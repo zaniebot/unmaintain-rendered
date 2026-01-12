@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `--line-length` option to `format` command - astral-sh/ruff #8363</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>--line-length</code> option to <code>format</code> command</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8363">#8363</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2023-10-30 17:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-30 17:59</div>
+            <div class="timeline-body"><p>Restores the <code>--line-length</code> option removed in https://github.com/astral-sh/ruff/pull/8131</p>
+<p>Closes #8362
+Closes #8352</p>
+<p>We removed this option because we did not feel it made sense for the format CLI to expose a single configuration option but not others.</p>
+<p>However, there are a few arguments in favor of restoring this option:</p>
+<ol>
+<li>It is the most asked for option (nobody has pointed out the other options are missing)</li>
+<li>It is also available via the <code>ruff check</code> CLI</li>
+<li>It is also available via the Black CLI</li>
+<li>There is no way for a user to configure the line width without a configuration file yet</li>
+<li>The line length is a unique formatter option; in that it is the most &quot;restrictive&quot; and not a toggle</li>
+</ol>
+<p>While we intend to introduce override of general configuration options via the CLI, we have not built it yet. If we replace <code>ruff check --line-length=...</code> with a generic <code>ruff check --setting line-length=...</code> we'll need to manage a deprecation period anyway.</p>
+<p>There remain some arguments against restoring this option:</p>
+<ol>
+<li>If/when we deprecate this option in favor of a <code>--setting</code> flag, more users will be affected</li>
+<li>Inconsistencies of the availability of configuration options via the CLI could be confusing</li>
+<li>Should this be <code>--line-width</code> to match our terminology for measuring enforced line length?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2023-10-30 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @zanieb on 2023-10-30 17:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2023-10-30 18:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @zanieb on 2023-10-30 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2023-10-30 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-30 18:26</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2023-10-30 20:59</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li>If/when we deprecate this option in favor of a <code>--setting</code> flag, more users will be affected</li>
+</ul>
+</blockquote>
+<p>IMO, this approach would be neater instead of <code>--settings {option-name}=value</code>:</p>
+<pre><code>...
+
+Format configuration:
+      --{option-name} &lt;VALUE&gt;  see formatter settings for possible options
+
+      # (also all settings can be auto generated in this section)
+
+Log levels:
+  -v, --verbose  Enable verbose logging
+  -q, --quiet    Print diagnostics, but nothing else
+  -s, --silent   Disable all logging (but still exit with status code &quot;1&quot; upon detecting diagnostics)
+</code></pre>
+<p>Then <code>--line-length</code> no need to deprecate in future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/args.rs</code>:414 on 2023-10-30 21:02</div>
+            <div class="timeline-body"><p>This is actually hidden on <code>ruff check</code>... We could consider doing the same here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-10-30 21:02</div>
+            <div class="timeline-body"><p>I know we discussed this synchronously but I support this change for the reasons outlined in the summary. Thank you for writing them up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-30 21:03</div>
+            <div class="timeline-body"><blockquote>
+<p>Should this be --line-width to match our terminology for measuring enforced line length?</p>
+</blockquote>
+<p>I believe we should change this if/when we change the terminology everywhere, and that for now, it's best to be consistent with the rest of the settings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-30 21:16</div>
+            <div class="timeline-body"><p>@T-256 I'm not sure that scales well to <em>all</em> of the settings. I've created a separate issue for discussion on that topic https://github.com/astral-sh/ruff/issues/8368</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-30 21:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_cli/src/args.rs</code>:414 on 2023-10-30 21:16</div>
+            <div class="timeline-body"><p>Oh.. hm... I don't think we should hide things from the help menu if they're intended to be used?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/args.rs</code>:414 on 2023-10-31 07:07</div>
+            <div class="timeline-body"><p>Agree. We should either expose and document it or not add it.</p>
+<p>It would be nice if we could add a message saying that we recommend using the configuration but it probably doesn't fit in nicely with the CLI documentation (not enough space, not in line with other CLI options)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-10-31 07:16</div>
+            <div class="timeline-body"><p>I remain concerned about re-introducing the option but I believe removing it and now re-adding it at least served its purpose: We learned more about the use case where people want this option (e.g. pre-commit without a configuration file, VS Code).</p>
+<p>My main concern is that we should encourage users to commit their formatter configuration to get consistent results across teams and interfaces (VS Code, CLI, ...). Adding this option is a step back in that regard.</p>
+<p>More details:</p>
+<ul>
+<li><blockquote>
+<p>It is also available via the ruff check CLI: But it is hidden and we discussed removing it.</p>
+</blockquote>
+<p>Adding a non-hidden <code>line-length</code> doesn't solve the inconsistency. It's differently inconsistent.</p>
+</li>
+<li><p>Using <code>--line-length</code> in VS code is rarely the right solution. The main advantage of a formatter is consistent formatting. Setting a user-specific <code>--line-length</code> doesn't achieve this goal (except if it is a workplace setting and committed). It further has the disadvantage that running <code>ruff format</code> on the CLI and in VS code produces different results. Understanding why VS code doesn't respect the line length (or configures code differently) may result in a lengthy debugging session.</p>
+</li>
+<li><p>Adding <code>line-length</code> unlocks the most common case, but it's still impossible to set all formatter configurations.</p>
+</li>
+<li><p>We're still not black compatible without exposing more options.</p>
+</li>
+</ul>
+<p>To sum it up. It unlocks some use cases but not all, nor does it fix any inconsistencies, it just changes them.</p>
+<p>I fear we'll have a hard time justifying not adding other options. Adding them will, similarly, unlock the mentioned use cases for some users and fit the bill as nicely as <code>--line-length</code>. I'm okay with this moving forward but would prefer if we pursue alternatives (or justify why we won't) before exposing all formatter options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-31 18:43</div>
+            <div class="timeline-body"><blockquote>
+<p>Using --line-length in VS code is rarely the right solution.</p>
+</blockquote>
+<p>While I agree with most of your points, many users use editors for Python files that do not belong to a real &quot;project&quot; and the usability of a formatter in this case is important.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-31 21:37</div>
+            <div class="timeline-body"><blockquote>
+<p>While I agree with most of your points, many users use editors for Python files that do not belong to a real &quot;project&quot; and the usability of a formatter in this case is important.</p>
+</blockquote>
+<p>I agree that this is a real use case and that we don't have any other solution for it yet. What I would prefer is something similar to <a href="https://github.com/prettier/prettier-vscode#prettier-settings">Prettier's VS Code extension</a>, allowing to configure a fallback for projects not using Ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-01 01:15</div>
+            <div class="timeline-body"><p>Oh interesting. I have a strong preference for that. However, I'm okay with merging this until we implement an alternative.</p>
+<p>@charliermarsh I don't have the heart to do it though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2023-11-01 21:24</div>
+            <div class="timeline-body"><blockquote>
+<p>...Prettier's VS Code extension, allowing to configure a fallback for projects not using Ruff.</p>
+</blockquote>
+<p>How would that that work for vi users?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-01 21:36</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>...Prettier's VS Code extension, allowing to configure a fallback for projects not using Ruff.</p>
+</blockquote>
+<p>How would that that work for vi users?</p>
+</blockquote>
+<p>I'm not that familiar with Vim but it would be an lsp setting that you can set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2023-11-02 01:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-11-02 01:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-02 01:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inigohidalgo">@inigohidalgo</a> on 2023-11-03 11:33</div>
+            <div class="timeline-body"><p>Sorry if this isn't the right place for this, but I started testing ruff yesterday, and I was looking for this setting for the reason @zanieb descibed above</p>
+<blockquote>
+<p>many users use editors for Python files that do not belong to a real &quot;project&quot; and the usability of a formatter in this case is important.</p>
+</blockquote>
+<p>I am evaluating ruff personally while working on work projects, where I cannot yet commit a new file or toml settings, so am relying on the CLI config to select the rules I want to apply. This could also be solved through some sort of &quot;global&quot; config, as that is basically what I am implementing using the extension settings for the <a href="https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff">Ruff vscode extension</a>.</p>
+<p>EDIT: solved by using the global  <code>~/.config/ruff/ruff.toml</code> file. Sorry for the noise</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insert newline between docstring and following own line comment - astral-sh/ruff #8216</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Insert newline between docstring and following own line comment</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8216">#8216</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-10-25 13:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-10-25 13:44</div>
+            <div class="timeline-body"><p><strong>Summary</strong> Previously, own line comment following after a docstring followed by newline(s) before the first content statement were treated as trailing on the docstring and we didn't insert a newline after the docstring as black would.</p>
+<p>Before:</p>
+<pre><code class="language-python">class ModuleBrowser:
+    &quot;&quot;&quot;Browse module classes and functions in IDLE.&quot;&quot;&quot;
+    # This class is also the base class for pathbrowser.PathBrowser.
+
+    def __init__(self, master, path, *, _htest=False, _utest=False):
+        pass
+</code></pre>
+<p>After:</p>
+<pre><code class="language-python">class ModuleBrowser:
+    &quot;&quot;&quot;Browse module classes and functions in IDLE.&quot;&quot;&quot;
+
+    # This class is also the base class for pathbrowser.PathBrowser.
+
+    def __init__(self, master, path, *, _htest=False, _utest=False):
+        pass
+</code></pre>
+<p>I'm not entirely happy about hijacking <code>handle_own_line_comment_between_statements</code>, but i don't know a better spot to put it.</p>
+<p>Fixes #7948</p>
+<p><strong>Test Plan</strong> Fixtures</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @konstin on 2023-10-25 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @konstin on 2023-10-25 13:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-10-26 00:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-10-26 00:28</div>
+            <div class="timeline-body"><p>I like the solution</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-26 01:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:564 on 2023-10-26 01:57</div>
+            <div class="timeline-body"><p>What if there's no statement in the body after the comment? Like:</p>
+<pre><code class="language-python">class ModuleBrowser:
+    &quot;&quot;&quot;Browse....&quot;&quot;&quot;
+    # Insert a newline above
+</code></pre>
+<p>Black inserts a newline there -- does this handle that case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-26 17:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:564 on 2023-10-26 17:24</div>
+            <div class="timeline-body"><p>Looks like it doesn't support that case yet. How else could we approach it? 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:564 on 2023-10-27 10:45</div>
+            <div class="timeline-body"><p>Fixed, manually inserting a newline seems to be the best option</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-10-27 10:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-28 01:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/statement/suite.rs</code>:610 on 2023-10-28 01:07</div>
+            <div class="timeline-body"><p>This should only be applied to class docstrings, right? (Wouldn't it also apply to function docstrings as written?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-28 01:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/statement/suite.rs</code>:591 on 2023-10-28 01:07</div>
+            <div class="timeline-body"><p>I think this comment is stale.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2023-10-30 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-10-30 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-10-30 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-30 13:26</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/statement/suite.rs</code>:610 on 2023-10-30 13:29</div>
+            <div class="timeline-body"><p>@konstin - Sorry to ping, did this get addressed? I don't see test cases for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-30 13:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-31 08:27</div>
+            <div class="timeline-body"><p>It seems that this PR regressed the Black compatibility for django, home-assistan, transformers, and zullip. The index is unchanged, but each project has significantly more changed files:</p>
+<p><strong>Before</strong></p>
+<p>| project        | similarity index  | total files       | changed files     |
+|----------------|------------------:|------------------:|------------------:|
+| django         |           0.99984 |              2772 |                33 |
+| home-assistant |           0.99963 |             10596 |               148 |
+| transformers   |           0.99967 |              2657 |               328 |
+| zulip          |           0.99970 |              1459 |                22 |</p>
+<p><strong>After</strong></p>
+<p>| project        | similarity index  | total files       | changed files     |
+|----------------|------------------:|------------------:|------------------:|
+| django         |           0.99984 |              2772 |                48 |
+| home-assistant |           0.99963 |             10596 |               181 |
+| transformers   |           0.99967 |              2657 |               339 |
+| zulip          |           0.99970 |              1459 |                23 |</p>
+<p>I'm not sure why this wasn't catched by the ecosystem check (CC: @zanieb) but we should make sure that this doesn't get released by either reverting the change, or following up with a follow up PR before the next release goes out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-10-31 11:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/statement/suite.rs</code>:610 on 2023-10-31 11:07</div>
+            <div class="timeline-body"><p>Addressed in https://github.com/astral-sh/ruff/pull/8375</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:14 UTC
+    </footer>
+</body>
+</html>

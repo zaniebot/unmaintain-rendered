@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow transparent cell magics - astral-sh/ruff #8911</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow transparent cell magics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8911">#8911</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-11-29 21:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-29 21:26</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates the logic for <code>is_magic_cell</code> to include certain cell magics. These cell magics would contain Python code following the line defining the command. The code could define a variable which can then be referenced in other cells. Currently, we would ignore the cell completely leading to undefined-name violation.</p>
+<p>As discussed in https://github.com/astral-sh/ruff/issues/8354#issuecomment-1832221009</p>
+<h2>Test Plan</h2>
+<p>Add new test case to validate this scenario.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-29 21:26</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #8911</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8911?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+</ul>
+</li>
+</ul>
+<p>This <a href="https://stacking.dev/?utm_source=stack-comment">stack of pull requests</a> is managed by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8911?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-29 21:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_notebook/src/cell.rs</code>:193 on 2023-11-29 21:33</div>
+            <div class="timeline-body"><p>So how does the parser handle this case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-11-29 21:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_notebook/src/cell.rs</code>:193 on 2023-11-29 21:37</div>
+            <div class="timeline-body"><p>The parser would parse the first line <code>%%time</code> as a cell magic statement and the second line as an assignment statement.</p>
+<p>This is technically a bug in the parser as both lines should be a single node instead but as we always ignored cell magic, it never came up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-29 21:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_notebook/src/cell.rs</code>:193 on 2023-11-29 21:38</div>
+            <div class="timeline-body"><p>Where does the cell magic end? Does it just include the <code>%%time</code> regardless of what follows? Like how would the parser deal with:</p>
+<pre><code class="language-python">%%time x = 1
+y = x
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-11-29 21:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_notebook/src/cell.rs</code>:193 on 2023-11-29 21:40</div>
+            <div class="timeline-body"><p>Each statement is a single node, so <code>%%time x = 1</code> would a single node and <code>y = x</code> would be an assignment statement. This code would raise undefined name for <code>x</code>. This is intentional as that requires support for inline parsing which might require more thinking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-29 21:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_notebook/src/cell.rs</code>:193 on 2023-11-29 21:48</div>
+            <div class="timeline-body"><p>I'm mostly wondering how the parser knows where the magic statement ends.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-11-29 21:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_notebook/src/cell.rs</code>:193 on 2023-11-29 21:50</div>
+            <div class="timeline-body"><p>Oh, it's the newline. The lexer consumes everything till the newline and considers this as part of the command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-29 21:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_notebook/src/cell.rs</code>:193 on 2023-11-29 21:57</div>
+            <div class="timeline-body"><p>Ah okay, makes sense. Could there be continuations though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-11-29 21:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_notebook/src/cell.rs</code>:193 on 2023-11-29 21:59</div>
+            <div class="timeline-body"><p>Yeah, but that is ignored. So,</p>
+<pre><code class="language-python">%%time \
+	x = 1
+y = x
+</code></pre>
+<p>will parse in same way as your example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-29 22:06</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-07 18:54</div>
+            <div class="timeline-body"><p>@dhruvmanila - What are your thoughts on moving this one forward? Are there concerns?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2023-12-07 19:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">linter</span> added by @dhruvmanila on 2023-12-07 19:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @dhruvmanila on 2023-12-07 19:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-12-07 20:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2023-12-07 20:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-12-07 20:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-07 20:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:22 UTC
+    </footer>
+</body>
+</html>

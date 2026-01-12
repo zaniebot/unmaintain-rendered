@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff ecosystem: pass no-preview cli arg by default - astral-sh/ruff #8775</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff ecosystem: pass no-preview cli arg by default</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8775">#8775</a>
+        opened by <a href="https://github.com/T-256">@T-256</a>
+        on 2023-11-20 05:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/T-256">@T-256</a> on 2023-11-20 05:48</div>
+            <div class="timeline-body"><p>Addresses https://github.com/astral-sh/ruff/pull/8489#issuecomment-1793513411
+That issues still exist on formatter, but since <code>black</code> doesn't support <code>no-preview</code> cli arg, I didn't include it in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-20 15:18</div>
+            <div class="timeline-body"><p>Thanks! You can add this to the formatter too. We don't use comparisons with Black in CI anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ci</span> added by @zanieb on 2023-11-20 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-20 16:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>python/ruff-ecosystem/ruff_ecosystem/projects.py</code>:49 on 2023-11-20 16:04</div>
+            <div class="timeline-body"><p>Please revert, this change is not correct.</p>
+<pre><code class="language-python">def foo(**kwargs):
+    print(kwargs)
+
+
+a = {&quot;x&quot;: 1}
+b = {&quot;x&quot;: 2}
+
+foo(**{**a, **b})
+foo(**a, **b)
+</code></pre>
+<pre><code>❯ python example.py
+{'x': 2}
+Traceback (most recent call last):
+  File &quot;/Users/mz/eng/src/astral-sh/ruff/example.py&quot;, line 9, in &lt;module&gt;
+    foo(**a, **b)
+TypeError: __main__.foo() got multiple values for keyword argument 'x'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-20 16:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>python/ruff-ecosystem/ruff_ecosystem/projects.py</code>:49 on 2023-11-20 16:15</div>
+            <div class="timeline-body"><p>I guess Python 3.9+ can use the <code>|</code> operator 🤯 e.g. <code>foo(**(a | b))</code> — that'd be fun someday.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2023-11-20 16:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>python/ruff-ecosystem/ruff_ecosystem/projects.py</code>:49 on 2023-11-20 16:17</div>
+            <div class="timeline-body"><p>Oh correct, actually I was working on that rule before :)
+This line became visually problem to my eyes. Can we use cleaner approach? For example:</p>
+<pre><code class="language-py">kwargs.update(asdict(self))
+return type(self)(**kwargs)
+</code></pre>
+<p>it's safe to mutate the <code>kwargs</code> because it won't access out of scope never again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-20 16:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>python/ruff-ecosystem/ruff_ecosystem/projects.py</code>:49 on 2023-11-20 16:26</div>
+            <div class="timeline-body"><p>It'd need to be reversed because we want the kwargs to override asdict.</p>
+<p>In general though, we shouldn't make unrelated changes like this in the same pull request as a fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "lint ecosystem: respect no-preview" to "Ruff ecosystem: pass no-preview cli arg by default" by @T-256 on 2023-11-20 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2023-11-20 18:00</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-20 18:16</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2023-11-20 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-11-20 18:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:21 UTC
+    </footer>
+</body>
+</html>

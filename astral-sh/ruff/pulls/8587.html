@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>refine pyupgrade's TimeoutErrorAlias lint (UP041) to remove false positives - astral-sh/ruff #8587</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>refine pyupgrade's TimeoutErrorAlias lint (UP041) to remove false positives</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8587">#8587</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2023-11-09 17:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-09 17:46</div>
+            <div class="timeline-body"><p>Previously, this lint had its alias detection logic a little
+backwards. That is, for Python 3.11+, it would <em>only</em> detect
+asyncio.TimeoutError as an alias, but it should have also detected
+socket.timeout as an alias. And in Python &lt;3.11, it would falsely
+detect asyncio.TimeoutError as an alias where it should have only
+detected socket.timeout as an alias.</p>
+<p>We fix it so that both asyncio.TimeoutError and socket.timeout are
+detected as aliases in Python 3.11+, and only socket.timeout is
+detected as an alias in Python 3.10.</p>
+<p>Fixes #8565</p>
+<h2>Test Plan</h2>
+<p>I tested this by updating the existing snapshot test which had erroneously
+asserted that socket.timeout should not be replaced with TimeoutError in Python
+3.11+. I also added a new regression test that targets Python 3.10 and ensures
+that the suggestion to replace asyncio.TimeoutError with TimeoutError does not
+occur.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @BurntSushi on 2023-11-09 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2023-11-09 17:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-09 18:04</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alex-700">@alex-700</a> on 2023-11-09 23:20</div>
+            <div class="timeline-body"><p>@BurntSushi hi! Thanks for the PR!</p>
+<p>If I understand correctly, you decide to leave linting <code>asyncio.TimeoutError</code> even for <code>py310</code> (but make the fix unsafe).
+IMHO, it looks a bit counterintuitive.
+The user, targeted to <code>py310</code>, can do nothing with the triggered lint about <code>asyncio.TimeoutError</code>, but suppressing.
+Should we just do not produce a warning about <code>asyncio.TimeoutError</code> in the case of <code>py310</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-09 23:59</div>
+            <div class="timeline-body"><p>Ah yeah, I think we may have misdiagnosed in the original issue. We probably shouldn't raise on <code>asyncio.TimeoutError</code> in Python 3.10 <em>at all</em>. The initial PR actually suggests that this was the intention:</p>
+<img width="313" alt="Screen Shot 2023-11-09 at 5 08 56 PM" src="https://github.com/astral-sh/ruff/assets/1309177/02f13677-ed55-450d-b4b9-c30b9e598a65">
+
+<p>But then has this code:</p>
+<pre><code class="language-rust">/// Return `true` if an [`Expr`] is an alias of `TimeoutError`.
+fn is_alias(expr: &amp;Expr, semantic: &amp;SemanticModel, target_version: PythonVersion) -&gt; bool {
+    semantic.resolve_call_path(expr).is_some_and(|call_path| {
+        if target_version &gt;= PythonVersion::Py311 {
+            matches!(call_path.as_slice(), [&quot;&quot;] | [&quot;asyncio&quot;, &quot;TimeoutError&quot;])
+        } else {
+            matches!(
+                call_path.as_slice(),
+                [&quot;&quot;] | [&quot;asyncio&quot;, &quot;TimeoutError&quot;] | [&quot;socket&quot;, &quot;timeout&quot;]
+            )
+        }
+    })
+}
+</code></pre>
+<p>We probably want to return both errors if &gt;= Python 3.11, and only <code>socket.timeout</code> error if Python 3.10?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alex-700">@alex-700</a> on 2023-11-10 11:21</div>
+            <div class="timeline-body"><p>@charliermarsh yes.
+Something like</p>
+<pre><code class="language-rust">/// Return `true` if an [`Expr`] is an alias of `TimeoutError`.
+fn is_alias(expr: &amp;Expr, semantic: &amp;SemanticModel, target_version: PythonVersion) -&gt; bool {
+    semantic.resolve_call_path(expr).is_some_and(|call_path| {
+        if target_version &gt;= PythonVersion::Py311 {
+            matches!(
+                call_path.as_slice(),
+                [&quot;&quot;] | [&quot;asyncio&quot;, &quot;TimeoutError&quot;] | [&quot;socket&quot;, &quot;timeout&quot;]
+            )
+        } else {
+            matches!(call_path.as_slice(), [&quot;&quot;] | [&quot;socket&quot;, &quot;timeout&quot;])
+        }
+    })
+}
+</code></pre>
+<p>^ to minimize a difference from the current code.</p>
+<p>Or maybe something like</p>
+<pre><code class="language-rust">/// Return `true` if an [`Expr`] is an alias of `TimeoutError`.
+fn is_alias(expr: &amp;Expr, semantic: &amp;SemanticModel, target_version: PythonVersion) -&gt; bool {
+    semantic
+        .resolve_call_path(expr)
+        .is_some_and(|call_path| match call_path.as_slice() {
+            [&quot;&quot;] =&gt; true,
+            [&quot;socket&quot;, &quot;timeout&quot;] if target_version &gt;= PythonVersion::Py310 =&gt; true,
+            [&quot;asyncio&quot;, &quot;TimeoutError&quot;] if target_version &gt;= PythonVersion::Py311 =&gt; true,
+            _ =&gt; false,
+        })
+}
+</code></pre>
+<p>or (implicitly used the information that target_version &gt;= py310)</p>
+<pre><code class="language-rust">/// Return `true` if an [`Expr`] is an alias of `TimeoutError`.
+fn is_alias(expr: &amp;Expr, semantic: &amp;SemanticModel, target_version: PythonVersion) -&gt; bool {
+    semantic
+        .resolve_call_path(expr)
+        .is_some_and(|call_path| {
+            matches!(call_path.as_slice(), [&quot;&quot;] | [&quot;socket&quot;, &quot;timeout&quot;])
+            || matches!(call_path.as_slice(), [&quot;asyncio&quot;, &quot;TimeoutError&quot;] if target_version &gt;= PythonVersion::Py311)
+        })
+}
+</code></pre>
+<p>P.S. I am actually does not understand why the check for [&quot;&quot;] is here 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-10 12:38</div>
+            <div class="timeline-body"><p>Right, the <code>unsafe</code> fix on Python 3.10 for <code>asyncio.TimeoutError</code> was what I was uncertain about. I structured this PR such that all I have to do is drop the last commit. I fixed the logic as @charliermarsh indicated above in the first commit. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-10 12:41</div>
+            <div class="timeline-body"><p>Okay, I've dropped the last commit and updated the PR description.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/timeout_error_alias.rs</code>:77 on 2023-11-10 14:41</div>
+            <div class="timeline-body"><p>We can remove the <code>[&quot;&quot;]</code> piece from this and the preceding branch -- I think that was just a misunderstanding in the original PR. (It has no effect.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-11-10 14:41</div>
+            <div class="timeline-body"><p>Excellent, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2023-11-10 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2023-11-10 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2023-11-10 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-10 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-10 15:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:18 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a ruff docker image at ghcr.io/astral-sh/ruff - astral-sh/ruff #8554</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a ruff docker image at ghcr.io/astral-sh/ruff</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8554">#8554</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-11-08 10:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-11-08 10:45</div>
+            <div class="timeline-body"><p>This dockerfile creates a minimal docker container that runs ruff</p>
+<pre><code class="language-console">$ docker run -v .:/io --rm ruff check --select G004 .
+scripts/check_ecosystem.py:51:26: G004 Logging statement uses f-string
+scripts/check_ecosystem.py:55:22: G004 Logging statement uses f-string
+scripts/check_ecosystem.py:84:13: G004 Logging statement uses f-string
+scripts/check_ecosystem.py:177:18: G004 Logging statement uses f-string
+scripts/check_ecosystem.py:200:18: G004 Logging statement uses f-string
+scripts/check_ecosystem.py:354:18: G004 Logging statement uses f-string
+scripts/check_ecosystem.py:477:18: G004 Logging statement uses f-string
+Found 7 errors.
+</code></pre>
+<pre><code class="language-console">$ docker image ls ruff
+ REPOSITORY   TAG       IMAGE ID       CREATED         SIZE
+ ruff         latest    505876b0f817   2 minutes ago   16.2MB
+</code></pre>
+<p>Test repo: https://github.com/konstin/release-testing2
+Successful build: https://github.com/konstin/release-testing2/actions/runs/6862107104/job/18659155108
+The package: https://github.com/konstin/release-testing2/pkgs/container/release-testing2</p>
+<p>After merging this, i have to manually push the first image and connect it the repo in the github UI or the action will fail due to lack of permissions</p>
+<p>Open questions:</p>
+<ul>
+<li>Test arm version: Anyone working on an aarch64 linux machine? I don't see this failing or a high-priority deployment (the vast majority of linux users is on x86), but it would be nice to have it tested one.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-08 19:43</div>
+            <div class="timeline-body"><p>Here's an example of a CI workflow https://github.com/PrefectHQ/prefect/blob/main/.github/workflows/docker-images.yaml — the matrix is of course not necessary for us.</p>
+<p>It'd be nice to submit an addition to the DockerHub official image collection, but to start I don't have a strong preference on DockerHub vs ghcr.io.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/daveisfera">@daveisfera</a> on 2023-11-08 22:31</div>
+            <div class="timeline-body"><p>This is great! I was able to build it for <code>linux/amd64</code> and <code>linux/arm64</code> with <code>buildx</code> so the multi-arch stuff should basically work out of the box. The question would be how many platforms/architecture combinations do you want to provide, because there's a pretty wide list tied to each release currently
+I'd recommend to start with just <code>linux</code> as the platform with the desired architectures because most images are run that way already
+Unless there's a functional difference that is important, I'd recommend to support only GNU or MUSL to keep things simple
+And as far as location, I'd vote for an official image on Docker Hub but anywhere that's easily available would be GREAT</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/daveisfera">@daveisfera</a> on 2023-11-09 02:59</div>
+            <div class="timeline-body"><p>Actually, the arm64 build failed with this error:</p>
+<pre><code>574.8 The following warnings were emitted during compilation:
+574.8 
+574.8 warning: &quot;`background_threads_runtime_support` not supported for `x86_64-unknown-linux-musl`&quot;
+574.8 
+574.8 error: failed to run custom build command for `tikv-jemalloc-sys v0.5.4+5.3.0-patched`
+574.8 
+574.8 Caused by:
+574.8   process didn't exit successfully: `/target/release/build/tikv-jemalloc-sys-4976bb44dc369cbb/build-script-build` (exit status: 101)
+574.8   --- stdout
+574.8   TARGET=x86_64-unknown-linux-musl
+574.8   HOST=aarch64-unknown-linux-gnu
+574.8   NUM_JOBS=16
+574.8   OUT_DIR=&quot;/target/x86_64-unknown-linux-musl/release/build/tikv-jemalloc-sys-249710264dccf383/out&quot;
+574.8   BUILD_DIR=&quot;/target/x86_64-unknown-linux-musl/release/build/tikv-jemalloc-sys-249710264dccf383/out/build&quot;
+574.8   SRC_DIR=&quot;/usr/local/cargo/registry/src/index.crates.io-6f17d22bba15001f/tikv-jemalloc-sys-0.5.4+5.3.0-patched&quot;
+574.8   cargo:rustc-cfg=prefixed
+574.8   cargo:rerun-if-env-changed=JEMALLOC_OVERRIDE
+574.8   OPT_LEVEL = Some(&quot;3&quot;)
+574.8   TARGET = Some(&quot;x86_64-unknown-linux-musl&quot;)
+574.8   HOST = Some(&quot;aarch64-unknown-linux-gnu&quot;)
+574.8   cargo:rerun-if-env-changed=CC_x86_64-unknown-linux-musl
+574.8   CC_x86_64-unknown-linux-musl = None
+574.8   cargo:rerun-if-env-changed=CC_x86_64_unknown_linux_musl
+574.8   CC_x86_64_unknown_linux_musl = None
+574.8   cargo:rerun-if-env-changed=TARGET_CC
+574.8   TARGET_CC = None
+574.8   cargo:rerun-if-env-changed=CC
+574.8   CC = None
+574.8   RUSTC_LINKER = None
+574.8   cargo:rerun-if-env-changed=CROSS_COMPILE
+574.8   CROSS_COMPILE = None
+574.8   cargo:rerun-if-env-changed=CRATE_CC_NO_DEFAULTS
+574.8   CRATE_CC_NO_DEFAULTS = None
+574.8   DEBUG = Some(&quot;false&quot;)
+574.8   CARGO_CFG_TARGET_FEATURE = Some(&quot;fxsr,sse,sse2&quot;)
+574.8   cargo:rerun-if-env-changed=CFLAGS_x86_64-unknown-linux-musl
+574.8   CFLAGS_x86_64-unknown-linux-musl = None
+574.8   cargo:rerun-if-env-changed=CFLAGS_x86_64_unknown_linux_musl
+574.8   CFLAGS_x86_64_unknown_linux_musl = None
+574.8   cargo:rerun-if-env-changed=TARGET_CFLAGS
+574.8   TARGET_CFLAGS = None
+574.8   cargo:rerun-if-env-changed=CFLAGS
+574.8   CFLAGS = None
+574.8   CC=&quot;musl-gcc&quot;
+574.8   CFLAGS=&quot;-O3 -ffunction-sections -fdata-sections -fPIC -m64 -Wall&quot;
+574.8   JEMALLOC_REPO_DIR=&quot;jemalloc&quot;
+574.8   cargo:warning=&quot;`background_threads_runtime_support` not supported for `x86_64-unknown-linux-musl`&quot;
+574.8   cargo:rerun-if-env-changed=JEMALLOC_SYS_WITH_MALLOC_CONF
+574.8   cargo:rerun-if-env-changed=JEMALLOC_SYS_WITH_LG_PAGE
+574.8   cargo:rerun-if-env-changed=JEMALLOC_SYS_WITH_LG_HUGEPAGE
+574.8   cargo:rerun-if-env-changed=JEMALLOC_SYS_WITH_LG_QUANTUM
+574.8   cargo:rerun-if-env-changed=JEMALLOC_SYS_WITH_LG_VADDR
+574.8   --with-jemalloc-prefix=_rjem_
+574.8   running: cd &quot;/target/x86_64-unknown-linux-musl/release/build/tikv-jemalloc-sys-249710264dccf383/out/build&quot; &amp;&amp; CC=&quot;musl-gcc&quot; CFLAGS=&quot;-O3 -ffunction-sections -fdata-sections -fPIC -m64 -Wall&quot; CPPFLAGS=&quot;-O3 -ffunction-sections -fdata-sections -fPIC -m64 -Wall&quot; LDFLAGS=&quot;-O3 -ffunction-sections -fdata-sections -fPIC -m64 -Wall&quot; &quot;sh&quot; &quot;/target/x86_64-unknown-linux-musl/release/build/tikv-jemalloc-sys-249710264dccf383/out/build/configure&quot; &quot;--disable-cxx&quot; &quot;--enable-doc=no&quot; &quot;--enable-shared=no&quot; &quot;--with-jemalloc-prefix=_rjem_&quot; &quot;--with-private-namespace=_rjem_&quot; &quot;--host=x86_64-unknown-linux-musl&quot; &quot;--build=aarch64-unknown-linux-gnu&quot; &quot;--prefix=/target/x86_64-unknown-linux-musl/release/build/tikv-jemalloc-sys-249710264dccf383/out&quot;
+574.8   checking for xsltproc... false
+574.8   checking for x86_64-unknown-linux-musl-gcc... musl-gcc
+574.8   checking whether the C compiler works... no
+574.8   running: &quot;tail&quot; &quot;-n&quot; &quot;100&quot; &quot;/target/x86_64-unknown-linux-musl/release/build/tikv-jemalloc-sys-249710264dccf383/out/build/config.log&quot;
+574.8   XSLROOT=''
+574.8   XSLTPROC='false'
+574.8   a=''
+574.8   abi=''
+574.8   abs_objroot='/target/x86_64-unknown-linux-musl/release/build/tikv-jemalloc-sys-249710264dccf383/out/build/'
+574.8   abs_srcroot='/target/x86_64-unknown-linux-musl/release/build/tikv-jemalloc-sys-249710264dccf383/out/build/'
+574.8   ac_ct_CC=''
+574.8   ac_ct_CXX=''
+574.8   bindir='${exec_prefix}/bin'
+574.8   build='aarch64-unknown-linux-gnu'
+574.8   build_alias='aarch64-unknown-linux-gnu'
+574.8   build_cpu=''
+574.8   build_os=''
+574.8   build_vendor=''
+574.8   cfghdrs_in=''
+574.8   cfghdrs_out=''
+574.8   cfgoutputs_in=''
+574.8   cfgoutputs_out=''
+574.8   datadir='${datarootdir}'
+574.8   datarootdir='${prefix}/share'
+574.8   docdir='${datarootdir}/doc/${PACKAGE}'
+574.8   dvidir='${docdir}'
+574.8   enable_autogen=''
+574.8   enable_cache_oblivious=''
+574.8   enable_cxx='no'
+574.8   enable_debug=''
+574.8   enable_doc='no'
+574.8   enable_experimental_smallocx=''
+574.8   enable_fill=''
+574.8   enable_initial_exec_tls=''
+574.8   enable_lazy_lock=''
+574.8   enable_log=''
+574.8   enable_opt_safety_checks=''
+574.8   enable_opt_size_checks=''
+574.8   enable_prof=''
+574.8   enable_readlinkat=''
+574.8   enable_shared='no'
+574.8   enable_static=''
+574.8   enable_stats=''
+574.8   enable_tls=''
+574.8   enable_uaf_detection=''
+574.8   enable_utrace=''
+574.8   enable_xmalloc=''
+574.8   enable_zone_allocator=''
+574.8   exe=''
+574.8   exec_prefix='/target/x86_64-unknown-linux-musl/release/build/tikv-jemalloc-sys-249710264dccf383/out'
+574.8   host='x86_64-unknown-linux-musl'
+574.8   host_alias='x86_64-unknown-linux-musl'
+574.8   host_cpu=''
+574.8   host_os=''
+574.8   host_vendor=''
+574.8   htmldir='${docdir}'
+574.8   importlib=''
+574.8   includedir='${prefix}/include'
+574.8   infodir='${datarootdir}/info'
+574.8   install_suffix=''
+574.8   je_=''
+574.8   jemalloc_version=''
+574.8   jemalloc_version_bugfix=''
+574.8   jemalloc_version_gid=''
+574.8   jemalloc_version_major=''
+574.8   jemalloc_version_minor=''
+574.8   jemalloc_version_nrev=''
+574.8   libdir='${exec_prefix}/lib'
+574.8   libdl=''
+574.8   libexecdir='${exec_prefix}/libexec'
+574.8   libprefix=''
+574.8   link_whole_archive=''
+574.8   localedir='${datarootdir}/locale'
+574.8   localstatedir='${prefix}/var'
+574.8   mandir='${datarootdir}/man'
+574.8   o=''
+574.8   objroot=''
+574.8   oldincludedir='/usr/include'
+574.8   pdfdir='${docdir}'
+574.8   prefix='/target/x86_64-unknown-linux-musl/release/build/tikv-jemalloc-sys-249710264dccf383/out'
+574.8   private_namespace=''
+574.8   program_transform_name='s,x,x,'
+574.8   psdir='${docdir}'
+574.8   rev='2'
+574.8   sbindir='${exec_prefix}/sbin'
+574.8   sharedstatedir='${prefix}/com'
+574.8   so=''
+574.8   srcroot=''
+574.8   sysconfdir='${prefix}/etc'
+574.8   target_alias=''
+574.8 
+574.8   ## ----------- ##
+574.8   ## confdefs.h. ##
+574.8   ## ----------- ##
+574.8 
+574.8   /* confdefs.h */
+574.8   #define PACKAGE_NAME &quot;&quot;
+574.8   #define PACKAGE_TARNAME &quot;&quot;
+574.8   #define PACKAGE_VERSION &quot;&quot;
+574.8   #define PACKAGE_STRING &quot;&quot;
+574.8   #define PACKAGE_BUGREPORT &quot;&quot;
+574.8   #define PACKAGE_URL &quot;&quot;
+574.8 
+574.8   configure: exit 77
+574.8 
+574.8   --- stderr
+574.8   configure: error: in `/target/x86_64-unknown-linux-musl/release/build/tikv-jemalloc-sys-249710264dccf383/out/build':
+574.8   configure: error: C compiler cannot create executables
+574.8   See `config.log' for more details
+574.8   thread 'main' panicked at /usr/local/cargo/registry/src/index.crates.io-6f17d22bba15001f/tikv-jemalloc-sys-0.5.4+5.3.0-patched/build.rs:351:9:
+574.8   command did not execute successfully: cd &quot;/target/x86_64-unknown-linux-musl/release/build/tikv-jemalloc-sys-249710264dccf383/out/build&quot; &amp;&amp; CC=&quot;musl-gcc&quot; CFLAGS=&quot;-O3 -ffunction-sections -fdata-sections -fPIC -m64 -Wall&quot; CPPFLAGS=&quot;-O3 -ffunction-sections -fdata-sections -fPIC -m64 -Wall&quot; LDFLAGS=&quot;-O3 -ffunction-sections -fdata-sections -fPIC -m64 -Wall&quot; &quot;sh&quot; &quot;/target/x86_64-unknown-linux-musl/release/build/tikv-jemalloc-sys-249710264dccf383/out/build/configure&quot; &quot;--disable-cxx&quot; &quot;--enable-doc=no&quot; &quot;--enable-shared=no&quot; &quot;--with-jemalloc-prefix=_rjem_&quot; &quot;--with-private-namespace=_rjem_&quot; &quot;--host=x86_64-unknown-linux-musl&quot; &quot;--build=aarch64-unknown-linux-gnu&quot; &quot;--prefix=/target/x86_64-unknown-linux-musl/release/build/tikv-jemalloc-sys-249710264dccf383/out&quot;
+574.8   expected success, got: exit status: 77
+574.8   note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+574.8 warning: build failed, waiting for other jobs to finish...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-09 11:22</div>
+            <div class="timeline-body"><p>Made the multiarch build work for x86_64 and aarch64, do we need other architectures too?</p>
+<p>The build works by cross compiling, so we avoid QEMU.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-09 14:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>.github/workflows/docker.yaml</code>:50 on 2023-11-09 14:37</div>
+            <div class="timeline-body"><p>We can drop all the flavor and Python suffixes</p>
+<pre><code class="language-suggestion">            type=pep440,pattern={{version}}
+            type=pep440,pattern={{major}}.{{minor}},enable=${{ github.event.release.prerelease == false }}
+            type=pep440,pattern={{major}},enable=${{ github.event.release.prerelease == false }}
+            type=raw,value=latest${{ matrix.flavor }},enable=github.event.release.prerelease == false }}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-09 14:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>.github/workflows/docker.yaml</code>:45 on 2023-11-09 14:40</div>
+            <div class="timeline-body"><p>I'm not sure if we need this part? I think this was for rebuilding old versions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-09 14:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>.github/workflows/docker.yaml</code>:60 on 2023-11-09 14:41</div>
+            <div class="timeline-body"><p>Looks like you dropped the dev tags?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>.github/workflows/docker.yaml</code>:45 on 2023-11-10 11:16</div>
+            <div class="timeline-body"><p>I've just copied prefect for the initial implementation, this needs a bunch of iterations to work properly with our setup</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-10 11:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-11-10 11:31</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/docker-image">CodSpeed Performance Report</a></h2>
+<h3>Merging #8554 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>docker-image</code> (5be26b8) with <code>main</code> (f7d249a)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 25</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add a ruff docker image" to "Add a ruff docker image at ghcr.io/astral-sh/ruff" by @konstin on 2023-11-14 10:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2023-11-14 10:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-14 10:26</div>
+            <div class="timeline-body"><p>Added a github actions integration, this is ready</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2023-11-16 01:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-17 16:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>Dockerfile</code>:5 on 2023-11-17 16:56</div>
+            <div class="timeline-body"><p>Probably still good to follow best practice to use <code>apt-get</code>, clean the cache, not install recommends.</p>
+<p>Even if it's not in the production images, reducing the size of the cached layers is important.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2023-11-17 16:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2023-11-17 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-11-17 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-17 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on <code>Dockerfile</code>:9 on 2023-11-19 01:34</div>
+            <div class="timeline-body"><p>Hello @konstin , I was just looking through <code>ruff</code> commit history and saw this PR.</p>
+<p>One comment here is usually one just uses system Python in a Docker container, mainly cuz Docker containers are short-lived objects already.</p>
+<p>I wanted to suggest a nice <code>Dockerfile</code> linter <a href="https://github.com/hadolint/hadolint">hadolint</a> that has a lot of good suggestions:</p>
+<ul>
+<li>Using <code>pip install --no-cache-dir</code> to minimize image size</li>
+<li>Using <code>apt-get</code> over <code>apt</code> and removing the apt cache when done</li>
+</ul>
+<p>Here is a sample <code>pre-commit</code> integration:</p>
+<pre><code class="language-yaml">    - repo: https://github.com/hadolint/hadolint
+      rev: v2.12.1-beta
+      hooks:
+          - id: hadolint-docker
+</code></pre>
+<p>Feel free to disregard this as well, just sharing for reference. Cheers!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jamesbraza">@jamesbraza</a> reviewed on 2023-11-19 01:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-11-19 07:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>Dockerfile</code>:9 on 2023-11-19 07:38</div>
+            <div class="timeline-body"><blockquote>
+<p>One comment here is usually one just uses system Python in a Docker container, mainly cuz Docker containers are short-lived objects already.</p>
+</blockquote>
+<p>I have bad experiences with user packages colliding with system packages, so i won't support that. As <code>pip install cargo-zigbuild</code> in the system environment will tell you: &quot;Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv&quot;</p>
+<blockquote>
+<p>Using pip install --no-cache-dir to minimize image size</p>
+</blockquote>
+<p>This is a multi-stage docker build, the builder does not affect the final image size. As shown in the PR description, the total is 16.2MB, which is the size of the x86_64-unknown-linux-musl release binary.</p>
+<blockquote>
+<p>Using apt-get over apt and removing the apt cache when done</p>
+</blockquote>
+<p>The <code>apt</code> interface is stable nowadays and the same as for the pip cache applies here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jamesbraza">@jamesbraza</a> reviewed on 2023-11-19 18:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on <code>Dockerfile</code>:9 on 2023-11-19 18:54</div>
+            <div class="timeline-body"><p>Alright sounds good!  The multi-stage build you set up here is pretty clever, nice work there</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bschoenmaeckers">@bschoenmaeckers</a> on 2023-12-07 11:02</div>
+            <div class="timeline-body"><p>I don't think this image is public accessible, because I can't find the image on the registry of this repo and <code>git pull ghcr.io/astral-sh/ruff</code> does not work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-12-07 14:15</div>
+            <div class="timeline-body"><p>Sorry, it's public now: https://github.com/astral-sh/ruff/pkgs/container/ruff</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:18 UTC
+    </footer>
+</body>
+</html>

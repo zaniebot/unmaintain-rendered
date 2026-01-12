@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[pylint] - add `unnecessary-list-index-lookup` (`PLR1736`) + autofix - astral-sh/ruff #7999</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[pylint] - add <code>unnecessary-list-index-lookup</code> (<code>PLR1736</code>) + autofix</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7999">#7999</a>
+        opened by <a href="https://github.com/diceroll123">@diceroll123</a>
+        on 2023-10-17 01:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/diceroll123">@diceroll123</a> on 2023-10-17 01:50</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Add <a href="https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/unnecessary-list-index-lookup.html">R1736</a> along with the autofix</p>
+<p>See #970</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code> and manually</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-17 02:34</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[pylint] add `unnecessary-list-index-lookup` `PLR1736` with autofix" to "[pylint] - add `unnecessary-list-index-lookup` (`PLR1736`) + autofix" by @diceroll123 on 2023-10-18 04:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2023-11-04 17:34</div>
+            <div class="timeline-body"><p>@diceroll123 I tried out your rule and found a bug:</p>
+<p>Consider this code snippit</p>
+<pre><code class="language-python">a = list(range(5, 10))
+for i, j in enumerate(a):
+    a[i] = j + 1
+    assert a[i] &gt; j
+</code></pre>
+<p>becomes transformed to:</p>
+<pre><code class="language-python">a = list(range(5, 10))
+for i, j in enumerate(a):
+    a[i] = j + 1
+    assert j &gt; j
+</code></pre>
+<p>which now outputs an Assertion Error. In other words, you have to make sure <code>a[i]</code> is always an alias of <code>j</code> which is not the case here. I suspect your other PR has a similar issue.</p>
+<p>You should also test mutating j and changing the alias there.</p>
+<p>ie:</p>
+<pre><code class="language-python">j = j+1
+assert a[i] != j
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/diceroll123">@diceroll123</a> on 2023-11-04 18:15</div>
+            <div class="timeline-body"><p>@Skylion007 good catch, thanks! Will update.</p>
+<p>I think the safest and sanest way forward is to stop emitting once the visitor finds a subscript assignment to the currently-looped value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-04 18:42</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+3 -0 violations, +0 -0 fixes in 41 projects)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/eed6427b66e5af51d7e6ff4afb5f7115b2754cf3/dev/breeze/src/airflow_breeze/utils/parallel.py#L297'>dev/breeze/src/airflow_breeze/utils/parallel.py:297:57:</a> PLR1736 [*] Unnecessary lookup of list item by index
++ <a href='https://github.com/apache/airflow/blob/eed6427b66e5af51d7e6ff4afb5f7115b2754cf3/dev/breeze/src/airflow_breeze/utils/parallel.py#L299'>dev/breeze/src/airflow_breeze/utils/parallel.py:299:40:</a> PLR1736 [*] Unnecessary lookup of list item by index
++ <a href='https://github.com/apache/airflow/blob/eed6427b66e5af51d7e6ff4afb5f7115b2754cf3/scripts/ci/pre_commit/pre_commit_check_provider_airflow_compatibility.py#L51'>scripts/ci/pre_commit/pre_commit_check_provider_airflow_compatibility.py:51:20:</a> PLR1736 [*] Unnecessary lookup of list item by index
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLR1736 | 3 | 3 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_list_index_lookup.rs</code>:222 on 2023-11-27 16:22</div>
+            <div class="timeline-body"><p>Should this use <code>checker.semantic().resolve_call_path(func)</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_list_index_lookup.rs</code>:15 on 2023-11-27 16:25</div>
+            <div class="timeline-body"><p>Perhaps</p>
+<pre><code class="language-suggestion">/// It is more succinct to use the variable for the value at the current index which is already in scope from the iterator. 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_list_index_lookup.rs</code>:12 on 2023-11-27 16:26</div>
+            <div class="timeline-body"><p>Perhaps</p>
+<pre><code class="language-suggestion">/// Checks for access of a list item at the current index when using enumeration.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_list_index_lookup.rs</code>:38 on 2023-11-27 16:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        format!(&quot;Unnecessary lookup of list item by index&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_list_index_lookup.rs</code>:42 on 2023-11-27 16:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        format!(&quot;Use existing item variable instead&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/unnecessary_list_index_lookup.py</code>:19 on 2023-11-27 16:28</div>
+            <div class="timeline-body"><p>What about a case where <code>index</code> is mutated? e.g. <code>index += 1</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-27 16:29</div>
+            <div class="timeline-body"><p>I think @charliermarsh  is better suited to review the implementation, but I read through everything as best as I could :)</p>
+<p>The ecosystem changes look good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/diceroll123">@diceroll123</a> reviewed on 2023-11-28 05:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/diceroll123">@diceroll123</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/unnecessary_list_index_lookup.py</code>:19 on 2023-11-28 05:03</div>
+            <div class="timeline-body"><p>Adding a case for that, as well as the sequence itself being mutated! Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/diceroll123">@diceroll123</a> reviewed on 2023-11-28 05:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/diceroll123">@diceroll123</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_list_index_lookup.rs</code>:222 on 2023-11-28 05:42</div>
+            <div class="timeline-body"><p>Good change, I've also added detection for <code>builtins.enumerate</code> along with it, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/unnecessary_list_index_lookup.py</code>:1 on 2023-11-30 22:35</div>
+            <div class="timeline-body"><p>These tests are really thorough! Thanks for thinking through them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_list_index_lookup.rs</code>:202 on 2023-11-30 22:47</div>
+            <div class="timeline-body"><p>nit: using <code>let Some(..) = .. else { continue; }</code> will avoid having an additional indent</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_list_index_lookup.rs</code>:104 on 2023-11-30 22:52</div>
+            <div class="timeline-body"><p>nit: can we avoid having nested <code>if</code> conditions by using <code>let Some(ast::ExprName { id, .. }) = value.as_name_expr() else { return; }</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_list_index_lookup.rs</code>:147 on 2023-11-30 22:52</div>
+            <div class="timeline-body"><p>Same as above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_list_index_lookup.rs</code>:235 on 2023-11-30 22:54</div>
+            <div class="timeline-body"><p>We could use the <code>call_expr.as_call_expr()?</code> pattern throughout this function. For example, the highlighted code would become:</p>
+<pre><code class="language-rust">let Some(ast::ExprCall { func, arguments, .. }) = call_expr.as_call_expr()?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2023-11-30 22:55</div>
+            <div class="timeline-body"><p>Overall this is pretty good. Thanks for the thorough test cases. I just have a few nits but those shouldn't be a blocker to merge this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/diceroll123">@diceroll123</a> on 2023-11-30 22:57</div>
+            <div class="timeline-body"><p>Will address those, all good feedback, thanks @dhruvmanila!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/diceroll123">@diceroll123</a> reviewed on 2023-11-30 23:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/diceroll123">@diceroll123</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_list_index_lookup.rs</code>:235 on 2023-11-30 23:25</div>
+            <div class="timeline-body"><p>Looks like the right code was</p>
+<pre><code class="language-rust">let ast::ExprCall {
+    func, arguments, ..
+} = call_expr.as_call_expr()?;
+</code></pre>
+<p>That tripped me up for a sec! 🤣 Thanks for the push in the right direction though!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2023-11-30 23:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-11-30 23:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2023-11-30 23:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2023-11-30 23:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-12-01 00:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_list_index_lookup.rs</code>:235 on 2023-12-01 00:34</div>
+            <div class="timeline-body"><p>Ah right, sorry!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:14 UTC
+    </footer>
+</body>
+</html>

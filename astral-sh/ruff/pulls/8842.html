@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`refurb`] Implement `redundant-log-base` (`FURB163`) - astral-sh/ruff #8842</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>refurb</code>] Implement <code>redundant-log-base</code> (<code>FURB163</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8842">#8842</a>
+        opened by <a href="https://github.com/tjkuson">@tjkuson</a>
+        on 2023-11-26 19:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-11-26 19:19</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Implement <a href="https://github.com/dosisod/refurb/blob/master/refurb/checks/math/simplify_log.py"><code>simplify-math-log</code></a> as <code>redundant-log-base</code> (<code>FURB163</code>).</p>
+<p>Auto-fixes</p>
+<pre><code class="language-python">import math
+
+math.log(2, 2)
+</code></pre>
+<p>to</p>
+<pre><code class="language-python">import math
+
+math.log2(2)
+</code></pre>
+<p>Related to #1348.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-26 19:36</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @tjkuson on 2023-11-26 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-27 15:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/codes.rs</code>:958 on 2023-11-27 15:43</div>
+            <div class="timeline-body"><p>New rules should be added in preview :)</p>
+<pre><code class="language-suggestion">        (Refurb, &quot;163&quot;) =&gt; (RuleGroup::Preview, rules::refurb::rules::RedundantLogBase),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2023-11-27 15:43</div>
+            <div class="timeline-body"><p>Nice! This lgtm except the rule needs to go through preview.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tjkuson">@tjkuson</a> reviewed on 2023-11-27 15:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tjkuson">@tjkuson</a> on <code>crates/ruff_linter/src/codes.rs</code>:958 on 2023-11-27 15:45</div>
+            <div class="timeline-body"><p>Oops, must've missed that. Apologies!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluetech">@bluetech</a> on 2023-11-27 17:57</div>
+            <div class="timeline-body"><p>IMO the term &quot;redundant&quot; is not quite right (except the <code>math.log(x, math.e)</code> case). The reason to prefer <code>math.log2(x)</code> over <code>math.log(x, 2)</code> is floating-point accuracy, as mentioned in the <a href="https://docs.python.org/3/library/math.html#math.log2">function docs</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-11-27 18:21</div>
+            <div class="timeline-body"><p>Yeah, that's fair. I did think about which name to use when porting the rule, but never found one I fully liked (it has to both describe both the <code>math.log(foo, math.e)</code> case and the <code>math.log(foo, 2)</code> case). I settled for redundant log base to mean 'there is a way of writing this logarithmic function without specifying a base' instead of 'just remove the base argument'.</p>
+<p>I also tried to make the rule message be explicit with what its recommendation is, to guard against confusion.</p>
+<pre><code>FURB163.py:15:1: FURB163 [*] Replace with `math.log2(1)`
+</code></pre>
+<p>Happy for name to changed, though. I'm not a huge fan of it.</p>
+<p>Also, for what it's worth, the corresponding refurb rule <a href="https://github.com/dosisod/refurb/blob/master/refurb/checks/math/simplify_log.py"><code>simplify-math-log</code></a> cites readability, not performance, as the motivation. I cited both readability and precision when porting the rule in the documentation (as well as efficiency; I found the fixes ran faster).</p>
+<p>EDIT: Maybe <code>superfluous-log-base</code>?</p>
+<p>EDIT 2: 'Accuracy', not 'precision', is the correct term to use here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-27 19:07</div>
+            <div class="timeline-body"><p>I think the name is fine. You could use <code>imprecise-log-base</code> if you really wanted but I imagine for most users the floating point accuracy is not going to be critical.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluetech">@bluetech</a> on 2023-11-27 22:20</div>
+            <div class="timeline-body"><p>Got it on the name. So my only nit is: in the rule description, replace &quot;precise&quot; with &quot;accurate&quot;; both <code>math.log</code> and <code>math.log2</code> have the same FP precision (double), but the latter is more accurate (for base 2).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bluetech">@bluetech</a> reviewed on 2023-11-27 22:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/bluetech">@bluetech</a> on <code>crates/ruff_linter/src/rules/refurb/rules/redundant_log_base.rs</code>:24 on 2023-11-27 22:23</div>
+            <div class="timeline-body"><p>Another suggestion: use another value than <code>2</code> for the x, to make it clearly distinguishable from the base <code>2</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tjkuson">@tjkuson</a> reviewed on 2023-11-27 23:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tjkuson">@tjkuson</a> on <code>crates/ruff_linter/src/rules/refurb/rules/redundant_log_base.rs</code>:24 on 2023-11-27 23:34</div>
+            <div class="timeline-body"><p>Changed to <code>3</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-11-27 23:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-11-27 23:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2023-11-27 23:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-11-27 23:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-27 23:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-28 00:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:22 UTC
+    </footer>
+</body>
+</html>

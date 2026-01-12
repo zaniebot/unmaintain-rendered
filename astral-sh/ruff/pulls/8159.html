@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[pylint] Implement redefined-argument-from-local (R1704) - astral-sh/ruff #8159</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[pylint] Implement redefined-argument-from-local (R1704)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8159">#8159</a>
+        opened by <a href="https://github.com/danbi2990">@danbi2990</a>
+        on 2023-10-24 09:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danbi2990">@danbi2990</a> on 2023-10-24 09:08</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>It implements Pylint rule R1704: redefined-argument-from-local</p>
+<p>Problematic code:</p>
+<pre><code class="language-python">def show(host_id=10.11):
+    # +1: [redefined-argument-from-local]
+    for host_id, host in [[12.13, &quot;Venus&quot;], [14.15, &quot;Mars&quot;]]:
+        print(host_id, host)
+</code></pre>
+<p>Correct code:</p>
+<pre><code class="language-python">def show(host_id=10.11):
+    for inner_host_id, host in [[12.13, &quot;Venus&quot;], [14.15, &quot;Mars&quot;]]:
+        print(host_id, inner_host_id, host)
+</code></pre>
+<p>References:
+<a href="https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/redefined-argument-from-local.html">Pylint documentation</a>
+<a href="https://github.com/astral-sh/ruff/issues/970">Related Issue</a></p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-24 09:36</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-25 23:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pylint/rules/redefined_argument_from_local.rs</code>:132 on 2023-10-25 23:37</div>
+            <div class="timeline-body"><p>I'm wondering if there's a slightly different way to structure this rule. Bear with me...</p>
+<p>Instead of analyzing the AST, I think we can achieve the same effect by looking at <em>bindings</em>.</p>
+<p>When we have something like:</p>
+<pre><code class="language-python">def f(x):
+    for x in y:
+        ...
+</code></pre>
+<p>We create a binding for the <code>x</code> in <code>def f(x)</code>, and then later, a binding for <code>x</code> in <code>for x in y</code>, and we track that this second binding shadows the first.</p>
+<p>If you look in <code>deferred_scopes.rs</code>, you'll see we have some rules based on looking at these shadows:</p>
+<pre><code class="language-rust">if checker.enabled(Rule::ImportShadowedByLoopVar) {
+    for (name, binding_id) in scope.bindings() {
+        for shadow in checker.semantic.shadowed_bindings(scope_id, binding_id) {
+            // If the shadowing binding isn't a loop variable, abort.
+            let binding = &amp;checker.semantic.bindings[shadow.binding_id()];
+            if !binding.kind.is_loop_var() {
+                continue;
+            }
+
+            // If the shadowed binding isn't an import, abort.
+            let shadowed = &amp;checker.semantic.bindings[shadow.shadowed_id()];
+            if !matches!(
+                shadowed.kind,
+                BindingKind::Import(..)
+                    | BindingKind::FromImport(..)
+                    | BindingKind::SubmoduleImport(..)
+                    | BindingKind::FutureImport
+            ) {
+                continue;
+            }
+
+            // If the bindings are in different forks, abort.
+            if shadowed.source.map_or(true, |left| {
+                binding.source.map_or(true, |right| {
+                    checker.semantic.different_branches(left, right)
+                })
+            }) {
+                continue;
+            }
+
+            #[allow(deprecated)]
+            let line = checker.locator.compute_line_index(shadowed.start());
+
+            checker.diagnostics.push(Diagnostic::new(
+                pyflakes::rules::ImportShadowedByLoopVar {
+                    name: name.to_string(),
+                    line,
+                },
+                binding.range(),
+            ));
+        }
+    }
+}
+</code></pre>
+<p>I think this rule could be structured similarly: iterate over the pairs of shadowed bindings, and look for pairs in which the original binding is <code>BindingKind::Argument</code>, and the new binding is <code>BindingKind::LoopVar</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-25 23:38</div>
+            <div class="timeline-body"><p>Thank you for contributing! I'd like us to explore one other approach and see if it produces the same result -- are you up for that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danbi2990">@danbi2990</a> on 2023-10-26 00:38</div>
+            <div class="timeline-body"><p>Appreciate the comment.
+I'll check it out and let you know the result. (after daily work 😅)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danbi2990">@danbi2990</a> on 2023-11-10 01:41</div>
+            <div class="timeline-body"><p>Applied the comment
+but there's an issue about <code>with</code> stmt.</p>
+<p>In the current code, it looks there's no BindingKind for withitem variable.
+I tried adding WithItemVar to the BindingKind but failed.</p>
+<p>Could you give an advice for the task?
+You can check my trial code in the two reverted commits.</p>
+<p><a href="https://github.com/astral-sh/ruff/pull/8159/commits/6426c0efa4dd9c71e5834bc53a53fd3f7ddc277f">Revert &quot;add WithItemVar&quot;</a></p>
+<p><a href="https://github.com/astral-sh/ruff/pull/8159/commits/818980be66b945fac4a623d93982d1becdeea86d">Revert &quot;add binding with stmt&quot;</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @danbi2990 on 2023-11-10 01:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-10 01:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/deferred_scopes.rs</code>:108 on 2023-11-10 01:45</div>
+            <div class="timeline-body"><p>Is this supposed to check if the argument is unused? Or does it fire in either case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-10 01:46</div>
+            <div class="timeline-body"><p>Thanks @danbi2990! Overall looks good. Let me take a look at adding a binding kind for <code>WithItem</code>, it might be more involved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-10 01:50</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+24 -0 violations, +0 -0 fixes in 41 projects)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+4 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --select ALL --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/8312e915691fd7d59a9a2372d8adcd4bfa4a6733/dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py#L659'>dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py:659:51:</a> PLR1704 Redefining argument with the local name `python`
++ <a href='https://github.com/apache/airflow/blob/8312e915691fd7d59a9a2372d8adcd4bfa4a6733/dev/breeze/src/airflow_breeze/commands/sbom_commands.py#L379'>dev/breeze/src/airflow_breeze/commands/sbom_commands.py:379:9:</a> PLR1704 Redefining argument with the local name `provider_id`
++ <a href='https://github.com/apache/airflow/blob/8312e915691fd7d59a9a2372d8adcd4bfa4a6733/dev/breeze/src/airflow_breeze/commands/sbom_commands.py#L450'>dev/breeze/src/airflow_breeze/commands/sbom_commands.py:450:26:</a> PLR1704 Redefining argument with the local name `provider_version`
++ <a href='https://github.com/apache/airflow/blob/8312e915691fd7d59a9a2372d8adcd4bfa4a6733/scripts/in_container/verify_providers.py#L188'>scripts/in_container/verify_providers.py:188:15:</a> PLR1704 Redefining argument with the local name `prefix`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+7 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --select ALL --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/src/bokeh/document/callbacks.py#L361'>src/bokeh/document/callbacks.py:361:13:</a> PLR1704 Redefining argument with the local name `callback_obj`
++ <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/src/bokeh/plotting/_figure.py#L384'>src/bokeh/plotting/_figure.py:384:13:</a> PLR1704 Redefining argument with the local name `kw`
++ <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/src/bokeh/plotting/_figure.py#L425'>src/bokeh/plotting/_figure.py:425:13:</a> PLR1704 Redefining argument with the local name `kw`
++ <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/src/bokeh/plotting/_figure.py#L475'>src/bokeh/plotting/_figure.py:475:17:</a> PLR1704 Redefining argument with the local name `kw`
++ <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/src/bokeh/plotting/_figure.py#L564'>src/bokeh/plotting/_figure.py:564:13:</a> PLR1704 Redefining argument with the local name `kw`
++ <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/src/bokeh/plotting/_figure.py#L606'>src/bokeh/plotting/_figure.py:606:13:</a> PLR1704 Redefining argument with the local name `kw`
++ <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/tests/support/util/examples.py#L161'>tests/support/util/examples.py:161:9:</a> PLR1704 Redefining argument with the local name `path`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/6172f07bbd04a6b65a1225e0e9105473669eaeae/ibis/__init__.py#L125'>ibis/__init__.py:125:9:</a> PLR1704 Redefining argument with the local name `name`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+7 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pandas-dev/pandas/blob/09ed69edc3a83141244b3b7e1098d0083c8a9440/pandas/core/computation/eval.py#L323'>pandas/core/computation/eval.py:323:9:</a> PLR1704 Redefining argument with the local name `expr`
++ <a href='https://github.com/pandas-dev/pandas/blob/09ed69edc3a83141244b3b7e1098d0083c8a9440/pandas/core/generic.py#L4747'>pandas/core/generic.py:4747:13:</a> PLR1704 Redefining argument with the local name `axis`
++ <a href='https://github.com/pandas-dev/pandas/blob/09ed69edc3a83141244b3b7e1098d0083c8a9440/pandas/core/generic.py#L4747'>pandas/core/generic.py:4747:19:</a> PLR1704 Redefining argument with the local name `labels`
++ <a href='https://github.com/pandas-dev/pandas/blob/09ed69edc3a83141244b3b7e1098d0083c8a9440/pandas/io/common.py#L591'>pandas/io/common.py:591:24:</a> PLR1704 Redefining argument with the local name `compression`
++ <a href='https://github.com/pandas-dev/pandas/blob/09ed69edc3a83141244b3b7e1098d0083c8a9440/pandas/plotting/_matplotlib/boxplot.py#L540'>pandas/plotting/_matplotlib/boxplot.py:540:27:</a> PLR1704 Redefining argument with the local name `ax`
++ <a href='https://github.com/pandas-dev/pandas/blob/09ed69edc3a83141244b3b7e1098d0083c8a9440/pandas/tests/io/test_parquet.py#L218'>pandas/tests/io/test_parquet.py:218:35:</a> PLR1704 Redefining argument with the local name `path`
++ <a href='https://github.com/pandas-dev/pandas/blob/09ed69edc3a83141244b3b7e1098d0083c8a9440/pandas/tests/reshape/merge/test_merge.py#L566'>pandas/tests/reshape/merge/test_merge.py:566:17:</a> PLR1704 Redefining argument with the local name `kwarg`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/sphinx-doc/sphinx">sphinx-doc/sphinx</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/sphinx-doc/sphinx/blob/bb74aec2b6aa1179868d83134013450c9ff9d4d6/sphinx/ext/inheritance_diagram.py#L316'>sphinx/ext/inheritance_diagram.py:316:13:</a> PLR1704 Redefining argument with the local name `name`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+4 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --select ALL --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/a7f02c89d7baf3c18785cf4251c8e9eb1ada45e9/zerver/lib/scim.py#L232'>zerver/lib/scim.py:232:13:</a> PLR1704 Redefining argument with the local name `path`
++ <a href='https://github.com/zulip/zulip/blob/a7f02c89d7baf3c18785cf4251c8e9eb1ada45e9/zerver/webhooks/clubhouse/view.py#L178'>zerver/webhooks/clubhouse/view.py:178:9:</a> PLR1704 Redefining argument with the local name `action`
++ <a href='https://github.com/zulip/zulip/blob/a7f02c89d7baf3c18785cf4251c8e9eb1ada45e9/zerver/webhooks/clubhouse/view.py#L465'>zerver/webhooks/clubhouse/view.py:465:13:</a> PLR1704 Redefining argument with the local name `action`
++ <a href='https://github.com/zulip/zulip/blob/a7f02c89d7baf3c18785cf4251c8e9eb1ada45e9/zerver/webhooks/clubhouse/view.py#L669'>zerver/webhooks/clubhouse/view.py:669:13:</a> PLR1704 Redefining argument with the local name `action`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLR1704 | 24 | 24 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-10 03:45</div>
+            <div class="timeline-body"><p>@danbi2990 - I added a with-item kind in #8594. Can you try updating against <code>main</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/danbi2990">@danbi2990</a> reviewed on 2023-11-10 07:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/danbi2990">@danbi2990</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/deferred_scopes.rs</code>:108 on 2023-11-10 07:01</div>
+            <div class="timeline-body"><p>It's not checking the usage.</p>
+<p>It looks sensible to check <code>binding.is_used()</code> as below</p>
+<pre><code class="language-rust">if !shadowed.kind.is_argument() || !binding.is_used() {
+    continue;
+}
+</code></pre>
+<p>In this case, results are following</p>
+<pre><code class="language-python">def foo(i):
+    for i in range(10):  # emit error
+        print(i)
+        ...
+
+def foo(i):
+    for i in range(10):  # no error because it's unused
+        ...
+</code></pre>
+<p>Is it good to go?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @danbi2990 on 2023-11-10 07:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danbi2990">@danbi2990</a> on 2023-11-10 07:54</div>
+            <div class="timeline-body"><p>It's working with updated main.
+Please check updated code 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/deferred_scopes.rs</code>:108 on 2023-11-10 14:50</div>
+            <div class="timeline-body"><p>I was referring to the inverse -- should this depend on the <em>argument</em> being unused? I'll check Pylint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-10 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-10 18:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/deferred_scopes.rs</code>:108 on 2023-11-10 18:54</div>
+            <div class="timeline-body"><p>I erred on the side of removing the <code>!binding.is_used()</code> piece here. I think it still makes sense to raise, even if the new binding is unused, since it will cause the same problems?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-11-10 18:55</div>
+            <div class="timeline-body"><p>Looks good, I just need to review the ecosystem checks once they finish.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-11-10 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-10 19:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account for selector specificity when merging `extend_unsafe_fixes` and `override extend_safe_fixes` - astral-sh/ruff #8444</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Account for selector specificity when merging <code>extend_unsafe_fixes</code> and <code>override extend_safe_fixes</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8444">#8444</a>
+        opened by <a href="https://github.com/lukaspiatkowski">@lukaspiatkowski</a>
+        on 2023-11-02 10:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/lukaspiatkowski">@lukaspiatkowski</a> on 2023-11-02 10:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Prior to this change <code>extend_unsafe_fixes</code> took precedence over <code>extend_safe_fixes</code> selectors, so any conflicts were resolved in favour of <code>extend_unsafe_fixes</code>. Thanks to that ruff were conservatively assuming that if configs conlict the fix corresponding to selected rule will be treated as unsafe.</p>
+<p>After this change we take into account Specificity of the selectors. For conflicts between selectors of the same Specificity we will treat the corresponding fixes as unsafe. But if the conflicting selectors are of different specificity the more specific one will win.</p>
+<h2>Test Plan</h2>
+<p>Tests were added for the <code>FixSafetyTable</code> struct. The <code>check_extend_unsafe_fixes_conflict_with_extend_safe_fixes_by_specificity</code> integration test was added to test conflicting rules of different specificity.</p>
+<p>Fixes #8404</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/settings/mod.rs</code>:48 on 2023-11-02 16:02</div>
+            <div class="timeline-body"><p>I think I have a preference for something like <code>fix_safety</code> i.e. we don't include <code>table</code> for the <code>RuleTable</code> field</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/linter.rs</code>:295 on 2023-11-02 16:06</div>
+            <div class="timeline-body"><p>This feels kind of awkward, could the <code>FixSafetyTable</code> provide a <code>resolve_applicability(Rule, Applicability) -&gt; Applicability</code> method instead? Then we could do:</p>
+<pre><code>diagnostic.set_fix(fix.with_applicability(fix_safety.resolve_applicability(rule, applicability))
+</code></pre>
+<p>and push this logic into the safety table</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/settings/fix_safety_table.rs</code>:26 on 2023-11-02 16:07</div>
+            <div class="timeline-body"><p>I'd rather not add another enum, I think this may be removable with my suggestion to provide a <code>resolve_applicability</code> interface?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/settings/fix_safety_table.rs</code>:52 on 2023-11-02 16:08</div>
+            <div class="timeline-body"><p>I worry that these names could be confused with our applicability ones — is there a way to do this without defining this temporary enum?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-02 16:09</div>
+            <div class="timeline-body"><p>Thank you for contributing! I have some questions about simplifying the implementation but otherwise this looks great.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Change extend_unsafe_fixes to override extend_safe_fixes per Specificity" to "Account for selector specificity when merging `extend_unsafe_fixes` and `override extend_safe_fixes`" by @zanieb on 2023-11-02 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @zanieb on 2023-11-02 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/lukaspiatkowski">@lukaspiatkowski</a> on <code>crates/ruff_linter/src/settings/fix_safety_table.rs</code>:52 on 2023-11-02 18:11</div>
+            <div class="timeline-body"><p>We could use boolean. Not a great fan of that as I think it will make this less readable. Your call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lukaspiatkowski">@lukaspiatkowski</a> reviewed on 2023-11-02 18:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-02 20:36</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lukaspiatkowski">@lukaspiatkowski</a> on 2023-11-04 09:07</div>
+            <div class="timeline-body"><p>I was going to ask if there is a chance this will make it to the next release, but I see the release happened yesterday :) is this good to go as is @zanieb?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-07 16:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/settings/fix_safety_table.rs</code>:52 on 2023-11-07 16:18</div>
+            <div class="timeline-body"><p>I switched back to the enum, I agree it's clearer. I removed the <code>use</code> though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-07 16:18</div>
+            <div class="timeline-body"><p>Sorry for the delay this one got lost!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2023-11-07 16:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lukaspiatkowski">@lukaspiatkowski</a> on 2023-11-07 16:33</div>
+            <div class="timeline-body"><p>LGTM</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2023-11-07 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-11-07 16:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New AST nodes for f-string elements - astral-sh/ruff #8835</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>New AST nodes for f-string elements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8835">#8835</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-11-24 23:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-24 23:39</div>
+            <div class="timeline-body"><p>Rebase of #6365 authored by @davidszotten.</p>
+<h2>Summary</h2>
+<p>This PR updates the AST structure for an f-string elements.</p>
+<p>The main <strong>motivation</strong> behind this change is to have a dedicated node for the string part of an f-string. Previously, the existing <code>ExprStringLiteral</code> node was used for this purpose which isn't exactly correct. The <code>ExprStringLiteral</code> node should include the quotes as well in the range but the f-string literal element doesn't include the quote as it's a specific part within an f-string. For example,</p>
+<pre><code class="language-python">f&quot;foo {x}&quot;
+# ^^^^
+# This is the literal part of an f-string
+</code></pre>
+<p>The introduction of <code>FStringElement</code> enum is helpful which represent either the literal part or the expression part of an f-string.</p>
+<h3>Rule Updates</h3>
+<p>This means that there'll be two nodes representing a string depending on the context. One for a normal string literal while the other is a string literal within an f-string. The AST checker is updated to accommodate this change. The rules which work on string literal are updated to check on the literal part of f-string as well.</p>
+<h4>Notes</h4>
+<ol>
+<li>The <code>Expr::is_literal_expr</code> method would check for <code>ExprStringLiteral</code> and return true if so. But now that we don't represent the literal part of an f-string using that node, this improves the method's behavior and confines to the actual expression. We do have the <code>FStringElement::is_literal</code> method.</li>
+<li>We avoid checking if we're in a f-string context before adding to <code>string_type_definitions</code> because the f-string literal is now a dedicated node and not part of <code>Expr</code>.</li>
+<li>Annotations cannot use f-string so we avoid changing any rules which work on annotation and checks for <code>ExprStringLiteral</code>.</li>
+</ol>
+<h2>Test Plan</h2>
+<ul>
+<li>All references of <code>Expr::StringLiteral</code> were checked to see if any of the rules require updating to account for the f-string literal element node.</li>
+<li>New test cases are added for rules which check against the literal part of an f-string.</li>
+<li>Check the ecosystem results and ensure it remains unchanged.</li>
+</ul>
+<h2>Performance</h2>
+<p>There's a performance penalty in the parser. The reason for this remains unknown as it seems that the generated assembly code is now different for the <code>__reduce154</code> function. The reduce function body is just popping the <code>ParenthesizedExpr</code> on top of the stack and pushing it with the new location.</p>
+<ul>
+<li>The size of <code>FStringElement</code> enum is the same as <code>Expr</code> which is what it replaces in <code>FString::format_spec</code></li>
+<li>The size of <code>FStringExpressionElement</code> is the same as <code>ExprFormattedValue</code> which is what it replaces</li>
+</ul>
+<p>I tried reducing the <code>Expr</code> enum from 80 bytes to 72 bytes but it hardly resulted in any performance gain. The difference can be seen here:</p>
+<ul>
+<li>Original profile: https://share.firefox.dev/3Taa7ES</li>
+<li>Profile after boxing some node fields: https://share.firefox.dev/3GsNXpD</li>
+</ul>
+<h3>Backtracking</h3>
+<p>I tried backtracking the changes to see if any of the isolated change produced this regression. The problem here is that the overall change is so small that there's only a single checkpoint where I can backtrack and that checkpoint results in the same regression. This checkpoint is to revert using <code>Expr</code> to the <code>FString::format_spec</code> field. After this point, the change would revert back to the original implementation.</p>
+<h2>Review process</h2>
+<p>The review process is similar to #7927. The first set of commits update the node structure, parser, and related AST files. Then, further commits update the linter and formatter part to account for the AST change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-24 23:39</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #8062</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8062?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #8063</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8063?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #8064</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8064?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7927</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7927?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #8826</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8826?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #8828</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8828?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #8835</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8835?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈
+* <strong>PR #9016</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/9016?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This <a href="https://stacking.dev/?utm_source=stack-comment">stack of pull requests</a> is managed by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8835?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-11-24 23:49</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/fstring-element">CodSpeed Performance Report</a></h2>
+<h3>Merging #8835 will <strong>degrade performances by 6.65%</strong></h3>
+<p><sub>Comparing <code>dhruv/fstring-element</code> (b6be853) with <code>main</code> (af88ffc)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 6</code> regressions
+<code>✅ 24</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/fstring-element">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>dhruv/fstring-element</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>linter/default-rules[numpy/ctypeslib.py]</code> | 16.1 ms | 17.2 ms | -6.65% |
+| ❌ | <code>parser[numpy/ctypeslib.py]</code> | 11.1 ms | 11.8 ms | -5.86% |
+| ❌ | <code>parser[pydantic/types.py]</code> | 24.8 ms | 26.3 ms | -5.59% |
+| ❌ | <code>parser[numpy/globals.py]</code> | 1.1 ms | 1.1 ms | -4.97% |
+| ❌ | <code>parser[large/dataset.py]</code> | 64.8 ms | 68.7 ms | -5.7% |
+| ❌ | <code>parser[unicode/pypinyin.py]</code> | 3.9 ms | 4.1 ms | -5.58% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-24 23:54</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-25 00:41</div>
+            <div class="timeline-body"><p>Ugh, I need to revisit this later. I think I messed up the git history somehow :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2023-11-25 00:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-11-27 22:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @dhruvmanila on 2023-11-27 22:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-12-04 00:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:182 on 2023-12-04 00:31</div>
+            <div class="timeline-body"><p>What's the motivation for boxing some fields? it seems unrelated to the PR itself. It makes it more difficult for me to judge if the drop regression is due to the new f-string node layout or the other boxing changes. Would you mind splitting this commit into its own PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-04 02:55</div>
+            <div class="timeline-body"><p>Comparing the generated llvm instructions between main and this PR</p>
+<pre><code class="language-diff">&lt; define internal fastcc void @_ZN18ruff_python_parser6python12__parse__Top11__reduce15417hd406a4d6cb8441daE(ptr noalias nocapture noundef align 8 dereferenceable(24) %__symbols) unnamed_addr #2 personality ptr @rust_eh_personality {
+---
+&gt; define internal fastcc void @_ZN18ruff_python_parser6python12__parse__Top11__reduce15417h429ba5e9ae4663f4E(ptr noalias nocapture noundef align 8 dereferenceable(24) %__symbols) unnamed_addr #2 personality ptr @rust_eh_personality {
+6,10c6,12
+&lt;   %_10.sroa.0 = alloca [192 x i8], align 8
+&lt;   tail call void @llvm.experimental.noalias.scope.decl(metadata !21616)
+&lt;   call void @llvm.lifetime.start.p0(i64 208, ptr nonnull %_2.i), !noalias !21619
+&lt;   tail call void @llvm.experimental.noalias.scope.decl(metadata !21621)
+&lt;   tail call void @llvm.experimental.noalias.scope.decl(metadata !21624)
+---
+&gt;   %__nt = alloca %&quot;ruff_python_ast::nodes::ParenthesizedExpr&quot;, align 8
+&gt;   %_11.sroa.4 = alloca [23 x i32], align 4
+&gt;   %_10.sroa.4 = alloca [23 x i32], align 4
+&gt;   tail call void @llvm.experimental.noalias.scope.decl(metadata !21750)
+&gt;   call void @llvm.lifetime.start.p0(i64 208, ptr nonnull %_2.i), !noalias !21753
+&gt;   tail call void @llvm.experimental.noalias.scope.decl(metadata !21755)
+&gt;   tail call void @llvm.experimental.noalias.scope.decl(metadata !21758)
+12c14
+&lt;   %_2.i.i = load i64, ptr %0, align 8, !alias.scope !21626, !noalias !21627, !noundef !14
+---
+&gt;   %_2.i.i = load i64, ptr %0, align 8, !alias.scope !21760, !noalias !21761, !noundef !14
+14c16
+&lt;   br i1 %1, label %&quot;_ZN5alloc3vec16Vec$LT$T$C$A$GT$3pop17h34c3d6d4499edab0E.exit.thread.i&quot;, label %&quot;_ZN5alloc3vec16Vec$LT$T$C$A$GT$3pop17h34c3d6d4499edab0E.exit.i&quot;
+---
+&gt;   br i1 %1, label %&quot;_ZN5alloc3vec16Vec$LT$T$C$A$GT$3pop17h91ca183f74ada0f2E.exit.thread.i&quot;, label %&quot;_ZN5alloc3vec16Vec$LT$T$C$A$GT$3pop17h91ca183f74ada0f2E.exit.i&quot;
+16,18c18,19
+&lt; &quot;_ZN5alloc3vec16Vec$LT$T$C$A$GT$3pop17h34c3d6d4499edab0E.exit.thread.i&quot;: ; preds = %start
+&lt;   %2 = getelementptr inbounds %&quot;core::option::Option&lt;(ruff_text_size::size::TextSize, python::__parse__Top::__Symbol, ruff_text_size::size::TextSize)&gt;&quot;, ptr %_2.i, i64 0, i32 1
+&lt;   store i8 104, ptr %2, align 8, !alias.scope !21621, !noalias !21628
+---
+&gt; &quot;_ZN5alloc3vec16Vec$LT$T$C$A$GT$3pop17h91ca183f74ada0f2E.exit.thread.i&quot;: ; preds = %start
+&gt;   store i32 137, ptr %_2.i, align 8, !alias.scope !21755, !noalias !21762
+21,26c22,27
+&lt; &quot;_ZN5alloc3vec16Vec$LT$T$C$A$GT$3pop17h34c3d6d4499edab0E.exit.i&quot;: ; preds = %start
+&lt;   %3 = add i64 %_2.i.i, -1
+&lt;   store i64 %3, ptr %0, align 8, !alias.scope !21626, !noalias !21627
+&lt;   %4 = getelementptr inbounds { ptr, i64 }, ptr %__symbols, i64 0, i32 1
+&lt;   %5 = load i64, ptr %4, align 8, !noalias !14, !noundef !14
+&lt;   %_3.i.i = icmp ult i64 %3, %5
+---
+&gt; &quot;_ZN5alloc3vec16Vec$LT$T$C$A$GT$3pop17h91ca183f74ada0f2E.exit.i&quot;: ; preds = %start
+&gt;   %2 = add i64 %_2.i.i, -1
+&gt;   store i64 %2, ptr %0, align 8, !alias.scope !21760, !noalias !21761
+&gt;   %3 = getelementptr inbounds { ptr, i64 }, ptr %__symbols, i64 0, i32 1
+&gt;   %4 = load i64, ptr %3, align 8, !noalias !14, !noundef !14
+&gt;   %_3.i.i = icmp ult i64 %2, %4
+29,34c30,34
+&lt;   %src.i.i = getelementptr inbounds { %&quot;python::__parse__Top::__Symbol&quot;, i32, i32 }, ptr %self1.i.i, i64 %3
+&lt;   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 8 dereferenceable(208) %_2.i, ptr noundef nonnull align 8 dereferenceable(208) %src.i.i, i64 208, i1 false), !noalias !21628
+&lt;   %.phi.trans.insert.i = getelementptr inbounds %&quot;core::option::Option&lt;(ruff_text_size::size::TextSize, python::__parse__Top::__Symbol, ruff_text_size::size::TextSize)&gt;&quot;, ptr %_2.i, i64 0, i32 1
+&lt;   %.pre.i = load i8, ptr %.phi.trans.insert.i, align 8, !range !2745, !noalias !21619
+&lt;   %6 = icmp eq i8 %.pre.i, 17
+&lt;   br i1 %6, label %&quot;_ZN5alloc3vec16Vec$LT$T$C$A$GT$4push17h6b55ac9fa3bd2a2aE.exit&quot;, label %bb2.i
+---
+&gt;   %src.i.i = getelementptr inbounds { %&quot;python::__parse__Top::__Symbol&quot;, i32, i32 }, ptr %self1.i.i, i64 %2
+&gt;   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 8 dereferenceable(208) %_2.i, ptr noundef nonnull align 8 dereferenceable(208) %src.i.i, i64 208, i1 false), !noalias !21762
+&gt;   %.pr.i = load i32, ptr %_2.i, align 8, !noalias !21753
+&gt;   %cond.i = icmp eq i32 %.pr.i, 47
+&gt;   br i1 %cond.i, label %&quot;_ZN5alloc3vec16Vec$LT$T$C$A$GT$4push17h6f744e2ae0097c52E.exit&quot;, label %bb2.i
+36,37c36,37
+&lt; bb2.i:                                            ; preds = %&quot;_ZN5alloc3vec16Vec$LT$T$C$A$GT$3pop17h34c3d6d4499edab0E.exit.i&quot;, %&quot;_ZN5alloc3vec16Vec$LT$T$C$A$GT$3pop17h34c3d6d4499edab0E.exit.thread.i&quot;
+&lt;   %7 = phi i8 [ 104, %&quot;_ZN5alloc3vec16Vec$LT$T$C$A$GT$3pop17h34c3d6d4499edab0E.exit.thread.i&quot; ], [ %.pre.i, %&quot;_ZN5alloc3vec16Vec$LT$T$C$A$GT$3pop17h34c3d6d4499edab0E.exit.i&quot; ]
+---
+&gt; bb2.i:                                            ; preds = %&quot;_ZN5alloc3vec16Vec$LT$T$C$A$GT$3pop17h91ca183f74ada0f2E.exit.i&quot;, %&quot;_ZN5alloc3vec16Vec$LT$T$C$A$GT$3pop17h91ca183f74ada0f2E.exit.thread.i&quot;
+&gt;   %5 = phi i32 [ 137, %&quot;_ZN5alloc3vec16Vec$LT$T$C$A$GT$3pop17h91ca183f74ada0f2E.exit.thread.i&quot; ], [ %.pr.i, %&quot;_ZN5alloc3vec16Vec$LT$T$C$A$GT$3pop17h91ca183f74ada0f2E.exit.i&quot; ]
+40c40
+&lt;           to label %unreachable.i unwind label %cleanup.i, !noalias !21619
+---
+&gt;           to label %unreachable.i unwind label %cleanup.i, !noalias !21753
+43c43
+&lt;   %8 = landingpad { ptr, i32 }
+---
+&gt;   %6 = landingpad { ptr, i32 }
+45,46c45,46
+&lt;   %9 = icmp eq i8 %7, 104
+&lt;   br i1 %9, label %bb6.i, label %bb2.i3.i
+---
+&gt;   %7 = icmp eq i32 %5, 137
+&gt;   br i1 %7, label %bb6.i, label %bb2.i2.i
+48c48
+&lt; bb2.i3.i:                                         ; preds = %cleanup.i
+---
+&gt; bb2.i2.i:                                         ; preds = %cleanup.i
+50,51c50,51
+&lt;   invoke fastcc void @&quot;_ZN4core3ptr71drop_in_place$LT$ruff_python_parser..python..__parse__Top..__Symbol$GT$17h7ca4ec50464f112bE&quot;(ptr noalias noundef nonnull align 8 dereferenceable(200) %_2.i)
+&lt;           to label %bb6.i unwind label %terminate.i, !noalias !21619
+---
+&gt;   invoke fastcc void @&quot;_ZN4core3ptr71drop_in_place$LT$ruff_python_parser..python..__parse__Top..__Symbol$GT$17ha84e15138d5fb157E&quot;(ptr noalias noundef nonnull align 8 dereferenceable(200) %_2.i)
+&gt;           to label %bb6.i unwind label %terminate.i, !noalias !21753
+56,57c56,57
+&lt; terminate.i:                                      ; preds = %bb2.i3.i
+&lt;   %10 = landingpad { ptr, i32 }
+---
+&gt; terminate.i:                                      ; preds = %bb2.i2.i
+&gt;   %8 = landingpad { ptr, i32 }
+60c60
+&lt;   call void @_ZN4core9panicking16panic_in_cleanup17he7753e109d98c84aE() #34, !noalias !21619
+---
+&gt;   call void @_ZN4core9panicking16panic_in_cleanup17he7753e109d98c84aE() #34, !noalias !21753
+63,64c63,64
+&lt; bb6.i:                                            ; preds = %bb2.i3.i, %cleanup.i
+&lt;   resume { ptr, i32 } %8
+---
+&gt; bb6.i:                                            ; preds = %bb2.i2.i, %cleanup.i
+&gt;   resume { ptr, i32 } %6
+66,77c66,83
+&lt; &quot;_ZN5alloc3vec16Vec$LT$T$C$A$GT$4push17h6b55ac9fa3bd2a2aE.exit&quot;: ; preds = %&quot;_ZN5alloc3vec16Vec$LT$T$C$A$GT$3pop17h34c3d6d4499edab0E.exit.i&quot;
+&lt;   %11 = getelementptr inbounds { %&quot;python::__parse__Top::__Symbol&quot;, i32, i32 }, ptr %_2.i, i64 0, i32 1
+&lt;   %__l.i = load i32, ptr %11, align 8, !noalias !21619, !noundef !14
+&lt;   %12 = getelementptr inbounds { %&quot;python::__parse__Top::__Symbol&quot;, i32, i32 }, ptr %_2.i, i64 0, i32 2
+&lt;   %__r.i = load i32, ptr %12, align 4, !noalias !21619, !noundef !14
+&lt;   call void @llvm.lifetime.start.p0(i64 192, ptr nonnull %_10.sroa.0)
+&lt;   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 8 dereferenceable(88) %_10.sroa.0, ptr noundef nonnull align 8 dereferenceable(88) %src.i.i, i64 88, i1 false)
+&lt;   call void @llvm.lifetime.end.p0(i64 208, ptr nonnull %_2.i), !noalias !21619
+&lt;   tail call void @llvm.experimental.noalias.scope.decl(metadata !21629)
+&lt;   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 8 dereferenceable(192) %src.i.i, ptr noundef nonnull align 8 dereferenceable(192) %_10.sroa.0, i64 192, i1 false), !noalias !21629
+&lt;   %_10.sroa.4.0.end.i.sroa_idx = getelementptr inbounds i8, ptr %src.i.i, i64 192
+&lt;   store i8 17, ptr %_10.sroa.4.0.end.i.sroa_idx, align 8, !noalias !21629
+---
+&gt; &quot;_ZN5alloc3vec16Vec$LT$T$C$A$GT$4push17h6f744e2ae0097c52E.exit&quot;: ; preds = %&quot;_ZN5alloc3vec16Vec$LT$T$C$A$GT$3pop17h91ca183f74ada0f2E.exit.i&quot;
+&gt;   %9 = getelementptr inbounds { %&quot;python::__parse__Top::__Symbol&quot;, i32, i32 }, ptr %_2.i, i64 0, i32 1
+&gt;   %__l.i = load i32, ptr %9, align 8, !noalias !21753, !noundef !14
+&gt;   %10 = getelementptr inbounds { %&quot;python::__parse__Top::__Symbol&quot;, i32, i32 }, ptr %_2.i, i64 0, i32 2
+&gt;   %__r.i = load i32, ptr %10, align 4, !noalias !21753, !noundef !14
+&gt;   %11 = getelementptr inbounds %&quot;python::__parse__Top::__Symbol::Variant15&quot;, ptr %_2.i, i64 0, i32 1
+&gt;   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 8 dereferenceable(88) %__nt, ptr noundef nonnull align 8 dereferenceable(88) %11, i64 88, i1 false)
+&gt;   call void @llvm.lifetime.end.p0(i64 208, ptr nonnull %_2.i), !noalias !21753
+&gt;   call void @llvm.lifetime.start.p0(i64 92, ptr nonnull %_10.sroa.4)
+&gt;   call void @llvm.lifetime.start.p0(i64 92, ptr nonnull %_11.sroa.4)
+&gt;   %_11.sroa.4.8.sroa_idx = getelementptr inbounds i8, ptr %_11.sroa.4, i64 4
+&gt;   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(88) %_11.sroa.4.8.sroa_idx, ptr noundef nonnull align 8 dereferenceable(88) %__nt, i64 88, i1 false)
+&gt;   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(92) %_10.sroa.4, ptr noundef nonnull align 4 dereferenceable(92) %_11.sroa.4, i64 92, i1 false)
+&gt;   call void @llvm.lifetime.end.p0(i64 92, ptr nonnull %_11.sroa.4)
+&gt;   tail call void @llvm.experimental.noalias.scope.decl(metadata !21763)
+&gt;   store i32 47, ptr %src.i.i, align 8, !noalias !21763
+&gt;   %_10.sroa.4.0.end.i.sroa_idx = getelementptr inbounds i8, ptr %src.i.i, i64 4
+&gt;   call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 4 dereferenceable(92) %_10.sroa.4.0.end.i.sroa_idx, ptr noundef nonnull align 4 dereferenceable(92) %_10.sroa.4, i64 92, i1 false), !noalias !21763
+79c85
+&lt;   store i32 %__l.i, ptr %_10.sroa.6.0.end.i.sroa_idx, align 8, !noalias !21629
+---
+&gt;   store i32 %__l.i, ptr %_10.sroa.6.0.end.i.sroa_idx, align 8, !noalias !21763
+81,83c87,89
+&lt;   store i32 %__r.i, ptr %_10.sroa.7.0.end.i.sroa_idx, align 4, !noalias !21629
+&lt;   store i64 %_2.i.i, ptr %0, align 8, !alias.scope !21629, !noalias !21632
+&lt;   call void @llvm.lifetime.end.p0(i64 192, ptr nonnull %_10.sroa.0)
+---
+&gt;   store i32 %__r.i, ptr %_10.sroa.7.0.end.i.sroa_idx, align 4, !noalias !21763
+&gt;   store i64 %_2.i.i, ptr %0, align 8, !alias.scope !21763, !noalias !21766
+&gt;   call void @llvm.lifetime.end.p0(i64 92, ptr nonnull %_10.sroa.4)
+(venv) 
+</code></pre>
+<p>I did compare the generated assembly and the new assembly indeed is longer for reduce154 than it used to.</p>
+<pre><code class="language-diff">8c8
+&lt;  cbz     x8, LBB835_3
+---
+&gt;  cbz     x8, LBB839_3
+28,53c28,70
+&lt;  ldrb    w19, [sp, #384]
+&lt;  cmp     w19, #17
+&lt;  b.ne    LBB835_4
+&lt;  ldr     w10, [sp, #392]
+&lt;  ldr     w11, [sp, #396]
+&lt;  ldr     x12, [x9, #80]
+&lt;  str     x12, [sp, #80]
+&lt;  ldp     q0, q1, [x9, #32]
+&lt;  stp     q0, q1, [sp, #32]
+&lt;  ldr     q2, [x9, #64]
+&lt;  str     q2, [sp, #64]
+&lt;  ldp     q3, q4, [sp, #144]
+&lt;  ldp     q6, q5, [sp, #112]
+&lt;  stp     q5, q3, [x9, #128]
+&lt;  ldr     q3, [sp, #176]
+&lt;  stp     q4, q3, [x9, #160]
+&lt;  ldp     q3, q4, [sp, #80]
+&lt;  stp     q2, q3, [x9, #64]
+&lt;  ldp     q2, q3, [x9]
+&lt;  stp     q2, q3, [sp]
+&lt;  stp     q4, q6, [x9, #96]
+&lt;  stp     q2, q3, [x9]
+&lt;  stp     q0, q1, [x9, #32]
+&lt;  mov     w12, #17
+&lt;  strb    w12, [x9, #192]
+&lt;  stp     w10, w11, [x9, #200]
+---
+&gt;  ldr     w19, [sp, #192]
+&gt;  cmp     w19, #47
+&gt;  b.ne    LBB839_4
+&gt;  add     x10, sp, #192
+&gt;  ldr     w11, [sp, #392]
+&gt;  ldr     w12, [sp, #396]
+&gt;  ldur    q0, [x10, #40]
+&gt;  ldur    q1, [x10, #56]
+&gt;  stp     q0, q1, [sp, #128]
+&gt;  ldur    q2, [x10, #72]
+&gt;  str     q2, [sp, #160]
+&gt;  ldr     x13, [sp, #280]
+&gt;  str     x13, [sp, #176]
+&gt;  ldur    q3, [x10, #8]
+&gt;  ldur    q4, [x10, #24]
+&gt;  stp     q3, q4, [sp, #96]
+&gt;  stur    x13, [x10, #84]
+&gt;  stur    q2, [x10, #68]
+&gt;  stur    q1, [x10, #52]
+&gt;  stur    q0, [x10, #36]
+&gt;  stur    q4, [x10, #20]
+&gt;  stur    q3, [x10, #4]
+&gt;  ldur    q0, [x10, #76]
+&gt;  stur    q0, [sp, #76]
+&gt;  ldr     q2, [sp, #256]
+&gt;  ldp     q3, q0, [sp, #224]
+&gt;  stp     q0, q2, [sp, #48]
+&gt;  ldp     q0, q1, [sp, #192]
+&gt;  str     q0, [sp]
+&gt;  stp     q1, q3, [sp, #16]
+&gt;  mov     w10, #47
+&gt;  str     w10, [x9]
+&gt;  ldp     q0, q1, [sp, #32]
+&gt;  stur    q0, [x9, #36]
+&gt;  stur    q1, [x9, #52]
+&gt;  ldr     q0, [sp, #64]
+&gt;  stur    q0, [x9, #68]
+&gt;  ldur    q0, [sp, #76]
+&gt;  str     q0, [x9, #80]
+&gt;  ldp     q0, q1, [sp]
+&gt;  stur    q0, [x9, #4]
+&gt;  stur    q1, [x9, #20]
+&gt;  stp     w11, w12, [x9, #200]
+60,64c77,81
+&lt; LBB835_3:
+&lt;  mov     w8, #104
+&lt;  mov     w19, #104
+&lt;  strb    w8, [sp, #384]
+&lt; LBB835_4:
+---
+&gt; LBB839_3:
+&gt;  mov     w8, #137
+&gt;  mov     w19, #137
+&gt;  str     w8, [sp, #192]
+&gt; LBB839_4:
+67c84
+&lt; LBB835_6:
+---
+&gt; LBB839_6:
+69,70c86,87
+&lt;  cmp     w19, #104
+&lt;  b.eq    LBB835_8
+---
+&gt;  cmp     w19, #137
+&gt;  b.eq    LBB839_8
+72,73c89,90
+&lt;  bl      __ZN4core3ptr71drop_in_place$LT$ruff_python_parser..python..__parse__Top..__Symbol$GT$17h7ca4ec50464f112bE
+&lt; LBB835_8:
+---
+&gt;  bl      __ZN4core3ptr71drop_in_place$LT$ruff_python_parser..python..__parse__Top..__Symbol$GT$17ha84e15138d5fb157E
+&gt; LBB839_8:
+76c93
+&lt; LBB835_9:
+---
+&gt; LBB839_9:
+
+</code></pre>
+<p>It seems that the new version uses <code>ldr</code> instead of <code>ldrb</code> on ARM which loads the entire 4 bytes instead of just 8bits into memory. I'm no good at reading assembly...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3951 on 2023-12-04 03:31</div>
+            <div class="timeline-body"><p>Nit: Can we move this above the size_assertions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-12-04 03:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-04 04:15</div>
+            <div class="timeline-body"><p>Some findings from reading through the <code>python.rs</code> changes:</p>
+<ul>
+<li>There are now 104 Symbol variants compared to 101 before (one for <code>Option&lt;FStringFormatSpec&gt;</code>, one for <code>FStringFormatSpec</code>, and one for <code>FStringElement</code>)</li>
+<li>The Symbol size remains unchanged at 200 bytes (My hope was that it changed)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-12-04 14:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:182 on 2023-12-04 14:53</div>
+            <div class="timeline-body"><p>Ugh, sorry. That was just me figuring out if decreasing the size would revert the regression -- it doesn't, I'll revert the change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2023-12-04 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2023-12-04 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-12-05 01:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1011 on 2023-12-05 01:51</div>
+            <div class="timeline-body"><p>Nit: Not necessarily better, it just feels a bit more explicit to me but I don't have a clear preference.</p>
+<pre><code class="language-suggestion">            for element in value.elements().filter_map(|element| element.as_literal()) {
+                if checker.enabled(Rule::HardcodedBindAllInterfaces) {
+</code></pre>
+<p>But you then need to access the <code>value</code> and <code>range</code> through <code>element</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1017 on 2023-12-05 01:53</div>
+            <div class="timeline-body"><p>Would it make sense to have a <code>analyze_string_like</code> function that accepts a <code>string_like</code> value (new <code>StringLike</code> enum that is either a <code>FStringLiteral</code> or <code>StringExpressionLiteral</code>) to ensure we don't forget to the rules to <code>FStringLiteral</code>, regular strings, and potentially bytes? Or is it only a subset of string rules that need to run for fstring literals?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1017 on 2023-12-05 01:55</div>
+            <div class="timeline-body"><p>Is it correct that this rule now triggers for <code>f&quot;0.0.0.0{expression}something_else&quot;</code> or should we enforce that the fstring only has a single element that exactly matches a certain value (same for other rules)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/string_or_bytes_too_long.rs</code>:46 on 2023-12-05 01:59</div>
+            <div class="timeline-body"><p>Using <code>AnyNodeRef</code> for <code>node</code> is unfortunate because it is now unclear what kind of nodes the rule accepts. I recommend renaming <code>node</code> to <code>string_like</code> to make it more explicit and/or consider introducing a <code>StringLike</code> enum that covers <code>FStringExpression</code>, <code>ByteLiteral</code>, and <code>StringLiteral</code> if this is something that we need in multiple places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pytest_style/rules/helpers.rs</code>:59 on 2023-12-05 02:17</div>
+            <div class="timeline-body"><p>I got rather confused by the <code>parts</code> method here. Like what's the difference between a <code>FStringPart</code> and an <code>FStringElement</code>, they even have the same members (although <code>FStringPart::Literal</code> takes a <code>StringLiteral</code> and <code>Element::Literal</code> an <code>FStringElementLiteral</code>).</p>
+<p>It clicked when opening the PR and looking up the definition, although I wonder if we can improve the naming (unrelated to this PR).</p>
+<p>A not fully formed idea:</p>
+<ul>
+<li><code>ExprStringLiteral</code> -&gt; <code>ExprString</code></li>
+<li><code>ExprStringLiteral::parts</code> rename to <code>literals</code> (it returns the individal string literals of which the string expression is composed)</li>
+<li><code>ExprFString::parts</code> rename to <code>literals</code></li>
+<li><code>FStringPart</code> rename to <code>ExprFStringLiteral</code></li>
+<li><code>FStringPart::Literal</code> rename to <code>FSTringPart::String</code></li>
+</ul>
+<p>Same for bytes.</p>
+<p>We may also want to change the <code>parts</code> and <code>parts_mut</code> methods to return a <code>&amp;[]</code> instead of an iterator.</p>
+<p>The part I feel uncertain about is if it is okay to name an <code>f&quot;abcd&quot;</code> a literal, but I think it is. For example, the object notation <code>{a: &quot;bcd&quot;}</code> in JavaScript is a <code>ObjectLiteral</code> and it contains dynamic content as well.</p>
+<p>I don't suggest making these changes as part of this PR. It's just something I dripped over when reviewing and thought I would raise.</p>
+<p>Edit: Even the Python spec names them literals: A formatted string literal</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/f_string_missing_placeholders.rs</code>:55 on 2023-12-05 02:21</div>
+            <div class="timeline-body"><p>Nit: We could add these as a method on <code>fstring</code> itself: <code>has_placeholders()</code> or similar if we want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/tryceratops/rules/raise_vanilla_args.rs</code>:109 on 2023-12-05 02:23</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">                    ast::FStringPart::FString(f_string) =&gt; {
+                        for literal in f_string.elements.iter().filter_map(|element| element.as_literal()) {
+                            if literal.value.chars().any(char::is_whitespace) {
+                                return true;
+                            }
+                        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/visitor/transformer.rs</code>:738 on 2023-12-05 02:40</div>
+            <div class="timeline-body"><p>It feels inconsistent to me that we have visitors for <code>string_literal</code> and <code>byte_literals</code> but that we aren't visiting <code>Literal</code> elements here. I think we should either have visitors for both or neither. The same applies to <code>preorder</code> and the regular visitor</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/visitor/preorder.rs</code>:529 on 2023-12-05 02:42</div>
+            <div class="timeline-body"><p>I think you can call here into <code>element.visit_preorder(visitor)</code> considering that <code>FStringExpressionElement</code> implements <code>AstNode</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/tests/preorder.rs</code>:226 on 2023-12-05 02:45</div>
+            <div class="timeline-body"><p>Can you add overrides for the new visitor functions or rewrite the test to use <code>enter_node</code> and <code>exit_node</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/f_string_expression_element.rs</code>:8 on 2023-12-05 02:48</div>
+            <div class="timeline-body"><p>I'm not sure if it's worth adding these implementations considering that they won't work. I rather have <code>fstring_expression_element.format()</code> to not compile than fail at runtime.</p>
+<p>Should we exclude them from the generate script. We can still add them when they become useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-12-05 02:53</div>
+            <div class="timeline-body"><p>Thanks for driving this long standing PR forward. I like what I see in the parser diffs.</p>
+<p>The majority of comments are nits, but there's the question whather we should visit the <code>FStringLiteralElement</code> in visitors and if some lint rules should check if it si a single element fstring to avoid false positives.</p>
+<p>I would prefer for @charliermarsh to also review the linter changes, considering that he has more context than I.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-12-05 14:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1017 on 2023-12-05 14:19</div>
+            <div class="timeline-body"><p>It always triggered for such cases, we're just maintaining the behavior. The reason is that it could be useful for cases like <code>f&quot;0.0.0.0{port}/path&quot;</code>: https://play.ruff.rs/7b6e80ea-5858-4983-877c-1669a5cd538d</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-12-05 14:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_pytest_style/rules/helpers.rs</code>:59 on 2023-12-05 14:21</div>
+            <div class="timeline-body"><p>Thanks! I'll explore this in a follow-up PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-12-05 14:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/f_string_missing_placeholders.rs</code>:55 on 2023-12-05 14:23</div>
+            <div class="timeline-body"><p>I thought so but currently it's only being used in a single place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-12-05 14:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1011 on 2023-12-05 14:42</div>
+            <div class="timeline-body"><p>Yeah, I thought about this. I don't really like the formatting so I think it's worth updating as per your suggestion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-12-05 15:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/visitor/transformer.rs</code>:738 on 2023-12-05 15:02</div>
+            <div class="timeline-body"><p>I see your point. Wouldn't <code>visit_f_string_element</code> cover visiting the literal element of an f-string? This is similar to what we have with <code>visit_match_case</code> and <code>visit_pattern</code>.</p>
+<p>Currently, we've a visitor for an <code>FStringElement</code> which is what you're highlighting here. I'd prefer to keep the literal visitors because they help in the formatter comment placements. Is what you're suggesting to replace <code>visit_f_string_element</code> with <code>visit_f_string_literal_element</code> and <code>visit_f_string_expression_element</code>? So, the hierarchy would be:</p>
+<pre><code class="language-bash">FString # visit_f_string
+ |- FStringLiteralElement # visit_f_string_literal_element
+ |- FStringExpressionElement # visit_f_string_expression_element
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-12-05 15:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/visitor/preorder.rs</code>:529 on 2023-12-05 15:14</div>
+            <div class="timeline-body"><p>Ah yes, thanks for noticing that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/string_or_bytes_too_long.rs</code>:46 on 2023-12-05 20:34</div>
+            <div class="timeline-body"><p>Yeah, I think this might be a good idea (https://github.com/astral-sh/ruff/pull/9016).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-12-05 20:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-12-06 00:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/visitor/transformer.rs</code>:738 on 2023-12-06 00:30</div>
+            <div class="timeline-body"><blockquote>
+<p>I see your point. Wouldn't visit_f_string_element cover visiting the literal element of an f-string? This is similar to what we have with visit_match_case and visit_pattern.</p>
+</blockquote>
+<p>That makes sense. Thank's for explaining.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1017 on 2023-12-06 17:56</div>
+            <div class="timeline-body"><p>Refer: https://github.com/astral-sh/ruff/pull/9016</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-12-06 17:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-12-06 21:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:818 on 2023-12-06 21:54</div>
+            <div class="timeline-body"><p>The <code>in_f_string</code> check isn't required now that there's a dedicated node for the literal part of f-string and it isn't the same as <code>ExprStringLiteral</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-07 00:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:818 on 2023-12-07 00:36</div>
+            <div class="timeline-body"><p>Smart.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-07 00:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1010 on 2023-12-07 00:40</div>
+            <div class="timeline-body"><p>So what happens here if we have, like <code>func(f&quot;/tmp&quot; f&quot;/bad&quot;)</code>, and the rule is matching against <code>&quot;/tmp/bad&quot;</code>? I guess that would now be a false negative? Or how do we handle concatenations here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-07 00:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1010 on 2023-12-07 00:44</div>
+            <div class="timeline-body"><p>It looks like we already wouldn't flag that on <code>main</code>, though I'm curious if it should be considered a bug. E.g., for <code>S104</code>, should we flag <code>f&quot;0.0&quot; f&quot;.0.0&quot;</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-12-07 00:44</div>
+            <div class="timeline-body"><p>This looks great.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-12-07 01:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1010 on 2023-12-07 01:10</div>
+            <div class="timeline-body"><p>This is a good point and yes it will be a false negative now. It's not just <code>f&quot;/tmp&quot; f&quot;/bad&quot;</code> but also <code>&quot;/tmp&quot; f&quot;/bad&quot;</code> (string and f-string)</p>
+<p>We can introduce a method which iterates over the concatenated literal parts of an f-string. For example,</p>
+<pre><code class="language-python">&quot;foo&quot; f&quot;bar {x} baz&quot; &quot;end&quot;
+</code></pre>
+<p>The above code would return two strings: <code>&quot;foobar &quot;</code> and <code>&quot; bazend&quot;</code>. Here, I don't see a way to avoid string allocation here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-12-07 16:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1010 on 2023-12-07 16:27</div>
+            <div class="timeline-body"><p>I'm moving ahead with this limitation for now but we can revisit if it proves to be a problem. My hunch is this shouldn't be but you never know 🤷‍♂️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2023-12-07 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-12-07 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-07 16:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:22 UTC
+    </footer>
+</body>
+</html>

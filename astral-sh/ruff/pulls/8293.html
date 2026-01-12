@@ -1,0 +1,2009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement multiline dictionary and list hugging for preview style - astral-sh/ruff #8293</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement multiline dictionary and list hugging for preview style</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8293">#8293</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-10-28 03:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-28 03:19</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR implement's Black's new single-argument hugging for lists, sets, and dictionaries under preview style.</p>
+<p>For example, this:</p>
+<pre><code class="language-python">foo(
+    [
+        1,
+        2,
+        3,
+    ]
+)
+</code></pre>
+<p>Would instead now be formatted as:</p>
+<pre><code class="language-python">foo([
+    1,
+    2,
+    3,
+])
+</code></pre>
+<p>A couple notes:</p>
+<ul>
+<li>This doesn't apply when the argument has a magic trailing comma.</li>
+<li>This <em>does</em> apply when the argument is starred or double-starred.</li>
+<li>We don't apply this when there are comments before or after the argument, though Black does in some cases (and moves the comments outside the call parentheses).</li>
+</ul>
+<p>It doesn't say it in the originating PR (https://github.com/psf/black/pull/3964), but I think this also applies to parenthesized expressions? At least, it does in my testing of preview vs. stable, though it's possible that behavior predated the linked PR.</p>
+<p>See: #8279.</p>
+<h2>Test Plan</h2>
+<p>Before:</p>
+<p>| project        | similarity index  | total files       | changed files     |
+|----------------|------------------:|------------------:|------------------:|
+| cpython        |           0.75804 |              1799 |              1648 |
+| django         |           0.99984 |              2772 |                34 |
+| home-assistant |           0.99963 |             10596 |               146 |
+| poetry         |           0.99925 |               317 |                12 |
+| transformers   |           0.99967 |              2657 |               322 |
+| twine          |           1.00000 |                33 |                 0 |
+| typeshed       |           0.99980 |              3669 |                18 |
+| warehouse      |           0.99977 |               654 |                13 |
+| zulip          |           0.99970 |              1459 |                21 |</p>
+<p>After:</p>
+<p>| project        | similarity index  | total files       | changed files     |
+|----------------|------------------:|------------------:|------------------:|
+| cpython        |           0.75804 |              1799 |              1648 |
+| django         |           0.99984 |              2772 |                34 |
+| home-assistant |           0.99963 |             10596 |               146 |
+| poetry         |           0.96215 |               317 |                34 |
+| transformers   |           0.99967 |              2657 |               322 |
+| twine          |           1.00000 |                33 |                 0 |
+| typeshed       |           0.99980 |              3669 |                18 |
+| warehouse      |           0.99977 |               654 |                13 |
+| zulip          |           0.99970 |              1459 |                21 |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-10-28 03:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2023-10-28 03:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-28 03:41</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-28 05:41</div>
+            <div class="timeline-body"><p>Hmm, does it also apply for maybe parenthesize expressions? What parts are missing after this PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-28 11:20</div>
+            <div class="timeline-body"><p>I think perhaps in <code>parenthesize_if_expands</code>? Will test that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-10-28 21:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-10-28 21:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-28 21:09</div>
+            <div class="timeline-body"><p>(Added <code>parenthesize_if_expands</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/hug.py</code>:85 on 2023-10-30 00:29</div>
+            <div class="timeline-body"><p>Can we add a test verifying that calls with more than one argument are not hugged?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:137 on 2023-10-30 00:31</div>
+            <div class="timeline-body"><p>Do your tests cover the <code>format_with_parentheses_comments</code> case? If not, could you add tests for it as well?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:1202 on 2023-10-30 00:32</div>
+            <div class="timeline-body"><p>Interesting that tuples are excluded.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:1132 on 2023-10-30 00:33</div>
+            <div class="timeline-body"><p>Should we move the preview check into <code>is_huggable</code> to avoid the repetition?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:429 on 2023-10-30 00:38</div>
+            <div class="timeline-body"><p>Nit: this becomes somewhat repetitive. Is it worth introducing a <code>parenthesize_expression_if_expands</code> helper?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/arguments.rs</code>:210 on 2023-10-30 00:40</div>
+            <div class="timeline-body"><p>Can we add a test case for <code>magic-trailing-comma=ignore</code> covering this check</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:422 on 2023-10-30 00:44</div>
+            <div class="timeline-body"><p>Can you verify if it is necessary to set <code>indent</code> for all these cases?</p>
+<p>At least for <code>if [aaa, b]</code>, <code>can_omit_optional_parentheses</code> should always return <code>true</code> and I think the same is true for all other parenthesized expressions. Meaning, this change seems unnecessary.</p>
+<p>Can you test which changes are necessary and a) either remove the change or b) add (if not already) test cases proving that they are necessary</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-10-30 00:45</div>
+            <div class="timeline-body"><p>Please update your PR summary with the new similarity index and can we get results on our new ecosystem check?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-30 00:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Please update your PR summary with the new similarity index and can we get results on our new ecosystem check?</p>
+</blockquote>
+<p>Just to be clear, we expect no change in the similarity index -- and I don't know if the ecosystem checks include preview style yet, do they @zanieb? The PR shows no change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-30 00:55</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Please update your PR summary with the new similarity index and can we get results on our new ecosystem check?</p>
+</blockquote>
+<p>Just to be clear, we expect no change in the similarity index -- and I don't know if the ecosystem checks include preview style yet, do they @zanieb? The PR shows no change.</p>
+</blockquote>
+<p>Is it because the projects included in our similarity index using preview-style don't use the new formatting yet?</p>
+<p>It seems we need to handle match/case as well</p>
+<p><a href="https://black.vercel.app/?version=main&amp;state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4AFEAGRdAD2IimZxl1N_WmBasjhgIoo1dFgnEH19ELkVU7Zs1tOr_y7iwpTk9TJX2EgkSoZ2FqGN6L3khtFjMSEjkmwuAMiQm0Ik9Ysf2H26EPPHEyOszlfB3ByyaKb5HTA0rJfyte-cfQAACmM1itE96ooAAYABxQIAAO8jkqKxxGf7AgAAAAAEWVo=">Black</a></p>
+<p>And can you add tests for delete:  <code>delete ([aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb])</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-10-30 10:12</div>
+            <div class="timeline-body"><blockquote>
+<p>and I don't know if the ecosystem checks include preview style yet,</p>
+</blockquote>
+<p>poetry is formatted with preview style, for the table at https://github.com/astral-sh/ruff/actions/runs/6691118897#summary-18177750624</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/hug.py</code>:66 on 2023-10-30 10:15</div>
+            <div class="timeline-body"><p>nit: Use <code>**{}</code> with dict contents here (&quot;TypeError: &lt;...&gt; argument after ** must be a mapping, not list&quot;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:1202 on 2023-10-30 10:19</div>
+            <div class="timeline-body"><p>I guess</p>
+<pre><code class="language-python">f((
+    1,
+    2,
+    3,
+))
+</code></pre>
+<p>is too hard to spot</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-10-30 10:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-30 14:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:422 on 2023-10-30 14:57</div>
+            <div class="timeline-body"><p>Only one of these cases is necessary, but it felt odd to be inconsistent between branches -- like, we're then encoding details about which combinations of values are actually possible in practice, aren't we?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-30 15:12</div>
+            <div class="timeline-body"><p>Poetry's similarity index went down, but I assume that's because this isn't even out in Black yet, so their preview style won't include this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-30 15:27</div>
+            <div class="timeline-body"><blockquote>
+<p>and I don't know if the ecosystem checks include preview style yet, do they @zanieb? The PR shows no change.</p>
+</blockquote>
+<p>They did not; see #8358.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-28 06:04</div>
+            <div class="timeline-body"><p>@charliermarsh what do you plan to do with this PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-28 06:13</div>
+            <div class="timeline-body"><p>@MichaReiser - Waiting to see if they decide to stabilize or postpone in https://github.com/psf/black/issues/4042. I am also interested in our stance on preview in general -- Black seems to suggest that preview features won't always graduate to stable and may be reverted, but our preview mode was generally intended to be features in which we have high confidence.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-29 01:47</div>
+            <div class="timeline-body"><p>I'm okay with landing this now but would recommend documenting the preview checks with the corresponding black preview-code to make it easier to remove the right preview style checks.</p>
+<p>There's a risk that this might never be stabilized. But for now, the intention is to ship it, just maybe not as part of 2024.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-29 03:32</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm okay with landing this now but would recommend documenting the preview checks with the corresponding black preview-code to make it easier to remove the right preview style checks.</p>
+</blockquote>
+<p>Can you expand on this a bit more? (Not disagreeing, just didn't fully understand the request.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-29 03:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:1202 on 2023-11-29 03:36</div>
+            <div class="timeline-body"><p>They re-added them in a later PR (https://github.com/psf/black/pull/4012), so I'm changing it here too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:1132 on 2023-11-29 03:42</div>
+            <div class="timeline-body"><p>Will do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-29 03:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-29 03:45</div>
+            <div class="timeline-body"><p>It would be good to add comments in the code where you check if preview style is enabled that mentions the <code>hug_parens_with_braces....</code> code. It will allow us to easily search for the future when promoting the new style to stable (or to not remove the check if it shouldn't be promoted).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-29 03:49</div>
+            <div class="timeline-body"><p>👍 Makes sense, will do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-29 03:50</div>
+            <div class="timeline-body"><p>Heads up that Black now collapses these recursively, i.e.:</p>
+<pre><code class="language-python"># Input
+foo([([
+    [
+        1,
+        2,
+        3,
+    ]
+])])
+
+# Black
+foo([([[
+    1,
+    2,
+    3,
+]])])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2023-11-29 03:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-29 03:59</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+41688 -48548 lines in 1289 files in 41 projects)</p>
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+37 -45 lines across 4 files)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/DisnakeDev/disnake/blob/594c12ad5230522a12008445217e71726cc60611/disnake/client.py#L128'>disnake/client.py~L128</a></p>
+<pre><code class="language-diff">         if task.cancelled():
+             continue
+         if task.exception() is not None:
+-            loop.call_exception_handler(
+-                {
+-                    &quot;message&quot;: &quot;Unhandled exception during Client.run shutdown.&quot;,
+-                    &quot;exception&quot;: task.exception(),
+-                    &quot;task&quot;: task,
+-                }
+-            )
++            loop.call_exception_handler({
++                &quot;message&quot;: &quot;Unhandled exception during Client.run shutdown.&quot;,
++                &quot;exception&quot;: task.exception(),
++                &quot;task&quot;: task,
++            })
+ 
+ 
+ def _cleanup_loop(loop: asyncio.AbstractEventLoop) -&gt; None:
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/594c12ad5230522a12008445217e71726cc60611/disnake/embeds.py#L305'>disnake/embeds.py~L305</a></p>
+<pre><code class="language-diff">         return total
+ 
+     def __bool__(self) -&gt; bool:
+-        return any(
+-            (
+-                self.title,
+-                self.url,
+-                self.description,
+-                self._colour,
+-                self._fields,
+-                self._timestamp,
+-                self._author,
+-                self._thumbnail,
+-                self._footer,
+-                self._image,
+-                self._provider,
+-                self._video,
+-            )
+-        )
++        return any((
++            self.title,
++            self.url,
++            self.description,
++            self._colour,
++            self._fields,
++            self._timestamp,
++            self._author,
++            self._thumbnail,
++            self._footer,
++            self._image,
++            self._provider,
++            self._video,
++        ))
+ 
+     def __eq__(self, other: Any) -&gt; bool:
+         if not isinstance(other, Embed):
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/594c12ad5230522a12008445217e71726cc60611/disnake/guild.py#L4866'>disnake/guild.py~L4866</a></p>
+<pre><code class="language-diff">             overwrites_data: List[PermissionOverwritePayload] = []
+             for target, perm in overwrites.items():
+                 allow, deny = perm.pair()
+-                overwrites_data.append(
+-                    {
+-                        &quot;allow&quot;: str(allow.value),
+-                        &quot;deny&quot;: str(deny.value),
+-                        &quot;id&quot;: target,
+-                        # can only set overrides for roles here
+-                        &quot;type&quot;: abc._Overwrites.ROLE,
+-                    }
+-                )
++                overwrites_data.append({
++                    &quot;allow&quot;: str(allow.value),
++                    &quot;deny&quot;: str(deny.value),
++                    &quot;id&quot;: target,
++                    # can only set overrides for roles here
++                    &quot;type&quot;: abc._Overwrites.ROLE,
++                })
+             data[&quot;permission_overwrites&quot;] = overwrites_data
+ 
+         if category is not MISSING:
+</code></pre>
+<p><a href='https://github.com/DisnakeDev/disnake/blob/594c12ad5230522a12008445217e71726cc60611/disnake/state.py#L166'>disnake/state.py~L166</a></p>
+<pre><code class="language-diff">         _log.exception(&quot;Exception occurred during %s&quot;, info)
+ 
+ 
+-_SELECT_COMPONENT_TYPES = frozenset(
+-    (
+-        ComponentType.string_select,
+-        ComponentType.user_select,
+-        ComponentType.role_select,
+-        ComponentType.mentionable_select,
+-        ComponentType.channel_select,
+-    )
+-)
++_SELECT_COMPONENT_TYPES = frozenset((
++    ComponentType.string_select,
++    ComponentType.user_select,
++    ComponentType.role_select,
++    ComponentType.mentionable_select,
++    ComponentType.channel_select,
++))
+ 
+ 
+ class ConnectionState:
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/PostHog/HouseWatch">PostHog/HouseWatch</a> (+26 -38 lines across 1 file)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/PostHog/HouseWatch/blob/bf61a8e227311b3bc2fecd53823e4c1b37eb4a6d/housewatch/api/analyze.py#L71'>housewatch/api/analyze.py~L71</a></p>
+<pre><code class="language-diff">         )
+         normalized_query = query_details[0][&quot;normalized_query&quot;]
+ 
+-        return Response(
+-            {
+-                &quot;query&quot;: normalized_query,
+-            }
+-        )
++        return Response({
++            &quot;query&quot;: normalized_query,
++        })
+ 
+     @action(detail=True, methods=[&quot;GET&quot;])
+     def query_metrics(self, request: Request, pk: str):
+</code></pre>
+<p><a href='https://github.com/PostHog/HouseWatch/blob/bf61a8e227311b3bc2fecd53823e4c1b37eb4a6d/housewatch/api/analyze.py#L94'>housewatch/api/analyze.py~L94</a></p>
+<pre><code class="language-diff">         )
+         cpu = run_query(QUERY_CPU_USAGE_SQL, {&quot;days&quot;: days, &quot;conditions&quot;: conditions})
+ 
+-        return Response(
+-            {
+-                &quot;execution_count&quot;: execution_count,
+-                &quot;memory_usage&quot;: memory_usage,
+-                &quot;read_bytes&quot;: read_bytes,
+-                &quot;cpu&quot;: cpu,
+-            }
+-        )
++        return Response({
++            &quot;execution_count&quot;: execution_count,
++            &quot;memory_usage&quot;: memory_usage,
++            &quot;read_bytes&quot;: read_bytes,
++            &quot;cpu&quot;: cpu,
++        })
+ 
+     @action(detail=True, methods=[&quot;GET&quot;])
+     def query_explain(self, request: Request, pk: str):
+</code></pre>
+<p><a href='https://github.com/PostHog/HouseWatch/blob/bf61a8e227311b3bc2fecd53823e4c1b37eb4a6d/housewatch/api/analyze.py#L111'>housewatch/api/analyze.py~L111</a></p>
+<pre><code class="language-diff">         example_queries = query_details[0][&quot;example_queries&quot;]
+         explain = run_query(EXPLAIN_QUERY, {&quot;query&quot;: example_queries[0]})
+ 
+-        return Response(
+-            {
+-                &quot;explain&quot;: explain,
+-            }
+-        )
++        return Response({
++            &quot;explain&quot;: explain,
++        })
+ 
+     @action(detail=True, methods=[&quot;GET&quot;])
+     def query_examples(self, request: Request, pk: str):
+</code></pre>
+<p><a href='https://github.com/PostHog/HouseWatch/blob/bf61a8e227311b3bc2fecd53823e4c1b37eb4a6d/housewatch/api/analyze.py#L124'>housewatch/api/analyze.py~L124</a></p>
+<pre><code class="language-diff">         )
+         example_queries = query_details[0][&quot;example_queries&quot;]
+ 
+-        return Response(
+-            {
+-                &quot;example_queries&quot;: [{&quot;query&quot;: q} for q in example_queries],
+-            }
+-        )
++        return Response({
++            &quot;example_queries&quot;: [{&quot;query&quot;: q} for q in example_queries],
++        })
+ 
+     @action(detail=False, methods=[&quot;GET&quot;])
+     def query_graphs(self, request: Request):
+</code></pre>
+<p><a href='https://github.com/PostHog/HouseWatch/blob/bf61a8e227311b3bc2fecd53823e4c1b37eb4a6d/housewatch/api/analyze.py#L141'>housewatch/api/analyze.py~L141</a></p>
+<pre><code class="language-diff">         )
+         read_bytes = run_query(QUERY_READ_BYTES_SQL, {&quot;days&quot;: days, &quot;conditions&quot;: &quot;&quot;})
+         cpu = run_query(QUERY_CPU_USAGE_SQL, {&quot;days&quot;: days, &quot;conditions&quot;: &quot;&quot;})
+-        return Response(
+-            {
+-                &quot;execution_count&quot;: execution_count,
+-                &quot;memory_usage&quot;: memory_usage,
+-                &quot;read_bytes&quot;: read_bytes,
+-                &quot;cpu&quot;: cpu,
+-            }
+-        )
++        return Response({
++            &quot;execution_count&quot;: execution_count,
++            &quot;memory_usage&quot;: memory_usage,
++            &quot;read_bytes&quot;: read_bytes,
++            &quot;cpu&quot;: cpu,
++        })
+ 
+     @action(detail=False, methods=[&quot;POST&quot;])
+     def logs(self, request: Request):
+</code></pre>
+<p><a href='https://github.com/PostHog/HouseWatch/blob/bf61a8e227311b3bc2fecd53823e4c1b37eb4a6d/housewatch/api/analyze.py#L295'>housewatch/api/analyze.py~L295</a></p>
+<pre><code class="language-diff">                 )
+                 i += 1
+                 sleep(0.5)
+-            return Response(
+-                {
+-                    &quot;is_result_equal&quot;: is_result_equal,
+-                    &quot;benchmarking_result&quot;: benchmarking_result,
+-                }
+-            )
++            return Response({
++                &quot;is_result_equal&quot;: is_result_equal,
++                &quot;benchmarking_result&quot;: benchmarking_result,
++            })
+         except Exception as e:
+             return Response(
+                 status=418, data={&quot;error&quot;: str(e), &quot;error_location&quot;: error_location}
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+1186 -1337 lines across 49 files)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/core/brokers/pika.py#L238'>rasa/core/brokers/pika.py~L238</a></p>
+<pre><code class="language-diff">             self.exchange_name, type=aio_pika.ExchangeType.FANOUT
+         )
+ 
+-        await asyncio.gather(
+-            *[
+-                self._bind_queue(queue_name, channel, exchange)
+-                for queue_name in self.queues
+-            ]
+-        )
++        await asyncio.gather(*[
++            self._bind_queue(queue_name, channel, exchange)
++            for queue_name in self.queues
++        ])
+ 
+         return exchange
+ 
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/core/channels/hangouts.py#L70'>rasa/core/channels/hangouts.py~L70</a></p>
+<pre><code class="language-diff">                 )
+                 return None
+ 
+-            hangouts_buttons.append(
+-                {
+-                    &quot;textButton&quot;: {
+-                        &quot;text&quot;: b_txt,
+-                        &quot;onClick&quot;: {&quot;action&quot;: {&quot;actionMethodName&quot;: b_pl}},
+-                    }
++            hangouts_buttons.append({
++                &quot;textButton&quot;: {
++                    &quot;text&quot;: b_txt,
++                    &quot;onClick&quot;: {&quot;action&quot;: {&quot;actionMethodName&quot;: b_pl}},
+                 }
+-            )
++            })
+ 
+         card = {
+             &quot;cards&quot;: [
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/core/evaluation/marker_base.py#L665'>rasa/core/evaluation/marker_base.py~L665</a></p>
+<pre><code class="language-diff">         &quot;&quot;&quot;
+         with path.open(mode=&quot;w&quot;) as f:
+             table_writer = csv.writer(f)
+-            table_writer.writerow(
+-                [
+-                    &quot;sender_id&quot;,
+-                    &quot;session_idx&quot;,
+-                    &quot;marker&quot;,
+-                    &quot;event_idx&quot;,
+-                    &quot;num_preceding_user_turns&quot;,
+-                ]
+-            )
++            table_writer.writerow([
++                &quot;sender_id&quot;,
++                &quot;session_idx&quot;,
++                &quot;marker&quot;,
++                &quot;event_idx&quot;,
++                &quot;num_preceding_user_turns&quot;,
++            ])
+             for sender_id, results_per_session in results.items():
+                 for session_idx, session_result in enumerate(results_per_session):
+                     Marker._write_relevant_events(
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/core/evaluation/marker_base.py#L686'>rasa/core/evaluation/marker_base.py~L686</a></p>
+<pre><code class="language-diff">     ) -&gt; None:
+         for marker_name, meta_data_per_relevant_event in session.items():
+             for event_meta_data in meta_data_per_relevant_event:
+-                writer.writerow(
+-                    [
+-                        sender_id,
+-                        str(session_idx),
+-                        marker_name,
+-                        str(event_meta_data.idx),
+-                        str(event_meta_data.preceding_user_turns),
+-                    ]
+-                )
++                writer.writerow([
++                    sender_id,
++                    str(session_idx),
++                    marker_name,
++                    str(event_meta_data.idx),
++                    str(event_meta_data.preceding_user_turns),
++                ])
+ 
+ 
+ class OperatorMarker(Marker, ABC):
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/core/evaluation/marker_stats.py#L279'>rasa/core/evaluation/marker_stats.py~L279</a></p>
+<pre><code class="language-diff">             value_str = str(np.nan)
+         else:
+             value_str = np.round(statistic_value, 3)
+-        table_writer.writerow(
+-            [
+-                str(item)
+-                for item in [
+-                    sender_id,
+-                    session_idx,
+-                    marker_name,
+-                    statistic_name,
+-                    value_str,
+-                ]
++        table_writer.writerow([
++            str(item)
++            for item in [
++                sender_id,
++                session_idx,
++                marker_name,
++                statistic_name,
++                value_str,
+             ]
+-        )
++        ])
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/core/featurizers/tracker_featurizers.py#L143'>rasa/core/featurizers/tracker_featurizers.py~L143</a></p>
+<pre><code class="language-diff">         &quot;&quot;&quot;
+         # store labels in numpy arrays so that it corresponds to np arrays of input
+         # features
+-        return ragged_array_to_ndarray(
+-            [
+-                np.array(
+-                    [domain.index_for_action(action) for action in tracker_actions]
+-                )
+-                for tracker_actions in trackers_as_actions
+-            ]
+-        )
++        return ragged_array_to_ndarray([
++            np.array([domain.index_for_action(action) for action in tracker_actions])
++            for tracker_actions in trackers_as_actions
++        ])
+ 
+     def _create_entity_tags(
+         self,
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/core/migrate.py#L70'>rasa/core/migrate.py~L70</a></p>
+<pre><code class="language-diff">             updated_mappings.append(mapping_copy)
+ 
+     for mapping in new_mappings:
+-        mapping.update(
+-            {
+-                &quot;conditions&quot;: [
+-                    _get_updated_mapping_condition(condition, mapping, slot_name)
+-                ]
+-            }
+-        )
++        mapping.update({
++            &quot;conditions&quot;: [
++                _get_updated_mapping_condition(condition, mapping, slot_name)
++            ]
++        })
+         updated_mappings.append(mapping)
+ 
+     return updated_mappings
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/core/migrate.py#L178'>rasa/core/migrate.py~L178</a></p>
+<pre><code class="language-diff">         elif key == KEY_FORMS:
+             new_domain.update({key: new_forms})
+         elif key == &quot;version&quot;:
+-            new_domain.update(
+-                {key: DoubleQuotedScalarString(LATEST_TRAINING_DATA_FORMAT_VERSION)}
+-            )
++            new_domain.update({
++                key: DoubleQuotedScalarString(LATEST_TRAINING_DATA_FORMAT_VERSION)
++            })
+         else:
+             new_domain.update({key: value})
+     return new_domain
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/core/migrate.py#L234'>rasa/core/migrate.py~L234</a></p>
+<pre><code class="language-diff"> 
+         if KEY_SLOTS not in original_content and KEY_FORMS not in original_content:
+             if isinstance(original_content, dict):
+-                original_content.update(
+-                    {
+-                        &quot;version&quot;: DoubleQuotedScalarString(
+-                            LATEST_TRAINING_DATA_FORMAT_VERSION
+-                        )
+-                    }
+-                )
++                original_content.update({
++                    &quot;version&quot;: DoubleQuotedScalarString(
++                        LATEST_TRAINING_DATA_FORMAT_VERSION
++                    )
++                })
+ 
+             # this is done so that the other domain files can be moved
+             # in the migrated directory
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/core/policies/ted_policy.py#L525'>rasa/core/policies/ted_policy.py~L525</a></p>
+<pre><code class="language-diff">         model_data = RasaModelData(label_key=LABEL_KEY, label_sub_key=LABEL_SUB_KEY)
+ 
+         if label_ids is not None and encoded_all_labels is not None:
+-            label_ids = np.array(
+-                [np.expand_dims(seq_label_ids, -1) for seq_label_ids in label_ids]
+-            )
++            label_ids = np.array([
++                np.expand_dims(seq_label_ids, -1) for seq_label_ids in label_ids
++            ])
+             model_data.add_features(
+                 LABEL_KEY,
+                 LABEL_SUB_KEY,
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/core/policies/ted_policy.py#L555'>rasa/core/policies/ted_policy.py~L555</a></p>
+<pre><code class="language-diff"> 
+         # add the dialogue lengths
+         attribute_present = next(iter(list(attribute_data.keys())))
+-        dialogue_lengths = np.array(
+-            [
+-                np.size(np.squeeze(f, -1))
+-                for f in model_data.data[attribute_present][MASK][0]
+-            ]
+-        )
++        dialogue_lengths = np.array([
++            np.size(np.squeeze(f, -1))
++            for f in model_data.data[attribute_present][MASK][0]
++        ])
+         model_data.data[DIALOGUE][LENGTH] = [
+             FeatureArray(dialogue_lengths, number_of_dimensions=1)
+         ]
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/core/policies/ted_policy.py#L1300'>rasa/core/policies/ted_policy.py~L1300</a></p>
+<pre><code class="language-diff">         # Disable input dropout in the config to be used if this is a label attribute.
+         if is_label_attribute:
+             config_to_use = self.config.copy()
+-            config_to_use.update(
+-                {SPARSE_INPUT_DROPOUT: False, DENSE_INPUT_DROPOUT: False}
+-            )
++            config_to_use.update({
++                SPARSE_INPUT_DROPOUT: False,
++                DENSE_INPUT_DROPOUT: False,
++            })
+         else:
+             config_to_use = self.config
+         # Attributes with sequence-level features also have sentence-level features,
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/core/processor.py#L651'>rasa/core/processor.py~L651</a></p>
+<pre><code class="language-diff">     @staticmethod
+     def _log_slots(tracker: DialogueStateTracker) -&gt; None:
+         # Log currently set slots
+-        slot_values = &quot;\n&quot;.join(
+-            [f&quot;\t{s.name}: {s.value}&quot; for s in tracker.slots.values()]
+-        )
++        slot_values = &quot;\n&quot;.join([
++            f&quot;\t{s.name}: {s.value}&quot; for s in tracker.slots.values()
++        ])
+         if slot_values.strip():
+             structlogger.debug(
+                 &quot;processor.slots.log&quot;, slot_values=copy.deepcopy(slot_values)
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/core/test.py#L859'>rasa/core/test.py~L859</a></p>
+<pre><code class="language-diff"> 
+             if action_executed_result.action_targets:
+                 tracker_eval_store.merge_store(action_executed_result)
+-                tracker_actions.append(
+-                    {
+-                        &quot;action&quot;: action_executed_result.action_targets[0],
+-                        &quot;predicted&quot;: action_executed_result.action_predictions[0],
+-                        &quot;policy&quot;: prediction.policy_name,
+-                        &quot;confidence&quot;: prediction.max_confidence,
+-                    }
+-                )
++                tracker_actions.append({
++                    &quot;action&quot;: action_executed_result.action_targets[0],
++                    &quot;predicted&quot;: action_executed_result.action_predictions[0],
++                    &quot;policy&quot;: prediction.policy_name,
++                    &quot;confidence&quot;: prediction.max_confidence,
++                })
+         elif use_e2e and isinstance(event, UserUttered):
+             # This means that user utterance didn't have a user message, only intent,
+             # so we can skip the NLU part and take the parse data directly.
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/core/tracker_store.py#L606'>rasa/core/tracker_store.py~L606</a></p>
+<pre><code class="language-diff">         for new_event in tracker.events:
+             # Event subclasses implement `__eq__` method that make it difficult
+             # to compare events. We use `as_dict` to compare events.
+-            if all(
+-                [
+-                    new_event.as_dict() != existing_event.as_dict()
+-                    for existing_event in merged.events
+-                ]
+-            ):
++            if all([
++                new_event.as_dict() != existing_event.as_dict()
++                for existing_event in merged.events
++            ]):
+                 merged.update(new_event)
+ 
+         return merged
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/engine/recipes/default_recipe.py#L339'>rasa/engine/recipes/default_recipe.py~L339</a></p>
+<pre><code class="language-diff">                     cli_parameters,
+                 )
+ 
+-            if component.types.intersection(
+-                {
+-                    self.ComponentType.MESSAGE_TOKENIZER,
+-                    self.ComponentType.MESSAGE_FEATURIZER,
+-                }
+-            ):
++            if component.types.intersection({
++                self.ComponentType.MESSAGE_TOKENIZER,
++                self.ComponentType.MESSAGE_FEATURIZER,
++            }):
+                 last_run_node = self._add_nlu_process_node(
+                     train_nodes,
+                     component.clazz,
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/engine/recipes/default_recipe.py#L731'>rasa/engine/recipes/default_recipe.py~L731</a></p>
+<pre><code class="language-diff">                     config=config,
+                 )
+ 
+-            if component.types.intersection(
+-                {
+-                    self.ComponentType.MESSAGE_TOKENIZER,
+-                    self.ComponentType.MESSAGE_FEATURIZER,
+-                }
+-            ):
++            if component.types.intersection({
++                self.ComponentType.MESSAGE_TOKENIZER,
++                self.ComponentType.MESSAGE_FEATURIZER,
++            }):
+                 last_run_node = self._add_nlu_predict_node_from_train(
+                     predict_nodes,
+                     component_name,
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/engine/recipes/default_recipe.py#L745'>rasa/engine/recipes/default_recipe.py~L745</a></p>
+<pre><code class="language-diff">                     config,
+                     from_resource=component.is_trainable,
+                 )
+-            elif component.types.intersection(
+-                {
+-                    self.ComponentType.INTENT_CLASSIFIER,
+-                    self.ComponentType.ENTITY_EXTRACTOR,
+-                }
+-            ):
++            elif component.types.intersection({
++                self.ComponentType.INTENT_CLASSIFIER,
++                self.ComponentType.ENTITY_EXTRACTOR,
++            }):
+                 if component.is_trainable:
+                     last_run_node = self._add_nlu_predict_node_from_train(
+                         predict_nodes,
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/engine/validation.py#L510'>rasa/engine/validation.py~L510</a></p>
+<pre><code class="language-diff">         for component_type, node_names in unmet_requirements_for_target.items():
+             unmet_requirements.setdefault(component_type, set()).update(node_names)
+     if unmet_requirements:
+-        errors = &quot;\n&quot;.join(
+-            [
+-                f&quot;The following components require a {component_type.__name__}: &quot;
+-                f&quot;{', '.join(sorted(required_by))}. &quot;
+-                for component_type, required_by in unmet_requirements.items()
+-            ]
+-        )
++        errors = &quot;\n&quot;.join([
++            f&quot;The following components require a {component_type.__name__}: &quot;
++            f&quot;{', '.join(sorted(required_by))}. &quot;
++            for component_type, required_by in unmet_requirements.items()
++        ])
+         num_nodes = len(
+             set(
+                 node_name
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/graph_components/validators/default_recipe_validator.py#L156'>rasa/graph_components/validators/default_recipe_validator.py~L156</a></p>
+<pre><code class="language-diff">                 docs=DOCS_URL_COMPONENTS,
+             )
+ 
+-        if training_data.entity_examples and self._component_types.isdisjoint(
+-            {DIETClassifier, CRFEntityExtractor}
+-        ):
++        if training_data.entity_examples and self._component_types.isdisjoint({
++            DIETClassifier,
++            CRFEntityExtractor,
++        }):
+             if training_data.entity_roles_groups_used():
+                 rasa.shared.utils.io.raise_warning(
+                     f&quot;You have defined training data with entities that &quot;
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/graph_components/validators/default_recipe_validator.py#L172'>rasa/graph_components/validators/default_recipe_validator.py~L172</a></p>
+<pre><code class="language-diff">                     docs=DOCS_URL_COMPONENTS,
+                 )
+ 
+-        if training_data.regex_features and self._component_types.isdisjoint(
+-            [RegexFeaturizer, RegexEntityExtractor]
+-        ):
++        if training_data.regex_features and self._component_types.isdisjoint([
++            RegexFeaturizer,
++            RegexEntityExtractor,
++        ]):
+             rasa.shared.utils.io.raise_warning(
+                 f&quot;You have defined training data with regexes, but &quot;
+                 f&quot;your NLU configuration does not include a 'RegexFeaturizer' &quot;
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/graph_components/validators/default_recipe_validator.py#L186'>rasa/graph_components/validators/default_recipe_validator.py~L186</a></p>
+<pre><code class="language-diff">                 docs=DOCS_URL_COMPONENTS,
+             )
+ 
+-        if training_data.lookup_tables and self._component_types.isdisjoint(
+-            [RegexFeaturizer, RegexEntityExtractor]
+-        ):
++        if training_data.lookup_tables and self._component_types.isdisjoint([
++            RegexFeaturizer,
++            RegexEntityExtractor,
++        ]):
+             rasa.shared.utils.io.raise_warning(
+                 f&quot;You have defined training data consisting of lookup tables, but &quot;
+                 f&quot;your NLU configuration does not include a featurizer &quot;
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/graph_components/validators/default_recipe_validator.py#L362'>rasa/graph_components/validators/default_recipe_validator.py~L362</a></p>
+<pre><code class="language-diff">             and not node_name.startswith(&quot;e2e&quot;)
+         ]
+ 
+-        Featurizer.raise_if_featurizer_configs_are_not_compatible(
+-            [schema_node.config for schema_node in featurizers]
+-        )
++        Featurizer.raise_if_featurizer_configs_are_not_compatible([
++            schema_node.config for schema_node in featurizers
++        ])
+ 
+     def _validate_core(self, story_graph: StoryGraph, domain: Domain) -&gt; None:
+         &quot;&quot;&quot;Validates whether the configuration matches the training data.
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/nlu/classifiers/diet_classifier.py#L1463'>rasa/nlu/classifiers/diet_classifier.py~L1463</a></p>
+<pre><code class="language-diff"> 
+             # disable input dropout applied to sparse and dense label features
+             label_config = self.config.copy()
+-            label_config.update(
+-                {SPARSE_INPUT_DROPOUT: False, DENSE_INPUT_DROPOUT: False}
+-            )
++            label_config.update({
++                SPARSE_INPUT_DROPOUT: False,
++                DENSE_INPUT_DROPOUT: False,
++            })
+ 
+             self._tf_layers[
+                 f&quot;feature_combining_layer.{self.label_name}&quot;
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/nlu/featurizers/dense_featurizer/lm_featurizer.py#L543'>rasa/nlu/featurizers/dense_featurizer/lm_featurizer.py~L543</a></p>
+<pre><code class="language-diff">         for index, embedding in enumerate(sequence_embeddings):
+             embedding_size = embedding.shape[-1]
+             if actual_sequence_lengths[index] &gt; self.max_model_sequence_length:
+-                embedding = np.concatenate(
+-                    [
+-                        embedding,
+-                        np.zeros(
+-                            (
+-                                actual_sequence_lengths[index]
+-                                - self.max_model_sequence_length,
+-                                embedding_size,
+-                            ),
+-                            dtype=np.float32,
++                embedding = np.concatenate([
++                    embedding,
++                    np.zeros(
++                        (
++                            actual_sequence_lengths[index]
++                            - self.max_model_sequence_length,
++                            embedding_size,
+                         ),
+-                    ]
+-                )
++                        dtype=np.float32,
++                    ),
++                ])
+             reshaped_sequence_embeddings.append(embedding)
+         return ragged_array_to_ndarray(reshaped_sequence_embeddings)
+ 
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/nlu/featurizers/sparse_featurizer/count_vectors_featurizer.py#L437'>rasa/nlu/featurizers/sparse_featurizer/count_vectors_featurizer.py~L437</a></p>
+<pre><code class="language-diff">         # To train a shared vocabulary, we use TEXT as the
+         # attribute for which a combined vocabulary is built.
+         if not self.finetune_mode:
+-            self.vectorizers = self._create_shared_vocab_vectorizers(
+-                {
+-                    &quot;strip_accents&quot;: self.strip_accents,
+-                    &quot;lowercase&quot;: self.lowercase,
+-                    &quot;stop_words&quot;: self.stop_words,
+-                    &quot;min_ngram&quot;: self.min_ngram,
+-                    &quot;max_ngram&quot;: self.max_ngram,
+-                    &quot;max_df&quot;: self.max_df,
+-                    &quot;min_df&quot;: self.min_df,
+-                    &quot;max_features&quot;: self.max_features,
+-                    &quot;analyzer&quot;: self.analyzer,
+-                }
+-            )
++            self.vectorizers = self._create_shared_vocab_vectorizers({
++                &quot;strip_accents&quot;: self.strip_accents,
++                &quot;lowercase&quot;: self.lowercase,
++                &quot;stop_words&quot;: self.stop_words,
++                &quot;min_ngram&quot;: self.min_ngram,
++                &quot;max_ngram&quot;: self.max_ngram,
++                &quot;max_df&quot;: self.max_df,
++                &quot;min_df&quot;: self.min_df,
++                &quot;max_features&quot;: self.max_features,
++                &quot;analyzer&quot;: self.analyzer,
++            })
+             self._fit_vectorizer_from_scratch(TEXT, combined_cleaned_texts)
+         else:
+             self._fit_loaded_vectorizer(TEXT, combined_cleaned_texts)
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/nlu/featurizers/sparse_featurizer/count_vectors_featurizer.py#L460'>rasa/nlu/featurizers/sparse_featurizer/count_vectors_featurizer.py~L460</a></p>
+<pre><code class="language-diff">     ) -&gt; None:
+         &quot;&quot;&quot;Constructs the vectorizers and train them with an independent vocab.&quot;&quot;&quot;
+         if not self.finetune_mode:
+-            self.vectorizers = self._create_independent_vocab_vectorizers(
+-                {
+-                    &quot;strip_accents&quot;: self.strip_accents,
+-                    &quot;lowercase&quot;: self.lowercase,
+-                    &quot;stop_words&quot;: self.stop_words,
+-                    &quot;min_ngram&quot;: self.min_ngram,
+-                    &quot;max_ngram&quot;: self.max_ngram,
+-                    &quot;max_df&quot;: self.max_df,
+-                    &quot;min_df&quot;: self.min_df,
+-                    &quot;max_features&quot;: self.max_features,
+-                    &quot;analyzer&quot;: self.analyzer,
+-                }
+-            )
++            self.vectorizers = self._create_independent_vocab_vectorizers({
++                &quot;strip_accents&quot;: self.strip_accents,
++                &quot;lowercase&quot;: self.lowercase,
++                &quot;stop_words&quot;: self.stop_words,
++                &quot;min_ngram&quot;: self.min_ngram,
++                &quot;max_ngram&quot;: self.max_ngram,
++                &quot;max_df&quot;: self.max_df,
++                &quot;min_df&quot;: self.min_df,
++                &quot;max_features&quot;: self.max_features,
++                &quot;analyzer&quot;: self.analyzer,
++            })
+         for attribute in self._attributes:
+             if self._attribute_texts_is_non_empty(attribute_texts[attribute]):
+                 if not self.finetune_mode:
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/nlu/featurizers/sparse_featurizer/lexical_syntactic_featurizer.py#L199'>rasa/nlu/featurizers/sparse_featurizer/lexical_syntactic_featurizer.py~L199</a></p>
+<pre><code class="language-diff">             `self.config` should be checked
+         &quot;&quot;&quot;
+         self._feature_to_idx_dict = feature_to_idx_dict
+-        self._number_of_features = sum(
+-            [
+-                len(feature_values.values())
+-                for feature_values in self._feature_to_idx_dict.values()
+-            ]
+-        )
++        self._number_of_features = sum([
++            len(feature_values.values())
++            for feature_values in self._feature_to_idx_dict.values()
++        ])
+         if check_consistency_with_config:
+             known_features = set(self._feature_to_idx_dict.keys())
+             not_in_config = known_features.difference(
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/nlu/test.py#L1116'>rasa/nlu/test.py~L1116</a></p>
+<pre><code class="language-diff">     from rasa.nlu.extractors.crf_entity_extractor import CRFEntityExtractor
+     from rasa.nlu.classifiers.diet_classifier import DIETClassifier
+ 
+-    return not extractors.isdisjoint(
+-        {CRFEntityExtractor.__name__, DIETClassifier.__name__}
+-    )
++    return not extractors.isdisjoint({
++        CRFEntityExtractor.__name__,
++        DIETClassifier.__name__,
++    })
+ 
+ 
+ def align_entity_predictions(
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/server.py#L691'>rasa/server.py~L691</a></p>
+<pre><code class="language-diff">     @app.get(&quot;/version&quot;)
+     async def version(request: Request) -&gt; HTTPResponse:
+         &quot;&quot;&quot;Respond with the version number of the installed Rasa.&quot;&quot;&quot;
+-        return response.json(
+-            {
+-                &quot;version&quot;: rasa.__version__,
+-                &quot;minimum_compatible_version&quot;: MINIMUM_COMPATIBLE_VERSION,
+-            }
+-        )
++        return response.json({
++            &quot;version&quot;: rasa.__version__,
++            &quot;minimum_compatible_version&quot;: MINIMUM_COMPATIBLE_VERSION,
++        })
+ 
+     @app.get(&quot;/status&quot;)
+     @requires_auth(app, auth_token)
+     @ensure_loaded_agent(app)
+     async def status(request: Request) -&gt; HTTPResponse:
+         &quot;&quot;&quot;Respond with the model name and the fingerprint of that model.&quot;&quot;&quot;
+-        return response.json(
+-            {
+-                &quot;model_file&quot;: app.ctx.agent.processor.model_filename,
+-                &quot;model_id&quot;: app.ctx.agent.model_id,
+-                &quot;num_active_training_jobs&quot;: app.ctx.active_training_processes.value,
+-            }
+-        )
++        return response.json({
++            &quot;model_file&quot;: app.ctx.agent.processor.model_filename,
++            &quot;model_id&quot;: app.ctx.agent.model_id,
++            &quot;num_active_training_jobs&quot;: app.ctx.active_training_processes.value,
++        })
+ 
+     @app.get(&quot;/conversations/&lt;conversation_id:path&gt;/tracker&quot;)
+     @requires_auth(app, auth_token)
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/shared/core/events.py#L151'>rasa/shared/core/events.py~L151</a></p>
+<pre><code class="language-diff"> 
+     message_from_md = entities_parser.parse_training_example(text, intent)
+     deserialised_entities = deserialise_entities(entities)
+-    return TrainingDataWriter.generate_message(
+-        {&quot;text&quot;: message_from_md.get(TEXT), &quot;entities&quot;: deserialised_entities}
+-    )
++    return TrainingDataWriter.generate_message({
++        &quot;text&quot;: message_from_md.get(TEXT),
++        &quot;entities&quot;: deserialised_entities,
++    })
+ 
+ 
+ def split_events(
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/shared/core/events.py#L583'>rasa/shared/core/events.py~L583</a></p>
+<pre><code class="language-diff"> 
+     def as_dict(self) -&gt; Dict[Text, Any]:
+         _dict = super().as_dict()
+-        _dict.update(
+-            {
+-                &quot;text&quot;: self.text,
+-                &quot;parse_data&quot;: self.parse_data,
+-                &quot;input_channel&quot;: getattr(self, &quot;input_channel&quot;, None),
+-                &quot;message_id&quot;: getattr(self, &quot;message_id&quot;, None),
+-                &quot;metadata&quot;: self.metadata,
+-            }
+-        )
++        _dict.update({
++            &quot;text&quot;: self.text,
++            &quot;parse_data&quot;: self.parse_data,
++            &quot;input_channel&quot;: getattr(self, &quot;input_channel&quot;, None),
++            &quot;message_id&quot;: getattr(self, &quot;message_id&quot;, None),
++            &quot;metadata&quot;: self.metadata,
++        })
+         return _dict
+ 
+     def as_sub_state(self) -&gt; Dict[Text, Union[None, Text, List[Optional[Text]]]]:
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/shared/core/events.py#L1165'>rasa/shared/core/events.py~L1165</a></p>
+<pre><code class="language-diff"> 
+     def __hash__(self) -&gt; int:
+         &quot;&quot;&quot;Returns unique hash for event.&quot;&quot;&quot;
+-        return hash(
+-            (
+-                self.intent,
+-                self.entities,
+-                self.trigger_date_time.isoformat(),
+-                self.kill_on_user_message,
+-                self.name,
+-            )
+-        )
++        return hash((
++            self.intent,
++            self.entities,
++            self.trigger_date_time.isoformat(),
++            self.kill_on_user_message,
++            self.name,
++        ))
+ 
+     def __eq__(self, other: Any) -&gt; bool:
+         &quot;&quot;&quot;Compares object with other object.&quot;&quot;&quot;
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/shared/core/events.py#L1327'>rasa/shared/core/events.py~L1327</a></p>
+<pre><code class="language-diff"> 
+     def as_story_string(self) -&gt; Text:
+         &quot;&quot;&quot;Returns text representation of event.&quot;&quot;&quot;
+-        props = json.dumps(
+-            {&quot;name&quot;: self.name, &quot;intent&quot;: self.intent, &quot;entities&quot;: self.entities}
+-        )
++        props = json.dumps({
++            &quot;name&quot;: self.name,
++            &quot;intent&quot;: self.intent,
++            &quot;entities&quot;: self.entities,
++        })
+         return f&quot;{self.type_name}{props}&quot;
+ 
+     @classmethod
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/shared/core/events.py#L1639'>rasa/shared/core/events.py~L1639</a></p>
+<pre><code class="language-diff">     def as_dict(self) -&gt; Dict[Text, Any]:
+         &quot;&quot;&quot;Returns serialized event.&quot;&quot;&quot;
+         d = super().as_dict()
+-        d.update(
+-            {
+-                &quot;name&quot;: self.action_name,
+-                &quot;policy&quot;: self.policy,
+-                &quot;confidence&quot;: self.confidence,
+-                &quot;action_text&quot;: self.action_text,
+-                &quot;hide_rule_turn&quot;: self.hide_rule_turn,
+-            }
+-        )
++        d.update({
++            &quot;name&quot;: self.action_name,
++            &quot;policy&quot;: self.policy,
++            &quot;confidence&quot;: self.confidence,
++            &quot;action_text&quot;: self.action_text,
++            &quot;hide_rule_turn&quot;: self.hide_rule_turn,
++        })
+         return d
+ 
+     def as_sub_state(self) -&gt; Dict[Text, Text]:
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/shared/core/events.py#L1994'>rasa/shared/core/events.py~L1994</a></p>
+<pre><code class="language-diff">     def as_dict(self) -&gt; Dict[Text, Any]:
+         &quot;&quot;&quot;Returns serialized event.&quot;&quot;&quot;
+         d = super().as_dict()
+-        d.update(
+-            {
+-                &quot;name&quot;: self.action_name,
+-                &quot;policy&quot;: self.policy,
+-                &quot;confidence&quot;: self.confidence,
+-            }
+-        )
++        d.update({
++            &quot;name&quot;: self.action_name,
++            &quot;policy&quot;: self.policy,
++            &quot;confidence&quot;: self.confidence,
++        })
+         return d
+ 
+     def apply_to(self, tracker: &quot;DialogueStateTracker&quot;) -&gt; None:
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/shared/core/generator.py#L598'>rasa/shared/core/generator.py~L598</a></p>
+<pre><code class="language-diff">         &quot;&quot;&quot;Add unused end checkpoints
+         if they were never encountered as start checkpoints.
+         &quot;&quot;&quot;
+-        return unused_checkpoints.union(
+-            {
+-                start_name
+-                for start_name in start_checkpoints
+-                if start_name not in used_checkpoints
+-            }
+-        )
++        return unused_checkpoints.union({
++            start_name
++            for start_name in start_checkpoints
++            if start_name not in used_checkpoints
++        })
+ 
+     @staticmethod
+     def _filter_active_trackers(
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/shared/core/training_data/story_reader/yaml_story_reader.py#L751'>rasa/shared/core/training_data/story_reader/yaml_story_reader.py~L751</a></p>
+<pre><code class="language-diff">                 entity_values = [entity_values]
+ 
+             for entity_value in entity_values:
+-                entities.append(
+-                    {
+-                        ENTITY_ATTRIBUTE_TYPE: entity_type,
+-                        ENTITY_ATTRIBUTE_VALUE: entity_value,
+-                        ENTITY_ATTRIBUTE_START: match.start(ENTITIES),
+-                        ENTITY_ATTRIBUTE_END: match.end(ENTITIES),
+-                        **default_properties,
+-                    }
+-                )
++                entities.append({
++                    ENTITY_ATTRIBUTE_TYPE: entity_type,
++                    ENTITY_ATTRIBUTE_VALUE: entity_value,
++                    ENTITY_ATTRIBUTE_START: match.start(ENTITIES),
++                    ENTITY_ATTRIBUTE_END: match.end(ENTITIES),
++                    **default_properties,
++                })
+         return entities
+ 
+     @staticmethod
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/shared/core/training_data/story_writer/yaml_story_writer.py#L180'>rasa/shared/core/training_data/story_writer/yaml_story_writer.py~L180</a></p>
+<pre><code class="language-diff">             `True` if the `stories` contain at least one active loop.
+             `False` otherwise.
+         &quot;&quot;&quot;
+-        return any(
+-            [
+-                [event for event in story_step.events if isinstance(event, ActiveLoop)]
+-                for story_step in stories
+-            ]
+-        )
++        return any([
++            [event for event in story_step.events if isinstance(event, ActiveLoop)]
++            for story_step in stories
++        ])
+ 
+     @staticmethod
+     def process_user_utterance(
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/shared/core/training_data/story_writer/yaml_story_writer.py#L225'>rasa/shared/core/training_data/story_writer/yaml_story_writer.py~L225</a></p>
+<pre><code class="language-diff">                                     )
+                                 )
+                                 if commented_entity:
+-                                    entity_map = CommentedMap(
+-                                        [(entity[&quot;entity&quot;], entity[&quot;value&quot;])]
+-                                    )
++                                    entity_map = CommentedMap([
++                                        (entity[&quot;entity&quot;], entity[&quot;value&quot;])
++                                    ])
+                                     entity_map.yaml_add_eol_comment(
+                                         commented_entity, entity[&quot;entity&quot;]
+                                     )
+                                     entities.append(entity_map)
+                                 else:
+                                     entities.append(
+-                                        OrderedDict(
+-                                            [(entity[&quot;entity&quot;], entity[&quot;value&quot;])]
+-                                        )
++                                        OrderedDict([
++                                            (entity[&quot;entity&quot;], entity[&quot;value&quot;])
++                                        ])
+                                     )
+                     else:
+                         entities.append(
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/shared/core/training_data/story_writer/yaml_story_writer.py#L327'>rasa/shared/core/training_data/story_writer/yaml_story_writer.py~L327</a></p>
+<pre><code class="language-diff">         for checkpoint in checkpoints:
+             if checkpoint.name == STORY_START:
+                 continue
+-            next_checkpoint: OrderedDict[Text, Any] = OrderedDict(
+-                [(KEY_CHECKPOINT, checkpoint.name)]
+-            )
++            next_checkpoint: OrderedDict[Text, Any] = OrderedDict([
++                (KEY_CHECKPOINT, checkpoint.name)
++            ])
+             if checkpoint.conditions:
+                 next_checkpoint[KEY_CHECKPOINT_SLOTS] = [
+                     {key: value} for key, value in checkpoint.conditions.items()
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/shared/core/training_data/story_writer/yaml_story_writer.py#L346'>rasa/shared/core/training_data/story_writer/yaml_story_writer.py~L346</a></p>
+<pre><code class="language-diff">         Returns:
+             Dict with converted user utterances.
+         &quot;&quot;&quot;
+-        return OrderedDict(
+-            [
+-                (
+-                    KEY_OR,
+-                    [
+-                        self.process_user_utterance(utterance, self._is_test_story)
+-                        for utterance in utterances
+-                    ],
+-                )
+-            ]
+-        )
++        return OrderedDict([
++            (
++                KEY_OR,
++                [
++                    self.process_user_utterance(utterance, self._is_test_story)
++                    for utterance in utterances
++                ],
++            )
++        ])
+ 
+     @staticmethod
+     def process_active_loop(event: ActiveLoop) -&gt; OrderedDict:
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/shared/importers/importer.py#L413'>rasa/shared/importers/importer.py~L413</a></p>
+<pre><code class="language-diff">             retrieval_intents
+         )
+ 
+-        return Domain.from_dict(
+-            {
+-                KEY_INTENTS: retrieval_intent_properties,
+-                KEY_RESPONSES: responses,
+-                KEY_ACTIONS: action_names,
+-            }
+-        )
++        return Domain.from_dict({
++            KEY_INTENTS: retrieval_intent_properties,
++            KEY_RESPONSES: responses,
++            KEY_ACTIONS: action_names,
++        })
+ 
+     def get_stories(self, exclusion_percentage: Optional[int] = None) -&gt; StoryGraph:
+         &quot;&quot;&quot;Retrieves training stories / rules (see parent class for full docstring).&quot;&quot;&quot;
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/shared/importers/importer.py#L481'>rasa/shared/importers/importer.py~L481</a></p>
+<pre><code class="language-diff"> 
+         additional_e2e_action_names = set()
+         for story_step in stories.story_steps:
+-            additional_e2e_action_names.update(
+-                {
+-                    event.action_text
+-                    for event in story_step.events
+-                    if isinstance(event, ActionExecuted) and event.action_text
+-                }
+-            )
++            additional_e2e_action_names.update({
++                event.action_text
++                for event in story_step.events
++                if isinstance(event, ActionExecuted) and event.action_text
++            })
+ 
+         return Domain.from_dict({KEY_E2E_ACTIONS: list(additional_e2e_action_names)})
+ 
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/shared/nlu/training_data/formats/readerwriter.py#L179'>rasa/shared/nlu/training_data/formats/readerwriter.py~L179</a></p>
+<pre><code class="language-diff">         if use_short_syntax:
+             return f&quot;({entity_type})&quot;
+         else:
+-            entity_dict = OrderedDict(
+-                [
+-                    (ENTITY_ATTRIBUTE_TYPE, entity_type),
+-                    (ENTITY_ATTRIBUTE_ROLE, entity_role),
+-                    (ENTITY_ATTRIBUTE_GROUP, entity_group),
+-                    (ENTITY_ATTRIBUTE_VALUE, entity_value),
+-                ]
+-            )
+-            entity_dict = OrderedDict(
+-                [(k, v) for k, v in entity_dict.items() if v is not None]
+-            )
++            entity_dict = OrderedDict([
++                (ENTITY_ATTRIBUTE_TYPE, entity_type),
++                (ENTITY_ATTRIBUTE_ROLE, entity_role),
++                (ENTITY_ATTRIBUTE_GROUP, entity_group),
++                (ENTITY_ATTRIBUTE_VALUE, entity_value),
++            ])
++            entity_dict = OrderedDict([
++                (k, v) for k, v in entity_dict.items() if v is not None
++            ])
+ 
+             return f&quot;{json.dumps(entity_dict)}&quot;
+ 
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/shared/nlu/training_data/formats/readerwriter.py#L212'>rasa/shared/nlu/training_data/formats/readerwriter.py~L212</a></p>
+<pre><code class="language-diff">             ]
+             return (
+                 f&quot;[{entity_text}][&quot;
+-                + &quot;, &quot;.join(
+-                    [
+-                        TrainingDataWriter.generate_entity_attributes(
+-                            text=entity_text, entity=e, short_allowed=False
+-                        )
+-                        for e in entity
+-                    ]
+-                )
++                + &quot;, &quot;.join([
++                    TrainingDataWriter.generate_entity_attributes(
++                        text=entity_text, entity=e, short_allowed=False
++                    )
++                    for e in entity
++                ])
+                 + &quot;]&quot;
+             )
+         else:
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/utils/tensorflow/model_data.py#L540'>rasa/utils/tensorflow/model_data.py~L540</a></p>
+<pre><code class="language-diff"> 
+             if features.number_of_dimensions == 4:
+                 lengths = FeatureArray(
+-                    ragged_array_to_ndarray(
+-                        [
+-                            # add one more dim so that dialogue dim
+-                            # would be a sequence
+-                            np.array([[[x.shape[0]]] for x in _features])
+-                            for _features in features
+-                        ]
+-                    ),
++                    ragged_array_to_ndarray([
++                        # add one more dim so that dialogue dim
++                        # would be a sequence
++                        np.array([[[x.shape[0]]] for x in _features])
++                        for _features in features
++                    ]),
+                     number_of_dimensions=4,
+                 )
+             else:
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/rasa/utils/tensorflow/model_data_utils.py#L234'>rasa/utils/tensorflow/model_data_utils.py~L234</a></p>
+<pre><code class="language-diff">         The default features
+     &quot;&quot;&quot;
+     example_features = next(
+-        iter(
+-            [
+-                list_of_features
+-                for list_of_list_of_features in all_features
+-                for list_of_features in list_of_list_of_features
+-                if list_of_features is not None
+-            ]
+-        )
++        iter([
++            list_of_features
++            for list_of_list_of_features in all_features
++            for list_of_features in list_of_list_of_features
++            if list_of_features is not None
++        ])
+     )
+ 
+     # create fake_features for Nones
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/tests/core/featurizers/test_single_state_featurizers.py#L138'>tests/core/featurizers/test_single_state_featurizers.py~L138</a></p>
+<pre><code class="language-diff">     encoded_actions = f.encode_all_labels(domain, precomputations=precomputations)
+ 
+     assert len(encoded_actions) == len(domain.action_names_or_texts)
+-    assert all(
+-        [
+-            ACTION_NAME in encoded_action and ACTION_TEXT not in encoded_action
+-            for encoded_action in encoded_actions
+-        ]
+-    )
++    assert all([
++        ACTION_NAME in encoded_action and ACTION_TEXT not in encoded_action
++        for encoded_action in encoded_actions
++    ])
+ 
+ 
+ #
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/tests/core/featurizers/test_single_state_featurizers.py#L327'>tests/core/featurizers/test_single_state_featurizers.py~L327</a></p>
+<pre><code class="language-diff">     # (only `encode_entities` does that).
+     units = 300
+     precomputations = MessageContainerForCoreFeaturization()
+-    precomputations.add_all(
+-        [
+-            Message(
+-                data={TEXT: text, TOKENS_NAMES[TEXT]: tokens},
+-                features=[
+-                    dummy_features(
+-                        fill_value=11,
+-                        units=units,
+-                        attribute=TEXT,
+-                        type=SENTENCE,
+-                        is_sparse=True,
+-                    ),
+-                    dummy_features(
+-                        fill_value=12,
+-                        units=units,
+-                        attribute=TEXT,
+-                        type=SEQUENCE,
+-                        is_sparse=False,
+-                    ),
+-                    # Note: sparse sequence feature is last here
+-                    dummy_features(
+-                        fill_value=13,
+-                        units=units,
+-                        attribute=TEXT,
+-                        type=SEQUENCE,
+-                        is_sparse=True,
+-                    ),
+-                ],
+-            ),
+-            Message(data={INTENT: intent}),
+-            Message(
+-                data={ACTION_TEXT: action_text},
+-                features=[
+-                    dummy_features(
+-                        fill_value=1,
+-                        units=units,
+-                        attribute=ACTION_TEXT,
+-                        type=SEQUENCE,
+-                        is_sparse=True,
+-                    )
+-                ],
+-            ),
+-        ]
+-    )
++    precomputations.add_all([
++        Message(
++            data={TEXT: text, TOKENS_NAMES[TEXT]: tokens},
++            features=[
++                dummy_features(
++                    fill_value=11,
++                    units=units,
++                    attribute=TEXT,
++                    type=SENTENCE,
++                    is_sparse=True,
++                ),
++                dummy_features(
++                    fill_value=12,
++                    units=units,
++                    attribute=TEXT,
++                    type=SEQUENCE,
++                    is_sparse=False,
++                ),
++                # Note: sparse sequence feature is last here
++                dummy_features(
++                    fill_value=13,
++                    units=units,
++                    attribute=TEXT,
++                    type=SEQUENCE,
++                    is_sparse=True,
++                ),
++            ],
++        ),
++        Message(data={INTENT: intent}),
++        Message(
++            data={ACTION_TEXT: action_text},
++            features=[
++                dummy_features(
++                    fill_value=1,
++                    units=units,
++                    attribute=ACTION_TEXT,
++                    type=SEQUENCE,
++                    is_sparse=True,
++                )
++            ],
++        ),
++    ])
+     if action_name is not None:
+         precomputations.add(Message(data={ACTION_NAME: action_name}))
+ 
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/tests/core/policies/test_ted_policy.py#L273'>tests/core/policies/test_ted_policy.py~L273</a></p>
+<pre><code class="language-diff"> 
+         # check that ranking length is applied - without normalization
+         if trained_policy.config[RANKING_LENGTH] == 0:
+-            assert sum(
+-                [confidence for confidence in prediction.probabilities]
+-            ) == pytest.approx(1)
++            assert sum([
++                confidence for confidence in prediction.probabilities
++            ]) == pytest.approx(1)
+             assert all(confidence &gt; 0 for confidence in prediction.probabilities)
+         else:
+             assert (
+                 sum([confidence &gt; 0 for confidence in prediction.probabilities])
+                 == trained_policy.config[RANKING_LENGTH]
+             )
+-            assert sum(
+-                [confidence for confidence in prediction.probabilities]
+-            ) != pytest.approx(1)
++            assert sum([
++                confidence for confidence in prediction.probabilities
++            ]) != pytest.approx(1)
+ 
+     def test_label_data_assembly(
+         self, trained_policy: TEDPolicy, default_domain: Domain
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/tests/core/policies/test_ted_policy.py#L373'>tests/core/policies/test_ted_policy.py~L373</a></p>
+<pre><code class="language-diff">             and batch_action_name_mask.shape[0] == batch_size
+         )
+         # some features might be &quot;fake&quot; so there sequence is `0`
+-        seq_len = max(
+-            [
+-                batch_intent_sentence_shape[1],
+-                batch_action_name_sentence_shape[1],
+-                batch_entities_sentence_shape[1],
+-                batch_slots_sentence_shape[1],
+-            ]
+-        )
++        seq_len = max([
++            batch_intent_sentence_shape[1],
++            batch_action_name_sentence_shape[1],
++            batch_entities_sentence_shape[1],
++            batch_slots_sentence_shape[1],
++        ])
+         assert (
+             batch_intent_sentence_shape[1] == seq_len
+             or batch_intent_sentence_shape[1] == 0
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/tests/core/policies/test_ted_policy.py#L432'>tests/core/policies/test_ted_policy.py~L432</a></p>
+<pre><code class="language-diff">             and batch_dialogue_length.shape[0] == batch_size
+         )
+         # some features might be &quot;fake&quot; so there sequence is `0`
+-        seq_len = max(
+-            [
+-                batch_intent_sentence_shape[1],
+-                batch_action_name_sentence_shape[1],
+-                batch_entities_sentence_shape[1],
+-                batch_slots_sentence_shape[1],
+-            ]
+-        )
++        seq_len = max([
++            batch_intent_sentence_shape[1],
++            batch_action_name_sentence_shape[1],
++            batch_entities_sentence_shape[1],
++            batch_slots_sentence_shape[1],
++        ])
+         assert (
+             batch_intent_sentence_shape[1] == seq_len
+             or batch_intent_sentence_shape[1] == 0
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/tests/core/policies/test_unexpected_intent_policy.py#L181'>tests/core/policies/test_unexpected_intent_policy.py~L181</a></p>
+<pre><code class="language-diff">     def test_similarities_collection_for_label_ids(self):
+         label_ids = np.array([[0, 1], [1, -1], [2, -1]])
+         outputs = {
+-            &quot;similarities&quot;: np.array(
+-                [[[1.2, 0.3, 0.2]], [[0.5, 0.2, 1.6]], [[0.01, 0.1, 1.7]]]
+-            )
++            &quot;similarities&quot;: np.array([
++                [[1.2, 0.3, 0.2]],
++                [[0.5, 0.2, 1.6]],
++                [[0.01, 0.1, 1.7]],
++            ])
+         }
+         label_id_similarities = UnexpecTEDIntentPolicy._collect_label_id_grouped_scores(
+             outputs, label_ids
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/tests/core/policies/test_unexpected_intent_policy.py#L801'>tests/core/policies/test_unexpected_intent_policy.py~L801</a></p>
+<pre><code class="language-diff">         # `-1` is used as padding label id. The embedding for it
+         # will be the same as `label_id=0`
+         expected_extracted_label_embeddings = tf.constant(
+-            np.concatenate(
+-                [
+-                    all_label_embeddings[2],
+-                    all_label_embeddings[0],
+-                    all_label_embeddings[1],
+-                    all_label_embeddings[2],
+-                    all_label_embeddings[0],
+-                    all_label_embeddings[0],
+-                ]
+-            ).reshape((3, 2, 20)),
++            np.concatenate([
++                all_label_embeddings[2],
++                all_label_embeddings[0],
++                all_label_embeddings[1],
++                all_label_embeddings[2],
++                all_label_embeddings[0],
++                all_label_embeddings[0],
++            ]).reshape((3, 2, 20)),
+             dtype=tf.float32,
+         )
+ 
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/tests/core/test_actions.py#L347'>tests/core/test_actions.py~L347</a></p>
+<pre><code class="language-diff">         ],
+     }
+ 
+-    nlg = TemplatedNaturalLanguageGenerator(
+-        {&quot;utter_ask_cuisine&quot;: [{&quot;text&quot;: &quot;what dou want to eat?&quot;}]}
+-    )
++    nlg = TemplatedNaturalLanguageGenerator({
++        &quot;utter_ask_cuisine&quot;: [{&quot;text&quot;: &quot;what dou want to eat?&quot;}]
++    })
+     with aioresponses() as mocked:
+         mocked.post(&quot;https://example.com/webhooks/actions&quot;, payload=response)
+ 
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/tests/core/test_actions.py#L1375'>tests/core/test_actions.py~L1375</a></p>
+<pre><code class="language-diff">     form_name = &quot;test_form&quot;
+     entity_name = &quot;some_slot&quot;
+ 
+-    domain = Domain.from_dict(
+-        {
+-            &quot;intents&quot;: [&quot;greet&quot;],
+-            &quot;entities&quot;: [&quot;some_slot&quot;],
+-            &quot;slots&quot;: {entity_name: {&quot;type&quot;: &quot;text&quot;, &quot;mappings&quot;: [slot_mapping]}},
+-            &quot;forms&quot;: {form_name: {REQUIRED_SLOTS_KEY: [entity_name]}},
+-        }
+-    )
++    domain = Domain.from_dict({
++        &quot;intents&quot;: [&quot;greet&quot;],
++        &quot;entities&quot;: [&quot;some_slot&quot;],
++        &quot;slots&quot;: {entity_name: {&quot;type&quot;: &quot;text&quot;, &quot;mappings&quot;: [slot_mapping]}},
++        &quot;forms&quot;: {form_name: {REQUIRED_SLOTS_KEY: [entity_name]}},
++    })
+ 
+     tracker = DialogueStateTracker.from_events(
+         &quot;default&quot;,
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/tests/core/test_actions.py#L1493'>tests/core/test_actions.py~L1493</a></p>
+<pre><code class="language-diff">     form_name = &quot;some_form&quot;
+     entity_name = &quot;some_slot&quot;
+ 
+-    domain = Domain.from_dict(
+-        {
+-            &quot;slots&quot;: {entity_name: {&quot;type&quot;: &quot;text&quot;, &quot;mappings&quot;: [slot_mapping]}},
+-            &quot;forms&quot;: {form_name: {REQUIRED_SLOTS_KEY: [entity_name]}},
+-        }
+-    )
++    domain = Domain.from_dict({
++        &quot;slots&quot;: {entity_name: {&quot;type&quot;: &quot;text&quot;, &quot;mappings&quot;: [slot_mapping]}},
++        &quot;forms&quot;: {form_name: {REQUIRED_SLOTS_KEY: [entity_name]}},
++    })
+ 
+     tracker = DialogueStateTracker.from_events(
+         &quot;default&quot;,
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/tests/core/test_actions.py#L1773'>tests/core/test_actions.py~L1773</a></p>
+<pre><code class="language-diff">         intent=mapping_intent,
+         not_intent=mapping_not_intent,
+     )
+-    domain = Domain.from_dict(
+-        {
+-            &quot;entities&quot;: [&quot;some_entity&quot;],
+-            &quot;slots&quot;: {&quot;some_slot&quot;: {&quot;type&quot;: &quot;any&quot;, &quot;mappings&quot;: [mapping]}},
+-            &quot;forms&quot;: {form_name: {REQUIRED_SLOTS_KEY: [&quot;some_slot&quot;]}},
+-        }
+-    )
++    domain = Domain.from_dict({
++        &quot;entities&quot;: [&quot;some_entity&quot;],
++        &quot;slots&quot;: {&quot;some_slot&quot;: {&quot;type&quot;: &quot;any&quot;, &quot;mappings&quot;: [mapping]}},
++        &quot;forms&quot;: {form_name: {REQUIRED_SLOTS_KEY: [&quot;some_slot&quot;]}},
++    })
+ 
+     tracker = DialogueStateTracker.from_events(
+         &quot;default&quot;,
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/tests/core/test_actions.py#L1897'>tests/core/test_actions.py~L1897</a></p>
+<pre><code class="language-diff">     entity_name = &quot;some_slot&quot;
+     slot_filled_by_trigger_mapping = &quot;other_slot&quot;
+ 
+-    domain = Domain.from_dict(
+-        {
+-            &quot;slots&quot;: {
+-                entity_name: {
+-                    &quot;type&quot;: &quot;text&quot;,
+-                    &quot;mappings&quot;: [
+-                        {
+-                            &quot;type&quot;: &quot;from_entity&quot;,
+-                            &quot;entity&quot;: entity_name,
+-                            &quot;intent&quot;: &quot;some_intent&quot;,
+-                        }
+-                    ],
+-                },
+-                slot_filled_by_trigger_mapping: {
+-                    &quot;type&quot;: &quot;text&quot;,
+-                    &quot;mappings&quot;: [trigger_slot_mapping],
+-                },
++    domain = Domain.from_dict({
++        &quot;slots&quot;: {
++            entity_name: {
++                &quot;type&quot;: &quot;text&quot;,
++                &quot;mappings&quot;: [
++                    {
++                        &quot;type&quot;: &quot;from_entity&quot;,
++                        &quot;entity&quot;: entity_name,
++                        &quot;intent&quot;: &quot;some_intent&quot;,
++                    }
++                ],
+             },
+-            &quot;forms&quot;: {form_name: {REQUIRED_SLOTS_KEY: [entity_name]}},
+-        }
+-    )
++            slot_filled_by_trigger_mapping: {
++                &quot;type&quot;: &quot;text&quot;,
++                &quot;mappings&quot;: [trigger_slot_mapping],
++            },
++        },
++        &quot;forms&quot;: {form_name: {REQUIRED_SLOTS_KEY: [entity_name]}},
++    })
+ 
+     tracker = DialogueStateTracker.from_events(
+         &quot;default&quot;,
+</code></pre>
+<p>&lt;a href='https://github.com/RasaHQ/rasa/blob/444c197625f614fbf1d6c7bed5dfe8add8400e14/tests/core/test_actions...<em>[Comment body truncated]</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-29 04:10</div>
+            <div class="timeline-body"><p>Looking through the ecosystem changes is interesting. I feel like it's fine until you have something like this</p>
+<pre><code class="language-diff">                                     )
+                                 )
+                                 if commented_entity:
+-                                    entity_map = CommentedMap(
+-                                        [(entity[&quot;entity&quot;], entity[&quot;value&quot;])]
+-                                    )
++                                    entity_map = CommentedMap([(
++                                        entity[&quot;entity&quot;],
++                                        entity[&quot;value&quot;],
++                                    )])
+                                     entity_map.yaml_add_eol_comment(
+                                         commented_entity, entity[&quot;entity&quot;]
+                                     )
+                                     entities.append(entity_map)
+                                 else:
+                                     entities.append(
+-                                        OrderedDict(
+-                                            [(entity[&quot;entity&quot;], entity[&quot;value&quot;])]
+-                                        )
++                                        OrderedDict([(
++                                            entity[&quot;entity&quot;],
++                                            entity[&quot;value&quot;],
++                                        )])
+                                     )
+                     else:
+                         entities.append(
+</code></pre>
+<p>I guess maybe I'm not into the recursive hugging, it makes it less clear what's going on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-29 04:13</div>
+            <div class="timeline-body"><blockquote>
+<p>I guess maybe I'm not into the recursive hugging, it makes it less clear what's going on.</p>
+</blockquote>
+<p>Yeah, the recursive hugging took me by surprise. I don't mind hugging the first list, but recursively feels a bit excessive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-29 04:14</div>
+            <div class="timeline-body"><p>What is &quot;the first list&quot;? Like, a list within a list, but no deeper?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-29 04:17</div>
+            <div class="timeline-body"><blockquote>
+<p>What is &quot;the first list&quot;? Like, a list within a list, but no deeper?</p>
+</blockquote>
+<p>Just the top-level list, similar to what Prettier does (yeah, I'm a prettier fan-boy)</p>
+<pre><code>foo([
+  [[1, 2, 3, aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]],
+])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-29 04:18</div>
+            <div class="timeline-body"><p>Yeah I agree. Perhaps we should take that feedback over to Black?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-29 04:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:137 on 2023-11-29 04:23</div>
+            <div class="timeline-body"><p>Yes, I believe this path isn't necessary since we don't want to hug when the expression has leading or trailing comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-29 04:23</div>
+            <div class="timeline-body"><p>Ok, I can back out the recursive cases for now (I only added for lists anyway).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-11-29 04:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-11-29 04:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-29 04:58</div>
+            <div class="timeline-body"><p>Trying to understand why Poetry's similarity index changed here. Ohh, it looks like we read the Black options from <code>pyproject.toml</code> in <code>format-dev</code>? So we <em>are</em> running with our <code>--preview</code> behavior. That makes more sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-29 17:08</div>
+            <div class="timeline-body"><p>@MichaReiser - Let me know if you'd like to review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-12-01 01:59</div>
+            <div class="timeline-body"><p>This seems a clear improvement to me. Let's keep the preview style issue open for now and let's document that we don't yet support Black's recursive collapsing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-12-01 02:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-01 02:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-01 02:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-01 02:12</div>
+            <div class="timeline-body"><p>Thanks @MichaReiser! I left the issue open, will defer to you if you choose to close.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2023-12-05 18:08</div>
+            <div class="timeline-body"><p>This looks fantastic, thank you! https://github.com/pypa/hatch/pull/1085</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:15 UTC
+    </footer>
+</body>
+</html>

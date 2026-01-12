@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmonize help commands' `--format` to `--output-format` with deprecation warnings - astral-sh/ruff #8203</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Harmonize help commands' <code>--format</code> to <code>--output-format</code> with deprecation warnings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8203">#8203</a>
+        opened by <a href="https://github.com/akx">@akx</a>
+        on 2023-10-25 06:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/akx">@akx</a> on 2023-10-25 06:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Since <code>--format</code> was changed to <code>--output-format</code> for <code>check</code>, it feels like it makes sense for the same to work for the auxiliary commands.</p>
+<p>This</p>
+<ul>
+<li>adds the same deprecation warning that used to be a thing in #7514 (and un-became a thing in #7984)</li>
+</ul>
+<p>Fixes #7990.</p>
+<h2>Test Plan</h2>
+<ul>
+<li><code>cargo run --bin=ruff -- rule --all --output-format=json</code> works</li>
+<li><code>cargo run --bin=ruff -- rule --format=json</code> works with warnings</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2023-10-25 06:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-25 06:32</div>
+            <div class="timeline-body"><p>Nice. I linked the related issue. Would it be possible to log a warning when using <code>--format</code> that mention that it is deprecated in favor of <code>--output-format</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @MichaReiser on 2023-10-25 06:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-10-25 06:42</div>
+            <div class="timeline-body"><p>Ah, I didn't even know that there was an issue about this 😁</p>
+<p>Sure, I can canonicalize it all to <code>output_format</code> and add warnings, but will it be weird that the help commands support a subset of the main <code>check</code> output formats with the same flag name?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-25 06:43</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-25 07:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Sure, I can canonicalize it all to <code>output_format</code> and add warnings, but will it be weird that the help commands support a subset of the main <code>check</code> output formats with the same flag name?</p>
+</blockquote>
+<p>I think that's fine, especially considering that it used to be the same before? @zanieb what's your take?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Support --output-format as alias for --format for help commands" to "Harmonize help commands' `--format` to `--output-format` with deprecation warnings" by @akx on 2023-10-25 07:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-10-25 07:34</div>
+            <div class="timeline-body"><p>@MichaReiser Done deal ✨</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-10-25 17:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> requested changes on 2023-10-25 18:07</div>
+            <div class="timeline-body"><p>I think this needs a bit more discussion before it goes out.</p>
+<p>I think it's okay for a subset of formats to be supported on the CLI, but it doesn't really make sense when using the environment variable. Like.. if you've set your output format in your environment to something not supported by another command it'll just fail?</p>
+<p>In combination with that concern, it seems problematic to add support for <code>RUFF_FORMAT</code> to commands to that did not previously have it as all use of those commands could start to fail.</p>
+<p>In general, I'm also not sure it makes sense to add support for deprecated options to new commands i.e. adding <code>--format</code> support to <code>ruff version</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-25 18:11</div>
+            <div class="timeline-body"><blockquote>
+<p>I think it's okay for a subset of formats to be supported on the CLI, but it doesn't really make sense when using the environment variable. Like.. if you've set your output format in your environment to something not supported by another command it'll just fail?</p>
+</blockquote>
+<p>Can you expand on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-25 18:19</div>
+            <div class="timeline-body"><p>Well we have the output formats supported by <code>ruff check</code>: text, json, json-lines, junit, grouped, github, gitlab, pylint, azure</p>
+<p>And then we have the output formats supported by &quot;help&quot; commands: text, json</p>
+<p>If we fail on unknown formats and use <code>RUFF_FORMAT</code>/<code>RUFF_OUTPUT_FORMAT</code> for both of these I believe this will break existing usage and be confusing for future users.</p>
+<pre><code>export RUFF_OUTPUT_FORMAT=github
+ruff check    # OK
+ruff version  # FAILS with invalid output format
+</code></pre>
+<p>I don't think the help formats should use the same variable at least, and maybe they shouldn't support environment variables at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-25 18:33</div>
+            <div class="timeline-body"><p>Hmm I see. How about leaving the <code>--format</code> and <code>--output-format</code> support for these commands (for consistency, for now -- we'd then deprecate <code>--format</code> for all of them at once), but omitting the environment variable support?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-10-26 08:38</div>
+            <div class="timeline-body"><p>@charliermarsh @zanieb Done: removed the envvars, removed <code>--format</code> from <code>version</code> (which hadn't had it in the first place).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @akx on 2023-10-26 08:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @akx on 2023-10-26 08:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_cli/src/lib.rs</code>:111 on 2023-10-26 15:40</div>
+            <div class="timeline-body"><p>I'd prefer the shorter...</p>
+<pre><code class="language-suggestion">        warn_user!(&quot;The `--format` argument is deprecated. Use `--output-format` instead.&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_cli/src/lib.rs</code>:110 on 2023-10-26 15:40</div>
+            <div class="timeline-body"><p>I guess this doesn't matter since clap will error if you provide both? but I'd expect the <code>output_format</code> to take precedence.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_cli/src/lib.rs</code>:179 on 2023-10-26 15:42</div>
+            <div class="timeline-body"><p>Perhaps <code>resolve_help_output_format</code> would be a better function name? No strong feelings though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2023-10-26 15:43</div>
+            <div class="timeline-body"><p>Thank you for making the changes! I have some minor comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/akx">@akx</a> reviewed on 2023-10-26 16:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/akx">@akx</a> on <code>crates/ruff_cli/src/lib.rs</code>:110 on 2023-10-26 16:45</div>
+            <div class="timeline-body"><p>It doesn't, really, but only one of these is an <code>Option</code> type so I don't see a way to do it the other way around :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-26 18:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_cli/src/lib.rs</code>:110 on 2023-10-26 18:06</div>
+            <div class="timeline-body"><p>👍 sounds good thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-28 03:27</div>
+            <div class="timeline-body"><p>Thank you as always @akx!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-10-28 03:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-28 03:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-10-29 13:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:14 UTC
+    </footer>
+</body>
+</html>

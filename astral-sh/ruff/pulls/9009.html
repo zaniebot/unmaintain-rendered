@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add visitor tests for strings, bytes, f-strings - astral-sh/ruff #9009</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add visitor tests for strings, bytes, f-strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9009">#9009</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-12-05 15:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-12-05 15:33</div>
+            <div class="timeline-body"><p>This PR adds tests for visitor implementation for string literals, bytes literals and f-strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2023-12-05 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-12-05 15:34</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #9009</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/9009?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #9025</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/9025?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This <a href="https://stacking.dev/?utm_source=stack-comment">stack of pull requests</a> is managed by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/9009?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-12-05 15:50</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/tests/preorder.rs</code>:309 on 2023-12-06 00:16</div>
+            <div class="timeline-body"><p>We can replace the implementations with:</p>
+<pre><code>
+impl RecordVisitor {
+    fn emit(&amp;mut self, text: &amp;dyn Debug) {
+        for _ in 0..self.depth {
+            self.output.push_str(&quot;  &quot;);
+        }
+
+        writeln!(self.output, &quot;- {text:?}&quot;).unwrap();
+    }
+}
+
+impl&lt;'a&gt; PreorderVisitor&lt;'a&gt; for RecordVisitor {
+    fn enter_node(&amp;mut self, node: AnyNodeRef&lt;'a&gt;) -&gt; TraversalSignal {
+        self.emit(&amp;node.kind());
+        self.depth += 1;
+
+        TraversalSignal::Traverse
+    }
+
+    fn leave_node(&amp;mut self, _node: AnyNodeRef&lt;'a&gt;) {
+        self.depth -= 1;
+    }
+
+    fn visit_bool_op(&amp;mut self, bool_op: &amp;BoolOp) {
+        self.emit(&amp;bool_op);
+    }
+
+    fn visit_operator(&amp;mut self, operator: &amp;Operator) {
+        self.emit(&amp;operator);
+    }
+
+    fn visit_unary_op(&amp;mut self, unary_op: &amp;UnaryOp) {
+        self.emit(&amp;unary_op);
+    }
+
+    fn visit_cmp_op(&amp;mut self, cmp_op: &amp;CmpOp) {
+        self.emit(&amp;cmp_op);
+    }
+}
+</code></pre>
+<p>Which fixes some other bugs because of missing overrides.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-12-06 00:17</div>
+            <div class="timeline-body"><p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/tests/preorder.rs</code>:309 on 2023-12-06 16:47</div>
+            <div class="timeline-body"><p>Oh yes. I'll fix this in a follow-up PR. Thanks for the suggestion!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-12-06 16:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2023-12-06 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-12-06 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-06 16:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:24 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't &quot;flatten&quot; nested if expressions when formatting - astral-sh/ruff #6996</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't &quot;flatten&quot; nested if expressions when formatting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6996">#6996</a>
+        opened by <a href="https://github.com/LaBatata101">@LaBatata101</a>
+        on 2023-08-29 21:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2023-08-29 21:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes #6939</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-08-29 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-08-30 04:02</div>
+            <div class="timeline-body"><p>LGTM -- added some additional tests and verified against Black.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-30 04:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-30 04:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-30 07:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@conditional_expression.py.snap</code>:146 on 2023-08-30 07:03</div>
+            <div class="timeline-body"><p>This seems to be a regression. But it seems to be correct when disabling the preview styles.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-30 07:12</div>
+            <div class="timeline-body"><p>This PR regresses formatting of</p>
+<pre><code class="language-python"># Reduce Model instances to their primary key values
+row_data = tuple(
+    d._get_pk_val()
+    if hasattr(d, &quot;_get_pk_val&quot;)
+    # Prevent &quot;unhashable type: list&quot; errors later on.
+    else tuple(d)
+    if isinstance(d, list)
+    else d
+    for d in row_data
+)
+if row_data and None not in row_data:
+    pass
+</code></pre>
+<p>Black collapses the second <code>else</code> as it seems because of the comment.</p>
+<pre><code class="language-python"># Reduce Model instances to their primary key values
+row_data = tuple(
+    d._get_pk_val() if hasattr(d, &quot;_get_pk_val&quot;)
+    # Prevent &quot;unhashable type: list&quot; errors later on.
+    else tuple(d) if isinstance(d, list) else d
+    for d in row_data
+)
+if row_data and None not in row_data:
+    pass
+</code></pre>
+<p>without the comment</p>
+<pre><code class="language-python"># Reduce Model instances to their primary key values
+row_data = tuple(
+    d._get_pk_val()
+    if hasattr(d, &quot;_get_pk_val&quot;)
+    else tuple(d)
+    if isinstance(d, list)
+    else d
+    for d in row_data
+)
+if row_data and None not in row_data:
+    pass
+</code></pre>
+<p>I prefer our formatting because there's a smaller difference between with/without comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-30 07:13</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-01 23:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:13 UTC
+    </footer>
+</body>
+</html>

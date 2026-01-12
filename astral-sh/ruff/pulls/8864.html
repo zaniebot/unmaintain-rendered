@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stop at the first resolved parent configuration - astral-sh/ruff #8864</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Stop at the first resolved parent configuration</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8864">#8864</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-11-28 04:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-28 04:02</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is a potential fix for https://github.com/astral-sh/ruff/issues/8858 but requires some more testing.
+I'm throwing this out here to get some feedback on whether this seems correct. The following is my reasoning, although I'm not very familiar with the code.</p>
+<p>The idea of visiting all ancestor paths is to find a configuration for the current directory (or given path).
+Visiting the ancestors is necessary if the configuration happens to be in a parent directory. For example when running ruff in a sub-directory of the project.</p>
+<p>This PR changes the implementation to stop at the first found configuration instead of visiting the entire project chain.
+One potential issue this could introduce is:</p>
+<pre><code>root:
+  - pyproject.toml (excludes subdir)
+  - subdir
+    - pyproject.toml
+      - sub-sub-dir
+        - some-python files 
+</code></pre>
+<p>Running ruff in <code>sub-sub-dir</code> would lint no files in the old version because the files are excluded by the root pyproject.toml.
+The new version lints the files in the sub-sub-dir because it finds the <code>subdir/pyproject.toml</code> as the closest pyproject.toml and it
+does not exclude the directoy.</p>
+<p>The new behavior seems more correct to me, but I might be overlooking something.</p>
+<p>Fixes #8858</p>
+<h2>Test Plan</h2>
+<p>Added regression test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-28 04:02</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #8864</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8864?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+</ul>
+</li>
+</ul>
+<p>This <a href="https://stacking.dev/?utm_source=stack-comment">stack of pull requests</a> is managed by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8864?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2023-11-28 04:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-28 04:02</div>
+            <div class="timeline-body"><p>This is a potential breaking change</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-11-28 04:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-28 04:15</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-11-28 06:04</div>
+            <div class="timeline-body"><p>This looks correct to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-11-29 04:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-11-29 04:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-29 04:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:22 UTC
+    </footer>
+</body>
+</html>

@@ -227,10 +227,151 @@ Thank you for contributing to Ruff/ty! To help us out with reviewing, please con
             <div class="timeline-body"><p>It's not just WSL, you can mount a vfat partition on normal Linux, put a repo on it and it'll all be 0755 no matter what, because vfat just makes up the permission bits. I don't know if WSL will even <em>let you</em> access non-NTFS partitions over drvfs?</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MusicalNinjaDad">@MusicalNinjaDad</a> on 2026-01-11 09:02</div>
+            <div class="timeline-body"><p>I hope it's OK to chime in here as the author of #10084 and someone with a lot of experience both using WSL and looking at potential solutions to this issue.</p>
+<p>@ntBre, you are correct - this <em>is</em> a breaking change and will cause false positives for a subset of users, where the status quo causes false negatives for a different subset of users. (I'll add a table summary to #10084 and copy it here too)</p>
+<p>@MichaReiser's original argumentation when discussing this was that false negatives are worse, as settings are mainly on a per-project basis - so it's hard to disable the rule only for some contributors.</p>
+<p>@K900 - this is definitely the easiest of &quot;solutions&quot; and I agree with you, and initially argued myself, that it has long been a strong recommendation by MS, that WSL users avoid using mounted windows partitions for performance reasons (see the note at the end of the description on #17584 for example timings)</p>
+<p>My personal opinion, FWIW, is that identifying default file permissions is the best: covers all use-cases, actually improves performance. (This is not what I first thought, when beginning to discuss and look at this issue; I actually agreed with the approach proposed in the PR when I first opened the issue).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MusicalNinjaDad">@MusicalNinjaDad</a> reviewed on 2026-01-11 09:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MusicalNinjaDad">@MusicalNinjaDad</a> on <code>crates/ruff_linter/src/rules/flake8_executable/rules/shebang_missing_executable_file.rs</code>:35 on 2026-01-11 09:09</div>
+            <div class="timeline-body"><p>To be absolutely clear: the underlying problem is purely a <strong>file-system issue</strong> and in <strong>no way inherent to WSL</strong>.</p>
+<p>The reason it comes up in relation to WSL is that this is the most common real-life scenario of a linux user storing their code on an FS without <em>nix permission bits *and</em> where the user doesn't understand the consequences. (A linux user storing code on an xFAT UBS stick is more likely to understand why they are getting this problem and simply ignore it - but see #12941)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/K900">@K900</a> on 2026-01-11 09:12</div>
+            <div class="timeline-body"><p>The problem I have with identifying file permissions is that to do that we need to:</p>
+<ul>
+<li>find a place to write a test file to (we can't always do that)</li>
+<li>be reasonably confident that the filesystem will behave the same way as the file we just wrote (drvfs doesn't)</li>
+</ul>
+<p>Edit: to be clear, #17584 does not in fact work for the &quot;WSL, source root on drvfs, cloned from Windows&quot; use case, because it will create a file with 644 permissions, drvfs will record that and give us back the correct permissions, but none of the other files will have the correct xattrs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MusicalNinjaDad">@MusicalNinjaDad</a> on 2026-01-11 09:21</div>
+            <div class="timeline-body"><p>Overview of currently proposed solutions:</p>
+<p>| | WSL user, WSL FS (#10084) | Linux user USB stick (#12941) | WSL user, Win FS (#3110, #5445) |
+| -- | -- | -- | -- |
+| Status Quo | :x: (false negatives) | :x: (false positives) | :x: (false negatives) |
+| #17548 | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| #21724 | :white_check_mark: | :x: (false positives) | :x: (false positives) |</p>
+<p>https://github.com/astral-sh/ruff/issues/10084#issuecomment-3734292000</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MusicalNinjaDad">@MusicalNinjaDad</a> on 2026-01-11 09:32</div>
+            <div class="timeline-body"><blockquote>
+<p>The problem I have with identifying file permissions is that to do that we need to:</p>
+<ul>
+<li>find a place to write a test file to (we can't always do that)</li>
+<li>be reasonably confident that the filesystem will behave the same way as the file we just wrote (drvfs doesn't)</li>
+</ul>
+</blockquote>
+<p>Did you take a look at the approach in the other PR?</p>
+<ol>
+<li>check if pryproject.toml is executable (if not, then we can guarantee that we have a settable executable-bit)</li>
+<li>touch a file in project_root (could fail if project root is read-only, although this is a more acceptable edge case than current status quo and only triggers on FS with no exe-bit)</li>
+</ol>
+<p>What specifically do you have in mind by cases where we can't write a test file?</p>
+<p>I've not tested drvfs, do you have a test setup to see whether #17584 fails in that case? My understanding is that it is only relevant for WSL1 (as you say, now dead) and the above test would disable the lints at step 1 anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/K900">@K900</a> on 2026-01-11 09:36</div>
+            <div class="timeline-body"><p>drvfs is still what WSL2 calls the 9p stuff internally, the case I'm imagining is: user clones repo from Windows, then runs ruff in WSL. What happens then is:</p>
+<ul>
+<li>pyproject.toml is executable, so we continue</li>
+<li>we touch a file in project root, which is 644 by default because umask, that's recorded in NTFS xattrs, reading back the permissions gives us 644</li>
+<li>all the other files are still marked executable because they have no xattrs</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MusicalNinjaDad">@MusicalNinjaDad</a> on 2026-01-11 09:45</div>
+            <div class="timeline-body"><blockquote>
+<p>drvfs is still what WSL2 calls the 9p stuff internally, the case I'm imagining is: user clones repo from Windows, then runs ruff in WSL. What happens then is:</p>
+<ul>
+<li>pyproject.toml is executable, so we continue</li>
+<li>we touch a file in project root, which is 644 by default because umask, that's recorded in NTFS xattrs, reading back the permissions gives us 644</li>
+<li>all the other files are still marked executable because they have no xattrs</li>
+</ul>
+</blockquote>
+<p>imagining or tested?</p>
+<p>I have tested exactly this setup both locally, and in CI (https://github.com/MusicalNinjaDad/forks-ruff/actions/runs/14663820841/job/41154168824) and in both cases the touched file is executable and the lints are disabled.</p>
+<p>If you have a specific setup which leads to the behaviour you describe then I'd be really interested to hear the config in place, both from general curiosity and to help with this case.</p>
+<p>(EDIT: just tested this manually, again, on WSL2 with <code>cd /mnt/c/Users.../Temp; touch foo; ls -al foo</code> and <code>foo</code> has <code>0777</code> permissions)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/K900">@K900</a> on 2026-01-11 09:52</div>
+            <div class="timeline-body"><p><img width="1860" height="303" alt="image" src="https://github.com/user-attachments/assets/0672d31d-50cf-4aca-948e-77978a60b5d3" /></p>
+<p>On my end, the file touched from WSL is 0644.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/K900">@K900</a> on 2026-01-11 10:00</div>
+            <div class="timeline-body"><p>Also here's a run with ruff from your branch (and a few dbg's sprinkled in):</p>
+<pre><code>d/test/chinatsu-master
+❯ ~/ruff/target/debug/ruff check --no-cache --select EXE
+[crates/ruff_linter/src/rules/flake8_executable/helpers.rs:29:9] is_executable(&amp;settings.project_root.join(&quot;pyproject.toml&quot;)) = Ok(
+    true,
+)
+[crates/ruff_linter/src/rules/flake8_executable/helpers.rs:33:37] is_executable(tmpfile.path()) = Ok(
+    false,
+)
+chinatsu/__init__.py:1:1: EXE002 The file is executable but no shebang is present
+(etc)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/K900">@K900</a> on 2026-01-11 10:01</div>
+            <div class="timeline-body"><pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/flake8_executable/helpers.rs b/crates/ruff_linter/src/rules/flake8_executable/helpers.rs
+index 717c805721..47e1e7352d 100644
+--- a/crates/ruff_linter/src/rules/flake8_executable/helpers.rs
++++ b/crates/ruff_linter/src/rules/flake8_executable/helpers.rs
+@@ -26,11 +26,11 @@ static EXECUTABLE_BY_DEFAULT: OnceLock&lt;bool&gt; = OnceLock::new();
+ #[cfg(target_family = &quot;unix&quot;)]
+ pub(super) fn executable_by_default(settings: &amp;LinterSettings) -&gt; bool {
+     *EXECUTABLE_BY_DEFAULT.get_or_init(|| {
+-        is_executable(&amp;settings.project_root.join(&quot;pyproject.toml&quot;)).unwrap_or(true)
++        dbg!(is_executable(&amp;settings.project_root.join(&quot;pyproject.toml&quot;))).unwrap_or(true)
+             // if pyproject.toml is executable or doesn't exist, run a slower check too:
+             &amp;&amp; NamedTempFile::new_in(&amp;settings.project_root)
+                 .map_err(std::convert::Into::into)
+-                .and_then(|tmpfile| is_executable(tmpfile.path()))
++                .and_then(|tmpfile| dbg!(is_executable(tmpfile.path())))
+                 .unwrap_or(false) // Assume a normal filesystem in case of read-only, IOError, ...
+     })
+ }
+</code></pre>
+<p>(for posterity)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MusicalNinjaDad">@MusicalNinjaDad</a> on 2026-01-11 10:09</div>
+            <div class="timeline-body"><p>Thanks for the confirmation.</p>
+<p>Did you adjust your <code>[automount]</code> settings in <code>wsl.conf</code> to enable metadata and set a specific umask? Or are you running with default config and getting these results?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/K900">@K900</a> on 2026-01-11 10:10</div>
+            <div class="timeline-body"><p>I have <code>options=metadata,uid=1000,gid=100</code>, the uid/gid stuff is just NixOS weirdness for historical reasons.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-10 16:42:35 UTC
+        Synced at 2026-01-12 02:13:32 UTC
     </footer>
 </body>
 </html>

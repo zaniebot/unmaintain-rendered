@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pylint`] Implement `non-ascii-name` (`C2401`) - astral-sh/ruff #6633</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pylint</code>] Implement <code>non-ascii-name</code> (<code>C2401</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6633">#6633</a>
+        opened by <a href="https://github.com/LaBatata101">@LaBatata101</a>
+        on 2023-08-16 22:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2023-08-16 22:18</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Checks for the use of non-ASCII unicode character in identifiers.</p>
+<p>Some non-ASCII unicode characters looks identical to ASCII characters, that may cause confusion and hard to catch bugs in your code.</p>
+<p>For example, the uppercase version of the Latin <code>b</code>, Greek <code>β</code> (Beta), and Cyrillic <code>в</code> (Ve) often look identical: <code>B</code>, <code>Β</code> and <code>В</code>, respectively.</p>
+<p>This allows identifiers to look the same for you, but not for Python. For example, the following identifiers are all distinct:</p>
+<ul>
+<li><code>scope</code> (Latin, ASCII-only)</li>
+<li><code>scоpe</code> (with a Cyrillic <code>о</code>)</li>
+<li><code>scοpe</code> (with a Greek <code>ο</code>)</li>
+</ul>
+<p>Reference: <a href="https://peps.python.org/pep-0672/#confusing-features">PEP-0672</a></p>
+<p>ref: #970</p>
+<h2>Test Plan</h2>
+<p>Snapshots and manual runs of <code>pylint</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-16 22:46</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      3.9±0.19ms    10.5 MB/sec    1.18      4.6±0.15ms     8.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00   810.2±40.38µs    20.6 MB/sec    1.17   945.3±90.47µs    17.6 MB/sec
+formatter/numpy/globals.py                 1.00     86.7±3.52µs    34.0 MB/sec    1.00     87.0±8.08µs    33.9 MB/sec
+formatter/pydantic/types.py                1.00  1598.0±84.34µs    16.0 MB/sec    1.08  1733.2±130.14µs    14.7 MB/sec
+linter/all-rules/large/dataset.py          1.00     11.5±0.37ms     3.5 MB/sec    1.03     11.8±0.60ms     3.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.1±0.12ms     5.5 MB/sec    1.05      3.2±0.11ms     5.2 MB/sec
+linter/all-rules/numpy/globals.py          1.03   448.8±19.00µs     6.6 MB/sec    1.00   437.1±22.61µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.9±0.22ms     4.3 MB/sec    1.07      6.4±0.23ms     4.0 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.1±0.20ms     6.7 MB/sec    1.06      6.4±0.30ms     6.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1344.0±80.21µs    12.4 MB/sec    1.09  1461.5±46.85µs    11.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    156.3±9.29µs    18.9 MB/sec    1.11    173.5±5.02µs    17.0 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.7±0.12ms     9.4 MB/sec    1.09      3.0±0.05ms     8.6 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      5.1±0.29ms     8.1 MB/sec    1.05      5.3±0.29ms     7.7 MB/sec
+formatter/numpy/ctypeslib.py               1.00   988.5±58.69µs    16.8 MB/sec    1.07  1056.0±65.02µs    15.8 MB/sec
+formatter/numpy/globals.py                 1.00    102.1±5.38µs    28.9 MB/sec    1.03    105.6±5.66µs    27.9 MB/sec
+formatter/pydantic/types.py                1.00      2.0±0.11ms    12.5 MB/sec    1.02      2.1±0.10ms    12.2 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.6±0.43ms     2.6 MB/sec    1.02     15.9±0.65ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.3±0.17ms     3.9 MB/sec    1.01      4.3±0.17ms     3.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00   538.7±28.15µs     5.5 MB/sec    1.04   559.5±27.40µs     5.3 MB/sec
+linter/all-rules/pydantic/types.py         1.01      8.2±0.30ms     3.1 MB/sec    1.00      8.2±0.30ms     3.1 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.7±0.24ms     4.7 MB/sec    1.01      8.8±0.30ms     4.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1814.3±61.18µs     9.2 MB/sec    1.03  1860.1±77.65µs     9.0 MB/sec
+linter/default-rules/numpy/globals.py      1.01   221.7±19.78µs    13.3 MB/sec    1.00   219.3±16.86µs    13.5 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.9±0.23ms     6.5 MB/sec    1.00      3.9±0.13ms     6.6 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-17 03:22</div>
+            <div class="timeline-body"><p>Are we concerned about the overlap between this and <a href="https://beta.ruff.rs/docs/rules/ambiguous-unicode-character-string/"><code>RUF001</code></a>? cc @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2023-08-17 19:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Are we concerned about the overlap between this and <a href="https://beta.ruff.rs/docs/rules/ambiguous-unicode-character-string/"><code>RUF001</code></a>? cc @charliermarsh</p>
+</blockquote>
+<p>It doesn't seem to be an overlap between <code>C2401</code> and <code>RUF001</code>. <code>RUF001</code> only checks for ambiguous Unicode characters in strings and comments while <code>C2401</code> checks any <strong>non-ASCII</strong> character in <code>ClassDef</code>, <code>FunctionDef</code>, <code>Assign</code>, <code>AugAssign</code>, <code>AnnAssign</code> and <code>Global</code> statements.</p>
+<p>Running <code>RUF001</code> in <code>crates/ruff/resources/test/fixtures/pylint/non_ascii_name.py</code> doesn't yield any diagnostic reports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-17 19:32</div>
+            <div class="timeline-body"><p>Thanks for investigating!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-20 18:47</div>
+            <div class="timeline-body"><p>Ugh, I'm really sorry @LaBatata101, this got re-PR'd as https://github.com/astral-sh/ruff/pull/8038 and I just reviewed and merged that version. It's entirely my fault for (1) not reviewing this earlier, and then (2) missing that this PR was already up. I sincerely apologize.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-20 18:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-01 23:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:13 UTC
+    </footer>
+</body>
+</html>

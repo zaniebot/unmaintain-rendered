@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add hidden `--extension` to override inference of source type from file extension - astral-sh/ruff #8373</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add hidden <code>--extension</code> to override inference of source type from file extension</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8373">#8373</a>
+        opened by <a href="https://github.com/felix-cw">@felix-cw</a>
+        on 2023-10-31 10:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/felix-cw">@felix-cw</a> on 2023-10-31 10:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR addresses the incompatibility with <code>jupyterlab-lsp</code> + <code>python-lsp-ruff</code> arising from the inference of source type from file extension, raised in #6847.</p>
+<p>In particular it follows the suggestion in https://github.com/astral-sh/ruff/issues/6847#issuecomment-1765724679 to specify a mapping from file extension to source type.</p>
+<p>The source types are</p>
+<ul>
+<li>python</li>
+<li>pyi</li>
+<li>ipynb</li>
+</ul>
+<p>Usage:</p>
+<pre><code class="language-sh">ruff check --no-cache --stdin-filename Untitled.ipynb --extension ipynb:python
+</code></pre>
+<p>Unlike the original suggestion, <code>:</code> instead of <code>=</code> is used to associate file extensions to language since that is what is used with <code>--per-file-ignores</code> which is an existing option that accepts a mapping.</p>
+<h2>Test Plan</h2>
+<p>2 tests added to <code>integration_test.rs</code> to ensure the override works as expected</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-31 10:59</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2023-11-06 01:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/args.rs</code>:356 on 2023-11-06 01:05</div>
+            <div class="timeline-body"><p>I'm somewhat partial to calling this <code>extension</code> rather than <code>extension-override</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/commands/check.rs</code>:199 on 2023-11-06 01:06</div>
+            <div class="timeline-body"><p>I think this should probably be on <code>settings</code>, rather than a standalone argument. That would also allow users to set this in their settings file (<code>pyproject.toml</code>, etc.), which seems important.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-06 01:06</div>
+            <div class="timeline-body"><p>Thank you! I'm comfortable with this approach but can we try moving <code>extension</code> onto settings?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-11-06 03:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_cli/src/commands/check.rs</code>:199 on 2023-11-06 03:22</div>
+            <div class="timeline-body"><p>Do we want to allow that as it's currently a hidden CLI argument?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:205 on 2023-11-06 03:26</div>
+            <div class="timeline-body"><p>nit: we could probably use a struct instead with a hidden field to hide the implementation details and provide a method to resolve the extension to the language. That way we could, if we want, change it or extend it in the future. This is totally fine as well :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:192 on 2023-11-06 03:30</div>
+            <div class="timeline-body"><p>nit: we could probably implement <code>impl From&lt;Language&gt; for PySourceType</code> and use that here like <code>extension.get(ext).map(PySourceType::from)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/settings/types.rs</code>:316 on 2023-11-06 03:32</div>
+            <div class="timeline-body"><p>This is not a blocker but I don't think <code>Ipynb</code> is the correct term here as that's just an extension. Although I'm not sure what language name corresponds here. Pre-commit uses <code>jupyter</code> but we moved away from using that previously so I think this might be fine for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2023-11-06 03:33</div>
+            <div class="timeline-body"><p>Thanks for doing this! And sorry for the back and forth in the issue :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/felix-cw">@felix-cw</a> on <code>crates/ruff_cli/src/commands/check.rs</code>:199 on 2023-11-06 09:47</div>
+            <div class="timeline-body"><p>I went back and forth on this myself (see commit history!) but I thought if it was hidden it didn't make sense to be a setting, or possibly I couldn't see any examples of hidden settings so I didn't know how to make one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/felix-cw">@felix-cw</a> reviewed on 2023-11-06 09:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/felix-cw">@felix-cw</a> reviewed on 2023-11-06 09:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/felix-cw">@felix-cw</a> on <code>crates/ruff_linter/src/settings/types.rs</code>:316 on 2023-11-06 09:47</div>
+            <div class="timeline-body"><p>Could <code>Notebook</code> be the right word? Maybe it's not specific enough.  Equally, <code>Pyi</code> maybe should be <code>Stub</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/felix-cw">@felix-cw</a> reviewed on 2023-11-06 18:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/felix-cw">@felix-cw</a> on <code>crates/ruff_cli/src/args.rs</code>:356 on 2023-11-06 18:40</div>
+            <div class="timeline-body"><p>Would you prefer it changed everywhere or just here and <code>CheckArguments</code>?
+I used <code>extension_override</code> rather than <code>extension</code> just because it seemed more explicit to me.  Why do prefer <code>extension</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-11-07 02:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_cli/src/commands/check.rs</code>:199 on 2023-11-07 02:51</div>
+            <div class="timeline-body"><p>I think the <code>--line-length</code> is an example of a hidden CLI flag but can be configured via the <a href="https://docs.astral.sh/ruff/settings/#line-length">config file</a>:</p>
+<p>https://github.com/astral-sh/ruff/blob/2d5ce4532ade11710ff854516cd085b9ea629cf2/crates/ruff_cli/src/args.rs#L274-L276</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-11-07 02:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/settings/types.rs</code>:316 on 2023-11-07 02:55</div>
+            <div class="timeline-body"><p>I think all of these file types contain Python syntax, although a Notebook might have additional syntax as well, so the language used is Python technically :)</p>
+<p>It's fine to use the file extension as a fallback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-11-07 03:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:188 on 2023-11-07 03:47</div>
+            <div class="timeline-body"><p>Sorry for not noticing this in my first review 😓</p>
+<p>How will this work if the cell contained IPython escape commands (<code>!pwd</code>, <code>%matplotlib inline</code>)? The parser mode is tied up with <code>PySourceType</code>. This mode is then used to allow the escape commands.</p>
+<p>https://github.com/astral-sh/ruff/blob/2d5ce4532ade11710ff854516cd085b9ea629cf2/crates/ruff_python_parser/src/lib.rs#L325-L332</p>
+<p>Now, if the cell contained escape commands and the override flag tells that this is a Python language (<code>--extension-override ipynb:python</code>), then it'll throw a syntax error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/felix-cw">@felix-cw</a> reviewed on 2023-11-07 10:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/felix-cw">@felix-cw</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:188 on 2023-11-07 10:07</div>
+            <div class="timeline-body"><p><code>jupyterlab-lsp</code> can  replace notebook magics with equivalent python code in most cases, so in this use case these syntax errors are avoided (I think the code is <a href="https://github.com/jupyter-lsp/jupyterlab-lsp/blob/5a8686067bdeeb1f8ce5bc108d7fd047809b0f80/packages/jupyterlab-lsp/src/transclusions/ipython/overrides.ts#L58">here</a>).</p>
+<p>Any python code affected by magic ends up in a string so doesn't get checked, for example with magics like <code>%time</code> and <code>%%time</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/felix-cw">@felix-cw</a> reviewed on 2023-11-07 10:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/felix-cw">@felix-cw</a> on <code>crates/ruff_cli/src/commands/check.rs</code>:199 on 2023-11-07 10:12</div>
+            <div class="timeline-body"><p>Ah ok. <code>line_length</code> is still documented in <code>ruff_workspace</code>, so it's hidden in the CLI but visible in other documentation and in the schema.  Is that OK for this option?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/felix-cw">@felix-cw</a> reviewed on 2023-11-07 10:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/felix-cw">@felix-cw</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:205 on 2023-11-07 10:17</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/felix-cw">@felix-cw</a> reviewed on 2023-11-07 10:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/felix-cw">@felix-cw</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:192 on 2023-11-07 10:17</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-07 10:25</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/felix-cw">@felix-cw</a> reviewed on 2023-11-07 11:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/felix-cw">@felix-cw</a> on <code>crates/ruff_cli/src/args.rs</code>:356 on 2023-11-07 11:45</div>
+            <div class="timeline-body"><p>renamed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/felix-cw">@felix-cw</a> reviewed on 2023-11-07 11:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/felix-cw">@felix-cw</a> on <code>crates/ruff_cli/src/commands/check.rs</code>:199 on 2023-11-07 11:45</div>
+            <div class="timeline-body"><p>I moved it to settings</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-11-07 13:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:188 on 2023-11-07 13:13</div>
+            <div class="timeline-body"><p>Thanks for letting us know about that.</p>
+<p>Coming from a <em>public</em> API perspective, this might still be a problem as, for example, if someone's trying to use it in a similar manner with an integration that doesn't perform those transformations, we'd throw an error.</p>
+<p>I would love any other opinion on this. I'm fine with including the flag but if we include it in the config, then it's part of the public API which is where I'm unsure of.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/felix-cw">@felix-cw</a> reviewed on 2023-11-07 16:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/felix-cw">@felix-cw</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:188 on 2023-11-07 16:20</div>
+            <div class="timeline-body"><p>FWIW <code>jupyter nbconvert --to script</code> also seems to convert notebook magics to python in the same way. <a href="https://github.com/fastai/nbdev"><code>nbdev</code></a> has a routine callled <code>scrub_magics</code> which removes magics altogether, though it seems to be optional.</p>
+<p>The docs could make it clear that <code>python</code> means <code>python</code> without notebookisms. Maybe something like:</p>
+<blockquote>
+<p>Users who use this option to lint code extracted from notebooks as python should ensure that the code should be free of IPython magics, as these will cause a syntax error.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:191 on 2023-11-07 22:26</div>
+            <div class="timeline-body"><p>You can likely remove this now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-07 22:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-07 22:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:183 on 2023-11-07 22:27</div>
+            <div class="timeline-body"><p>I believe this can be reduced to:</p>
+<pre><code class="language-rust">fn override_source_type(path: Option&lt;&amp;Path&gt;, extension: &amp;ExtensionMapping) -&gt; Option&lt;PySourceType&gt; {
+    let ext = path?.extension()?.to_str()?;
+    extension.map_ext(ext).map(PySourceType::from)
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-07 22:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/settings/types.rs</code>:320 on 2023-11-07 22:28</div>
+            <div class="timeline-body"><p>Nit: use <code>anyhow::Result</code> instead here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-11-07 22:35</div>
+            <div class="timeline-body"><p>I pushed some nits, and I'll let @dhruvmanila approve and merge ultimately, but this looks good to me. I opted to remove the setting from <code>Options</code> for now, since @dhruvmanila is right that we only need to support it on the CLI -- but I do like that it's on <code>Settings</code> rather than a standalone argument, so I think that refactor was necessary anyway :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2023-11-07 22:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add hidden `--extension-override` to override inference of source type from file extension" to "Add hidden `--extension` to override inference of source type from file extension" by @dhruvmanila on 2023-11-08 02:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2023-11-08 02:32</div>
+            <div class="timeline-body"><p>Thanks @felix-cw for contributing and welcome to the repo!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2023-11-08 02:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-11-08 02:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:16 UTC
+    </footer>
+</body>
+</html>

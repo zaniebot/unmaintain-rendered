@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule: Auto-add `-&gt; None` typehint to functions - astral-sh/ruff #8212</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule: Auto-add <code>-&gt; None</code> typehint to functions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8212">#8212</a>
+        opened by <a href="https://github.com/intgr">@intgr</a>
+        on 2023-10-25 12:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/intgr">@intgr</a> on 2023-10-25 12:22</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p><strong>WIP:</strong> This is a very early partial draft still. No need to do serious review yet, but feel free to give me pointers.</p>
+<p>I want to create a new Ruff rule that auto-adds <code>-&gt; None</code> return type hint to functions when no <code>return &lt;value&gt;</code> statements are present in the function.</p>
+<p>Clearly there are lots of special cases I need to handle (<code>yield</code>, <code>raise</code>, <code>@overload</code>, <code>.pyi</code> files, etc).</p>
+<p>I currently used rule code <code>RUF300</code>, which is unprecedented. But I think it may make sense to allocate a specific RUF range for typehinting-related rules. I have a few more ideas similar to this one.</p>
+<ul>
+<li>Related issue: #8213</li>
+</ul>
+<h2>Test Plan</h2>
+<p>TBD.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Rule: Auto-add return None typehint to functions" to "Rule: Auto-add `-> None` typehint to functions" by @intgr on 2023-10-25 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/intgr">@intgr</a> on 2023-10-25 12:33</div>
+            <div class="timeline-body"><p>Also some relevant points here that I should consider:</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/issues/3704</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/diceroll123">@diceroll123</a> on 2023-10-25 17:11</div>
+            <div class="timeline-body"><p>Might need to special case <code>NoReturn</code>, not limited to the following:</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/1243957/5d2d785d-0488-4d9a-8361-41877b38997c" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-25 17:18</div>
+            <div class="timeline-body"><p>I haven't had a chance to review the code yet, but I think we could just treat this as a sometimes-available autofix for <a href="https://docs.astral.sh/ruff/rules/missing-return-type-undocumented-public-function/"><code>ANN201</code></a> and the other rules that check for return type annotations, rather than treating it as a separate rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/intgr">@intgr</a> on 2023-10-25 17:47</div>
+            <div class="timeline-body"><blockquote>
+<p>haven't had a chance to review the code yet</p>
+</blockquote>
+<p>Just be aware that it's very incomplete and broken right now.</p>
+<blockquote>
+<p>we could just treat this as a sometimes-available autofix for <a href="https://docs.astral.sh/ruff/rules/missing-return-type-undocumented-public-function/">ANN201</a> and the other rules that check for return type annotations, rather than treating it as a separate rule</p>
+</blockquote>
+<p>I see where you're coming from. My initial thoughts:</p>
+<ul>
+<li>I imagine that this rule doesn't just <em>add</em> a hint, but can <em>change</em> a hint that it determines is incorrect. But it remains to be seen if this can be done reliably (<a href="https://github.com/astral-sh/ruff/issues/3704">#3704</a> is a counterexample).</li>
+<li>If we add several ways to infer return types, some of them more reliable than others, then by grouping them under one rule, users lose the ability to pick which ones they want and which they don't. But perhaps the distinction between safe/unsafe edits is sufficient here.</li>
+</ul>
+<p>But I'm by no means committed to this approach.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-13 04:46</div>
+            <div class="timeline-body"><p>I ended up adding a similar fix for the ANN rules as a fun Sunday-night hack: https://github.com/astral-sh/ruff/pull/8643. It won't apply to functions that already have annotations as you mention, but the logic does extend to other primitive types and unions of those types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @intgr on 2023-11-14 07:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:14 UTC
+    </footer>
+</body>
+</html>

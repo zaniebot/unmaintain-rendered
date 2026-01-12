@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Include version number in release archive names - astral-sh/ruff #9002</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Include version number in release archive names</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/9002">#9002</a>
+        opened by <a href="https://github.com/tobbez">@tobbez</a>
+        on 2023-12-05 00:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/tobbez">@tobbez</a> on 2023-12-05 00:07</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Add a release's version number to the names of archives containing binaries that are attached to that GitHub release.</p>
+<p>This makes it possible for users to easily tell archives from different downloaded releases apart.</p>
+<p>See also: #8961</p>
+<h2>Test Plan</h2>
+<p>The workflow was tested in my fork. The example release can be found at: <a href="https://github.com/tobbez/ruff/releases/tag/v0.1.7">https://github.com/tobbez/ruff/releases/tag/v0.1.7</a>.</p>
+<p>To allow the workflow run to succeed in the fork while testing, I had to use a small commit to prevent interaction with external services (ghcr, PyPI, and the ruff-pre-commit repository):</p>
+<pre><code class="language-diff">diff --git a/.github/workflows/release.yaml b/.github/workflows/release.yaml
+index 86eac6ebc..56b9fa908 100644
+--- a/.github/workflows/release.yaml
++++ b/.github/workflows/release.yaml
+@@ -463,10 +463,12 @@ jobs:
+       id-token: write
+     steps:
+       - uses: actions/download-artifact@v3
++        if: false
+         with:
+           name: wheels
+           path: wheels
+       - name: Publish to PyPi
++        if: false
+         uses: pypa/gh-action-pypi-publish@release/v1
+         with:
+           skip-existing: true
+@@ -517,6 +519,7 @@ jobs:
+           tag_name: v${{ inputs.tag }}
+ 
+   docker-publish:
++    if: false
+     # This action doesn't need to wait on any other task, it's easy to re-tag if something failed and we're validating
+     # the tag here also
+     name: Push Docker image ghcr.io/astral-sh/ruff
+@@ -575,6 +578,7 @@ jobs:
+   # After the release has been published, we update downstream repositories
+   # This is separate because if this fails the release is still fine, we just need to do some manual workflow triggers
+   update-dependents:
++    if: false
+     name: Update dependents
+     runs-on: ubuntu-latest
+     needs: publish-release
+</code></pre>
+<p>Those workflow jobs are however not modified by this PR, so they should not be affected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-05 02:46</div>
+            <div class="timeline-body"><p>This looks reasonable to me and seems to match the scheme that @BurntSushi uses in ripgrep. I really appreciate that you went through the effort of <em>actually</em> testing this, and have included the example release link in the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">release</span> added by @charliermarsh on 2023-12-05 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-05 02:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>.github/workflows/release.yaml</code>:89 on 2023-12-05 02:47</div>
+            <div class="timeline-body"><p>Above, tag says <code>&quot;The version to tag, without the leading 'v'. If omitted, will initiate a dry run (no uploads).&quot;</code> Do you know if that's still true? Can it be omitted? And, if it is omitted, what happens here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-05 02:53</div>
+            <div class="timeline-body"><p>One note to consider here is whether there are any docs anywhere that walk someone through downloading and extracting a release archive. Those might need to be updated to reflect the name change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tobbez">@tobbez</a> reviewed on 2023-12-05 10:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tobbez">@tobbez</a> on <code>.github/workflows/release.yaml</code>:89 on 2023-12-05 10:13</div>
+            <div class="timeline-body"><p>It can still be omitted, in which case <code>${{ inputs.tag }}</code> expands to an empty string. That specific example would result in <code>ruff--x86_64-apple-darwin.tar.gz</code> in dry-run mode. You can see an example in <a href="https://github.com/tobbez/ruff/actions/runs/7093701040">this workflow run</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tobbez">@tobbez</a> on 2023-12-05 10:13</div>
+            <div class="timeline-body"><blockquote>
+<p>One note to consider here is whether there are any docs anywhere that walk someone through downloading and extracting a release archive. Those might need to be updated to reflect the name change.</p>
+</blockquote>
+<p>The <a href="https://github.com/astral-sh/ruff/blob/main/docs/installation.md">installation instructions</a> don't mention these archives at all, and a grep for <code>zip</code> and <code>tar.gz</code> in the repository found nothing relevant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>.github/workflows/release.yaml</code>:89 on 2023-12-05 19:42</div>
+            <div class="timeline-body"><p>It'd be nice to omit the second dash, but that's just a debugging workflow so not critical.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-12-05 19:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-12-05 19:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-05 19:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-05 19:42</div>
+            <div class="timeline-body"><p>Thanks @tobbez! Great PR.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:24 UTC
+    </footer>
+</body>
+</html>

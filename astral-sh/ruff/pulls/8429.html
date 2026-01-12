@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve detection of `TYPE_CHECKING` blocks imported from `typing_extensions` or `_typeshed` - astral-sh/ruff #8429</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve detection of <code>TYPE_CHECKING</code> blocks imported from <code>typing_extensions</code> or <code>_typeshed</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8429">#8429</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2023-11-02 01:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-02 01:32</div>
+            <div class="timeline-body"><p>~Improves detection of types imported from <code>typing_extensions</code>. Removes the hard-coded list of supported types in <code>typing_extensions</code>; instead assuming all types could be imported from <code>typing</code>, <code>_typeshed</code>, or <code>typing_extensions</code>.~</p>
+<p>~The typing extensions package appears to re-export types even if they do not need modification.~</p>
+<p>Adds detection of <code>if typing_extensions.TYPE_CHECKING</code> blocks. Avoids inserting a new <code>if TYPE_CHECKING</code> block and <code>from typing import TYPE_CHECKING</code> if <code>typing_extensions.TYPE_CHECKING</code> is used (closes https://github.com/astral-sh/ruff/issues/8427)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-02 01:33</div>
+            <div class="timeline-body"><p>I'd like to update some test fixtures</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-02 01:35</div>
+            <div class="timeline-body"><p>It looks like at https://github.com/astral-sh/ruff/blob/1e173f7909f9c78b38741cd510b65153dd408247/crates/ruff_linter/src/importer/mod.rs#L135-L139 we need to check if a <code>typing_extensions.TYPE_CHECKING</code> block is used before inserting the <code>typing.TYPE_CHECKING</code> block to actually solve the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-02 02:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/analyze/typing.rs</code>:319 on 2023-11-02 02:01</div>
+            <div class="timeline-body"><p>We may want to instead use <code>semantic.match_typing_call_path</code> which checks <code>typing_extensions</code>, but also <code>_typeshed</code> and any user-configured modules... Though I don't know if type checkers respect <code>TYPING_CHECKING</code> re-exports? I assume so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-02 02:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_python_semantic/src/analyze/typing.rs</code>:319 on 2023-11-02 02:03</div>
+            <div class="timeline-body"><p>That's a good idea I'll look into that too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-09 04:25</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-09 04:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:186 on 2023-11-09 04:40</div>
+            <div class="timeline-body"><p>I decided to remove this behavior in which we check if the member is part of <code>typing_extensions</code>. We could retain it... but that list may vary over time, so hard-coding it makes Ruff less future-proof.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-11-09 04:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-09 04:40</div>
+            <div class="timeline-body"><p>@zanieb - I decided to finish this one up -- feel free to review and merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-09 06:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:186 on 2023-11-09 06:19</div>
+            <div class="timeline-body"><p>Hm what's the effect of this then? Is it a breaking change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:180 on 2023-11-09 06:34</div>
+            <div class="timeline-body"><p>fyi using <code>matches!</code> really broke things because <code>target</code> here isn't what you wanted — it's capturing second item in the slice not using the provided <code>target</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-09 06:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-09 06:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:180 on 2023-11-09 06:35</div>
+            <div class="timeline-body"><p>fixed in https://github.com/astral-sh/ruff/pull/8429/commits/545bd30c7bdc50009cf931ad585884cdd2117535 — not sure how else to write it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add `typing_extensions.TYPE_CHECKING` to detection of type checking blocks" to "Improves detection of types imported from `typing_extensions`" by @zanieb on 2023-11-09 06:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2023-11-09 06:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-09 14:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:186 on 2023-11-09 14:29</div>
+            <div class="timeline-body"><p>It's not breaking, it's <em>more</em> lax (the net effect is that we consider all imports from <code>typing_extensions</code> to be treated equivalently to <code>typing</code>, rather than the allow-list that we encoded of specific members). But let's back it out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Improves detection of types imported from `typing_extensions`" to "Improve detection of `TYPE_CHECKING` blocks imported from `typing_extensions` or `_typeshed`" by @zanieb on 2023-11-09 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2023-11-09 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-11-09 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-09 18:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:16 UTC
+    </footer>
+</body>
+</html>

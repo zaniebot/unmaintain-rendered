@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split `Constant` to individual literal nodes - astral-sh/ruff #8064</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Split <code>Constant</code> to individual literal nodes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8064">#8064</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-10-19 13:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-10-19 13:48</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR splits the <code>Constant</code> enum as individual literal nodes. It introduces the following new nodes for each variant:</p>
+<ul>
+<li><code>ExprStringLiteral</code></li>
+<li><code>ExprBytesLiteral</code></li>
+<li><code>ExprNumberLiteral</code></li>
+<li><code>ExprBooleanLiteral</code></li>
+<li><code>ExprNoneLiteral</code></li>
+<li><code>ExprEllipsisLiteral</code></li>
+</ul>
+<p>The main motivation behind this refactor is to introduce the new AST node for implicit string concatenation in the coming PR. The elements of that node will be either a string literal, bytes literal or a f-string which can be implemented using an enum. This means that a string or bytes literal cannot be represented by <code>Constant::Str</code> / <code>Constant::Bytes</code> which creates an inconsistency.</p>
+<p>This PR avoids that inconsistency by splitting the constant nodes into it's own literal nodes, literal being the more appropriate naming convention from a static analysis tool perspective.</p>
+<p>This also makes working with literals in the linter and formatter much more ergonomic like, for example, if one would want to check if this is a string literal, it can be done easily using <code>Expr::is_string_literal_expr</code> or matching against <code>Expr::StringLiteral</code> as oppose to matching against the <code>ExprConstant</code> and enum <code>Constant</code>. A few AST helper methods can be simplified as well which will be done in a follow-up PR.</p>
+<p>This introduces a new <code>Expr::is_literal_expr</code> method which is the same as <code>Expr::is_constant_expr</code>. There are also intermediary changes related to implicit string concatenation which are quiet less. This is done so as to avoid having a huge PR which this already is.</p>
+<h2>Test Plan</h2>
+<ol>
+<li>Verify and update all of the existing snapshots (parser, visitor)</li>
+<li>Verify that the ecosystem check output remains <strong>unchanged</strong> for both the linter and formatter</li>
+</ol>
+<h3>Formatter ecosystem check</h3>
+<h4><code>main</code></h4>
+<p>| project        | similarity index  | total files       | changed files     |
+|----------------|------------------:|------------------:|------------------:|
+| cpython        |           0.75803 |              1799 |              1647 |
+| django         |           0.99983 |              2772 |                34 |
+| home-assistant |           0.99953 |             10596 |               186 |
+| poetry         |           0.99891 |               317 |                17 |
+| transformers   |           0.99966 |              2657 |               330 |
+| twine          |           1.00000 |                33 |                 0 |
+| typeshed       |           0.99978 |              3669 |                20 |
+| warehouse      |           0.99977 |               654 |                13 |
+| zulip          |           0.99970 |              1459 |                22 |</p>
+<h4><code>dhruv/constant-to-literal</code></h4>
+<p>| project        | similarity index  | total files       | changed files     |
+|----------------|------------------:|------------------:|------------------:|
+| cpython        |           0.75803 |              1799 |              1647 |
+| django         |           0.99983 |              2772 |                34 |
+| home-assistant |           0.99953 |             10596 |               186 |
+| poetry         |           0.99891 |               317 |                17 |
+| transformers   |           0.99966 |              2657 |               330 |
+| twine          |           1.00000 |                33 |                 0 |
+| typeshed       |           0.99978 |              3669 |                20 |
+| warehouse      |           0.99977 |               654 |                13 |
+| zulip          |           0.99970 |              1459 |                22 |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-10-19 13:48</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #8062</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8062?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #8063</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8063?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #8064</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8064?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #7927</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7927?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #8826</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8826?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #8828</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8828?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #8835</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8835?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #9016</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/9016?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This <a href="https://stacking.dev/?utm_source=stack-comment">stack of pull requests</a> is managed by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8064?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-19 20:00</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_simplify/rules/if_else_block_instead_of_dict_lookup.rs</code>:75 on 2023-10-20 10:03</div>
+            <div class="timeline-body"><p>Here's where a virtual enum could be useful for literal where we could cast the <code>expr</code>  to a literal expression (<code>expr.as_literal_expr</code>) which would return <code>Option&lt;T&gt;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pylint/rules/magic_value_comparison.rs</code>:61 on 2023-10-20 10:09</div>
+            <div class="timeline-body"><p>Another potential use for a virtual enum for literal expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pylint/settings.rs</code>:31 on 2023-10-20 10:11</div>
+            <div class="timeline-body"><p>The <code>Err</code> variant was never used and this won't be an error. On that note, I think this could be better as it's own method return <code>Option&lt;Self&gt;</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/expression/expr_bytes_literal.rs</code>:13 on 2023-10-20 10:25</div>
+            <div class="timeline-body"><p>Is this required for byte literals as well? I'm referring to the <code>layout</code> option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-10-20 10:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2023-10-20 10:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2023-10-20 10:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2023-10-20 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @dhruvmanila on 2023-10-20 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @dhruvmanila on 2023-10-20 10:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:1247 on 2023-10-23 01:33</div>
+            <div class="timeline-body"><p>Should we change this methods to instead accept the string literal, now that it is a dedicated node?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/doc_lines.rs</code>:73 on 2023-10-23 01:36</div>
+            <div class="timeline-body"><p>We should keep the <code>if let</code> binding here to ensure that <code>value</code> points to the <code>StringLiteral</code> because the statement and the literal have a different range in <code>(&quot;abcd&quot;)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/docstrings/extraction.rs</code>:14 on 2023-10-23 01:36</div>
+            <div class="timeline-body"><p>I wonder if this function should now return  a <code> StringLiteralExpression</code>.</p>
+<p>It would narrow the type and probably make <code>should_ignore_docstring</code> redundant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/redundant_literal_union.rs</code>:157 on 2023-10-23 01:45</div>
+            <div class="timeline-body"><p>This seems easy to miss when adding a new constant expression. This is where a <code>ConstantExprRef</code> could be handy with a <code>.as_constant</code> method on <code>Expr</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-10-23 08:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:643 on 2023-10-23 08:32</div>
+            <div class="timeline-body"><p>This is temporary and will be removed with the addition of the new node for implicit string concatenation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-10-23 08:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:631 on 2023-10-23 08:32</div>
+            <div class="timeline-body"><p>This is basically a replacement of the old <code>expr.is_constant_expr</code> method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:994 on 2023-10-23 08:37</div>
+            <div class="timeline-body"><p>Do we need to keep tracking the unicode flag in the AST? The only real usage i see is the pyupgrade rule that removes that prefix because it's redundant in python 3. It feels inconsistent since we don't track string flags in the AST otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/expression/expr_bytes_literal.rs</code>:13 on 2023-10-23 08:42</div>
+            <div class="timeline-body"><p>I checked that byte strings are not accepted as docstrings.</p>
+<p>CC @MichaReiser</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/expression/expr_ellipsis_literal.rs</code>:22 on 2023-10-23 08:44</div>
+            <div class="timeline-body"><p>We shouldn't need those, these constants can't have dangling comments, iirc that's only a thing for implicitly concatenated strings where comments can be placed like:</p>
+<pre><code class="language-python">a = (
+&quot;1&quot;
+# comment
+&quot;2&quot;
+) 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1184 on 2023-10-23 08:46</div>
+            <div class="timeline-body"><p>Those changes are a nice simplification!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-10-23 08:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:994 on 2023-10-23 14:31</div>
+            <div class="timeline-body"><p>Yeah, that's the <em>only</em> usage. I agree, we could easily get that information from the source code. I think I'll change it after the new AST node because otherwise we'll need to invoke the lexer for <code>&quot;foo&quot; u&quot;bar&quot;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-10-23 14:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-10-26 08:30</div>
+            <div class="timeline-body"><p>I haven't managed to get through all of it yet, but here a first few comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyflakes/rules/repeated_keys.rs</code>:152 on 2023-10-27 00:14</div>
+            <div class="timeline-body"><p>Not having a single union will make it more challenging to identify all places where a new literal type would need to be added. But that's probably fine, new literal types don't happen everyday.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/magic_value_comparison.rs</code>:61 on 2023-10-27 00:16</div>
+            <div class="timeline-body"><p>What's stopping you from adding one?</p>
+<p>I think it would also be nice to have a <code>Expr::as_literal_expr()</code> method for the situations where we want to handle all literal types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/magic_value_comparison.rs</code>:92 on 2023-10-27 00:18</div>
+            <div class="timeline-body"><p>I liked the exhaustive enum from before.  It's now no longer guaranteed at compile time that we handle all necessary branches.</p>
+<p>Regardless of using an exhaustive match. I would prefer explicit branches of literals that we need handling (<code>None</code>, <code>Bool</code>, and <code>ellipsis</code>)  rather than handling them in the catch all. It makes the code more explicit (helpful for readers) and gives you a place to retain the comment about ignoring <code>None</code>, <code>Bool</code>, and <code>Ellipsis</code> (would be nice if it would mention why :D)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/settings.rs</code>:31 on 2023-10-27 00:21</div>
+            <div class="timeline-body"><p>It's not uncommon for <code>new</code> or <code>from</code> methods to return <code>Option&lt;Self&gt;</code>. Do you want to change it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/native_literals.rs</code>:42 on 2023-10-27 00:24</div>
+            <div class="timeline-body"><p>We could implement <code>Default</code> for <code>ExprStringLiteral</code> so that we can simplify this to</p>
+<pre><code>ExprStringLiteral::default()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:425 on 2023-10-27 00:26</div>
+            <div class="timeline-body"><p>I don't have a good recommendation but there have been a few places where we want all literals + <code>FString</code>. It would be nice if <code>Expr</code> we could avoid listing all variants in multiple places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyupgrade/types.rs</code>:15 on 2023-10-27 00:28</div>
+            <div class="timeline-body"><p>It seems we have multiple enums that represent the literal type. Should we add a <code>LiteralKind</code> or <code>LiteralType</code> enum to <code>ruff_python_ast</code> and expose a <code>literal_type(): Option&lt;LiteralType&gt;</code> on Expr?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/implicit_cwd.rs</code>:69 on 2023-10-27 00:29</div>
+            <div class="timeline-body"><p><code>str.as_str()</code> is a bit confusing to read. Remove the <code>value: str</code> alias from the match?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/ruff/rules/invalid_index_type.rs</code>:152 on 2023-10-27 00:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/comparable.rs</code>:918 on 2023-10-27 00:37</div>
+            <div class="timeline-body"><p>Should we exclude <code>unicdode</code> to. Or does our parser not normalize <code>unicode</code> / <code>non-unicode</code> strings to the same <code>value</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:990 on 2023-10-27 00:41</div>
+            <div class="timeline-body"><p>We could implement <code>Eq</code> for all new nodes except <code>NumberLiteral</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:1088 on 2023-10-27 00:42</div>
+            <div class="timeline-body"><p>This is another place where we need the <code>unicode</code> flag. I think we should keep it in the AST to avoid that <code>unparse</code> needs to lex the soure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:1098 on 2023-10-27 00:43</div>
+            <div class="timeline-body"><p>Nit: This could be a <code>static</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_boolean_literal.rs</code>:25 on 2023-10-27 00:50</div>
+            <div class="timeline-body"><p>Nit: Add a debug assertion that <code>dangling_comments</code> is empty</p>
+<pre><code>debug_assert_eq(dangling_comments, &amp;[]);
+</code></pre>
+<p>Same for the other literal nodes that can't have dangling comments (all except String, Bytes?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_bytes_literal.rs</code>:13 on 2023-10-27 00:51</div>
+            <div class="timeline-body"><p>The easiest way to find out should be to remove the <code>FormatRuleWithOptions</code> implementation and test if it still compiles :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_number_literal.rs</code>:4 on 2023-10-27 00:52</div>
+            <div class="timeline-body"><p>Nit: Inline <code>FormatComplex</code>, <code>FormatFloat</code>, and <code>FormatInt</code> into this file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/number.rs</code>:14 on 2023-10-27 00:54</div>
+            <div class="timeline-body"><p>I wonder if it still makes sense to have these 3 structs or if we should just inline it into <code>FormatNumber</code> and use one big match.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/suite.rs</code>:490 on 2023-10-27 00:55</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            value.is_ellipsis_literal_expr() &amp;&amp; !comments.has_leading(node)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-10-27 00:59</div>
+            <div class="timeline-body"><p>Looks good to me. Thanks for working on this large refactor.</p>
+<p>I think adding a <code>LiteralExpression</code> union would be useful in a few places and might be something you want to consider adding as part of this PR or as a follow up PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-10-27 00:59</div>
+            <div class="timeline-body"><p>Looks good to me. Thanks for working on this large refactor.</p>
+<p>I think adding a <code>LiteralExpression</code> union would be useful in a few places and might be something you want to consider adding as part of this PR or as a follow up PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/doc_lines.rs</code>:73 on 2023-10-27 12:39</div>
+            <div class="timeline-body"><p>I'm unable to follow here as there's no binding created by the <code>if let</code>. Can you specify which <code>value</code> are you referring to?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/docstrings/extraction.rs</code>:14 on 2023-10-27 12:41</div>
+            <div class="timeline-body"><p>Yeah, makes sense although I think the function will still remain.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/native_literals.rs</code>:42 on 2023-10-27 13:03</div>
+            <div class="timeline-body"><p>That basically means that the default implementation for all literal nodes will give us the zero value in terms of Python (<code>&quot;&quot;, b&quot;&quot;, False, 0, 0.0, None</code>). Is this what you're referring to?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pyupgrade/types.rs</code>:15 on 2023-10-27 13:04</div>
+            <div class="timeline-body"><p>Yeah, I noticed that too. I'll put that up as a follow-up PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:1088 on 2023-10-27 13:09</div>
+            <div class="timeline-body"><p>Yes, you're right. I thought we could remove it from the AST but I guess we'll keep it for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-10-27 13:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-10-27 13:16</div>
+            <div class="timeline-body"><p>Thanks for the review! I'll make most of the smaller changes in this PR and move a few larger ones in the follow-up PRs:</p>
+<ul>
+<li>Introduce <code>LiteralExpressionRef</code> which can be constructed using <code>Expr::as_literal_expr</code></li>
+<li>Unify multiple implementation of having constant type (<code>LiteralKind</code>, <code>LiteralType</code>, <code>ConstantType</code>) on the AST node as <code>expr::literal_type() -&gt; Option&lt;LiteralType&gt;</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-10-27 13:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/comparable.rs</code>:918 on 2023-10-27 13:34</div>
+            <div class="timeline-body"><p>The parser doesn't do anything except that to store the information in the AST node. I think it makes sense to ignore it here but I remember that I made a comment about this in some old PR. Let me try to find it, otherwise I'll remove it 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-10-29 23:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/doc_lines.rs</code>:73 on 2023-10-29 23:48</div>
+            <div class="timeline-body"><p>Never mind. You're right. I got confused by the multiple use of <code>value</code> in the old code. Consider renaming <code>value</code> to <code>statement</code> to make it clear that it refers to the statement and not the expression value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-10-30 04:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/doc_lines.rs</code>:73 on 2023-10-30 04:36</div>
+            <div class="timeline-body"><p>It's actually a expression value used at the statement level 😅</p>
+<p>I get your point, I've renamed it to <code>expr</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-10-30 04:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pylint/rules/magic_value_comparison.rs</code>:92 on 2023-10-30 04:39</div>
+            <div class="timeline-body"><p>I'll use the <code>LiteralExpressionRef</code> in the follow-up PR here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-10-30 04:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/comparable.rs</code>:918 on 2023-10-30 04:46</div>
+            <div class="timeline-body"><p>Ah, https://github.com/astral-sh/ruff/pull/7180#discussion_r1316841244.</p>
+<p>\cc @charliermarsh who might know more about this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/expression/expr_boolean_literal.rs</code>:25 on 2023-10-30 05:01</div>
+            <div class="timeline-body"><p>I think it would be the same as not having the <code>fmt_dangling_comments</code> method on the nodes, right?</p>
+<p>I've removed those methods from all literals except for string and bytes as the dangling comments for them will be handled by <code>fmt_fields</code> (<code>FormatString</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-10-30 05:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-10-30 06:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @dhruvmanila on 2023-10-30 06:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2023-10-30 06:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-10-30 06:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-10-30 06:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:14 UTC
+    </footer>
+</body>
+</html>

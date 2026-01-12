@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FStringPart for f-string formatting - astral-sh/ruff #6365</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>FStringPart for f-string formatting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6365">#6365</a>
+        opened by <a href="https://github.com/davidszotten">@davidszotten</a>
+        on 2023-08-05 13:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-08-05 13:34</div>
+            <div class="timeline-body"><p>Step one of <a href="https://github.com/astral-sh/ruff/pull/5932#issuecomment-1659647476">&quot;proper f-string formatting&quot; </a></p>
+<p>Implements <code>JoinedStringPart</code> suggested in #5970</p>
+<p>The previous implementation uses <code>Constant::Str</code> to model the constant parts of formatted strings (including eg <code>format_spec</code>s) but the formatter expects <code>Constant::Str</code> to include the surrounding quotes which these string parts don't have</p>
+<p>I think i've got far enough into my <a href="https://github.com/davidszotten/ruff/pull/1">f-string formatting poc</a> to say this is good</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:880 on 2023-08-05 13:37</div>
+            <div class="timeline-body"><p>Maybe <code>String(StringTodoName)</code> -&gt; <code>Constant(StringPart)</code> or <code>Constant(ConstantStringPart)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-08-05 13:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-06 17:35</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-08-07 18:44</div>
+            <div class="timeline-body"><p>@MichaReiser are we still interested in something like this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-08 08:37</div>
+            <div class="timeline-body"><blockquote>
+<p>@MichaReiser are we still interested in something like this?</p>
+</blockquote>
+<p>Sorry. I have yet to look at it since it is a draft pull request. Generally, yes, but I'm a bit underwater right now. It's almost a full-day job to keep up with @charliermarsh's PRs ;P</p>
+<p>Is there specific feedback you're looking for?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-08-08 09:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there specific feedback you're looking for?</p>
+</blockquote>
+<p>https://github.com/astral-sh/ruff/discussions/6183 mentions larger structural changes around handling of implicit concatenation (and how it would be nice to unify this with <code>JoinedStringPart</code> (i guess i need to rename to <code>FStringPart</code> now).</p>
+<p>You've previously (sorry can't find reference now) mentioned that someone might be making larger changes in order to support 3.12 style formatted-values (though that might be orthogonal until we drop support for 3.11 in 2029 or so)</p>
+<p>i suppose for a quick review the interesting changes are in
+https://github.com/astral-sh/ruff/pull/6365/files#diff-3af3e83bb70765ce947636ab537ecd13676c5dc1929edf6e2a1e3d1d46191191</p>
+<p><code>ast/nodes.rs</code></p>
+<p>perhaps also a glance at the snapshots</p>
+<p>considering changing <code>format_spec</code> from <code>Option&lt;Box&lt;Expr&gt;&gt;</code> to <code>Vec&lt;JoinedStringPart&gt;</code>
+(same reason as above, these &quot;snippets&quot; don't have quotes so can't really stand alone as expressions. but does it need to be <code>Option&lt;Vec&lt;_&gt;&gt;</code> to avoid memory overhead? afict an empty vec takes space for metadata but doesn't allocate a buffer for elements so maybe ok?</p>
+<p>https://github.com/astral-sh/ruff/pull/6365/files#diff-3af3e83bb70765ce947636ab537ecd13676c5dc1929edf6e2a1e3d1d46191191R871</p>
+<p>and open q about naming
+https://github.com/astral-sh/ruff/pull/6365/files#r1285057553</p>
+<p>lastly i hadn't quite appreciated how much changing the ast node leaks into rules. i think i managed most but will require thorough review, and i'll need help with https://github.com/astral-sh/ruff/pull/6365/files#diff-c2c8422959405016e1fb54ca23edee9716bd06ad64e610ceea9612a8291122fcR1292  and probably https://github.com/astral-sh/ruff/pull/6365/files#diff-b6e87960d75a3034eafafa5ba307dbce96935905deada7841a56f80e7927acbbR63</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:818 on 2023-08-10 12:51</div>
+            <div class="timeline-body"><p>Using a <code>Vec</code> here instead of <code>Option&lt;Vec&lt;_&gt;&gt;</code> is fine in my view and has the benefit that it requires less space.</p>
+<p>What's the reason for <code>format_spec</code> to require a <code>Vec</code>? Is it possible to have implicit string concatenation in the middle of a format spec?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:868 on 2023-08-10 12:53</div>
+            <div class="timeline-body"><p><code>parts</code> or <code>elements</code> (changing the postfix of the type too) makes sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/node.rs</code>:2568 on 2023-08-10 13:02</div>
+            <div class="timeline-body"><p>We'll still need the implementations for <code>FormattedValue</code> and <code>StringTodo</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flynt/helpers.rs</code>:64 on 2023-08-10 13:05</div>
+            <div class="timeline-body"><p>WHat part do we not know? How to handle FStrings?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:880 on 2023-08-10 13:09</div>
+            <div class="timeline-body"><p>My preference (in the long term) is to rename <code>Constant</code> (it's a constant at runtime but it is literal in the source code) to <code>Literal</code>. How about <code>FStringLiteralElement</code> and <code>FStringExpressionElement</code> (or <code>FormattedValueElement</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-10 13:13</div>
+            <div class="timeline-body"><p>Sorry for the late reply and thanks for working on this refactor.</p>
+<p>What's your overall sense for this change? Does it simplify the AST handling or does it add unnecessary complexity?</p>
+<p>@dhruvmanila is working on the python 312 f-string parsing. My understanding is that this is mainly limited to how we lex f-strings, and shouldn't affect the AST representation.</p>
+<blockquote>
+<p>https://github.com/astral-sh/ruff/discussions/6183 mentions larger structural changes around handling of implicit concatenation (and how it would be nice to unify this with JoinedStringPart (i guess i need to rename to FStringPart now).</p>
+</blockquote>
+<p>Yeah, I'm not yet sure how implicit concatenation should work. Especially because you can mix regular strings an FString (what a mess...). I'm thinking about removing <code>FStringExpr</code> and instead have a single <code>StringLiteral</code> that may consist of FString and regular string elements. I would ignore this for now but I would appreciate any suggestions that you have.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-08-10 19:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff/src/rules/flynt/helpers.rs</code>:64 on 2023-08-10 19:14</div>
+            <div class="timeline-body"><p>sorry for being unclear, this is a reference to an existing comment next to the only caller of this function, https://github.com/astral-sh/ruff/pull/6365/files/96513114ba006216c2601882692d9e96b96b5844#diff-18474f15dbc4220d441b5f36f7065939d7fa0acc0609b1b3a84d253db8211ae6L91-R92</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:818 on 2023-08-10 19:20</div>
+            <div class="timeline-body"><p>format_spec can made up from literals and nested formatted values, e.g. <code>f'{a:{b}d}'</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-08-10 19:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-08-10 19:25</div>
+            <div class="timeline-body"><blockquote>
+<p>What's your overall sense for this change?</p>
+</blockquote>
+<p>as i mention in the summary it feels more correct to use a different representation for string &quot;snippets&quot; than <code>Constant</code> since they don't include the quotes (and often aren't the entire string)</p>
+<p>it's also nice to remove a few <code>unreachable</code>s</p>
+<p>in general i'd say slightly better</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_ast/src/node.rs</code>:2568 on 2023-08-11 08:04</div>
+            <div class="timeline-body"><p>ok. what's the rule for when the &quot;helpers&quot; in ast::nodes should be considered nodes?</p>
+<p>related: which of these should have methods in the visitor traits?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-08-11 08:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-08-14 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-08-15 13:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_ast/src/node.rs</code>:2568 on 2023-08-15 13:25</div>
+            <div class="timeline-body"><p>bump @MichaReiser ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-16 06:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/node.rs</code>:2568 on 2023-08-16 06:16</div>
+            <div class="timeline-body"><p>As a rule of thumb. They are nodes if</p>
+<ul>
+<li>they contain other nodes (is the case for <code>FormattedValue</code>)</li>
+<li>they are in a union with other nodes. The way I think about this is that there are nodes and the rest is mainly tokens/literals. We don't want unions where one variant is a terminal literal and another variant is anode. We either want unions over literals, or nodes. That's why <code>StringTodo</code> should be a node</li>
+<li>If they have a range (<code>Identifier</code> is the exception to this)</li>
+</ul>
+<p>We may not need dedicated visitor methods for <code>StringTodo</code> and <code>FormattedValue</code>, instead, we can create a single <code>visit_fstring_part</code> method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "JoinedStringPart for f-string formatting" to "FStringPart for f-string formatting" by @davidszotten on 2023-08-20 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @davidszotten on 2023-08-20 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/comparable.rs</code>:534 on 2023-08-21 03:08</div>
+            <div class="timeline-body"><p>Can you provide the reason for keeping these (<code>conversion</code>, <code>format_spec</code>) 2 fields public?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/node.rs</code>:2651 on 2023-08-21 03:13</div>
+            <div class="timeline-body"><p>Yes, I think it's correct. (You can inline this method)</p>
+<pre><code class="language-suggestion">	#[inline]
+    fn visit_preorder&lt;'a, V&gt;(&amp;'a self, _visitor: &amp;mut V)
+    where
+        V: PreorderVisitor&lt;'a&gt; + ?Sized,
+    {
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:1286 on 2023-08-21 03:27</div>
+            <div class="timeline-body"><p>I'm assuming this visit is done elsewhere and that's why it's removed here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/string.rs</code>:420 on 2023-08-21 03:35</div>
+            <div class="timeline-body"><p>I think you moved this because it's only useful for formatted values i.e., the expression between <code>{</code> .. <code>}</code> or is it any other reason? Isn't <code>parse_fstring</code> the entrypoint so does that make any difference?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2023-08-21 03:38</div>
+            <div class="timeline-body"><p>This is great work, thanks for doing this! I have mainly looked at the AST/parser related changes and briefly the linter related changes but if you want I can give a closer look at other changes as well.</p>
+<p>If I understand correctly, the introduction of <code>Literal</code> is (in the future) to move away from <code>Constant</code> as suggested by Micha. I'm a bit unsure of the difference between <code>PartialString</code> and <code>Constant::Str</code>. Is <code>PartialString</code> will only be used for f-string?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @konstin on 2023-08-21 08:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-08-21 10:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_ast/src/comparable.rs</code>:534 on 2023-08-21 10:30</div>
+            <div class="timeline-body"><p>copy/paste fail i think</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-08-21 10:32</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm a bit unsure of the difference between <code>PartialString</code> and <code>Constant::Str</code></p>
+</blockquote>
+<p><code>PartialString</code> doesn't include prefixes and quotes, and sometimes is only part of a string, e.g.</p>
+<pre><code>f&quot;before{formatted}after&quot;
+  ^^^^^^
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-08-21 11:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:1286 on 2023-08-21 11:56</div>
+            <div class="timeline-body"><p>yes, this is now handled as part of walking f-strings (which walks the parts, some of which are formatted-values which has the format spec</p>
+<p>see e.g. https://github.com/davidszotten/ruff/blob/0eafbe4afee2f43cfc1af3b6ccdec8479133d38b/crates/ruff_python_ast/src/visitor.rs#L705</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-08-21 11:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_ast/src/node.rs</code>:2651 on 2023-08-21 11:58</div>
+            <div class="timeline-body"><p>interestingly for <code>ExprConstant</code> we have a <code>visit_constant</code> that is empty instead</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-08-21 12:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_parser/src/string.rs</code>:420 on 2023-08-21 12:00</div>
+            <div class="timeline-body"><p>if i recall i think this moved because this function no longer recurses, <code>parse_formatted_value</code> does</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> removed by @MichaReiser on 2023-08-22 06:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @MichaReiser on 2023-08-22 06:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-22 06:56</div>
+            <div class="timeline-body"><p>I'm still not feeling a 100%, and this change requires more brainpower than I have right now. I'll get back to you when I feel better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-08-22 07:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm still not feeling a 100%, and this change requires more brainpower than I have right now. I'll get back to you when I feel better.</p>
+</blockquote>
+<p>sorry to hear, hope you feel better soon! no rush on this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-08-22 08:01</div>
+            <div class="timeline-body"><p>might need to rethink the naming (and possibly more). i thought i had my poc for f-strings mostly working but i had forgotten about implicit concatenation which complicates things. i don't full understand how that works atm but need to figure out if/how it can be adapted for f-strings.  one thing i immediately noticed is that we already use the term &quot;string part&quot; there to mean &quot;one of multiple implicitly concatenated strings&quot; so we might want to use a different name than <code>FStringPart</code> here to avoid confusion</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-08-27 07:43</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/davidszotten:joined-string-part">CodSpeed Performance Report</a></h2>
+<h3>Merging #6365 will <strong>improve performances by 8.46%</strong></h3>
+<p><sub>Comparing <code>davidszotten:joined-string-part</code> (1c35588) with <code>main</code> (15813a6)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 8</code> improvements
+<code>✅ 17</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>davidszotten:joined-string-part</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/default-rules[large/dataset.py]</code> | 94.1 ms | 89.8 ms | +4.79% |
+| ⚡ | <code>linter/default-rules[pydantic/types.py]</code> | 38 ms | 36.9 ms | +2.91% |
+| ⚡ | <code>lexer[large/dataset.py]</code> | 9.8 ms | 9 ms | +8.46% |
+| ⚡ | <code>lexer[unicode/pypinyin.py]</code> | 620.1 µs | 591.9 µs | +4.75% |
+| ⚡ | <code>parser[large/dataset.py]</code> | 68.4 ms | 66.7 ms | +2.54% |
+| ⚡ | <code>parser[unicode/pypinyin.py]</code> | 4.3 ms | 4.2 ms | +2.53% |
+| ⚡ | <code>lexer[numpy/ctypeslib.py]</code> | 2 ms | 1.9 ms | +2.55% |
+| ⚡ | <code>lexer[pydantic/types.py]</code> | 4.1 ms | 4 ms | +3.69% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @davidszotten on 2023-08-27 08:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:946 on 2023-08-28 08:14</div>
+            <div class="timeline-body"><p>My preferred naming is</p>
+<pre><code class="language-rust">pub enum FStringElement {
+	Literal(FStringLiteralElement)
+	Expression(FStringExpressionElement)
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-28 08:21</div>
+            <div class="timeline-body"><p>This looks good to me and thanks for your patience. My preference is to rename parts to <code>elements</code> and rename the nodes to <code>FStringExpressionElement</code> and <code>FStringLiteralElement</code>. The names are somewhat long but I don't mind that. Wdyt?</p>
+<p>@charliermarsh would you mind taking a look as well?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-08-28 10:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:946 on 2023-08-28 10:32</div>
+            <div class="timeline-body"><p>i don't mind. i picked &quot;part&quot; because it was shorter but don't feel strongly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-31 08:08</div>
+            <div class="timeline-body"><p>@charliermarsh could you take a look at this PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-14 09:23</div>
+            <div class="timeline-body"><p>@charliermarsh Could you have a look at this, now that you're back from PTO ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-18 16:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:811 on 2023-09-18 16:53</div>
+            <div class="timeline-body"><p>I think the part after the hash here is an incorrect search-replace error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-18 17:02</div>
+            <div class="timeline-body"><p>Sorry that it took me so long to look at this. I think the refinement of the AST structure generally makes sense, although it looks like we now have some false negatives in the linter, since we're not treating the f-string constant parts as string nodes. So, e.g., none of these rules seem to be run on f-string constant parts:</p>
+<pre><code class="language-rust">Expr::Constant(ast::ExprConstant {
+    value: Constant::Str(value),
+    range: _,
+}) =&gt; {
+    if checker.enabled(Rule::HardcodedBindAllInterfaces) {
+        if let Some(diagnostic) =
+            flake8_bandit::rules::hardcoded_bind_all_interfaces(value, expr.range())
+        {
+            checker.diagnostics.push(diagnostic);
+        }
+    }
+    if checker.enabled(Rule::HardcodedTempFile) {
+        flake8_bandit::rules::hardcoded_tmp_directory(checker, expr, value);
+    }
+    if checker.enabled(Rule::UnicodeKindPrefix) {
+        pyupgrade::rules::unicode_kind_prefix(checker, expr, value.unicode);
+    }
+    if checker.source_type.is_stub() {
+        if checker.enabled(Rule::StringOrBytesTooLong) {
+            flake8_pyi::rules::string_or_bytes_too_long(checker, expr);
+        }
+    }
+}
+</code></pre>
+<p>How could we resolve? Should we add these to the <code>Expr::JoinedStr</code> case in the match?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-09-24 07:18</div>
+            <div class="timeline-body"><p>good catch.</p>
+<p><code>hardcoded_bind_all_interfaces</code> and <code>hardcoded_tmp_directory</code> are straightforward to add. <code>unicode_kind_prefix</code> doesn't apply but <code>string_or_bytes_too_long</code> is a bit tricker since (unlike the first 2 which only need the range) it actually unpacks the <code>expr</code>. let me know what you think of the approach (cast to astnodes)</p>
+<p>i guess the main issue is remembering to add new checks in both places. could maybe factor out a helper function</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_bandit/snapshots/ruff_linter__rules__flake8_bandit__tests__S104_S104.py.snap</code>:30 on 2023-09-25 07:07</div>
+            <div class="timeline-body"><p>I think the range should include the quotes and prefix as is the case for normal strings:</p>
+<pre><code>11 | f&quot;0.0.0.0&quot;
+   | ^^^^^^^^^^ S104
+</code></pre>
+<p>Same issue exists for other rules as well wherever the <code>FStringElement::Literal</code> is being used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:978 on 2023-09-25 07:12</div>
+            <div class="timeline-body"><p>I would prefer to not pass in the range here as otherwise it becomes difficult to know which range is this within the rule function.</p>
+<p>Regarding my other comment, I think you would want to pass in the f-string expression node by capturing it in the match case arm above on line 961:</p>
+<pre><code class="language-rust">        fstring @ Expr::FString(ast::ExprFString { elements, .. }) =&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flynt/helpers.rs</code>:17 on 2023-09-25 07:18</div>
+            <div class="timeline-body"><p>The previous implementation would create a constant string node but it's changed to creating a f-string literal element. Is that an expected behavior? If so, could you change the function name and documentation to reflect that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-25 07:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-09-25 19:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_linter/src/rules/flake8_bandit/snapshots/ruff_linter__rules__flake8_bandit__tests__S104_S104.py.snap</code>:30 on 2023-09-25 19:34</div>
+            <div class="timeline-body"><p>that behaviour doesn't change with this pr (i'm just adding tests since i briefly regressed).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-09-25 19:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_linter/src/rules/flynt/helpers.rs</code>:17 on 2023-09-25 19:36</div>
+            <div class="timeline-body"><p>yes it's expected, this is (and was) only used to build an f-string. makes sense to update the name</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a> reviewed on 2023-09-25 19:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/davidszotten">@davidszotten</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/expression.rs</code>:978 on 2023-09-25 19:39</div>
+            <div class="timeline-body"><p>see my reply above. a more interesting example is an f-string with expressions as well. isn't it nice that we can be more specific than marking up the entire string, e.g.</p>
+<pre><code>f&quot;0.0.0.0{port}/something-else&quot;
+  ^^^^^^^
+</code></pre>
+<p>vs</p>
+<pre><code>f&quot;0.0.0.0{port}/something-else&quot;
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-26 02:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_bandit/snapshots/ruff_linter__rules__flake8_bandit__tests__S104_S104.py.snap</code>:30 on 2023-09-26 02:17</div>
+            <div class="timeline-body"><p>Oh sorry, I didn't see that. Thanks for clarifying :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @davidszotten on 2023-09-28 08:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-29 01:59</div>
+            <div class="timeline-body"><p>(I will re-review this tonight; if not, then tomorrow, sorry!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-29 02:56</div>
+            <div class="timeline-body"><p>(I'll take ownership of rebasing this PR as #7376 has been merged on <code>main</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-10-03 15:40</div>
+            <div class="timeline-body"><p>If I understand this correctly, then we're replacing the <code>Constant::Str</code> with a dedicated <code>FStringElement::Literal</code>, right? I think we'll need to preserve the information across both nodes which includes the <code>unicode</code> and <code>implicit_concatenated</code> fields otherwise for something like <code>u&quot;foo&quot; f&quot;{bar}&quot;</code> we won't be able to detect whether it's a unicode string or not.</p>
+<p>There are some changes involved in the parser definition as well mainly with the fact that the <code>format_spec</code> isn't a node anymore but rather a vector of f-string elements. The range of format spec was being used to extract the debug text.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-10-04 07:40</div>
+            <div class="timeline-body"><blockquote>
+<p>If I understand this correctly, then we're replacing the <code>Constant::Str</code> with a dedicated <code>FStringElement::Literal</code>, right? I think we'll need to preserve the information across both nodes which includes the <code>unicode</code> and <code>implicit_concatenated</code> fields otherwise for something like <code>u&quot;foo&quot; f&quot;{bar}&quot;</code> we won't be able to detect whether it's a unicode string or not.</p>
+</blockquote>
+<p>The original idea was focused on cases like <code>f&quot;foo{bar}&quot;</code> where the <code>foo</code> part was modelled the same as a single string <code>&quot;foo&quot;</code> even though those are different things (eg the latter includes quotes and can have a prefix)</p>
+<p>i don't think i'd fully considered the case in your example but it does make me wonder if we should consider modelling implicit concatenation differently too</p>
+<blockquote>
+<p>There are some changes involved in the parser definition as well mainly with the fact that the <code>format_spec</code> isn't a node anymore but rather a vector of f-string elements. The range of format spec was being used to extract the debug text.</p>
+</blockquote>
+<p>the f-string elements have ranges so could we find the range using the start of the first and the end of the last?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-24 23:46</div>
+            <div class="timeline-body"><p>This is replaced by #8835 with correct author attribution. Thanks @davidszotten for taking this up! Happy to take any additional feedback in the new PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-11-24 23:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:13 UTC
+    </footer>
+</body>
+</html>

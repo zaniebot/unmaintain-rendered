@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-bandit`] Add Rule S110 (try/except/pass) - astral-sh/ruff #2197</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-bandit</code>] Add Rule S110 (try/except/pass)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2197">#2197</a>
+        opened by <a href="https://github.com/sciyoshi">@sciyoshi</a>
+        on 2023-01-26 16:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sciyoshi">@sciyoshi</a> on 2023-01-26 16:22</div>
+            <div class="timeline-body"><p>Check for <a href="https://bandit.readthedocs.io/en/latest/plugins/b110_try_except_pass.html">flake8-bandit B110: blank <code>pass</code> in exception handler</a>. Just getting my feet wet with implementing checkers in Ruff, so let me know if anything is missing. I used the <code>add_rule.py</code> script which has a slightly different convention than the other flake8-bandit checkers.</p>
+<p>ref: #1646</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2023-01-26 17:12</div>
+            <div class="timeline-body"><p>I think there's some overlap between this rule and <code>SIM105</code>: <code>Use contextlib.suppress({exception}) instead of try-except-pass</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2023-01-26 22:20</div>
+            <div class="timeline-body"><p>SIM105 is intentionally <a href="https://github.com/charliermarsh/ruff/pull/1948">restricted</a> because <code>contextlib.suppress</code> is confusing in all but the simplest cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-27 00:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_bandit/settings.rs</code>:42 on 2023-01-27 00:51</div>
+            <div class="timeline-body"><p>This looks like it might be incorrect for this option. Maybe copied over from elsewhere?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-27 00:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_bandit/rules/try_except_pass.rs</code>:31 on 2023-01-27 00:52</div>
+            <div class="timeline-body"><p>We can do a bit better here. Try: <code>checker.resolve_call_path(&amp;type).map_or(false, |call_path| call_path.as_slice() == [&quot;&quot;, &quot;Exception&quot;])</code>.</p>
+<p>That will verify that <code>&amp;type</code> is a reference to the built-in <code>Exception</code> (so it also does the right thing if <code>Exception</code> gets shadowed and assigned to some other variable -- which is weird, but correct).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-01-27 00:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_bandit/rules/try_except_pass.rs</code>:16 on 2023-01-27 00:54</div>
+            <div class="timeline-body"><p>I know this is exactly what Bandit uses, but our conventions would probably be more like:</p>
+<pre><code>format!(&quot;`try`-`except`-`pass` detected&quot;)
+</code></pre>
+<p>Or commas in lieu of dashes. But wrapping except keyword in backticks, and removing the period.</p>
+<p>(Sorry for the nit!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sciyoshi">@sciyoshi</a> reviewed on 2023-01-27 01:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sciyoshi">@sciyoshi</a> on <code>src/rules/flake8_bandit/rules/try_except_pass.rs</code>:16 on 2023-01-27 01:01</div>
+            <div class="timeline-body"><p>Thanks - fixed 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sciyoshi">@sciyoshi</a> reviewed on 2023-01-27 01:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sciyoshi">@sciyoshi</a> on <code>src/rules/flake8_bandit/rules/try_except_pass.rs</code>:31 on 2023-01-27 01:02</div>
+            <div class="timeline-body"><p>Fixed in my latest commit, although I didn't add a test for the case of <code>Exception</code> being shadowed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sciyoshi">@sciyoshi</a> on 2023-01-27 01:16</div>
+            <div class="timeline-body"><p>@andersk's link doesn't seem to resolve so I'm not sure what SIM105 being restricted means in this context, but the point about overlapping rules is a good one - I'm not sure what the best approach would be for that.</p>
+<p>(Also - it's a small world, I remember Anders from my USAMO days!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2023-01-27 01:31</div>
+            <div class="timeline-body"><p>(Oops, fixed the link.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-01-27 23:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-27 23:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-27 23:53</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-22 20:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement NumPy 2.0 migration rule - astral-sh/ruff #7702</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement NumPy 2.0 migration rule</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7702">#7702</a>
+        opened by <a href="https://github.com/mtsokol">@mtsokol</a>
+        on 2023-09-28 20:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mtsokol">@mtsokol</a> on 2023-09-28 20:58</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Hi! Currently NumPy Python API is undergoing a cleanup process that will be delivered in NumPy 2.0 (release is planned for the end of the year).
+Most changes are rather simple (renaming, removing or moving a member of the main namespace to a new place), and they could be flagged/fixed by an additional ruff rule for numpy (e.g. changing occurrences of <code>np.float_</code> to <code>np.float64</code>).</p>
+<p>Would you accept such rule?</p>
+<p>I named it <code>NPY201</code> in the existing group, so people will receive a heads-up for changes arriving in 2.0 before actually migrating to it.</p>
+<p>~~This is still a draft PR.~~ I'm not an expert in rust so if any part of code can be done better please share!</p>
+<p>NumPy 2.0 migration guide: https://numpy.org/devdocs/numpy_2_0_migration_guide.html
+NEP 52: https://numpy.org/neps/nep-0052-python-api-cleanup.html
+NumPy cleanup tracking issue: https://github.com/numpy/numpy/issues/23999</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>A unit test is provided that checks all rule's fix cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-28 22:43</div>
+            <div class="timeline-body"><p>Happy to include something like this. I need to think a bit more on whether this should be its own rule, or whether we should just extend <code>deprecated_function</code> (and add a <code>deprecated_constant</code> for the remaining rules).</p>
+<p>As of what NumPy version are these fixes safe? As in, are there older, supported versions of NumPy for which applying these rules would cause issues? (Ultimately asking: will Ruff need to know the NumPy version?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtsokol">@mtsokol</a> on 2023-09-28 23:21</div>
+            <div class="timeline-body"><p>Thank you for the feedback! <a href="https://numpy.org/devdocs/numpy_2_0_migration_guide.html#main-namespace">All these breaking changes</a> will be shipped in 2.0.0 version that is planned for this December. The latest release of numpy is 1.26.0.</p>
+<p>Only nightly 2.0.0.dev0 and future 2.0.0 versions are safe to apply these changes.
+For past releases these are incompatible ones, therefore we thought to establish it as a separate rule. Downstream users that are still on 1.x would upgrade ruff and get a heads-up errors, which they can suppress by disabling the rule.
+Once they decide to upgrade to 2.0 they can run ruff with <code>--fix</code> and get most of changes done (and these renames can be mundane to do manually - I did them for numpy, scipy, etc. and it was magnitude of hundreds of lines of changed code).</p>
+<p>If ruff would know numpy version then it could be used to determine whether to apply this rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-01 03:18</div>
+            <div class="timeline-body"><p>Thanks @mtsokol. Sorry if I'm misunderstanding, but <em>some</em> of these fixes would be safe to apply in older versions, right? For example, the rules that suggest using <code>np.inf</code> would be safe to apply, since <code>np.inf</code> exists in older versions, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtsokol">@mtsokol</a> on 2023-10-01 07:55</div>
+            <div class="timeline-body"><p>@charliermarsh Ah yes! Actually <strong>most of changes</strong> from the NumPy 2.0 <a href="https://numpy.org/devdocs/numpy_2_0_migration_guide.html">migration guide</a> can be applied to the previous versions. (My last response was confusing - only a few are backward incompatible, e.g. renaming <code>np.int_</code> to <code>np.long</code> (https://github.com/numpy/numpy/pull/24794) or moving <code>np.byte_bounds</code> to <code>np.lib.array_utils</code>. Right now I'm working on these renames mostly and I forgot to mention that it's just a fraction of all changes).</p>
+<p><code>np.Infinity</code> -&gt; <code>np.inf</code>, <code>np.float_</code> -&gt; <code>np.float64</code> etc. are all backward compatible and are safe to apply to previous versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtsokol">@mtsokol</a> on 2023-10-02 19:03</div>
+            <div class="timeline-body"><p>The PR's blueprint is ready from my side - it consist of three types of AST fixes:</p>
+<ul>
+<li><code>AutoImport</code>: the deprecated member of the numpy namespace can be replaced with another, e.g. <code>np.float_</code> with <code>np.float64</code> or <code>np.INF</code> with <code>np.inf</code>.</li>
+<li><code>AutoPurePython</code>: the deprecated member can be replaced with python expression, e.g. <code>np.NZERO</code> with <code>-0.0</code> or <code>np.issubclass_</code> with <code>issubclass</code>.</li>
+<li><code>Manual</code>: can't be automatically fixed - a guideline is provided on how to fix it.</li>
+</ul>
+<p>If the code's shape is correct I will provision the rest of entries and exhaustive unit test. Please share your feedback!</p>
+<p>P.S. I get some errors in the CI that I can't reproduce locally:</p>
+<pre><code>  |
+1 | use ruff_diagnostics::{AutofixKind, Diagnostic, Edit, Fix, Violation};
+  |                        ^^^^^^^^^^^ no `AutofixKind` in the root
+</code></pre>
+<p>I followed implementation of other numpy rules. What am I missing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @mtsokol on 2023-10-02 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-02 19:40</div>
+            <div class="timeline-body"><p>@mtsokol - We recently renamed <code>AutofixKind</code> to <code>AutofixAvailability</code>, so you might be running into something like: GitHub is rebasing your PR on main prior to testing, and so the name doesn't exist anymore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtsokol">@mtsokol</a> on 2023-10-02 19:56</div>
+            <div class="timeline-body"><blockquote>
+<p>@mtsokol - We recently renamed <code>AutofixKind</code> to <code>AutofixAvailability</code>, so you might be running into something like: GitHub is rebasing your PR on main prior to testing, and so the name doesn't exist anymore.</p>
+</blockquote>
+<p>Thank you! Now CI tests are passing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-10-02 19:57</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/mtsokol:npy201">CodSpeed Performance Report</a></h2>
+<h3>Merging #7702 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>mtsokol:npy201</code> (b86abcd) with <code>main</code> (f64c389)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 25</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-02 20:02</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>ℹ️ ecosystem check <strong>detected changes</strong>. (+3, -1, 0 error(s))</p>
+<details><summary>airflow (+3, -1)</summary>
+<p>
+
+<pre>
+- [*] 16167 fixable with the `--fix` option (6240 hidden fixes can be enabled with the `--unsafe-fixes` option).
++ [*] 16169 fixable with the `--fix` option (6240 hidden fixes can be enabled with the `--unsafe-fixes` option).
++ <a href='https://github.com/apache/airflow/blob/6316025b7c160006ef57d3463868394c3f9e8d97/airflow/serialization/serializers/numpy.py#L78'>airflow/serialization/serializers/numpy.py:78:13:</a> NPY201 [*] `np.float_` will be removed in the NumPy 2.0. Use `numpy.float64` instead.
++ <a href='https://github.com/apache/airflow/blob/6316025b7c160006ef57d3463868394c3f9e8d97/airflow/serialization/serializers/numpy.py#L78'>airflow/serialization/serializers/numpy.py:78:60:</a> NPY201 [*] `np.complex_` will be removed in the NumPy 2.0. Use `numpy.complex128` instead.
+</pre>
+
+</p>
+</details>
+Rules changed: 1
+
+<p>| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| NPY201 | 2 | 2 | 0 |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoxbro">@hoxbro</a> on 2023-10-06 20:51</div>
+            <div class="timeline-body"><p>It looks like you are not changing NaN to nan. Per https://numpy.org/devdocs/numpy_2_0_migration_guide.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtsokol">@mtsokol</a> on 2023-10-06 21:31</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks like you are not changing NaN to nan. Per https://numpy.org/devdocs/numpy_2_0_migration_guide.html</p>
+</blockquote>
+<p>We're still finishing adding new changes but here it's just a matter of adding new entries to match in the rule (I will add the rest soon!). I was curious if the overall design of PR and three types of fixes proposed looks correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtsokol">@mtsokol</a> on 2023-10-24 10:36</div>
+            <div class="timeline-body"><p>Hi @charliermarsh @Hoxbro,</p>
+<p>We finished Python API refactoring for NumPy 2.0. I updated this PR - now the new rule contains all changes introduced to the main namespace (i.e. members' removals).</p>
+<p>Out of all 52 cases in the rule only one is backward incompatible (<code>np.byte_bounds</code>). 51 remaining ones are relevant for both NumPy 1.x and 2.0 releases and contribute to cleaner codebase regardless of NumPy version used. There are 29 cases that can be auto-fixed and 23 that require manual intervention.</p>
+<p>I added a unit test that checks all rule's fix cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-24 14:09</div>
+            <div class="timeline-body"><p>Thanks @mtsokol -- will queue this up for review and try to get to it shortly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-27 15:51</div>
+            <div class="timeline-body"><p>(Sorry for the delay on this -- we shipped our formatter earlier this week and I've been busy with follow-ups from the release. This is still on my list.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-03 03:44</div>
+            <div class="timeline-body"><p>This looks great, thanks @mtsokol! I like the way you structured the rule -- it reads well.</p>
+<p>I took some liberties in editing the rule documentation and tweaking a few of the migration messages, with the goal of making them a little more consistent with the copy and voice we use in other rules. If you have any feedback or issues with the changes, just let me know, happy to address in a follow-up PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-11-03 03:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-11-03 03:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-03 03:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-03 03:55</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+3 -0 violations, +0 -0 fixes in 41 projects)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --select ALL --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/db012ac5de1d65e40ca75b80c9e15e1c5ac4b224/airflow/providers/salesforce/hooks/salesforce.py#L263'>airflow/providers/salesforce/hooks/salesforce.py:263:34:</a> NPY201 [*] `np.NaN` will be removed in NumPy 2.0. Use `numpy.nan` instead.
++ <a href='https://github.com/apache/airflow/blob/db012ac5de1d65e40ca75b80c9e15e1c5ac4b224/airflow/serialization/serializers/numpy.py#L78'>airflow/serialization/serializers/numpy.py:78:13:</a> NPY201 [*] `np.float_` will be removed in NumPy 2.0. Use `numpy.float64` instead.
++ <a href='https://github.com/apache/airflow/blob/db012ac5de1d65e40ca75b80c9e15e1c5ac4b224/airflow/serialization/serializers/numpy.py#L78'>airflow/serialization/serializers/numpy.py:78:60:</a> NPY201 [*] `np.complex_` will be removed in NumPy 2.0. Use `numpy.complex128` instead.
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| NPY201 | 3 | 3 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-03 07:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoxbro">@hoxbro</a> on 2023-11-03 07:53</div>
+            <div class="timeline-body"><p>Shouldn't the new numpy imports happen at the same level as the existing numpy import?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mtsokol">@mtsokol</a> on 2023-11-03 09:10</div>
+            <div class="timeline-body"><p>@charliermarsh Hi, all tweaks look good to me - thank you for a review!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pllim">@pllim</a> on 2023-11-03 13:50</div>
+            <div class="timeline-body"><p>Hello! As a user who does not know much about ruff internals, how do I try this out downstream? Do I only have to modify https://github.com/astropy/astropy/blob/main/.ruff.toml ? If so, how? Is this documented somewhere?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-03 13:55</div>
+            <div class="timeline-body"><p>@Hoxbro - Can you give an example of where this is happening?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-03 13:56</div>
+            <div class="timeline-body"><p>@pllim -- You shouldn't need to modify your configuration, but you <em>would</em> need to build from source, which just means that you need to have Rust installed. If you have Rust installed, then you should be able to run something like:</p>
+<pre><code class="language-shell">cargo run -p ruff_linter -- check ../path/to/astropy --select NPY --preview
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hoxbro">@hoxbro</a> on <code>crates/ruff_linter/src/rules/numpy/snapshots/ruff_linter__rules__numpy__tests__numpy2-deprecation_NPY201.py.snap</code>:18 on 2023-11-03 14:00</div>
+            <div class="timeline-body"><p>@charliermarsh, here is an example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hoxbro">@hoxbro</a> reviewed on 2023-11-03 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-03 14:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/numpy/snapshots/ruff_linter__rules__numpy__tests__numpy2-deprecation_NPY201.py.snap</code>:18 on 2023-11-03 14:47</div>
+            <div class="timeline-body"><p>I think that instead we should focus on trying to get this to use <code>np.lib.add_docstring</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pllim">@pllim</a> on 2023-11-03 15:05</div>
+            <div class="timeline-body"><blockquote>
+<p>but you would need to build from source</p>
+</blockquote>
+<p>Oh, so this isn't one of those code I can just add to the TOML? Or maybe I can in the future when this feature is released?</p>
+<p>Not sure if I want to install rust and build this from source on a CI for a Python package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hoxbro">@hoxbro</a> reviewed on 2023-11-03 15:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hoxbro">@hoxbro</a> on <code>crates/ruff_linter/src/rules/numpy/snapshots/ruff_linter__rules__numpy__tests__numpy2-deprecation_NPY201.py.snap</code>:18 on 2023-11-03 15:11</div>
+            <div class="timeline-body"><p>I think this is a great way and will only change the line where changes are needed.</p>
+<p>Just needs to be sure that the different submodules are initialized when running <code>import numpy as np</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hoxbro">@hoxbro</a> on <code>crates/ruff_linter/src/rules/numpy/snapshots/ruff_linter__rules__numpy__tests__numpy2-deprecation_NPY201.py.snap</code>:84 on 2023-11-03 15:15</div>
+            <div class="timeline-body"><p>Sorry to be so noisy after the PR has been merged.</p>
+<p>I can't do this import in numpy 1.26.0. It is possible to do <code>from numpy.lib.utils import byte_bounds</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hoxbro">@hoxbro</a> reviewed on 2023-11-03 15:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtsokol">@mtsokol</a> reviewed on 2023-11-03 15:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtsokol">@mtsokol</a> on <code>crates/ruff_linter/src/rules/numpy/snapshots/ruff_linter__rules__numpy__tests__numpy2-deprecation_NPY201.py.snap</code>:84 on 2023-11-03 15:18</div>
+            <div class="timeline-body"><p>Hi! This is the only backward incompatible change in the rule, mentioned in the comment: https://github.com/astral-sh/ruff/pull/7702#issuecomment-1776953773. It will be available in <code>array_utils</code> from 2.0.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hoxbro">@hoxbro</a> reviewed on 2023-11-03 15:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hoxbro">@hoxbro</a> on <code>crates/ruff_linter/src/rules/numpy/snapshots/ruff_linter__rules__numpy__tests__numpy2-deprecation_NPY201.py.snap</code>:84 on 2023-11-03 15:29</div>
+            <div class="timeline-body"><p>Then I'm really sorry about the noise :slightly_smiling_face:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-03 15:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/numpy/snapshots/ruff_linter__rules__numpy__tests__numpy2-deprecation_NPY201.py.snap</code>:84 on 2023-11-03 15:38</div>
+            <div class="timeline-body"><p>I should probably make this a suggested fix with a clear message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-03 15:38</div>
+            <div class="timeline-body"><p>@pllim -- It'll be available in the next release (it was just merged last night), so later today or early next week.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pllim">@pllim</a> on 2023-11-03 15:45</div>
+            <div class="timeline-body"><blockquote>
+<p>It'll be available in the next release</p>
+</blockquote>
+<p>And after that, I can just edit my <code>.ruff.toml</code> to use this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-03 15:46</div>
+            <div class="timeline-body"><p>@pllim yep!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pllim">@pllim</a> on 2023-11-03 15:49</div>
+            <div class="timeline-body"><p>What codes are available? Is there a page where I can look this up? Thanks!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-03 15:54</div>
+            <div class="timeline-body"><p>Everything on the <a href="https://docs.astral.sh/ruff/rules/">rules page</a> is available in the latest release. (We only update the documentation when we release.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/numpy/snapshots/ruff_linter__rules__numpy__tests__numpy2-deprecation_NPY201.py.snap</code>:84 on 2023-11-03 16:07</div>
+            <div class="timeline-body"><p>Fixed in https://github.com/astral-sh/ruff/pull/8474</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-03 16:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pllim">@pllim</a> on 2023-11-03 19:09</div>
+            <div class="timeline-body"><p>Great, thanks! Looking forward to the release.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:14 UTC
+    </footer>
+</body>
+</html>

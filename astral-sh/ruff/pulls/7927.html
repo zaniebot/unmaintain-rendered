@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update string nodes for implicit concatenation - astral-sh/ruff #7927</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Update string nodes for implicit concatenation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7927">#7927</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-10-12 12:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-10-12 12:50</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates the string nodes (<code>ExprStringLiteral</code>, <code>ExprBytesLiteral</code>, and <code>ExprFString</code>) to account for implicit string concatenation.</p>
+<h3>Motivation</h3>
+<p>In Python, implicit string concatenation are joined while parsing because the interpreter doesn't require the information for each part. While that's feasible for an interpreter, it falls short for a static analysis tool where having such information is more useful. Currently, various parts of the code uses the lexer to get the individual string parts.</p>
+<p>One of the main challenge this solves is that of string formatting. Currently, the formatter relies on the lexer to get the individual string parts, and formats them including the comments accordingly. But, with PEP 701, f-string can also contain comments. Without this change, it becomes very difficult to add support for f-string formatting.</p>
+<h3>Implementation</h3>
+<p>The initial proposal was made in this discussion: https://github.com/astral-sh/ruff/discussions/6183#discussioncomment-6591993. There were various AST designs which were explored for this task which are available in the linked internal document[^1].</p>
+<p>The selected variant was the one where the nodes were kept as it is except that the <code>implicit_concatenated</code> field was removed and instead a new struct was added to the <code>Expr*</code> struct. This would be a private struct would contain the actual implementation of how the AST is designed for both single and implicitly concatenated strings.</p>
+<p>This implementation is achieved through an enum with two variants: <code>Single</code> and <code>Concatenated</code> to avoid allocating a vector even for single strings. There are various public methods available on the value struct to query certain information regarding the node.</p>
+<p>The nodes are structured in the following way:</p>
+<pre><code>ExprStringLiteral - &quot;foo&quot; &quot;bar&quot;
+|- StringLiteral - &quot;foo&quot;
+|- StringLiteral - &quot;bar&quot;
+
+ExprBytesLiteral - b&quot;foo&quot; b&quot;bar&quot;
+|- BytesLiteral - b&quot;foo&quot;
+|- BytesLiteral - b&quot;bar&quot;
+
+ExprFString - &quot;foo&quot; f&quot;bar {x}&quot;
+|- FStringPart::Literal - &quot;foo&quot;
+|- FStringPart::FString - f&quot;bar {x}&quot;
+  |- StringLiteral - &quot;bar &quot;
+  |- FormattedValue - &quot;x&quot;
+</code></pre>
+<p>[^1]: Internal document: https://www.notion.so/astral-sh/Implicit-String-Concatenation-e036345dc48943f89e416c087bf6f6d9?pvs=4</p>
+<h4>Visitor</h4>
+<p>The way the nodes are structured is that the entire string, including all the parts that are implicitly concatenation, is a single node containing individual nodes for the parts. The previous section has a representation of that tree for all the string nodes. This means that new visitor methods are added to visit the individual parts of string, bytes, and f-strings for <code>Visitor</code>, <code>PreorderVisitor</code>, and <code>Transformer</code>.</p>
+<h2>Test Plan</h2>
+<ul>
+<li><code>cargo insta test --workspace --all-features --unreferenced reject</code></li>
+<li>Verify that the ecosystem results are unchanged</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-10-12 12:50</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #8062</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8062?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #8063</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8063?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #8064</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8064?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7927</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7927?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #8826</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8826?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #8828</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8828?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #8835</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8835?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #9016</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/9016?utm_source=stack-comment-icon" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This <a href="https://stacking.dev/?utm_source=stack-comment">stack of pull requests</a> is managed by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7927?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2023-10-12 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> removed by @dhruvmanila on 2023-10-12 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dhruvmanila on 2023-10-12 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "POC: AST node for implicit string concatenation" to "New AST node for implicit string concatenation" by @dhruvmanila on 2023-10-19 13:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/use_pep604_annotation.rs</code>:212 on 2023-10-23 08:47</div>
+            <div class="timeline-body"><p>We should pick a different name than string list (<code>StringConcatenation</code> maybe?), because string list sounds like <code>[&quot;1&quot;, &quot;2&quot;]</code> rather than <code>&quot;1&quot; &quot;2&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-10-23 08:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-10-23 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/use_pep604_annotation.rs</code>:212 on 2023-10-23 14:00</div>
+            <div class="timeline-body"><p>Yeah, thanks! I'll propose a few names, we can finalize then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "New AST node for implicit string concatenation" to "Update string nodes for implicit concatenation" by @dhruvmanila on 2023-11-14 13:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-18 17:24</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-18 19:03</div>
+            <div class="timeline-body"><p>The ecosystem checks are only for <code>F541</code> where earlier we <em>wouldn't</em> highlight the individual f-string part if there's a placeholder in any other part. This means the following wouldn't be highlighted:</p>
+<pre><code class="language-python">(
+    f&quot;this is a f-string without any placeholders&quot;
+    f&quot;while this contains a {placeholder}&quot;
+)
+</code></pre>
+<p>But now, we would highlight it:</p>
+<pre><code class="language-console">$ cargo run --bin ruff -- check --no-cache --isolated --select=F541 ~/playground/ruff/src/play.py --show-source --ecosystem-ci
+/Users/dhruv/playground/ruff/src/play.py:2:5: F541 [*] f-string without any placeholders
+  |
+1 | (
+2 |     f&quot;this is a f-string without any placeholders&quot;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ F541
+3 |     f&quot;while this contains a {placeholder}&quot;
+4 | )
+  |
+  = help: Remove extraneous `f` prefix
+
+ℹ Safe fix
+1 1 | (
+2   |-    f&quot;this is a f-string without any placeholders&quot;
+  2 |+    &quot;this is a f-string without any placeholders&quot;
+3 3 |     f&quot;while this contains a {placeholder}&quot;
+4 4 | )
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_bandit/rules/hardcoded_sql_expression.rs</code>:92 on 2023-11-20 17:30</div>
+            <div class="timeline-body"><p>This is now a separate branch because there could be implicit concatenations on the left side of <code>%</code> operator.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_bandit/rules/hardcoded_sql_expression.rs</code>:62 on 2023-11-20 17:30</div>
+            <div class="timeline-body"><p>Escapes are required for multi-line strings to escape the newline characters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/native_literals.rs</code>:206 on 2023-11-20 17:33</div>
+            <div class="timeline-body"><p>This change is mainly to narrow down the scope for <code>is_implicit_concatenated</code> method on literal expressions instead of all expressions (<code>Expr::is_implicit_concatenated_string</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/comparable.rs</code>:562 on 2023-11-20 17:35</div>
+            <div class="timeline-body"><p>Sorry, the actual change here is the following:</p>
+<pre><code class="language-diff">-    Str(&amp;'a str),
+-    Bytes(&amp;'a [u8]),
++    Str(Vec&lt;ComparableStringLiteral&lt;'a&gt;&gt;),
++    Bytes(Vec&lt;ComparableBytesLiteral&lt;'a&gt;&gt;),
+</code></pre>
+<p>And, the corresponding change in <code>impl&lt;'a&gt; From&lt;ast::LiteralExpressionRef&lt;'a&gt;&gt; for ComparableLiteral&lt;'a&gt; {</code>. I moved this part from down below which is why the diff is big.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1345 on 2023-11-20 17:41</div>
+            <div class="timeline-body"><p>For test snapshots as the <code>value</code> field is a <code>OnceCell&lt;String&gt;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/expression/string.rs</code>:262 on 2023-11-20 17:47</div>
+            <div class="timeline-body"><p>I'm thinking of removing <code>FormatString</code> altogether and move the formatting logic in the respective node. The highlighted part is for implicit string concatenation and the <code>self.string.parts</code> is allocating a new vector because of type differences in each match blocks. This would also help in isolating docstring formatting only in <code>ExprStringLiteral</code>. Also, the f-string formatting would mean that the logic will be shifted so we might as well do it for string and bytes literal.</p>
+<p>I'll probably do it in a follow-up PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-11-20 17:51</div>
+            <div class="timeline-body"><p>The f-strings nesting is a bit too much but it'll be reduced with https://github.com/astral-sh/ruff/pull/6365</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2023-11-20 17:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @dhruvmanila on 2023-11-20 17:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @dhruvmanila on 2023-11-20 17:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-21 19:14</div>
+            <div class="timeline-body"><p>@dhruvmanila What would you say is the best way to review this? I first looked at doing this commit-by-commit, but the individual commits themselves are quite large. One thing that could help is if the commits were split in a way where one commit might have a change to a data structure (like a new AST node or something), and then a commit separate from that updated the rest of the code to be in sync with that change. The split makes it easier to scrutinize the &quot;substance&quot; of the change (the data structure) separately from the less interesting refactor bits that can easily drown out the substance. Splitting them this way will mean that your commits won't build individually, but we can squash them on merge.</p>
+<p>I don't know how much effort it would be to split this up at this point though. It might not be worth it. It might also just be harder for me because I'm less familiar with the code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-21 19:26</div>
+            <div class="timeline-body"><blockquote>
+<p>One thing that could help is if the commits were split in a way where one commit might have a change to a data structure (like a new AST node or something), and then a commit separate from that updated the rest of the code to be in sync with that change.</p>
+</blockquote>
+<p>I think it can be done, let me spend some time on it.</p>
+<p>(Rebased on main, will be re-arranging the commits now.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-21 19:59</div>
+            <div class="timeline-body"><p>@BurntSushi I've re-arranged the commits, let me know if it helps. I'm happy to provide any further information as required.</p>
+<p>The commit flow is as follows:</p>
+<ul>
+<li>Update the AST nodes</li>
+<li>Update the parser<ul>
+<li>Update snapshots for parser tests</li>
+</ul>
+</li>
+<li>Update visitor implementation and related code</li>
+<li>Update the code generator</li>
+<li>Update the linter</li>
+<li>Update the formatter</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1090 on 2023-11-22 12:41</div>
+            <div class="timeline-body"><p>My first thought here is to wonder why, based on the comment, this isn't <code>Single(FString)</code> in order to better encode the invariant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1090 on 2023-11-22 12:44</div>
+            <div class="timeline-body"><p>Hmmm yes, I see, the <code>FStringValue::parts</code> method makes it rather annoying to do that without extra type machinery that probably isn't worth doing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1326 on 2023-11-22 12:50</div>
+            <div class="timeline-body"><p>I wonder if you want to implement <code>PartialEq</code> manually? Namely, if you have two <code>ConcatenatedStringLiteral</code> values where both have equivalent values for <code>strings</code> but where one has <code>value</code> initialized and the other does not, would you expect them to compare equal? Semantically I think I would, since the alternative is that equality is dependent on whether <code>as_str()</code> has been called, which seems incidental.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_python_ast/src/visitor.rs</code>:782 on 2023-11-22 13:08</div>
+            <div class="timeline-body"><p>What about using <code>_visitor</code> and <code>_alias</code> instead of the <code>allow(unused_variables)</code>? (Not a big deal either way.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2023-11-22 13:15</div>
+            <div class="timeline-body"><p>Ah this is much better! Thank you for breaking it up. It made it oodles easier to review. :-)</p>
+<p>Overall great work. I especially found the new fstring/string/byte-string types pretty easy to follow and understand. Their structure makes sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-11-22 15:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1090 on 2023-11-22 15:38</div>
+            <div class="timeline-body"><p>Yeah, I tried adding a <code>FStringPartRef</code> enum but then we can't get the mutable reference for it which is required in the <code>Transformer</code>.</p>
+<pre><code class="language-rs">enum FStringPartRef&lt;'a&gt; {
+	Literal(&amp;'a StringLiteral),
+	FString(&amp;'a FString),
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-11-22 15:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1326 on 2023-11-22 15:43</div>
+            <div class="timeline-body"><p>Oh, that's a good point, thanks for noticing it. I'll add the custom implementation for <code>PartialEq</code> which compares the <code>strings</code> field only:</p>
+<pre><code class="language-rs">impl PartialEq for ConcatenatedStringLiteral {
+    fn eq(&amp;self, other: &amp;Self) -&gt; bool {
+        if self.strings.len() != other.strings.len() {
+            return false;
+        }
+        // The `zip` here is safe because we have checked the length of both parts.
+        self.strings
+            .iter()
+            .zip(other.strings.iter())
+            .all(|(s1, s2)| s1 == s2)
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-11-22 15:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/visitor.rs</code>:782 on 2023-11-22 15:44</div>
+            <div class="timeline-body"><p>I did it mainly for consistency with other methods 😅</p>
+<p>I'll probably change it in a follow-up PR instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-22 17:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/comparable.rs</code>:562 on 2023-11-22 17:36</div>
+            <div class="timeline-body"><p>Should this be a <code>Vec</code> though? Does this still consider <code>&quot;foobar&quot;</code> and <code>&quot;foo&quot; &quot;bar&quot;</code> to be equivalent?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-22 17:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pylint/rules/bad_string_format_type.rs</code>:128 on 2023-11-22 17:44</div>
+            <div class="timeline-body"><p>I suspect that you could implement <code>.chars()</code> without needing to allocate the string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-22 17:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/ruff/rules/explicit_f_string_type_conversion.rs</code>:151 on 2023-11-22 17:45</div>
+            <div class="timeline-body"><p>Interesting, how did this get so much simpler?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-22 17:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1241 on 2023-11-22 17:51</div>
+            <div class="timeline-body"><p>I don't know that I'm a huge fan of <code>deref</code> here since this can actually be expensive and require an allocation. How much trouble would it be to remove this and require explicit <code>as_str()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-11-22 17:54</div>
+            <div class="timeline-body"><p>This is impressive work. There's a huge surface area here. You did a great job of breaking down the individual PRs and walking us through it.</p>
+<p>I left a few questions, which I'm happy to continued discussing, but erring on the side of approving.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-22 17:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1116 on 2023-11-22 17:55</div>
+            <div class="timeline-body"><p>I wonder if these should be <code>smallvec</code>... It's probably worth benchmarking in a separate PR. In practice, I'd bet the vast majority of concatenations are &lt;= 5 elements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-22 17:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/unrecognized_platform.rs</code>:130 on 2023-11-22 17:57</div>
+            <div class="timeline-body"><p>This is an example where... we can probably do this without the concatenation? Imagine if we had a custom matcher that worked on implicit concatenations (i.e., a vector of strings). \cc @burntsushi in case you have obvious ideas here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/unrecognized_platform.rs</code>:130 on 2023-11-22 18:28</div>
+            <div class="timeline-body"><p>I think the closest &quot;out of the box&quot; experience you can get is <a href="https://docs.rs/aho-corasick/latest/aho_corasick/struct.AhoCorasick.html#method.stream_find_iter">stream searching with <code>aho-corasick</code></a>, but you need to provide a <code>std::io::Read</code> impl. Mildly annoying but doable in this context.</p>
+<p>But I would say to write the simple/obvious code for now, and if this ends up popping up on a profile then we can revisit it and do something bespoke here or use <code>aho-corasick</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-11-22 18:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-11-22 19:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1241 on 2023-11-22 19:00</div>
+            <div class="timeline-body"><p>It's not too much as I just need to go through the references and add the method call which should be simple with <code>rust-analyzer</code>.</p>
+<p>I get your point and I think having an explicit call is worth the small effort.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-11-22 19:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pylint/rules/bad_string_format_type.rs</code>:128 on 2023-11-22 19:04</div>
+            <div class="timeline-body"><p>Yes, we can.</p>
+<p>Thinking about this with your previous comment, I think we should implement some other methods as well like <code>is_empty</code>, <code>len</code>, etc. which means that these APIs will guaranteed be free of allocation and, we would be providing <code>as_str</code> to get the concatenated source code to use methods not implemented on the abstract type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-11-22 19:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/ruff/rules/explicit_f_string_type_conversion.rs</code>:151 on 2023-11-22 19:10</div>
+            <div class="timeline-body"><p>Ah, that's the magic of this refactor 😉</p>
+<p>Jokes aside, this basically reverts this commit https://github.com/astral-sh/ruff/commit/ac4a4da50ed524b45f162acf2726aea902b2026f which fixed the bug where this rule wasn't producing the correct fix for an implicitly concatenated string. But, now that we work on individual parts, that isn't required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-11-22 19:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/unrecognized_platform.rs</code>:130 on 2023-11-22 19:15</div>
+            <div class="timeline-body"><p>I think I would prefer to avoid the complexity for such simple cases but I do understand that this could be useful in similar cases where the strings are long.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-11-23 14:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1241 on 2023-11-23 14:57</div>
+            <div class="timeline-body"><p>#8826</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pylint/rules/bad_string_format_type.rs</code>:128 on 2023-11-23 14:57</div>
+            <div class="timeline-body"><p>#8826</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-11-23 14:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2023-11-24 23:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-11-24 23:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-24 23:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:14 UTC
+    </footer>
+</body>
+</html>

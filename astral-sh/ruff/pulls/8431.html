@@ -1,0 +1,2245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid parenthesizing unsplittable because of comments - astral-sh/ruff #8431</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid parenthesizing unsplittable because of comments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8431">#8431</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-11-02 02:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-02 02:45</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR implements a fix for https://github.com/astral-sh/ruff/issues/8041 where Ruff parenthesized unsplittable values in assignments if it has a trailing end-of-line comment that makes the assignment go over the line length.</p>
+<pre><code class="language-python">____aaa = aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbvvvvvvvvvvvv  # c
+
+# Formatted
+____aaa = (
+    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbvvvvvvvvvvvv
+)  # c
+</code></pre>
+<p>The way black <em>solves</em> this is by moving the trailing end-of-line comment into the assignment so that it only parenthesizes the value (and comment) if formatting it on a new line makes both fit.</p>
+<pre><code class="language-python"># 88 characters unparenthesized, fits on a single line
+____aaa = aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbvvvvv  # c
+
+# 88 characters parenthesized
+____aaa = (
+    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbvvvvvvvvvv  # c
+)
+
+# 89 characters parenthesized. Collapse to avoid unnecessary parentheses
+____aaa = aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbvvvvvvvvvvvv  # c
+</code></pre>
+<p>Closes https://github.com/astral-sh/ruff/issues/8041</p>
+<h2>Notes</h2>
+<p>There's one downside to this approach. It violates our principle of never collapsing an expression if it has trailing line comments. Let's take this example:</p>
+<pre><code class="language-python">a = (
+	short  # comment
+)
+</code></pre>
+<p>It is now formatted as</p>
+<pre><code class="language-python">a = short  # comment
+</code></pre>
+<p>To ensure the new comment style is reversible.</p>
+<h2>Non-Fluent attribute chains</h2>
+<p>Non-fluent attribute chains aren't splittable. However, Black formats the comments after the closing parentheses as ruff used to before this change (related https://github.com/astral-sh/ruff/issues/8182). I decided to favour Black compatibility over consistence because it introduces about 30 file regressions in the similarity index check. Which is more than this PR fixes.</p>
+<h2>Test Plan</h2>
+<p>I added extensive tests and reviewed the ecosystem changes. They all seem to capture better the user's intent (and e.g. avoid moving pragma comments.</p>
+<p><strong>Main</strong></p>
+<p>| project        | similarity index  | total files       | changed files     |
+|----------------|------------------:|------------------:|------------------:|
+| cpython        |           0.75804 |              1799 |              1648 |
+| django         |           0.99984 |              2772 |                34 |
+| home-assistant |           0.99963 |             10596 |               148 |
+| poetry         |           0.99925 |               317 |                12 |
+| transformers   |           0.99967 |              2657 |               328 |
+| twine          |           1.00000 |                33 |                 0 |
+| typeshed       |           0.99980 |              3669 |                18 |
+| warehouse      |           0.99977 |               654 |                13 |
+| zulip          |           0.99970 |              1459 |                22 |</p>
+<p><strong>PR</strong></p>
+<p>| project        | similarity index  | total files       | changed files     |
+|----------------|------------------:|------------------:|------------------:|
+| cpython        |           0.75804 |              1799 |              1648 |
+| django         |           0.99984 |              2772 |                34 |
+| <strong>home-assistant</strong> |           0.99963 |             10596 |               143 |
+| poetry         |           0.99925 |               317 |                12 |
+| <strong>transformers</strong>   |           0.99967 |              2657 |               322 |
+| twine          |           1.00000 |                33 |                 0 |
+| typeshed       |           0.99980 |              3669 |                18 |
+| warehouse      |           0.99977 |               654 |                13 |
+| <strong>zulip</strong>          |           0.99970 |              1459 |                21 |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-02 02:45</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #8431</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8431" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+</ul>
+</li>
+</ul>
+<p>This <a href="https://stacking.dev/?utm_source=stack-comment">stack of pull requests</a> is managed by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8431?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-02 03:04</div>
+            <div class="timeline-body"><h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+352 -378 lines in 69 files in 40 projects; 1 project error)</p>
+<details><summary><a href="https://github.com/PostHog/HouseWatch">PostHog/HouseWatch</a> (+4 -6 lines across 1 file)</summary>
+<p>
+<pre>ruff format</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/PostHog/HouseWatch/blob/bf61a8e227311b3bc2fecd53823e4c1b37eb4a6d/housewatch/settings/__init__.py#L260'>housewatch/settings/<strong>init</strong>.py~L260</a></p>
+<pre><code class="language-diff"> CELERY_IMPORTS = []  # type: ignore
+ CELERY_BROKER_URL = RABBITMQ_URL  # celery connects to rabbitmq
+ CELERY_BEAT_MAX_LOOP_INTERVAL = (
+-    30
+-)  # sleep max 30sec before checking for new periodic events
++    30  # sleep max 30sec before checking for new periodic events
++)
+ CELERY_RESULT_BACKEND = REDIS_URL  # stores results for lookup when processing
+-CELERY_IGNORE_RESULT = (
+-    True
+-)  # only applies to delay(), must do @shared_task(ignore_result=True) for apply_async
++CELERY_IGNORE_RESULT = True  # only applies to delay(), must do @shared_task(ignore_result=True) for apply_async
+ CELERY_RESULT_EXPIRES = timedelta(
+     days=4
+ )  # expire tasks after 4 days instead of the default 1
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+5 -9 lines across 1 file)</summary>
+<p>
+<pre>ruff format</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/RasaHQ/rasa/blob/0dd893a1b343b069cbd237c74ded10ffa984afb4/rasa/server.py#L880'>rasa/server.py~L880</a></p>
+<pre><code class="language-diff"> 
+         try:
+             async with app.ctx.agent.lock_store.lock(conversation_id):
+-                tracker = await (
+-                    app.ctx.agent.processor.fetch_tracker_and_update_session(
+-                        conversation_id
+-                    )
++                tracker = await app.ctx.agent.processor.fetch_tracker_and_update_session(
++                    conversation_id
+                 )
+ 
+                 output_channel = _get_output_channel(request, tracker)
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/0dd893a1b343b069cbd237c74ded10ffa984afb4/rasa/server.py#L933'>rasa/server.py~L933</a></p>
+<pre><code class="language-diff"> 
+         try:
+             async with app.ctx.agent.lock_store.lock(conversation_id):
+-                tracker = await (
+-                    app.ctx.agent.processor.fetch_tracker_and_update_session(
+-                        conversation_id
+-                    )
++                tracker = await app.ctx.agent.processor.fetch_tracker_and_update_session(
++                    conversation_id
+                 )
+                 output_channel = _get_output_channel(request, tracker)
+                 if intent_to_trigger not in app.ctx.agent.domain.intents:
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/alteryx/featuretools">alteryx/featuretools</a> (+3 -7 lines across 1 file)</summary>
+<p>
+<pre>ruff format</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/alteryx/featuretools/blob/1498c9a9723deff9b049e4bb70a4859c70331942/featuretools/tests/synthesis/test_deep_feature_synthesis.py#L229'>featuretools/tests/synthesis/test_deep_feature_synthesis.py~L229</a></p>
+<pre><code class="language-diff"> 
+ 
+ def test_ignore_columns_input_type(es):
+-    error_msg = (
+-        r&quot;ignore_columns should be dict\[str -&gt; list\]&quot;
+-    )  # need to use string literals to avoid regex params
++    error_msg = r&quot;ignore_columns should be dict\[str -&gt; list\]&quot;  # need to use string literals to avoid regex params
+     wrong_input_type = {&quot;log&quot;: &quot;value&quot;}
+     with pytest.raises(TypeError, match=error_msg):
+         DeepFeatureSynthesis(
+</code></pre>
+<p><a href='https://github.com/alteryx/featuretools/blob/1498c9a9723deff9b049e4bb70a4859c70331942/featuretools/tests/synthesis/test_deep_feature_synthesis.py#L253'>featuretools/tests/synthesis/test_deep_feature_synthesis.py~L253</a></p>
+<pre><code class="language-diff"> 
+ 
+ def test_ignore_columns_with_nonstring_keys(es):
+-    error_msg = (
+-        r&quot;ignore_columns should be dict\[str -&gt; list\]&quot;
+-    )  # need to use string literals to avoid regex params
++    error_msg = r&quot;ignore_columns should be dict\[str -&gt; list\]&quot;  # need to use string literals to avoid regex params
+     wrong_input_keys = {1: [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]}
+     with pytest.raises(TypeError, match=error_msg):
+         DeepFeatureSynthesis(
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/demisto/content">demisto/content</a> (+32 -36 lines across 6 files)</summary>
+<p>
+<pre>ruff format --exclude Packs/ThreatQ/Integrations/ThreatQ/ThreatQ.py</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Packs/AWS_SystemManager/Integrations/AWSSystemManager/AWSSystemManager.py#L31'>Packs/AWS_SystemManager/Integrations/AWSSystemManager/AWSSystemManager.py~L31</a></p>
+<pre><code class="language-diff"> }
+ SERVICE_NAME = &quot;ssm&quot;  # Amazon Simple Systems Manager (SSM).
+ DEFAULT_TIMEOUT = 600  # Default timeout for polling commands.
+-MAXIMUM_COMMAND_TIMEOUT = (
+-    2592000  # Maximum timeout for running commands in ssm (30 days).
+-)
++MAXIMUM_COMMAND_TIMEOUT = 2592000  # Maximum timeout for running commands in ssm (30 days).
+ MINIMUM_COMMAND_TIMEOUT = 30  # Minimum timeout for running commands in ssm.
+ DEFAULT_INTERVAL_IN_SECONDS = 30  # Interval for polling commands.
+ TERMINAL_AUTOMATION_STATUSES = {  # the status for run automation command
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Packs/AWS_SystemManager/Integrations/AWSSystemManager/AWSSystemManager.py#L1480'>Packs/AWS_SystemManager/Integrations/AWSSystemManager/AWSSystemManager.py~L1480</a></p>
+<pre><code class="language-diff">     aws_role_arn = params.get(&quot;roleArn&quot;)
+     aws_role_session_name = params.get(&quot;roleSessionName&quot;)
+     aws_role_session_duration = params.get(&quot;sessionDuration&quot;)
+-    aws_role_policy = (
+-        None  # added it for using AWSClient class without changing the code
+-    )
++    aws_role_policy = None  # added it for using AWSClient class without changing the code
+     timeout = params[&quot;timeout&quot;]
+     retries = params[&quot;retries&quot;]
+ 
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Packs/MicrosoftDefenderAdvancedThreatProtection/Integrations/MicrosoftDefenderAdvancedThreatProtection/MicrosoftDefenderAdvancedThreatProtection.py#L150'>Packs/MicrosoftDefenderAdvancedThreatProtection/Integrations/MicrosoftDefenderAdvancedThreatProtection/MicrosoftDefenderAdvancedThreatProtection.py~L150</a></p>
+<pre><code class="language-diff">         SMB_CONNECTIONS_QUERY_SUFFIX = &quot;\n| summarize RemoteIPCount=dcount(RemoteIP) by DeviceName, InitiatingProcessFileName, InitiatingProcessId, InitiatingProcessCreationTime\n|{} limit {}&quot;  # noqa: E501
+         CREDENTIAL_DUMPING_QUERY_SUFFIX = &quot;\n| project Timestamp, DeviceName, ActionType, FileName, ProcessCommandLine, AccountName, InitiatingProcessIntegrityLevel, InitiatingProcessTokenElevation\n| limit {}&quot;  # noqa: E501
+         MANAGEMENT_CONNECTION_QUERY_SUFFIX = (
+-            &quot;\n| summarize TotalCount=count() by DeviceName,LocalIP,RemoteIP,RemotePort\n| order by TotalCount\n| limit {}&quot;
+-        )  # noqa: E501
++            &quot;\n| summarize TotalCount=count() by DeviceName,LocalIP,RemoteIP,RemotePort\n| order by TotalCount\n| limit {}&quot;  # noqa: E501
++        )
+ 
+         def __init__(
+             self,
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Packs/MicrosoftDefenderAdvancedThreatProtection/Integrations/MicrosoftDefenderAdvancedThreatProtection/MicrosoftDefenderAdvancedThreatProtection.py#L257'>Packs/MicrosoftDefenderAdvancedThreatProtection/Integrations/MicrosoftDefenderAdvancedThreatProtection/MicrosoftDefenderAdvancedThreatProtection.py~L257</a></p>
+<pre><code class="language-diff">         &quot;&quot;&quot;QUERY PREFIX&quot;&quot;&quot;
+ 
+         SCHEDULE_JOB_QUERY_PREFIX = (
+-            'DeviceEvents | where ActionType == &quot;ScheduledTaskCreated&quot; and InitiatingProcessAccountSid != &quot;S-1-5-18&quot; and'
+-        )  # noqa: E501
++            'DeviceEvents | where ActionType == &quot;ScheduledTaskCreated&quot; and InitiatingProcessAccountSid != &quot;S-1-5-18&quot; and'  # noqa: E501
++        )
+         REGISTRY_ENTRY_QUERY_PREFIX = 'DeviceRegistryEvents | where ActionType == &quot;RegistryValueSet&quot; and'
+         STARTUP_FOLDER_CHANGES_QUERY_PREFIX = 'DeviceFileEvents | where FolderPath contains @&quot;\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup&quot; and ActionType == &quot;FileCreated&quot; and'  # noqa: E501
+         NEW_SERVICE_CREATED_QUERY_PREFIX = 'DeviceRegistryEvents | where RegistryKey contains @&quot;HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services&quot; and ActionType == &quot;RegistryKeyCreated&quot; and'  # noqa: E501
+         SERVICE_UPDATED_QUERY_PREFIX = 'DeviceRegistryEvents | where RegistryKey contains @&quot;HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services&quot; and ActionType has_any (&quot;RegistryValueSet&quot;,&quot;RegistryKeyCreated&quot;) and'  # noqa: E501
+         FILE_REPLACED_QUERY_PREFIX = (
+-            'DeviceFileEvents | where FolderPath contains @&quot;C:\Program Files&quot; and ActionType == &quot;FileModified&quot; and'
+-        )  # noqa: E501
++            'DeviceFileEvents | where FolderPath contains @&quot;C:\Program Files&quot; and ActionType == &quot;FileModified&quot; and'  # noqa: E501
++        )
+         NEW_USER_QUERY_PREFIX = 'DeviceEvents | where ActionType == &quot;UserAccountCreated&quot; and'
+         NEW_GROUP_QUERY_PREFIX = 'DeviceEvents | where ActionType == &quot;SecurityGroupCreated&quot; and'
+         GROUP_USER_CHANGE_QUERY_PREFIX = 'DeviceEvents | where ActionType == &quot;UserAccountAddedToLocalGroup&quot; and'
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Packs/MicrosoftDefenderAdvancedThreatProtection/Integrations/MicrosoftDefenderAdvancedThreatProtection/MicrosoftDefenderAdvancedThreatProtection.py#L576'>Packs/MicrosoftDefenderAdvancedThreatProtection/Integrations/MicrosoftDefenderAdvancedThreatProtection/MicrosoftDefenderAdvancedThreatProtection.py~L576</a></p>
+<pre><code class="language-diff">         GENERIC_PROCESS_DETAILS_QUERY_PREFIX = &quot;DeviceProcessEvents | where&quot;
+         BECAONING_QUERY_PREFIX = &quot;DeviceNetworkEvents | where&quot;
+         POWERSHELL_EXECUTION_PROCESS_QUERY_PREFIX = (
+-            'DeviceProcessEvents | where FileName in~ (&quot;powershell.exe&quot;, &quot;powershell_ise.exe&quot;,&quot;.ps&quot;) and'
+-        )  # noqa: E501
++            'DeviceProcessEvents | where FileName in~ (&quot;powershell.exe&quot;, &quot;powershell_ise.exe&quot;,&quot;.ps&quot;) and'  # noqa: E501
++        )
+         POWERSHELL_EXECUTION_PROCESS_UNSIGNED_QUERY_PREFIX = 'DeviceProcessEvents | where FileName in~ (&quot;powershell.exe&quot;, &quot;powershell_ise.exe&quot;,&quot;.ps&quot;) and ( InitiatingProcessFileName != &quot;SenerIR.exe&quot; and InitiatingProcessParentFileName != &quot;MsSense.exe&quot; and InitiatingProcessSignatureStatus != &quot;Valid&quot; ) and (InitiatingProcessFileName != &quot;CompatTelRunner.exe&quot; and InitiatingProcessParentFileName != &quot;CompatTelRunner.exe&quot;)'  # noqa: E501
+ 
+         &quot;&quot;&quot;QUERY SUFFIX&quot;&quot;&quot;
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Packs/MicrosoftDefenderAdvancedThreatProtection/Integrations/MicrosoftDefenderAdvancedThreatProtection/MicrosoftDefenderAdvancedThreatProtection.py#L741'>Packs/MicrosoftDefenderAdvancedThreatProtection/Integrations/MicrosoftDefenderAdvancedThreatProtection/MicrosoftDefenderAdvancedThreatProtection.py~L741</a></p>
+<pre><code class="language-diff">         &quot;&quot;&quot;QUERY SUFFIX&quot;&quot;&quot;
+         EXTERNAL_ADDRESSES_QUERY_SUFFIX = &quot;\n| summarize TotalConnections = count() by DeviceName, RemoteIP, RemotePort, InitiatingProcessFileName,InitiatingProcessFolderPath | order by TotalConnections\n| limit {}&quot;  # noqa: E501
+         DNS_QUERY_SUFFIX = (
+-            &quot;| project Timestamp,DeviceName,ActionType,RemoteIP,Packetinfo = url_decode(AdditionalFields)\n| limit {}&quot;
+-        )  # noqa: E501
++            &quot;| project Timestamp,DeviceName,ActionType,RemoteIP,Packetinfo = url_decode(AdditionalFields)\n| limit {}&quot;  # noqa: E501
++        )
+         ENCODED_COMMANDS_QUERY_SUFFIX = &quot;\n| limit {}&quot;
+ 
+         def __init__(
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Packs/MicrosoftDefenderAdvancedThreatProtection/Integrations/MicrosoftDefenderAdvancedThreatProtection/MicrosoftDefenderAdvancedThreatProtection.py#L894'>Packs/MicrosoftDefenderAdvancedThreatProtection/Integrations/MicrosoftDefenderAdvancedThreatProtection/MicrosoftDefenderAdvancedThreatProtection.py~L894</a></p>
+<pre><code class="language-diff">         COMPROMISED_INFORMATION_QUERY_SUFFIX = &quot;\n| project Timestamp, DeviceId, DeviceName, ActionType, FileName, FolderPath, SHA1, SHA256, MD5, InitiatingProcessFileName\n| limit {}&quot;  # noqa: E501
+         CONNECTED_DEVICES_QUERY_SUFFIX = &quot;\n| summarize by DeviceName\n| limit {}&quot;
+         ACTION_TYPES_QUERY_SUFFIX = (
+-            &quot;\n| summarize Number_of_actions=count(ActionType) by ActionType,DeviceName | order by Number_of_actions\n| limit {}&quot;
+-        )  # noqa: E501
++            &quot;\n| summarize Number_of_actions=count(ActionType) by ActionType,DeviceName | order by Number_of_actions\n| limit {}&quot;  # noqa: E501
++        )
+         COMMON_FILES_QUERY_SUFFIX = &quot;\n| summarize Number_of_accoiated_events=count(FileName) by FileName, MD5, SHA1, SHA256 | order by Number_of_accoiated_events\n| limit {}&quot;  # noqa: E501
+ 
+         def __init__(
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Packs/SentinelOne/Integrations/SentinelOneEventCollector/SentinelOneEventCollector_test.py#L7'>Packs/SentinelOne/Integrations/SentinelOneEventCollector/SentinelOneEventCollector_test.py~L7</a></p>
+<pre><code class="language-diff"> &quot;&quot;&quot; CONSTANTS &quot;&quot;&quot;
+ 
+ ACTIVITIES_MOCK_URL = (
+-    &quot;https://test.com/web/api/v2.1/activities?createdAt__gt=2022-01-04+00%3A00%3A00&amp;limit=1000&amp;sortBy=createdAt&amp;sortOrder=asc&quot;
+-)  # noqa: E501
++    &quot;https://test.com/web/api/v2.1/activities?createdAt__gt=2022-01-04+00%3A00%3A00&amp;limit=1000&amp;sortBy=createdAt&amp;sortOrder=asc&quot;  # noqa: E501
++)
+ ACTIVITIES_SECOND_MOCK_URL = &quot;https://test.com/web/api/v2.1/activities?createdAt__gt=2022-09-06T20%3A37%3A55.912951Z&amp;limit=1000&amp;sortBy=createdAt&amp;sortOrder=asc&quot;  # noqa: E501
+ THREATS_MOCK_URL = (
+-    &quot;https://test.com/web/api/v2.1/threats?createdAt__gt=2022-01-04+00%3A00%3A00&amp;limit=1000&amp;sortBy=createdAt&amp;sortOrder=asc&quot;
+-)  # noqa: E501
++    &quot;https://test.com/web/api/v2.1/threats?createdAt__gt=2022-01-04+00%3A00%3A00&amp;limit=1000&amp;sortBy=createdAt&amp;sortOrder=asc&quot;  # noqa: E501
++)
+ THREATS_SECOND_MOCK_URL = &quot;https://test.com/web/api/v2.1/threats?createdAt__gt=2022-12-20T15%3A51%3A17.514437Z&amp;limit=1000&amp;sortBy=createdAt&amp;sortOrder=asc&quot;  # noqa: E501
+ ALERTS_MOCK_URL = &quot;https://test.com/web/api/v2.1/cloud-detection/alerts?limit=1000&amp;createdAt__gt=2022-01-04+00%3A00%3A00&amp;sortBy=alertInfoCreatedAt&amp;sortOrder=asc&quot;  # noqa: E501
+ ALERTS_SECOND_MOCK_URL = &quot;https://test.com/web/api/v2.1/cloud-detection/alerts?limit=1000&amp;createdAt__gt=2022-12-20T13%3A54%3A43.027000Z&amp;sortBy=alertInfoCreatedAt&amp;sortOrder=asc&quot;  # noqa: E501
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Packs/XsoarWebserver/Integrations/XSOARWebServer/XSOARWebServer.py#L87'>Packs/XsoarWebserver/Integrations/XSOARWebServer/XSOARWebServer.py~L87</a></p>
+<pre><code class="language-diff">         link_uuid = str(uuid.uuid4())
+         partial_link = f&quot;{xsoar_external_url}/instance/execute/{integration_instance_name}/process/{entry_uuid}/{link_uuid}/&quot;
+         partial_link_port = (
+-            f&quot;{xsoar_external_url}:{port}/instance/execute/{integration_instance_name}/process/{entry_uuid}/{link_uuid}/&quot;
+-        )  # noqa: E501
++            f&quot;{xsoar_external_url}:{port}/instance/execute/{integration_instance_name}/process/{entry_uuid}/{link_uuid}/&quot;  # noqa: E501
++        )
+         temp_link_tracker = {&quot;response&quot;: &quot;&quot;, &quot;response_received&quot;: False, &quot;emailaddress&quot;: email}
+ 
+         for ind, action in enumerate(input_list):
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Packs/XsoarWebserver/Integrations/XSOARWebServer/XSOARWebServer.py#L131'>Packs/XsoarWebserver/Integrations/XSOARWebServer/XSOARWebServer.py~L131</a></p>
+<pre><code class="language-diff">         link_uuid = str(uuid.uuid4())
+         partial_link = f&quot;{xsoar_external_url}/instance/execute/{integration_instance_name}/processform/{entry_uuid}/{link_uuid}/&quot;
+         partial_link_port = (
+-            f&quot;{xsoar_external_url}:{port}/instance/execute/{integration_instance_name}/processform/{entry_uuid}/{link_uuid}/&quot;
+-        )  # noqa: E501
++            f&quot;{xsoar_external_url}:{port}/instance/execute/{integration_instance_name}/processform/{entry_uuid}/{link_uuid}/&quot;  # noqa: E501
++        )
+ 
+         if xsoar_proxy == &quot;true&quot;:
+             action_url = partial_link
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Packs/rasterize/Integrations/rasterize/rasterize.py#L42'>Packs/rasterize/Integrations/rasterize/rasterize.py~L42</a></p>
+<pre><code class="language-diff"> DEFAULT_W, DEFAULT_H = &quot;600&quot;, &quot;800&quot;
+ DEFAULT_W_WIDE = &quot;1024&quot;
+ CHROME_USER_AGENT = (
+-    &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36&quot;
+-)  # noqa
++    &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36&quot;  # noqa
++)
+ MAX_FULLSCREEN_W = 8000
+ MAX_FULLSCREEN_H = 8000
+ DRIVER_LOG = f&quot;{tempfile.gettempdir()}/chromedriver.log&quot;
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Tests/Marketplace/search_and_install_packs.py#L37'>Tests/Marketplace/search_and_install_packs.py~L37</a></p>
+<pre><code class="language-diff"> PACKS_DIR = &quot;Packs&quot;
+ PACK_METADATA_FILE = Pack.USER_METADATA
+ GITLAB_PACK_METADATA_URL = (
+-    f&quot;{{gitlab_url}}/api/v4/projects/{CONTENT_PROJECT_ID}/repository/files/{PACKS_DIR}%2F{{pack_id}}%2F{PACK_METADATA_FILE}&quot;
+-)  # noqa: E501
++    f&quot;{{gitlab_url}}/api/v4/projects/{CONTENT_PROJECT_ID}/repository/files/{PACKS_DIR}%2F{{pack_id}}%2F{PACK_METADATA_FILE}&quot;  # noqa: E501
++)
+ 
+ 
+ @lru_cache
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/docker/docker-py">docker/docker-py</a> (+3 -3 lines across 1 file)</summary>
+<p>
+<pre>ruff format</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/docker/docker-py/blob/c38656dc7894363f32317affecc3e4279e1163f8/tests/unit/fake_api.py#L6'>tests/unit/fake_api.py~L6</a></p>
+<pre><code class="language-diff"> 
+ FAKE_CONTAINER_ID = &quot;81cf499cc928ce3fedc250a080d2b9b978df20e4517304c45211e8a68b33e254&quot;
+ FAKE_IMAGE_ID = (
+-    &quot;sha256:fe7a8fc91d3f17835cbb3b86a1c60287500ab01a53bc79c4497d09f07a3f0688&quot;
+-)  # noqa: E501
++    &quot;sha256:fe7a8fc91d3f17835cbb3b86a1c60287500ab01a53bc79c4497d09f07a3f0688&quot;  # noqa: E501
++)
+ FAKE_EXEC_ID = &quot;b098ec855f10434b5c7c973c78484208223a83f663ddaefb0f02a242840cb1c7&quot;
+ FAKE_NETWORK_ID = &quot;1999cfb42e414483841a125ade3c276c3cb80cb3269b14e339354ac63a31b02c&quot;
+ FAKE_IMAGE_NAME = &quot;test_image&quot;
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/milvus-io/pymilvus">milvus-io/pymilvus</a> (+6 -6 lines across 2 files)</summary>
+<p>
+<pre>ruff format</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/milvus-io/pymilvus/blob/9ad0ceada72396be890b746fe3a78ed4d74b3589/examples/example_bulkinsert_json.py#L50'>examples/example_bulkinsert_json.py~L50</a></p>
+<pre><code class="language-diff"> _JSON_FIELD_NAME = &quot;json_field&quot;
+ _VARCHAR_FIELD_NAME = &quot;varchar_field&quot;
+ _DYNAMIC_FIELD_NAME = (
+-    &quot;$meta&quot;
+-)  # dynamic field, the internal name is &quot;$meta&quot;, enable_dynamic_field=True
++    &quot;$meta&quot;  # dynamic field, the internal name is &quot;$meta&quot;, enable_dynamic_field=True
++)
+ 
+ # minio
+ DEFAULT_BUCKET_NAME = &quot;a-bucket&quot;
+</code></pre>
+<p><a href='https://github.com/milvus-io/pymilvus/blob/9ad0ceada72396be890b746fe3a78ed4d74b3589/examples/example_bulkinsert_numpy.py#L51'>examples/example_bulkinsert_numpy.py~L51</a></p>
+<pre><code class="language-diff"> _JSON_FIELD_NAME = &quot;json_field&quot;
+ _VARCHAR_FIELD_NAME = &quot;varchar_field&quot;
+ _DYNAMIC_FIELD_NAME = (
+-    &quot;$meta&quot;
+-)  # dynamic field, the internal name is &quot;$meta&quot;, enable_dynamic_field=True
++    &quot;$meta&quot;  # dynamic field, the internal name is &quot;$meta&quot;, enable_dynamic_field=True
++)
+ 
+ # minio
+ DEFAULT_BUCKET_NAME = &quot;a-bucket&quot;
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/reflex-dev/reflex">reflex-dev/reflex</a> (+3 -3 lines across 1 file)</summary>
+<p>
+<pre>ruff format</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/reflex-dev/reflex/blob/6e71393ed5f29234071da2b43192fc12d9bdbbd7/reflex/vars.py#L506'>reflex/vars.py~L506</a></p>
+<pre><code class="language-diff">             else:
+                 # apply operator to operands (left operand &lt;operator&gt; right_operand)
+                 operation_name = (
+-                    f&quot;{left_operand._var_full_name} {op} {right_operand._var_full_name}&quot;
+-                )  # type: ignore
++                    f&quot;{left_operand._var_full_name} {op} {right_operand._var_full_name}&quot;  # type: ignore
++                )
+                 operation_name = format.wrap(operation_name, &quot;(&quot;)
+         else:
+             # apply operator to left operand (&lt;operator&gt; left_operand)
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+294 -304 lines across 55 files)</summary>
+<p>
+<pre>ruff format</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/accounting/export/csv.py#L158'>rotkehlchen/accounting/export/csv.py~L158</a></p>
+<pre><code class="language-diff"> 
+         index = event.index + CSV_INDEX_OFFSET
+         value_formula = f&quot;{amount_column}{index}*H{index}&quot;
+-        total_value_formula = (
+-            f&quot;(F{index}*H{index}+G{index}*H{index})&quot;
+-        )  # formula of both free and taxable  # noqa: E501
++        total_value_formula = f&quot;(F{index}*H{index}+G{index}*H{index})&quot;  # formula of both free and taxable  # noqa: E501
+         cost_basis_column = &quot;K&quot; if name == &quot;taxable&quot; else &quot;L&quot;
+         cost_basis = f&quot;{cost_basis_column}{index}&quot;
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/accounting/structures/eth2.py#L53'>rotkehlchen/accounting/structures/eth2.py~L53</a></p>
+<pre><code class="language-diff"> ]
+ 
+ STAKING_DB_INSERT_QUERY_STR = (
+-    &quot;eth_staking_events_info(identifier, validator_index, is_exit_or_blocknumber) VALUES (?, ?, ?)&quot;
+-)  # noqa: E501
++    &quot;eth_staking_events_info(identifier, validator_index, is_exit_or_blocknumber) VALUES (?, ?, ?)&quot;  # noqa: E501
++)
+ STAKING_DB_UPDATE_QUERY_STR = (
+-    &quot;UPDATE eth_staking_events_info SET validator_index=?, is_exit_or_blocknumber=?&quot;
+-)  # noqa: E501
++    &quot;UPDATE eth_staking_events_info SET validator_index=?, is_exit_or_blocknumber=?&quot;  # noqa: E501
++)
+ 
+ 
+ class EthStakingEvent(HistoryBaseEntry, metaclass=ABCMeta):  # noqa: PLW1641  # hash in superclass
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/arbitrum_one/modules/arbitrum_one_bridge/decoder.py#L38'>rotkehlchen/chain/arbitrum_one/modules/arbitrum_one_bridge/decoder.py~L38</a></p>
+<pre><code class="language-diff"> L2_ERC20_GATEWAY = string_to_evm_address(&quot;0x09e9222E96E7B4AE2a407B98d48e330053351EEe&quot;)
+ L2_GATEWAY_ROUTER = string_to_evm_address(&quot;0x5288c571Fd7aD117beA99bF60FE0846C4E84F933&quot;)
+ TRANSFER_ROUTED = (
+-    b&quot;\x85)\x1d\xff!a\xa9&lt;/\x12\xc8\x19\xd3\x18\x89\xc9lc\x04!\x16\xf5\xbcZ Z\xa7\x01\xc2\xc4)\xf5&quot;
+-)  # noqa: E501
++    b&quot;\x85)\x1d\xff!a\xa9&lt;/\x12\xc8\x19\xd3\x18\x89\xc9lc\x04!\x16\xf5\xbcZ Z\xa7\x01\xc2\xc4)\xf5&quot;  # noqa: E501
++)
+ TOKEN_WITHDRAWAL_INITIATED = (
+-    b&quot;0s\xa7N\xcbr\x8d\x10\xbew\x9f\xe1\x9at\xa1B\x8e F\x8f[M\x16{\xf9\xc7=\x90g\x84}s&quot;
+-)  # noqa: E501
++    b&quot;0s\xa7N\xcbr\x8d\x10\xbew\x9f\xe1\x9at\xa1B\x8e F\x8f[M\x16{\xf9\xc7=\x90g\x84}s&quot;  # noqa: E501
++)
+ ETH_WITHDRAWAL_INITIATED = (
+-    b&quot;&gt;z\xaf\xa7}\xbf\x18k\x7f\xd4\x88\x00k\xef\xf8\x93tL\xaa&lt;Oo)\x9e\x8ap\x9f\xa2\x08st\xfc&quot;
+-)  # noqa: E501
++    b&quot;&gt;z\xaf\xa7}\xbf\x18k\x7f\xd4\x88\x00k\xef\xf8\x93tL\xaa&lt;Oo)\x9e\x8ap\x9f\xa2\x08st\xfc&quot;  # noqa: E501
++)
+ DEPOSIT_TX_TYPE = 100  # A deposit of ETH from L1 to L2 via the Arbitrum bridge.
+ ERC20_DEPOSIT_FINALIZED = b'\xc7\xf2\xe9\xc5\\@\xa5\x0f\xbc!}\xfcp\xcd9\xa2&quot;\x94\r\xfab\x14Z\xa0\xcaI\xeb\x955\xd4\xfc\xb2'  # noqa: E501
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/decoding/constants.py#L2'>rotkehlchen/chain/ethereum/decoding/constants.py~L2</a></p>
+<pre><code class="language-diff"> from rotkehlchen.chain.evm.types import string_to_evm_address
+ 
+ GTC_CLAIM = (
+-    b&quot;\x04g R\xdc\xb6\xb5\xb1\x9a\x9c\xc2\xec\x1b\x8fD\x7f\x1f^G\xb5\xe2L\xfa^O\xfbd\rc\xca+\xe7&quot;
+-)  # noqa: E501
++    b&quot;\x04g R\xdc\xb6\xb5\xb1\x9a\x9c\xc2\xec\x1b\x8fD\x7f\x1f^G\xb5\xe2L\xfa^O\xfbd\rc\xca+\xe7&quot;  # noqa: E501
++)
+ ONEINCH_CLAIM = (
+-    b&quot;N\xc9\x0e\x96U\x19\xd9&amp;\x81&amp;tg\xf7u\xad\xa5\xbd!J\xa9,\r\xc9=\x90\xa5\xe8\x80\xce\x9e\xd0&amp;&quot;
+-)  # noqa: E501
++    b&quot;N\xc9\x0e\x96U\x19\xd9&amp;\x81&amp;tg\xf7u\xad\xa5\xbd!J\xa9,\r\xc9=\x90\xa5\xe8\x80\xce\x9e\xd0&amp;&quot;  # noqa: E501
++)
+ GNOSIS_CHAIN_BRIDGE_RECEIVE = b&quot;\x9a\xfdG\x90~%\x02\x8c\xda\xca\x89\xd1\x93Q\x8c0+\xbb\x12\x86\x17\xd5\xa9\x92\xc5\xab\xd4X\x15Re\x93&quot;  # noqa: E501
+ GOVERNORALPHA_PROPOSE = (
+-    b&quot;}\x84\xa6&amp;:\xe0\xd9\x8d3)\xbd{F\xbbN\x8do\x98\xcd5\xa7\xad\xb4\\'L\x8b\x7f\xd5\xeb\xd5\xe0&quot;
+-)  # noqa: E501
++    b&quot;}\x84\xa6&amp;:\xe0\xd9\x8d3)\xbd{F\xbbN\x8do\x98\xcd5\xa7\xad\xb4\\'L\x8b\x7f\xd5\xeb\xd5\xe0&quot;  # noqa: E501
++)
+ GOVERNORALPHA_PROPOSE_ABI = '{&quot;anonymous&quot;:false,&quot;inputs&quot;:[{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;id&quot;,&quot;type&quot;:&quot;uint256&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;proposer&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;address[]&quot;,&quot;name&quot;:&quot;targets&quot;,&quot;type&quot;:&quot;address[]&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256[]&quot;,&quot;name&quot;:&quot;values&quot;,&quot;type&quot;:&quot;uint256[]&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;string[]&quot;,&quot;name&quot;:&quot;signatures&quot;,&quot;type&quot;:&quot;string[]&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;bytes[]&quot;,&quot;name&quot;:&quot;calldatas&quot;,&quot;type&quot;:&quot;bytes[]&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;startBlock&quot;,&quot;type&quot;:&quot;uint256&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;endBlock&quot;,&quot;type&quot;:&quot;uint256&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;string&quot;,&quot;name&quot;:&quot;description&quot;,&quot;type&quot;:&quot;string&quot;}],&quot;name&quot;:&quot;ProposalCreated&quot;,&quot;type&quot;:&quot;event&quot;}'  # noqa: E501
+ 
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/aave/v1/decoder.py#L21'>rotkehlchen/chain/ethereum/modules/aave/v1/decoder.py~L21</a></p>
+<pre><code class="language-diff"> DEPOSIT = b&quot;\xc1,W\xb1\xc7:,:.\xa4a&gt;\x94v\xab\xb3\xd8\xd1F\x85z\xabs)\xe2BC\xfbYq\x0c\x82&quot;
+ REDEEM_UNDERLYING = b&quot;\x9cN\xd5\x99\xcd\x85U\xb9\xc1\xe8\xcdvC$\r}q\xebv\xb7\x92\x94\x8cI\xfc\xb4\xd4\x11\xf7\xb6\xb3\xc6&quot;  # noqa: E501
+ LIQUIDATION_CALL = (
+-    b&quot;V\x86GW\xfd[\x1f\xc9\xf3\x8f_:\x98\x1c\xd8\xaeQ,\xe4\x1b\x90,\xf7?\xc5\x06\xee6\x9ck\xc27&quot;
+-)  # noqa: E501
++    b&quot;V\x86GW\xfd[\x1f\xc9\xf3\x8f_:\x98\x1c\xd8\xaeQ,\xe4\x1b\x90,\xf7?\xc5\x06\xee6\x9ck\xc27&quot;  # noqa: E501
++)
+ 
+ 
+ class Aavev1Decoder(DecoderInterface):
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/aave/v1/decoder.py#L70'>rotkehlchen/chain/ethereum/modules/aave/v1/decoder.py~L70</a></p>
+<pre><code class="language-diff">                 event.event_subtype = HistoryEventSubType.RECEIVE_WRAPPED
+                 event.counterparty = CPT_AAVE_V1
+                 event.notes = (
+-                    f&quot;Receive {amount} {atoken.symbol} from aave-v1 for {event.location_label}&quot;
+-                )  # noqa: E501
++                    f&quot;Receive {amount} {atoken.symbol} from aave-v1 for {event.location_label}&quot;  # noqa: E501
++                )
+                 receive_event = event
+             elif (
+                 event.event_type == HistoryEventType.RECEIVE
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/aave/v1/decoder.py#L82'>rotkehlchen/chain/ethereum/modules/aave/v1/decoder.py~L82</a></p>
+<pre><code class="language-diff">                 event.event_subtype = HistoryEventSubType.REWARD
+                 event.counterparty = CPT_AAVE_V1
+                 event.notes = (
+-                    f&quot;Gain {event.balance.amount} {atoken.symbol} from aave-v1 as interest&quot;
+-                )  # noqa: E501
++                    f&quot;Gain {event.balance.amount} {atoken.symbol} from aave-v1 as interest&quot;  # noqa: E501
++                )
+ 
+         maybe_reshuffle_events(
+             ordered_events=[deposit_event, receive_event],
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/aave/v1/decoder.py#L135'>rotkehlchen/chain/ethereum/modules/aave/v1/decoder.py~L135</a></p>
+<pre><code class="language-diff">                 event.event_subtype = HistoryEventSubType.REWARD
+                 event.counterparty = CPT_AAVE_V1
+                 event.notes = (
+-                    f&quot;Gain {event.balance.amount} {atoken.symbol} from aave-v1 as interest&quot;
+-                )  # noqa: E501
++                    f&quot;Gain {event.balance.amount} {atoken.symbol} from aave-v1 as interest&quot;  # noqa: E501
++                )
+                 interest_event = event
+ 
+         maybe_reshuffle_events(
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/aave/v1/decoder.py#L165'>rotkehlchen/chain/ethereum/modules/aave/v1/decoder.py~L165</a></p>
+<pre><code class="language-diff">                 # we are transfering the debt token
+                 event.event_subtype = HistoryEventSubType.PAYBACK_DEBT
+                 event.notes = (
+-                    f&quot;Payback {event.balance.amount} {asset.symbol} for an aave-v1 position&quot;
+-                )  # noqa: E501
++                    f&quot;Payback {event.balance.amount} {asset.symbol} for an aave-v1 position&quot;  # noqa: E501
++                )
+                 event.counterparty = CPT_AAVE_V1
+                 event.address = context.tx_log.address
+                 event.extra_data = {
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/aave/v2/decoder.py#L32'>rotkehlchen/chain/ethereum/modules/aave/v2/decoder.py~L32</a></p>
+<pre><code class="language-diff"> 
+ ENABLE_COLLATERAL = b'\x00\x05\x8aV\xea\x94e&lt;\xdfO\x15-&quot;z\xce&quot;\xd4\xc0\n\xd9\x9e*C\xf5\x8c\xb7\xd9\xe3\xfe\xb2\x95\xf2'  # noqa: E501
+ DISABLE_COLLATERAL = (
+-    b'D\xc5\x8d\x816[f\xddK\x1a\x7f6\xc2Z\xa9{\x8cq\xc3a\xeeI7\xad\xc1\xa0\x00\x00&quot;}\xb5\xdd'
+-)  # noqa: E501
++    b'D\xc5\x8d\x816[f\xddK\x1a\x7f6\xc2Z\xa9{\x8cq\xc3a\xeeI7\xad\xc1\xa0\x00\x00&quot;}\xb5\xdd'  # noqa: E501
++)
+ DEPOSIT = b&quot;\xdehW!\x95D\xbb[wF\xf4\x8e\xd3\x0b\xe68o\xef\xc6\x1b/\x86L\xac\xf5Y\x89;\xf5\x0f\xd9Q&quot;
+ WITHDRAW = (
+-    b&quot;1\x15\xd1D\x9a{s,\x98l\xba\x18$N\x89zE\x0fa\xe1\xbb\x8dX\x9c\xd2\xe6\x9el\x89$\xf9\xf7&quot;
+-)  # noqa: E501
++    b&quot;1\x15\xd1D\x9a{s,\x98l\xba\x18$N\x89zE\x0fa\xe1\xbb\x8dX\x9c\xd2\xe6\x9el\x89$\xf9\xf7&quot;  # noqa: E501
++)
+ BORROW = b&quot;\xc6\xa8\x980\x9e\x82&gt;\xe5\x0b\xacd\xe4\\\xa8\xad\xbaf\x90\xe9\x9exA\xc4]uN*8\xe9\x01\x9d\x9b&quot;  # noqa: E501
+ REPAY = b&quot;L\xdd\xe6\xe0\x9b\xb7U\xc9\xa5X\x9e\xba\xecd\x0b\xbf\xed\xff\x13b\xd4\xb2U\xeb\xf83\x97\x82\xb9\x94/\xaa&quot;  # noqa: E501
+ LIQUIDATION_CALL = (
+-    b&quot;\xe4\x13\xa3!\xe8h\x1d\x83\x1fM\xbc\xcb\xcay\r)R\xb5o\x97y\x08\xe4[\xe3s5S&gt;\x00R\x86&quot;
+-)  # noqa: E501
++    b&quot;\xe4\x13\xa3!\xe8h\x1d\x83\x1fM\xbc\xcb\xcay\r)R\xb5o\x97y\x08\xe4[\xe3s5S&gt;\x00R\x86&quot;  # noqa: E501
++)
+ ETH_GATEWAYS = (
+     string_to_evm_address(&quot;0xEFFC18fC3b7eb8E676dac549E0c693ad50D1Ce31&quot;),
+     string_to_evm_address(&quot;0xcc9a0B7c43DC2a5F023Bb9b738E45B0Ef6B06E04&quot;),
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/aave/v2/decoder.py#L117'>rotkehlchen/chain/ethereum/modules/aave/v2/decoder.py~L117</a></p>
+<pre><code class="language-diff">                     event.event_subtype = HistoryEventSubType.RECEIVE_WRAPPED
+                     resolved_asset = event.asset.resolve_to_asset_with_symbol()
+                     event.notes = (
+-                        f&quot;Receive {event.balance.amount} {resolved_asset.symbol} from AAVE v2&quot;
+-                    )  # noqa: E501
++                        f&quot;Receive {event.balance.amount} {resolved_asset.symbol} from AAVE v2&quot;  # noqa: E501
++                    )
+                     event.counterparty = CPT_AAVE_V2
+                 # Set protocol for both events
+                 event.counterparty = CPT_AAVE_V2
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/aave/v2/decoder.py#L232'>rotkehlchen/chain/ethereum/modules/aave/v2/decoder.py~L232</a></p>
+<pre><code class="language-diff">                 # we are transfering the aTOKEN
+                 event.event_subtype = HistoryEventSubType.LIQUIDATE
+                 event.notes = (
+-                    f&quot;An aave-v2 position got liquidated for {event.balance.amount} {asset.symbol}&quot;
+-                )  # noqa: E501
++                    f&quot;An aave-v2 position got liquidated for {event.balance.amount} {asset.symbol}&quot;  # noqa: E501
++                )
+                 event.counterparty = CPT_AAVE_V2
+                 event.address = tx_log.address
+             elif (
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/aave/v2/decoder.py#L246'>rotkehlchen/chain/ethereum/modules/aave/v2/decoder.py~L246</a></p>
+<pre><code class="language-diff">                 # we are transfering the debt token
+                 event.event_subtype = HistoryEventSubType.PAYBACK_DEBT
+                 event.notes = (
+-                    f&quot;Payback {event.balance.amount} {asset.symbol} for an aave-v2 position&quot;
+-                )  # noqa: E501
++                    f&quot;Payback {event.balance.amount} {asset.symbol} for an aave-v2 position&quot;  # noqa: E501
++                )
+                 event.counterparty = CPT_AAVE_V2
+                 event.address = tx_log.address
+                 event.extra_data = {
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/airdrops/decoder.py#L49'>rotkehlchen/chain/ethereum/modules/airdrops/decoder.py~L49</a></p>
+<pre><code class="language-diff"> 
+ UNISWAP_DISTRIBUTOR = string_to_evm_address(&quot;0x090D4613473dEE047c3f2706764f49E0821D256e&quot;)
+ UNISWAP_TOKEN_CLAIMED = (
+-    b&quot;N\xc9\x0e\x96U\x19\xd9&amp;\x81&amp;tg\xf7u\xad\xa5\xbd!J\xa9,\r\xc9=\x90\xa5\xe8\x80\xce\x9e\xd0&amp;&quot;
+-)  # noqa: E501
++    b&quot;N\xc9\x0e\x96U\x19\xd9&amp;\x81&amp;tg\xf7u\xad\xa5\xbd!J\xa9,\r\xc9=\x90\xa5\xe8\x80\xce\x9e\xd0&amp;&quot;  # noqa: E501
++)
+ 
+ BADGERHUNT = string_to_evm_address(&quot;0x394DCfbCf25C5400fcC147EbD9970eD34A474543&quot;)
+ BADGER_HUNT_EVENT = (
+-    b&quot;\x8e\xaf\x15aI\x08\xa4\xe9\x02!A\xfeJYk\x1a\xb0\xcbr\xab2\xb2P#\xe3\xda*E\x9c\x9a3\\&quot;
+-)  # noqa: E501
++    b&quot;\x8e\xaf\x15aI\x08\xa4\xe9\x02!A\xfeJYk\x1a\xb0\xcbr\xab2\xb2P#\xe3\xda*E\x9c\x9a3\\&quot;  # noqa: E501
++)
+ 
+ ONEINCH = string_to_evm_address(&quot;0xE295aD71242373C37C5FdA7B57F26f9eA1088AFe&quot;)
+ ONEINCH_CLAIMED = (
+-    b&quot;N\xc9\x0e\x96U\x19\xd9&amp;\x81&amp;tg\xf7u\xad\xa5\xbd!J\xa9,\r\xc9=\x90\xa5\xe8\x80\xce\x9e\xd0&amp;&quot;
+-)  # noqa: E501
++    b&quot;N\xc9\x0e\x96U\x19\xd9&amp;\x81&amp;tg\xf7u\xad\xa5\xbd!J\xa9,\r\xc9=\x90\xa5\xe8\x80\xce\x9e\xd0&amp;&quot;  # noqa: E501
++)
+ 
+ FPIS = string_to_evm_address(&quot;0x61A1f84F12Ba9a56C22c31dDB10EC2e2CA0ceBCf&quot;)
+ CONVEX = string_to_evm_address(&quot;0x2E088A0A19dda628B4304301d1EA70b114e4AcCd&quot;)
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/airdrops/decoder.py#L68'>rotkehlchen/chain/ethereum/modules/airdrops/decoder.py~L68</a></p>
+<pre><code class="language-diff"> 
+ FOX_DISTRIBUTOR = string_to_evm_address(&quot;0xe099e688D12DBc19ab46D128d1Db297575474a0d&quot;)
+ FOX_CLAIMED = (
+-    b&quot;R\x897\xb30\x08-\x89*\x98\xd4\xe4(\xab-\xcc\xa7\x84KQ\xd2'\xa1\xc0\xaeg\xf0\xb5&amp;\x1a\xcb\xd9&quot;
+-)  # noqa: E501
++    b&quot;R\x897\xb30\x08-\x89*\x98\xd4\xe4(\xab-\xcc\xa7\x84KQ\xd2'\xa1\xc0\xaeg\xf0\xb5&amp;\x1a\xcb\xd9&quot;  # noqa: E501
++)
+ 
+ ELFI_LOCKING = string_to_evm_address(&quot;0x02Bd4A3b1b95b01F2Aa61655415A5d3EAAcaafdD&quot;)
+ ELFI_VOTE_CHANGE = (
+-    b&quot;3\x16\x1c\xf2\xda(\xd7G\xbe\x9d\xf16\xb6\xf3r\x93\x90)\x84\x94\x94rht1\x93\xc5=s\xd3\xc2\xe0&quot;
+-)  # noqa: E501
++    b&quot;3\x16\x1c\xf2\xda(\xd7G\xbe\x9d\xf16\xb6\xf3r\x93\x90)\x84\x94\x94rht1\x93\xc5=s\xd3\xc2\xe0&quot;  # noqa: E501
++)
+ 
+ 
+ logger = logging.getLogger(__name__)
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/balancer/v2/decoder.py#L144'>rotkehlchen/chain/ethereum/modules/balancer/v2/decoder.py~L144</a></p>
+<pre><code class="language-diff">         if asset == context.event.asset:
+             context.event.event_subtype = HistoryEventSubType.RECEIVE
+             context.event.notes = (
+-                f&quot;Receive {context.event.balance.amount} {asset.symbol} from Balancer v2&quot;
+-            )  # noqa: E501
++                f&quot;Receive {context.event.balance.amount} {asset.symbol} from Balancer v2&quot;  # noqa: E501
++            )
+         else:
+             context.event.event_subtype = HistoryEventSubType.SPEND
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/base_bridge/decoder.py#L26'>rotkehlchen/chain/ethereum/modules/base_bridge/decoder.py~L26</a></p>
+<pre><code class="language-diff"> BRIDGE_ADDRESS = string_to_evm_address(&quot;0x49048044D57e1C92A77f79988d21Fa8fAF74E97e&quot;)
+ TOKEN_PORTAL = string_to_evm_address(&quot;0x3154Cf16ccdb4C6d922629664174b904d80F2C35&quot;)
+ TRANSACTION_DEPOSITED = (
+-    b&quot;\xb3\x815h\xd9\x99\x1f\xc9Q\x96\x1f\xcbLxH\x93WB@\xa2\x89%`M\t\xfcW|U\xbb|2&quot;
+-)  # noqa: E501
++    b&quot;\xb3\x815h\xd9\x99\x1f\xc9Q\x96\x1f\xcbLxH\x93WB@\xa2\x89%`M\t\xfcW|U\xbb|2&quot;  # noqa: E501
++)
+ WITHDRAWAL_FINALIZED = b&quot;\xdb\\vR\x85z\xa1c\xda\xad\xd6p\xe1\x16b\x8f\xb4.\x86\x9d\x8a\xc4%\x1e\xf8\x97\x1d\x9eW'\xdf\x1b&quot;  # noqa: E501
+ BRIDGE_TOKEN = b&quot;\x7f\xf1&amp;\xdb\x80$BK\xbf\xd9\x82n\x8a\xb8/\xf5\x916(\x9e\xa4@\xb0K9\xa0\xdf\x1b\x03\xb9\xca\xbf&quot;  # noqa: E501
+ WITHDRAWAL_TOKEN = b'\xd5\x9ce\xb3TE&quot;X5\xc8?P\xb6\xed\xe0j{\xe0G\xd2.5ps\xe2P\xd9\xafSu\x18\xcd'
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/compound/decoder.py#L38'>rotkehlchen/chain/ethereum/modules/compound/decoder.py~L38</a></p>
+<pre><code class="language-diff"> 
+ MAXIMILLION_ADDR = string_to_evm_address(&quot;0xf859A1AD94BcF445A406B892eF0d3082f4174088&quot;)
+ MINT_COMPOUND_TOKEN = (
+-    b&quot;L \x9b_\xc8\xadPu\x8f\x13\xe2\xe1\x08\x8b\xa5jV\r\xffi\n\x1co\xef&amp;9OL\x03\x82\x1cO&quot;
+-)  # noqa: E501
++    b&quot;L \x9b_\xc8\xadPu\x8f\x13\xe2\xe1\x08\x8b\xa5jV\r\xffi\n\x1co\xef&amp;9OL\x03\x82\x1cO&quot;  # noqa: E501
++)
+ REDEEM_COMPOUND_TOKEN = b&quot;\xe5\xb7T\xfb\x1a\xbb\x7f\x01\xb4\x99y\x1d\x0b\x82\n\xe3\xb6\xaf4$\xac\x1cYv\x8e\xdbS\xf4\xec1\xa9)&quot;  # noqa: E501
+ BORROW_COMPOUND = b&quot;\x13\xedhf\xd4\xe1\xeem\xa4o\x84\\F\xd7\xe5A \x88=u\xc5\xea\x9a-\xac\xc1\xc4\xca\x89\x84\xab\x80&quot;  # noqa: E501
+ REPAY_COMPOUND = (
+-    b'\x1a*&quot;\xcb\x03M&amp;\xd1\x85K\xdcff\xa5\xb9\x1f\xe2^\xfb\xbb]\xca\xd3\xb05Tx\xd6\xf5\xc3b\xa1'
+-)  # noqa: E501
++    b'\x1a*&quot;\xcb\x03M&amp;\xd1\x85K\xdcff\xa5\xb9\x1f\xe2^\xfb\xbb]\xca\xd3\xb05Tx\xd6\xf5\xc3b\xa1'  # noqa: E501
++)
+ LIQUIDATE_BORROW = (
+-    b&quot;)\x867\xf6\x84\xdapgO&amp;P\x9b\x10\xf0~\xc2\xfb\xc7z3Z\xb1\xe7\xd6!ZK$\x84\xd8\xbbR&quot;
+-)  # noqa: E501
++    b&quot;)\x867\xf6\x84\xdapgO&amp;P\x9b\x10\xf0~\xc2\xfb\xc7z3Z\xb1\xe7\xd6!ZK$\x84\xd8\xbbR&quot;  # noqa: E501
++)
+ DISTRIBUTED_SUPPLIER_COMP = (
+-    b&quot;,\xae\xcd\x17\xd0/V\xfa\x89w\x05\xdc\xc7@\xda-#|7?phoN\r\x9b\xd3\xbf\x04\x00\xeaz&quot;
+-)  # noqa: E501
++    b&quot;,\xae\xcd\x17\xd0/V\xfa\x89w\x05\xdc\xc7@\xda-#|7?phoN\r\x9b\xd3\xbf\x04\x00\xeaz&quot;  # noqa: E501
++)
+ DISTRIBUTED_BORROWER_COMP = b&quot;\x1f\xc3\xec\xc0\x87\xd8\xd2\xd1^#\xd0\x03*\xf5\xa4pY\xc3\x89-\x00=\x8e\x13\x9f\xdc\xb6\xbb2|\x99\xa6&quot;  # noqa: E501
+ 
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/compound/decoder.py#L309'>rotkehlchen/chain/ethereum/modules/compound/decoder.py~L309</a></p>
+<pre><code class="language-diff">                 and event.counterparty == CPT_COMPOUND
+             ):
+                 event.notes = (
+-                    f&quot;Repay {repaid_amount} {repaying_asset.symbol} in a compound liquidation&quot;
+-                )  # noqa: E501
++                    f&quot;Repay {repaid_amount} {repaying_asset.symbol} in a compound liquidation&quot;  # noqa: E501
++                )
+                 event.extra_data = {&quot;in_liquidation&quot;: True}
+             elif (
+                 event.event_type == HistoryEventType.RECEIVE
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/convex/constants.py#L17'>rotkehlchen/chain/ethereum/modules/convex/constants.py~L17</a></p>
+<pre><code class="language-diff"> CVXCRV_REWARDS = string_to_evm_address(&quot;0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e&quot;)
+ 
+ CVX_WITHDRAW_TOPIC = (
+-    b&quot;p\x84\xf5Gf\x18\xd8\xe6\x0b\x11\xef\r}?\x06\x91FU\xad\xb8y&gt;(\xff\x7f\x01\x8dLv\xd5\x05\xd5&quot;
+-)  # noqa: E501
++    b&quot;p\x84\xf5Gf\x18\xd8\xe6\x0b\x11\xef\r}?\x06\x91FU\xad\xb8y&gt;(\xff\x7f\x01\x8dLv\xd5\x05\xd5&quot;  # noqa: E501
++)
+ CVXCRV_REWARD_PAID_TOPIC = b&quot;\xe2@6@\xbah\xfe\xd3\xa2\xf8\x8buWU\x1d\x19\x93\xf8K\x99\xbb\x10\xff\x83?\x0c\xf8\xdb\x0c^\x04\x86&quot;  # noqa: E501
+ CVXCRV_WITHDRAWAL_TOPIC = (
+-    b&quot;p\x84\xf5Gf\x18\xd8\xe6\x0b\x11\xef\r}?\x06\x91FU\xad\xb8y&gt;(\xff\x7f\x01\x8dLv\xd5\x05\xd5&quot;
+-)  # noqa: E501
++    b&quot;p\x84\xf5Gf\x18\xd8\xe6\x0b\x11\xef\r}?\x06\x91FU\xad\xb8y&gt;(\xff\x7f\x01\x8dLv\xd5\x05\xd5&quot;  # noqa: E501
++)
+ CVX_LOCKER_REWARD_PAID_TOPIC = (
+-    b&quot;T\x07\x98\xdfF\x8d{#\xd1\x1f\x15o\xdb\x95L\xb1\x9a\xd4\x14\xd1Pr*{mU\xba6\x9d\xeay.&quot;
+-)  # noqa: E501
++    b&quot;T\x07\x98\xdfF\x8d{#\xd1\x1f\x15o\xdb\x95L\xb1\x9a\xd4\x14\xd1Pr*{mU\xba6\x9d\xeay.&quot;  # noqa: E501
++)
+ BOOSTER_WITHDRAW_TOPIC = b&quot;\x92\xcc\xf4P\xa2\x86\xa9W\xafRP\x9b\xc1\xc9\x93\x9d\x1ajH\x17\x83\xe1B\xe4\x1e$\x99\xf0\xbbf\xeb\xc6&quot;  # noqa: E501
+ 
+ WITHDRAWAL_TOPICS = {
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/convex/decoder.py#L50'>rotkehlchen/chain/ethereum/modules/convex/decoder.py~L50</a></p>
+<pre><code class="language-diff"> log = RotkehlchenLogsAdapter(logger)
+ 
+ DEPOSIT_EVENT = (
+-    b&quot;\x9eq\xbc\x8e\xea\x02\xa69i\xf5\t\x81\x8f-\xaf\xb9%E2\x90C\x19\xf9\xdb\xday\xb6{\xd3J_=&quot;
+-)  # noqa: E501
++    b&quot;\x9eq\xbc\x8e\xea\x02\xa69i\xf5\t\x81\x8f-\xaf\xb9%E2\x90C\x19\xf9\xdb\xday\xb6{\xd3J_=&quot;  # noqa: E501
++)
+ REWARD_ADDED = (
+-    b'\xde\x88\xa9&quot;\xe0\xd3\xb8\x8b$\xe9b&gt;\xfe\xb4d\x91\x9ck\xf9\xf6hW\xa6^+\xfc\xf2\xce\x87\xa9C='
+-)  # noqa: E501
++    b'\xde\x88\xa9&quot;\xe0\xd3\xb8\x8b$\xe9b&gt;\xfe\xb4d\x91\x9ck\xf9\xf6hW\xa6^+\xfc\xf2\xce\x87\xa9C='  # noqa: E501
++)
+ 
+ 
+ class ConvexDecoder(DecoderInterface, ReloadableCacheDecoderMixin):
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/convex/decoder.py#L144'>rotkehlchen/chain/ethereum/modules/convex/decoder.py~L144</a></p>
+<pre><code class="language-diff">                         event.notes = f&quot;Return {event.balance.amount} {crypto_asset.symbol} to convex {self.pools[context.tx_log.address]} pool&quot;  # noqa: E501
+                     else:
+                         event.notes = (
+-                            f&quot;Return {event.balance.amount} {crypto_asset.symbol} to convex&quot;
+-                        )  # noqa: E501
++                            f&quot;Return {event.balance.amount} {crypto_asset.symbol} to convex&quot;  # noqa: E501
++                        )
+                 else:
+                     event.event_type = HistoryEventType.DEPOSIT
+                     event.event_subtype = HistoryEventSubType.DEPOSIT_ASSET
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/convex/decoder.py#L155'>rotkehlchen/chain/ethereum/modules/convex/decoder.py~L155</a></p>
+<pre><code class="language-diff">                         event.product = EvmProduct.GAUGE
+                     else:
+                         event.notes = (
+-                            f&quot;Deposit {event.balance.amount} {crypto_asset.symbol} into convex&quot;
+-                        )  # noqa: E501
++                            f&quot;Deposit {event.balance.amount} {crypto_asset.symbol} into convex&quot;  # noqa: E501
++                        )
+                         if (
+                             isinstance(crypto_asset, EvmToken)
+                             and crypto_asset.protocol == CURVE_POOL_PROTOCOL
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/convex/decoder.py#L192'>rotkehlchen/chain/ethereum/modules/convex/decoder.py~L192</a></p>
+<pre><code class="language-diff">                         event.product = EvmProduct.GAUGE
+                     else:
+                         event.notes = (
+-                            f&quot;Withdraw {event.balance.amount} {crypto_asset.symbol} from convex&quot;
+-                        )  # noqa: E501
++                            f&quot;Withdraw {event.balance.amount} {crypto_asset.symbol} from convex&quot;  # noqa: E501
++                        )
+                         if (
+                             isinstance(crypto_asset, EvmToken)
+                             and crypto_asset.protocol == CURVE_POOL_PROTOCOL
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/curve/decoder.py#L102'>rotkehlchen/chain/ethereum/modules/curve/decoder.py~L102</a></p>
+<pre><code class="language-diff"> 
+ GAUGE_DEPOSIT = b&quot;\xe1\xff\xfc\xc4\x92=\x04\xb5Y\xf4\xd2\x9a\x8b\xfcl\xda\x04\xeb[\r&lt;F\x07Q\xc2@,\\\\\xc9\x10\x9c&quot;  # noqa: E501
+ GAUGE_WITHDRAW = (
+-    b&quot;\x88N\xda\xd9\xceo\xa2D\r\x8aT\xcc\x124\x90\xeb\x96\xd2v\x84y\xd4\x9f\xf9\xc76a%\xa9BCd&quot;
+-)  # noqa: E501
++    b&quot;\x88N\xda\xd9\xceo\xa2D\r\x8aT\xcc\x124\x90\xeb\x96\xd2v\x84y\xd4\x9f\xf9\xc76a%\xa9BCd&quot;  # noqa: E501
++)
+ GAUGE_VOTE = (
+-    b&quot;E\xca\x9aL\x8d\x01\x19\xeb2\x9eX\r(\xfeh\x9eHN\x1b\xe20\xda\x807\xad\xe9T}-%\xcc\x91&quot;
+-)  # noqa: E501
++    b&quot;E\xca\x9aL\x8d\x01\x19\xeb2\x9eX\r(\xfeh\x9eHN\x1b\xe20\xda\x807\xad\xe9T}-%\xcc\x91&quot;  # noqa: E501
++)
+ GAUGE_CONTROLLER = string_to_evm_address(&quot;0x2F50D538606Fa9EDD2B11E2446BEb18C9D5846bB&quot;)
+ 
+ TOKEN_EXCHANGE = (
+-    b&quot;\x8b&gt;\x96\xf2\xb8\x89\xfaw\x1cS\xc9\x81\xb4\r\xaf\x00_c\xf67\xf1\x86\x9fppR\xd1Z=\xd9q@&quot;
+-)  # noqa: E501
++    b&quot;\x8b&gt;\x96\xf2\xb8\x89\xfaw\x1cS\xc9\x81\xb4\r\xaf\x00_c\xf67\xf1\x86\x9fppR\xd1Z=\xd9q@&quot;  # noqa: E501
++)
+ TOKEN_EXCHANGE_UNDERLYING = (
+-    b&quot;\xd0\x13\xca#\xe7ze\x00&lt;,e\x9cTB\xc0\x0c\x80Sq\xb7\xfc\x1e\xbdL lA\xd1Sk\xd9\x0b&quot;
+-)  # noqa: E501
++    b&quot;\xd0\x13\xca#\xe7ze\x00&lt;,e\x9cTB\xc0\x0c\x80Sq\xb7\xfc\x1e\xbdL lA\xd1Sk\xd9\x0b&quot;  # noqa: E501
++)
+ EXCHANGE_MULTIPLE = b&quot;\x14\xb5a\x17\x8a\xe0\xf3h\xf4\x0f\xaf\xd0H\\Oq)\xeaq\xcd\xc0\x0bL\xe1\xe5\x94\x0f\x9b\xc6Y\xc8\xb2&quot;  # noqa: E501
+ CURVE_SWAP_ROUTER = string_to_evm_address(&quot;0x99a58482BD75cbab83b27EC03CA68fF489b5788f&quot;)
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/curve/decoder.py#L206'>rotkehlchen/chain/ethereum/modules/curve/decoder.py~L206</a></p>
+<pre><code class="language-diff">                 event.event_subtype = HistoryEventSubType.REMOVE_ASSET
+                 event.counterparty = CPT_CURVE
+                 event.notes = (
+-                    f&quot;Remove {event.balance.amount} {crypto_asset.symbol} from the curve pool&quot;
+-                )  # noqa: E501
++                    f&quot;Remove {event.balance.amount} {crypto_asset.symbol} from the curve pool&quot;  # noqa: E501
++                )
+                 withdrawal_events.append(event)
+             elif (  # Withdraw send wrapped
+                 event.event_type == HistoryEventType.SPEND
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/diva/decoder.py#L27'>rotkehlchen/chain/ethereum/modules/diva/decoder.py~L27</a></p>
+<pre><code class="language-diff"> logger = logging.getLogger(__name__)
+ log = RotkehlchenLogsAdapter(logger)
+ DELEGATE_CHANGED = (
+-    b&quot;14\xe8\xa2\xe6\xd9~\x92\x9a~T\x01\x1e\xa5H]}\x19m\xd5\xf0\xbaMN\xf9X\x03\xe8\xe3\xfc%\x7f&quot;
+-)  # noqa: E501
++    b&quot;14\xe8\xa2\xe6\xd9~\x92\x9a~T\x01\x1e\xa5H]}\x19m\xd5\xf0\xbaMN\xf9X\x03\xe8\xe3\xfc%\x7f&quot;  # noqa: E501
++)
+ CLAIM_AIRDROP = (
+-    b&quot;N\xc9\x0e\x96U\x19\xd9&amp;\x81&amp;tg\xf7u\xad\xa5\xbd!J\xa9,\r\xc9=\x90\xa5\xe8\x80\xce\x9e\xd0&amp;&quot;
+-)  # noqa: E501
++    b&quot;N\xc9\x0e\x96U\x19\xd9&amp;\x81&amp;tg\xf7u\xad\xa5\xbd!J\xa9,\r\xc9=\x90\xa5\xe8\x80\xce\x9e\xd0&amp;&quot;  # noqa: E501
++)
+ DIVA_AIDROP_CONTRACT = string_to_evm_address(&quot;0x777E2B2Cc7980A6bAC92910B95269895EEf0d2E8&quot;)
+ DIVA_GOVERNOR = string_to_evm_address(&quot;0xFb6B7C11a55C57767643F1FF65c34C8693a11A70&quot;)
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/dxdaomesa/decoder.py#L25'>rotkehlchen/chain/ethereum/modules/dxdaomesa/decoder.py~L25</a></p>
+<pre><code class="language-diff"> DEPOSIT = b&quot;\xc1\x1c\xc3N\x93\xc6z\x938+\x99\xf2I\x8e\x997\x19\x87\x98\xf3\xc1\xc2\x88\x80\x08\xff\xc0\xee\xb8/h\xc4&quot;  # noqa: E501
+ ORDER_PLACEMENT = b&quot;\xde\xcfo\xde\x82C\x98\x12\x99\xf7\xb7\xa7v\xf2\x9a\x9f\xc6z,\x98H\xe2]w\xc5\x0e\xb1\x1f\xa5\x8a~!&quot;  # noqa: E501
+ WITHDRAW_REQUEST = (
+-    b&quot;,bE\xafPo\x0f\xc1\x08\x99\x18\xc0,\x1d\x01\xbd\xe9\xcc\x80v\t\xb34\xb3\xe7dMm\xfbZl^&quot;
+-)  # noqa: E501
++    b&quot;,bE\xafPo\x0f\xc1\x08\x99\x18\xc0,\x1d\x01\xbd\xe9\xcc\x80v\t\xb34\xb3\xe7dMm\xfbZl^&quot;  # noqa: E501
++)
+ WITHDRAW = b&quot;\x9b\x1b\xfa\x7f\xa9\xeeB\n\x16\xe1$\xf7\x94\xc3Z\xc9\xf9\x04r\xac\xc9\x91@\xeb/dG\xc7\x14\xca\xd8\xeb&quot;  # noqa: E501
+ 
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/ens/decoder.py#L55'>rotkehlchen/chain/ethereum/modules/ens/decoder.py~L55</a></p>
+<pre><code class="language-diff"> ENS_REVERSE_RESOLVER = string_to_evm_address(&quot;0xA2C122BE93b0074270ebeE7f6b7292C7deB45047&quot;)
+ 
+ NAME_RENEWED = (
+-    b&quot;=\xa2L\x02E\x82\x93\x1c\xfa\xf8&amp;}\x8e\xd2M\x13\xa8*\x80h\xd5\xbd3}0\xecE\xce\xa4\xe5\x06\xae&quot;
+-)  # noqa: E501
++    b&quot;=\xa2L\x02E\x82\x93\x1c\xfa\xf8&amp;}\x8e\xd2M\x13\xa8*\x80h\xd5\xbd3}0\xecE\xce\xa4\xe5\x06\xae&quot;  # noqa: E501
++)
+ NAME_RENEWED_ABI = '{&quot;anonymous&quot;:false,&quot;inputs&quot;:[{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;string&quot;,&quot;name&quot;:&quot;name&quot;,&quot;type&quot;:&quot;string&quot;},{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;bytes32&quot;,&quot;name&quot;:&quot;label&quot;,&quot;type&quot;:&quot;bytes32&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;cost&quot;,&quot;type&quot;:&quot;uint256&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;expires&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;NameRenewed&quot;,&quot;type&quot;:&quot;event&quot;}'  # noqa: E501
+ NEW_RESOLVER = (
+-    b&quot;3W!\xb0\x18f\xdc#\xfb\xee\x8bk,{\x1e\x14\xd6\xf0\\(\xcd5\xa2\xc94#\x9f\x94\tV\x02\xa0&quot;
+-)  # noqa: E501
++    b&quot;3W!\xb0\x18f\xdc#\xfb\xee\x8bk,{\x1e\x14\xd6\xf0\\(\xcd5\xa2\xc94#\x9f\x94\tV\x02\xa0&quot;  # noqa: E501
++)
+ NAME_REGISTERED_SINGLE_COST = b'\xcaj\xbb\xe9\xd7\xf1\x14&quot;\xcbl\xa7b\x9f\xbfo\xe9\xef\xb1\xc6!\xf7\x1c\xe8\xf0+\x9f*#\x00\x97@O'  # noqa: E501
+ NAME_REGISTERED_SINGLE_COST_ABI = '{&quot;anonymous&quot;:false,&quot;inputs&quot;:[{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;string&quot;,&quot;name&quot;:&quot;name&quot;,&quot;type&quot;:&quot;string&quot;},{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;bytes32&quot;,&quot;name&quot;:&quot;label&quot;,&quot;type&quot;:&quot;bytes32&quot;},{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;owner&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;cost&quot;,&quot;type&quot;:&quot;uint256&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;expires&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;NameRegistered&quot;,&quot;type&quot;:&quot;event&quot;}'  # noqa: E501
+ NAME_REGISTERED_BASE_COST_AND_PREMIUM = b&quot;i\xe3\x7f\x15\x1e\xb9\x8a\ta\x8d\xda\xa8\x0c\x8c\xfa\xf1\xceY\x96\x86|H\x9fE\xb5U\xb4\x12'\x1e\xbf'&quot;  # noqa: E501
+ NAME_REGISTERED_BASE_COST_AND_PREMIUM_ABI = '{&quot;anonymous&quot;:false,&quot;inputs&quot;:[{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;string&quot;,&quot;name&quot;:&quot;name&quot;,&quot;type&quot;:&quot;string&quot;},{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;bytes32&quot;,&quot;name&quot;:&quot;label&quot;,&quot;type&quot;:&quot;bytes32&quot;},{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;owner&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;baseCost&quot;,&quot;type&quot;:&quot;uint256&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;premium&quot;,&quot;type&quot;:&quot;uint256&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;expires&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;NameRegistered&quot;,&quot;type&quot;:&quot;event&quot;}'  # noqa: E501
+ TEXT_CHANGED_KEY_ONLY = (
+-    b&quot;\xd8\xc93K\x1a\x9c/\x9d\xa3B\xa0\xa2\xb3&amp;)\xc1\xa2)\xb6D]\xadx\x94\x7fgKDDJuP&quot;
+-)  # noqa: E501
++    b&quot;\xd8\xc93K\x1a\x9c/\x9d\xa3B\xa0\xa2\xb3&amp;)\xc1\xa2)\xb6D]\xadx\x94\x7fgKDDJuP&quot;  # noqa: E501
++)
+ TEXT_CHANGED_KEY_ONLY_ABI = '{&quot;anonymous&quot;:false,&quot;inputs&quot;:[{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;bytes32&quot;,&quot;name&quot;:&quot;node&quot;,&quot;type&quot;:&quot;bytes32&quot;},{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;string&quot;,&quot;name&quot;:&quot;indexedKey&quot;,&quot;type&quot;:&quot;string&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;string&quot;,&quot;name&quot;:&quot;key&quot;,&quot;type&quot;:&quot;string&quot;}],&quot;name&quot;:&quot;TextChanged&quot;,&quot;type&quot;:&quot;event&quot;}'  # noqa: E501
+ TEXT_CHANGED_KEY_AND_VALUE = (
+-    b&quot;D\x8b\xc0\x14\xf1Sg&amp;\xcf\x8dT\xff=d\x81\xed&lt;\xbch&lt;%\x91\xca Bt\x00\x9a\xfa\t\xb1\xa1&quot;
+-)  # noqa: E501
++    b&quot;D\x8b\xc0\x14\xf1Sg&amp;\xcf\x8dT\xff=d\x81\xed&lt;\xbch&lt;%\x91\xca Bt\x00\x9a\xfa\t\xb1\xa1&quot;  # noqa: E501
++)
+ TEXT_CHANGED_KEY_AND_VALUE_ABI = '{&quot;anonymous&quot;:false,&quot;inputs&quot;:[{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;bytes32&quot;,&quot;name&quot;:&quot;node&quot;,&quot;type&quot;:&quot;bytes32&quot;},{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;string&quot;,&quot;name&quot;:&quot;indexedKey&quot;,&quot;type&quot;:&quot;string&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;string&quot;,&quot;name&quot;:&quot;key&quot;,&quot;type&quot;:&quot;string&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;string&quot;,&quot;name&quot;:&quot;value&quot;,&quot;type&quot;:&quot;string&quot;}],&quot;name&quot;:&quot;TextChanged&quot;,&quot;type&quot;:&quot;event&quot;}'  # noqa: E501
+ CONTENT_HASH_CHANGED = (
+-    b&quot;\xe3y\xc1bN\xd7\xe7\x14\xcc\t7R\x8a25\x9di\xd5(\x137vS\x13\xdb\xa4\xe0\x81\xb7-ux&quot;
+-)  # noqa: E501
++    b&quot;\xe3y\xc1bN\xd7\xe7\x14\xcc\t7R\x8a25\x9di\xd5(\x137vS\x13\xdb\xa4\xe0\x81\xb7-ux&quot;  # noqa: E501
++)
+ ENS_GOVERNOR = string_to_evm_address(&quot;0x323A76393544d5ecca80cd6ef2A560C6a395b7E3&quot;)
+ 
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/golem/decoder.py#L24'>rotkehlchen/chain/ethereum/modules/golem/decoder.py~L24</a></p>
+<pre><code class="language-diff"> log = RotkehlchenLogsAdapter(logger)
+ 
+ MIGRATED = (
+-    b&quot;\x92\x8f\xd5S\x13$\xee\x87\xd7l\xc50}\xc3u\x80\x17M\xa7k\x85\xcdTm\xa61\xb2g\x0b\xc2f\xb5&quot;
+-)  # noqa: E501
++    b&quot;\x92\x8f\xd5S\x13$\xee\x87\xd7l\xc50}\xc3u\x80\x17M\xa7k\x85\xcdTm\xa61\xb2g\x0b\xc2f\xb5&quot;  # noqa: E501
++)
+ 
+ 
+ class GolemDecoder(DecoderInterface):
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/kyber/decoder.py#L27'>rotkehlchen/chain/ethereum/modules/kyber/decoder.py~L27</a></p>
+<pre><code class="language-diff"> 
+ KYBER_TRADE_LEGACY = b&quot;\xf7$\xb4\xdff\x17G6\x12\xb5=\x7f\x88\xec\xc6\xea\x980t\xb3\t`\xa0I\xfc\xd0e\x7f\xfe\x80\x80\x83&quot;  # noqa: E501
+ KYBER_TRADE = (
+-    b&quot;\xd3\x0c\xa3\x99\xcbCP~\xce\xc6\xa6)\xa3\\\xf4^\xb9\x8c\xdaU\x0c'im\xcb\r\x8cJ8s\xcel&quot;
+-)  # noqa: E501
++    b&quot;\xd3\x0c\xa3\x99\xcbCP~\xce\xc6\xa6)\xa3\\\xf4^\xb9\x8c\xdaU\x0c'im\xcb\r\x8cJ8s\xcel&quot;  # noqa: E501
++)
+ KYBER_LEGACY_CONTRACT = string_to_evm_address(&quot;0x9ae49C0d7F8F9EF4B864e004FE86Ac8294E20950&quot;)
+ KYBER_LEGACY_CONTRACT_MIGRATED = string_to_evm_address(
+     &quot;0x65bF64Ff5f51272f729BDcD7AcFB00677ced86Cd&quot;
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/liquity/decoder.py#L34'>rotkehlchen/chain/ethereum/modules/liquity/decoder.py~L34</a></p>
+<pre><code class="language-diff"> LIQUITY_STAKING = string_to_evm_address(&quot;0x4f9Fbb3f1E99B56e0Fe2892e623Ed36A76Fc605d&quot;)
+ 
+ STABILITY_POOL_GAIN_WITHDRAW = (
+-    b'QEr&quot;\xeb\xca\x92\xc35\xc9\xc8n+\xaa\x1c\xc0\xe4\x0f\xfa\xa9\x08JQE)\x80\xd5\xba\x8d\xec/c'
+-)  # noqa: E501
++    b'QEr&quot;\xeb\xca\x92\xc35\xc9\xc8n+\xaa\x1c\xc0\xe4\x0f\xfa\xa9\x08JQE)\x80\xd5\xba\x8d\xec/c'  # noqa: E501
++)
+ STABILITY_POOL_LQTY_PAID = (
+-    b&quot;&amp;\x08\xb9\x86\xa6\xac\x0flb\x9c\xa3p\x18\xe8\n\xf5V\x1e6bR\xae\x93`*\x96\xd3\xab.s\xe4-&quot;
+-)  # noqa: E501
++    b&quot;&amp;\x08\xb9\x86\xa6\xac\x0flb\x9c\xa3p\x18\xe8\n\xf5V\x1e6bR\xae\x93`*\x96\xd3\xab.s\xe4-&quot;  # noqa: E501
++)
+ STABILITY_POOL_EVENTS = {STABILITY_POOL_GAIN_WITHDRAW, STABILITY_POOL_LQTY_PAID}
+ STAKING_LQTY_CHANGE = (
+-    b&quot;9\xdf\x0eR\x86\xa3\xef/B\xa0\xbfR\xf3,\xfe,X\xe5\xb0@_G\xfeQ/,$9\xe4\xcf\xe2\x04&quot;
+-)  # noqa: E501
++    b&quot;9\xdf\x0eR\x86\xa3\xef/B\xa0\xbfR\xf3,\xfe,X\xe5\xb0@_G\xfeQ/,$9\xe4\xcf\xe2\x04&quot;  # noqa: E501
++)
+ STAKING_ETH_SENT = (
+-    b&quot;a\t\xe2U\x9d\xfavj\xae\xc7\x11\x83Q\xd4\x8aR?\nAW\xf4\x9c\x8dht\x9c\x8a\xc4\x13\x18\xad\x12&quot;
+-)  # noqa: E501
++    b&quot;a\t\xe2U\x9d\xfavj\xae\xc7\x11\x83Q\xd4\x8aR?\nAW\xf4\x9c\x8dht\x9c\x8a\xc4\x13\x18\xad\x12&quot;  # noqa: E501
++)
+ STAKING_LQTY_EVENTS = {STAKING_LQTY_CHANGE, STAKING_ETH_SENT}
+ STAKING_REWARDS_ASSETS = {A_ETH, A_LUSD}
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/liquity/decoder.py#L221'>rotkehlchen/chain/ethereum/modules/liquity/decoder.py~L221</a></p>
+<pre><code class="language-diff">                     event.event_subtype = HistoryEventSubType.DEPOSIT_ASSET
+                     event.counterparty = CPT_LIQUITY
+                     event.notes = (
+-                        f&quot;Stake {event.balance.amount} {self.lqty.symbol} in the Liquity protocol&quot;
+-                    )  # noqa: E501
++                        f&quot;Stake {event.balance.amount} {self.lqty.symbol} in the Liquity protocol&quot;  # noqa: E501
++                    )
+                     event.extra_data = extra_data
+                 elif event.location_label == user and event.event_type == HistoryEventType.RECEIVE:
+                     event.event_type = HistoryEventType.STAKING
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/makerdao/decoder.py#L78'>rotkehlchen/chain/ethereum/modules/makerdao/decoder.py~L78</a></p>
+<pre><code class="language-diff"> CDPMANAGER_FROB = b&quot;E\xe6\xbd\xcd\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00&quot;  # noqa: E501
+ 
+ SDAI_DEPOSIT = (
+-    b&quot;\xdc\xbc\x1c\x05$\x0f1\xff:\xd0g\xef\x1e\xe3\\\xe4\x99wbu.:\tR\x84uED\xf4\xc7\t\xd7&quot;
+-)  # noqa: E501
++    b&quot;\xdc\xbc\x1c\x05$\x0f1\xff:\xd0g\xef\x1e\xe3\\\xe4\x99wbu.:\tR\x84uED\xf4\xc7\t\xd7&quot;  # noqa: E501
++)
+ SDAI_REDEEM = b&quot;\xfb\xdey} \x1ch\x1b\x91\x05e)\x11\x9e\x0b\x02@|{\xb9jJ,u\xc0\x1f\xc9fr2\xc8\xdb&quot;
+ 
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/makerdao/decoder.py#L192'>rotkehlchen/chain/ethereum/modules/makerdao/decoder.py~L192</a></p>
+<pre><code class="language-diff">                     event.event_subtype = HistoryEventSubType.DEPOSIT_ASSET
+                     event.counterparty = CPT_VAULT
+                     event.notes = (
+-                        f&quot;Deposit {amount} {vault_asset.symbol} to {vault_type} MakerDAO vault&quot;
+-                    )  # noqa: E501
++                        f&quot;Deposit {amount} {vault_asset.symbol} to {vault_type} MakerDAO vault&quot;  # noqa: E501
++                    )
+                     event.extra_data = {&quot;vault_type&quot;: vault_type}
+                     return DEFAULT_DECODING_OUTPUT
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/makerdao/decoder.py#L215'>rotkehlchen/chain/ethereum/modules/makerdao/decoder.py~L215</a></p>
+<pre><code class="language-diff">                     event.event_subtype = HistoryEventSubType.REMOVE_ASSET
+                     event.counterparty = CPT_VAULT
+                     event.notes = (
+-                        f&quot;Withdraw {amount} {vault_asset.symbol} from {vault_type} MakerDAO vault&quot;
+-                    )  # noqa: E501
++                        f&quot;Withdraw {amount} {vault_asset.symbol} from {vault_type} MakerDAO vault&quot;  # noqa: E501
++                    )
+                     event.extra_data = {&quot;vault_type&quot;: vault_type}
+                     return DEFAULT_DECODING_OUTPUT
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/makerdao/decoder.py#L463'>rotkehlchen/chain/ethereum/modules/makerdao/decoder.py~L463</a></p>
+<pre><code class="language-diff">                         event.extra_data[&quot;cdp_id&quot;] = cdp_id
+ 
+                     event.notes = (
+-                        f&quot;Payback {event.balance.amount} DAI of debt to makerdao vault {cdp_id}&quot;
+-                    )  # noqa: E501
++                        f&quot;Payback {event.balance.amount} DAI of debt to makerdao vault {cdp_id}&quot;  # noqa: E501
++                    )
+                     break
+ 
+         else:  # collateral deposit
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py#L35'>rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py~L35</a></p>
+<pre><code class="language-diff"> POOLED_ETHER_ADDRESS = string_to_evm_address(&quot;0xf53AD2c6851052A81B42133467480961B2321C09&quot;)
+ PETH_BURN_EVENT_TOPIC = b&quot;\xcc\x16\xf5\xdb\xb4\x872\x80\x81\\\x1e\xe0\x9d\xbd\x06sl\xff\xcc\x18D\x12\xcfzq\xa0\xfd\xb7]9|\xa5&quot;  # noqa: E501
+ PETH_MINT_EVENT_TOPIC = (
+-    b&quot;\x0fg\x98\xa5`y:T\xc3\xbc\xfe\x86\xa9&lt;\xde\x1es\x08}\x94L\x0e\xa2\x05D\x13}A!9h\x85&quot;
+-)  # noqa: E501
++    b&quot;\x0fg\x98\xa5`y:T\xc3\xbc\xfe\x86\xa9&lt;\xde\x1es\x08}\x94L\x0e\xa2\x05D\x13}A!9h\x85&quot;  # noqa: E501
++)
+ SAI_CDP_MIGRATION_TOPIC = b'\n\t\x94\xe6\x12&lt;i3\xeeu\x98\x86\x90WW\xde\xfe&quot;\xc1\xf5\xd0&lt;\xd1\xee1\\\xb6\xbd\xe8\xd1\x1a\xe8'  # noqa: E501
+ MAKERDAO_SAITUB_CONTRACT = string_to_evm_address(&quot;0x448a5065aeBB8E423F0896E6c5D525C040f59af3&quot;)
+ MAKERDAO_SAITAP_CONTRACT = string_to_evm_address(&quot;0xBda109309f9FafA6Dd6A9CB9f1Df4085B27Ee8eF&quot;)
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py#L109'>rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py~L109</a></p>
+<pre><code class="language-diff">                         event.event_subtype = HistoryEventSubType.REMOVE_ASSET
+                         event.counterparty = CPT_SAI
+                         event.notes = (
+-                            f&quot;Withdraw {event.balance.amount} {self.eth.symbol} from CDP {cdp_id}&quot;
+-                        )  # noqa: E501
++                            f&quot;Withdraw {event.balance.amount} {self.eth.symbol} from CDP {cdp_id}&quot;  # noqa: E501
++                        )
+                         return DEFAULT_DECODING_OUTPUT
+ 
+         return DEFAULT_DECODING_OUTPUT
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py#L384'>rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py~L384</a></p>
+<pre><code class="language-diff">                         event.event_type = HistoryEventType.DEPOSIT
+                         event.event_subtype = HistoryEventSubType.DEPOSIT_ASSET
+                         event.notes = (
+-                            f&quot;Supply {event.balance.amount} {self.eth.symbol} to Sai vault&quot;
+-                        )  # noqa: E501
++                            f&quot;Supply {event.balance.amount} {self.eth.symbol} to Sai vault&quot;  # noqa: E501
++                        )
+                         event.counterparty = CPT_SAI
+                         return DEFAULT_DECODING_OUTPUT
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py#L405'>rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py~L405</a></p>
+<pre><code class="language-diff">                 context.event.event_type = HistoryEventType.DEPOSIT
+                 context.event.event_subtype = HistoryEventSubType.DEPOSIT_ASSET
+                 context.event.notes = (
+-                    f&quot;Supply {context.event.balance.amount} {self.weth.symbol} to Sai vault&quot;
+-                )  # noqa: E501
++                    f&quot;Supply {context.event.balance.amount} {self.weth.symbol} to Sai vault&quot;  # noqa: E501
++                )
+                 context.event.counterparty = CPT_SAI
+                 return TransferEnrichmentOutput(matched_counterparty=CPT_SAI)
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py#L414'>rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py~L414</a></p>
+<pre><code class="language-diff">                 context.event.event_type = HistoryEventType.DEPOSIT
+                 context.event.event_subtype = HistoryEventSubType.DEPOSIT_ASSET
+                 context.event.notes = (
+-                    f&quot;Increase CDP collateral by {context.event.balance.amount} {self.peth.symbol}&quot;
+-                )  # noqa: E501
++                    f&quot;Increase CDP collateral by {context.event.balance.amount} {self.peth.symbol}&quot;  # noqa: E501
++                )
+                 context.event.counterparty = CPT_SAI
+                 return TransferEnrichmentOutput(matched_counterparty=CPT_SAI)
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py#L428'>rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py~L428</a></p>
+<pre><code class="language-diff">                 context.event.event_type = HistoryEventType.WITHDRAWAL
+                 context.event.event_subtype = HistoryEventSubType.REMOVE_ASSET
+                 context.event.notes = (
+-                    f&quot;Withdraw {context.event.balance.amount} {self.weth.symbol} from Sai vault&quot;
+-                )  # noqa: E501
++                    f&quot;Withdraw {context.event.balance.amount} {self.weth.symbol} from Sai vault&quot;  # noqa: E501
++                )
+                 context.event.counterparty = CPT_SAI
+                 return TransferEnrichmentOutput(matched_counterparty=CPT_SAI)
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/562b18f1bf5194574ea2fc0e4aa3211b2dd8e6bf/rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py#L437'>rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py~L437</a></p>
+<pre><code class="language-diff">                 context.event.event_type = HistoryEventType.WITHDRAWAL
+                 context.event.event_subtype = HistoryEventSubType.REMOVE_ASSET
+                 context.event.notes = (
+-                    f&quot;Decrease CDP collateral by {context.event.balance.amount} {self.peth.symbol}&quot;
+-                )  # noqa: E501
++                    f&quot;Decrease CDP collateral by {context.event.balance.amount} {self.peth.symbol}&quot;  # noqa: E501
++                )
+                 context.event.counterparty = CPT_SAI
+                 return TransferEnrichmentOutput(matched_counterparty...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-11-02 06:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-11-02 06:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-11-02 06:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">style</span> added by @MichaReiser on 2023-11-02 06:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-02 07:13</div>
+            <div class="timeline-body"><h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected format changes</strong>. (+354 -382 lines in 70 files in 41 projects)</p>
+<details><summary><a href="https://github.com/PostHog/HouseWatch">PostHog/HouseWatch</a> (+4 -6 lines across 1 file)</summary>
+<p>
+<pre>ruff format</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/PostHog/HouseWatch/blob/bf61a8e227311b3bc2fecd53823e4c1b37eb4a6d/housewatch/settings/__init__.py#L260'>housewatch/settings/<strong>init</strong>.py~L260</a></p>
+<pre><code class="language-diff"> CELERY_IMPORTS = []  # type: ignore
+ CELERY_BROKER_URL = RABBITMQ_URL  # celery connects to rabbitmq
+ CELERY_BEAT_MAX_LOOP_INTERVAL = (
+-    30
+-)  # sleep max 30sec before checking for new periodic events
++    30  # sleep max 30sec before checking for new periodic events
++)
+ CELERY_RESULT_BACKEND = REDIS_URL  # stores results for lookup when processing
+-CELERY_IGNORE_RESULT = (
+-    True
+-)  # only applies to delay(), must do @shared_task(ignore_result=True) for apply_async
++CELERY_IGNORE_RESULT = True  # only applies to delay(), must do @shared_task(ignore_result=True) for apply_async
+ CELERY_RESULT_EXPIRES = timedelta(
+     days=4
+ )  # expire tasks after 4 days instead of the default 1
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+5 -9 lines across 1 file)</summary>
+<p>
+<pre>ruff format</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/RasaHQ/rasa/blob/0dd893a1b343b069cbd237c74ded10ffa984afb4/rasa/server.py#L880'>rasa/server.py~L880</a></p>
+<pre><code class="language-diff"> 
+         try:
+             async with app.ctx.agent.lock_store.lock(conversation_id):
+-                tracker = await (
+-                    app.ctx.agent.processor.fetch_tracker_and_update_session(
+-                        conversation_id
+-                    )
++                tracker = await app.ctx.agent.processor.fetch_tracker_and_update_session(
++                    conversation_id
+                 )
+ 
+                 output_channel = _get_output_channel(request, tracker)
+</code></pre>
+<p><a href='https://github.com/RasaHQ/rasa/blob/0dd893a1b343b069cbd237c74ded10ffa984afb4/rasa/server.py#L933'>rasa/server.py~L933</a></p>
+<pre><code class="language-diff"> 
+         try:
+             async with app.ctx.agent.lock_store.lock(conversation_id):
+-                tracker = await (
+-                    app.ctx.agent.processor.fetch_tracker_and_update_session(
+-                        conversation_id
+-                    )
++                tracker = await app.ctx.agent.processor.fetch_tracker_and_update_session(
++                    conversation_id
+                 )
+                 output_channel = _get_output_channel(request, tracker)
+                 if intent_to_trigger not in app.ctx.agent.domain.intents:
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/alteryx/featuretools">alteryx/featuretools</a> (+3 -7 lines across 1 file)</summary>
+<p>
+<pre>ruff format</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/alteryx/featuretools/blob/1498c9a9723deff9b049e4bb70a4859c70331942/featuretools/tests/synthesis/test_deep_feature_synthesis.py#L229'>featuretools/tests/synthesis/test_deep_feature_synthesis.py~L229</a></p>
+<pre><code class="language-diff"> 
+ 
+ def test_ignore_columns_input_type(es):
+-    error_msg = (
+-        r&quot;ignore_columns should be dict\[str -&gt; list\]&quot;
+-    )  # need to use string literals to avoid regex params
++    error_msg = r&quot;ignore_columns should be dict\[str -&gt; list\]&quot;  # need to use string literals to avoid regex params
+     wrong_input_type = {&quot;log&quot;: &quot;value&quot;}
+     with pytest.raises(TypeError, match=error_msg):
+         DeepFeatureSynthesis(
+</code></pre>
+<p><a href='https://github.com/alteryx/featuretools/blob/1498c9a9723deff9b049e4bb70a4859c70331942/featuretools/tests/synthesis/test_deep_feature_synthesis.py#L253'>featuretools/tests/synthesis/test_deep_feature_synthesis.py~L253</a></p>
+<pre><code class="language-diff"> 
+ 
+ def test_ignore_columns_with_nonstring_keys(es):
+-    error_msg = (
+-        r&quot;ignore_columns should be dict\[str -&gt; list\]&quot;
+-    )  # need to use string literals to avoid regex params
++    error_msg = r&quot;ignore_columns should be dict\[str -&gt; list\]&quot;  # need to use string literals to avoid regex params
+     wrong_input_keys = {1: [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;]}
+     with pytest.raises(TypeError, match=error_msg):
+         DeepFeatureSynthesis(
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/demisto/content">demisto/content</a> (+32 -36 lines across 6 files)</summary>
+<p>
+<pre>ruff format --exclude Packs/ThreatQ/Integrations/ThreatQ/ThreatQ.py</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Packs/AWS_SystemManager/Integrations/AWSSystemManager/AWSSystemManager.py#L31'>Packs/AWS_SystemManager/Integrations/AWSSystemManager/AWSSystemManager.py~L31</a></p>
+<pre><code class="language-diff"> }
+ SERVICE_NAME = &quot;ssm&quot;  # Amazon Simple Systems Manager (SSM).
+ DEFAULT_TIMEOUT = 600  # Default timeout for polling commands.
+-MAXIMUM_COMMAND_TIMEOUT = (
+-    2592000  # Maximum timeout for running commands in ssm (30 days).
+-)
++MAXIMUM_COMMAND_TIMEOUT = 2592000  # Maximum timeout for running commands in ssm (30 days).
+ MINIMUM_COMMAND_TIMEOUT = 30  # Minimum timeout for running commands in ssm.
+ DEFAULT_INTERVAL_IN_SECONDS = 30  # Interval for polling commands.
+ TERMINAL_AUTOMATION_STATUSES = {  # the status for run automation command
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Packs/AWS_SystemManager/Integrations/AWSSystemManager/AWSSystemManager.py#L1480'>Packs/AWS_SystemManager/Integrations/AWSSystemManager/AWSSystemManager.py~L1480</a></p>
+<pre><code class="language-diff">     aws_role_arn = params.get(&quot;roleArn&quot;)
+     aws_role_session_name = params.get(&quot;roleSessionName&quot;)
+     aws_role_session_duration = params.get(&quot;sessionDuration&quot;)
+-    aws_role_policy = (
+-        None  # added it for using AWSClient class without changing the code
+-    )
++    aws_role_policy = None  # added it for using AWSClient class without changing the code
+     timeout = params[&quot;timeout&quot;]
+     retries = params[&quot;retries&quot;]
+ 
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Packs/MicrosoftDefenderAdvancedThreatProtection/Integrations/MicrosoftDefenderAdvancedThreatProtection/MicrosoftDefenderAdvancedThreatProtection.py#L150'>Packs/MicrosoftDefenderAdvancedThreatProtection/Integrations/MicrosoftDefenderAdvancedThreatProtection/MicrosoftDefenderAdvancedThreatProtection.py~L150</a></p>
+<pre><code class="language-diff">         SMB_CONNECTIONS_QUERY_SUFFIX = &quot;\n| summarize RemoteIPCount=dcount(RemoteIP) by DeviceName, InitiatingProcessFileName, InitiatingProcessId, InitiatingProcessCreationTime\n|{} limit {}&quot;  # noqa: E501
+         CREDENTIAL_DUMPING_QUERY_SUFFIX = &quot;\n| project Timestamp, DeviceName, ActionType, FileName, ProcessCommandLine, AccountName, InitiatingProcessIntegrityLevel, InitiatingProcessTokenElevation\n| limit {}&quot;  # noqa: E501
+         MANAGEMENT_CONNECTION_QUERY_SUFFIX = (
+-            &quot;\n| summarize TotalCount=count() by DeviceName,LocalIP,RemoteIP,RemotePort\n| order by TotalCount\n| limit {}&quot;
+-        )  # noqa: E501
++            &quot;\n| summarize TotalCount=count() by DeviceName,LocalIP,RemoteIP,RemotePort\n| order by TotalCount\n| limit {}&quot;  # noqa: E501
++        )
+ 
+         def __init__(
+             self,
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Packs/MicrosoftDefenderAdvancedThreatProtection/Integrations/MicrosoftDefenderAdvancedThreatProtection/MicrosoftDefenderAdvancedThreatProtection.py#L257'>Packs/MicrosoftDefenderAdvancedThreatProtection/Integrations/MicrosoftDefenderAdvancedThreatProtection/MicrosoftDefenderAdvancedThreatProtection.py~L257</a></p>
+<pre><code class="language-diff">         &quot;&quot;&quot;QUERY PREFIX&quot;&quot;&quot;
+ 
+         SCHEDULE_JOB_QUERY_PREFIX = (
+-            'DeviceEvents | where ActionType == &quot;ScheduledTaskCreated&quot; and InitiatingProcessAccountSid != &quot;S-1-5-18&quot; and'
+-        )  # noqa: E501
++            'DeviceEvents | where ActionType == &quot;ScheduledTaskCreated&quot; and InitiatingProcessAccountSid != &quot;S-1-5-18&quot; and'  # noqa: E501
++        )
+         REGISTRY_ENTRY_QUERY_PREFIX = 'DeviceRegistryEvents | where ActionType == &quot;RegistryValueSet&quot; and'
+         STARTUP_FOLDER_CHANGES_QUERY_PREFIX = 'DeviceFileEvents | where FolderPath contains @&quot;\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup&quot; and ActionType == &quot;FileCreated&quot; and'  # noqa: E501
+         NEW_SERVICE_CREATED_QUERY_PREFIX = 'DeviceRegistryEvents | where RegistryKey contains @&quot;HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services&quot; and ActionType == &quot;RegistryKeyCreated&quot; and'  # noqa: E501
+         SERVICE_UPDATED_QUERY_PREFIX = 'DeviceRegistryEvents | where RegistryKey contains @&quot;HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services&quot; and ActionType has_any (&quot;RegistryValueSet&quot;,&quot;RegistryKeyCreated&quot;) and'  # noqa: E501
+         FILE_REPLACED_QUERY_PREFIX = (
+-            'DeviceFileEvents | where FolderPath contains @&quot;C:\Program Files&quot; and ActionType == &quot;FileModified&quot; and'
+-        )  # noqa: E501
++            'DeviceFileEvents | where FolderPath contains @&quot;C:\Program Files&quot; and ActionType == &quot;FileModified&quot; and'  # noqa: E501
++        )
+         NEW_USER_QUERY_PREFIX = 'DeviceEvents | where ActionType == &quot;UserAccountCreated&quot; and'
+         NEW_GROUP_QUERY_PREFIX = 'DeviceEvents | where ActionType == &quot;SecurityGroupCreated&quot; and'
+         GROUP_USER_CHANGE_QUERY_PREFIX = 'DeviceEvents | where ActionType == &quot;UserAccountAddedToLocalGroup&quot; and'
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Packs/MicrosoftDefenderAdvancedThreatProtection/Integrations/MicrosoftDefenderAdvancedThreatProtection/MicrosoftDefenderAdvancedThreatProtection.py#L576'>Packs/MicrosoftDefenderAdvancedThreatProtection/Integrations/MicrosoftDefenderAdvancedThreatProtection/MicrosoftDefenderAdvancedThreatProtection.py~L576</a></p>
+<pre><code class="language-diff">         GENERIC_PROCESS_DETAILS_QUERY_PREFIX = &quot;DeviceProcessEvents | where&quot;
+         BECAONING_QUERY_PREFIX = &quot;DeviceNetworkEvents | where&quot;
+         POWERSHELL_EXECUTION_PROCESS_QUERY_PREFIX = (
+-            'DeviceProcessEvents | where FileName in~ (&quot;powershell.exe&quot;, &quot;powershell_ise.exe&quot;,&quot;.ps&quot;) and'
+-        )  # noqa: E501
++            'DeviceProcessEvents | where FileName in~ (&quot;powershell.exe&quot;, &quot;powershell_ise.exe&quot;,&quot;.ps&quot;) and'  # noqa: E501
++        )
+         POWERSHELL_EXECUTION_PROCESS_UNSIGNED_QUERY_PREFIX = 'DeviceProcessEvents | where FileName in~ (&quot;powershell.exe&quot;, &quot;powershell_ise.exe&quot;,&quot;.ps&quot;) and ( InitiatingProcessFileName != &quot;SenerIR.exe&quot; and InitiatingProcessParentFileName != &quot;MsSense.exe&quot; and InitiatingProcessSignatureStatus != &quot;Valid&quot; ) and (InitiatingProcessFileName != &quot;CompatTelRunner.exe&quot; and InitiatingProcessParentFileName != &quot;CompatTelRunner.exe&quot;)'  # noqa: E501
+ 
+         &quot;&quot;&quot;QUERY SUFFIX&quot;&quot;&quot;
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Packs/MicrosoftDefenderAdvancedThreatProtection/Integrations/MicrosoftDefenderAdvancedThreatProtection/MicrosoftDefenderAdvancedThreatProtection.py#L741'>Packs/MicrosoftDefenderAdvancedThreatProtection/Integrations/MicrosoftDefenderAdvancedThreatProtection/MicrosoftDefenderAdvancedThreatProtection.py~L741</a></p>
+<pre><code class="language-diff">         &quot;&quot;&quot;QUERY SUFFIX&quot;&quot;&quot;
+         EXTERNAL_ADDRESSES_QUERY_SUFFIX = &quot;\n| summarize TotalConnections = count() by DeviceName, RemoteIP, RemotePort, InitiatingProcessFileName,InitiatingProcessFolderPath | order by TotalConnections\n| limit {}&quot;  # noqa: E501
+         DNS_QUERY_SUFFIX = (
+-            &quot;| project Timestamp,DeviceName,ActionType,RemoteIP,Packetinfo = url_decode(AdditionalFields)\n| limit {}&quot;
+-        )  # noqa: E501
++            &quot;| project Timestamp,DeviceName,ActionType,RemoteIP,Packetinfo = url_decode(AdditionalFields)\n| limit {}&quot;  # noqa: E501
++        )
+         ENCODED_COMMANDS_QUERY_SUFFIX = &quot;\n| limit {}&quot;
+ 
+         def __init__(
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Packs/MicrosoftDefenderAdvancedThreatProtection/Integrations/MicrosoftDefenderAdvancedThreatProtection/MicrosoftDefenderAdvancedThreatProtection.py#L894'>Packs/MicrosoftDefenderAdvancedThreatProtection/Integrations/MicrosoftDefenderAdvancedThreatProtection/MicrosoftDefenderAdvancedThreatProtection.py~L894</a></p>
+<pre><code class="language-diff">         COMPROMISED_INFORMATION_QUERY_SUFFIX = &quot;\n| project Timestamp, DeviceId, DeviceName, ActionType, FileName, FolderPath, SHA1, SHA256, MD5, InitiatingProcessFileName\n| limit {}&quot;  # noqa: E501
+         CONNECTED_DEVICES_QUERY_SUFFIX = &quot;\n| summarize by DeviceName\n| limit {}&quot;
+         ACTION_TYPES_QUERY_SUFFIX = (
+-            &quot;\n| summarize Number_of_actions=count(ActionType) by ActionType,DeviceName | order by Number_of_actions\n| limit {}&quot;
+-        )  # noqa: E501
++            &quot;\n| summarize Number_of_actions=count(ActionType) by ActionType,DeviceName | order by Number_of_actions\n| limit {}&quot;  # noqa: E501
++        )
+         COMMON_FILES_QUERY_SUFFIX = &quot;\n| summarize Number_of_accoiated_events=count(FileName) by FileName, MD5, SHA1, SHA256 | order by Number_of_accoiated_events\n| limit {}&quot;  # noqa: E501
+ 
+         def __init__(
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Packs/SentinelOne/Integrations/SentinelOneEventCollector/SentinelOneEventCollector_test.py#L7'>Packs/SentinelOne/Integrations/SentinelOneEventCollector/SentinelOneEventCollector_test.py~L7</a></p>
+<pre><code class="language-diff"> &quot;&quot;&quot; CONSTANTS &quot;&quot;&quot;
+ 
+ ACTIVITIES_MOCK_URL = (
+-    &quot;https://test.com/web/api/v2.1/activities?createdAt__gt=2022-01-04+00%3A00%3A00&amp;limit=1000&amp;sortBy=createdAt&amp;sortOrder=asc&quot;
+-)  # noqa: E501
++    &quot;https://test.com/web/api/v2.1/activities?createdAt__gt=2022-01-04+00%3A00%3A00&amp;limit=1000&amp;sortBy=createdAt&amp;sortOrder=asc&quot;  # noqa: E501
++)
+ ACTIVITIES_SECOND_MOCK_URL = &quot;https://test.com/web/api/v2.1/activities?createdAt__gt=2022-09-06T20%3A37%3A55.912951Z&amp;limit=1000&amp;sortBy=createdAt&amp;sortOrder=asc&quot;  # noqa: E501
+ THREATS_MOCK_URL = (
+-    &quot;https://test.com/web/api/v2.1/threats?createdAt__gt=2022-01-04+00%3A00%3A00&amp;limit=1000&amp;sortBy=createdAt&amp;sortOrder=asc&quot;
+-)  # noqa: E501
++    &quot;https://test.com/web/api/v2.1/threats?createdAt__gt=2022-01-04+00%3A00%3A00&amp;limit=1000&amp;sortBy=createdAt&amp;sortOrder=asc&quot;  # noqa: E501
++)
+ THREATS_SECOND_MOCK_URL = &quot;https://test.com/web/api/v2.1/threats?createdAt__gt=2022-12-20T15%3A51%3A17.514437Z&amp;limit=1000&amp;sortBy=createdAt&amp;sortOrder=asc&quot;  # noqa: E501
+ ALERTS_MOCK_URL = &quot;https://test.com/web/api/v2.1/cloud-detection/alerts?limit=1000&amp;createdAt__gt=2022-01-04+00%3A00%3A00&amp;sortBy=alertInfoCreatedAt&amp;sortOrder=asc&quot;  # noqa: E501
+ ALERTS_SECOND_MOCK_URL = &quot;https://test.com/web/api/v2.1/cloud-detection/alerts?limit=1000&amp;createdAt__gt=2022-12-20T13%3A54%3A43.027000Z&amp;sortBy=alertInfoCreatedAt&amp;sortOrder=asc&quot;  # noqa: E501
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Packs/XsoarWebserver/Integrations/XSOARWebServer/XSOARWebServer.py#L87'>Packs/XsoarWebserver/Integrations/XSOARWebServer/XSOARWebServer.py~L87</a></p>
+<pre><code class="language-diff">         link_uuid = str(uuid.uuid4())
+         partial_link = f&quot;{xsoar_external_url}/instance/execute/{integration_instance_name}/process/{entry_uuid}/{link_uuid}/&quot;
+         partial_link_port = (
+-            f&quot;{xsoar_external_url}:{port}/instance/execute/{integration_instance_name}/process/{entry_uuid}/{link_uuid}/&quot;
+-        )  # noqa: E501
++            f&quot;{xsoar_external_url}:{port}/instance/execute/{integration_instance_name}/process/{entry_uuid}/{link_uuid}/&quot;  # noqa: E501
++        )
+         temp_link_tracker = {&quot;response&quot;: &quot;&quot;, &quot;response_received&quot;: False, &quot;emailaddress&quot;: email}
+ 
+         for ind, action in enumerate(input_list):
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Packs/XsoarWebserver/Integrations/XSOARWebServer/XSOARWebServer.py#L131'>Packs/XsoarWebserver/Integrations/XSOARWebServer/XSOARWebServer.py~L131</a></p>
+<pre><code class="language-diff">         link_uuid = str(uuid.uuid4())
+         partial_link = f&quot;{xsoar_external_url}/instance/execute/{integration_instance_name}/processform/{entry_uuid}/{link_uuid}/&quot;
+         partial_link_port = (
+-            f&quot;{xsoar_external_url}:{port}/instance/execute/{integration_instance_name}/processform/{entry_uuid}/{link_uuid}/&quot;
+-        )  # noqa: E501
++            f&quot;{xsoar_external_url}:{port}/instance/execute/{integration_instance_name}/processform/{entry_uuid}/{link_uuid}/&quot;  # noqa: E501
++        )
+ 
+         if xsoar_proxy == &quot;true&quot;:
+             action_url = partial_link
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Packs/rasterize/Integrations/rasterize/rasterize.py#L42'>Packs/rasterize/Integrations/rasterize/rasterize.py~L42</a></p>
+<pre><code class="language-diff"> DEFAULT_W, DEFAULT_H = &quot;600&quot;, &quot;800&quot;
+ DEFAULT_W_WIDE = &quot;1024&quot;
+ CHROME_USER_AGENT = (
+-    &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36&quot;
+-)  # noqa
++    &quot;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36&quot;  # noqa
++)
+ MAX_FULLSCREEN_W = 8000
+ MAX_FULLSCREEN_H = 8000
+ DRIVER_LOG = f&quot;{tempfile.gettempdir()}/chromedriver.log&quot;
+</code></pre>
+<p><a href='https://github.com/demisto/content/blob/d18164ad51622173451959ff0e2cf61c3fd06c05/Tests/Marketplace/search_and_install_packs.py#L37'>Tests/Marketplace/search_and_install_packs.py~L37</a></p>
+<pre><code class="language-diff"> PACKS_DIR = &quot;Packs&quot;
+ PACK_METADATA_FILE = Pack.USER_METADATA
+ GITLAB_PACK_METADATA_URL = (
+-    f&quot;{{gitlab_url}}/api/v4/projects/{CONTENT_PROJECT_ID}/repository/files/{PACKS_DIR}%2F{{pack_id}}%2F{PACK_METADATA_FILE}&quot;
+-)  # noqa: E501
++    f&quot;{{gitlab_url}}/api/v4/projects/{CONTENT_PROJECT_ID}/repository/files/{PACKS_DIR}%2F{{pack_id}}%2F{PACK_METADATA_FILE}&quot;  # noqa: E501
++)
+ 
+ 
+ @lru_cache
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/docker/docker-py">docker/docker-py</a> (+3 -3 lines across 1 file)</summary>
+<p>
+<pre>ruff format</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/docker/docker-py/blob/c38656dc7894363f32317affecc3e4279e1163f8/tests/unit/fake_api.py#L6'>tests/unit/fake_api.py~L6</a></p>
+<pre><code class="language-diff"> 
+ FAKE_CONTAINER_ID = &quot;81cf499cc928ce3fedc250a080d2b9b978df20e4517304c45211e8a68b33e254&quot;
+ FAKE_IMAGE_ID = (
+-    &quot;sha256:fe7a8fc91d3f17835cbb3b86a1c60287500ab01a53bc79c4497d09f07a3f0688&quot;
+-)  # noqa: E501
++    &quot;sha256:fe7a8fc91d3f17835cbb3b86a1c60287500ab01a53bc79c4497d09f07a3f0688&quot;  # noqa: E501
++)
+ FAKE_EXEC_ID = &quot;b098ec855f10434b5c7c973c78484208223a83f663ddaefb0f02a242840cb1c7&quot;
+ FAKE_NETWORK_ID = &quot;1999cfb42e414483841a125ade3c276c3cb80cb3269b14e339354ac63a31b02c&quot;
+ FAKE_IMAGE_NAME = &quot;test_image&quot;
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/milvus-io/pymilvus">milvus-io/pymilvus</a> (+6 -6 lines across 2 files)</summary>
+<p>
+<pre>ruff format</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/milvus-io/pymilvus/blob/9ad0ceada72396be890b746fe3a78ed4d74b3589/examples/example_bulkinsert_json.py#L50'>examples/example_bulkinsert_json.py~L50</a></p>
+<pre><code class="language-diff"> _JSON_FIELD_NAME = &quot;json_field&quot;
+ _VARCHAR_FIELD_NAME = &quot;varchar_field&quot;
+ _DYNAMIC_FIELD_NAME = (
+-    &quot;$meta&quot;
+-)  # dynamic field, the internal name is &quot;$meta&quot;, enable_dynamic_field=True
++    &quot;$meta&quot;  # dynamic field, the internal name is &quot;$meta&quot;, enable_dynamic_field=True
++)
+ 
+ # minio
+ DEFAULT_BUCKET_NAME = &quot;a-bucket&quot;
+</code></pre>
+<p><a href='https://github.com/milvus-io/pymilvus/blob/9ad0ceada72396be890b746fe3a78ed4d74b3589/examples/example_bulkinsert_numpy.py#L51'>examples/example_bulkinsert_numpy.py~L51</a></p>
+<pre><code class="language-diff"> _JSON_FIELD_NAME = &quot;json_field&quot;
+ _VARCHAR_FIELD_NAME = &quot;varchar_field&quot;
+ _DYNAMIC_FIELD_NAME = (
+-    &quot;$meta&quot;
+-)  # dynamic field, the internal name is &quot;$meta&quot;, enable_dynamic_field=True
++    &quot;$meta&quot;  # dynamic field, the internal name is &quot;$meta&quot;, enable_dynamic_field=True
++)
+ 
+ # minio
+ DEFAULT_BUCKET_NAME = &quot;a-bucket&quot;
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/python/mypy">python/mypy</a> (+2 -4 lines across 1 file)</summary>
+<p>
+<pre>ruff format</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/python/mypy/blob/371219347a6d17e16924bbabf3e693c6874e7138/mypy/semanal.py#L3100'>mypy/semanal.py~L3100</a></p>
+<pre><code class="language-diff">             if s.rvalue.analyzed.info.tuple_type and not has_placeholder(
+                 s.rvalue.analyzed.info.tuple_type
+             ):
+-                return (
+-                    True
+-                )  # This is a valid and analyzed named tuple definition, nothing to do here.
++                return True  # This is a valid and analyzed named tuple definition, nothing to do here.
+         if len(s.lvalues) != 1 or not isinstance(s.lvalues[0], (NameExpr, MemberExpr)):
+             return False
+         lvalue = s.lvalues[0]
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/reflex-dev/reflex">reflex-dev/reflex</a> (+3 -3 lines across 1 file)</summary>
+<p>
+<pre>ruff format</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/reflex-dev/reflex/blob/6e71393ed5f29234071da2b43192fc12d9bdbbd7/reflex/vars.py#L506'>reflex/vars.py~L506</a></p>
+<pre><code class="language-diff">             else:
+                 # apply operator to operands (left operand &lt;operator&gt; right_operand)
+                 operation_name = (
+-                    f&quot;{left_operand._var_full_name} {op} {right_operand._var_full_name}&quot;
+-                )  # type: ignore
++                    f&quot;{left_operand._var_full_name} {op} {right_operand._var_full_name}&quot;  # type: ignore
++                )
+                 operation_name = format.wrap(operation_name, &quot;(&quot;)
+         else:
+             # apply operator to left operand (&lt;operator&gt; left_operand)
+</code></pre>
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+294 -304 lines across 55 files)</summary>
+<p>
+<pre>ruff format</pre>
+</p>
+<p>
+
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/accounting/export/csv.py#L158'>rotkehlchen/accounting/export/csv.py~L158</a></p>
+<pre><code class="language-diff"> 
+         index = event.index + CSV_INDEX_OFFSET
+         value_formula = f&quot;{amount_column}{index}*H{index}&quot;
+-        total_value_formula = (
+-            f&quot;(F{index}*H{index}+G{index}*H{index})&quot;
+-        )  # formula of both free and taxable  # noqa: E501
++        total_value_formula = f&quot;(F{index}*H{index}+G{index}*H{index})&quot;  # formula of both free and taxable  # noqa: E501
+         cost_basis_column = &quot;K&quot; if name == &quot;taxable&quot; else &quot;L&quot;
+         cost_basis = f&quot;{cost_basis_column}{index}&quot;
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/accounting/structures/eth2.py#L53'>rotkehlchen/accounting/structures/eth2.py~L53</a></p>
+<pre><code class="language-diff"> ]
+ 
+ STAKING_DB_INSERT_QUERY_STR = (
+-    &quot;eth_staking_events_info(identifier, validator_index, is_exit_or_blocknumber) VALUES (?, ?, ?)&quot;
+-)  # noqa: E501
++    &quot;eth_staking_events_info(identifier, validator_index, is_exit_or_blocknumber) VALUES (?, ?, ?)&quot;  # noqa: E501
++)
+ STAKING_DB_UPDATE_QUERY_STR = (
+-    &quot;UPDATE eth_staking_events_info SET validator_index=?, is_exit_or_blocknumber=?&quot;
+-)  # noqa: E501
++    &quot;UPDATE eth_staking_events_info SET validator_index=?, is_exit_or_blocknumber=?&quot;  # noqa: E501
++)
+ 
+ 
+ class EthStakingEvent(HistoryBaseEntry, metaclass=ABCMeta):  # noqa: PLW1641  # hash in superclass
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/arbitrum_one/modules/arbitrum_one_bridge/decoder.py#L38'>rotkehlchen/chain/arbitrum_one/modules/arbitrum_one_bridge/decoder.py~L38</a></p>
+<pre><code class="language-diff"> L2_ERC20_GATEWAY = string_to_evm_address(&quot;0x09e9222E96E7B4AE2a407B98d48e330053351EEe&quot;)
+ L2_GATEWAY_ROUTER = string_to_evm_address(&quot;0x5288c571Fd7aD117beA99bF60FE0846C4E84F933&quot;)
+ TRANSFER_ROUTED = (
+-    b&quot;\x85)\x1d\xff!a\xa9&lt;/\x12\xc8\x19\xd3\x18\x89\xc9lc\x04!\x16\xf5\xbcZ Z\xa7\x01\xc2\xc4)\xf5&quot;
+-)  # noqa: E501
++    b&quot;\x85)\x1d\xff!a\xa9&lt;/\x12\xc8\x19\xd3\x18\x89\xc9lc\x04!\x16\xf5\xbcZ Z\xa7\x01\xc2\xc4)\xf5&quot;  # noqa: E501
++)
+ TOKEN_WITHDRAWAL_INITIATED = (
+-    b&quot;0s\xa7N\xcbr\x8d\x10\xbew\x9f\xe1\x9at\xa1B\x8e F\x8f[M\x16{\xf9\xc7=\x90g\x84}s&quot;
+-)  # noqa: E501
++    b&quot;0s\xa7N\xcbr\x8d\x10\xbew\x9f\xe1\x9at\xa1B\x8e F\x8f[M\x16{\xf9\xc7=\x90g\x84}s&quot;  # noqa: E501
++)
+ ETH_WITHDRAWAL_INITIATED = (
+-    b&quot;&gt;z\xaf\xa7}\xbf\x18k\x7f\xd4\x88\x00k\xef\xf8\x93tL\xaa&lt;Oo)\x9e\x8ap\x9f\xa2\x08st\xfc&quot;
+-)  # noqa: E501
++    b&quot;&gt;z\xaf\xa7}\xbf\x18k\x7f\xd4\x88\x00k\xef\xf8\x93tL\xaa&lt;Oo)\x9e\x8ap\x9f\xa2\x08st\xfc&quot;  # noqa: E501
++)
+ DEPOSIT_TX_TYPE = 100  # A deposit of ETH from L1 to L2 via the Arbitrum bridge.
+ ERC20_DEPOSIT_FINALIZED = b'\xc7\xf2\xe9\xc5\\@\xa5\x0f\xbc!}\xfcp\xcd9\xa2&quot;\x94\r\xfab\x14Z\xa0\xcaI\xeb\x955\xd4\xfc\xb2'  # noqa: E501
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/decoding/constants.py#L2'>rotkehlchen/chain/ethereum/decoding/constants.py~L2</a></p>
+<pre><code class="language-diff"> from rotkehlchen.chain.evm.types import string_to_evm_address
+ 
+ GTC_CLAIM = (
+-    b&quot;\x04g R\xdc\xb6\xb5\xb1\x9a\x9c\xc2\xec\x1b\x8fD\x7f\x1f^G\xb5\xe2L\xfa^O\xfbd\rc\xca+\xe7&quot;
+-)  # noqa: E501
++    b&quot;\x04g R\xdc\xb6\xb5\xb1\x9a\x9c\xc2\xec\x1b\x8fD\x7f\x1f^G\xb5\xe2L\xfa^O\xfbd\rc\xca+\xe7&quot;  # noqa: E501
++)
+ ONEINCH_CLAIM = (
+-    b&quot;N\xc9\x0e\x96U\x19\xd9&amp;\x81&amp;tg\xf7u\xad\xa5\xbd!J\xa9,\r\xc9=\x90\xa5\xe8\x80\xce\x9e\xd0&amp;&quot;
+-)  # noqa: E501
++    b&quot;N\xc9\x0e\x96U\x19\xd9&amp;\x81&amp;tg\xf7u\xad\xa5\xbd!J\xa9,\r\xc9=\x90\xa5\xe8\x80\xce\x9e\xd0&amp;&quot;  # noqa: E501
++)
+ GNOSIS_CHAIN_BRIDGE_RECEIVE = b&quot;\x9a\xfdG\x90~%\x02\x8c\xda\xca\x89\xd1\x93Q\x8c0+\xbb\x12\x86\x17\xd5\xa9\x92\xc5\xab\xd4X\x15Re\x93&quot;  # noqa: E501
+ GOVERNORALPHA_PROPOSE = (
+-    b&quot;}\x84\xa6&amp;:\xe0\xd9\x8d3)\xbd{F\xbbN\x8do\x98\xcd5\xa7\xad\xb4\\'L\x8b\x7f\xd5\xeb\xd5\xe0&quot;
+-)  # noqa: E501
++    b&quot;}\x84\xa6&amp;:\xe0\xd9\x8d3)\xbd{F\xbbN\x8do\x98\xcd5\xa7\xad\xb4\\'L\x8b\x7f\xd5\xeb\xd5\xe0&quot;  # noqa: E501
++)
+ GOVERNORALPHA_PROPOSE_ABI = '{&quot;anonymous&quot;:false,&quot;inputs&quot;:[{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;id&quot;,&quot;type&quot;:&quot;uint256&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;proposer&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;address[]&quot;,&quot;name&quot;:&quot;targets&quot;,&quot;type&quot;:&quot;address[]&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256[]&quot;,&quot;name&quot;:&quot;values&quot;,&quot;type&quot;:&quot;uint256[]&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;string[]&quot;,&quot;name&quot;:&quot;signatures&quot;,&quot;type&quot;:&quot;string[]&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;bytes[]&quot;,&quot;name&quot;:&quot;calldatas&quot;,&quot;type&quot;:&quot;bytes[]&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;startBlock&quot;,&quot;type&quot;:&quot;uint256&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;endBlock&quot;,&quot;type&quot;:&quot;uint256&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;string&quot;,&quot;name&quot;:&quot;description&quot;,&quot;type&quot;:&quot;string&quot;}],&quot;name&quot;:&quot;ProposalCreated&quot;,&quot;type&quot;:&quot;event&quot;}'  # noqa: E501
+ 
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/aave/v1/decoder.py#L21'>rotkehlchen/chain/ethereum/modules/aave/v1/decoder.py~L21</a></p>
+<pre><code class="language-diff"> DEPOSIT = b&quot;\xc1,W\xb1\xc7:,:.\xa4a&gt;\x94v\xab\xb3\xd8\xd1F\x85z\xabs)\xe2BC\xfbYq\x0c\x82&quot;
+ REDEEM_UNDERLYING = b&quot;\x9cN\xd5\x99\xcd\x85U\xb9\xc1\xe8\xcdvC$\r}q\xebv\xb7\x92\x94\x8cI\xfc\xb4\xd4\x11\xf7\xb6\xb3\xc6&quot;  # noqa: E501
+ LIQUIDATION_CALL = (
+-    b&quot;V\x86GW\xfd[\x1f\xc9\xf3\x8f_:\x98\x1c\xd8\xaeQ,\xe4\x1b\x90,\xf7?\xc5\x06\xee6\x9ck\xc27&quot;
+-)  # noqa: E501
++    b&quot;V\x86GW\xfd[\x1f\xc9\xf3\x8f_:\x98\x1c\xd8\xaeQ,\xe4\x1b\x90,\xf7?\xc5\x06\xee6\x9ck\xc27&quot;  # noqa: E501
++)
+ 
+ 
+ class Aavev1Decoder(DecoderInterface):
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/aave/v1/decoder.py#L70'>rotkehlchen/chain/ethereum/modules/aave/v1/decoder.py~L70</a></p>
+<pre><code class="language-diff">                 event.event_subtype = HistoryEventSubType.RECEIVE_WRAPPED
+                 event.counterparty = CPT_AAVE_V1
+                 event.notes = (
+-                    f&quot;Receive {amount} {atoken.symbol} from aave-v1 for {event.location_label}&quot;
+-                )  # noqa: E501
++                    f&quot;Receive {amount} {atoken.symbol} from aave-v1 for {event.location_label}&quot;  # noqa: E501
++                )
+                 receive_event = event
+             elif (
+                 event.event_type == HistoryEventType.RECEIVE
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/aave/v1/decoder.py#L82'>rotkehlchen/chain/ethereum/modules/aave/v1/decoder.py~L82</a></p>
+<pre><code class="language-diff">                 event.event_subtype = HistoryEventSubType.REWARD
+                 event.counterparty = CPT_AAVE_V1
+                 event.notes = (
+-                    f&quot;Gain {event.balance.amount} {atoken.symbol} from aave-v1 as interest&quot;
+-                )  # noqa: E501
++                    f&quot;Gain {event.balance.amount} {atoken.symbol} from aave-v1 as interest&quot;  # noqa: E501
++                )
+ 
+         maybe_reshuffle_events(
+             ordered_events=[deposit_event, receive_event],
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/aave/v1/decoder.py#L135'>rotkehlchen/chain/ethereum/modules/aave/v1/decoder.py~L135</a></p>
+<pre><code class="language-diff">                 event.event_subtype = HistoryEventSubType.REWARD
+                 event.counterparty = CPT_AAVE_V1
+                 event.notes = (
+-                    f&quot;Gain {event.balance.amount} {atoken.symbol} from aave-v1 as interest&quot;
+-                )  # noqa: E501
++                    f&quot;Gain {event.balance.amount} {atoken.symbol} from aave-v1 as interest&quot;  # noqa: E501
++                )
+                 interest_event = event
+ 
+         maybe_reshuffle_events(
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/aave/v1/decoder.py#L165'>rotkehlchen/chain/ethereum/modules/aave/v1/decoder.py~L165</a></p>
+<pre><code class="language-diff">                 # we are transfering the debt token
+                 event.event_subtype = HistoryEventSubType.PAYBACK_DEBT
+                 event.notes = (
+-                    f&quot;Payback {event.balance.amount} {asset.symbol} for an aave-v1 position&quot;
+-                )  # noqa: E501
++                    f&quot;Payback {event.balance.amount} {asset.symbol} for an aave-v1 position&quot;  # noqa: E501
++                )
+                 event.counterparty = CPT_AAVE_V1
+                 event.address = context.tx_log.address
+                 event.extra_data = {
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/aave/v2/decoder.py#L32'>rotkehlchen/chain/ethereum/modules/aave/v2/decoder.py~L32</a></p>
+<pre><code class="language-diff"> 
+ ENABLE_COLLATERAL = b'\x00\x05\x8aV\xea\x94e&lt;\xdfO\x15-&quot;z\xce&quot;\xd4\xc0\n\xd9\x9e*C\xf5\x8c\xb7\xd9\xe3\xfe\xb2\x95\xf2'  # noqa: E501
+ DISABLE_COLLATERAL = (
+-    b'D\xc5\x8d\x816[f\xddK\x1a\x7f6\xc2Z\xa9{\x8cq\xc3a\xeeI7\xad\xc1\xa0\x00\x00&quot;}\xb5\xdd'
+-)  # noqa: E501
++    b'D\xc5\x8d\x816[f\xddK\x1a\x7f6\xc2Z\xa9{\x8cq\xc3a\xeeI7\xad\xc1\xa0\x00\x00&quot;}\xb5\xdd'  # noqa: E501
++)
+ DEPOSIT = b&quot;\xdehW!\x95D\xbb[wF\xf4\x8e\xd3\x0b\xe68o\xef\xc6\x1b/\x86L\xac\xf5Y\x89;\xf5\x0f\xd9Q&quot;
+ WITHDRAW = (
+-    b&quot;1\x15\xd1D\x9a{s,\x98l\xba\x18$N\x89zE\x0fa\xe1\xbb\x8dX\x9c\xd2\xe6\x9el\x89$\xf9\xf7&quot;
+-)  # noqa: E501
++    b&quot;1\x15\xd1D\x9a{s,\x98l\xba\x18$N\x89zE\x0fa\xe1\xbb\x8dX\x9c\xd2\xe6\x9el\x89$\xf9\xf7&quot;  # noqa: E501
++)
+ BORROW = b&quot;\xc6\xa8\x980\x9e\x82&gt;\xe5\x0b\xacd\xe4\\\xa8\xad\xbaf\x90\xe9\x9exA\xc4]uN*8\xe9\x01\x9d\x9b&quot;  # noqa: E501
+ REPAY = b&quot;L\xdd\xe6\xe0\x9b\xb7U\xc9\xa5X\x9e\xba\xecd\x0b\xbf\xed\xff\x13b\xd4\xb2U\xeb\xf83\x97\x82\xb9\x94/\xaa&quot;  # noqa: E501
+ LIQUIDATION_CALL = (
+-    b&quot;\xe4\x13\xa3!\xe8h\x1d\x83\x1fM\xbc\xcb\xcay\r)R\xb5o\x97y\x08\xe4[\xe3s5S&gt;\x00R\x86&quot;
+-)  # noqa: E501
++    b&quot;\xe4\x13\xa3!\xe8h\x1d\x83\x1fM\xbc\xcb\xcay\r)R\xb5o\x97y\x08\xe4[\xe3s5S&gt;\x00R\x86&quot;  # noqa: E501
++)
+ ETH_GATEWAYS = (
+     string_to_evm_address(&quot;0xEFFC18fC3b7eb8E676dac549E0c693ad50D1Ce31&quot;),
+     string_to_evm_address(&quot;0xcc9a0B7c43DC2a5F023Bb9b738E45B0Ef6B06E04&quot;),
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/aave/v2/decoder.py#L117'>rotkehlchen/chain/ethereum/modules/aave/v2/decoder.py~L117</a></p>
+<pre><code class="language-diff">                     event.event_subtype = HistoryEventSubType.RECEIVE_WRAPPED
+                     resolved_asset = event.asset.resolve_to_asset_with_symbol()
+                     event.notes = (
+-                        f&quot;Receive {event.balance.amount} {resolved_asset.symbol} from AAVE v2&quot;
+-                    )  # noqa: E501
++                        f&quot;Receive {event.balance.amount} {resolved_asset.symbol} from AAVE v2&quot;  # noqa: E501
++                    )
+                     event.counterparty = CPT_AAVE_V2
+                 # Set protocol for both events
+                 event.counterparty = CPT_AAVE_V2
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/aave/v2/decoder.py#L232'>rotkehlchen/chain/ethereum/modules/aave/v2/decoder.py~L232</a></p>
+<pre><code class="language-diff">                 # we are transfering the aTOKEN
+                 event.event_subtype = HistoryEventSubType.LIQUIDATE
+                 event.notes = (
+-                    f&quot;An aave-v2 position got liquidated for {event.balance.amount} {asset.symbol}&quot;
+-                )  # noqa: E501
++                    f&quot;An aave-v2 position got liquidated for {event.balance.amount} {asset.symbol}&quot;  # noqa: E501
++                )
+                 event.counterparty = CPT_AAVE_V2
+                 event.address = tx_log.address
+             elif (
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/aave/v2/decoder.py#L246'>rotkehlchen/chain/ethereum/modules/aave/v2/decoder.py~L246</a></p>
+<pre><code class="language-diff">                 # we are transfering the debt token
+                 event.event_subtype = HistoryEventSubType.PAYBACK_DEBT
+                 event.notes = (
+-                    f&quot;Payback {event.balance.amount} {asset.symbol} for an aave-v2 position&quot;
+-                )  # noqa: E501
++                    f&quot;Payback {event.balance.amount} {asset.symbol} for an aave-v2 position&quot;  # noqa: E501
++                )
+                 event.counterparty = CPT_AAVE_V2
+                 event.address = tx_log.address
+                 event.extra_data = {
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/airdrops/decoder.py#L49'>rotkehlchen/chain/ethereum/modules/airdrops/decoder.py~L49</a></p>
+<pre><code class="language-diff"> 
+ UNISWAP_DISTRIBUTOR = string_to_evm_address(&quot;0x090D4613473dEE047c3f2706764f49E0821D256e&quot;)
+ UNISWAP_TOKEN_CLAIMED = (
+-    b&quot;N\xc9\x0e\x96U\x19\xd9&amp;\x81&amp;tg\xf7u\xad\xa5\xbd!J\xa9,\r\xc9=\x90\xa5\xe8\x80\xce\x9e\xd0&amp;&quot;
+-)  # noqa: E501
++    b&quot;N\xc9\x0e\x96U\x19\xd9&amp;\x81&amp;tg\xf7u\xad\xa5\xbd!J\xa9,\r\xc9=\x90\xa5\xe8\x80\xce\x9e\xd0&amp;&quot;  # noqa: E501
++)
+ 
+ BADGERHUNT = string_to_evm_address(&quot;0x394DCfbCf25C5400fcC147EbD9970eD34A474543&quot;)
+ BADGER_HUNT_EVENT = (
+-    b&quot;\x8e\xaf\x15aI\x08\xa4\xe9\x02!A\xfeJYk\x1a\xb0\xcbr\xab2\xb2P#\xe3\xda*E\x9c\x9a3\\&quot;
+-)  # noqa: E501
++    b&quot;\x8e\xaf\x15aI\x08\xa4\xe9\x02!A\xfeJYk\x1a\xb0\xcbr\xab2\xb2P#\xe3\xda*E\x9c\x9a3\\&quot;  # noqa: E501
++)
+ 
+ ONEINCH = string_to_evm_address(&quot;0xE295aD71242373C37C5FdA7B57F26f9eA1088AFe&quot;)
+ ONEINCH_CLAIMED = (
+-    b&quot;N\xc9\x0e\x96U\x19\xd9&amp;\x81&amp;tg\xf7u\xad\xa5\xbd!J\xa9,\r\xc9=\x90\xa5\xe8\x80\xce\x9e\xd0&amp;&quot;
+-)  # noqa: E501
++    b&quot;N\xc9\x0e\x96U\x19\xd9&amp;\x81&amp;tg\xf7u\xad\xa5\xbd!J\xa9,\r\xc9=\x90\xa5\xe8\x80\xce\x9e\xd0&amp;&quot;  # noqa: E501
++)
+ 
+ FPIS = string_to_evm_address(&quot;0x61A1f84F12Ba9a56C22c31dDB10EC2e2CA0ceBCf&quot;)
+ CONVEX = string_to_evm_address(&quot;0x2E088A0A19dda628B4304301d1EA70b114e4AcCd&quot;)
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/airdrops/decoder.py#L68'>rotkehlchen/chain/ethereum/modules/airdrops/decoder.py~L68</a></p>
+<pre><code class="language-diff"> 
+ FOX_DISTRIBUTOR = string_to_evm_address(&quot;0xe099e688D12DBc19ab46D128d1Db297575474a0d&quot;)
+ FOX_CLAIMED = (
+-    b&quot;R\x897\xb30\x08-\x89*\x98\xd4\xe4(\xab-\xcc\xa7\x84KQ\xd2'\xa1\xc0\xaeg\xf0\xb5&amp;\x1a\xcb\xd9&quot;
+-)  # noqa: E501
++    b&quot;R\x897\xb30\x08-\x89*\x98\xd4\xe4(\xab-\xcc\xa7\x84KQ\xd2'\xa1\xc0\xaeg\xf0\xb5&amp;\x1a\xcb\xd9&quot;  # noqa: E501
++)
+ 
+ ELFI_LOCKING = string_to_evm_address(&quot;0x02Bd4A3b1b95b01F2Aa61655415A5d3EAAcaafdD&quot;)
+ ELFI_VOTE_CHANGE = (
+-    b&quot;3\x16\x1c\xf2\xda(\xd7G\xbe\x9d\xf16\xb6\xf3r\x93\x90)\x84\x94\x94rht1\x93\xc5=s\xd3\xc2\xe0&quot;
+-)  # noqa: E501
++    b&quot;3\x16\x1c\xf2\xda(\xd7G\xbe\x9d\xf16\xb6\xf3r\x93\x90)\x84\x94\x94rht1\x93\xc5=s\xd3\xc2\xe0&quot;  # noqa: E501
++)
+ 
+ 
+ logger = logging.getLogger(__name__)
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/balancer/v2/decoder.py#L144'>rotkehlchen/chain/ethereum/modules/balancer/v2/decoder.py~L144</a></p>
+<pre><code class="language-diff">         if asset == context.event.asset:
+             context.event.event_subtype = HistoryEventSubType.RECEIVE
+             context.event.notes = (
+-                f&quot;Receive {context.event.balance.amount} {asset.symbol} from Balancer v2&quot;
+-            )  # noqa: E501
++                f&quot;Receive {context.event.balance.amount} {asset.symbol} from Balancer v2&quot;  # noqa: E501
++            )
+         else:
+             context.event.event_subtype = HistoryEventSubType.SPEND
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/base_bridge/decoder.py#L26'>rotkehlchen/chain/ethereum/modules/base_bridge/decoder.py~L26</a></p>
+<pre><code class="language-diff"> BRIDGE_ADDRESS = string_to_evm_address(&quot;0x49048044D57e1C92A77f79988d21Fa8fAF74E97e&quot;)
+ TOKEN_PORTAL = string_to_evm_address(&quot;0x3154Cf16ccdb4C6d922629664174b904d80F2C35&quot;)
+ TRANSACTION_DEPOSITED = (
+-    b&quot;\xb3\x815h\xd9\x99\x1f\xc9Q\x96\x1f\xcbLxH\x93WB@\xa2\x89%`M\t\xfcW|U\xbb|2&quot;
+-)  # noqa: E501
++    b&quot;\xb3\x815h\xd9\x99\x1f\xc9Q\x96\x1f\xcbLxH\x93WB@\xa2\x89%`M\t\xfcW|U\xbb|2&quot;  # noqa: E501
++)
+ WITHDRAWAL_FINALIZED = b&quot;\xdb\\vR\x85z\xa1c\xda\xad\xd6p\xe1\x16b\x8f\xb4.\x86\x9d\x8a\xc4%\x1e\xf8\x97\x1d\x9eW'\xdf\x1b&quot;  # noqa: E501
+ BRIDGE_TOKEN = b&quot;\x7f\xf1&amp;\xdb\x80$BK\xbf\xd9\x82n\x8a\xb8/\xf5\x916(\x9e\xa4@\xb0K9\xa0\xdf\x1b\x03\xb9\xca\xbf&quot;  # noqa: E501
+ WITHDRAWAL_TOKEN = b'\xd5\x9ce\xb3TE&quot;X5\xc8?P\xb6\xed\xe0j{\xe0G\xd2.5ps\xe2P\xd9\xafSu\x18\xcd'
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/compound/decoder.py#L38'>rotkehlchen/chain/ethereum/modules/compound/decoder.py~L38</a></p>
+<pre><code class="language-diff"> 
+ MAXIMILLION_ADDR = string_to_evm_address(&quot;0xf859A1AD94BcF445A406B892eF0d3082f4174088&quot;)
+ MINT_COMPOUND_TOKEN = (
+-    b&quot;L \x9b_\xc8\xadPu\x8f\x13\xe2\xe1\x08\x8b\xa5jV\r\xffi\n\x1co\xef&amp;9OL\x03\x82\x1cO&quot;
+-)  # noqa: E501
++    b&quot;L \x9b_\xc8\xadPu\x8f\x13\xe2\xe1\x08\x8b\xa5jV\r\xffi\n\x1co\xef&amp;9OL\x03\x82\x1cO&quot;  # noqa: E501
++)
+ REDEEM_COMPOUND_TOKEN = b&quot;\xe5\xb7T\xfb\x1a\xbb\x7f\x01\xb4\x99y\x1d\x0b\x82\n\xe3\xb6\xaf4$\xac\x1cYv\x8e\xdbS\xf4\xec1\xa9)&quot;  # noqa: E501
+ BORROW_COMPOUND = b&quot;\x13\xedhf\xd4\xe1\xeem\xa4o\x84\\F\xd7\xe5A \x88=u\xc5\xea\x9a-\xac\xc1\xc4\xca\x89\x84\xab\x80&quot;  # noqa: E501
+ REPAY_COMPOUND = (
+-    b'\x1a*&quot;\xcb\x03M&amp;\xd1\x85K\xdcff\xa5\xb9\x1f\xe2^\xfb\xbb]\xca\xd3\xb05Tx\xd6\xf5\xc3b\xa1'
+-)  # noqa: E501
++    b'\x1a*&quot;\xcb\x03M&amp;\xd1\x85K\xdcff\xa5\xb9\x1f\xe2^\xfb\xbb]\xca\xd3\xb05Tx\xd6\xf5\xc3b\xa1'  # noqa: E501
++)
+ LIQUIDATE_BORROW = (
+-    b&quot;)\x867\xf6\x84\xdapgO&amp;P\x9b\x10\xf0~\xc2\xfb\xc7z3Z\xb1\xe7\xd6!ZK$\x84\xd8\xbbR&quot;
+-)  # noqa: E501
++    b&quot;)\x867\xf6\x84\xdapgO&amp;P\x9b\x10\xf0~\xc2\xfb\xc7z3Z\xb1\xe7\xd6!ZK$\x84\xd8\xbbR&quot;  # noqa: E501
++)
+ DISTRIBUTED_SUPPLIER_COMP = (
+-    b&quot;,\xae\xcd\x17\xd0/V\xfa\x89w\x05\xdc\xc7@\xda-#|7?phoN\r\x9b\xd3\xbf\x04\x00\xeaz&quot;
+-)  # noqa: E501
++    b&quot;,\xae\xcd\x17\xd0/V\xfa\x89w\x05\xdc\xc7@\xda-#|7?phoN\r\x9b\xd3\xbf\x04\x00\xeaz&quot;  # noqa: E501
++)
+ DISTRIBUTED_BORROWER_COMP = b&quot;\x1f\xc3\xec\xc0\x87\xd8\xd2\xd1^#\xd0\x03*\xf5\xa4pY\xc3\x89-\x00=\x8e\x13\x9f\xdc\xb6\xbb2|\x99\xa6&quot;  # noqa: E501
+ 
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/compound/decoder.py#L309'>rotkehlchen/chain/ethereum/modules/compound/decoder.py~L309</a></p>
+<pre><code class="language-diff">                 and event.counterparty == CPT_COMPOUND
+             ):
+                 event.notes = (
+-                    f&quot;Repay {repaid_amount} {repaying_asset.symbol} in a compound liquidation&quot;
+-                )  # noqa: E501
++                    f&quot;Repay {repaid_amount} {repaying_asset.symbol} in a compound liquidation&quot;  # noqa: E501
++                )
+                 event.extra_data = {&quot;in_liquidation&quot;: True}
+             elif (
+                 event.event_type == HistoryEventType.RECEIVE
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/convex/constants.py#L17'>rotkehlchen/chain/ethereum/modules/convex/constants.py~L17</a></p>
+<pre><code class="language-diff"> CVXCRV_REWARDS = string_to_evm_address(&quot;0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e&quot;)
+ 
+ CVX_WITHDRAW_TOPIC = (
+-    b&quot;p\x84\xf5Gf\x18\xd8\xe6\x0b\x11\xef\r}?\x06\x91FU\xad\xb8y&gt;(\xff\x7f\x01\x8dLv\xd5\x05\xd5&quot;
+-)  # noqa: E501
++    b&quot;p\x84\xf5Gf\x18\xd8\xe6\x0b\x11\xef\r}?\x06\x91FU\xad\xb8y&gt;(\xff\x7f\x01\x8dLv\xd5\x05\xd5&quot;  # noqa: E501
++)
+ CVXCRV_REWARD_PAID_TOPIC = b&quot;\xe2@6@\xbah\xfe\xd3\xa2\xf8\x8buWU\x1d\x19\x93\xf8K\x99\xbb\x10\xff\x83?\x0c\xf8\xdb\x0c^\x04\x86&quot;  # noqa: E501
+ CVXCRV_WITHDRAWAL_TOPIC = (
+-    b&quot;p\x84\xf5Gf\x18\xd8\xe6\x0b\x11\xef\r}?\x06\x91FU\xad\xb8y&gt;(\xff\x7f\x01\x8dLv\xd5\x05\xd5&quot;
+-)  # noqa: E501
++    b&quot;p\x84\xf5Gf\x18\xd8\xe6\x0b\x11\xef\r}?\x06\x91FU\xad\xb8y&gt;(\xff\x7f\x01\x8dLv\xd5\x05\xd5&quot;  # noqa: E501
++)
+ CVX_LOCKER_REWARD_PAID_TOPIC = (
+-    b&quot;T\x07\x98\xdfF\x8d{#\xd1\x1f\x15o\xdb\x95L\xb1\x9a\xd4\x14\xd1Pr*{mU\xba6\x9d\xeay.&quot;
+-)  # noqa: E501
++    b&quot;T\x07\x98\xdfF\x8d{#\xd1\x1f\x15o\xdb\x95L\xb1\x9a\xd4\x14\xd1Pr*{mU\xba6\x9d\xeay.&quot;  # noqa: E501
++)
+ BOOSTER_WITHDRAW_TOPIC = b&quot;\x92\xcc\xf4P\xa2\x86\xa9W\xafRP\x9b\xc1\xc9\x93\x9d\x1ajH\x17\x83\xe1B\xe4\x1e$\x99\xf0\xbbf\xeb\xc6&quot;  # noqa: E501
+ 
+ WITHDRAWAL_TOPICS = {
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/convex/decoder.py#L50'>rotkehlchen/chain/ethereum/modules/convex/decoder.py~L50</a></p>
+<pre><code class="language-diff"> log = RotkehlchenLogsAdapter(logger)
+ 
+ DEPOSIT_EVENT = (
+-    b&quot;\x9eq\xbc\x8e\xea\x02\xa69i\xf5\t\x81\x8f-\xaf\xb9%E2\x90C\x19\xf9\xdb\xday\xb6{\xd3J_=&quot;
+-)  # noqa: E501
++    b&quot;\x9eq\xbc\x8e\xea\x02\xa69i\xf5\t\x81\x8f-\xaf\xb9%E2\x90C\x19\xf9\xdb\xday\xb6{\xd3J_=&quot;  # noqa: E501
++)
+ REWARD_ADDED = (
+-    b'\xde\x88\xa9&quot;\xe0\xd3\xb8\x8b$\xe9b&gt;\xfe\xb4d\x91\x9ck\xf9\xf6hW\xa6^+\xfc\xf2\xce\x87\xa9C='
+-)  # noqa: E501
++    b'\xde\x88\xa9&quot;\xe0\xd3\xb8\x8b$\xe9b&gt;\xfe\xb4d\x91\x9ck\xf9\xf6hW\xa6^+\xfc\xf2\xce\x87\xa9C='  # noqa: E501
++)
+ 
+ 
+ class ConvexDecoder(DecoderInterface, ReloadableCacheDecoderMixin):
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/convex/decoder.py#L144'>rotkehlchen/chain/ethereum/modules/convex/decoder.py~L144</a></p>
+<pre><code class="language-diff">                         event.notes = f&quot;Return {event.balance.amount} {crypto_asset.symbol} to convex {self.pools[context.tx_log.address]} pool&quot;  # noqa: E501
+                     else:
+                         event.notes = (
+-                            f&quot;Return {event.balance.amount} {crypto_asset.symbol} to convex&quot;
+-                        )  # noqa: E501
++                            f&quot;Return {event.balance.amount} {crypto_asset.symbol} to convex&quot;  # noqa: E501
++                        )
+                 else:
+                     event.event_type = HistoryEventType.DEPOSIT
+                     event.event_subtype = HistoryEventSubType.DEPOSIT_ASSET
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/convex/decoder.py#L155'>rotkehlchen/chain/ethereum/modules/convex/decoder.py~L155</a></p>
+<pre><code class="language-diff">                         event.product = EvmProduct.GAUGE
+                     else:
+                         event.notes = (
+-                            f&quot;Deposit {event.balance.amount} {crypto_asset.symbol} into convex&quot;
+-                        )  # noqa: E501
++                            f&quot;Deposit {event.balance.amount} {crypto_asset.symbol} into convex&quot;  # noqa: E501
++                        )
+                         if (
+                             isinstance(crypto_asset, EvmToken)
+                             and crypto_asset.protocol == CURVE_POOL_PROTOCOL
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/convex/decoder.py#L192'>rotkehlchen/chain/ethereum/modules/convex/decoder.py~L192</a></p>
+<pre><code class="language-diff">                         event.product = EvmProduct.GAUGE
+                     else:
+                         event.notes = (
+-                            f&quot;Withdraw {event.balance.amount} {crypto_asset.symbol} from convex&quot;
+-                        )  # noqa: E501
++                            f&quot;Withdraw {event.balance.amount} {crypto_asset.symbol} from convex&quot;  # noqa: E501
++                        )
+                         if (
+                             isinstance(crypto_asset, EvmToken)
+                             and crypto_asset.protocol == CURVE_POOL_PROTOCOL
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/curve/decoder.py#L102'>rotkehlchen/chain/ethereum/modules/curve/decoder.py~L102</a></p>
+<pre><code class="language-diff"> 
+ GAUGE_DEPOSIT = b&quot;\xe1\xff\xfc\xc4\x92=\x04\xb5Y\xf4\xd2\x9a\x8b\xfcl\xda\x04\xeb[\r&lt;F\x07Q\xc2@,\\\\\xc9\x10\x9c&quot;  # noqa: E501
+ GAUGE_WITHDRAW = (
+-    b&quot;\x88N\xda\xd9\xceo\xa2D\r\x8aT\xcc\x124\x90\xeb\x96\xd2v\x84y\xd4\x9f\xf9\xc76a%\xa9BCd&quot;
+-)  # noqa: E501
++    b&quot;\x88N\xda\xd9\xceo\xa2D\r\x8aT\xcc\x124\x90\xeb\x96\xd2v\x84y\xd4\x9f\xf9\xc76a%\xa9BCd&quot;  # noqa: E501
++)
+ GAUGE_VOTE = (
+-    b&quot;E\xca\x9aL\x8d\x01\x19\xeb2\x9eX\r(\xfeh\x9eHN\x1b\xe20\xda\x807\xad\xe9T}-%\xcc\x91&quot;
+-)  # noqa: E501
++    b&quot;E\xca\x9aL\x8d\x01\x19\xeb2\x9eX\r(\xfeh\x9eHN\x1b\xe20\xda\x807\xad\xe9T}-%\xcc\x91&quot;  # noqa: E501
++)
+ GAUGE_CONTROLLER = string_to_evm_address(&quot;0x2F50D538606Fa9EDD2B11E2446BEb18C9D5846bB&quot;)
+ 
+ TOKEN_EXCHANGE = (
+-    b&quot;\x8b&gt;\x96\xf2\xb8\x89\xfaw\x1cS\xc9\x81\xb4\r\xaf\x00_c\xf67\xf1\x86\x9fppR\xd1Z=\xd9q@&quot;
+-)  # noqa: E501
++    b&quot;\x8b&gt;\x96\xf2\xb8\x89\xfaw\x1cS\xc9\x81\xb4\r\xaf\x00_c\xf67\xf1\x86\x9fppR\xd1Z=\xd9q@&quot;  # noqa: E501
++)
+ TOKEN_EXCHANGE_UNDERLYING = (
+-    b&quot;\xd0\x13\xca#\xe7ze\x00&lt;,e\x9cTB\xc0\x0c\x80Sq\xb7\xfc\x1e\xbdL lA\xd1Sk\xd9\x0b&quot;
+-)  # noqa: E501
++    b&quot;\xd0\x13\xca#\xe7ze\x00&lt;,e\x9cTB\xc0\x0c\x80Sq\xb7\xfc\x1e\xbdL lA\xd1Sk\xd9\x0b&quot;  # noqa: E501
++)
+ EXCHANGE_MULTIPLE = b&quot;\x14\xb5a\x17\x8a\xe0\xf3h\xf4\x0f\xaf\xd0H\\Oq)\xeaq\xcd\xc0\x0bL\xe1\xe5\x94\x0f\x9b\xc6Y\xc8\xb2&quot;  # noqa: E501
+ CURVE_SWAP_ROUTER = string_to_evm_address(&quot;0x99a58482BD75cbab83b27EC03CA68fF489b5788f&quot;)
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/curve/decoder.py#L206'>rotkehlchen/chain/ethereum/modules/curve/decoder.py~L206</a></p>
+<pre><code class="language-diff">                 event.event_subtype = HistoryEventSubType.REMOVE_ASSET
+                 event.counterparty = CPT_CURVE
+                 event.notes = (
+-                    f&quot;Remove {event.balance.amount} {crypto_asset.symbol} from the curve pool&quot;
+-                )  # noqa: E501
++                    f&quot;Remove {event.balance.amount} {crypto_asset.symbol} from the curve pool&quot;  # noqa: E501
++                )
+                 withdrawal_events.append(event)
+             elif (  # Withdraw send wrapped
+                 event.event_type == HistoryEventType.SPEND
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/diva/decoder.py#L27'>rotkehlchen/chain/ethereum/modules/diva/decoder.py~L27</a></p>
+<pre><code class="language-diff"> logger = logging.getLogger(__name__)
+ log = RotkehlchenLogsAdapter(logger)
+ DELEGATE_CHANGED = (
+-    b&quot;14\xe8\xa2\xe6\xd9~\x92\x9a~T\x01\x1e\xa5H]}\x19m\xd5\xf0\xbaMN\xf9X\x03\xe8\xe3\xfc%\x7f&quot;
+-)  # noqa: E501
++    b&quot;14\xe8\xa2\xe6\xd9~\x92\x9a~T\x01\x1e\xa5H]}\x19m\xd5\xf0\xbaMN\xf9X\x03\xe8\xe3\xfc%\x7f&quot;  # noqa: E501
++)
+ CLAIM_AIRDROP = (
+-    b&quot;N\xc9\x0e\x96U\x19\xd9&amp;\x81&amp;tg\xf7u\xad\xa5\xbd!J\xa9,\r\xc9=\x90\xa5\xe8\x80\xce\x9e\xd0&amp;&quot;
+-)  # noqa: E501
++    b&quot;N\xc9\x0e\x96U\x19\xd9&amp;\x81&amp;tg\xf7u\xad\xa5\xbd!J\xa9,\r\xc9=\x90\xa5\xe8\x80\xce\x9e\xd0&amp;&quot;  # noqa: E501
++)
+ DIVA_AIDROP_CONTRACT = string_to_evm_address(&quot;0x777E2B2Cc7980A6bAC92910B95269895EEf0d2E8&quot;)
+ DIVA_GOVERNOR = string_to_evm_address(&quot;0xFb6B7C11a55C57767643F1FF65c34C8693a11A70&quot;)
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/dxdaomesa/decoder.py#L25'>rotkehlchen/chain/ethereum/modules/dxdaomesa/decoder.py~L25</a></p>
+<pre><code class="language-diff"> DEPOSIT = b&quot;\xc1\x1c\xc3N\x93\xc6z\x938+\x99\xf2I\x8e\x997\x19\x87\x98\xf3\xc1\xc2\x88\x80\x08\xff\xc0\xee\xb8/h\xc4&quot;  # noqa: E501
+ ORDER_PLACEMENT = b&quot;\xde\xcfo\xde\x82C\x98\x12\x99\xf7\xb7\xa7v\xf2\x9a\x9f\xc6z,\x98H\xe2]w\xc5\x0e\xb1\x1f\xa5\x8a~!&quot;  # noqa: E501
+ WITHDRAW_REQUEST = (
+-    b&quot;,bE\xafPo\x0f\xc1\x08\x99\x18\xc0,\x1d\x01\xbd\xe9\xcc\x80v\t\xb34\xb3\xe7dMm\xfbZl^&quot;
+-)  # noqa: E501
++    b&quot;,bE\xafPo\x0f\xc1\x08\x99\x18\xc0,\x1d\x01\xbd\xe9\xcc\x80v\t\xb34\xb3\xe7dMm\xfbZl^&quot;  # noqa: E501
++)
+ WITHDRAW = b&quot;\x9b\x1b\xfa\x7f\xa9\xeeB\n\x16\xe1$\xf7\x94\xc3Z\xc9\xf9\x04r\xac\xc9\x91@\xeb/dG\xc7\x14\xca\xd8\xeb&quot;  # noqa: E501
+ 
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/ens/decoder.py#L55'>rotkehlchen/chain/ethereum/modules/ens/decoder.py~L55</a></p>
+<pre><code class="language-diff"> ENS_REVERSE_RESOLVER = string_to_evm_address(&quot;0xA2C122BE93b0074270ebeE7f6b7292C7deB45047&quot;)
+ 
+ NAME_RENEWED = (
+-    b&quot;=\xa2L\x02E\x82\x93\x1c\xfa\xf8&amp;}\x8e\xd2M\x13\xa8*\x80h\xd5\xbd3}0\xecE\xce\xa4\xe5\x06\xae&quot;
+-)  # noqa: E501
++    b&quot;=\xa2L\x02E\x82\x93\x1c\xfa\xf8&amp;}\x8e\xd2M\x13\xa8*\x80h\xd5\xbd3}0\xecE\xce\xa4\xe5\x06\xae&quot;  # noqa: E501
++)
+ NAME_RENEWED_ABI = '{&quot;anonymous&quot;:false,&quot;inputs&quot;:[{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;string&quot;,&quot;name&quot;:&quot;name&quot;,&quot;type&quot;:&quot;string&quot;},{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;bytes32&quot;,&quot;name&quot;:&quot;label&quot;,&quot;type&quot;:&quot;bytes32&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;cost&quot;,&quot;type&quot;:&quot;uint256&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;expires&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;NameRenewed&quot;,&quot;type&quot;:&quot;event&quot;}'  # noqa: E501
+ NEW_RESOLVER = (
+-    b&quot;3W!\xb0\x18f\xdc#\xfb\xee\x8bk,{\x1e\x14\xd6\xf0\\(\xcd5\xa2\xc94#\x9f\x94\tV\x02\xa0&quot;
+-)  # noqa: E501
++    b&quot;3W!\xb0\x18f\xdc#\xfb\xee\x8bk,{\x1e\x14\xd6\xf0\\(\xcd5\xa2\xc94#\x9f\x94\tV\x02\xa0&quot;  # noqa: E501
++)
+ NAME_REGISTERED_SINGLE_COST = b'\xcaj\xbb\xe9\xd7\xf1\x14&quot;\xcbl\xa7b\x9f\xbfo\xe9\xef\xb1\xc6!\xf7\x1c\xe8\xf0+\x9f*#\x00\x97@O'  # noqa: E501
+ NAME_REGISTERED_SINGLE_COST_ABI = '{&quot;anonymous&quot;:false,&quot;inputs&quot;:[{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;string&quot;,&quot;name&quot;:&quot;name&quot;,&quot;type&quot;:&quot;string&quot;},{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;bytes32&quot;,&quot;name&quot;:&quot;label&quot;,&quot;type&quot;:&quot;bytes32&quot;},{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;owner&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;cost&quot;,&quot;type&quot;:&quot;uint256&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;expires&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;NameRegistered&quot;,&quot;type&quot;:&quot;event&quot;}'  # noqa: E501
+ NAME_REGISTERED_BASE_COST_AND_PREMIUM = b&quot;i\xe3\x7f\x15\x1e\xb9\x8a\ta\x8d\xda\xa8\x0c\x8c\xfa\xf1\xceY\x96\x86|H\x9fE\xb5U\xb4\x12'\x1e\xbf'&quot;  # noqa: E501
+ NAME_REGISTERED_BASE_COST_AND_PREMIUM_ABI = '{&quot;anonymous&quot;:false,&quot;inputs&quot;:[{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;string&quot;,&quot;name&quot;:&quot;name&quot;,&quot;type&quot;:&quot;string&quot;},{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;bytes32&quot;,&quot;name&quot;:&quot;label&quot;,&quot;type&quot;:&quot;bytes32&quot;},{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;address&quot;,&quot;name&quot;:&quot;owner&quot;,&quot;type&quot;:&quot;address&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;baseCost&quot;,&quot;type&quot;:&quot;uint256&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;premium&quot;,&quot;type&quot;:&quot;uint256&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;uint256&quot;,&quot;name&quot;:&quot;expires&quot;,&quot;type&quot;:&quot;uint256&quot;}],&quot;name&quot;:&quot;NameRegistered&quot;,&quot;type&quot;:&quot;event&quot;}'  # noqa: E501
+ TEXT_CHANGED_KEY_ONLY = (
+-    b&quot;\xd8\xc93K\x1a\x9c/\x9d\xa3B\xa0\xa2\xb3&amp;)\xc1\xa2)\xb6D]\xadx\x94\x7fgKDDJuP&quot;
+-)  # noqa: E501
++    b&quot;\xd8\xc93K\x1a\x9c/\x9d\xa3B\xa0\xa2\xb3&amp;)\xc1\xa2)\xb6D]\xadx\x94\x7fgKDDJuP&quot;  # noqa: E501
++)
+ TEXT_CHANGED_KEY_ONLY_ABI = '{&quot;anonymous&quot;:false,&quot;inputs&quot;:[{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;bytes32&quot;,&quot;name&quot;:&quot;node&quot;,&quot;type&quot;:&quot;bytes32&quot;},{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;string&quot;,&quot;name&quot;:&quot;indexedKey&quot;,&quot;type&quot;:&quot;string&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;string&quot;,&quot;name&quot;:&quot;key&quot;,&quot;type&quot;:&quot;string&quot;}],&quot;name&quot;:&quot;TextChanged&quot;,&quot;type&quot;:&quot;event&quot;}'  # noqa: E501
+ TEXT_CHANGED_KEY_AND_VALUE = (
+-    b&quot;D\x8b\xc0\x14\xf1Sg&amp;\xcf\x8dT\xff=d\x81\xed&lt;\xbch&lt;%\x91\xca Bt\x00\x9a\xfa\t\xb1\xa1&quot;
+-)  # noqa: E501
++    b&quot;D\x8b\xc0\x14\xf1Sg&amp;\xcf\x8dT\xff=d\x81\xed&lt;\xbch&lt;%\x91\xca Bt\x00\x9a\xfa\t\xb1\xa1&quot;  # noqa: E501
++)
+ TEXT_CHANGED_KEY_AND_VALUE_ABI = '{&quot;anonymous&quot;:false,&quot;inputs&quot;:[{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;bytes32&quot;,&quot;name&quot;:&quot;node&quot;,&quot;type&quot;:&quot;bytes32&quot;},{&quot;indexed&quot;:true,&quot;internalType&quot;:&quot;string&quot;,&quot;name&quot;:&quot;indexedKey&quot;,&quot;type&quot;:&quot;string&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;string&quot;,&quot;name&quot;:&quot;key&quot;,&quot;type&quot;:&quot;string&quot;},{&quot;indexed&quot;:false,&quot;internalType&quot;:&quot;string&quot;,&quot;name&quot;:&quot;value&quot;,&quot;type&quot;:&quot;string&quot;}],&quot;name&quot;:&quot;TextChanged&quot;,&quot;type&quot;:&quot;event&quot;}'  # noqa: E501
+ CONTENT_HASH_CHANGED = (
+-    b&quot;\xe3y\xc1bN\xd7\xe7\x14\xcc\t7R\x8a25\x9di\xd5(\x137vS\x13\xdb\xa4\xe0\x81\xb7-ux&quot;
+-)  # noqa: E501
++    b&quot;\xe3y\xc1bN\xd7\xe7\x14\xcc\t7R\x8a25\x9di\xd5(\x137vS\x13\xdb\xa4\xe0\x81\xb7-ux&quot;  # noqa: E501
++)
+ ENS_GOVERNOR = string_to_evm_address(&quot;0x323A76393544d5ecca80cd6ef2A560C6a395b7E3&quot;)
+ 
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/golem/decoder.py#L24'>rotkehlchen/chain/ethereum/modules/golem/decoder.py~L24</a></p>
+<pre><code class="language-diff"> log = RotkehlchenLogsAdapter(logger)
+ 
+ MIGRATED = (
+-    b&quot;\x92\x8f\xd5S\x13$\xee\x87\xd7l\xc50}\xc3u\x80\x17M\xa7k\x85\xcdTm\xa61\xb2g\x0b\xc2f\xb5&quot;
+-)  # noqa: E501
++    b&quot;\x92\x8f\xd5S\x13$\xee\x87\xd7l\xc50}\xc3u\x80\x17M\xa7k\x85\xcdTm\xa61\xb2g\x0b\xc2f\xb5&quot;  # noqa: E501
++)
+ 
+ 
+ class GolemDecoder(DecoderInterface):
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/kyber/decoder.py#L27'>rotkehlchen/chain/ethereum/modules/kyber/decoder.py~L27</a></p>
+<pre><code class="language-diff"> 
+ KYBER_TRADE_LEGACY = b&quot;\xf7$\xb4\xdff\x17G6\x12\xb5=\x7f\x88\xec\xc6\xea\x980t\xb3\t`\xa0I\xfc\xd0e\x7f\xfe\x80\x80\x83&quot;  # noqa: E501
+ KYBER_TRADE = (
+-    b&quot;\xd3\x0c\xa3\x99\xcbCP~\xce\xc6\xa6)\xa3\\\xf4^\xb9\x8c\xdaU\x0c'im\xcb\r\x8cJ8s\xcel&quot;
+-)  # noqa: E501
++    b&quot;\xd3\x0c\xa3\x99\xcbCP~\xce\xc6\xa6)\xa3\\\xf4^\xb9\x8c\xdaU\x0c'im\xcb\r\x8cJ8s\xcel&quot;  # noqa: E501
++)
+ KYBER_LEGACY_CONTRACT = string_to_evm_address(&quot;0x9ae49C0d7F8F9EF4B864e004FE86Ac8294E20950&quot;)
+ KYBER_LEGACY_CONTRACT_MIGRATED = string_to_evm_address(
+     &quot;0x65bF64Ff5f51272f729BDcD7AcFB00677ced86Cd&quot;
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/liquity/decoder.py#L34'>rotkehlchen/chain/ethereum/modules/liquity/decoder.py~L34</a></p>
+<pre><code class="language-diff"> LIQUITY_STAKING = string_to_evm_address(&quot;0x4f9Fbb3f1E99B56e0Fe2892e623Ed36A76Fc605d&quot;)
+ 
+ STABILITY_POOL_GAIN_WITHDRAW = (
+-    b'QEr&quot;\xeb\xca\x92\xc35\xc9\xc8n+\xaa\x1c\xc0\xe4\x0f\xfa\xa9\x08JQE)\x80\xd5\xba\x8d\xec/c'
+-)  # noqa: E501
++    b'QEr&quot;\xeb\xca\x92\xc35\xc9\xc8n+\xaa\x1c\xc0\xe4\x0f\xfa\xa9\x08JQE)\x80\xd5\xba\x8d\xec/c'  # noqa: E501
++)
+ STABILITY_POOL_LQTY_PAID = (
+-    b&quot;&amp;\x08\xb9\x86\xa6\xac\x0flb\x9c\xa3p\x18\xe8\n\xf5V\x1e6bR\xae\x93`*\x96\xd3\xab.s\xe4-&quot;
+-)  # noqa: E501
++    b&quot;&amp;\x08\xb9\x86\xa6\xac\x0flb\x9c\xa3p\x18\xe8\n\xf5V\x1e6bR\xae\x93`*\x96\xd3\xab.s\xe4-&quot;  # noqa: E501
++)
+ STABILITY_POOL_EVENTS = {STABILITY_POOL_GAIN_WITHDRAW, STABILITY_POOL_LQTY_PAID}
+ STAKING_LQTY_CHANGE = (
+-    b&quot;9\xdf\x0eR\x86\xa3\xef/B\xa0\xbfR\xf3,\xfe,X\xe5\xb0@_G\xfeQ/,$9\xe4\xcf\xe2\x04&quot;
+-)  # noqa: E501
++    b&quot;9\xdf\x0eR\x86\xa3\xef/B\xa0\xbfR\xf3,\xfe,X\xe5\xb0@_G\xfeQ/,$9\xe4\xcf\xe2\x04&quot;  # noqa: E501
++)
+ STAKING_ETH_SENT = (
+-    b&quot;a\t\xe2U\x9d\xfavj\xae\xc7\x11\x83Q\xd4\x8aR?\nAW\xf4\x9c\x8dht\x9c\x8a\xc4\x13\x18\xad\x12&quot;
+-)  # noqa: E501
++    b&quot;a\t\xe2U\x9d\xfavj\xae\xc7\x11\x83Q\xd4\x8aR?\nAW\xf4\x9c\x8dht\x9c\x8a\xc4\x13\x18\xad\x12&quot;  # noqa: E501
++)
+ STAKING_LQTY_EVENTS = {STAKING_LQTY_CHANGE, STAKING_ETH_SENT}
+ STAKING_REWARDS_ASSETS = {A_ETH, A_LUSD}
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/liquity/decoder.py#L221'>rotkehlchen/chain/ethereum/modules/liquity/decoder.py~L221</a></p>
+<pre><code class="language-diff">                     event.event_subtype = HistoryEventSubType.DEPOSIT_ASSET
+                     event.counterparty = CPT_LIQUITY
+                     event.notes = (
+-                        f&quot;Stake {event.balance.amount} {self.lqty.symbol} in the Liquity protocol&quot;
+-                    )  # noqa: E501
++                        f&quot;Stake {event.balance.amount} {self.lqty.symbol} in the Liquity protocol&quot;  # noqa: E501
++                    )
+                     event.extra_data = extra_data
+                 elif event.location_label == user and event.event_type == HistoryEventType.RECEIVE:
+                     event.event_type = HistoryEventType.STAKING
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/makerdao/decoder.py#L78'>rotkehlchen/chain/ethereum/modules/makerdao/decoder.py~L78</a></p>
+<pre><code class="language-diff"> CDPMANAGER_FROB = b&quot;E\xe6\xbd\xcd\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00&quot;  # noqa: E501
+ 
+ SDAI_DEPOSIT = (
+-    b&quot;\xdc\xbc\x1c\x05$\x0f1\xff:\xd0g\xef\x1e\xe3\\\xe4\x99wbu.:\tR\x84uED\xf4\xc7\t\xd7&quot;
+-)  # noqa: E501
++    b&quot;\xdc\xbc\x1c\x05$\x0f1\xff:\xd0g\xef\x1e\xe3\\\xe4\x99wbu.:\tR\x84uED\xf4\xc7\t\xd7&quot;  # noqa: E501
++)
+ SDAI_REDEEM = b&quot;\xfb\xdey} \x1ch\x1b\x91\x05e)\x11\x9e\x0b\x02@|{\xb9jJ,u\xc0\x1f\xc9fr2\xc8\xdb&quot;
+ 
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/makerdao/decoder.py#L192'>rotkehlchen/chain/ethereum/modules/makerdao/decoder.py~L192</a></p>
+<pre><code class="language-diff">                     event.event_subtype = HistoryEventSubType.DEPOSIT_ASSET
+                     event.counterparty = CPT_VAULT
+                     event.notes = (
+-                        f&quot;Deposit {amount} {vault_asset.symbol} to {vault_type} MakerDAO vault&quot;
+-                    )  # noqa: E501
++                        f&quot;Deposit {amount} {vault_asset.symbol} to {vault_type} MakerDAO vault&quot;  # noqa: E501
++                    )
+                     event.extra_data = {&quot;vault_type&quot;: vault_type}
+                     return DEFAULT_DECODING_OUTPUT
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/makerdao/decoder.py#L215'>rotkehlchen/chain/ethereum/modules/makerdao/decoder.py~L215</a></p>
+<pre><code class="language-diff">                     event.event_subtype = HistoryEventSubType.REMOVE_ASSET
+                     event.counterparty = CPT_VAULT
+                     event.notes = (
+-                        f&quot;Withdraw {amount} {vault_asset.symbol} from {vault_type} MakerDAO vault&quot;
+-                    )  # noqa: E501
++                        f&quot;Withdraw {amount} {vault_asset.symbol} from {vault_type} MakerDAO vault&quot;  # noqa: E501
++                    )
+                     event.extra_data = {&quot;vault_type&quot;: vault_type}
+                     return DEFAULT_DECODING_OUTPUT
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/makerdao/decoder.py#L463'>rotkehlchen/chain/ethereum/modules/makerdao/decoder.py~L463</a></p>
+<pre><code class="language-diff">                         event.extra_data[&quot;cdp_id&quot;] = cdp_id
+ 
+                     event.notes = (
+-                        f&quot;Payback {event.balance.amount} DAI of debt to makerdao vault {cdp_id}&quot;
+-                    )  # noqa: E501
++                        f&quot;Payback {event.balance.amount} DAI of debt to makerdao vault {cdp_id}&quot;  # noqa: E501
++                    )
+                     break
+ 
+         else:  # collateral deposit
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py#L35'>rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py~L35</a></p>
+<pre><code class="language-diff"> POOLED_ETHER_ADDRESS = string_to_evm_address(&quot;0xf53AD2c6851052A81B42133467480961B2321C09&quot;)
+ PETH_BURN_EVENT_TOPIC = b&quot;\xcc\x16\xf5\xdb\xb4\x872\x80\x81\\\x1e\xe0\x9d\xbd\x06sl\xff\xcc\x18D\x12\xcfzq\xa0\xfd\xb7]9|\xa5&quot;  # noqa: E501
+ PETH_MINT_EVENT_TOPIC = (
+-    b&quot;\x0fg\x98\xa5`y:T\xc3\xbc\xfe\x86\xa9&lt;\xde\x1es\x08}\x94L\x0e\xa2\x05D\x13}A!9h\x85&quot;
+-)  # noqa: E501
++    b&quot;\x0fg\x98\xa5`y:T\xc3\xbc\xfe\x86\xa9&lt;\xde\x1es\x08}\x94L\x0e\xa2\x05D\x13}A!9h\x85&quot;  # noqa: E501
++)
+ SAI_CDP_MIGRATION_TOPIC = b'\n\t\x94\xe6\x12&lt;i3\xeeu\x98\x86\x90WW\xde\xfe&quot;\xc1\xf5\xd0&lt;\xd1\xee1\\\xb6\xbd\xe8\xd1\x1a\xe8'  # noqa: E501
+ MAKERDAO_SAITUB_CONTRACT = string_to_evm_address(&quot;0x448a5065aeBB8E423F0896E6c5D525C040f59af3&quot;)
+ MAKERDAO_SAITAP_CONTRACT = string_to_evm_address(&quot;0xBda109309f9FafA6Dd6A9CB9f1Df4085B27Ee8eF&quot;)
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py#L109'>rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py~L109</a></p>
+<pre><code class="language-diff">                         event.event_subtype = HistoryEventSubType.REMOVE_ASSET
+                         event.counterparty = CPT_SAI
+                         event.notes = (
+-                            f&quot;Withdraw {event.balance.amount} {self.eth.symbol} from CDP {cdp_id}&quot;
+-                        )  # noqa: E501
++                            f&quot;Withdraw {event.balance.amount} {self.eth.symbol} from CDP {cdp_id}&quot;  # noqa: E501
++                        )
+                         return DEFAULT_DECODING_OUTPUT
+ 
+         return DEFAULT_DECODING_OUTPUT
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py#L384'>rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py~L384</a></p>
+<pre><code class="language-diff">                         event.event_type = HistoryEventType.DEPOSIT
+                         event.event_subtype = HistoryEventSubType.DEPOSIT_ASSET
+                         event.notes = (
+-                            f&quot;Supply {event.balance.amount} {self.eth.symbol} to Sai vault&quot;
+-                        )  # noqa: E501
++                            f&quot;Supply {event.balance.amount} {self.eth.symbol} to Sai vault&quot;  # noqa: E501
++                        )
+                         event.counterparty = CPT_SAI
+                         return DEFAULT_DECODING_OUTPUT
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py#L405'>rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py~L405</a></p>
+<pre><code class="language-diff">                 context.event.event_type = HistoryEventType.DEPOSIT
+                 context.event.event_subtype = HistoryEventSubType.DEPOSIT_ASSET
+                 context.event.notes = (
+-                    f&quot;Supply {context.event.balance.amount} {self.weth.symbol} to Sai vault&quot;
+-                )  # noqa: E501
++                    f&quot;Supply {context.event.balance.amount} {self.weth.symbol} to Sai vault&quot;  # noqa: E501
++                )
+                 context.event.counterparty = CPT_SAI
+                 return TransferEnrichmentOutput(matched_counterparty=CPT_SAI)
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py#L414'>rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py~L414</a></p>
+<pre><code class="language-diff">                 context.event.event_type = HistoryEventType.DEPOSIT
+                 context.event.event_subtype = HistoryEventSubType.DEPOSIT_ASSET
+                 context.event.notes = (
+-                    f&quot;Increase CDP collateral by {context.event.balance.amount} {self.peth.symbol}&quot;
+-                )  # noqa: E501
++                    f&quot;Increase CDP collateral by {context.event.balance.amount} {self.peth.symbol}&quot;  # noqa: E501
++                )
+                 context.event.counterparty = CPT_SAI
+                 return TransferEnrichmentOutput(matched_counterparty=CPT_SAI)
+ 
+</code></pre>
+<p><a href='https://github.com/rotki/rotki/blob/0b9c37b30c7e8609621db22c850da5ba8774fbe5/rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py#L428'>rotkehlchen/chain/ethereum/modules/makerdao/sai/decoder.py~L428</a></p>
+<pre><code class="language-diff">                 context.event.event_type = HistoryEventType.WITHDRAWAL
+                 context.event.event_subtype = HistoryEventSubType.REMOVE_ASSET
+                 context.event.notes = (
+-                    f&quot;Withdraw {context.event.balance.amount} {self.weth.symbol} from Sai vault&quot;
+-                )  # noqa: E501
++                    f&quot;Withdraw {context.event.balance.amount} {self.weth.symbol} from Sai vault&quot;  # noqa: E501
++                )
+                 context.event.counterparty = CPT_SAI
+                 return TransferEnrichmentOutput(matched_co...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-02 12:30</div>
+            <div class="timeline-body"><p>I like the new style</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:512 on 2023-11-02 17:32</div>
+            <div class="timeline-body"><p>I'm trying to understand the relationship and expectations between this and the <code>if !inline_comments.is_empty() {</code> below. Could this not be moved outside of the closure?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-02 17:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-02 17:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:456 on 2023-11-02 17:32</div>
+            <div class="timeline-body"><p>Would this work out-of-the-box if we <em>did</em> associate the trailing statement comments on the expression, ignoring the suite formatting?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-11-03 01:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:456 on 2023-11-03 01:19</div>
+            <div class="timeline-body"><p>No, it would still require the <code>if_group_breaks</code> and <code>if_group_fits</code> but it would avoid the unprecedented &quot;the child steals comments from its parent&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-11-03 01:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:512 on 2023-11-03 01:20</div>
+            <div class="timeline-body"><p>The <code>inine_comments.is_empty</code> is just an optimization so that we don't write the <code>if_group_breaks</code> and call into <code>trailing_comments</code> when the list is empty. It doesn't change the formatted result.</p>
+<blockquote>
+<p>Could this not be moved outside of the closure?</p>
+</blockquote>
+<p>If you mean the <code>!inline_comments.is_empty</code> then no, because we always want to apply the <code>best_fit_parenthesize</code> style. What we could do is to duplicate the <code>best_fit_parenthesize</code> instead. No strong opinion on either of them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-11-03 02:30</div>
+            <div class="timeline-body"><p>I haven't reviewed the ecosystem changes in detail, but the PR and summary look right to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-11-03 05:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-11-03 05:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-03 05:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support type alias statements in simple statement positions - astral-sh/ruff #8916</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support type alias statements in simple statement positions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8916">#8916</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-11-30 00:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-30 00:55</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Our <code>SoftKeywordTokenizer</code> only respected soft keywords in compound statement positions -- for example, at the start of a logical line:</p>
+<pre><code class="language-python">type X = int
+</code></pre>
+<p>However, type aliases can also appear in simple statement positions, like:</p>
+<pre><code class="language-python">class Class: type X = int
+</code></pre>
+<p>(Note that <code>match</code> and <code>case</code> are <em>not</em> valid keywords in such positions.)</p>
+<p>This PR upgrades the tokenizer to track both kinds of valid positions.</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/8900.
+Closes https://github.com/astral-sh/ruff/issues/8899.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-11-30 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2023-11-30 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-11-30 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @charliermarsh on 2023-11-30 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-30 00:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_parser/src/soft_keywords.rs</code>:223 on 2023-11-30 00:56</div>
+            <div class="timeline-body"><p>This and <code>Nested</code> could be combined, since this is just <code>Nested</code> with a depth of <code>0</code>. Alternatively, <code>Nested</code> could be <code>NonZeroU32</code>. But both felt clunkier in practice. Open to changing, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/soft_keywords.rs</code>:167 on 2023-11-30 00:58</div>
+            <div class="timeline-body"><p>Nit: You could implement <code>Eq</code> on <code>Position</code> so that you can use <code>==</code> instead of <code>matches</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/soft_keywords.rs</code>:165 on 2023-11-30 00:58</div>
+            <div class="timeline-body"><p>Just looking at the colon itself might not be sufficient because colons are also used to separate type annotations, slice indices, etc). I'm not sure if this is an issue here, but let's add a few more tests, e.g. <code>a: type X = int</code> (which should not be valid)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-11-30 01:11</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_python_parser/src/parser.rs</code>:828 on 2023-11-30 05:18</div>
+            <div class="timeline-body"><p>I'm confused that you call these compound statements here but simple statements everywhere else.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-11-30 05:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2023-11-30 05:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/soft_keywords.rs</code>:100 on 2023-11-30 07:09</div>
+            <div class="timeline-body"><p>Unrelated to your change: It's somewhat unfortunate that it's necessary to track whether we're at the start of the line, because we already know this inside of the <code>Lexer</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-11-30 07:13</div>
+            <div class="timeline-body"><p>I overall like the solution. I'm a bit worried that the <code>colon</code> detection is a bit too permissive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-11-30 07:14</div>
+            <div class="timeline-body"><p>I overall like the solution. I'm a bit worried that the <code>colon</code> detection is a bit too permissive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-30 15:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_parser/src/soft_keywords.rs</code>:165 on 2023-11-30 15:57</div>
+            <div class="timeline-body"><p>In the logical line rules, we have some more extensive logic to ensure that the colon follows a statement keyword (like <code>class</code>). I could add that here...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-11-30 15:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_parser/src/soft_keywords.rs</code>:100 on 2023-11-30 15:59</div>
+            <div class="timeline-body"><p>Definitely. Perhaps we could move this into the lexer...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-11-30 19:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-30 19:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-11-30 19:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:23 UTC
+    </footer>
+</body>
+</html>

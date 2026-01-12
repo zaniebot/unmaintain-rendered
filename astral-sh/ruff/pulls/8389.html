@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Rust toolchain for sdist testing in CI - astral-sh/ruff #8389</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix Rust toolchain for sdist testing in CI</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8389">#8389</a>
+        opened by <a href="https://github.com/stinodego">@stinodego</a>
+        on 2023-10-31 19:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/stinodego">@stinodego</a> on 2023-10-31 19:53</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>I noticed the CI step sets the default Rust toolchain by calling <code>rustup default ($cat rust-toolchain)</code>. However, this fails, as there is no <code>rust-toolchain</code> file.</p>
+<p>The CI currently continues without setting the default toolchain. Seems like this hasn't tripped anyone up yet, but it might in the future.</p>
+<p>I replaced <code>($cat rust-toolchain)</code> with a command to read the <code>rust-toolchain.toml</code> file.</p>
+<h2>Test Plan</h2>
+<p>You can verify that the command works by running it locally.</p>
+<p>Since this triggered the workflow, you can compare and see that it works.</p>
+<p>The previous release workflow is here:
+https://github.com/astral-sh/ruff/actions/runs/6658624231/job/18095891817</p>
+<p>In the logs for the <code>test-sdist</code> step:</p>
+<pre><code>cat: rust-toolchain: No such file or directory
+stable-x86_64-unknown-linux-gnu (default)
+</code></pre>
+<p>In the workflow triggered by this PR:
+https://github.com/astral-sh/ruff/actions/runs/6711771325/job/18239884406?pr=8389</p>
+<pre><code>info: using existing install for '1.73-x86_64-unknown-linux-gnu'
+info: default toolchain set to '1.73-x86_64-unknown-linux-gnu'
+</code></pre>
+<p>EDIT: Seems like I melted some icebergs by triggering your release workflow this way 😕 I'm sorry about that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @stinodego on 2023-10-31 19:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-31 19:59</div>
+            <div class="timeline-body"><p>Welcome to the project :)</p>
+<p>I wonder if we need to change the default toolchain at all since the toolchain is not specified in the package? Could this just be removed?</p>
+<p>Also yeah triggering the release pipeline is expected when this file changes for verification purposes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stinodego">@stinodego</a> on 2023-10-31 20:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Welcome to the project :)</p>
+</blockquote>
+<p>Thanks! I've been following the progress closely as I'm a linting enthusiast myself and we make good use of ruff in the @pola-rs project. I've opened some issues in the past.</p>
+<blockquote>
+<p>Could this just be removed?</p>
+</blockquote>
+<p>I don't think so. The subsequent <code>pip install</code> will trigger <code>maturin</code> to compile the Rust code. If the right toolchain is not set, this will fail. The <code>rust-toolchain.toml</code> is not picked up during a <code>pip install</code>.</p>
+<p>The reason I know this (and made this PR), is that I set up the Polars release workflow based on the excellent work here. Polars requires a specific nightly version which is specified in the toolchain. This fails without the <code>rust default</code> command.</p>
+<p>So you <em>could</em> remove it, which will be fine as long as ruff compiles with the latest stable Rust version (as is currently the case). But it's better to set the default Rust version to the one specified in the toolchain.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-31 20:22</div>
+            <div class="timeline-body"><p>Well thanks for taking the time to contribute!</p>
+<p>Interesting. I'm just a little hesitant to pull it out of the toml file like this and am a bit confused as to why this isn't handled by the build tooling. I wonder if it would be respected by maturin if we added it to the Python package's sdist via the manifest? cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stinodego">@stinodego</a> on 2023-10-31 20:24</div>
+            <div class="timeline-body"><blockquote>
+<p>I wonder if it would be respected by maturin if we added it to the Python package's sdist via the manifest?</p>
+</blockquote>
+<p>If that works, that would be great! I didn't consider that possibility 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-01 17:19</div>
+            <div class="timeline-body"><blockquote>
+<p>I wonder if it would be respected by maturin if we added it to the Python package's sdist via the manifest?</p>
+</blockquote>
+<p>It does, maturin just unpacks and calls cargo the normal way, it even has precedence over a rust-toolchain.toml in the working directory</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-01 17:21</div>
+            <div class="timeline-body"><p>Necessary changes if we want to include rust-toolchain.toml in the source distribution: https://github.com/astral-sh/ruff/compare/include-rust-toolchain</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-01 17:27</div>
+            <div class="timeline-body"><p>I have a strong preference for that :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-11-01 18:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:16 UTC
+    </footer>
+</body>
+</html>

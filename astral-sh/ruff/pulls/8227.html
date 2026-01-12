@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>perf(parser): use faster string parser methods - astral-sh/ruff #8227</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>perf(parser): use faster string parser methods</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8227">#8227</a>
+        opened by <a href="https://github.com/sno2">@sno2</a>
+        on 2023-10-25 20:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sno2">@sno2</a> on 2023-10-25 20:41</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This makes use of memchr and other methods to parse the strings (hopefully) faster. It might also be worth converting the <code>parse_fstring_middle</code> helper to use similar techniques, but I did not implement it in this PR.</p>
+<h2>Test Plan</h2>
+<p>This was tested using the existing tests and passed all of them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-10-25 20:55</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/sno2:perf/parser-string">CodSpeed Performance Report</a></h2>
+<h3>Merging #8227 will <strong>improve performances by 22.78%</strong></h3>
+<p><sub>Comparing <code>sno2:perf/parser-string</code> (28b823f) with <code>main</code> (9792b15)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 5</code> improvements
+<code>✅ 20</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>sno2:perf/parser-string</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/all-rules[numpy/globals.py]</code> | 4.1 ms | 3.9 ms | +6.14% |
+| ⚡ | <code>parser[unicode/pypinyin.py]</code> | 4.1 ms | 3.9 ms | +4.83% |
+| ⚡ | <code>parser[numpy/ctypeslib.py]</code> | 12 ms | 11.2 ms | +7.36% |
+| ⚡ | <code>parser[numpy/globals.py]</code> | 1.3 ms | 1.1 ms | +22.78% |
+| ⚡ | <code>linter/default-rules[numpy/globals.py]</code> | 2 ms | 1.7 ms | +15.48% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sno2 on 2023-10-25 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-25 21:14</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-26 00:19</div>
+            <div class="timeline-body"><p>Wow, that's amazing. We had it on our bucket list to rewrite the String parsing to use our <code>Cursor</code> implementation that is also used by the Lexer and should be easier to optimize by the compiler.</p>
+<p>I hope to find some time soon to review this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-26 00:35</div>
+            <div class="timeline-body"><p>This is really cool, thank you for putting this together.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sno2">@sno2</a> on 2023-10-26 00:55</div>
+            <div class="timeline-body"><p>Thank you, I also noticed another panic while looking through the code so hopefully there won't be any more panics in here :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @MichaReiser on 2023-10-27 01:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2023-10-27 01:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:162 on 2023-10-27 01:32</div>
+            <div class="timeline-body"><p>Could we use <code>find</code> and create another PR that replaces the search methods with <code>memchr</code>? It would allow us to better assess whether using <code>memchr</code> is worth it or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:149 on 2023-10-27 01:33</div>
+            <div class="timeline-body"><p>Could you explain why this check is no longer necessary? Is it because the optimisation (never was) is no longer necessary because the operation above is so fast and <code>unicode_names2::character</code> handles it for us?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:177 on 2023-10-27 01:35</div>
+            <div class="timeline-body"><p>For another PR: It would be nice if we wouldn't need to allocate a <code>String</code> when no character gets replaced (e.g. <code>\n</code> remains unchanged).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:210 on 2023-10-27 01:36</div>
+            <div class="timeline-body"><p>Nit: maybe move this after the error case handling</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:305 on 2023-10-27 01:37</div>
+            <div class="timeline-body"><p>Future (for another PR): It would be nice if we avoid allocating the string if input and output is the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-10-27 01:40</div>
+            <div class="timeline-body"><p>Excellent work! And it's good to see how much potential there still is to improve our parser.</p>
+<p>I would prefer if we could split the <code>memchr</code> usage out of this PR and submit it as its own PR to better assess whether replacing <code>find</code> with <code>memchr</code> is worth it.</p>
+<p>It would be nice if we could explore using <code>Cursor</code> for <code>StringParser</code> as part of another PR. <code>Cursor</code> is what we use in the <code>Lexer</code> and other places where we need to parse text. Using <code>Cursor</code> everywhere has the benefit that maintainers are familiar with it, simplifying code reviews and code maintenance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sno2">@sno2</a> on <code>crates/ruff_python_parser/src/string.rs</code>:177 on 2023-10-27 02:31</div>
+            <div class="timeline-body"><p>Yeah, agree. I planned to implement such a feature in a subsequent PR by trying to use <code>Cow&lt;_&gt;</code> and considering other methods (e.g. <code>smol_str</code>/<code>compact_str</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sno2">@sno2</a> reviewed on 2023-10-27 02:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sno2">@sno2</a> reviewed on 2023-10-27 02:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sno2">@sno2</a> on <code>crates/ruff_python_parser/src/string.rs</code>:149 on 2023-10-27 02:35</div>
+            <div class="timeline-body"><p>It seemed like a code smell to me- I did not understand why we should optimize for a fail state as obscure as a unicode escape name &gt; 80 characters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sno2">@sno2</a> reviewed on 2023-10-27 02:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sno2">@sno2</a> on <code>crates/ruff_python_parser/src/string.rs</code>:210 on 2023-10-27 02:36</div>
+            <div class="timeline-body"><p>Yup, will do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sno2">@sno2</a> reviewed on 2023-10-27 02:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sno2">@sno2</a> on <code>crates/ruff_python_parser/src/string.rs</code>:305 on 2023-10-27 02:36</div>
+            <div class="timeline-body"><p>Agree, and provided input in the other comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sno2">@sno2</a> on 2023-10-27 02:41</div>
+            <div class="timeline-body"><blockquote>
+<p>It would be nice if we could explore using Cursor for StringParser as part of another PR. Cursor is what we use in the Lexer and other places where we need to parse text. Using Cursor everywhere has the benefit that maintainers are familiar with it, simplifying code reviews and code maintenance.</p>
+</blockquote>
+<p>Agree, I believe we could use this technique fairly cleanly in both the lexer and parser with something like <code>Cursor::eat_until_byte{1,2}</code> which returns an <code>Option&lt;&amp;str&gt;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-10-27 02:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:177 on 2023-10-27 02:44</div>
+            <div class="timeline-body"><p>Cow feels nice but is a bit painful because it also requires adding lifetimes to all AST nodes. I'm not against it, just be prepared to deal with 1000's of lifetime issues</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sno2">@sno2</a> reviewed on 2023-10-27 02:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sno2">@sno2</a> on <code>crates/ruff_python_parser/src/string.rs</code>:177 on 2023-10-27 02:56</div>
+            <div class="timeline-body"><p>Yeah, the diff would be an eyesore. However, I am wary of the possible lack of change in performance from using an inline string crate. We do enough reading of the strings in the linting/formatting stage to make the control flow required enough to mess up our performance from my previous attempt to introduce stack strings.</p>
+<p>Using <code>Cow&lt;_&gt;</code> might produce more gains from no copying required which could be greater than the slowdowns caused by added control flow from variant checking. Of course, these changes could be implemented and benched against each other.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sno2">@sno2</a> reviewed on 2023-10-27 03:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sno2">@sno2</a> on <code>crates/ruff_python_parser/src/string.rs</code>:162 on 2023-10-27 03:04</div>
+            <div class="timeline-body"><p>Wow, only a 0.16% drop without using memchr. Thanks for considering that, I totally expected most of the speedups to be from memchr's vectorization.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/string.rs</code>:92 on 2023-10-27 09:06</div>
+            <div class="timeline-body"><p>nit: for consistent styling</p>
+<pre><code class="language-suggestion">    /// # Panics
+    ///
+    /// When the next byte is a part of a multi-byte character.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/string.rs</code>:136 on 2023-10-27 09:11</div>
+            <div class="timeline-body"><p>nit: for me this feels more like an index variable rather than a length. I would prefer <code>idx</code> / <code>index</code> but if you think <code>len</code> is more suitable, it's totally fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/string.rs</code>:149 on 2023-10-27 09:19</div>
+            <div class="timeline-body"><p>For reference, the relevant issue: https://github.com/RustPython/RustPython/issues/3798</p>
+<p>The constant value is now publicly available: https://github.com/progval/unicode_names2/blob/22759d0e725a4c253e401dd8a5edf6d200008299/generator/src/lib.rs#L340, so the following should work.</p>
+<pre><code class="language-rust">use unicode_names2::MAX_NAME_LENGTH;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2023-10-27 09:34</div>
+            <div class="timeline-body"><p>Wow, this is pretty neat. Thanks for doing this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @dhruvmanila on 2023-10-27 09:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sno2">@sno2</a> reviewed on 2023-10-27 13:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sno2">@sno2</a> on <code>crates/ruff_python_parser/src/string.rs</code>:136 on 2023-10-27 13:41</div>
+            <div class="timeline-body"><p>Yeah, I initially named it <code>idx</code>; however, the variable could be <code>3</code> if all of the octets are set in the escape. <code>3</code> would not be a valid index, so I named it <code>len</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sno2">@sno2</a> on 2023-10-27 13:47</div>
+            <div class="timeline-body"><p>@dhruvmanila The <code>MAX_NAME_LENGTH</code> is public in the generated file. But, the file that uses the constants does not mark them as public:</p>
+<p>https://github.com/progval/unicode_names2/blob/22759d0e725a4c253e401dd8a5edf6d200008299/src/lib.rs#L70-L72</p>
+<p>Would you like for me to re-copy the constant into our source?</p>
+<p>(The reply box is not underneath your response for some reason.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_parser/src/string.rs</code>:149 on 2023-10-28 01:35</div>
+            <div class="timeline-body"><p>I'd suggest we re-add -- costs us very little (nothing?) and gives us an error rather than a panic, if I understand this conversation correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-28 01:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sno2">@sno2</a> reviewed on 2023-10-28 04:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sno2">@sno2</a> on <code>crates/ruff_python_parser/src/string.rs</code>:149 on 2023-10-28 04:59</div>
+            <div class="timeline-body"><p>I have validated that the error does not exist by testing the previous reproduction. The issue was fixed in the crate here https://github.com/progval/unicode_names2/commit/9404fb6e48f93ef0b5b9dfb5d7aaff1f0c64168c (Note that it is included in the <code>1.2.0</code> tag that we are using)</p>
+<p>I did not realize that the motivation was to fix a previous panic in the crate and not a performance trick. Therefore, should we be fine not adding in the magic constants again?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-28 22:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_parser/src/string.rs</code>:149 on 2023-10-28 22:50</div>
+            <div class="timeline-body"><p>Excellent -- thank you for testing this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-10-28 22:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-28 22:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-28 22:51</div>
+            <div class="timeline-body"><p>Thanks @sno2, great to have you contributing!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-10-28 23:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:13:14 UTC
+    </footer>
+</body>
+</html>
