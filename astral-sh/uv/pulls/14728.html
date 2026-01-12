@@ -42,63 +42,70 @@
 <li><code>default-groups</code>: Synthetic groups for default installation (currently empty per spec)</li>
 </ul>
 <h4>2. Dependency Markers for Extras and Groups</h4>
-<p>Package dependencies include PEP 751 markers using the container membership syntax:</p>
+<p>Package dependencies include markers using the appropriate syntax:</p>
 <ul>
-<li><code>'test' in extras</code> - indicates this dependency is only needed with the <code>test</code> extra</li>
-<li><code>'dev' in dependency_groups</code> - indicates this dependency is only needed with the <code>dev</code> group</li>
+<li><strong>Root project extras/groups</strong>: Use PEP 751 container syntax (<code>'test' in extras</code>, <code>'dev' in dependency_groups</code>)</li>
+<li><strong>Transitive package extras</strong>: Use standard PEP 508 syntax (<code>extra == 'dotenv'</code>)</li>
 </ul>
 <p>Dependency markers are simplified relative to <code>requires-python</code>. Unconditional dependencies have no marker; conditional ones only include the additional constraints.</p>
 <h4>3. Marker Conversion</h4>
-<p>uv's internal lock format uses &quot;universal markers&quot; that encode extras and groups in a special format. PEP 751 specifies a different syntax:</p>
-<p>| Internal Format                | PEP 751 Format               |
-| ------------------------------ | ---------------------------- |
-| <code>extra == 'extra-3-pkg-cpu'</code>   | <code>'cpu' in extras</code>            |
-| <code>extra == 'group-5-myapp-dev'</code> | <code>'dev' in dependency_groups</code> |</p>
-<h3>Example Output</h3>
-<pre><code class="language-toml">lock-version = &quot;1.0&quot;
-created-by = &quot;uv&quot;
-requires-python = &quot;&gt;=3.12&quot;
-extras = [&quot;docs&quot;, &quot;test&quot;]
-dependency-groups = [&quot;dev&quot;]
-
-[[packages]]
-name = &quot;click&quot;
-version = &quot;8.1.7&quot;
-dependencies = [{ name = &quot;colorama&quot;, version = &quot;0.4.6&quot;, marker = &quot;sys_platform == 'win32'&quot; }]
-index = &quot;https://pypi.org/simple&quot;
-...
-
-[[packages]]
+<p>uv's internal lock format uses &quot;universal markers&quot; that encode extras and groups. The conversion logic:</p>
+<ul>
+<li>Identifies root project extras/groups and converts to PEP 751 syntax</li>
+<li>Preserves standard PEP 508 syntax for transitive package extras</li>
+<li>Simplifies markers by removing redundant <code>requires-python</code> constraints</li>
+</ul>
+<h3>Marker Syntax Summary</h3>
+<p>| Dependency Type | Marker Syntax | Example |
+|----------------|---------------|---------|
+| Unconditional | <em>(no marker)</em> | <code>{ name = &quot;flask&quot;, version = &quot;3.0.2&quot; }</code> |
+| Platform-specific | PEP 508 | <code>marker = &quot;sys_platform == 'win32'&quot;</code> |
+| Root project extra | PEP 751 | <code>marker = &quot;'extra1' in extras&quot;</code> |
+| Root project group | PEP 751 | <code>marker = &quot;'test' in dependency_groups&quot;</code> |
+| Transitive extra | PEP 508 | <code>marker = &quot;extra == 'dotenv'&quot;</code> |</p>
+<h3>Marker Variations</h3>
+<h4>Unconditional dependencies (no marker)</h4>
+<pre><code class="language-toml">[[packages]]
 name = &quot;flask&quot;
 version = &quot;3.0.2&quot;
 dependencies = [
     { name = &quot;blinker&quot;, version = &quot;1.7.0&quot; },
     { name = &quot;click&quot;, version = &quot;8.1.7&quot; },
     { name = &quot;itsdangerous&quot;, version = &quot;2.1.2&quot; },
-    { name = &quot;jinja2&quot;, version = &quot;3.1.3&quot; },
-    { name = &quot;python-dotenv&quot;, version = &quot;1.0.1&quot;, marker = &quot;'dotenv' in extras&quot; },
-    { name = &quot;werkzeug&quot;, version = &quot;3.0.1&quot; },
 ]
-index = &quot;https://pypi.org/simple&quot;
-...
-
-[[packages]]
+</code></pre>
+<h4>Platform-specific dependencies (PEP 508 marker)</h4>
+<pre><code class="language-toml">[[packages]]
+name = &quot;click&quot;
+version = &quot;8.1.7&quot;
+dependencies = [
+    { name = &quot;colorama&quot;, version = &quot;0.4.6&quot;, marker = &quot;sys_platform == 'win32'&quot; },
+]
+</code></pre>
+<h4>Root project extras (PEP 751 syntax)</h4>
+<pre><code class="language-toml">[[packages]]
 name = &quot;project&quot;
 dependencies = [
-    { name = &quot;flask&quot;, version = &quot;3.0.2&quot; },
-    { name = &quot;pytest&quot;, version = &quot;8.0.0&quot;, marker = &quot;'test' in extras&quot; },
-    { name = &quot;sphinx&quot;, version = &quot;7.0.0&quot;, marker = &quot;'docs' in extras&quot; },
+    { name = &quot;sortedcontainers&quot;, version = &quot;2.3.0&quot;, marker = &quot;'extra1' in extras&quot; },
+    { name = &quot;sortedcontainers&quot;, version = &quot;2.4.0&quot;, marker = &quot;'extra2' in extras&quot; },
+]
+</code></pre>
+<h4>Root project dependency groups (PEP 751 syntax)</h4>
+<pre><code class="language-toml">[[packages]]
+name = &quot;project&quot;
+dependencies = [
+    { name = &quot;pytest&quot;, version = &quot;8.1.1&quot;, marker = &quot;'test' in dependency_groups&quot; },
     { name = &quot;mypy&quot;, version = &quot;1.0.0&quot;, marker = &quot;'dev' in dependency_groups&quot; },
 ]
-directory = { path = &quot;.&quot;, editable = true }
 </code></pre>
-<p>Note:</p>
-<ul>
-<li>Unconditional dependencies (blinker, click, etc.) have no marker</li>
-<li>Platform-specific dependencies include only that condition (<code>sys_platform == 'win32'</code>)</li>
-<li>Extra dependencies include the extras marker (<code>'dotenv' in extras</code>)</li>
-<li>Dependency group dependencies include the groups marker (<code>'dev' in dependency_groups</code>)</li>
-</ul>
+<h4>Transitive package extras (PEP 508 syntax)</h4>
+<pre><code class="language-toml">[[packages]]
+name = &quot;flask&quot;
+version = &quot;3.0.2&quot;
+dependencies = [
+    { name = &quot;python-dotenv&quot;, version = &quot;1.0.1&quot;, marker = &quot;extra == 'dotenv'&quot; },
+]
+</code></pre>
 <h3>Usage</h3>
 <pre><code class="language-bash"># Export a project to pylock.toml format
 uv export --format pylock.toml &gt; pylock.toml
@@ -226,7 +233,7 @@ uv pip install -r pylock.toml --group dev
     </div>
 
     <footer>
-        Synced at 2026-01-12 20:18:36 UTC
+        Synced at 2026-01-12 22:17:02 UTC
     </footer>
 </body>
 </html>
