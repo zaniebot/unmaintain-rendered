@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rg pattern dir -g '!'&quot;$path/to/exclude&quot; fails if $path ends with / - BurntSushi/ripgrep #354</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rg pattern dir -g '!'&quot;$path/to/exclude&quot; fails if $path ends with /</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/354">#354</a>
+        opened by <a href="https://github.com/timotheecour">@timotheecour</a>
+        on 2017-02-10 12:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/timotheecour">@timotheecour</a></div>
+            <div class="timeline-body"><p>could consecutive // be treated as a single / ? that would simplify usage: $path/foo is simpler to use than ${path}foo and works regardless whether $path has a trailing slash or not, unlike ${path}foo</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-10 15:06</div>
+            <div class="timeline-body"><p>Do other tools do this? Is there ever a difference between file paths <code>foo/bar</code> and <code>foo//bar</code>?</p>
+<p>Note that <code>gitignore</code> semantics matches current behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-02-10 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timotheecour">@timotheecour</a> on 2017-02-12 12:17</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there ever a difference between file paths foo/bar and foo//bar?</p>
+</blockquote>
+<p>no</p>
+<p><code>//</code> can never occur in a path so there's no downside to treating consecutive <code>/</code> as one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-12 14:18</div>
+            <div class="timeline-body"><p>Why doesn't git do it? Why don't other tools do it? I would want to know that before jumping on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timotheecour">@timotheecour</a> on 2017-02-13 01:12</div>
+            <div class="timeline-body"><p>@BurntSushi  it makes less sense in a .gitignore file because IIRC we can't have environment variables there, so having a <code>//</code> in there would be immediately obvious, in plain site, and trivial to avoid.</p>
+<p>But it does make sense when using shell commands (where environment variables can be used), as is the case for <code>-g</code>.</p>
+<p>my workaround is not pretty (it should handle cases with spaces in paths, otherwise it'd be simpler)</p>
+<pre><code>rg_sanitized(){
+    # could also be passed as argument
+    local g_dirs=($dir4/baz $dir5)
+    local g_pattern=(-g '!'&quot;$dir1/foo/&quot; -g '!'&quot;$dir2/bar/&quot; )
+
+    local g_pattern2=()
+    for f in &quot;${g_pattern[@]}&quot; ; do
+      local temp=$(echo &quot;$f&quot; | sed -E 's@/+@/@g')
+      g_pattern2=($g_pattern2 $temp) ;
+    done
+
+    #NOTE:this wouldn't work with spaces in $dir1 for example:
+    #local g_pattern2=($(echo $g_pattern |  sed -E 's@/+@/@g' ))
+
+   (
+      # cd to / assuming $dir1, $dir2 are absolute paths
+      cd / &amp;&amp; rg &quot;$@&quot; $g_dirs $g_pattern2
+   )
+}
+
+
+rg_sanitized foo $dir3
+</code></pre>
+<p>(and happy to receive any suggestions on how to improve this, bash isn't my favorite thing)</p>
+<p>NOTE: also, multiple consecutive <code>/</code> are already allowed and working fine for path arguments (cf <code>$dir4/baz</code> in above snippet, eg when <code>dir4=/path/fob/</code>), so it's actually more consistent if that's also the case for <code>-g</code> arguments, in a sense</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-13 03:09</div>
+            <div class="timeline-body"><p>To be honest, I don't really understand what you're working around. Why do
+you have paths with multiple consecutive slashes in them?</p>
+<p>On Feb 12, 2017 8:12 PM, &quot;Timothee Cour&quot; <a href="mailto:notifications@github.com">notifications@github.com</a> wrote:</p>
+<blockquote>
+<p>@BurntSushi <a href="https://github.com/BurntSushi">https://github.com/BurntSushi</a> it makes less sense in a
+.gitignore file because IIRC we can't have environment variables there, so
+having a // in there would be silly and trivial to avoid.
+But it does make sense when using shell commands (where environment
+variables can be used), as is the case for -g.</p>
+<p>my workaround is not pretty (it should handle cases with spaces in paths,
+otherwise it'd be simpler)</p>
+<p>rg_sanitized(){
+# could also be passed as argument
+local g_pattern=(-g '!'&quot;$dir1/foo/&quot; -g '!'&quot;$dir2/bar/&quot; )</p>
+<pre><code>local g_pattern2=()
+for f in &quot;${g_pattern[@]}&quot; ; do
+  local temp=$(echo &quot;$f&quot; | sed -E 's@/+@/@g')
+  g_pattern2=($g_pattern2 $temp) ;
+done
+
+#NOTE:this wouldn't work with spaces in $dir1 for example:
+#local g_pattern2=($(echo $g_pattern |  sed -E 's@/+@/@g' ))</code></pre>
+<p>(
+# cd to / assuming $dir1, $dir2 are absolute paths
+cd / &amp;&amp; rg &quot;$@&quot; $g_pattern2
+)
+}</p>
+<p>rg_sanitized foo $dir3</p>
+<p>(and happy to receive any suggestions on how to improve this, bash isn't
+my favorite thing)</p>
+<p>—
+You are receiving this because you were mentioned.
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/BurntSushi/ripgrep/issues/354#issuecomment-279272465">https://github.com/BurntSushi/ripgrep/issues/354#issuecomment-279272465</a>,
+or mute the thread
+<a href="https://github.com/notifications/unsubscribe-auth/AAb34rUHQ2na6gSw0T2xNgchHbJYhaWHks5rb634gaJpZM4L9VkB">https://github.com/notifications/unsubscribe-auth/AAb34rUHQ2na6gSw0T2xNgchHbJYhaWHks5rb634gaJpZM4L9VkB</a>
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timotheecour">@timotheecour</a> on 2017-02-13 07:26</div>
+            <div class="timeline-body"><p>eg use case: with this change,</p>
+<pre><code>rg -g &quot;$package_dir/lib&quot;
+</code></pre>
+<p>would work regardless of whether $package_dir ends with a <code>/</code> or not, eg:</p>
+<ul>
+<li>would work with <code>package_dir=/usr/local/</code></li>
+<li>would work with <code>package_dir=/usr/local</code>
+=&gt; both cases treated as meaning <code>rg -g /usr/local/lib</code></li>
+</ul>
+<p>without this change: I have to know whether <code>$package_dir</code> ends with a <code>/</code> or not:</p>
+<ul>
+<li>ends with a <code>/</code> =&gt; use <code>rg -g &quot;${package_dir}lib&quot;</code></li>
+<li>ends without a <code>/</code> =&gt; use <code>rg -g &quot;$package_dir/lib&quot;</code></li>
+</ul>
+<p>It's a small thing. If no-one has time, would u accept a PR or would that be rejected?</p>
+<p>btw, this discussion is relevant: http://stackoverflow.com/questions/980255/should-a-directory-path-variable-end-with-a-trailing-slash
+there's basically no consensus as to whether env variables containing directories should end with a trailing <code>/</code> or not, so lots of people use path concatenation as <code>$package_dir/rest_of_path</code> to make it work in all cases. This leads to paths containing double <code>//</code> if $package_dir ends with a <code>/</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-13 13:32</div>
+            <div class="timeline-body"><p>I've just never seen this as a problem that people have faced, and I would like to know what other tools do before we act. It seems like you could just define your env vars without a trailing slash, and all your problems would go away.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-18 17:19</div>
+            <div class="timeline-body"><p>After thinking about this, I don't think this is a problem that ripgrep should solve. If you have an env var and you're not sure if it has a trailing slash, then you can use <code>${package_dir%/}</code> to remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-02-18 17:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:03 UTC
+    </footer>
+</body>
+</html>

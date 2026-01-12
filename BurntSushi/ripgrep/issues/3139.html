@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inconsistent behaviour when using --files-with-matches vs without - BurntSushi/ripgrep #3139</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Inconsistent behaviour when using --files-with-matches vs without</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3139">#3139</a>
+        opened by <a href="https://github.com/F8enjoyer">@F8enjoyer</a>
+        on 2025-09-05 18:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/F8enjoyer">@F8enjoyer</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[x] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>ripgrep 14.1.1</p>
+<p>features:+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2</p>
+<p>PCRE2 10.43 is available (JIT is available)</p>
+<h3>How did you install ripgrep?</h3>
+<p>cargo install ripgrep --features pcre2</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Windows 10 &amp; 11</p>
+<h3>Describe your bug.</h3>
+<p>Output when using switch <code>--files-with-matches</code> appears to leave out files, that otherwise show matches when the switch is not present.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>Compare the output of these two commands on the attached files:</p>
+<p><code>rg --pcre2 --iglob *.txt --multiline &quot;(?s)Start(?!.*thing1)(?=.*thing2)(?!.*thing3)&quot;</code>
+<code>rg --pcre2 --iglob *.txt --multiline &quot;(?s)Start(?!.*thing1)(?=.*thing2)(?!.*thing3)&quot; --files-with-matches</code></p>
+<p><a href="https://github.com/user-attachments/files/22177751/issue.txt">issue.txt</a>
+<a href="https://github.com/user-attachments/files/22177755/normal.txt">normal.txt</a></p>
+<p>Base64-encoded version of issue.txt (just in case attachment mangles it):</p>
+<blockquote>
+<p>U3RhcnQgCiAgIAoKICAgWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFgKICAgWVlZWVlZWVlZWVlZ
+WVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZ
+WVlZWVkKICAgCiAgICAgIHRoaW5nMiAKCgo=</p>
+</blockquote>
+<p>Base64 normal.txt:</p>
+<blockquote>
+<p>U3RhcnQKCiAgdGhpbmcyIAoK</p>
+</blockquote>
+<h3>What is the actual behavior?</h3>
+<p>Without <code>--files-with-matches</code>:</p>
+<blockquote>
+<p>normal.txt
+1:Start</p>
+<p>issue.txt
+1:Start</p>
+</blockquote>
+<p>(Note: When run in a console, the match for the match for normal.txt is colored red, but the match in issue.txt is not)</p>
+<p>With <code>--files-with-matches</code>:</p>
+<blockquote>
+<p>normal.txt</p>
+</blockquote>
+<h3>What is the expected behavior?</h3>
+<p>I would expect the <code>--files-with-matches</code> version of the command to list both normal.txt and issue.txt</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/F8enjoyer">@F8enjoyer</a> on 2025-09-05 19:17</div>
+            <div class="timeline-body"><p>I can simplify the steps to reproduce - the negative lookaheads are not necessary to trigger the issue:</p>
+<p><code>rg --pcre2 --iglob *.txt --multiline &quot;(?s)Start(?=.*thing2)&quot;</code>
+<code>rg --pcre2 --iglob *.txt --multiline &quot;(?s)Start(?=.*thing2)&quot; --files-with-matches</code></p>
+<p>However, the positive lookahead is necessary; the following does <em>not</em> trigger the issue:</p>
+<p><code>rg --pcre2 --iglob *.txt --multiline &quot;(?s)Start.*thing2&quot; --files-with-matches</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/F8enjoyer">@F8enjoyer</a> on 2025-09-06 23:08</div>
+            <div class="timeline-body"><p>I think I have bisected the issue down to a specific commit.</p>
+<p>This version <em>does not</em> have the issue:
+https://github.com/BurntSushi/ripgrep/commit/656aa126492b04f1ac8b0406f589b6de4c4b7d60</p>
+<p>The next version <em>does</em> have the issue:
+https://github.com/BurntSushi/ripgrep/commit/efd9cfb2fc1f0233de9eda4c03416d32ef2c3ce8</p>
+<p>(This commit message mentions both multiline and PCRE2, so it seems plausible?)
+<strong>Edit:</strong> This would make the first affected build v13.0.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-06 23:12</div>
+            <div class="timeline-body"><p>If that is indeed it, there is definitely an open issue for this somewhere. This sort of bug was known when I hacked around a different bug.</p>
+<p>Anyway, this bug is unlikely to be fixed any time soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/F8enjoyer">@F8enjoyer</a> on 2025-09-06 23:47</div>
+            <div class="timeline-body"><p>Ok, understood.</p>
+<p>Meanwhile, I've tried to express this as a regression test:</p>
+<pre><code>rgtest!(r3139_multiline_lookahead_files_with_matches, |dir: Dir, mut cmd: TestCommand| {
+
+    // Only PCRE2 supports look-around.
+    if !dir.is_pcre2() {
+        return;
+    }
+    dir.create(&quot;test&quot;, &quot;Start \n   \n\n   XXXXXXXXXXXXXXXXXXXXXXXXXX\n   YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY\n   \n      thing2 \n\n&quot;);
+    
+    cmd
+        .args(&amp;[&quot;--multiline&quot;, &quot;--pcre2&quot;, &quot;--files-with-matches&quot;, r&quot;(?s)Start(?=.*thing2)&quot;, &quot;test&quot;])
+        .assert_exit_code(0);
+        
+    eqnice!(&quot;test\n&quot;, cmd.stdout());
+});
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2025-09-21 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-21 18:03</div>
+            <div class="timeline-body"><p>The issue I was referring to above was #2528.</p>
+<p>I managed to find a hacky fix for this <em>specific</em> issue in #3154 without resolving the underlying problem identified in #2528.</p>
+<p>Thank you for the nice regression test!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-09-22 13:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:58 UTC
+    </footer>
+</body>
+</html>

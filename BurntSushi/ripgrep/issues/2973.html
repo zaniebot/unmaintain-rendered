@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overrides are order sensitive - BurntSushi/ripgrep #2973</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Overrides are order sensitive</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2973">#2973</a>
+        opened by <a href="https://github.com/alpaylan">@alpaylan</a>
+        on 2025-01-15 07:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alpaylan">@alpaylan</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>I'm using <code>ignore = &quot;0.4.23&quot;</code> installed by Cargo as a library.</p>
+<h3>How did you install ripgrep?</h3>
+<p>Cargo</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>macOS 13.2.1</p>
+<h3>Describe your bug.</h3>
+<p>Overrides in the ignore crate are order sensitive, so if a later pattern includes a previously ignored pattern, the pattern will not be ignored.</p>
+<pre><code>!src/lib.rs
+**/*.rs
+</code></pre>
+<p>will have a different behavior than,</p>
+<pre><code>**/*.rs
+!src/lib.rs
+</code></pre>
+<p>as the first does not ignore <code>src/lib.rs</code> but the second does.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<pre><code>fn main() {
+    let mut overrides = OverrideBuilder::new(&quot;.&quot;);
+    overrides.add(&quot;!a.txt&quot;)?;
+    overrides.add(&quot;**/*.txt&quot;)?;
+
+    overrides.build()?.matched(&quot;!a.txt&quot;, false) 
+    // this returns 
+    // Whitelist(Glob(Matched(Glob { from: None, original: &quot;**/*.rs&quot;, actual: &quot;**/*.rs&quot;, is_whitelist: false, is_only_dir: false })))
+
+    let mut overrides = OverrideBuilder::new(&quot;.&quot;);
+    overrides.add(&quot;**/*.txt&quot;)?;
+    overrides.add(&quot;!a.txt&quot;)?;
+
+    overrides.build()?.matched(&quot;!a.txt&quot;, false) 
+    // this returns 
+    // Ignore(Glob(Matched(Glob { from: None, original: &quot;!src/lib.rs&quot;, actual: &quot;src/lib.rs&quot;, is_whitelist: true, is_only_dir: false })))
+}
+
+### What is the actual behavior?
+
+-
+
+### What is the expected behavior?
+
+I think this should either be documented(I assume that's this is the actual behavior of gitignore too), or if not, my previous expectation was that the strictest pattern would win in ignore/match cases.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-15 12:06</div>
+            <div class="timeline-body"><p>This is absolutely intended. Overrides use the same semantics as gitignore.</p>
+<p>I also think this is by far the most sensible behavior. Otherwise you have to come up with a notion of &quot;strictness.&quot; It might be obvious in this case, but I have no idea how to do that in general.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-01-15 12:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:53 UTC
+    </footer>
+</body>
+</html>

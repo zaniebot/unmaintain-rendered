@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display more informative error messages when attempting to read files - BurntSushi/ripgrep #511</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Display more informative error messages when attempting to read files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/511">#511</a>
+        opened by <a href="https://github.com/MichaelAquilina">@MichaelAquilina</a>
+        on 2017-06-12 11:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaelAquilina">@MichaelAquilina</a></div>
+            <div class="timeline-body"><p>When searching for files which the current user does not have access to, a very cryptic error message is shown:</p>
+<pre><code>$ rg --files -g &quot;virtualenvwrapper.sh&quot; /
+Invalid argument (os error 22)
+Invalid argument (os error 22)
+Invalid argument (os error 22)
+</code></pre>
+<p>This seems to be because the user does not have permission to view the file. But it does not specify what the file was or what the error code even means.</p>
+<p>Redirecting stderr helps filter out the noise at least:</p>
+<pre><code>$ rg --files -g &quot;virtualenvwrapper.sh&quot; / 2&gt;/dev/null
+/usr/share/virtualenvwrapper/virtualenvwrapper.sh
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaelAquilina">@MichaelAquilina</a> on 2017-06-12 11:08</div>
+            <div class="timeline-body"><p>Btw, I am happy to try attempt solving this if I am giving some indicators :) Been meaning to dive into rust after reading the learn rust book.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-12 11:34</div>
+            <div class="timeline-body"><p>@MichaelAquilina Hmm, I'm happy to mentor this! Basically, it's going to require auditing the codebase for where errors can occur. It's something that is relatively easy to do if you know the codebase, but if you don't, it will take some careful sleuthing. If you're feeling up to the challenge, then I'd be happy to give you some pointers.</p>
+<p>For example, if I had to <em>guess</em> at where the error is coming from, I'd say it's wherever we're trying to open a file to search it. That would be here: https://github.com/BurntSushi/ripgrep/blob/8bbe58d623db78a32b04eabff9a69667ad23ff7b/src/worker.rs#L221 --- As you can see though, there is already logic for printing a nicer error message with the file name. That means it's likely somewhere else, perhaps in the directory traversal which is in the <code>ignore</code> crate.</p>
+<p>(There may be other smaller issues you might want to start with. I believe they're all tagged with &quot;help wanted.&quot;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2017-06-12 11:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaelAquilina">@MichaelAquilina</a> on 2017-06-12 13:11</div>
+            <div class="timeline-body"><p>Thanks @BurntSushi I will probably attempt to do this some time this week in the evening or during the Weekend :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaelAquilina by @BurntSushi on 2017-06-12 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-12 13:13</div>
+            <div class="timeline-body"><p>@MichaelAquilina Awesome! I've assigned it to you. :-) I'm on the various Rust IRC channels and happy to be pinged if you want any help! I'm typically available in the evening EST time during the week, and unpredictably available on the weekends.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @MichaelAquilina by @BurntSushi on 2017-09-24 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaelAquilina">@MichaelAquilina</a> on 2018-01-09 23:08</div>
+            <div class="timeline-body"><p>Revisiting this, and found that OS error is &quot;EINVAL 22 Invalid argument&quot;.</p>
+<p>I suspect this might have been a previous issue that is now fixed in the latest version as I cannot reproduce it.</p>
+<p>Closing this issue for this reason.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaelAquilina on 2018-01-09 23:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:12 UTC
+    </footer>
+</body>
+</html>

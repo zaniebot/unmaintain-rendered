@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add a way for file types to include rules from other file types - BurntSushi/ripgrep #83</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>add a way for file types to include rules from other file types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/83">#83</a>
+        opened by <a href="https://github.com/SigmundVik">@SigmundVik</a>
+        on 2016-09-25 13:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SigmundVik">@SigmundVik</a></div>
+            <div class="timeline-body"><p>This would be useful for defining file types that are aggregates of other file types, for example:</p>
+<pre><code>--type-add src:cpp,py
+</code></pre>
+<p>would be equivalent of specifying:</p>
+<pre><code>--type-add src:*.C,*.H,*.cc,*.cpp,*.cxx,*.h,*.hh,*.hpp,*py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 14:02</div>
+            <div class="timeline-body"><p>Would <code>--type-include 'src:cpp'</code> do it for you? (I think it'd be better to have separate flags for specifying globs and for subsuming other file types, to avoid trying to guess the user's intent.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 14:04</div>
+            <div class="timeline-body"><p>The argument against this feature is:</p>
+<ol>
+<li>Specifying file types is already too complicated.</li>
+<li>Specifying custom file types is probably done in an alias, so you only need to write them once. The advantages of having an include-type directive are therefore not as prescient.</li>
+</ol>
+<p>A good counterpoint to (2) is that type inclusion means you always get updates in <code>ripgrep</code> automatically, but even that seems a touch weak to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SigmundVik">@SigmundVik</a> on 2016-09-25 14:40</div>
+            <div class="timeline-body"><p>I agree that a separate flag like <code>--type-include</code> would be more clear.</p>
+<p>I do indeed specify my file types in an alias, but I would like the alias to be easy to read.  The curly brace glob syntax will help a lot with shortening my alias, so maybe the downsides of adding another flag outweigh the benefits in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 15:07</div>
+            <div class="timeline-body"><p>I do kind of come down on your side of things, honestly. The various <code>--type</code> flags need a bit more docs/examples though. (See #76)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 18:39</div>
+            <div class="timeline-body"><p>One possible issue with adding this is that ripgrep's argv parser can't tell the position of each flag relative to one another. So for example, if you did this: <code>--type-add 'foo:*.foo' --type-include 'bar:foo' --type-add 'foo:*.wat'</code>, then it's not exactly clear what <code>bar</code> should contain. We can either process all includes after all additions, or all includes before any additions. Neither are necessarily intuitive.</p>
+<p>We have the same problem with --type-clear, but I'm hesitant to make it worse until we either decide to live with it, or fix it. So I'm going to let this one linger for now.</p>
+<p>The other potential relief is that I expect <code>rg</code> to gain support for an RC file or similar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "It would be nice if file types somehow could refer to other file types" to "add a way for file types to include rules from other file types" by @BurntSushi on 2016-09-25 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2016-09-25 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2016-09-25 19:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-19 14:53</div>
+            <div class="timeline-body"><p>OK, I'd like to propose a specification for this so we can move forward. Here are a couple key design constraints that I've imposed:</p>
+<ol>
+<li>Do not add any additional flags for the reasons pointed out above. Therefore, this feature has to be made available in an existing flag like <code>--type-add</code> (which is really the only sensible choice).</li>
+<li>Do not break any existing uses.</li>
+</ol>
+<p>OK, now for the spec. The documentation for <code>--type-add</code> should be modified to include:</p>
+<p><code>--type-add</code> can also be used to include rules from other types with the special <code>include</code> directive. The <code>include</code> directive permits specifying one or more other type names (separated by a comma) that have been defined and its rules will automatically be imported into the type specified. For example, to create a type called <code>src</code> that matches C++, Python and Markdown files, one can use:</p>
+<pre><code>--type-add 'src:include:cpp,py,md'
+</code></pre>
+<p>Additional glob rules can still be added to the <code>src</code> type by using the <code>--type-add</code> flag again:</p>
+<pre><code>--type-add 'src:include:cpp,py,md' --type-add 'src:*.foo'
+</code></pre>
+<p>Note that type names must consist only of Unicode letters. Punctuation characters are not allowed.</p>
+<hr />
+<p>If someone has thoughts on the above or would like to implement it, I'd be happy to mentor it. I think it is a relatively isolated change and should probably only require modifying the implementation of <a href="https://docs.rs/ignore/0.1.5/ignore/types/struct.TypesBuilder.html#method.add_def"><code>TypesBuilder::add_def</code></a> in the <a href="https://docs.rs/ignore"><code>ignore</code> crate</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @BurntSushi on 2016-11-19 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @BurntSushi on 2016-11-19 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SimenB">@SimenB</a> on 2016-11-25 14:21</div>
+            <div class="timeline-body"><p>Huge +1 for this! Just opened #252, my Github issue search-fu failed me (should have been able to ripgrep it 😉).</p>
+<p>I've never touched Rust before, or I'd give this feature a go myself.</p>
+<blockquote>
+<p>The other potential relief is that I expect rg to gain support for an <code>RC</code> file or similar.</p>
+</blockquote>
+<p>Great news!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/isker">@isker</a> on 2017-01-01 21:17</div>
+            <div class="timeline-body"><p>Hi @BurntSushi, I'm taking a swing at this.  You say in your spec here:</p>
+<blockquote>
+<p>Note that type names must consist only of Unicode letters. Punctuation characters are not allowed.</p>
+</blockquote>
+<p>but I think the only character disallowed presently by <code>TypesBuilder</code> for names is <code>:</code>.  Do we want to expand that as a part of this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-02 17:03</div>
+            <div class="timeline-body"><p>@CannedYerins Thanks for taking a look at this!</p>
+<p>And yes, I believe your observation is correct. We'll need to do a semver bump of the <code>ignore</code> crate, but that's OK.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-06 00:04</div>
+            <div class="timeline-body"><p>@tankorsmash No, sorry. I feel that we've been getting along just fine so far with wrapper scripts and aliases. There is talk of <code>clap</code> (ripgrep's argv parser) potentially providing configuration automatically, but there's no ETA.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-06 00:05</div>
+            <div class="timeline-body"><p>@tankorsmash Also, please take further discussion to the appropriate issue: #196. Let's not hijack this one!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tankorsmash">@tankorsmash</a> on 2017-01-06 00:06</div>
+            <div class="timeline-body"><p>Thanks, thought I looked hard enough, that's how I stumbled onto this one. I'll delete my comment to clear this up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-06 00:08</div>
+            <div class="timeline-body"><p>@tankorsmash Deletion wasn't necessary, but thanks! :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-01-07 23:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:41 UTC
+    </footer>
+</body>
+</html>

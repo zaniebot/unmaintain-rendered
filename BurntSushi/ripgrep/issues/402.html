@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--max-count has precedence over --after-context and --context - BurntSushi/ripgrep #402</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--max-count has precedence over --after-context and --context</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/402">#402</a>
+        opened by <a href="https://github.com/chelmertz">@chelmertz</a>
+        on 2017-03-10 08:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chelmertz">@chelmertz</a></div>
+            <div class="timeline-body"><p>I think <code>--after-context</code> (<code>-A</code>) and <code>--context</code> (<code>-C</code>) should have the same precedence as <code>--before-context</code> (<code>-B</code>), when being combined with <code>--max-count</code> (<code>-m</code>), but they do not:</p>
+<pre><code class="language-bash">$ cat &gt; rgtest.txt &lt;&lt;EOF
+&gt; a
+&gt; b
+&gt; c
+&gt; d
+&gt; e
+&gt; EOF
+$ rg -B2 c rgtest.txt
+1-a
+2-b
+3:c
+$ rg -C2 c rgtest.txt
+1-a
+2-b
+3:c
+4-d
+5-e
+$ rg -A2 c rgtest.txt
+3:c
+4-d
+5-e
+$ # and now with --max-count:
+$ rg -B2 c -m1 rgtest.txt
+1-a
+2-b
+3:c
+$ rg -C2 c -m1 rgtest.txt
+1-a
+2-b
+3:c
+$ rg -A2 c -m1 rgtest.txt
+3:c
+</code></pre>
+<p>From my expectations, <code>-B</code> works correctly, <code>-C</code> works like <code>-B</code> which is unexpected, and <code>-A</code> has no effect at all.</p>
+<p>My use case is to show a colleague one instance of many repeated matches, but also with some context. If <code>-A</code> combined with <code>-m</code> would yield the same result as with <code>-B</code>, then my use case would have been fulfilled.</p>
+<p>I am using ripgrep-0.3.2-1.fc24.x86_64, packaged for Fedora through copr (by carlgeorge-ripgrep).</p>
+<p>Thanks for a great program! (edit: removed trailing whitespace in code block)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-10 11:54</div>
+            <div class="timeline-body"><p>Thanks for the bug report. This is definitely a bug. But I don't think it has anything to do with <em>precedence</em> specifically. For example:</p>
+<pre><code>[andrew@Cheetah ripgrep-402] cat &gt; rgtest.txt &lt;&lt;EOF
+&gt; a
+&gt; b
+&gt; c
+&gt; d
+&gt; e
+&gt; a
+&gt; b
+&gt; c
+&gt; d
+&gt; e
+&gt; EOF
+[andrew@Cheetah ripgrep-402] rg -C2 c -m1 rgtest.txt
+1-a
+2-b
+3:c
+[andrew@Cheetah ripgrep-402] rg -C2 c -m2 rgtest.txt
+1-a
+2-b
+3:c
+4-d
+5-e
+6-a
+7-b
+8:c
+</code></pre>
+<p>Notice that in the last example, the &quot;after&quot; context for the first match is printed correctly. Only the last match loses it.</p>
+<p>This is probably just a bug in the search code where it neglects to print the context after the last match if it decides to quit early. I'll note that <code>grep</code> handles this correctly:</p>
+<pre><code>[andrew@Cheetah ripgrep-402] grep -C2 c -m2 rgtest.txt
+a
+b
+c
+d
+e
+a
+b
+c
+d
+e
+</code></pre>
+<p>This <em>could</em> be a little tricky to fix. Not sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2017-03-10 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">libripgrep</span> added by @BurntSushi on 2017-03-10 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "libripgrep" by @BurntSushi on 2017-03-10 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-10-08 12:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:06 UTC
+    </footer>
+</body>
+</html>

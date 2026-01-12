@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cmd isn't waiting for all threads to return before exiting - BurntSushi/ripgrep #804</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>cmd isn't waiting for all threads to return before exiting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/804">#804</a>
+        opened by <a href="https://github.com/rodrigobahiense">@rodrigobahiense</a>
+        on 2018-02-14 16:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rodrigobahiense">@rodrigobahiense</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.8.0 (rev 23d1b91ead)
+-SIMD -AVX</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p><strong>Edition:</strong> Windows 10 Pro
+<strong>Version:</strong> 1709
+<strong>OS Build:</strong> 16299.248</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>I was getting incomplete results from rg (without flags) and tried using <code>--sort-files</code> and <code>-j1</code> (in separate runs). Both returned the expected results.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>Search some string in a somewhat &quot;deep&quot; directory. My case has 17094 files in 1092 folders.</p>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<p>I can't put the actual output here, but goes as something like:</p>
+<p>Normal search:</p>
+<pre><code># rg &quot;whatever&quot; .
+
+path/to/file1
+1: this file has whatever on it
+</code></pre>
+<p>Singlethreaded search:</p>
+<pre><code># rg -j1 &quot;whatever&quot; .
+
+path/to/file1
+1: this file has whatever on it
+
+path/to/file2
+1: this other file also has whatever on it but don't appear on the normal search
+</code></pre>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>That the normal search return all results without the need to use <code>--sort-files</code> or <code>-j1</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-14 16:52</div>
+            <div class="timeline-body"><p>Thanks for the bug report! Unfortunately, without the ability to reproduce this, it's unlikely to get fixed. In particular, the issue title is jumping to conclusions a bit. The bug here may not necessarily be that threads aren't waiting until proper termination, but rather, there may just be a bug somewhere that's causing the search routines themselves to behave differently between the single threaded and multithreaded implementations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-14 16:52</div>
+            <div class="timeline-body"><p>Is there any way you can find a corpus of code on which to reproduce this bug? Perhaps a large open source repository? Chromium?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rodrigobahiense">@rodrigobahiense</a> on 2018-02-14 17:16</div>
+            <div class="timeline-body"><p>I'm finding it very hard to reproduce outside of the directory it happened, apparently I've found some unusual case.</p>
+<p>I've also just found out that if I use <code>rg -c &quot;string&quot; .</code> it counts correctly the number of results in each file.</p>
+<p>Can I send the debug output to you directly, privately?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-14 17:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Can I send the debug output to you directly, privately?</p>
+</blockquote>
+<p>@zugl Yes, but I doubt that will help. You can send it to jamslam@gmail.com --- I really need to be able to reproduce a bug like this myself unfortunately.</p>
+<p>I guess we can try debug-by-proxy? What are the outputs of the following commands?</p>
+<pre><code>$ rg whatever | wc -l
+$ rg -j1 whatever | wc -l
+$ rg -j2 whatever | wc -l
+$ rg . | wc -l
+$ rg -j1 . | wc -l
+$ rg -j2 . | wc -l
+$ rg whatever -c | cut -d':' -f2 | python -c 'import sys; print(sum(int(x) for x in sys.stdin))'
+$ rg whatever -c -j1 | cut -d':' -f2 | python -c 'import sys; print(sum(int(x) for x in sys.stdin))'
+$ rg whatever -c -j2 | cut -d':' -f2 | python -c 'import sys; print(sum(int(x) for x in sys.stdin))'
+</code></pre>
+<p>I'm not sure any of this will lead to answer for you, but let's see what happens.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rodrigobahiense">@rodrigobahiense</a> on 2018-02-14 17:33</div>
+            <div class="timeline-body"><p>I'll convert this commands to PowerShell equivalents because I've also just found out that this only occurs on rg for Windows (using PowerShell or Cmd).</p>
+<p>Using rg (same version) on linux through WSL (bash) it returns correct results.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rodrigobahiense">@rodrigobahiense</a> on 2018-02-14 17:38</div>
+            <div class="timeline-body"><p>Another test and apparently rg.exe works correctly through WSL (it supports running windows binaries in bash).</p>
+<p>The issue seems related to rg.exe through PowerShell or Cmd.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-14 17:39</div>
+            <div class="timeline-body"><p>@zugl Hmm, that is a helpful data point! It <em>could</em> be a red herring, but I'll noodle on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rodrigobahiense">@rodrigobahiense</a> on 2018-02-14 18:09</div>
+            <div class="timeline-body"><p>I guess I've found the core issue and it might not have anything to do with rg itself. Here is the real problem:</p>
+<p>One of the first results contained a latin1 character in the line, something like:</p>
+<pre><code># rg -E latin1 &quot;erro&quot; .
+
+path/to/file
+1: erro improvável
+</code></pre>
+<p>Using just <code>rg &quot;erro&quot; .</code> resulted in:</p>
+<pre><code>path/to/file
+1: erro improv
+</code></pre>
+<p>The cmd hangs after the <strong>v</strong> in &quot;improvável&quot; and after some time exits.</p>
+<p>Running <code>rg -j1 &quot;erro&quot; .</code> or <code>rg --sort-files &quot;erro&quot; .</code> resulted in:</p>
+<pre><code>path/to/file
+1: erro improv�vel
+</code></pre>
+<p>Here the full text is returned but with the <strong>replacement character</strong> in the string.</p>
+<p>Outputting to a file in all cases returned the correct results, so maybe this is a console buffer issue? I for one have no idea.</p>
+<p>However, now the question is: why rg didn't output the <strong>replacement character</strong> in all cases?</p>
+<p>Hope this helps somehow and you may close this issue.</p>
+<p>Thank you very much for your time on this project! =)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-14 18:13</div>
+            <div class="timeline-body"><p>That is... interesting. I am pretty sure there are things going on with the console and encoding, but I honestly don't know the precise details. @retep998 might know something though!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rodrigobahiense">@rodrigobahiense</a> on 2018-02-14 18:14</div>
+            <div class="timeline-body"><p>By the way, on WSL the latin1 characters were cut out of the result:</p>
+<pre><code>path/to/file
+1: erro improvvel
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2018-02-21 00:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-21 00:41</div>
+            <div class="timeline-body"><p>Closing this since it seems like this isn't ripgrep's problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-02-21 00:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:26 UTC
+    </footer>
+</body>
+</html>

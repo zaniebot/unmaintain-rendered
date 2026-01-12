@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can ripgrep be used as a tool to search a file as unit instead of line? - BurntSushi/ripgrep #1110</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can ripgrep be used as a tool to search a file as unit instead of line?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1110">#1110</a>
+        opened by <a href="https://github.com/stardiviner">@stardiviner</a>
+        on 2018-11-16 13:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/stardiviner">@stardiviner</a></div>
+            <div class="timeline-body"><p>I want to use ripgrep as a command tool to search file as unit instead of line.
+So that I can search &quot;Linux Emacs&quot; in files if a file matched, show it in result.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-11-16 13:24</div>
+            <div class="timeline-body"><p>Please consider perusing the flags before opening an issue next time. The flag you're looking for is <code>--files-with-matches</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-11-16 13:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stardiviner">@stardiviner</a> on 2018-11-18 03:13</div>
+            <div class="timeline-body"><p>Hi, @BurntSushi I created following snippet of code after your hints.
+Here it is:</p>
+<pre><code class="language-emacs-lisp">(defun rg-direct (word)
+  (format &quot;rg %s&quot; word))
+
+(defun rg-files-with-matches-beginning (word dir)
+  (format &quot;rg --files-with-matches \&quot;%s\&quot; %s&quot; word dir))
+
+(defun rg-files-with-matches-middle (word)
+  (format &quot; | xargs rg --files-with-matches \&quot;%s\&quot;&quot; word))
+
+(defun rg-files-with-matches-end (word)
+  (format &quot; | xargs rg --heading \&quot;%s\&quot;&quot; word))
+
+(defun rg-files-construct-command (words dir)
+  (case (length words)
+    (1 (rg-direct (car words)))
+    (2 (concat (rg-files-with-matches-beginning) (rg-files-with-matches-end)))
+    (3 (concat (rg-files-with-matches-beginning (car words) dir)
+               (rg-files-with-matches-middle (cadr words))
+               (rg-files-with-matches-end (car (reverse words)))))
+    (t (concat (rg-files-with-matches-beginning (car words) dir)
+               ;; OPTIMIZE: Do I have to use (car (mapcan ...))?
+               (car (mapcan
+                     (lambda (word) (list (rg-files-with-matches-middle word)))
+                     (delq (car (reverse words)) (cdr words))))
+               (rg-files-with-matches-end (car (reverse words)))))))
+
+;; (rg-files-construct-command
+;;  (split-string &quot;hello world stardiviner myself&quot; &quot; &quot;)
+;;  default-directory)
+
+(defun rg-search-words-by-files (directory)
+  &quot;Search multiple words by file as unit instead of line.
+
+rg --files-with-matches \&quot;foo\&quot; . | xargs rg --files-with-matches \&quot;bar\&quot; | ... | xargs rg --heading \&quot;baz\&quot;
+&quot;
+  (interactive (list (completing-read &quot;Dir: &quot; `(,(expand-file-name org-directory)
+                                                ,default-directory))))
+  (let* ((words (split-string (read-from-minibuffer &quot;Words: &quot;) &quot; &quot;))
+         (command (rg-files-construct-command words directory)))
+    (compilation-start command 'rg-mode)))
+</code></pre>
+<p>I have some ideas about this code,</p>
+<ul>
+<li>how to improve this code to fit <code>rg.el</code> style? (I wish to use <code>rg.el</code>'s API functions like macro <code>define-rg-search</code>) I would like to hear your reviews. Thanks in advance.</li>
+<li>Is it possible to integrated it into <code>rg.el</code>, If yes, I would like to send PR.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-11-18 03:16</div>
+            <div class="timeline-body"><p>I don't understand what problem you're trying to solve. I don't know what <code>rg.el</code> is.</p>
+<p>I am happy to help, but please be considerate of others' time. Please:</p>
+<ol>
+<li>Use a common shell scripting language, such as bash, to show the commands you're trying to run.</li>
+<li>Describe, at a high level, what problem you want to solve. If you're unsure of how to do this, then complete, small, reproducible examples of what you would like to do is a good start.</li>
+</ol>
+<p>If you are trying to integrate ripgrep into another tool, then you might consider speaking with practitioners of said tool instead of me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stardiviner">@stardiviner</a> on 2018-11-18 08:38</div>
+            <div class="timeline-body"><p>Sorry, wrong place post this comment. I supposed to post comment on rg.el issues.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:44 UTC
+    </footer>
+</body>
+</html>

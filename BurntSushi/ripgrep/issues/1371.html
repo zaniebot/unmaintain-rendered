@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature - Search all casing permutations - BurntSushi/ripgrep #1371</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature - Search all casing permutations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1371">#1371</a>
+        opened by <a href="https://github.com/j-martin">@j-martin</a>
+        on 2019-09-11 02:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/j-martin">@j-martin</a></div>
+            <div class="timeline-body"><h3>Describe your question, feature request, or bug.</h3>
+<p>The idea is to be able to expand beyond the concept of smart casing. More often than enough, I need to search code with different casing. For example, <code>PascalCasing</code> (Java, Go, Python classes, etc.) <code>camelCasing</code> (Java, Go, etc.), <code>snake_casing</code> (python, ruby, etc.), <code>kebab-casing</code> (clojure, etc.).</p>
+<p>It would be wonderful if there was a quick way to search <code>aCoolVariable</code>, <code>a-cool-variable</code> or <code>a_cool_variable</code> and have it to expand as a case insensitive regex like <code>a[_-]?cool[_-]?variable</code>.</p>
+<p>The feature would be activated with a flag of some sort.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-09-11 02:39</div>
+            <div class="timeline-body"><p>I suspect something like this would also be quite useful for languages like Nim. (It was suggested in a PR somewhere, but nobody made a separate ticket for it.)</p>
+<p>I think the meat if this work requires a thorough specification for how the regex pattern is transformed. What you have so far is just a start. Does someone want to take a crack at this?</p>
+<p>An issue with this feature is that we likely won't be able to support it when PCRE2 is used, since PCRE2 does not expose tools for correct syntax transformations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-03-15 16:07</div>
+            <div class="timeline-body"><p>I'm still willing to have something like this in ripgrep. But the UX story here is really the hard part. Some questions off the top of my head:</p>
+<ul>
+<li>What happens when the given pattern is a regex and not just a literal? (Maybe ripgrep should return an error?)</li>
+<li>What are the precise set of transformations that ripgrep performs? Is this configurable? (I want to say &quot;no.&quot;)<ul>
+<li>But perhaps we do need this. e.g., Languages like Nim probably have a concrete specification on which variable names are equivalent, which might not include literally every possible transform one might want in a feature like this. So maybe we need a special <code>--nim</code> flag?</li>
+</ul>
+</li>
+<li>What happens when multiple patterns are given? I guess they should all be transformed.</li>
+</ul>
+<p>There is definitely a potential here for the transformed regexes to blow up in size, thus leading to an overall degradation in performance. In particular, I suspect this will either render literal optimizations inert or otherwise much less effective. But still, I see this as being a useful feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2020-03-15 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-03-15 16:08</div>
+            <div class="timeline-body"><p>cc @dom96</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/j-martin">@j-martin</a> on 2020-03-16 04:06</div>
+            <div class="timeline-body"><blockquote>
+<p>What happens when the given pattern is a regex and not just a literal? (Maybe ripgrep should return an error?)</p>
+</blockquote>
+<p>I would expect it to be an alternative or similar to fix strings (<code>-F</code>) and would not support regex at all.</p>
+<p>As you noted handling regex would make things substantially more complicated (and potentially bad performance), but also if someone wants regex I would expect them to want to control these casing permutations themselves.</p>
+<blockquote>
+<p>What are the precise set of transformations that ripgrep performs? Is this configurable? (I want to say &quot;no.&quot;)</p>
+</blockquote>
+<p>No, as far as I am concerned.</p>
+<blockquote>
+<p>What happens when multiple patterns are given? I guess they should all be transformed.</p>
+</blockquote>
+<p>Yes, I think so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kastiglione">@kastiglione</a> on 2020-03-16 06:53</div>
+            <div class="timeline-body"><p>I've wanted a feature like this for a while.</p>
+<p>My experience: When I want this, I write my search as <code>a.?cool.?variable</code>. I have smart case enabled by default so this matches aCoolCariable, a_cool_variable, etc. It also catches the use as a phrase, in comments. This could produce false positives, but in practice  (for me) I can't recall a single time that it happened. I also can't remember combining such a search with additional regex. The only thing I'd want to combine it with is <code>-w</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-03-17 21:54</div>
+            <div class="timeline-body"><p>@kastiglione Could you maybe restate that in terms of what this feature should provide? For example, I imagine you'd want to say <code>rg --smart-ident acoolvariable</code> and have that rewritten to something like <code>rg a.?c.?o.?o.?l.?v.?a.?r.?i.?a.?b.?l.?e.?</code>, which isn't quite the same as what you're writing. The latter will match a lot more. I don't think ripgrep can be much smarter here. It kind of has to allow extract characters at any position between the letters.</p>
+<p>I guess we can be a bit more restrictive. e.g.,</p>
+<p><code>bar</code> -&gt; <code>(?i)[-_]?b[-_]?a[-_]?r[-_]?</code></p>
+<p>Does this look right to folks? I think it's at least required to support the Nim case, for example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/j-martin">@j-martin</a> on 2020-03-17 22:17</div>
+            <div class="timeline-body"><p>@BurntSushi I was hoping for a smarter heuristic as far as deciding where to put the separators, but it seems totally fine as an MVP and should work in most cases. If not it would be the time for the user to write the regex by hand.</p>
+<p>I would definitely go with the more restrictive regex <code>[-_]</code> since the <code>.?</code> would pickup <code>:</code> or <code>.</code> which would create issues with method calls and whatnot.  As noted by @kastiglione <code>--word-regexp</code> would solve the issue, but I don't think it should be required. After all, those characters are themselves word boundaries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dom96">@dom96</a> on 2020-03-17 23:26</div>
+            <div class="timeline-body"><blockquote>
+<p>What happens when the given pattern is a regex and not just a literal? (Maybe ripgrep should return an error?)</p>
+</blockquote>
+<p>I agree with @j-martin in that I don't think this feature should be supported in conjunction with regex.</p>
+<blockquote>
+<p>Languages like Nim probably have a concrete specification on which variable names are equivalent, which might not include literally every possible transform one might want in a feature like this. So maybe we need a special --nim flag?</p>
+</blockquote>
+<p>This is true. But for a generic tool like ripgrep I think it's fine to not offer this. It depends on the design philosophy of ripgrep though, do you think it makes sense to implement language-specific features? If not, we can just as well create a wrapper script/program around ripgrep which builds a regex pattern and passes it to ripgrep. That way the burden of maintenance of this feature isn't on you :)</p>
+<p>In general, being able to search in a style insensitive manner is really a useful feature for users of all languages and it's really nice to see it being considered as a feature in ripgrep!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-10-09 23:42</div>
+            <div class="timeline-body"><p>Revisiting this, I think I'm going to pass on this. It looks like this feature probably has some pretty tricky UX questions, and it isn't clear to me how broadly applicable it is. If someone can come up with something relatively simple and wants to submit a patch, I might be open to that. If so, feel free to ask to re-open the issue here with a proposal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-10-09 23:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:00 UTC
+    </footer>
+</body>
+</html>

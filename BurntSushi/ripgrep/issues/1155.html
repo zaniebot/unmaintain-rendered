@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add flag to enable &quot;hybrid&quot; regex mode - BurntSushi/ripgrep #1155</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>add flag to enable &quot;hybrid&quot; regex mode</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1155">#1155</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2019-01-08 18:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>In some cases, it would be nice for ripgrep to use Rust's regex engine by default whenever possible, and then fall back to PCRE2 when &quot;advanced&quot; regex features are used. In terms of user level documentation, I might suggest this specification:</p>
+<pre><code>--auto-hybrid-regex
+    When this flag is used, ripgrep will dynamically choose between supported
+    regex engines depending on the features used in a pattern. When ripgrep
+    chooses a regex engine, it applies that choice for every regex provided to
+    ripgrep (e.g., via multiple `-e/--regexp` or `-f/--file` flags).
+
+    As an example of how this flag might behave, ripgrep will attempt to use its
+    default finite automata based regex engine whenever the pattern can be
+    successfully compiled with that regex engine. If PCRE2 is enabled and if the
+    pattern given could not be compiled with the default regex engine, then PCRE2
+    will be automatically used for searching. If PCRE2 isn't available, then this flag
+    has no effect because there is only one regex engine to choose from.
+
+    In the future, ripgrep may adjust its heuristics for how it decides which regex
+    engine to use. In general, the heuristics will be limited to a static analysis of
+    the patterns, and not to any specific runtime behavior observed while searching
+    files.
+
+    The primary downside of using this flag is that it may not always be obvious
+    which regex engine ripgrep uses, and thus, the match semantics or performance
+    profile of ripgrep may subtly and unexpectedly change. However, in many cases,
+    all regex engines will agree on what constitutes a match and it can be nice to
+    transparently support more advanced regex features like look-around and
+    backreferences without explicitly needing to enable them.
+
+    This flag can be disabled with `--no-auto-hybrid-regex`.
+</code></pre>
+<p>I had initially thought about adding this when I added PCRE2, since it's a somewhat logical addition. However, I held off because I wanted a real use case first. One such use case is here: https://github.com/Microsoft/vscode/issues/64606</p>
+<p>In terms of implementation, we should add debug logs indicating which regex engine is being used and any compilation errors that are otherwise suppressed in normal output.</p>
+<p>cc @roblourens</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2019-01-24 01:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-04-14 23:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:47 UTC
+    </footer>
+</body>
+</html>

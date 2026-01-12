@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ripgrep outputs BOM character for match on first line of a file with a BOM - BurntSushi/ripgrep #632</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ripgrep outputs BOM character for match on first line of a file with a BOM</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/632">#632</a>
+        opened by <a href="https://github.com/roblourens">@roblourens</a>
+        on 2017-10-10 05:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/roblourens">@roblourens</a></div>
+            <div class="timeline-body"><p>From https://github.com/Microsoft/vscode/issues/35633</p>
+<p>As the title says, I noticed that ripgrep will output the BOM character when printing a match in the first line. Not really blocking anything, but I think it would make sense for ripgrep to strip this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-10 10:51</div>
+            <div class="timeline-body"><p>@roblourens That is interesting. I think my intuition was the opposite, but I could be completely wrong? For example, if you run <code>rg pattern file &gt; results</code> and <code>file</code> has a BOM, shouldn't <code>results</code> also have a BOM?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FSMaxB">@FSMaxB</a> on 2017-10-10 12:38</div>
+            <div class="timeline-body"><p>But shouldn't the output encoding depend on the locale?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-10 12:41</div>
+            <div class="timeline-body"><p>@FSMaxB ripgrep doesn't respect any locale settings and always uses UTF-8 for output. That seems orthogonal to the issue reported here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FSMaxB">@FSMaxB</a> on 2017-10-10 12:42</div>
+            <div class="timeline-body"><p>Ok, sorry for the noise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/roblourens">@roblourens</a> on 2017-10-10 15:06</div>
+            <div class="timeline-body"><p>It seems to me like the BOM is metadata and not really part of the actual text of the file. But I'm not sure and haven't checked what other tools do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-10-10 15:57</div>
+            <div class="timeline-body"><p><code>rg</code>'s behaviour seems consistent with BSD <code>grep</code>, GNU <code>grep</code>, and <code>ag</code>:</p>
+<pre><code>% printf '\xef\xbb\xbftest\n' &gt; bom.txt
+% file bom.txt
+bom.txt: UTF-8 Unicode (with BOM) text
+% /usr/bin/grep . bom.txt | xxd -a
+00000000: efbb bf74 6573 740a    ...test.
+% /usr/local/bin/grep . bom.txt | xxd -a
+00000000: efbb bf74 6573 740a    ...test.
+% /usr/local/bin/ag --no-numbers . bom.txt | xxd -a
+00000000: efbb bf74 6573 740a    ...test.
+% /usr/local/bin/rg --no-line-number . bom.txt | xxd -a
+00000000: efbb bf74 6573 740a    ...test.
+</code></pre>
+<p>I can see why someone might expect it to be stripped out tho</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-21 01:26</div>
+            <div class="timeline-body"><p>I don't quite know what the right answer is here. Given that both BSD and GNU grep leave the BOM in tact, I'm also inclined to take that path as well. In particular, in the absence of more concrete use cases where removing the BOM makes sense, I'd like to side with tradition on this one.</p>
+<p>I'm going to close this for now, but if there is a more compelling argument to be made, please make it here and we can revisit this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-10-21 01:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:18 UTC
+    </footer>
+</body>
+</html>

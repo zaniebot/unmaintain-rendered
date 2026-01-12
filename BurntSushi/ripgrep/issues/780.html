@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ripgrep misses some matching lines - BurntSushi/ripgrep #780</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ripgrep misses some matching lines</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/780">#780</a>
+        opened by <a href="https://github.com/josh-duetto">@josh-duetto</a>
+        on 2018-02-08 02:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/josh-duetto">@josh-duetto</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.7.1
+-AVX -SIMD</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>OS X 10.11.6</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>I found a case where <code>ripgrep</code> fails to find some matching lines when it should.  If I tweak the pattern slightly, it will find the lines.  Changing the contents of the files also can bring the missing lines back into the result set.</p>
+<p>I was searching a repo of several thousand Java files for an endpoint containing the path &quot;/upsert/rateplans&quot;.  I initially used &quot;/upsert/rate&quot; as the pattern.  <code>rg</code> found some matches, but not the one I was looking for.  Extending the pattern to &quot;/upsert/ratep&quot; brings in the expected match.  Omitting the leading slash like &quot;upsert/rate&quot; will also yield correct results.</p>
+<p>I tried stripping down the files to just the matching lines for a minimal test corpus, but <code>rg</code> finds everything in that case.  I can restrict the search to just three files and reproduce the problem, however.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>I copied the three files with expected matches to a new directory and stomped most lines with <code>sed -e '/upsert/!s/[a-zA-Z]/a/g'</code> (replace all letters with &quot;a&quot; on lines not containing &quot;upsert&quot;).</p>
+<p>Here are the scrubbed files:
+https://gist.github.com/josh-duetto/065e1b579d72164dc4deb7b54d9279a6</p>
+<p>Sorry for all the &quot;aaaaa&quot; spam, but it seems to be somewhat necessary to reproduce the bug.
+Also if I change the scrub command to <code>sed -e '/upsert/!s/./-/g'</code> then the matches show up again, so there seems to be something more going on than just the byte offset of the match text in the corpus.</p>
+<p>Expected matches:</p>
+<pre><code>[josh@yawp rg2]$ grep -nHrF /upsert/rate .
+./one.java:115:            .setServer(&quot;http://127.0.0.1:9090/upsert/rates&quot;);
+./three.java:141:    private static final String UPSERT_RATE_PLANS_ENDPOINT = &quot;/v1/upsert/rateplans&quot;;
+./two.java:43:    private static final String DARI_RATE_PATH = &quot;/upsert/rates&quot;;
+</code></pre>
+<p>Ripgrep results (missing &quot;three.java:141&quot;):</p>
+<pre><code>[josh@yawp rg2]$ rg --debug --no-heading -F /upsert/rate
+DEBUG:grep::search: regex ast:
+Literal {
+    chars: [
+        '/',
+        'u',
+        'p',
+        's',
+        'e',
+        'r',
+        't',
+        '/',
+        'r',
+        'a',
+        't',
+        'e'
+    ],
+    casei: false
+}
+DEBUG:grep::literals: literal prefixes detected: Literals { lits: [Complete(/upsert/rate)], limit_size: 250, limit_class: 10 }
+one.java:115:            .setServer(&quot;http://127.0.0.1:9090/upsert/rates&quot;);
+two.java:43:    private static final String DARI_RATE_PATH = &quot;/upsert/rates&quot;;
+</code></pre>
+<p>Tweaked successful match:</p>
+<pre><code>[josh@yawp rg2]$ rg --debug --no-heading -F upsert/rate
+DEBUG:grep::search: regex ast:
+Literal {
+    chars: [
+        'u',
+        'p',
+        's',
+        'e',
+        'r',
+        't',
+        '/',
+        'r',
+        'a',
+        't',
+        'e'
+    ],
+    casei: false
+}
+DEBUG:grep::literals: literal prefixes detected: Literals { lits: [Complete(upsert/rate)], limit_size: 250, limit_class: 10 }
+one.java:115:            .setServer(&quot;http://127.0.0.1:9090/upsert/rates&quot;);
+three.java:141:    private static final String UPSERT_RATE_PLANS_ENDPOINT = &quot;/v1/upsert/rateplans&quot;;
+two.java:43:    private static final String DARI_RATE_PATH = &quot;/upsert/rates&quot;;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-08 12:38</div>
+            <div class="timeline-body"><p>Thanks for the awesome bug report! I can indeed reproduce it. It looks like this is a bug in the new Boyer-Moore optimization introduced in the regex library. The heuristic for using Boyer-Moore is a bit complex, which explains why reproducing the bug is so fiddly.</p>
+<p>Incidentally, this shares the same root cause as #781 (Boyer-Moore), although it isn't clear if the implementation has two distinct bugs or not, so I will leave this open.</p>
+<p>This should be fixed in the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2018-02-08 12:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/josh-duetto">@josh-duetto</a> on 2018-02-08 22:49</div>
+            <div class="timeline-body"><p>Happy to help!  Thanks for such a great tool!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-02-08 23:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:25 UTC
+    </footer>
+</body>
+</html>

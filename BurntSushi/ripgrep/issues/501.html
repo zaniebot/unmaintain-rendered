@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>path separator on windows is not always \ - BurntSushi/ripgrep #501</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>path separator on windows is not always \</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/501">#501</a>
+        opened by <a href="https://github.com/albfan">@albfan</a>
+        on 2017-06-02 09:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/albfan">@albfan</a></div>
+            <div class="timeline-body"><p>running under mingw output shows paths with \ but mingw (running bash) uses /</p>
+<p>Were is the code related with path separator?, maybe mingw can be detected to fix that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-02 11:35</div>
+            <div class="timeline-body"><p>There is no automatic detection, but you can use the <code>--path-separator</code> flag to override the path separator in any environment. I imagine sticking it in an alias might work for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-06-02 11:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/albfan">@albfan</a> on 2017-06-02 12:08</div>
+            <div class="timeline-body"><p>On cmd it works, but on mingw bash (the one that git for windows provides if you're curious) it outputs:</p>
+<pre><code>$ rg foo --path-separator '/'
+A path separator must be exactly one byte, but the given separator is 20 bytes.</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/albfan">@albfan</a> on 2017-06-02 12:08</div>
+            <div class="timeline-body"><p>same without quotes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-02 12:09</div>
+            <div class="timeline-body"><p>That error message is baffling to me. Someone will need to debug it. I'll do it eventually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/albfan">@albfan</a> on 2017-06-02 12:18</div>
+            <div class="timeline-body"><p>Ok, count on me for that</p>
+<p>Seems there's window detecting no?
+https://github.com/BurntSushi/ripgrep/blob/13235b596f93f7f0e7ce76e7967996787147e96e/src/printer.rs#L412</p>
+<p>and docs say it too:
+https://github.com/BurntSushi/ripgrep/blob/master/doc/rg.1#L390</p>
+<p>Have to check what is behind cfg!(windows)</p>
+<p>maybe that can be a better fix. By now options would work</p>
+<p>If you want to go for OS detection or want to detect that problem with bytes just open a bug and comment here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @albfan on 2017-06-02 12:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-02 12:21</div>
+            <div class="timeline-body"><p>@albfan Why did you close this? If <code>--path-separator</code> isn't working, then that's a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/albfan">@albfan</a> on 2017-06-02 13:33</div>
+            <div class="timeline-body"><p>My problem with choose a separator is resolved:</p>
+<pre><code>$ rg foo --path-separator '\x2F'</code></pre>
+<p>There's another problem that maybe you want to solve. But feels that is a different issue</p>
+<p>Do you want me to reopen this and work that here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @BurntSushi on 2017-06-02 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-02 13:35</div>
+            <div class="timeline-body"><p>@albfan I understand that you found a work-around, but if <code>rg foo --path-separator /</code> is giving your error messages about the path separator being 20 bytes, then that's a bug.</p>
+<p>If there's a distinct issue, then I'd say open a new ticket...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/albfan">@albfan</a> on 2017-06-02 13:46</div>
+            <div class="timeline-body"><p>Here some test:</p>
+<pre><code>$ rg foo --path-separator /
+A path separator must be exactly one byte, but the given separator is 20 bytes.
+
+#this works
+$ rg foo --path-separator //
+
+$ rg foo --path-separator aa
+A path separator must be exactly one byte, but the given separator is 2 bytes.
+
+$ rg foo --path-separator aaa
+A path separator must be exactly one byte, but the given separator is 3 bytes.
+
+$ rg foo --path-separator aaa/
+A path separator must be exactly one byte, but the given separator is 4 bytes.
+
+#double do not increase faulty bytes
+$ rg foo --path-separator aaa//
+A path separator must be exactly one byte, but the given separator is 5 bytes.
+
+$ rg foo --path-separator /a
+A path separator must be exactly one byte, but the given separator is 3 bytes.
+
+#what???
+$ rg foo--path-separator /aa
+A path separator must be exactly one byte, but the given separator is 23 bytes.
+
+$ rg foo--path-separator /aaa
+A path separator must be exactly one byte, but the given separator is 24 bytes.
+</code></pre>
+<p>Have to learn how to debug rust, any hint on windows?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-02 14:06</div>
+            <div class="timeline-body"><p>@albfan Ah, I wonder if the problem here is your shell. Maybe the shell is expanding <code>/</code> to something like <code>/c/cygdrive/</code> or something similar?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/albfan">@albfan</a> on 2017-06-02 15:02</div>
+            <div class="timeline-body"><p>I think so</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/albfan">@albfan</a> on 2017-06-03 08:24</div>
+            <div class="timeline-body"><p>http://www.mingw.org/wiki/Posix_path_conversion</p>
+<p>Here we are. / gets translated into a absolute path on mingw. Double // prevents conversion.</p>
+<p>That's why 20 bytes</p>
+<p>This is solved then</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @albfan on 2017-06-03 08:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/albfan">@albfan</a> on 2017-11-15 08:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Definitive solution</p>
+</blockquote>
+<pre><code>$ cat ~/.bashrc
+...
+alias rg='rg --path-separator=&quot;//&quot;'
+...
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:11 UTC
+    </footer>
+</body>
+</html>

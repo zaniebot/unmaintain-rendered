@@ -22,7 +22,7 @@
 
     <div class="timeline">
         <div class="timeline-entry">
-            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-09-28 15:21</div>
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a></div>
             <div class="timeline-body"><h2>Summary</h2>
 <p>This PR consolidates various fields on the <code>SemanticIndex</code> struct so that instead of having five <code>IndexVec</code> fields that are indexed by <code>FileScopeId</code>, we only have one.</p>
 <p>The original motivation behind this PR was to see if this change would reduce memory usage at all. I'm unable to find any evidence that this makes any significant difference to ty's memory usage -- and this probably makes sense, because we only create one <code>SemanticIndex</code> struct for each file. However, I think this PR is probably worth doing anyway, as it looks like it leads to a 3% speedup on our <code>colour</code> benchmark, and speedups of 1-2% on all our other walltime benchmarks: https://codspeed.io/astral-sh/ruff/branches/alex%2Fsemantic-index-memory?runnerMode=WallTime. These reported speedups have been consistent across multiple runs on this PR, so I think they're real. I assume this PR speeds things up because we're now doing less work in <code>SemanticIndexBuilder::new()</code> (rather than having to allocate five <code>IndexVec</code>s, we now only need three for each builder), and <code>SemanticIndexBuilder::build()</code> (rather than having five different <code>.shrink_to_fit()</code> calls and three different <code>.collect()</code> calls, we now only need one of each). Conceptually, it's also quite nice to have all per-scope information consolidated in the <code>Scope</code> struct as well.</p>
@@ -174,7 +174,7 @@ No memory usage changes detected ✅
     </div>
 
     <footer>
-        Synced at 2026-01-10 17:34:59 UTC
+        Synced at 2026-01-12 17:16:05 UTC
     </footer>
 </body>
 </html>

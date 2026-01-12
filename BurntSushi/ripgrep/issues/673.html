@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why was .rgignore deprecated in favor of .ignore? - BurntSushi/ripgrep #673</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Why was .rgignore deprecated in favor of .ignore?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/673">#673</a>
+        opened by <a href="https://github.com/rlue">@rlue</a>
+        on 2017-11-11 15:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rlue">@rlue</a></div>
+            <div class="timeline-body"><p>Without presuming to ask for a reversal of this deprecation, I'd like to get some perspective on why <code>.rgignore</code> was abandoned in favor of <code>.ignore</code>. There are many programs that can be configured with ignore files — git, syncthing, and GNU stow all come to mind. All of these programs follow a practice of namespacing configuration files to avoid potential collisions (<code>.gitignore</code>, <code>.stignore</code>, and <code>.stow-local-ignore</code>, respectively) — in fact, I have a directory that contains all three (my <code>~/.config</code> dir).</p>
+<p>I understand that both <em>ag</em> and <em>rg</em> previously supported separate <code>.agignore</code> and <code>.rgignore</code> files, and I'm also under the impression that both have been deprecated in favor of a unified <code>.ignore</code> file. In a <a href="https://github.com/sharkdp/fd/issues/156">currently-open issue with <em>fd</em></a><em>,</em> a question arose as to whether it made sense for the program to honor <code>.ignore</code> by default. I don't think it does, as the use cases for the programs are different, but I also think that the fact that <code>.ignore</code> actually belongs to <em>rg</em>/<em>ag</em> (which cannot be inferred or intuited from the name of the file itself) obscures the nature of the question.</p>
+<p>So if I may ask, why have the developers of <em>rg</em> and <em>ag</em> chosen to designate a common configuration file which, in a manner of speaking, pollutes the global config-file namespace? and would you consider switching back to a namespaced alternative, like <code>.grepignore</code>?</p>
+<p>(And either way, might you also consider supporting a <em>non-hidden</em> XDG-compatible ignore file — <em>i.e.,</em> <code>~/.config/ignore</code>, rather than <code>~/.config/.ignore</code>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-11-11 15:33</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd like to get some perspective on why <code>.rgignore</code> was abandoned in favor of <code>.ignore</code></p>
+</blockquote>
+<p>It's simple: so that multiple tools can use the same set of ignore rules. The change was made here: #41 and the conversation that sparked it is here: https://news.ycombinator.com/item?id=12567328</p>
+<p>I have <em>zero</em> interest in discussing the particular choice of <code>.ignore</code> further. I think that conversation covers the motivation, and my intent is to <em>never</em> remove support for it. Therefore, it doesn't make sense to dig into that any more than we already have. (Sorry if I'm coming across as curt here, but I have so little time and the last thing I want to do is spend it re-litigating things, especially on things that aren't going to change because it will <strong>break end user uses of ripgrep</strong>. I also don't want to invite the maintenance and confusion overhead of a deprecation, so that's off the table as well.)</p>
+<hr />
+<p>With that said, I am open to potentially supporting something like a <code>.grepignore</code> that has higher precedence than <code>.ignore</code> (which means rules in <code>.grepignore</code> would override <code>.ignore</code>, just like <code>.ignore</code> overrides <code>.gitignore</code>). We could implement this by making the name configurable at the level of the <code>ignore</code> crate, which should let ripgrep use <code>.grepignore</code> and tools like <code>fd</code> use <code>.fdignore</code> (for example), while also continuing to support <code>.ignore</code>.</p>
+<p>Am I understanding the issue here correctly? Do you agree that the above would solve this specific problem?</p>
+<p>So to make this happen, I think these are the steps:</p>
+<ol>
+<li>Decide whether we should actually do this. Adding an extra ignore-like file means an additional stat call for every directory we search. We should attempt to carefully benchmark this and make sure we're OK with the performance. ripgrep does use a parallel iterator by default, so I'm hoping this is negligible.</li>
+<li>Decide on a name for the file. Every name I've ever come up with has problems, including <code>.ignore</code> and <code>.grepignore</code>.</li>
+<li>Actually implement it in the <code>ignore</code> crate.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-11-11 15:36</div>
+            <div class="timeline-body"><blockquote>
+<p>(And either way, might you also consider supporting a non-hidden XDG-compatible ignore file — i.e., <code>~/.config/ignore</code>, rather than <code>~/.config/.ignore</code>?)</p>
+</blockquote>
+<p>You can simulate this today with the <code>--ignore-file</code> flag, and embed that into an alias. When ripgrep gets persistent config files (which will likely use XDG), then you can add <code>--ignore-file</code> flags to that config.</p>
+<p>(If you think that even given the above we should still have a separate XDG ignore file, please file a separate issue.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rlue">@rlue</a> on 2017-11-11 15:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Sorry if I'm coming across as curt here</p>
+</blockquote>
+<p>Not at all. The issue has clearly been discussed at length, and I missed the memo. Thanks very much for taking the time to point me over to it.</p>
+<blockquote>
+<p>Am I understanding the issue here correctly? Do you agree that the above would solve this specific problem?</p>
+</blockquote>
+<p>I am beginning to appreciate the volume of opinion and decisionmaking that has gone into getting things the way they are thus far, so rather than rocking the boat with more undocumented functionality, I might restate the issue as a request for better documentation (both in the README and the manpage).</p>
+<p>Specifically, I think a section clarifying 1) the usage of the <code>.ignore</code> file, and 2) a statement of its intended/proposed scope would go a long way in preempting questions like mine.</p>
+<p>I'd offer to submit a PR for these additions to the docs myself, but clearly, I have no idea what I'm talking about. Nevertheless, if you'd like me to take a stab at it (as I'm sure you have bigger fish to fry), I'll gladly oblige.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @rlue on 2017-11-11 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-11-11 16:12</div>
+            <div class="timeline-body"><p>Hmm but it sounds like the cause of this issue is an actual problem that might be worth solving. Separate from how we got here, do you still see a use case for more specific ignore files or does .ignore on its own solve the problem and I'm misunderstanding?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rlue">@rlue</a> on 2017-11-11 16:44</div>
+            <div class="timeline-body"><p>The aforementioned issue on <em>fd</em> was simply that the @sharkdp was trying to decide whether it made sense to honor <code>.ignore</code>. The issue I raised here is that the name <code>.ignore</code> made that decision harder than it should be — <em>find-like</em> ignore and <em>grep-like</em> ignore are definitely distinct use cases, and IMO they simply shouldn't be lumped together by default.</p>
+<p>(And if you concocted, in a single file, a way to specify lines that applied to grep and lines that applied to find and lines that applied to both, my opinion is that it would unduly increase the documentation burden and violate the principle of least surprise.)</p>
+<p><em>fd's</em> problems can be reasonably addressed by simply disregarding <code>.ignore</code> altogether (or honoring both <code>.ignore</code> and <code>.fdignore</code> but allowing the latter to override the former, if it's present). I don't know if there is a great need among find-like utilities to share a unified ignore-file (the way that ag, ripgrep, and sift do), but until the authors of those utilities come knocking on your doors to work together on a shared config format, I think it's fine to let this sleeping dog lie.</p>
+<p>(I definitely still advocate for documentation on <code>.ignore</code>, though!)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:20 UTC
+    </footer>
+</body>
+</html>

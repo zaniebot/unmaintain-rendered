@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No match highlighting when using pcre2 - BurntSushi/ripgrep #2484</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>No match highlighting when using pcre2</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2484">#2484</a>
+        opened by <a href="https://github.com/fabian-thomas">@fabian-thomas</a>
+        on 2023-04-03 20:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/fabian-thomas">@fabian-thomas</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>Arch repositories</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Arch linux, all packages latest</p>
+<h4>Describe your bug.</h4>
+<p>When using the pcre2 regex engine, rg does not highlight matches.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p><code>rg -p -P -e &quot;^(?=.*one)&quot;</code></p>
+<p>with a file with content:</p>
+<pre><code>one
+</code></pre>
+<p>I would assume this to highlight the matched word one, as rg would do without the <code>-P</code> flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-04-04 01:24</div>
+            <div class="timeline-body"><p>Your regex only matches the empty string, so no highlighting is correct.</p>
+<p>Look around only controls whether something matches. The whole point of it is that it doesn't change the offsets of the match. In other words, you're asking for something that is directly contrary to the feature you're using.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-04-04 01:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2023-04-04 01:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fabian-thomas">@fabian-thomas</a> on 2023-04-04 06:01</div>
+            <div class="timeline-body"><p>Thanks for the explanation! Makes sense. So there is absolutely no way to get what I want with one ripgrep call?
+Note that the real pattern I want to search for is something like this: <code>rg -P -e &quot;^(?=.*one)(?=.*three)&quot;</code>. So basically match all lines that have both one and three, and I would want highlighting for all occurences of one and three.</p>
+<p>What I could do I guess, is to pipe the results through ripgrep one more time and then highlight all occurences of one and three.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-04-04 11:36</div>
+            <div class="timeline-body"><blockquote>
+<p>What I could do I guess, is to pipe the results through ripgrep one more time and then highlight all occurences of one and three.</p>
+</blockquote>
+<p>Yes. This is the way for now. There is also a ticket for adding more sophisticated boolean matching that would probably let you achieve your objective here. On mobile, or otherwise I would link it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fabian-thomas">@fabian-thomas</a> on 2023-04-04 21:39</div>
+            <div class="timeline-body"><p>For future reference:
+#875 is the issue about boolean matching.
+I'm just mentioning here that ugrep might be the tool you are searching if you arive at this issue. It supports matching against multiple patterns combined with an and. The command for that is <code>ugrep --and one --and three</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-04-04 21:47</div>
+            <div class="timeline-body"><p><code>git grep</code> supports it too.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:39 UTC
+    </footer>
+</body>
+</html>

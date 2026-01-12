@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strange behavior when the search string starts with '-' - BurntSushi/ripgrep #556</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Strange behavior when the search string starts with '-'</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/556">#556</a>
+        opened by <a href="https://github.com/mhristache">@mhristache</a>
+        on 2017-07-15 16:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mhristache">@mhristache</a></div>
+            <div class="timeline-body"><p>I am seeing some strange behavior when trying to find a string which starts with a <code>-</code>. I found it looking for <code>--release</code> keyword trying to find the syntax for a cargo command</p>
+<p>When the string starts with <code>--</code> I get an error immediately (no matter if I use <code>-F</code> or not):</p>
+<pre><code>$ rg -F &quot;--release&quot; lazy/
+error: Found argument '--release' which wasn't expected, or isn't valid in this context
+	Did you mean --replace?
+
+USAGE:
+    
+    rg [OPTIONS] &lt;pattern&gt; [&lt;path&gt; ...]
+    rg [OPTIONS] [-e PATTERN | -f FILE ]... [&lt;path&gt; ...]
+    rg [OPTIONS] --files [&lt;path&gt; ...]
+    rg [OPTIONS] --type-list
+
+For more information try --help
+</code></pre>
+<p>When the string starts with a <code>-</code>, the search takes very long time and it does not find anything:</p>
+<pre><code>$ time rg -F &quot;-release&quot; lazy/
+
+real	0m0.699s
+user	0m1.510s
+sys	0m1.811s
+</code></pre>
+<p>It works when I look for <code> --release</code> (note the extra space at the beginning):</p>
+<pre><code>$ time rg -F &quot; --release&quot; lazy/
+lazy/test/build
+8:OPENSSL_STATIC=&quot;&quot; OPENSSL_LIB_DIR=../openssl_latest/lib/ OPENSSL_INCLUDE_DIR=../openssl_latest/include/ cargo build --release
+
+real	0m0.102s
+user	0m0.013s
+sys	0m0.063s
+</code></pre>
+<p>Is this a bug or am I using it wrongly?</p>
+<p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-07-15 16:17</div>
+            <div class="timeline-body"><p>This is standard behaviour with UNIX tools. You'll see the same thing with <code>grep</code> for example.</p>
+<p>You can use the special <code>--</code> argument to tell it not to interpret anything that follows as a command-line option:</p>
+<pre><code>rg -F -- --release lazy/
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-15 16:18</div>
+            <div class="timeline-body"><p>Or also use the <code>-e</code> flag to specify your pattern (which is also standard grep behavior as well): <code>rg -F -e --release lazy/</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-07-15 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mhristache">@mhristache</a> on 2017-07-15 16:19</div>
+            <div class="timeline-body"><p>Great! Thank you!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:14 UTC
+    </footer>
+</body>
+</html>

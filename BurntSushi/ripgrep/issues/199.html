@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--smart-case doesn't work with --regexp/-w - BurntSushi/ripgrep #199</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--smart-case doesn't work with --regexp/-w</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/199">#199</a>
+        opened by <a href="https://github.com/alejandro5042">@alejandro5042</a>
+        on 2016-10-28 17:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alejandro5042">@alejandro5042</a></div>
+            <div class="timeline-body"><p>Smart casing works great if you use --fixed-strings. However, once you use --regexp or -w, it falls apart:</p>
+<p>For example, this code does not match &quot;ToCsvFile&quot; in any file.</p>
+<pre><code>rg --smart-case --regexp &quot;\btocsvfile&quot;
+</code></pre>
+<p>Same with -w. Doesn't work:</p>
+<pre><code>rg --smart-case -w &quot;tocsvfile&quot;
+</code></pre>
+<p>But begins matching with --ignore-case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alejandro5042">@alejandro5042</a> on 2016-10-28 17:00</div>
+            <div class="timeline-body"><p>Version 0.2.3.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2016-10-28 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-28 17:30</div>
+            <div class="timeline-body"><p>This is indeed a bug. It's probably related to literal optimizations that are ignoring the smart case flag. For example, this works even though it's using a regex:</p>
+<pre><code>[andrew@Cheetah tmp] cat foo
+ToCSVFile
+tocsvfile
+[andrew@Cheetah tmp] rg '^\p{Ll}+$' foo
+2:tocsvfile
+[andrew@Cheetah tmp] rg -S '^\p{Ll}+$' foo
+1:ToCSVFile
+2:tocsvfile
+</code></pre>
+<p>(Although, I wonder if making pure regexes case insensitive even when smart case is enabled is desirable. Maybe it should only activate if there's at least one literal byte? Not sure, but that's a separate issue I guess.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-11-06 17:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:51 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Please compare also with &quot;agrep&quot; - BurntSushi/ripgrep #736</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Please compare also with &quot;agrep&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/736">#736</a>
+        opened by <a href="https://github.com/Wikinaut">@Wikinaut</a>
+        on 2018-01-08 09:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Wikinaut">@Wikinaut</a></div>
+            <div class="timeline-body"><p>See https://github.com/Wikinaut/agrep</p>
+<p>Agrep is an older program but using very fast algorithms (and offers &quot;approximate&quot; matching in addition to standard regexp).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "pls. compare also with "apgrep"" to "pls. compare also with "agrep"" by @Wikinaut on 2018-01-08 09:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "pls. compare also with "agrep"" to "Please compare also with "agrep"" by @Wikinaut on 2018-01-08 09:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">icebox</span> added by @BurntSushi on 2018-01-08 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-01-08 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-08 12:46</div>
+            <div class="timeline-body"><p>It is interestingly faster than GNU grep in some cases, but doesn't quite beat ripgrep:</p>
+<pre><code>$ time rg -i 'Sherlock Holmes' OpenSubtitles2016.raw.sample.en | wc -l
+642
+
+real    0m0.381s
+user    0m0.320s
+sys     0m0.063s
+$ time agrep -i 'Sherlock Holmes' OpenSubtitles2016.raw.sample.en | wc -l
+643
+
+real    0m0.494s
+user    0m0.349s
+sys     0m0.147s
+$ time egrep -i 'Sherlock Holmes' OpenSubtitles2016.raw.sample.en | wc -l
+642
+
+real    0m2.087s
+user    0m1.999s
+sys     0m0.090s
+</code></pre>
+<p>But agrep will be hard to benchmark. For one, it doesn't appear to support a case sensitive feature. e.g., <code>agrep foo</code> and <code>agrep -i foo</code> appear to do the same thing, and I don't see anything in the man page to suggest it has a flag to disable this. It does have literal search (<code>-k</code>), but that doesn't seem to disable the case insensitive search.</p>
+<p>Secondly, it doesn't seem to be Unicode-aware, which will negates some of the more interesting/extreme benchmarks. For example, <code>rg -i 'Шерлок Холмс' OpenSubtitles2016.raw.ru</code> reports 604 matches (as does the equivalent <code>egrep</code> command), but <code>agrep</code> reports 584 matches, which is what case sensitive ripgrep and egrep searches report. In other words, there is no support for Unicode case folding.</p>
+<p>Thirdly, agrep seems to just give up entirely on reasonable patterns that it thinks are too long. For example:</p>
+<pre><code>$ agrep 'Sherlock Holmes|John Watson|Irene Adler|Inspector Lestrade|Professor Moriarty' OpenSubtitles2016.raw.sample.en
+agrep: regular expression too long
+0
+</code></pre>
+<p>There doesn't seem to be any way to easily increase the limit imposed here. This, once again, negates several benchmarks. I tried to widdle the regex down, but even <code>Sherlock Holmes|John Watson|Irene Adler</code> is too long. <code>Sherlock Holmes|John Watson</code> however is apparently OK. This is kind of a ridiculous restriction IMO, and I can't imagine anyone using this tool for general purpose use, and instead would seemingly only use it for its fuzzy searching capabilities, when needed. Note that even with the shorter pattern, <code>Sherlock Holmes|John Watson</code>, ripgrep is an order of magnitude faster than agrep because of its SIMD algorithms.</p>
+<p>I think there maybe exists an interesting benchmark that involves agrep---since it does seem to beat GNU grep in some restricted cases---but the benchmark I setup for ripgrep probably isn't it. It would be disqualified from many of them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-01-08 12:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">icebox</span> removed by @BurntSushi on 2018-01-09 00:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:24 UTC
+    </footer>
+</body>
+</html>

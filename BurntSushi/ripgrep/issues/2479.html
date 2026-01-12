@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ripgrep ignores files found in the parent directories `.ignore` file - BurntSushi/ripgrep #2479</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ripgrep ignores files found in the parent directories <code>.ignore</code> file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2479">#2479</a>
+        opened by <a href="https://github.com/scottchiefbaker">@scottchiefbaker</a>
+        on 2023-03-27 21:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/scottchiefbaker">@scottchiefbaker</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 13.0.0</p>
+<h4>How did you install ripgrep?</h4>
+<p>Installed directly from the GitHub release</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>CentOS Stream 8</p>
+<h4>Describe your bug.</h4>
+<p>Ripgrep is ignoring files found in an <code>.ignore</code> file in the <strong>parent</strong> directory?</p>
+<h4>What is the expected behavior?</h4>
+<p>I was ripgreping for a pattern I knew was in my source, and wasn't getting a result. I immediately checked <code>.gitignore</code> and <code>.ignore</code> files in the current directory and there was nothing that would have filtered out my source. Testing again with <code>--no-ignore</code> showed the content I was expecting.</p>
+<p>I'm assuming this is the intended behavior? I couldn't find any reference in the docs to <code>ripgrep</code> going <strong>up</strong> the tree looking for <code>.ignore</code> files. I would maybe expect it to look in each sub directory, but not go up. If this is not a bug then the <a href="https://github.com/BurntSushi/ripgrep/blob/a7ae9e4043533ba1b6e2f63b989b84f27d961b37/doc/rg.1.txt.tpl#L122">documentation</a> should be updated to indicate that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-27 22:10</div>
+            <div class="timeline-body"><p>Yes, it is definitely intended. Basically, ripgrep farms out a lot of the docs for this to <code>man gitignore</code>. For example, from the GUIDE:</p>
+<blockquote>
+<p>For a more in depth description of how glob patterns in a .gitignore file are interpreted, please see <code>man gitignore</code>.</p>
+</blockquote>
+<p>Now obviously <code>man gitignore</code> doesn't mention <code>.ignore</code>, so I think we can improve the docs there by essentially mentioning that &quot;<code>.ignore</code> and <code>.rgignore</code> work just like <code>.gitignore</code>, but with no special connection to git and the presence of <code>.git</code> directories.&quot;</p>
+<p>I don't think I documented this because it never occurred to me that someone would expect the behavior you want. Moreover, the presence of the <code>--no-ignore-parent</code> flag (and its docs) implies the behavior that ripgrep has.</p>
+<blockquote>
+<p>I was ripgreping for a pattern I knew was in my source, and wasn't getting a result. I immediately checked .gitignore and .ignore files in the current directory and there was nothing that would have filtered out my source. Testing again with --no-ignore showed the content I was expecting.</p>
+</blockquote>
+<p>I'd strongly recommend that you check out the <code>--debug</code> flag. It will tell you what things ripgrep is skipping. That way, you don't have to read gitignore files and apply the matching rules mentally. You can just see exactly what ripgrep is doing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">doc</span> added by @BurntSushi on 2023-03-27 22:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/scottchiefbaker">@scottchiefbaker</a> on 2023-03-27 22:19</div>
+            <div class="timeline-body"><p>My real-world use case for this was that I had a directory <code>~/html/content/books/2023/</code> that I was trying to <code>ripgrep</code>. I had a <code>.gitignore</code> file in <code>~/html/</code> which was three directories up from where I was, so it was out of sight, out of mind. I had an overly broad rule that applied to the HTML directory, but not the books sub-dir. I didn't know about <code>--no-ignore-parent</code> until you mentioned it. That would have helped also.</p>
+<p>Ultimately I think a modification to the docs that mentions that <code>ripgrep</code> will look for ignore files in <strong>all</strong> parent directories would be sufficient. That's where I was expecting to find this information.</p>
+<p>Thanks for a great tool. I could <strong>not</strong> code nearly as efficiently without <code>ripgrep</code>. It's been a real game-changer in my workflow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-27 22:25</div>
+            <div class="timeline-body"><p>Yeah the problem is where to put them. There are a lot of these sorts of caveats, and they just can't all be front and center. So if this information is buried in the GUIDE somewhere, would have it actually helped you? If it has to go in the very top of the man page to have helped you, then I'm not actually sure it's worth doing. Because that space is very content dense, and adding more to it reduces the visibility of other things that are perhaps more important than a detail like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Timmmm">@Timmmm</a> on 2023-05-22 15:42</div>
+            <div class="timeline-body"><p>It would be good to put this comment in the docs for the <code>ignore</code> crate too (on the first page). It's currently a bit unclear which <code>.gitignore</code> files it uses.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/githorse">@githorse</a> on 2023-08-24 13:17</div>
+            <div class="timeline-body"><p>This one bit me as well. I had <code>**/node_modules/**</code> in my <code>.gitignore</code>. But sometimes I do need to find something inside <code>node_modules/</code>, so I <code>$ cd node_modules/library-whatever</code> and <code>rg thingamabob</code> ... and I get nothing.</p>
+<p>If I replace <code>**/node_modules/**</code> with <code>**/node_modules/</code> in <code>.gitignore</code>, then everything works as expected. So seems the problem is this overly broad ignore pattern is screening out any file that has <code>node_modules</code> anywhere in the path.</p>
+<p>Ok, my bad. But maybe <code>rg</code> could handle this case better? It took me a while to figure out what was going on here. The distinction between <code>**/node_modules/**</code> and <code>**/node_modules/</code> is pretty subtle, and it's non-obvious how that should affect the behavior of <code>rg</code>. If I'm currently <em>inside</em> <code>/node_modules</code>, my <code>.ignore</code> file says to ignore <code>**/node_modules/**</code>, and I run a <code>rg</code> search, clearly I'm doing something wrong. So maybe <code>rg</code> could either (1) ignore my <code>.ignore</code> in this case, since I didn't really mean it; or (2) issue a (more specific) warning about what's going on. (I did try <code>--debug</code> and the answer is in there but hard to find and parse in all that output.)</p>
+<p>(1) is a little questionable but I think you could make a pretty good argument that, if the current working directory (not subdirectories, obviously) matches a pattern in some parent <code>.ignore</code> file, that particular ignore pattern should be skipped (since not doing so can only ever result in zero results, which is clearly not what the user wanted).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-08-24 13:23</div>
+            <div class="timeline-body"><p>@githorse I suspect doing something smarter like what you want without breaking other things is harder than you imagine. And in particular, &quot;looking for patterns that match the cwd&quot; is highly suspect.</p>
+<p>ripgrep should emit a warning if it searches nothing. That is the intended failure mode here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-11-22 01:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-25 20:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:39 UTC
+    </footer>
+</body>
+</html>

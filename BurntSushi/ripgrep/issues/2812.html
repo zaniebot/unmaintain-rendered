@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WalkDir ignores files that are in .gitignore outside of current git repository - BurntSushi/ripgrep #2812</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>WalkDir ignores files that are in .gitignore outside of current git repository</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2812">#2812</a>
+        opened by <a href="https://github.com/RudolfVonKrugstein">@RudolfVonKrugstein</a>
+        on 2024-05-20 14:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/RudolfVonKrugstein">@RudolfVonKrugstein</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>git clone of master (f1d23c06e30606b2428a4e32da8f0b5069e81280)</p>
+<h3>How did you install ripgrep?</h3>
+<p>cargo/I used the source</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Ubuntu in WSL2</p>
+<h3>Describe your bug.</h3>
+<p>When WalkDir is created via <code>WalkBuilder</code> and <code>reguire_git(false)</code> enabled, files that are ignored by an <code>.gitignore</code> above the current git repository root directory, are ignored (also git would not ignore them). When <code>require_git(treu)</code> is enabled, this is not the case.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<ol>
+<li>Create this test applicatin:</li>
+</ol>
+<pre><code class="language-rust">use std::env;
+
+use ignore::WalkBuilder;
+
+fn main() {
+    let require_git_arg = if env::args().nth(1).unwrap() == &quot;true&quot; {
+        true
+    } else { false };
+
+    let walker = WalkBuilder::new(&quot;.&quot;).require_git(require_git_arg).build();
+    for result in walker {
+        println!(&quot;{:?}&quot;, result.unwrap())
+    }
+}
+</code></pre>
+<ol start="2">
+<li>Create a git repository with a file in it:</li>
+</ol>
+<pre><code class="language-sh">git init
+touch test
+</code></pre>
+<ol start="3">
+<li>Create a .gitignore outside of the git repoistory:</li>
+</ol>
+<pre><code class="language-sh">echo &quot;test\n&quot; &gt; ../.gitignore
+</code></pre>
+<ol start="4">
+<li>run the application with <code>require_git(true)</code> and see, that the <code>.gitignore</code> is not considered:</li>
+</ol>
+<pre><code class="language-sh">cargo run -- true
+DirEntry { dent: Walkdir(DirEntry(&quot;.&quot;)), err: None }                                                                                                                                                                                                        DirEntry { dent: Walkdir(DirEntry(&quot;./test&quot;)), err: None }  
+</code></pre>
+<ol start="5">
+<li>run the application with <code>require_git(rqlw3)</code> and see, that the <code>.gitignore</code> is considered:</li>
+</ol>
+<pre><code class="language-sh">cargo run -- true
+DirEntry { dent: Walkdir(DirEntry(&quot;.&quot;)), err: None }                                                                                                                                                                                                       
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<p><code>WalkDir</code>, created from <code>WalkBuilder</code> with<code>require_git(false)</code> uses any <code>.gitignore</code> files, that are outside of the current git repo (and therefor are not used by git) while <code>require_git(true)</code> does not use them.</p>
+<h3>What is the expected behavior?</h3>
+<p>The <code>.gitignore</code> outside/above the current git reo should not be used, regardless if <code>require_git</code> is called with <code>true</code> or <code>false</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-20 14:17</div>
+            <div class="timeline-body"><blockquote>
+<p>The <code>.gitignore</code> outside/above the current git reo should not be used, regardless if <code>require_git</code> is called with <code>true</code> or <code>false</code>.</p>
+</blockquote>
+<p>That's the entire point of <code>require_git</code>: it ignores whether <code>.git</code> is present or not and just uses every <code>.gitignore</code> that it finds. If you don't want ripgrep to cross git repository boundaries, then you should enable <code>require_git</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-05-20 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2024-05-20 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RudolfVonKrugstein">@RudolfVonKrugstein</a> on 2024-05-20 14:38</div>
+            <div class="timeline-body"><p>Thank you for your reply. Just for completenes my perspective and how I got to creating this issue:</p>
+<p>I thought the point of <code>require_git(false)</code> is to apply gitignore rules even when there is no git repository. I did not expect <code>require_git(false)</code> to behave differently from <code>require_git(true)</code> when there is a git repository.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:49 UTC
+    </footer>
+</body>
+</html>

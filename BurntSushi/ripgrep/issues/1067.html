@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a way to print a total count across multiple files - BurntSushi/ripgrep #1067</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a way to print a total count across multiple files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1067">#1067</a>
+        opened by <a href="https://github.com/sabi0">@sabi0</a>
+        on 2018-09-26 12:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sabi0">@sabi0</a></div>
+            <div class="timeline-body"><p>Occasionally I need to count a number of particular lines across multiple (log) files.
+Currently <code>-c</code> option allows to print the counts per file only. It would be nice if there was a way (<code>--count-total</code> ?) to add-up those individual counts and print the grand total.</p>
+<p>It would be great if the grand total could also be printed alone, without the files counts.
+I.e. <code>--count --count-total</code> would print per file counts and the grand total.
+<code>--count-total</code> alone would only print the grand total (and could be used in scripting).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-09-26 12:29</div>
+            <div class="timeline-body"><p>If you want the grand total, then I'd just suggest piping the output to <code>wc -l</code> or an equivalent program.</p>
+<p>There is also the <code>--stats</code> flag which you might be interested in. You can even combine it with the <code>--quiet</code> flag to only show the stats without matches.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-09-26 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-09-26 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sabi0">@sabi0</a> on 2018-09-26 13:41</div>
+            <div class="timeline-body"><p>So for matches in one file one could use efficient built-in counter. But for matches in multiple files he'd have to pipe millions of matching lines through <code>wc -l</code>.
+That seems inconsistent, don't you think?</p>
+<p><code>--stats</code> is an interesting option, thank you. But it would require some &quot;output parsing&quot; to be able to use the total count in a script.</p>
+<p>Adding up the numbers produced by <code>--count</code> also requires some (awk) scripting. I.e. way more complicated than a simple <code>--count-total</code> option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/haasn">@haasn</a> on 2021-06-23 10:22</div>
+            <div class="timeline-body"><blockquote>
+<p>If you want the grand total, then I'd just suggest piping the output to <code>wc -l</code> or an equivalent program.</p>
+</blockquote>
+<p>This, and the other suggestions, have non-negligible performance overhead. On a warm cache:</p>
+<pre><code>( rg -c '^'; )  10.35s user 17.80s system 850% cpu 3.311 total
+( rg '^' | wc -l; )  24.80s user 31.46s system 599% cpu 9.388 total
+( cat * | wc -l; )  3.00s user 21.46s system 118% cpu 20.577 total
+( rg --stats --quiet '^'; )  55.31s user 17.75s system 841% cpu 8.685 total
+( rg -c '^' | awk -F':' '{sum += $2} END {print sum}'; )  10.32s user 17.94s system 848% cpu 3.332 total
+</code></pre>
+<p>As you can see, the simple awk example parsing the output of <code>-c</code> is by far the fastest variant, even in the ideal case of there being only a single match per line. (If you change the <code>^</code> to something more like <code>.</code>, then <code>--stats</code> becomes unusably slow)</p>
+<p>P.s. The reason <code>rg</code> vastly outperforms <code>cat</code> here is because of many small files. Incidentally, the fastest variant for this specific job was this:</p>
+<pre><code>( ( for f in *; do; wc -l $f &amp;; done; wait; ) | awk ; )  2.84s user 25.08s system 1136% cpu 2.457 total
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-06-23 11:39</div>
+            <div class="timeline-body"><p>@haasn Your variants aren't equivalent. And indeed, using <code>.</code> changes things in a pertinent way. The <code>-c</code> flag only counts lines. But using the <code>--stats</code> flag will make ripgrep count every individual match. So when you search for <code>.</code>, you're essentially just using a huge hammer to count the number of UTF-8 encoded codepoints across your files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-06-23 11:43</div>
+            <div class="timeline-body"><p>Basically, the bottom line here is that <code>--stats -q</code> is going to produce a total count in the fastest possible way that ripgrep is capable of. Expecting it to be the fastest possible thing <em>for all inputs</em> is not reasonable. When it comes to queries like <code>.</code>, it's plausible there are some performance bugs causing it to be slower than it has to be, and I welcome fixes there (assuming they don't add much complexity).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:42 UTC
+    </footer>
+</body>
+</html>

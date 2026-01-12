@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature idea: &quot;context matches&quot; - BurntSushi/ripgrep #346</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature idea: &quot;context matches&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/346">#346</a>
+        opened by <a href="https://github.com/quodlibetor">@quodlibetor</a>
+        on 2017-02-02 16:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/quodlibetor">@quodlibetor</a></div>
+            <div class="timeline-body"><p>I &quot;often&quot; find myself doing something like:</p>
+<pre><code>$ rg -A5 something | grep -B5 something-else
+</code></pre>
+<p>it would be kind of awesome if <code>rg</code> took a <code>--context-matches</code> regex (that requires one of the other context specifiers (<code>-A -B -C</code>)) that does this automatically for me.</p>
+<pre><code>$ rg -A5 -B2 --context-matches 'some.regex' 'main.search'
+...
+</code></pre>
+<pre><code>$ rg --context-matches 'some.regex' 'main.search'
+error: --context-matches requires one of --before, --after, or --context
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-02 17:16</div>
+            <div class="timeline-body"><p>I'm not against this on principle, but it would be a very difficult feature to add in the current implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2017-02-02 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">libripgrep</span> added by @BurntSushi on 2017-02-02 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/quodlibetor">@quodlibetor</a> on 2017-02-02 19:19</div>
+            <div class="timeline-body"><p>Ah, that makes sense. I was hoping that it would be as simple as just caching the output for each chunk for a bit and running a regex over that cached chunk.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/quodlibetor">@quodlibetor</a> on 2017-02-02 19:20</div>
+            <div class="timeline-body"><p>Which is obviously less efficient than some kind of fancy one-pass analysis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timotheecour">@timotheecour</a> on 2017-02-17 18:26</div>
+            <div class="timeline-body"><p>related to: https://github.com/BurntSushi/ripgrep/issues/360</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-18 17:52</div>
+            <div class="timeline-body"><blockquote>
+<p>I was hoping that it would be as simple as just caching the output for each chunk for a bit and running a regex over that cached chunk.</p>
+</blockquote>
+<p>The current implementation already does that. It <em>has</em> to, because it doesn't know which lines to print until a match occurs.</p>
+<p>You're welcome to go look at the code and marvel at just how hard an addition like this would be. The context handling is complicated, which is why I've tagged this with <code>libripgrep</code>. Namely, we should think about this use case while refactoring the search code into a reusable library.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Hywan">@Hywan</a> on 2017-03-03 08:29</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>It might sound stupid, but what would be the difference between:</p>
+<pre><code>$ rg --context-matches 'foo' 'bar'
+</code></pre>
+<p>and:</p>
+<pre><code>$ rg 'foo.*bar'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-03 10:33</div>
+            <div class="timeline-body"><p>ripgrep doesn't do multiline search.</p>
+<p>On Mar 3, 2017 3:29 AM, &quot;Ivan Enderlin&quot; <a href="mailto:notifications@github.com">notifications@github.com</a> wrote:</p>
+<blockquote>
+<p>Hello,</p>
+<p>It might sound stupid, but what would be the difference between:</p>
+<p>$ rg --context-matches 'foo' 'bar'</p>
+<p>and:</p>
+<p>$ rg 'foo.*bar'</p>
+<p>—
+You are receiving this because you commented.
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/BurntSushi/ripgrep/issues/346#issuecomment-283895669">https://github.com/BurntSushi/ripgrep/issues/346#issuecomment-283895669</a>,
+or mute the thread
+<a href="https://github.com/notifications/unsubscribe-auth/AAb34laVxe-2mr2JkmfV74h-QJmsWW2iks5rh893gaJpZM4L1XYf">https://github.com/notifications/unsubscribe-auth/AAb34laVxe-2mr2JkmfV74h-QJmsWW2iks5rh893gaJpZM4L1XYf</a>
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-05-08 22:36</div>
+            <div class="timeline-body"><p>I'm going to close this not only because the implementation complexity of this scares me a little, but it opens the door to a whole new world of feature bloat that I'd rather avoid. I'd kindly suggest that if someone wants a search this sophisticated, they should just write some code or figure out a clever work-around using the existing context flags. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-05-08 22:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jdtsmith">@jdtsmith</a> on 2023-02-20 04:37</div>
+            <div class="timeline-body"><p>A related idea that might be much easier to implement: a <em>context state</em> match.  Rather than printing lines before or after the match, a context match would print the most recent matching line of context, if any.  Any given context match is only printed (once) when the main match hits.  So with a file like:</p>
+<pre><code>* foo
+** bar
+*** baz
+something
+*boo
+something else
+</code></pre>
+<p>and <code>rg --context-match '^\*+' something</code> would produce:</p>
+<pre><code>*** baz
+something
+* boo
+something else
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:02 UTC
+    </footer>
+</body>
+</html>

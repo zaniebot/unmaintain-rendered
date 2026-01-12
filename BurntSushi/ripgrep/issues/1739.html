@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rg outputs wrong matches when everything is matched and replaced with custom string - BurntSushi/ripgrep #1739</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rg outputs wrong matches when everything is matched and replaced with custom string</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1739">#1739</a>
+        opened by <a href="https://github.com/borestad">@borestad</a>
+        on 2020-11-22 03:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/borestad">@borestad</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 12.1.1
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>brew install ripgrep</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Darwin 19.6.0 x86_64
+zsh 5.8 (x86_64-apple-darwin19.6.0)</p>
+<h4>Describe your bug.</h4>
+<p>rg outputs wrong matches when everything is matched and replaced with custom string</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p><strong>Preparation</strong></p>
+<pre><code>❯❯❯ cd $(mktemp -d)
+❯❯❯ touch a b c d e
+</code></pre>
+<p><strong>Example1 - When it works</strong></p>
+<pre><code>❯❯❯ fd . | rg 'a.*' -r '$0.&lt;NO_EXTENSION&gt;'
+
+a.&lt;NO_EXTENSION&gt;
+</code></pre>
+<p><strong>Example2 - When it fails</strong></p>
+<pre><code>❯❯❯ fd . | rg '.*' -r '$0.&lt;NO_EXTENSION&gt;'
+
+a.&lt;NO_EXTENSION&gt;
+.&lt;NO_EXTENSION&gt;
+b.&lt;NO_EXTENSION&gt;
+.&lt;NO_EXTENSION&gt;
+c.&lt;NO_EXTENSION&gt;
+.&lt;NO_EXTENSION&gt;
+d.&lt;NO_EXTENSION&gt;
+.&lt;NO_EXTENSION&gt;
+e.&lt;NO_EXTENSION&gt;
+.&lt;NO_EXTENSION&gt;
+
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p><strong>Example2 - How it should behave</strong></p>
+<pre><code>❯❯❯ fd . | rg '.*' -r '$0.&lt;NO_EXTENSION&gt;'
+
+a.&lt;NO_EXTENSION&gt;
+b.&lt;NO_EXTENSION&gt;
+c.&lt;NO_EXTENSION&gt;
+d.&lt;NO_EXTENSION&gt;
+e.&lt;NO_EXTENSION&gt;
+</code></pre>
+<h4>What do you think ripgrep should have done?</h4>
+<p><code>Removed the .&lt;NO_EXTENSION&gt; from the output</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/learnbyexample">@learnbyexample</a> on 2020-11-26 05:14</div>
+            <div class="timeline-body"><p>I think this is because of how <code>*</code> can match <strong>zero</strong> or more times.</p>
+<pre><code class="language-bash">$ echo 'a' | rg '.*' -r '$0.&lt;NO_EXTENSION&gt;'
+a.&lt;NO_EXTENSION&gt;
+.&lt;NO_EXTENSION&gt;
+$ echo 'a' | rg '.+' -r '$0.&lt;NO_EXTENSION&gt;'
+a.&lt;NO_EXTENSION&gt;
+
+$ echo 'a' | perl -lpe 's/.*/$&amp;.&lt;NO_EXTENSION&gt;/g'
+a.&lt;NO_EXTENSION&gt;.&lt;NO_EXTENSION&gt;
+$ echo 'a' | perl -lpe 's/.+/$&amp;.&lt;NO_EXTENSION&gt;/g'
+a.&lt;NO_EXTENSION&gt;
+</code></pre>
+<p>See https://www.regular-expressions.info/zerolength.html for a detailed discussion on this topic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-26 15:22</div>
+            <div class="timeline-body"><p>The <code>.*</code> matching an empty string is almost certainly the issue here, but I'm not sure whether the end result is correct or not. In particular, these examples is interesting:</p>
+<pre><code>$ printf a | rg '.*' -r '${0}f'
+af
+$ printf 'a\n' | rg '.*' -r '${0}f'
+af
+f
+</code></pre>
+<p>My guess here is that something about the replacement code is erroneously matching the position immediately after the <code>\n</code>. I say &quot;erroneous&quot; here because, logically speaking, grep tools work by matching a line at a time, and that generally doesn't include the line terminator. (Without multiline mode for example, ripgrep literally forbids you from writing a regex that matches a line terminator.)</p>
+<p>Moreover, it is <em>at least</em> inconsistent:</p>
+<pre><code>$ printf 'a' | rg '.*' --json
+{&quot;type&quot;:&quot;begin&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;&lt;stdin&gt;&quot;}}}
+{&quot;type&quot;:&quot;match&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;&lt;stdin&gt;&quot;},&quot;lines&quot;:{&quot;text&quot;:&quot;a&quot;},&quot;line_number&quot;:1,&quot;absolute_offset&quot;:0,&quot;submatches&quot;:[{&quot;match&quot;:{&quot;text&quot;:&quot;a&quot;},&quot;start&quot;:0,&quot;end&quot;:1}]}}
+{&quot;type&quot;:&quot;end&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;&lt;stdin&gt;&quot;},&quot;binary_offset&quot;:null,&quot;stats&quot;:{&quot;elapsed&quot;:{&quot;secs&quot;:0,&quot;nanos&quot;:123261,&quot;human&quot;:&quot;0.000123s&quot;},&quot;searches&quot;:1,&quot;searches_with_match&quot;:1,&quot;bytes_searched&quot;:1,&quot;bytes_printed&quot;:217,&quot;matched_lines&quot;:1,&quot;matches&quot;:1}}}
+{&quot;data&quot;:{&quot;elapsed_total&quot;:{&quot;human&quot;:&quot;0.006336s&quot;,&quot;nanos&quot;:6335770,&quot;secs&quot;:0},&quot;stats&quot;:{&quot;bytes_printed&quot;:217,&quot;bytes_searched&quot;:1,&quot;elapsed&quot;:{&quot;human&quot;:&quot;0.000123s&quot;,&quot;nanos&quot;:123261,&quot;secs&quot;:0},&quot;matched_lines&quot;:1,&quot;matches&quot;:1,&quot;searches&quot;:1,&quot;searches_with_match&quot;:1}},&quot;type&quot;:&quot;summary&quot;}
+
+$ printf 'a\n' | rg '.*' --json
+{&quot;type&quot;:&quot;begin&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;&lt;stdin&gt;&quot;}}}
+{&quot;type&quot;:&quot;match&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;&lt;stdin&gt;&quot;},&quot;lines&quot;:{&quot;text&quot;:&quot;a\n&quot;},&quot;line_number&quot;:1,&quot;absolute_offset&quot;:0,&quot;submatches&quot;:[{&quot;match&quot;:{&quot;text&quot;:&quot;a&quot;},&quot;start&quot;:0,&quot;end&quot;:1}]}}
+{&quot;type&quot;:&quot;end&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;&lt;stdin&gt;&quot;},&quot;binary_offset&quot;:null,&quot;stats&quot;:{&quot;elapsed&quot;:{&quot;secs&quot;:0,&quot;nanos&quot;:165502,&quot;human&quot;:&quot;0.000166s&quot;},&quot;searches&quot;:1,&quot;searches_with_match&quot;:1,&quot;bytes_searched&quot;:2,&quot;bytes_printed&quot;:219,&quot;matched_lines&quot;:1,&quot;matches&quot;:1}}}
+{&quot;data&quot;:{&quot;elapsed_total&quot;:{&quot;human&quot;:&quot;0.005240s&quot;,&quot;nanos&quot;:5240405,&quot;secs&quot;:0},&quot;stats&quot;:{&quot;bytes_printed&quot;:219,&quot;bytes_searched&quot;:2,&quot;elapsed&quot;:{&quot;human&quot;:&quot;0.000166s&quot;,&quot;nanos&quot;:165502,&quot;secs&quot;:0},&quot;matched_lines&quot;:1,&quot;matches&quot;:1,&quot;searches&quot;:1,&quot;searches_with_match&quot;:1}},&quot;type&quot;:&quot;summary&quot;}
+</code></pre>
+<p>Notice how the second search reports exactly one match. Which is inconsistent with the fact that the replacement behaves as if there are two matches. So as far as I can tell, <em>one</em> of these is wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/learnbyexample">@learnbyexample</a> on 2020-11-27 03:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Moreover, it is at least inconsistent:</p>
+</blockquote>
+<p>Just remembered, I had filed a similar issue: https://github.com/BurntSushi/ripgrep/issues/1295</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-06-01 01:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>May worth testing against icGrep? - BurntSushi/ripgrep #63</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>May worth testing against icGrep?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/63">#63</a>
+        opened by <a href="https://github.com/upsuper">@upsuper</a>
+        on 2016-09-24 13:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/upsuper">@upsuper</a></div>
+            <div class="timeline-body"><p><a href="http://parabix.costar.sfu.ca/wiki/ICgrep">icGrep</a> is announced to be a &quot;full-featured grep program with <a href="http://parabix.costar.sfu.ca/wiki/GigabytePerSecondGrep">world-beating performance</a>&quot; from academia. It uses a different idea (parabix) for parallelizing.</p>
+<p>If parabix is proven to be a good idea, probably Rust regex can consider adopting that algorithm?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 15:29</div>
+            <div class="timeline-body"><p>It's probably worth it. Certainly, from the description, it looks promising. (I have seen it before.)</p>
+<p>The build appears nightmarish (it requires compiling <code>llvm</code>), but I kicked one off.</p>
+<p>FWIW, if their claims of 1 GB/s are true, then that's roughly twice the speed of Rust's <em>regex</em> engine. (Of course, a huge part of a regex engine is its literal optimizations, and that often propels it to several GB/s, so if <code>icgrep</code> isn't doing that---and from their description it seems like they aren't---then they're missing a really common usage scenario.)</p>
+<p>Anyway, I'll check it out.</p>
+<blockquote>
+<p>If parabix is proven to be a good idea, probably Rust regex can consider adopting that algorithm?</p>
+</blockquote>
+<p>We are always considering new algorithms and there is always room for improvement. The list is probably a mile long.</p>
+<p>The other tool in this space is <a href="https://github.com/01org/hyperscan">Hyperscan</a> which is also <em>super</em> fast, but it is geared more towards deep packet inspection and matching massive lists of regexes. (By design, it has slightly different match semantics then you might expect from a grep tool.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 22:50</div>
+            <div class="timeline-body"><p>OK, I got <code>icgrep</code> running. Here's a good example of what I meant by missing the literal optimizations:</p>
+<pre><code>$ time rg '\w+\s+Holmes\s+\w+' OpenSubtitles2016.raw.sample.en | wc -l
+317
+
+real    0m0.255s
+user    0m0.190s
+sys     0m0.063s
+$ time icgrep '\w+\s+Holmes\s+\w+' OpenSubtitles2016.raw.sample.en | wc -l
+317
+
+real    0m4.406s
+user    0m4.350s
+sys     0m0.053s
+</code></pre>
+<p>If we try the <code>\p{Greek}</code> pattern, we can see where <code>icgrep</code> beats <code>ripgrep</code> (which is impressive!):</p>
+<pre><code>$ time rg '\p{Greek}' OpenSubtitles2016.raw.sample.en | wc -l
+13426
+
+real    0m1.757s
+user    0m1.713s
+sys     0m0.043s
+$ time icgrep '\p{Greek}' OpenSubtitles2016.raw.sample.en | wc -l
+13426
+
+real    0m1.414s
+user    0m1.320s
+sys     0m0.093s
+</code></pre>
+<p>But it doesn't get case insensitivity right:</p>
+<pre><code>$ time rg -i '\p{Greek}' OpenSubtitles2016.raw.sample.en | wc -l
+13671
+
+real    0m1.838s
+user    0m1.790s
+sys     0m0.047s
+$ time icgrep -i '\p{Greek}' OpenSubtitles2016.raw.sample.en | wc -l
+13426
+
+real    0m1.422s
+user    0m1.380s
+sys     0m0.040s
+</code></pre>
+<p>Also, <code>icgrep</code>'s regex engine doesn't seem to be always faster than Rust's:</p>
+<pre><code>$ time rg '\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}' OpenSubtitles2016.raw.sample.en | wc -l
+13
+
+real    0m2.048s
+user    0m1.997s
+sys     0m0.050s
+$ time icgrep '\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}' OpenSubtitles2016.raw.sample.en | wc -l
+13
+
+real    0m4.982s
+user    0m4.930s
+sys     0m0.050s
+</code></pre>
+<p>And <code>icgrep</code> appears to pay a steep penalty when searching on Cyrllic. <code>ripgrep</code> slows down a bit too, but is still much faster: (It is nice to see that <code>icgrep</code> gets Unicode right!)</p>
+<pre><code>$ time rg '\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}' OpenSubtitles2016.raw.ru | wc -l
+41
+
+real    0m3.419s
+user    0m3.333s
+sys     0m0.083s
+$ time icgrep '\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}\s+\w{5}' OpenSubtitles2016.raw.ru | wc -l
+41
+
+real    0m9.598s
+user    0m9.517s
+sys     0m0.077s
+</code></pre>
+<p>I think I should do more investigation into <code>icgrep</code>, since it sounds like they're doing some really cool stuff. It does look like they need to handle some of the (comparatively) simpler optimizations before they can compete in more common usage scenarios.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-09-24 22:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/upsuper">@upsuper</a> on 2016-09-24 23:05</div>
+            <div class="timeline-body"><p>It is said that the compilation of regex is expensive for icgrep, so it would only shine when the data being greped is large enough. (I heard the users of their algorithm currently are mainly firewall and big data.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 23:29</div>
+            <div class="timeline-body"><p>@upsuper Did you read my blog post? I benchmarked it on the same data used in the blog. <code>OpenSubtitles2016.raw.sample.en</code> is 918MB and <code>OpenSubtitles2016.raw.ru</code> is 1.6GB.</p>
+<p>But yes, Hyperscan is also primarily used for DPI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-27 17:03</div>
+            <div class="timeline-body"><p>See also this exchange between myself and one of the authors of icgrep: https://news.ycombinator.com/item?id=12586928</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:39 UTC
+    </footer>
+</body>
+</html>

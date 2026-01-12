@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issue with -g &quot;!dirname/&quot; when the CWD is &quot;dirname&quot; - BurntSushi/ripgrep #1764</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Issue with -g &quot;!dirname/&quot; when the CWD is &quot;dirname&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1764">#1764</a>
+        opened by <a href="https://github.com/twmr">@twmr</a>
+        on 2020-12-19 11:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/twmr">@twmr</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 12.1.1 (rev 7cb211378a)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p><code>sudo dpkg -i ripgrep_12*.deb </code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p><code>Ubuntu 19.10</code></p>
+<h4>Describe your bug.</h4>
+<p>If a glob pattern and a root directory is passed to <code>rg</code>, the ignored files depend on the current working directory.</p>
+<h4>Why do I care?</h4>
+<p>I'm using an emacs pkg called <code>dumb-jump</code>, that executes <code>rg</code> in the directory of the currently visited file and not in the project root. The project root is always passed as the last parameter to <code>rg</code>. <code>dumb-jump</code> allows to pass additional parameter to ripgrep, which I need because I need to ignore large directories that make ripgrep slow.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<pre><code class="language-bash">#!/bin/bash
+set -x
+
+rm -rf /tmp/foo
+
+mkdir -p /tmp/foo/to-be-ignored
+mkdir /tmp/foo/dir1
+
+touch /tmp/foo/to-be-ignored/a
+touch /tmp/foo/dir1/d
+
+#### setup done ####
+
+cd /tmp/foo/to-be-ignored
+# no output expected:  BUG
+rg --files -g '!to-be-ignored/' /tmp/foo | grep to-be-ignored
+
+cd /tmp/foo/dir1
+# no output expected:  OK
+rg --files -g '!to-be-ignored/' /tmp/foo | grep to-be-ignored
+
+cd /tmp/foo
+# no output expected:  OK
+rg --files -g '!to-be-ignored/' /tmp/foo | grep to-be-ignored
+
+
+cd /tmp/foo/to-be-ignored
+# no output expected:  OK
+rg --files -g '!dir1/' /tmp/foo | grep dir1
+
+cd /tmp/foo/dir1
+# no output expected:  BUG
+rg --files -g '!dir1/' /tmp/foo | grep dir1
+
+cd /tmp/foo
+# no output expected:  OK
+rg --files -g '!dir1/' /tmp/foo | grep dir1
+</code></pre>
+<h4>What is the actual behavior?</h4>
+<pre><code>+ mkdir -p /tmp/foo/to-be-ignored
++ mkdir /tmp/foo/dir1
++ touch /tmp/foo/to-be-ignored/a
++ touch /tmp/foo/dir1/d
++ cd /tmp/foo/to-be-ignored
++ rg --files -g '!to-be-ignored/' /tmp/foo
++ grep to-be-ignored
+/tmp/foo/to-be-ignored/a
++ cd /tmp/foo/dir1
++ rg --files -g '!to-be-ignored/' /tmp/foo
++ grep to-be-ignored
++ cd /tmp/foo
++ rg --files -g '!to-be-ignored/' /tmp/foo
++ grep to-be-ignored
++ cd /tmp/foo/to-be-ignored
++ grep dir1
++ rg --files -g '!dir1/' /tmp/foo
++ cd /tmp/foo/dir1
++ grep dir1
++ rg --files -g '!dir1/' /tmp/foo
+/tmp/foo/dir1/d
++ cd /tmp/foo
++ rg --files -g '!dir1/' /tmp/foo
++ grep dir1
+</code></pre>
+<p>If the current-working directory is the same as the ignored directory passed to <code>-g</code>, then the glob pattern doesn't work.</p>
+<h4>What is the expected behavior?</h4>
+<p>In all the <code>rg</code> calls in the above bash script, I don't expect any output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2021-06-01 00:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:17 UTC
+    </footer>
+</body>
+</html>

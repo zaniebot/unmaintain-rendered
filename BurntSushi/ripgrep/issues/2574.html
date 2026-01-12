@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incomplete matches when using the `--word-regexp` flag - BurntSushi/ripgrep #2574</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incomplete matches when using the <code>--word-regexp</code> flag</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2574">#2574</a>
+        opened by <a href="https://github.com/ilia-cy">@ilia-cy</a>
+        on 2023-07-31 06:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ilia-cy">@ilia-cy</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 13.0.0
+-SIMD -AVX (compiled)</p>
+<h4>How did you install ripgrep?</h4>
+<p><code>wget https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz</code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Mac and Linux</p>
+<h4>Describe your bug.</h4>
+<p>According to the manual:</p>
+<pre><code>-w, --word-regexp
+            Only show matches surrounded by word boundaries. This is roughly equivalent to
+            putting \b before and after all of the search patterns.
+</code></pre>
+<p>I'm using this text as a sample file:</p>
+<pre><code>some.domain.com
+some.domain.com/x
+some.domain.com
+</code></pre>
+<p>And here is some very naive regex that searches for &quot;domains&quot; (not really, but it is enough to show the problem):
+<code>&quot;([\w]+[.])*domain[.](\w)+</code></p>
+<p>Running this regex with the <code>-w</code> flag (<code>rg -w &quot;([\w]+[.])*domain[.](\w)+&quot;</code>) matches the first and third strings properly (<code>some.domain.com</code>), but for the second one <strong>starts capturing from the second char onwards</strong>, meaning it matches <code>ome.domain.com</code>.</p>
+<p>If I change the execution, remove the <code>-w</code> flag and wrap the regex with <code>\b</code> (<code>rg &quot;\b([\w]+[.])*domain[.](\w)+\b&quot;</code>), then all lines are matched properly (<code>some.domain.com</code> is matched).</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>Explained above.</p>
+<h4>What is the actual behavior?</h4>
+<p>https://gist.github.com/ilia-cy/396f43f57057e42723d4a3dc87d4e994
+The matches aren't shown here because they are highlighted in the terminal, so i'm adding a screenshot:</p>
+<img width="270" alt="image" src="https://github.com/BurntSushi/ripgrep/assets/60312091/04a73a38-4829-4c16-8497-9f53a5219ac5">
+
+<h4>What is the expected behavior?</h4>
+<p>I would expect that the flag usage would work similarly as wrapping the pattern with <code>\b</code> (as the manual indicates), so that all the <code>some.domain.com</code> instances will be matched.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2023-07-31 11:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-07-31 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-31 12:51</div>
+            <div class="timeline-body"><p>Nice find! This is now fixed on master.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:42 UTC
+    </footer>
+</body>
+</html>

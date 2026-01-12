@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipe causes panic - BurntSushi/ripgrep #22</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Pipe causes panic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/22">#22</a>
+        opened by <a href="https://github.com/mlsteele">@mlsteele</a>
+        on 2016-09-23 17:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mlsteele">@mlsteele</a></div>
+            <div class="timeline-body"><p>Running <code>rg --help | echo</code> causes a panic. Not that this is a particularly useful thing to do anyway. ;) This only happens for <code>--help</code>, works fine when searching.</p>
+<pre><code>$ rg --version
+0.1.16
+$ RUST_BACKTRACE=1 rg --help | echo
+
+thread 'main' panicked at 'failed printing to stdout: Broken pipe (os error 32)', ../src/libstd/io/stdio.rs:617
+stack backtrace:
+   1:        0x1034311eb - std::sys::backtrace::tracing::imp::write::h46e546df6e4e4fe6
+   2:        0x1034333ba - std::panicking::default_hook::_$u7b$$u7b$closure$u7d$$u7d$::h077deeda8b799591
+   3:        0x103432fea - std::panicking::default_hook::heb8b6fd640571a4f
+   4:        0x103425a68 - std::panicking::rust_panic_with_hook::hd7b83626099d3416
+   5:        0x103433996 - std::panicking::begin_panic::h941ea76fc945d925
+   6:        0x1034268d8 - std::panicking::begin_panic_fmt::h30280d4dd3f149f5
+   7:        0x10342bdb2 - std::io::stdio::_print::h91aef6f665f00d62
+   8:        0x103392ff2 - docopt::dopt::Error::exit::had75b1255cfb9a0a
+   9:        0x10334003f - rg::main::h6a22bacbbfd7cdf6
+  10:        0x103432bad - std::panicking::try::call::hca715a47aa047c49
+  11:        0x1034339eb - __rust_maybe_catch_panic
+  12:        0x1034329d1 - std::rt::lang_start::h162055cb2e4b9fe7
+[1]    69118 abort      RUST_BACKTRACE=1 rg --help
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/houshuang">@houshuang</a> on 2016-09-23 19:43</div>
+            <div class="timeline-body"><p>Confirmed. Version 0.1.15, OSX (binary from site).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2016-09-24 02:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 02:18</div>
+            <div class="timeline-body"><p>Bah, yup, bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-09-24 23:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mlsteele">@mlsteele</a> on 2019-02-20 20:59</div>
+            <div class="timeline-body"><p>Sorry it's back. I think the panic is <a href="https://github.com/clap-rs/clap/blob/master/src/errors.rs#L401">here</a> now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-02-20 21:05</div>
+            <div class="timeline-body"><p>Please provide a reproduction.</p>
+<p>On Wed, Feb 20, 2019, 15:59 Miles Steele &lt;notifications@github.com wrote:</p>
+<blockquote>
+<p>Sorry it's back. I think the panic is here
+<a href="https://github.com/clap-rs/clap/blob/master/src/errors.rs#L401">https://github.com/clap-rs/clap/blob/master/src/errors.rs#L401</a> now.</p>
+<p>—
+You are receiving this because you modified the open/close state.
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/BurntSushi/ripgrep/issues/22#issuecomment-465751769">https://github.com/BurntSushi/ripgrep/issues/22#issuecomment-465751769</a>,
+or mute the thread
+<a href="https://github.com/notifications/unsubscribe-auth/AAb34uMztCrT7_1bT0H4PdPtZLGWW2t2ks5vPbc-gaJpZM4KFPHu">https://github.com/notifications/unsubscribe-auth/AAb34uMztCrT7_1bT0H4PdPtZLGWW2t2ks5vPbc-gaJpZM4KFPHu</a>
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mlsteele">@mlsteele</a> on 2019-02-20 21:15</div>
+            <div class="timeline-body"><pre><code>$ git rev-parse HEAD
+d9cf05ad50d976d55e2c5e1234fa3d03aad4bd66
+$ export RUST_BACKTRACE=1
+$ cargo run --help | grep
+usage: grep [-abcDEFGHhIiJLlmnOoqRSsUVvwxZ] [-A num] [-B num] [-C[num]]
+        [-e pattern] [-f file] [--binary-files=value] [--color=when]
+        [--context[=num]] [--directories=action] [--label] [--line-buffered]
+        [--null] [pattern] [file ...]
+thread 'main' panicked at 'Error writing Error to stdout: Os { code: 32, kind: BrokenPipe, message: &quot;Broken pipe&quot; }', src/libcore/result.rs:997:5
+stack backtrace:
+   0: std::sys::unix::backtrace::tracing::imp::unwind_backtrace
+   1: std::sys_common::backtrace::_print
+   2: std::panicking::default_hook::{{closure}}
+   3: std::panicking::default_hook
+   4: std::panicking::rust_panic_with_hook
+   5: std::panicking::continue_panic_fmt
+   6: rust_begin_unwind
+   7: core::panicking::panic_fmt
+   8: core::result::unwrap_failed
+   9: clap::errors::Error::exit
+  10: cargo::exit_with_error
+  11: cargo::main
+  12: std::rt::lang_start::{{closure}}
+  13: std::panicking::try::do_call
+  14: __rust_maybe_catch_panic
+  15: std::rt::lang_start_internal
+  16: main
+$ sw_vers
+ProductName:    Mac OS X
+ProductVersion: 10.14.2
+BuildVersion:   18C54
+$ cargo --version
+cargo 1.34.0-nightly (865cb7010 2019-02-10)
+$ rustc --version
+rustc 1.34.0-nightly (eac09088e 2019-02-15)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-02-20 21:21</div>
+            <div class="timeline-body"><p>Why are you using <code>cargo run</code>? What happens when you use the binary directly? I would probably expect that bug to be in Cargo, not ripgrep. That --help flag is being given to Cargo. To give it to ripgrep, you would need <code>cargo run -- --help</code> I think.</p>
+<p>(This is why providing a reproduction is always important.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-02-20 21:23</div>
+            <div class="timeline-body"><p>Yes, that backtrace points to Cargo, not ripgrep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mlsteele">@mlsteele</a> on 2019-02-20 21:42</div>
+            <div class="timeline-body"><p>Whoops. I was only using cargo (incorrectly) because I cloned the repo to poke around after seeing it another way.</p>
+<h3>cargo install</h3>
+<p>This is how I've been using ripgrep normally. As you can see it's nondeterministic but mostly panics.</p>
+<pre><code>$ cargo install ripgrep --force
+...
+   Replacing /Users/miles/.cargo/bin/rg
+$ ~/.cargo/bin/rg --version
+ripgrep 0.10.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+$ ~/.cargo/bin/rg --help | grep
+usage: grep [-abcDEFGHhIiJLlmnOoqRSsUVvwxZ] [-A num] [-B num] [-C[num]]
+        [-e pattern] [-f file] [--binary-files=value] [--color=when]
+        [--context[=num]] [--directories=action] [--label] [--line-buffered]
+        [--null] [pattern] [file ...]
+$ ~/.cargo/bin/rg --help | grep
+usage: grep [-abcDEFGHhIiJLlmnOoqRSsUVvwxZ] [-A num] [-B num] [-C[num]]
+        [-e pattern] [-f file] [--binary-files=value] [--color=when]
+        [--context[=num]] [--directories=action] [--label] [--line-buffered]
+        [--null] [pattern] [file ...]
+thread 'main' panicked at 'Error writing Error to stdout: Os { code: 32, kind: BrokenPipe, message: &quot;Broken pipe&quot; }', src/libcore/result.rs:997:5
+stack backtrace:
+   0: std::sys::unix::backtrace::tracing::imp::unwind_backtrace
+   1: std::sys_common::backtrace::_print
+   2: std::panicking::default_hook::{{closure}}
+   3: std::panicking::default_hook
+   4: std::panicking::rust_panic_with_hook
+   5: std::panicking::continue_panic_fmt
+   6: rust_begin_unwind
+   7: core::panicking::panic_fmt
+   8: core::result::unwrap_failed
+   9: clap::errors::Error::exit
+  10: clap::app::App::get_matches
+  11: rg::args::Args::parse
+  12: rg::main
+  13: std::rt::lang_start::{{closure}}
+  14: std::panicking::try::do_call
+  15: __rust_maybe_catch_panic
+  16: std::rt::lang_start_internal
+  17: main
+</code></pre>
+<h3>github download</h3>
+<p>https://github.com/BurntSushi/ripgrep/releases</p>
+<pre><code>$ ~/Downloads/ripgrep-0.10.0-x86_64-apple-darwin/rg --version
+ripgrep 0.10.0 (rev 8a7db1a918)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+$ ~/Downloads/ripgrep-0.10.0-x86_64-apple-darwin/rg --help | grep
+usage: grep [-abcDEFGHhIiJLlmnOoqRSsUVvwxZ] [-A num] [-B num] [-C[num]]
+        [-e pattern] [-f file] [--binary-files=value] [--color=when]
+        [--context[=num]] [--directories=action] [--label] [--line-buffered]
+        [--null] [pattern] [file ...]
+thread 'main' panicked at 'Error writing Error to stdout: Os { code: 32, kind: BrokenPipe, message: &quot;Broken pipe&quot; }', libcore/result.rs:983:5
+stack backtrace:
+   0: &lt;unknown&gt;
+   1: &lt;unknown&gt;
+   2: &lt;unknown&gt;
+   3: &lt;unknown&gt;
+   4: &lt;unknown&gt;
+   5: &lt;unknown&gt;
+   6: &lt;unknown&gt;
+   7: &lt;unknown&gt;
+   8: &lt;unknown&gt;
+   9: &lt;unknown&gt;
+  10: &lt;unknown&gt;
+  11: &lt;unknown&gt;
+  12: &lt;unknown&gt;
+  13: &lt;unknown&gt;
+  14: &lt;unknown&gt;
+  15: &lt;unknown&gt;
+  16: &lt;unknown&gt;
+  17: &lt;unknown&gt;
+</code></pre>
+<h3>cargo run</h3>
+<p>fwiw <code>cargo run -- --help | grep</code> does not panic and <code>cargo run -- --help</code> outputs ripgrep's help not cargo's.</p>
+<pre><code>$ git rev-parse HEAD
+d9cf05ad50d976d55e2c5e1234fa3d03aad4bd66
+$ cargo run -- --help | grep
+usage: grep [-abcDEFGHhIiJLlmnOoqRSsUVvwxZ] [-A num] [-B num] [-C[num]]
+        [-e pattern] [-f file] [--binary-files=value] [--color=when]
+        [--context[=num]] [--directories=action] [--label] [--line-buffered]
+        [--null] [pattern] [file ...]
+    Finished dev [unoptimized + debuginfo] target(s) in 0.35s
+     Running `target/debug/rg --help`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-02-20 22:39</div>
+            <div class="timeline-body"><p>There hasn't been a release since this was fixed on master. Try compiling a recent checkout instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cj">@cj</a> on 2019-03-20 05:20</div>
+            <div class="timeline-body"><p>@BurntSushi I am having the same issue even after building from master:</p>
+<pre><code>cj-osx ~/src/ripgrep ➤ 0913972|master✓
+0:18 ± : ./target/release/rg --version                                            ⏎ [16d7h42m]
+ripgrep 0.10.0 (rev 0913972104)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cj">@cj</a> on 2019-03-20 05:37</div>
+            <div class="timeline-body"><h3>Steps to reproduce:</h3>
+<ul>
+<li>cargo install devicon-lookup</li>
+<li>cd ~</li>
+<li>rg --files --no-ignore --hidden --follow --no-messages --glob &quot;&quot; | devicon-lookup | grep</li>
+</ul>
+<pre><code>cj-osx ~/apps
+0:33 ◯ : rg --files --no-ignore --hidden --follow --no-messages --glob &quot;&quot; | devicon-lookup | grep
+usage: grep [-abcDEFGHhIiJLlmnOoqRSsUVvwxZ] [-A num] [-B num] [-C[num]]
+        [-e pattern] [-f file] [--binary-files=value] [--color=when]
+        [--context[=num]] [--directories=action] [--label] [--line-buffered]
+        [--null] [pattern] [file ...]
+thread 'main' panicked at 'failed printing to stdout: Broken pipe (os error 32)', libstd/io/stdio.rs:700:9
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-03-20 11:01</div>
+            <div class="timeline-body"><p>@cj Thanks for the report, but that's unfortunately not a valid reproduction. The panic is coming from <code>devicon-lookup</code>, not ripgrep.</p>
+<p>Compare:</p>
+<pre><code>$ RUST_BACKTRACE=1 rg --files --no-ignore --hidden --follow --no-messages --glob '' | devicon-lookup | grep
+Usage: grep [OPTION]... PATTERNS [FILE]...
+Try 'grep --help' for more information.
+thread 'main' panicked at 'failed printing to stdout: Broken pipe (os error 32)', src/libstd/io/stdio.rs:743:9
+note: Run with `RUST_BACKTRACE=1` environment variable to display a backtrace.
+</code></pre>
+<p>with</p>
+<pre><code>$ rg --files --no-ignore --hidden --follow --no-messages --glob '' | RUST_BACKTRACE=1 devicon-lookup | grep
+Usage: grep [OPTION]... PATTERNS [FILE]...
+Try 'grep --help' for more information.
+thread 'main' panicked at 'failed printing to stdout: Broken pipe (os error 32)', src/libstd/io/stdio.rs:743:9
+stack backtrace:
+   0: std::sys::unix::backtrace::tracing::imp::unwind_backtrace
+             at src/libstd/sys/unix/backtrace/tracing/gcc_s.rs:39
+   1: std::sys_common::backtrace::_print
+             at src/libstd/sys_common/backtrace.rs:71
+   2: std::panicking::default_hook::{{closure}}
+             at src/libstd/sys_common/backtrace.rs:59
+             at src/libstd/panicking.rs:197
+   3: std::panicking::default_hook
+             at src/libstd/panicking.rs:211
+   4: std::panicking::rust_panic_with_hook
+             at src/libstd/panicking.rs:474
+   5: std::panicking::continue_panic_fmt
+             at src/libstd/panicking.rs:381
+   6: std::panicking::begin_panic_fmt
+             at src/libstd/panicking.rs:336
+   7: std::io::stdio::_print
+             at src/libstd/io/stdio.rs:743
+             at src/libstd/io/stdio.rs:753
+   8: devicon_lookup::main
+   9: std::rt::lang_start::{{closure}}
+  10: std::panicking::try::do_call
+             at src/libstd/rt.rs:49
+             at src/libstd/panicking.rs:293
+  11: __rust_maybe_catch_panic
+             at src/libpanic_unwind/lib.rs:87
+  12: std::rt::lang_start_internal
+             at src/libstd/panicking.rs:272
+             at src/libstd/panic.rs:388
+             at src/libstd/rt.rs:48
+  13: main
+  14: __libc_start_main
+  15: _start
+</code></pre>
+<p>If the bug were in ripgrep, then the first example would have shown a backtrace. In the second example, you can see at <code>8</code> that the panic passes through <code>devicon_lookup::main</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cj">@cj</a> on 2019-03-20 16:56</div>
+            <div class="timeline-body"><p>@BurntSushi that makes sense -- I will open a ticket in their repo.</p>
+<p>Thank you for your response and taking a look!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/coreyja">@coreyja</a> on 2019-03-21 14:40</div>
+            <div class="timeline-body"><p>@BurntSushi Thanks for the investigation! Sorry for causing noise on your repo and thanks so much for RipGrep!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:37 UTC
+    </footer>
+</body>
+</html>

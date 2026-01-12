@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combined options - BurntSushi/ripgrep #568</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Combined options</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/568">#568</a>
+        opened by <a href="https://github.com/dsciarra">@dsciarra</a>
+        on 2017-07-29 14:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dsciarra">@dsciarra</a></div>
+            <div class="timeline-body"><p>The following commands in the ripgrep root folder return different results.</p>
+<p><code>rg -rni hello</code>
+globset/src/glob.rs
+1166:    matches!(matchpat1, &quot;<em>ni.txt&quot;, &quot;ni.txt&quot;);
+1167:    matches!(matchpat2, &quot;</em>ni.txt&quot;, &quot;gareth_says_ni.txt&quot;);
+1168:    matches!(matchpat3, &quot;<em>ni.txt&quot;, &quot;some/path/to/ni.txt&quot;);
+1169:    matches!(matchpat4, &quot;</em>ni.txt&quot;, &quot;some\path\to\ni.txt&quot;);
+1170:    matches!(matchpat5, &quot;<em>ni.txt&quot;, &quot;/an/absolute/path/to/ni.txt&quot;);
+1171:    matches!(matchpat6, &quot;</em>some/path/to/ni.txt&quot;, &quot;some/path/to/ni.txt&quot;);
+1172:    matches!(matchpat7, &quot;<em>some/path/to/ni.txt&quot;,
+1173:             &quot;a/bigger/some/path/to/ni.txt&quot;);
+1223:    nmatches!(matchnot16, &quot;</em>ni.txt&quot;, &quot;ni.txt-and-then-some&quot;);
+1224:    nmatches!(matchnot17, &quot;<em>ni.txt&quot;, &quot;goodbye.txt&quot;);
+1225:    nmatches!(matchnot18, &quot;</em>some/path/to/ni.txt&quot;,
+1226:              &quot;some/path/to/ni.txt-and-then-some&quot;);
+1227:    nmatches!(matchnot19, &quot;*some/path/to/ni.txt&quot;,
+1228:              &quot;some/other/path/to/ni.txt&quot;);</p>
+<p>whereas</p>
+<p><code>rg -r -n -i hello</code>
+globset/src/glob.rs
+1166:    matches!(matchpat1, &quot;<em>hello.txt&quot;, &quot;hello.txt&quot;);
+1167:    matches!(matchpat2, &quot;</em>hello.txt&quot;, &quot;gareth_says_hello.txt&quot;);
+1168:    matches!(matchpat3, &quot;<em>hello.txt&quot;, &quot;some/path/to/hello.txt&quot;);
+1169:    matches!(matchpat4, &quot;</em>hello.txt&quot;, &quot;some\path\to\hello.txt&quot;);
+1170:    matches!(matchpat5, &quot;<em>hello.txt&quot;, &quot;/an/absolute/path/to/hello.txt&quot;);
+1171:    matches!(matchpat6, &quot;</em>some/path/to/hello.txt&quot;, &quot;some/path/to/hello.txt&quot;);
+1172:    matches!(matchpat7, &quot;<em>some/path/to/hello.txt&quot;,
+1173:             &quot;a/bigger/some/path/to/hello.txt&quot;);
+1223:    nmatches!(matchnot16, &quot;</em>hello.txt&quot;, &quot;hello.txt-and-then-some&quot;);
+1224:    nmatches!(matchnot17, &quot;<em>hello.txt&quot;, &quot;goodbye.txt&quot;);
+1225:    nmatches!(matchnot18, &quot;</em>some/path/to/hello.txt&quot;,
+1226:              &quot;some/path/to/hello.txt-and-then-some&quot;);
+1227:    nmatches!(matchnot19, &quot;*some/path/to/hello.txt&quot;,
+1228:              &quot;some/other/path/to/hello.txt&quot;);</p>
+<p>grep returns in both cases the same result.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-07-29 15:10</div>
+            <div class="timeline-body"><p>The <code>-r</code> option for <code>rg</code> doesn't work like the one for <code>grep</code>:</p>
+<pre><code>-r, --replace &lt;ARG&gt;                     
+        Replace every match with the string given when printing results. Neither this flag nor
+        any other flag will modify your files.
+        
+        Capture group indices (e.g., $5) and names (e.g., $foo) are supported in the replacement
+        string.
+        
+        Note that the replacement by default replaces each match, and NOT the entire line. To
+        replace the entire line, you should match the entire line.
+</code></pre>
+<p>So when you give it <code>rg -rni hello</code>, you're telling it to replace the string <code>hello</code> in the output by the string <code>ni</code>.</p>
+<p><code>rg -r -n -i hello</code> should work the same way, except it should replace <code>hello</code> by <code>-n</code>. The fact that it doesn't is a bug, probably in <code>clap</code> (the argument-handling library <code>rg</code> uses) — maybe #482.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-07-30 21:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:15 UTC
+    </footer>
+</body>
+</html>

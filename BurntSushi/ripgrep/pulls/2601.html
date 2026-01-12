@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ci: replace mips with powerpc64, aarch64 and s390x - BurntSushi/ripgrep #2601</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ci: replace mips with powerpc64, aarch64 and s390x</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/2601">#2601</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2023-08-29 02:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>We drop our MIPS target because it no longer works.<a href="https://github.com/rust-lang/regex/commit/c788378d6fe407f4774df98a78436cea5d98525b">1</a> We were previously using it as a means of testing ripgrep in a big endian environment. So to achieve that without MIPS, we test on powerpc64 and s390x. (No particular reason to do both, but why not.)</p>
+<p>We also add aarch64 as a proxy for at least ensuring everything works for the same architecture as Apple silicon. It's not a guarantee that everything works, but it seems better than nothing until we can actually test Apple silicon in CI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-08-29 02:43</div>
+            <div class="timeline-body"><p>This PR is a good example of why I generally dislike using tooling in CI that I don't control. Something about how <a href="https://github.com/cross-rs/cross">Cross</a> works changed and has cost me several hours of debugging this evening. I hit at least a few problems that are difficult for me to describe because I don't really understand them (and not all of which are necessarily Cross's fault), but the big one is that it looks like the <code>CROSS_RUNNER</code> environment variable is now <em>almost</em> useless. (It's still useful for detecting whether we're running under <code>cross</code>.) It, I believe, used to point to the <code>qemu</code> executable that one can use to run the cross compiled <code>rg</code> executable with inside of the Docker container. But now it just points to <code>qemu-user</code> in all of the images (except for native <code>x86_64</code>) and there is no <code>qemu-user</code> binary in the Docker image. So I had to do some detective work to figure out how exactly to invoke <code>qemu</code> so that I could run the <code>rg</code> executable for integration tests.</p>
+<p>If Cross didn't do so damn much and save so much work when it came to cross-compilation I'd drop it in a heart beat. It easily consumes the vast majority of the time I spend dealing with CI problems.</p>
+<p>Don't let anyone convince you that cross compilation is easy. It's <em>easier</em> because of Cross (a lot easier), but it isn't without its problems.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2023-08-29 02:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-08-29 02:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:10 UTC
+    </footer>
+</body>
+</html>

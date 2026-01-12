@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O_NOATIME ? - BurntSushi/ripgrep #1333</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>O_NOATIME ?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1333">#1333</a>
+        opened by <a href="https://github.com/lilydjwg">@lilydjwg</a>
+        on 2019-07-29 15:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lilydjwg">@lilydjwg</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 11.0.1 (rev 7ac95c1f50)
++SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>pacman</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Arch Linux.</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>Would ripgrep try to open files with <code>O_NOATIME</code> on Linux so it does not update access times? I want it because:</p>
+<ul>
+<li>it could save some disk writes</li>
+<li>access times are helpful to determine if I should delete / archive those files</li>
+</ul>
+<p>Currently ripgrep will update access times for all files in the search space, e.g. my workspace directory. I tend to use a much larger than necessary search space as ripgerp is so fast, but it will mark all files as recently visited.</p>
+<p>It's OK for me if this feature is behind an option because I mostly search my own files anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2019-07-29 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @BurntSushi on 2019-07-29 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-07-29 15:25</div>
+            <div class="timeline-body"><p>I would potentially be okay with this. Does <code>grep</code> has a similar feature? If not, do you know why not?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lilydjwg">@lilydjwg</a> on 2019-07-29 16:36</div>
+            <div class="timeline-body"><p>There was a <a href="https://lists.gnu.org/archive/html/bug-grep/2014-09/msg00011.html">thread</a> on that but grep did not get the option though. It seems that adding that option is not very trivial and atime is not very useful.</p>
+<p>Actually I didn't want this option when using grep, mostly because I didn't (and still don't) often do the <code>find | grep</code> combo. grep was so slow that I only grepped files from a single project (with <code>-r .</code>), while with ripgrep I tend to grep all my projects. (And now I only use grep for pipes or a single file unless ripgrep is unavailable on the system.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-07-29 16:57</div>
+            <div class="timeline-body"><p>Ah yeah, thanks for that link. It's helpful. In particular, it reminded me that this would require a lot of plumbing work. Given the current state of the world, this would actually require adding the relevant APIs to set <code>O_NOATIME</code> in the standard library directory traversal APIs, and then add the corresponding APIs to enable it in both <code>walkdir</code> and <code>ignore</code>. Then <code>grep-searcher</code> and probably ripgrep core would need to be updated to open files using that mode as well.</p>
+<p>Overall, this is a ton of work for a niche use case. I am in the process of rewriting <code>walkdir</code> such that it no longer depends on standard library APIs, which would probably make this significantly easier. But, it's still a lot of plumbing work and the rewrite itself will take quite a bit of time.</p>
+<p>So I'm going to close this for now, since it's unlikely to happen soon, and may not happen ever. Sorry. (It also sounds like you need special options enabled in <code>ext4</code> for this to be even useful in the first place.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-07-29 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">icebox</span> added by @BurntSushi on 2019-07-29 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2019-07-29 16:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lilydjwg">@lilydjwg</a> on 2019-07-30 05:03</div>
+            <div class="timeline-body"><p>OK, I didn't think there are so many libraries involved. I hope it can happen in the future then. And I don't need any special mount options to get a roughly correct atime (for ext4, zfs, xfs and btrfs; relatime is default).</p>
+<p>In the meantime maybe I'll get a fancy wrapper to mount the search space as <code>ro</code> :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-07-30 10:53</div>
+            <div class="timeline-body"><p>It's not necessarily about libraries, but about layers in the code. The work would be approximately same if ripgrep had no libraries and rolled everything itself. (With modifications to the standard library being an exception, since that would have to go through a review process, and something like this would probably require some careful API design.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lilydjwg">@lilydjwg</a> on 2020-01-28 11:21</div>
+            <div class="timeline-body"><p>Using private mounts seems to be harder than I thought and I've gone another way which uses a <code>LD_PRELOAD</code> hack: https://github.com/lilydjwg/open-noatime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-01-28 11:34</div>
+            <div class="timeline-body"><p>@lilydjwg Nice! If you want to add that to the FAQ in this repo, I'd be happy to link to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lilydjwg">@lilydjwg</a> on 2020-01-28 13:10</div>
+            <div class="timeline-body"><p>Yes, I'd like to, but please note that it's new and may have bugs.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:58 UTC
+    </footer>
+</body>
+</html>

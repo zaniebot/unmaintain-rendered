@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ignore crate doesn't handle common recursive directory ignore pattern - BurntSushi/ripgrep #1715</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ignore crate doesn't handle common recursive directory ignore pattern</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1715">#1715</a>
+        opened by <a href="https://github.com/jazzdan">@jazzdan</a>
+        on 2020-10-22 17:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jazzdan">@jazzdan</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>master branch @ <code>c777e2cd5766128e11f7fd5dffd79e1ba8a753fb</code></p>
+<h4>How did you install ripgrep?</h4>
+<p>n/a, I was using the ignore crate as a library.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Tried on both macOS catalina and Windows Subsystem for Linux v2 running Ubuntu:</p>
+<pre><code>$ uname -a
+Linux MYPC 4.19.104-microsoft-standard #1 SMP Wed Feb 19 06:37:35 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux
+</code></pre>
+<h4>Describe your bug.</h4>
+<p>There's a common way to ignore top level directories in <code>.gitignore</code> files: simply put the name of the directory in the <code>.gitignore</code> followed by a <code>/</code>. For example, if I wanted to ignore a directory called <code>target</code> and all of the files in it I would put <code>target/</code> in my <code>.gitignore</code> file. You can see an example of this in <a href="https://github.com/github/gitignore/blob/master/Rust.gitignore#L1-L4">GitHub's Rust <code>.gitignore</code></a>.</p>
+<p>Unfortunately this doesn't work in the ignore crate's handling of <code>.gitignore</code>.</p>
+<p>I understand that ripgrep doesn't want to exactly handle all of <code>.gitignore</code>'s edgecases (I've written this code in Go and ... it's really hard) but this is a pretty common case and I didn't see it documented in issues here. That said I completely understand if this is a WONTFIX issue. :)</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>I wrote <a href="https://github.com/jazzdan/ripgrep/blob/b1ed7e01a9b004f8ecae540830d4050ecdb5575d/crates/ignore/src/gitignore.rs#L707">a test case for the ignore crate demonstrating this</a>.</p>
+<h4>What is the actual behavior?</h4>
+<p>With this <code>.gitignore</code> file:</p>
+<pre><code class="language-gitignore">target/
+</code></pre>
+<p>A change to a path like <code>./target/tcr.d</code> is not marked as ignored.</p>
+<h4>What is the expected behavior?</h4>
+<p>With this <code>.gitignore</code> file:</p>
+<pre><code class="language-gitignore">target/
+</code></pre>
+<p>A change to a path like <code>./target/tcr.d</code> should be ignored.</p>
+<p>Thank you for making ripgrep and all of these great libraries!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-10-22 17:41</div>
+            <div class="timeline-body"><p>Looks correct to me. The pattern <code>target/</code> will ignore the path <code>target</code>. So when using ignore for recursive traversal, it should ignore the <code>target</code> directory before descending into it. If you aren't doing recursive search, then you may need to match each parent path up to the level at which the gitignore file resides.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jazzdan">@jazzdan</a> on 2020-10-22 17:52</div>
+            <div class="timeline-body"><p>Ah, I might be misunderstanding how to use the library then. <a href="https://github.com/jazzdan/tcr/blob/master/src/ignore.rs#L32">Here's the code I wrote</a>, here's the part where I use the ignore crate:</p>
+<pre><code class="language-rust">match &amp;self.gitignore {
+  Some(gi) =&gt; {
+    let is_dir = event.is_dir;
+    return paths.iter().all(|p| gi.matched(p, is_dir).is_ignore());
+  }
+  None =&gt; {}
+ }
+</code></pre>
+<p>Where <code>p</code> is a path: I would expect like <code>matched('target/tcr.d', false).is_ignore() == true</code>. But from what you're saying it sounds like it won't check that <code>target/tcr.d</code> is a child of <code>target/</code> and so it will return false. Whereas if I just put <code>target/**</code> in my <code>.gitignore</code> then it will do what I expect.</p>
+<p>Is there a way for the ignore crate to do the kind of parent matching that I'm describing?</p>
+<p>By the way, I'm guessing that <code>target/</code> works with <code>git</code> because of some intricacy for how <code>git</code> handles files? Anyway, not important, feel free to close this issue as it seems I have a misunderstanding of the API.</p>
+<p>Thanks for the quick response and for all this great code!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-10-22 18:21</div>
+            <div class="timeline-body"><p>The only way to do that with the ignore crate is to iterate over parent paths.</p>
+<p>I think people probably don't realize just how limited the ignore crate is. If you aren't doing filtered recursive directory traversal, then <em>maybe</em> parts of the crate will be useful to you, but you'll likely need to work hard to make it come together.</p>
+<blockquote>
+<p>By the way, I'm guessing that target/ works with git because of some intricacy for how git handles files?</p>
+</blockquote>
+<p>Yeah git handles ignore rules pretty differently than ripgrep. Obviously I did my best to make them match, but I did that in the context of recursive directory traversal because that was the problem I needed to solve. But for example, if a file matches a gitignore pattern but is committed, then git won't ignore but ripgrep will.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jazzdan">@jazzdan</a> on 2020-10-22 19:10</div>
+            <div class="timeline-body"><p>Gotcha, thanks @BurntSushi! I think I will implement the recursive directory traversal myself, that sounds like a fun project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jazzdan on 2020-10-22 19:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-10-22 19:20</div>
+            <div class="timeline-body"><p>Errm, to clarify, the ignore crate provides recursive directory traversal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jazzdan">@jazzdan</a> on 2020-10-23 14:28</div>
+            <div class="timeline-body"><p>Ah! Yeah you just need to use <code>matched_path_or_any_parents</code> it seems. Thanks again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-10-23 14:31</div>
+            <div class="timeline-body"><p>Oh cool. I forgot about that API!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:15 UTC
+    </footer>
+</body>
+</html>

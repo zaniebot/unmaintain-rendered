@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect line numbering when using multiline and replacing by noncontiguous capture groups - BurntSushi/ripgrep #1655</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect line numbering when using multiline and replacing by noncontiguous capture groups</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1655">#1655</a>
+        opened by <a href="https://github.com/dancingbug">@dancingbug</a>
+        on 2020-08-15 12:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dancingbug">@dancingbug</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 12.1.1
+-SIMD -AVX (compiled)
++SIMD -AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p><code>pacman -S ripgrep</code>
+(package version 12.1.1-1 from [community] repo)</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Arch Linux x86-64 5.7.4</p>
+<h4>Describe your bug.</h4>
+<p>When using -r with noncontiguous capture groups together with --multiline and -n, the output line numbers are reported incorrectly.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>run the following command:
+<code>seq 5 | rg -n --multiline -r '$1$3' '^(2)$(\n^.$)+(\n^5)'</code></p>
+<h4>What is the actual behavior?</h4>
+<p><code>seq 5 | rg -n --multiline -r '$1$3' '^(2)$(\n^.$)+(\n^5)'</code></p>
+<p>gives</p>
+<pre><code>2:2
+3:5
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>output should be one of</p>
+<pre><code>2:2
+4:5
+</code></pre>
+<pre><code>2:2
+5:5
+</code></pre>
+<pre><code>2:2
+4:
+5:5
+</code></pre>
+<p>depending on the desired semantics (which line should each character in the capture group <code>(\n^5)</code> be associated with?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-08-15 13:44</div>
+            <div class="timeline-body"><p>This looks correct to me. Or at least, as correct as one might expect. Line numbers and multi-line replacements don't really make a whole lot of sense. The replacement could insert an arbitrary number of new lines or remove an arbitrary number of new lines, and so creating a &quot;correct&quot; mapping seems impossible to me because it's not clear what &quot;correct&quot; would be. Here is perhaps a simpler example:</p>
+<pre><code>$ seq 8 | rg -n --multiline '(?s)(2).+(\n5)' -r '$1$2'
+2:2
+3:5
+</code></pre>
+<p>Or even:</p>
+<pre><code>$ seq 8 | rg -n --multiline '(?s)(2).+(\n5)|(7)' -r '$1$2$3'
+2:2
+3:5
+7:7
+</code></pre>
+<p>And things get even whackier when the replacement string contains new lines itself:</p>
+<pre><code>$ seq 8 | rg -n --multiline '(?s)(2).+(\n5)|(7)' -r '$1$2
+
+
+
+
+
+$3'
+2:2
+3:5
+4:
+5:
+6:
+7:
+8:
+9:
+7:
+8:
+9:
+10:
+11:
+12:
+13:7
+</code></pre>
+<p>What exactly should the correct output be here? I don't know. If you count the new lines in the original text as I think you want, then that falls over in the above example because the replacement will throw off the count. (You'd wind up with a non-increasing sequence of line numbers.) ripgrep counts new lines in this sort of case by simply starting from the number of the line in which the match starts and then incrementing the line number for each subsequent line that is <em>written</em> for that particular match.</p>
+<p>I'm pretty sure this is probably a <code>wontfix</code> bug. I could potentially be swayed to some other sort of behavior if a compelling use case were presented though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2020-08-15 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dancingbug">@dancingbug</a> on 2020-08-16 06:05</div>
+            <div class="timeline-body"><h3>Use case</h3>
+<p>My goal is to inline a range of lines that follow a marker into mentions of that marker, across an entire file hierarchy, using a unix command pipeline.</p>
+<p>In my approach, I want to use <code>rg</code> and some other commands to generate a list of identifier -&gt; line range associations.</p>
+<p>I need the start and end line numbers of the range.</p>
+<h3>Further details</h3>
+<p>I'm using this on files containing an uncommon serialization format that represents GUI objects hierarchically, but I'll use some toy examples to illustrate.</p>
+<p>My approach using <code>rg</code>,<code>cut</code>,<code>paste</code>, and <code>join</code>  might generate lines like</p>
+<pre><code>FileA.txt:34:MMM:FileB.txt:1000:1005:2200
+FileA.txt:35:NNN:FileB.txt:302:400:440
+</code></pre>
+<p>where the fields are</p>
+<pre><code>&lt;inline-destination-file&gt;:&lt;common match&gt;:&lt;inline-source-file&gt;:&lt;source-match-line&gt;:&lt;range-start-line&gt;:&lt;range-end-line&gt;
+</code></pre>
+<p>and where FileA.txt and FileB.txt might look like</p>
+<pre><code>  FileA.txt   line#     |   FileB.txt           line#
+  ---------   -----     |   ---------           -----
+  ...                   |   SectionNNN{           302
+  var MMM;       34     |   ...     
+  var NNN;       35     |     start_match         400
+  ...                   |   ...
+                        |     end_match           440
+                        |   ...
+                        |   }
+                        |   ...
+                        |   SectionMMM{          1000
+                        |   ...
+                        |     start_match        1005
+                        |   ...
+                        |     end_match          2200
+                        |   ...
+                        |   }
+                        |   ...
+</code></pre>
+<p>I think this illustrates that this could be quite useful for summarizing salient portions of hierarchical data, giving both line ranges and nesting information from one command while using fancy pcre2 lookaround criteria to include/exclude ranges in delimited contexts, approximating solutions to feature requests like https://github.com/BurntSushi/ripgrep/issues/282  and https://github.com/BurntSushi/ripgrep/issues/236</p>
+<h3>A more concrete  (but still contrived) example</h3>
+<p><code>seq -w 0 9999 | sed 'y/0123456789/abcdefghij/' &gt; data.txt</code>
+This fills <code>data.txt</code> with the sequence of all strings of length 4 over the characters <code>{abcdefghij}</code> in lexicographic ordering.</p>
+<p>Now to each match of the form <code>XYaa</code> (here X and Y match any word character), I want to associate the first range of lines starting/ending at <code>XYXY</code>/ <code>XYYX</code>, which is encountered after <code>XYaa</code></p>
+<pre><code>  rg -e '(?sxx: ((\w)([^a])aa\n) .*? (\2\3\2\3\n) .*? (\2\3\3\2\n) )'\
+  -r '@@$1$4$5' --pcre2 -I -n --multiline -- data.txt\
+| tail -n 15
+
+output:
+6801:@@giaa
+6802:gigi
+6803:giig
+6901:@@gjaa
+6902:gjgj
+6903:gjjg
+7801:@@hiaa
+7802:hihi
+7803:hiih
+7901:@@hjaa
+7902:hjhj
+7903:hjjh
+8901:@@ijaa
+8902:ijij
+8903:ijji
+</code></pre>
+<p>Here, the original line numbers are lost for the desired range in each match.</p>
+<p>I can actually already get what I want by naively using two invocations of <code>rg</code> in a pipeline:</p>
+<pre><code>  rg -e '.*' -I -n -- data.txt\
+| rg -r '@@$1$4$5' -e '(?sxx: (^\N+?(\w)([^a])aa\n) .*? (^\N+?\2\3\2\3\n) .*? (^\N+?\2\3\3\2\n) )' --pcre2 --multiline\
+| tail -n 15
+
+output:
+@@6801:giaa
+6869:gigi
+6887:giig
+@@6901:gjaa
+6970:gjgj
+6997:gjjg
+@@7801:hiaa
+7879:hihi
+7888:hiih
+@@7901:hjaa
+7980:hjhj
+7998:hjjh
+@@8901:ijaa
+8990:ijij
+8999:ijji
+
+</code></pre>
+<p>Which is less convenient and complicates the regex due to the added field in the input.</p>
+<p>My understanding of unix pipes is limited, but I wonder about the overhead of pipe related context switching.
+While trying to benchmark on an example using longer strings I ran into a PCRE 'match limit exceeded' error. I'll see if I can get that working.</p>
+<p>For an example of concatenating the associated lines and selecting parts of the result, pipe the above to</p>
+<pre><code>paste -d : - - - | cut -d : -f 1,2,3,5,8
+</code></pre>
+<h3>Alternative solution: a separate feature</h3>
+<p>I can imagine different features that would fit my use case.
+Of those, the one I personally find most pleasing would be to provide the user a means to print the line number of the first character that a given capture group captures.</p>
+<p>Then I could do something like <code>rg ... -r ':$@2:$2'</code>, without <code>-n</code>, where <code>$@2</code> gives the line number for the first character of capture group 2.</p>
+<p>Regarding earlier comments' examples, using this approach it would be very clear what the output is supposed to be since it is being constructed explicitly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2020-08-16 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-08-16 11:55</div>
+            <div class="timeline-body"><p>Thank you for elaborating. I really appreciate it. Unfortunately, I'm not convinced that your use case is really compelling enough to convince me to change how line numbers are handled in cases like this. To be honest, I think you would be better served by writing a dedicated tool to do what you want. That's probably what I would do anyway.</p>
+<p>ripgrep provides just the barest replacement support, and I will continue to resist adding features that enhance the replacement syntax. There are other tools more suited to that task.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-08-16 11:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:13 UTC
+    </footer>
+</body>
+</html>

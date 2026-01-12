@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add hyperlinks - BurntSushi/ripgrep #2322</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add hyperlinks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/2322">#2322</a>
+        opened by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a>
+        on 2022-10-02 21:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ltrzesniewski">@ltrzesniewski</a></div>
+            <div class="timeline-body"><p>This PR adds hyperlinks to the file paths for terminals which support it:</p>
+<p><img src="https://user-images.githubusercontent.com/7913492/193475900-7fbd250b-7b1f-4c52-98cd-56fe316a082f.png" alt="image" /></p>
+<p>It's just a draft for now, there's still work to do, but I'm opening this in case anyone would like to provide some early feedback. I'm still new to Rust, so this surely looks like garbage right now, but I'd like to make the code more idiomatic, bring it to the adequate speed and quality level, and learn in the process.</p>
+<p>I ~still need to add~ added hostnames on Unix for better SSH support, but that <a href="https://github.com/BurntSushi/ripgrep/issues/665#issuecomment-840735760">requires approval</a> from @BurntSushi.</p>
+<p>This depends on https://github.com/BurntSushi/termcolor/pull/65, ~which will certainly need to be rewritten (because of the clunky API it currently introduces), or at the very least enhanced with stuff like <code>supports_hyperlinks()</code>.~</p>
+<p>Fixes #665</p>
+<hr />
+<p>This is what I have in mind for this PR:</p>
+<ul>
+<li>On Unix: <code>file://hostname/path/file.txt</code></li>
+<li>On Windows: <code>file:///C:/path/file.txt</code></li>
+<li>On WSL: <code>file://wsl$/distribution/path/file.txt</code></li>
+</ul>
+<p>Hostnames on Unix would be useful for using ripgrep through SSH (SSH is mostly used to connect to Unix destinations). They could also be added on Windows after https://github.com/microsoft/terminal/issues/14116 is fixed.</p>
+<hr />
+<p>Preview builds can be found <a href="https://github.com/ltrzesniewski/ripgrep/actions/workflows/preview.yml?query=is%3Asuccess">here</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @ltrzesniewski on 2022-10-02 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kovidgoyal">@kovidgoyal</a> on 2022-10-03 08:09</div>
+            <div class="timeline-body"><p>I suggest you look at https://sw.kovidgoyal.net/kitty/kittens/hyperlinked_grep/ In particular</p>
+<p>By default, this kitten adds hyperlinks for several parts of ripgrep output: the per-file header, match context lines, and match lines. You can control which items are linked with a --kitten hyperlink flag. For example, --kitten hyperlink=matching_lines will only add hyperlinks to the match lines. --kitten hyperlink=file_headers,context_lines will link file headers and context lines but not match lines. --kitten hyperlink=none will cause the command line to be passed to directly to rg so no hyperlinking will be performed. --kitten hyperlink may be specified multiple times.</p>
+<p>I am pretty sure users will want to customize what parts of the output are hyperlinked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2022-10-03 09:20</div>
+            <div class="timeline-body"><p>I thought about adding a <code>--hyperlink</code> command line option, but wasn't sure exactly what options I should put there. That's something that should be discussed I guess.</p>
+<p>It looks like hyperlinked_grep is able to point the editor directly at the matched line, which is <em>awesome</em>.  Unfortunately, that doesn't seem to be possible to achieve in a <em>standard</em> way with just the <code>file://</code> protocol alone. I took a quick glance at your code, and you're adding the line number in the fragment part of the URI (<code>file://host/file#line</code>), which, you guessed it... doesn't work on Windows (the file won't even open). 😭</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kovidgoyal">@kovidgoyal</a> on 2022-10-03 09:59</div>
+            <div class="timeline-body"><p>On Mon, Oct 03, 2022 at 02:20:23AM -0700, Lucas Trzesniewski wrote:</p>
+<blockquote>
+<p>I thought about adding a <code>--hyperlink</code> command line option, but wasn't sure what exactly what options I should put there. That's something that should be discussed I guess.</p>
+</blockquote>
+<p>Yes, indeed, it should be discussed.</p>
+<blockquote>
+<p>It looks like hyperlinked_grep is able to point the editor directly at the matched line, which is <em>awesome</em>.  Unfortunately, that doesn't seem to be possible to achieve in a <em>standard</em> way with just the <code>file://</code> protocol alone. I took a quick glance at your code, and you're adding the line number in the fragment part of the URI (<code>file://host/file#line</code>), which, you guessed it... doesn't work on Windows. 😭</p>
+</blockquote>
+<p>I feel for you, maybe come over to the dark side :)) On a serious note,
+there is nothing preventing a windows based terminal from parsing the
+fragment part of the URL and either discarding it or using it, as it
+sees fit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2022-10-03 12:47</div>
+            <div class="timeline-body"><blockquote>
+<p>I feel for you, maybe come over to the dark side :))</p>
+</blockquote>
+<p>I have WSL on Windows, so I'm getting the best of both worlds. 😜</p>
+<blockquote>
+<p>On a serious note, there is nothing preventing a windows based terminal from parsing the fragment part of the URL and either discarding it or using it, as it sees fit.</p>
+</blockquote>
+<p>That's not really how things work on Windows, and I don't think Microsoft would change their terminal that way. This would need special-casing the <code>file://</code> protocol in the terminal, enhancing it with <code>#line</code> support, then adding configurable apps by file types with custom command line argument patterns. They won't do such a thing.</p>
+<p>Let me explain: URIs are handled by the shell (a system component), and applications can be associated with URI schemes. For instance, <code>https://</code> would be associated with the web browser. So, the shell decides how to handle a particular URI, not the terminal app. That way, you get an integrated UI experience which is consistent across applications. I'm not sure how exactly <code>file://</code> is set up, but it must be tied to something that decodes the URI to a file path, and chooses the application to open based on the file extension, which is configurable in the system settings. But this configuration doesn't let you specify additional parameters to pass to the target application, such as the file line.</p>
+<p>This could be worked around with a custom URI scheme such as <code>ripgrep://</code>, but I'm pretty sure that wouldn't be accepted. 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kovidgoyal">@kovidgoyal</a> on 2022-10-03 13:27</div>
+            <div class="timeline-body"><p>On Mon, Oct 03, 2022 at 05:47:38AM -0700, Lucas Trzesniewski wrote:</p>
+<blockquote>
+<p>That's not really how things work on Windows, and I don't think Microsoft would change their terminal that way. This would need special-casing the <code>file://</code> protocol in the terminal, enhancing it with <code>#line</code> support, then adding configurable apps by file types with custom command line argument patterns. They won't do such a thing.</p>
+</blockquote>
+<p>No, they can just strip the fragment from the URL before passing it to
+the shell. If they want to remain backwards that's their lookout, I don't
+see why the rest of the world should suffer for it.</p>
+<blockquote>
+<p>Let me explain: URIs are handled by the shell (a system component), and applications can be associated with URI schemes. For instance, <code>https://</code> would be associated with the web browser. So, the shell decides how to handle a particular URI, not the terminal app. That way, you get an integrated UI experience which is consistent across applications. I'm not sure how exactly <code>file://</code> is set up, but it must be tied to something that decodes the URI to a file path, and chooses the application to open based on the file extension, which is configurable in the system settings. But this configuration doesn't let you specify additional parameters to pass to the target application, such as the file line.</p>
+</blockquote>
+<p>Umm, I am pretty sure if you pass a http:// url with a fragment via
+the shell, the browser will handle the fragment just fine. I dont see
+why the shell cant pass file:// urls with fragments to applications, all
+it requires is an extra check box in their configuration UI, to indicate
+to the shell not to modify file urls when passed to the specified
+application.</p>
+<p>Or just use a non-Microsoft terminal if you must use windows.</p>
+<p>Regardless, I am very strongly against crippling hyperlink support in rg
+to satisfy the limitations of Microsoft's software. If you really want
+to do it, add an option to control whether to add line numbers to the
+file URLs, or better yet create a template system with a default
+template that is file://{hostname}{path}#{line}</p>
+<p>Then users of rg can adapt the hyperlink to use whatever scheme and
+level of usefulness they require.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2022-10-03 14:11</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't see why the rest of the world should suffer for it.</p>
+</blockquote>
+<p>Like I said before, the behavior can be slightly different on Windows and Linux. You don't need to suffer anything.</p>
+<p>Do you know if other terminals can interpret the fragment part of the URI as a line number, and act accordingly?</p>
+<blockquote>
+<p>I dont see why the shell cant pass file:// urls with fragments to applications, all it requires is an extra check box in their configuration UI, to indicate to the shell not to modify file urls when passed to the specified application.</p>
+</blockquote>
+<p>Because of the intermediate step <em>in the Windows shell</em> which translates the URI to a file path, which apparently cannot handle it. The target appliction is passed the <em>file path</em>, not the URI.</p>
+<p><em>&quot;all it requires&quot;</em> is an obscure change at the OS level. That won't happen.</p>
+<blockquote>
+<p>Or just use a non-Microsoft terminal if you must use windows.</p>
+</blockquote>
+<p>I want this feature to work <em>by default</em>. Otherwise, there's no point. It also happens I want it to work with the terminal I use every day.</p>
+<p>And finally, please stop being aggressive. I'm just trying to <em>add a feature</em> here, in good faith. I'm not trying to cripple anything. It doesn't need to be perfect right from the start. Remember it can always be enhanced afterwards. In the meantime, your kitten can continue to fill the gaps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kovidgoyal">@kovidgoyal</a> on 2022-10-03 14:33</div>
+            <div class="timeline-body"><p>On Mon, Oct 03, 2022 at 07:11:31AM -0700, Lucas Trzesniewski wrote:</p>
+<blockquote>
+<blockquote>
+<p>I don't see why the rest of the world should suffer for it.</p>
+</blockquote>
+<p>Like I said before, the behavior can be slightly different on Windows and Linux. You don't need to suffer anything.</p>
+</blockquote>
+<p>ripgrep cannot know if its output is being interpreted on linux or
+windows. It can be running over ssh on a linux machine but its output
+can be interpreted on a windows machine. Or vice versa. You really
+cannot include compile time tests to control output in a terminal application.</p>
+<blockquote>
+<p>Do you know if other terminals can interpret the fragment part of the URI as a line number, and act accordingly?</p>
+</blockquote>
+<p>No clue. Probably not, if I had to guess.</p>
+<blockquote>
+<blockquote>
+<p>I dont see why the shell cant pass file:// urls with fragments to applications, all it requires is an extra check box in their configuration UI, to indicate to the shell not to modify file urls when passed to the specified application.</p>
+</blockquote>
+<p>Because of the intermediate step <em>in the Windows shell</em> which translates the URI to a file path, which apparently cannot handle it. The target appliction is passed the <em>file path</em>, not the URI.</p>
+</blockquote>
+<p>Yes, hence the suggestion to have a checkbox to pass the URI <em>instead</em>
+of the file path.</p>
+<blockquote>
+<p><em>&quot;all it requires&quot;</em> is an obscure change at the OS level. That won't happen.</p>
+</blockquote>
+<p>I already know it wont happen. I was simply pointing out that it is not hard to do.</p>
+<blockquote>
+<blockquote>
+<p>Or just use a non-Microsoft terminal if you must use windows.</p>
+</blockquote>
+<p>I want this feature to work <em>by default</em>. Otherwise, there's no point. It also happens I want it to work with the terminal I use every day.</p>
+</blockquote>
+<p>You want it to work by default on <em>your terminal</em> in <em>your use case</em>,
+breaking it by default for other people and other usecases. And you
+picked the terminal and usecase that is the <em>most limited</em>. No remote
+hosts and no line numbers. There is simply nothing stopping your
+favorite terminal from stripping fragments and hostnames if it doesnt
+like them. But no, according to you instead by default ripgrep must
+produce crippled output, so that it works by default for <em>you</em>. I don't
+consider clicking on a search result and being taken to a random point
+in the file (as will happen if the editor remembers last opened
+position) or the top of the file <em>working by default</em>.</p>
+<blockquote>
+<p>And finally, please stop being aggressive. I'm just trying to <em>add a feature</em> here, in good faith. I'm not trying to cripple anything. It doesn't need to be perfect right from the start. Remember it can always be enhanced afterwards. In the meantime, your kitten can continue to fill the gaps.</p>
+</blockquote>
+<p>You are adding the feature <em>wrong</em>. I thought you were asking for
+feedback, so I wasted my precious time giving you some, my mistake. But
+OK, whatever. I will continue to work around this in hyperlinked_grep.
+Sorry for wasting your time and good luck. You wont be hearing from me
+again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2022-10-03 16:00</div>
+            <div class="timeline-body"><p><em>Sigh.</em> Looks like you don't understand what I've been saying in the issue thread.</p>
+<blockquote>
+<p>It can be running over ssh on a linux machine but its output can be interpreted on a windows machine.</p>
+</blockquote>
+<p>Yes. And SSH support will work fine <em>if I include the hostname on Linux</em>. Because there's no Linux to Windows SSH.</p>
+<blockquote>
+<p>No clue. Probably not, if I had to guess.</p>
+</blockquote>
+<p>So, in other words, you're trying to change the default behavior of ripgrep to nonstandard links just for kitty support.</p>
+<blockquote>
+<p>You want it to work by default on <em>your terminal</em> in <em>your use case</em>, breaking it by default for other people and other usecases.</p>
+</blockquote>
+<p>Well, <em>of course</em> I want to make it work for myself. But I won't be breaking anyone else. On the contrary, I want this to work for most people out of the box.</p>
+<p>You're trying to make me generate nonstandard links which only <em>your</em> terminal understands. Now <em>that</em> is breaking it by default for other people, like me.</p>
+<blockquote>
+<p>And you picked the terminal and usecase that is the <em>most limited</em>.</p>
+</blockquote>
+<p>Yes. That's the lowest common denominator which works for everyone.</p>
+<blockquote>
+<p>No remote hosts and no line numbers.</p>
+</blockquote>
+<ul>
+<li>Remote hosts will be supported if I include the hostname on Linux.</li>
+<li>Line numbers are only supported by kitty, and can be handled by hyperlinked_grep just fine.</li>
+</ul>
+<blockquote>
+<p>ripgrep must produce crippled output</p>
+</blockquote>
+<p>ripgrep must produce <em>standard</em> output.</p>
+<blockquote>
+<p>I don't consider clicking on a search result and being taken to a random point in the file (as will happen if the editor remembers last opened position) or the top of the file <em>working by default</em>.</p>
+</blockquote>
+<p>Then, as you're fond of saying, change your settings. Or continue to use hyperlinked_grep. Just don't break it for other people.</p>
+<blockquote>
+<p>You are adding the feature <em>wrong</em>.</p>
+</blockquote>
+<p>This is your opinion. I've heard it. I just don't agree with it.</p>
+<p>Thanks for your feedback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kovidgoyal">@kovidgoyal</a> on 2022-10-07 05:31</div>
+            <div class="timeline-body"><blockquote>
+<p><em>Sigh.</em> Looks like you don't understand what I've been saying in the issue thread.</p>
+</blockquote>
+<p>Sigh. Looks like you dont have a clue what you are doing.</p>
+<blockquote>
+<blockquote>
+<p>It can be running over ssh on a linux machine but its output can be interpreted on a windows machine.</p>
+</blockquote>
+<p>Yes. And SSH support will work fine <em>if I include the hostname on Linux</em>. Because there's no Linux to Windows SSH.</p>
+</blockquote>
+<p>Yes there is. Google is your friend.</p>
+<blockquote>
+<blockquote>
+<p>No clue. Probably not, if I had to guess.</p>
+</blockquote>
+<p>So, in other words, you're trying to change the default behavior of ripgrep to nonstandard links just for kitty support.</p>
+</blockquote>
+<p>No, I am trying to make the output of ripgrep fit for purpose. The purpose here being, clicking on a search result and navigating to that result in an editor.</p>
+<blockquote>
+<blockquote>
+<p>You want it to work by default on <em>your terminal</em> in <em>your use case</em>, breaking it by default for other people and other usecases.</p>
+</blockquote>
+</blockquote>
+<p>It breaks only on terminals that pass file URLs without removing hostnames, fragments, queries etc from them onto systems which cant handle those. AKA terminals that dont sanitize untrusted input before passing it on. I feel for you that you are wedded to such a terminal.</p>
+<blockquote>
+<p>Well, <em>of course</em> I want to make it work for myself. But I won't be breaking anyone else. On the contrary, I want this to work for most people out of the box.</p>
+</blockquote>
+<p>Yes, you will. You have conveniently ignored the fact that output from a search tool when clicked should go to the search result inside the file, not just the file. By leaving off line numbers you are <em>breaking that extremely reasonable expectation</em> for everybody, forcing them to use wrappers to work around your lack.</p>
+<blockquote>
+<p>You're trying to make me generate nonstandard links which only <em>your</em> terminal understands. Now <em>that</em> is breaking it by default for other people, like me.</p>
+</blockquote>
+<p>Non standard? Which standard are you referring to? Last I checked fragments are a part of every standard that determines what constitutes a valid URL.</p>
+<blockquote>
+<blockquote>
+<p>And you picked the terminal and usecase that is the <em>most limited</em>.</p>
+</blockquote>
+<p>Yes. That's the lowest common denominator which works for everyone.</p>
+</blockquote>
+<p>Except, it doesn't actually work.</p>
+<blockquote>
+<blockquote>
+<p>No remote hosts and no line numbers.</p>
+</blockquote>
+<ul>
+<li>Remote hosts will be supported if I include the hostname on Linux.</li>
+<li>Line numbers are only supported by kitty, and can be handled by hyperlinked_grep just fine.</li>
+</ul>
+</blockquote>
+<p>Is it really your position that you think clicking on search results should take you to random positions in a file?</p>
+<blockquote>
+<blockquote>
+<p>ripgrep must produce crippled output</p>
+</blockquote>
+<p>ripgrep must produce <em>standard</em> output.</p>
+</blockquote>
+<p>Again, what standard?</p>
+<blockquote>
+<blockquote>
+<p>I don't consider clicking on a search result and being taken to a random point in the file (as will happen if the editor remembers last opened position) or the top of the file <em>working by default</em>.</p>
+</blockquote>
+<p>Then, as you're fond of saying, change your settings. Or continue to use hyperlinked_grep. Just don't break it for other people.</p>
+</blockquote>
+<p>You mean you and your input unsanitizing, crippled terminal.</p>
+<blockquote>
+<blockquote>
+<p>You are adding the feature <em>wrong</em>.</p>
+</blockquote>
+<p>This is your opinion. I've heard it. I just don't agree with it.</p>
+<p>Thanks for your feedback.</p>
+</blockquote>
+<p>You are most welcome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2022-10-07 09:07</div>
+            <div class="timeline-body"><p>That discussion leads to nowhere. Now please stop insulting me and stick to your word:</p>
+<blockquote>
+<p>You wont be hearing from me again.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-10-07 10:56</div>
+            <div class="timeline-body"><p>@kovidgoyal You are coming across as pretty agressive and it is a VERY POOR way to get your point across. Stop it or you will no longer be welcome here.</p>
+<p>The overall temperature of this conversation should be reduced considerably. There is no reason for it to be heated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kovidgoyal">@kovidgoyal</a> on 2022-10-07 11:02</div>
+            <div class="timeline-body"><p>Sure, happy to leave. I dont know why I bothered. Good luck.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2022-10-29 11:14</div>
+            <div class="timeline-body"><p>I think this should now be ready for a first review, but I'm keeping the PR marked as draft as it can't be merged yet:</p>
+<ul>
+<li>The <a href="https://github.com/BurntSushi/termcolor/pull/65">termcolor feature</a> needs to be approved/merged/released first.</li>
+<li>I commented out a regression test temporarily until you decide if you'd like to add a <code>--hyperlinks</code> switch or similar.</li>
+</ul>
+<p>Also, sorry for the drama in this thread.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-04-02 17:03</div>
+            <div class="timeline-body"><p>Superseded by #2483</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ltrzesniewski on 2023-04-02 17:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:06 UTC
+    </footer>
+</body>
+</html>

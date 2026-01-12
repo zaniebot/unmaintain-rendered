@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignoring files based on their size - BurntSushi/ripgrep #369</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ignoring files based on their size</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/369">#369</a>
+        opened by <a href="https://github.com/mensfeld">@mensfeld</a>
+        on 2017-02-18 15:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mensfeld">@mensfeld</a></div>
+            <div class="timeline-body"><p>Hey, is there an option to use ripgrep and exclude files based on their size? I have a lot of +10MB text files that I don't want to grep and would love to be able to exclude them all. Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-18 16:00</div>
+            <div class="timeline-body"><p>No. Can you use some other attribute of the text files? You can specify paths to ignore at the command line with <code>-g '!dir/to/ignore'</code> or <code>-g '!*.txt'</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-02-18 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mensfeld">@mensfeld</a> on 2017-02-18 17:34</div>
+            <div class="timeline-body"><p>Hello @BurntSushi. Thank you for such fast reaction. Unfortunately I can't. I use rg as a part in a &quot;chain&quot; where I get some locations and I need to do search based on that. If it is not possible, I will just wrap it around with a shell script with a list of dirs/files to ignore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-18 17:39</div>
+            <div class="timeline-body"><p>It is indeed not possible right now. It would have to be explicitly added to ripgrep as a new flag. Which I'd be OK with, since it should be relatively easy to add. It will have a performance cost, but that seems fine since the end user would have to specifically ask for it anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2017-02-18 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @BurntSushi on 2017-02-18 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @BurntSushi on 2017-02-18 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mensfeld">@mensfeld</a> on 2017-02-18 17:44</div>
+            <div class="timeline-body"><p>@BurntSushi - yes it would have a perf. impact but only when needed which shouldn't be that bad. For now I will just find those files on my own and exclude them. Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tiehuis">@tiehuis</a> on 2017-02-23 10:39</div>
+            <div class="timeline-body"><p>I'll probably end up looking at implementing this over the next few days. Just to outline the intended approach from a quick glance before beginning.</p>
+<ul>
+<li>Add a new size matcher into <code>Ignore</code> and co in the <code>ignore</code> crate (in file <code>dir.rs</code>)</li>
+<li>Add the size check into <code>matched</code> (in file <code>dir.rs</code>)</li>
+<li>Add the top-level options into all the required locations</li>
+<li>Add some tests</li>
+</ul>
+<p>There probably should be some nice intuitive values expected for the command line option, too (i.e. <code>--limit-size=2K</code> <code>--limit-size=1G</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-23 11:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Add a new size matcher into Ignore and co in the ignore crate (in file dir.rs)</p>
+</blockquote>
+<p>I think the <code>ignore</code> crate is probably the right place, but it feels like the filter should be implemented in <code>walk.rs</code>, not <code>dir.rs</code>. The stuff in <code>dir.rs</code> is pretty tightly coupled to glob matching, where as the stuff in <code>walk.dir</code> is generalized to recursive directory walking. Note that you will have to implement the check on both the single threaded and parallel walkers.</p>
+<blockquote>
+<p>There probably should be some nice intuitive values expected for the command line option, too (i.e. --limit-size=2K --limit-size=1G).</p>
+</blockquote>
+<p>That seems like nice extra credit. Feel free to punt on that if you like. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-12 20:59</div>
+            <div class="timeline-body"><p>Fixed in https://github.com/BurntSushi/ripgrep/pull/385</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-03-12 20:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:04 UTC
+    </footer>
+</body>
+</html>

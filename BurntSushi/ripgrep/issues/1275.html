@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Behavior of \b word anchor when applied to non-word characters - BurntSushi/ripgrep #1275</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Behavior of \b word anchor when applied to non-word characters</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1275">#1275</a>
+        opened by <a href="https://github.com/learnbyexample">@learnbyexample</a>
+        on 2019-05-08 12:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/learnbyexample">@learnbyexample</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code class="language-bash">$ rg --version
+ripgrep 11.0.1 (rev 1f1cd9b467)
+-SIMD -AVX (compiled)
++SIMD -AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>Using https://github.com/BurntSushi/ripgrep/releases/download/11.0.1/ripgrep_11.0.1_amd64.deb</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Ubuntu 16.04.1</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>Behavior of <code>\b</code> word anchor applied on non-word characters is different than what is observed on other regex engines. I found this accidentally, wasn't a usecase I needed. But filing the issue anyway, incase this may be a bug.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>See example below.</p>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<pre><code class="language-bash">$ echo 'I have 12, he has 2!' | rg -o '\b..\b'
+I 
+12
+</code></pre>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>I feel <code>ripgrep</code> should also behave as seen in other regex engines.</p>
+<pre><code class="language-bash">$ # GNU grep 3.3
+$ # grep -oP '\b..\b' and rg -oP '\b..\b' also produce same result
+$ echo 'I have 12, he has 2!' | grep -o '\b..\b'
+I 
+12
+, 
+he
+ 2
+
+$ echo 'I have 12, he has 2!' | perl -lne 'print join &quot;|&quot;, /\b..\b/g'
+I |12|, |he| 2
+$ echo 'I have 12, he has 2!' | ruby -ne 'puts $_.scan(/\b..\b/).join(&quot;|&quot;)'
+I |12|, |he| 2
+
+$ # python3.7
+&gt;&gt;&gt; import re
+&gt;&gt;&gt; re.findall(r'\b..\b', 'I have 12, he has 2!')
+['I ', '12', ', ', 'he', ' 2']
+</code></pre>
+<p>The below image might help in understanding what is happening in all these regex engines. Vertical bar represents word boundary. Note that even though <code>!</code> is at end of line, it doesn't have boundary after as it is not a word character.</p>
+<p><img src="https://user-images.githubusercontent.com/17766317/57372980-ce421500-71b4-11e9-8b12-e44ad4fd5532.png" alt="ripgrep_word_boundary" /></p>
+<p><strong>Note</strong></p>
+<ul>
+<li><code>grep -o '\&lt;..\&gt;'</code> (also in <code>vim</code>) will be different compared to <code>\b</code> as <code>\b</code> cannot differentiate between start and end word boundary</li>
+<li><code>grep -ow '..'</code> is same as <code>rg -ow '..'</code> (perhaps because both do <code>(?&lt;!\w)pattern(?!\w)</code> for <code>-w</code> option)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-05-08 13:11</div>
+            <div class="timeline-body"><p>Thanks for the report! This smells like a bug in the regex engine. I've filed an issue for it here: https://github.com/rust-lang/regex/issues/579</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2019-05-08 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-10-09 23:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-10-10 00:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:54 UTC
+    </footer>
+</body>
+</html>

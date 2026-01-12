@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>.gitignore entries are not filtered - BurntSushi/ripgrep #2855</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>.gitignore entries are not filtered</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2855">#2855</a>
+        opened by <a href="https://github.com/Rasmus-Bertell">@Rasmus-Bertell</a>
+        on 2024-07-16 20:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Rasmus-Bertell">@Rasmus-Bertell</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>❯ rg --version
+ripgrep 14.1.0</p>
+<p>features:-simd-accel,+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2</p>
+<p>PCRE2 10.42 is available (JIT is available)</p>
+<h3>How did you install ripgrep?</h3>
+<pre><code class="language-zsh">❯ sudo pacman -S ripgrep
+</code></pre>
+<p><a href="https://archlinux.org/packages/extra/x86_64/ripgrep/">ripgrep package</a></p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Archlinux 6.9.9-arch1-1</p>
+<h3>Describe your bug.</h3>
+<p>I have a gitignore file defined for my project but ripgrep still gets results from the vendor directory.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<pre><code class="language-zsh">❯ composer create-project laravel/laravel example-app
+❯ cd example-app
+❯ echo &quot;/vendor&quot; &gt; .gitignore # Laravel already has a default .gitignore so this step is not really needed
+❯ rg todo
+
+vendor/psy/psysh/src/ExecutionLoop/RunkitReloader.php
+21: * @todo Remove RunkitReloader once we drop support for PHP 7.x :(
+
+...
+
+vendor/psy/psysh/src/Formatter/CodeFormatter.php
+72:        // @todo something better here?
+142:     * @todo consider switching \token_get_all() out for PHP-Parser-based formatting at some point
+
+❯ echo &quot;/vendor&quot; &gt; .ignore
+❯ rg todo # No matches as expected
+
+❯
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<pre><code class="language-zsh">❯ rg --debug todo &amp;&gt; log.txt
+</code></pre>
+<p><a href="https://gist.github.com/Rasmus-Bertell/bccd3ae1e3cc92b2079e76ed7ab11afb">log.txt</a></p>
+<h3>What is the expected behavior?</h3>
+<p>I would expect .gitignore and .ignore files to behave the same but with different precedence.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-16 20:59</div>
+            <div class="timeline-body"><p>They don't behave the same. <code>.gitignore</code> only works in a git repo unless <code>--no-require-git</code> is passed. I don't see any <code>git init</code> in your repro, so this appears to be behaving as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-07-16 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-07-16 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2024-07-16 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Rasmus-Bertell">@Rasmus-Bertell</a> on 2024-07-17 05:41</div>
+            <div class="timeline-body"><p>Thanks for clarifying this. Didn't know .gitignore needed a git repo, though on the hindsight it makes sense. Perhaps make it a bit more clear in the documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TinyLittleWheatley">@TinyLittleWheatley</a> on 2024-07-18 17:11</div>
+            <div class="timeline-body"><blockquote>
+<p>They don't behave the same. <code>.gitignore</code> only works in a git repo unless <code>--no-require-git</code> is passed. I don't see any <code>git init</code> in your repro, so this appears to be behaving as expected.</p>
+</blockquote>
+<p>This behavior confuses me. Why we need a .git directory to use .gitignore exclusion rules? Is there an specific scenario that requires this check?</p>
+<p>I understand that a .gitignore file is expected to be near a .git directory but for example when i use Exercism cli to download an exercise, it doesn't initialize a git repository but there is a .gitignore just in case user decides to use git or see what will be submitted and what will be ignored by cli tool when sending a solution.</p>
+<p>I assume the tradeoff has been considered at time of implementation. just commenting about my specific use case...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-18 17:19</div>
+            <div class="timeline-body"><p>Yes, it has been considered. The specific technical reason is that <code>.gitignore</code> files should not cross git repository boundaries. For example, my <code>$HOME</code> is a git repository. And it has a <code>.gitignore</code>. But it would be wildly inappropriate to apply that <code>.gitignore</code> to repositories checked out in a sub-directory of <code>$HOME</code>. For example, <code>~/rust/ripgrep</code>.</p>
+<p><code>--no-require-git</code> exists for folks that don't want ripgrep to care about git repository boundaries.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:50 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can not get .gitlab-ci.yml to be searched - BurntSushi/ripgrep #2191</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can not get .gitlab-ci.yml to be searched</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2191">#2191</a>
+        opened by <a href="https://github.com/lexicalunit">@lexicalunit</a>
+        on 2022-04-22 15:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lexicalunit">@lexicalunit</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 13.0.0
+-SIMD -AVX (compiled)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p><code>brew</code> on macOS.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>macOS 10.16</p>
+<h4>Describe your bug.</h4>
+<p>No matter what I do rg will not return hits for anything in <code>.gitlab-ci.yml</code>.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<pre><code class="language-shell">cat .gitlab-ci.yml | grep collectstatic
+    - python manage.py collectstatic --noinput
+</code></pre>
+<pre><code>rg --no-hidden collectstatic
+onboard/utils/management/commands/generate_zappa_settings.py
+29:            # these files will be deployed separately via `collectstatic`).
+</code></pre>
+<pre><code class="language-shell">rg collectstatic
+onboard/utils/management/commands/generate_zappa_settings.py
+29:            # these files will be deployed separately via `collectstatic`).
+</code></pre>
+<pre><code class="language-shell">rg -iglob &quot;.gitlab-ci.yml&quot; collectstatic
+collectstatic: No such file or directory (os error 2)
+</code></pre>
+<pre><code class="language-shell">± rg --no-ignore collectstatic
+env/lib/python3.8/site-packages/django/contrib/staticfiles/testing.py
+9:    means you don't need to run collectstatic before or as a part of your tests
+
+env/lib/python3.8/site-packages/django/contrib/staticfiles/storage.py
+205:        Post process the given dictionary of files (called from collectstatic).
+
+env/lib/python3.8/site-packages/django/contrib/staticfiles/management/commands/collectstatic.py
+92:        Perform the bulk of the work of collectstatic.
+273:                        # the previous collectstatic wasn't with --link) or if
+275:                        # previous collectstatic was with --link), the old
+
+env/lib/python3.8/site-packages/Django-3.1.13.dist-info/RECORD
+3571:django/contrib/staticfiles/management/commands/__pycache__/collectstatic.cpython-38.pyc,,
+3574:django/contrib/staticfiles/management/commands/collectstatic.py,sha256=OF-wPu9FvkHZPvfu1PHEy9yghcKwxKsoqpimqEacmzM,15136
+
+env/lib/python3.8/site-packages/webpack_loader/signals.py
+1:# will hook into collectstatic
+
+env/lib/python3.8/site-packages/django_stubs-1.5.0.dist-info/RECORD
+165:django-stubs/contrib/staticfiles/management/commands/collectstatic.pyi,sha256=aauFD0KDUGYrHRVy-El3hUVhCkTXtWty213H0YRRjHc,1125
+
+env/lib/python3.8/site-packages/django_webpack_loader-1.4.1.dist-info/METADATA
+438:**It is up to you**. There are a few ways to handle this. I like to have slightly separate configs for production and local. I tell git to ignore my local stats + bundle file but track the ones for production. Before pushing out newer version to production, I generate a new bundle using production config and commit the new stats file and bundle. I store the stats file and bundles in a directory that is added to the `STATICFILES_DIR`. This gives me integration with collectstatic for free. The generated bundles are automatically collected to the target directory and synched to S3.
+469:You can also simply generate the bundles on the server before running collectstatic if that works for you.
+
+env/lib/python3.8/site-packages/django_storages-1.10.dist-info/METADATA
+351:  ``collectstatic``. (`#382`_, `#754`_)
+636:* Fix ``collectstatic`` timezone handling in and add ``get_modified_time`` to ``S3BotoStorage`` (`#290`_)
+747:  this prevents a crash when running ``collectstatic -c`` on Django 1.9.1 (`#112`_) fixed in `#116`_
+877:* Fixes `#156`_ regarding date parsing, ValueError when running collectstatic
+
+onboard/utils/management/commands/generate_zappa_settings.py
+29:            # these files will be deployed separately via `collectstatic`).
+</code></pre>
+<h4>What is the actual behavior?</h4>
+<p>If I use the <code>--debug</code> flag in addition to the <code>--no-ignore</code> flag I see this in the output:</p>
+<pre><code>DEBUG|ignore::walk|crates/ignore/src/walk.rs:1741: ignoring ./.gitlab-ci.yml: Ignore(IgnoreMatch(Hidden))
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>The <code>--no-ignore</code> flag should disable ignores. The <code>--no-hidden</code> flag doesn't seem to work. I can get it to work with <code>-uu</code> but I want my ignores to work! Using <code>-uu</code> causes <code>rg</code> to return a bunch of stuff that <em>should</em> be ignored. I just want <code>rg</code> to search my local files that start with <code>.</code>. That seems to be impossible?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lexicalunit">@lexicalunit</a> on 2022-04-22 15:18</div>
+            <div class="timeline-body"><p><code>rg --hidden collectstatic</code> works. I assumed <code>--no-hidden</code> would turn off the &quot;ignore hidden&quot; setting just like <code>--no-ignore</code> turns off the &quot;ignore&quot; setting. Confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @lexicalunit on 2022-04-22 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2022-04-22 15:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:32 UTC
+    </footer>
+</body>
+</html>

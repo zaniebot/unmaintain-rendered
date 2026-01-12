@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option to supress log/error messages - BurntSushi/ripgrep #149</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Option to supress log/error messages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/149">#149</a>
+        opened by <a href="https://github.com/cloudhead">@cloudhead</a>
+        on 2016-10-05 14:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cloudhead">@cloudhead</a></div>
+            <div class="timeline-body"><p>It would be nice to have an option to supress log messages and errors like in <code>ag</code>. This is useful for using ripgrep in scripts. This comes up when using ripgrep in directories where certain files are not readable.</p>
+<p>In <code>ag</code>, there is:</p>
+<pre><code>--silent
+ Suppress all log messages, including errors.
+</code></pre>
+<p>Since there is already a <code>--quiet</code> option, this might not be the best name for it, maybe <code>--no-log</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-05 14:49</div>
+            <div class="timeline-body"><p>Which log messages do you want to see suppressed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cloudhead">@cloudhead</a> on 2016-10-05 14:52</div>
+            <div class="timeline-body"><p>Anything that isn't results. For example, when folders aren't readable, you currently get:</p>
+<pre><code>IO error for operation on ./lost+found: Permission denied (os error 13)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-05 14:52</div>
+            <div class="timeline-body"><p>But that's emitted to <code>stderr</code>. You could hide those messages by redirecting <code>stderr</code> to <code>/dev/null</code>. e.g., <code>rg foo 2&gt; /dev/null</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cloudhead">@cloudhead</a> on 2016-10-05 15:01</div>
+            <div class="timeline-body"><p>Hm indeed! I guess if all non-result text is emitted on stderr, that should be a fine solution. Ripgrep isn't always used within a shell context though, but I guess there is always the possibility to control stderr.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-05 15:05</div>
+            <div class="timeline-body"><p>I think GNU find has the same behavior. I don't see an option to suppress these types of messages, but if it did, I'd consider that a stronger precedent than <code>ag</code> personally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cloudhead">@cloudhead</a> on 2016-10-05 15:10</div>
+            <div class="timeline-body"><p><code>grep</code> has the following:</p>
+<pre><code>   -s, --no-messages
+              Suppress error messages about nonexistent or unreadable files.
+</code></pre>
+<p>However, I do agree that it seems redundant if messages are properly sent to stderr.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cloudhead">@cloudhead</a> on 2016-10-05 15:12</div>
+            <div class="timeline-body"><p>I'm guessing this exists because sending stderr to /dev/null is not always appropriate or possible, but can't think of any specific examples. My use-case is solved with redirection.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-05 15:20</div>
+            <div class="timeline-body"><p>@cloudhead I consider <code>grep</code> a very strong precedent for a feature like this, although the short <code>-s</code> option is already taken. I'd be fine adding a <code>--no-messages</code> option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2016-10-05 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cloudhead">@cloudhead</a> on 2016-10-05 15:22</div>
+            <div class="timeline-body"><p>Great. I don't think a short option is necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-11-06 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ElectricRCAircraftGuy">@ElectricRCAircraftGuy</a> on 2021-12-08 20:02</div>
+            <div class="timeline-body"><blockquote>
+<p>But that's emitted to <code>stderr</code>. You could hide those messages by redirecting <code>stderr</code> to <code>/dev/null</code>. e.g., <code>rg foo 2&gt; /dev/null</code>.</p>
+</blockquote>
+<p>Perfect! Full example:</p>
+<pre><code class="language-bash">rg 'my regex search' 'path/to/search' 2&gt; /dev/null
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thistehneisen">@thistehneisen</a> on 2023-03-18 14:05</div>
+            <div class="timeline-body"><p>Sorry for bringing back old topic, but I don't seem to find an option to suppress messages like:</p>
+<pre><code>WARNING: stopped searching binary file after match (found &quot;\0&quot; byte around offset 687940)
+WARNING: stopped searching binary file after match (found &quot;\0&quot; byte around offset 881429)
+</code></pre>
+<p>Neither <code>2&gt;</code> works, nor <code>--no-messages</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:46 UTC
+    </footer>
+</body>
+</html>

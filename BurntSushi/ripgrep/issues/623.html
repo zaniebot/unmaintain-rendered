@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hidden files to be searched by default - BurntSushi/ripgrep #623</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>hidden files to be searched by default</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/623">#623</a>
+        opened by <a href="https://github.com/akostadinov">@akostadinov</a>
+        on 2017-10-06 20:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/akostadinov">@akostadinov</a></div>
+            <div class="timeline-body"><p>Am I the only one that thinks hidden files should be searched by default? Especially when trying to find something related to configuration, these things are often put into hidden files in user home.</p>
+<p>And if I'm the only one, probably #196 is what can help me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-10-06 21:21</div>
+            <div class="timeline-body"><p>Excluding hidden/dot files by default is common for this class of tool — notably, <code>ag</code> and <code>pt</code> both do it. <code>rg</code> was inspired directly by <code>ag</code>, so that's probably (?) the immediate reason for the current behaviour. But i think it makes sense even if you ignore the historical baggage, since these tools are mainly designed for searching through source code, and dot files in that context are usually just noise.</p>
+<p>If you've read that other ticket you've probably already picked this up, but just in case, this is your best work-around for now:</p>
+<pre><code>alias rg='rg --hidden'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-06 23:00</div>
+            <div class="timeline-body"><p>@okdana has got it. This isn't changing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-10-06 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kriskhaira">@kriskhaira</a> on 2020-07-17 07:03</div>
+            <div class="timeline-body"><p>The following is @okdana's solution, but with the .git folder remaining ignored:</p>
+<pre><code>alias rg=&quot;rg --hidden --glob '!.git'&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pkoch">@pkoch</a> on 2021-08-25 22:56</div>
+            <div class="timeline-body"><blockquote>
+<p>these tools are mainly designed for searching through source code, and dot files in that context are usually just noise.</p>
+</blockquote>
+<p>More and more, I've been finding this not to be the case anymore. I've broken pipelines over this default. Not ripgrep's fault, I should read the docs, but it's still evidence against this argument.</p>
+<p>In any case, using <code>RIPGREP_CONFIG_PATH</code> feels like a good recourse to have.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-08-25 23:02</div>
+            <div class="timeline-body"><p>I don't know what you mean exactly by broken pipelines, but I haven't budged on this personally. In any case, ripgrep's &quot;smart&quot; filtering defaults are really a part of its identity at this point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pkoch">@pkoch</a> on 2021-08-26 02:42</div>
+            <div class="timeline-body"><p>CI pipelines. Those based on GitHub Actions are normally kept at <code>.github/workflows</code>.</p>
+<p>I'm not really trying to change your mind, you seem pretty resolute. I'm just bringing evidence forward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2021-08-26 07:12</div>
+            <div class="timeline-body"><p>I agree with @pkgw here and I use that alias <code>rg='rg --hidden --no-follow --max-columns 255 --no-heading --column -F'</code> to overcome for some of the undesired defaults. In addition to that I have a <code>~/.ignore</code> file which lists things I want to be ignored with notable mentions like <code>.git</code> and <code>.tox</code> folders.</p>
+<p>As you said, not all dot files are created equal. Almost nobody wants to search on cache files but almost for sure they want to search inside hidden config files. Even the default user config folder based on XDG standard is <code>~/.config</code>.</p>
+<p>I do hope that @BurntSushi will reconsider his opinion on that default because we cannot really deploy our ripgrep config on each machine we use it. I think that the tricky bit about implementing this feature is that it should also include an implicit <code>.ignore</code> set of values, ones to be used when the is not found. Otherwise lots of people would be upset about getting results from inside their .git folders.</p>
+<p>Interestingly I do not see any downvote on the proposal, only 10 upvotes. Still the number is likely too small to be considered as a real survey.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akostadinov">@akostadinov</a> on 2021-08-26 07:13</div>
+            <div class="timeline-body"><p><del>I'm +1 for hidden files or at least smarter hidden files filtering. There are a lot of configuration hidden files and they are not less important than other source files. The pipelines example is good. Also bundler config files come to my mind.</del></p>
+<p>Ops, I see that I filed the issue :)</p>
+<p>My suggestion is that at least under Git repositories to search in hidden files, because caches and other temporary files will be in <code>.gitignore</code> anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-08-26 08:19</div>
+            <div class="timeline-body"><p>No, the default is never changing. I don't practice upvote driven development. If you can deploy ripgrep then you should be able to also deploy aliases/ignores/configs.</p>
+<p>The defaults are not perfect all the time. That's why the tool is configurable. The defaults are just an approximation. It is also important for defaults to be simple. &quot;Skip all hidden files&quot; is simpler than &quot;skip all hidden files except foo, bar and baz.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akostadinov">@akostadinov</a> on 2021-08-26 09:40</div>
+            <div class="timeline-body"><p>@BurntSushi , how a about a new feature to skip only files ignored by the CMS system at use (git, etc.), and search in everything else?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-08-26 11:46</div>
+            <div class="timeline-body"><p>@akostadinov That's what <code>-./--hidden</code> does. (Well, technically ripgrep will still also try to skip binary files, so you can also add <code>--binary</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akostadinov">@akostadinov</a> on 2021-08-27 08:55</div>
+            <div class="timeline-body"><p>@BurntSushi , I mean some feature to automatically detect whether it is run in a SCM repo or not. Or a feature to read a configuration file from within a repo when such one is present.</p>
+<p>e.g. (in a similar way how <code>.editorconfig</code> works) when running in my home dir I may want default behavior, when I run in a git repo, I may have auto-detection, or a configuration file for that specific repo.</p>
+<p>Would some of the above suggestions be acceptable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-08-27 09:32</div>
+            <div class="timeline-body"><p>Also probably not happening. Others have requested it. Search the tracker. I'm on mobile.</p>
+<p>Just setup your ignore files. You should be able to whitelist hidden files or directories.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nakilon">@Nakilon</a> on 2022-08-17 04:18</div>
+            <div class="timeline-body"><p>Personally I would never complain if the Github Actions wasn't invented as being put into <code>.github</code> and that now I need to grep those often to find how I solve common issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-08-17 12:30</div>
+            <div class="timeline-body"><p>@Nakilon Sorry, what's the point of your comment? Just to complain? Why not put <code>!/.github/</code> in your <code>.ignore</code>? Boom. Problem solved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nakilon">@Nakilon</a> on 2023-06-09 06:31</div>
+            <div class="timeline-body"><blockquote>
+<p>put <code>!/.github/</code> in your <code>.ignore</code>?</p>
+</blockquote>
+<p>Can't figure out how this autofiltering thing works. I have <code>mydir/infrared/.rgignore</code> with content:</p>
+<pre><code class="language-none">/*.cache.yaml
+</code></pre>
+<p>but</p>
+<pre><code>$ rg jobs: --sortr created mydir -g*.y*l
+...mydir/infrared/token.cache.yaml
+204267:Now people are getting food/gas priced out of their homes and jobs:
+...
+</code></pre>
+<p>Why doesn't it ignore the file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-06-09 11:06</div>
+            <div class="timeline-body"><p>Please open a new Discussion question instead of posting in some old issue that may or may not be related.</p>
+<p>Please also include a full reproduction that others can try.</p>
+<p>Please also read the guide. For example, why haven't you tried using the <code>--debug</code> flag yet?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/StackOverflowExcept1on">@StackOverflowExcept1on</a> on 2023-06-10 07:57</div>
+            <div class="timeline-body"><p>I also ran into the same problem today when the <code>rg foo</code> command cannot find the code that is in <code>.github/workflows</code>.It makes sense to exclude the <code>.gitignore</code> files and the <code>.git</code> folder from hidden files. The hidden files should be searched by default.
+For example, if you run the command <code>grep foo -r --include=&quot;*.yaml&quot;</code>, it will find matches in hidden files. If your utility is trying to replace <code>grep</code>, why put restrictions on hidden files?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-06-10 10:23</div>
+            <div class="timeline-body"><blockquote>
+<p>If your utility is trying to replace <code>grep</code></p>
+</blockquote>
+<p><a href="https://github.com/BurntSushi/ripgrep/blob/master/FAQ.md#posix4ever">It's not.</a></p>
+<p>I guess I need to start locking issue threads now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Locked by @ghost on 2023-06-10 10:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:17 UTC
+    </footer>
+</body>
+</html>

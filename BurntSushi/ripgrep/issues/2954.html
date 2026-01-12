@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>globset: Support paths already present as [u8] (e.g. typed_path::Path) - BurntSushi/ripgrep #2954</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>globset: Support paths already present as [u8] (e.g. typed_path::Path)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2954">#2954</a>
+        opened by <a href="https://github.com/aawsome">@aawsome</a>
+        on 2024-12-24 01:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/aawsome">@aawsome</a></div>
+            <div class="timeline-body"><p>Hi!</p>
+<p>I'd like to use <code>globset</code> to match paths - but I like to use <a href="https://docs.rs/typed-path/latest/typed_path/struct.Path.html"><code>typed_path::Path</code></a> for them. This means they are already represented as <code>[u8]</code> on windows and unix platforms. Unfortunately, matching is currently only supported for <code>AsRef&lt;Path&gt;</code> and <code>Candidate</code> which can itself only be created from <code>AsRef&lt;Path&gt;</code>.</p>
+<p>I could convert <code>typed_path::Path</code> into a <code>std::pathPath</code>/<code>std::path::PathBuf</code> but this is ugly because it will internally convert back and forth and (more annoying) the conversation may fail (e.g. non-UTF parts on windows).</p>
+<p>Is it possible to add support for <code>AsRef&lt;[u8]&gt;</code> or something similar?</p>
+<p>Thanks in advance!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-12-24 14:37</div>
+            <div class="timeline-body"><p><code>globset</code> itself uses <code>&amp;[u8]</code> internally, so in theory, this shouldn't be much of a problem. But you can't ask for either <code>AsRef&lt;[u8]&gt;</code> or <code>AsRef&lt;Path&gt;</code> in the same API without a new trait, which I have no intent of doing. Which means you need another API for it.</p>
+<p>However... it looks like <a href="https://docs.rs/typed-path/latest/typed_path/struct.Path.html#impl-AsRef%3COsStr%3E-for-Path%3CT%3E"><code>typed_path::Path</code> implements <code>AsRef&lt;OsStr&gt;</code></a>? Although, I guess that's only on Unix. But at least on Unix, it looks like you can get an <code>&amp;OsStr</code> and thus a <code>&amp;Path</code> with zero cost.</p>
+<p>I might revisit this in a <code>globset 0.5</code> release (no idea when that will happen), but for now, I think you might need to just deal with the conversion (which <em>should</em> be zero cost on Unix).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aawsome">@aawsome</a> on 2024-12-24 19:25</div>
+            <div class="timeline-body"><p>Thanks @BurntSushi for your fast response!</p>
+<p>I must say that I am not very satisfied with your proposal :-/ The idea of using <code>typed_path::Path</code> is to have treatment of unix-style paths under unix <em>and</em> windows without the need for platform-specific code. Also, as mentioned, using a non-valid path on windows leads to extra trouble which I don't see how to fix, actually..</p>
+<p>About API: A <code>Candidate::from_bytes&lt;P: AsRef&lt;[u8]&gt;(path: P) -&gt; Self</code> (replace naming if you find something more suited) would be sufficient from my point of view. I agree that having traits such that the matching methods would run with both <code>AsRef&lt;std::path::Path&gt;</code> and <code>AsRef&lt;[u8]&gt;</code> would be even more elegant.</p>
+<p>I however respect if you don't want to change your API. In that case I'd actually prefer to maintain a fork which provides that functionality (which seems to be the lesser evil to me compared to the conversion hassle when coding platform-agnostic)</p>
+<p>Merry Christmas!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-12-24 19:36</div>
+            <div class="timeline-body"><p>I think I'd be open to a <code>Candidate::from_bytes</code> constructor. That's pretty unobtrusive.</p>
+<p>Note that the encoding of the bytes still has to be conventionally UTF-8, even if it isn't fully valid. So, e.g., WTF-8 would be okay. But you'll get nonsense if you pass a <code>&amp;[u8]</code> that is UCS-2 or UTF-16.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2025-08-17 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-09-20 01:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:52 UTC
+    </footer>
+</body>
+</html>

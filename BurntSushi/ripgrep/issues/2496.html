@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Output is shuffled (Could be SIMD-related?) - BurntSushi/ripgrep #2496</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Output is shuffled (Could be SIMD-related?)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2496">#2496</a>
+        opened by <a href="https://github.com/imshvc">@imshvc</a>
+        on 2023-04-22 18:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/imshvc">@imshvc</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>13.0.0</p>
+<h4>How did you install ripgrep?</h4>
+<p>From GitHub Release via <code>dpkg</code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<pre><code>$ cat /etc/lsb-release
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=22.04
+DISTRIB_CODENAME=jammy
+DISTRIB_DESCRIPTION=&quot;Ubuntu 22.04.2 LTS&quot;
+</code></pre>
+<h4>Describe your bug.</h4>
+<p>The bug occurs when traversing multiple directories of source code.</p>
+<p>On each initial run the results returned in the STDOUT appear &quot;shuffled&quot; and thus trying to <code>diff</code> from one iteration to another is not possible.</p>
+<p>I use <a href="https://github.com/theZiz/aha">theZiz/aha</a> to redirect STDOUT to a HTML file for later inspection and that's how I noticed this behavior.</p>
+<p>https://user-images.githubusercontent.com/102489121/233800755-eb6354ba-3154-4763-8bb0-a4fdbe70d133.mp4</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>Go to my repository <a href="https://github.com/oxou/repro-bug-ripgrep">oxou/repro-bug-ripgrep</a> there I've provided easy steps to reproduce the bug.</p>
+<h4>What is the actual behavior?</h4>
+<p>It appears as if multiple threads are running and depending on which finishes first the output is not identical to the previous iteration.</p>
+<h4>What is the expected behavior?</h4>
+<p>The output should always be the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/imshvc">@imshvc</a> on 2023-04-22 19:11</div>
+            <div class="timeline-body"><p>After looking through the source code, I've realized there's a flag you can pass <code>--sort path</code> that solves this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @imshvc on 2023-04-22 19:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-04-23 11:50</div>
+            <div class="timeline-body"><p>SIMD certainly has nothing to do with it. SIMD doesn't usually result in out-of-order things. The underlying reason for the shuffled output is two-fold:</p>
+<ol>
+<li>The order of results when traversing a directory tree is usually unspecified from the operating system itself. So unless you explicitly sort things, the result order of <em>any</em> directory traversal isn't guaranteed to remain the same. (In practice, it doesn't shuffle too much.)</li>
+<li>ripgrep traverses the directory tree in parallel, processing each file in an undetermined order. ripgrep just prints things out as it is done with them.</li>
+</ol>
+<p>You are correct that <code>--sort path</code> is what you want if you want a consistent ordering. Note though that it disables parallelism and so may be non-trivially slower.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/craftyguy">@craftyguy</a> on 2023-07-13 01:51</div>
+            <div class="timeline-body"><blockquote>
+<p>You are correct that --sort path is what you want if you want a consistent ordering. Note though that it disables parallelism and so may be non-trivially slower.</p>
+</blockquote>
+<p>Why do you have to disable parallelism in order to sort a set of strings?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-13 01:56</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>You are correct that --sort path is what you want if you want a consistent ordering. Note though that it disables parallelism and so may be non-trivially slower.</p>
+</blockquote>
+<p>Why do you have to disable parallelism in order to sort a set of strings?</p>
+</blockquote>
+<p>You don't. Never said that. What I said is that ripgrep disables parallelism when asked to sort. This is an implementation problem, not a requirement of the problem itself.</p>
+<p>And the problem is far more complicated than &quot;set of strings.&quot; Those are your words, not mine.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:40 UTC
+    </footer>
+</body>
+</html>

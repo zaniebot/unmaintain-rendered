@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>support rg -e &quot;*key*&quot; - BurntSushi/ripgrep #1565</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>support rg -e &quot;<em>key</em>&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1565">#1565</a>
+        opened by <a href="https://github.com/laoshaw">@laoshaw</a>
+        on 2020-04-30 14:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/laoshaw">@laoshaw</a></div>
+            <div class="timeline-body"><p>when I do <code>grep -E &quot;*key*ord&quot;</code> or `grep -E &quot;<em>key</em>&quot; it works fine</p>
+<p>when I do <code>rg -e &quot;*key*&quot;</code>: <code>*key*: No such file or directory (os error 2)</code></p>
+<p><code>rg -e '*ard*ist'</code> I got <code>regex parse error</code></p>
+<p>is this a missing feature for rg?</p>
+<p><code>rg -P &quot;*key*&quot;</code> leads to &quot;PCRE2 is not available in this build of ripgrep&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2020-04-30 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-04-30 15:06</div>
+            <div class="timeline-body"><p>This issue is hard for me to understand. In particular, I do not understand why you removed the issue template.</p>
+<p>As far as I can tell, you're requesting that <code>rg '*' some-file</code> should work. Where <code>*</code> is inferred to apply to an empty sub-expression, which in turn matches anything. In other words, it's strictly superfluous. There should be no difference between the regexes <code>*key*ord</code> and <code>key*ord</code>.</p>
+<p>ripgrep's regex engine does not permit applying a repetition operator to a non-existent expression. You left this out of your issue:</p>
+<pre><code>$ rg &quot;*key*&quot;
+regex parse error:
+    *key*
+    ^
+error: repetition operator missing expression
+</code></pre>
+<p>PCRE2 has the same restriction:</p>
+<pre><code>$ rg &quot;*key*&quot; -P
+PCRE2: error compiling pattern at offset 0: quantifier does not follow a repeatable item
+</code></pre>
+<p>This is working as intended.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-04-30 15:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:10 UTC
+    </footer>
+</body>
+</html>

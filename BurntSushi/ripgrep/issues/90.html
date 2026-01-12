@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whitelist certain dot files? - BurntSushi/ripgrep #90</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Whitelist certain dot files?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/90">#90</a>
+        opened by <a href="https://github.com/kaushalmodi">@kaushalmodi</a>
+        on 2016-09-25 20:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kaushalmodi">@kaushalmodi</a></div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>I am trying to whitelist certain dot files. But it does not seem to work.</p>
+<p>Is the syntax in <code>.ignore</code> file incorrect?</p>
+<p>Thanks.</p>
+<pre><code>~/temp/:proj/SOMEPRJ&gt; tree -a
+.
+├── .file
+└── .ignore
+
+0 directories, 2 files
+km²~/temp/:proj/SOMEPRJ&gt; cat .ignore
+!.file
+km²~/temp/:proj/SOMEPRJ&gt; cat .file
+foo
+km²~/temp/:proj/SOMEPRJ&gt; which rg
+rg:      aliased to \rg --follow --no-mmap --no-ignore-vcs --smart-case
+km²~/temp/:proj/SOMEPRJ&gt; rg foo
+No files were searched, which means ripgrep probably applied a filter you didn't expect. Try running again with --debug.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-09-25 20:51</div>
+            <div class="timeline-body"><p>Here with <code>--debug</code>:</p>
+<pre><code>km²~/temp/:proj/SOMEPRJ&gt; rg foo --debug
+DEBUG:grep::search: regex ast:
+Literal {
+    chars: [
+        'f',
+        'o',
+        'o'
+    ],
+    casei: false
+}
+DEBUG:grep::literals: literal prefixes detected: Literals { lits: [Complete(foo)], limit_size: 250, limit_class: 10 }
+DEBUG:rg::ignore: ./.ignore ignored because it is hidden
+DEBUG:rg::ignore: ./.file ignored because it is hidden
+IO error for operation on ./.#.ignore: No such file or directory (os error 2)
+DEBUG:rg::ignore: kmodi/temp/proj/./#.ignore# ignored by Pattern { from: &quot;/home/kmodi/.ignore&quot;, original: &quot;*#*#&quot;, pat: &quot;**/*#*#&quot;, whitelist: false, only_dir: false }
+No files were searched, which means ripgrep probably applied a filter you didn't expect. Try running again with --debug.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 20:55</div>
+            <div class="timeline-body"><p>Are you using current master? If not, you need to use <code>.rgignore</code>. Current master supports both <code>.rgignore</code> and <code>.ignore</code>, with the intent of deprecating <code>.rgignore</code>.</p>
+<p>With that said, actually, you can't whitelist hidden files. The only way a hidden file gets searched is if <code>--hidden</code> is set or if <code>-g</code> is used to explicitly match a hidden file.</p>
+<p>This does seem like a shortcoming.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2016-09-25 20:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 20:57</div>
+            <div class="timeline-body"><p>I think what this means is that we should do the hidden check <em>last</em>, which will enable CLI globs, ignores or file types the opportunity to whitelist them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-09-25 22:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-09-26 01:34</div>
+            <div class="timeline-body"><blockquote>
+<p>Are you using current master?</p>
+</blockquote>
+<p>Yes, I am, and thus the reference to <code>.ignore</code> :)</p>
+<blockquote>
+<p>This does seem like a shortcoming.</p>
+</blockquote>
+<p>Thanks for recognizing this as a bug and fixing it this quick!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ye">@ye</a> on 2016-11-04 20:32</div>
+            <div class="timeline-body"><p>We use GitLab CI and its configuration file is named <code>.gitlab-ci.yml</code> and because of <code>rg</code> skips hidden files, none of the content of hidden files were searched, including <code>.gitlab-ci.yml</code>.</p>
+<pre><code class="language-bash">$ cat &lt;&lt;EOF &gt; .hidden-file
+&gt; docker pull python:3.4-wheezy
+&gt; EOF
+$ ll .hidden-file 
+-rw-r--r--  1 ye  staff  30 Nov  4 16:24 .hidden-file
+$ cat .hidden-file 
+docker pull python:3.4-wheezy
+$ rg python:3.4-wheezy
+$ 
+$ rg --no-ignore python-3.4:wheezy 
+$
+$ cat .hidden-file | grep 'python-3.4:wheezy'
+docker pull python-3.4:wheezy
+$ cat .hidden-file | rg  'python-3.4:wheezy'
+1:docker pull python-3.4:wheezy
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-04 21:52</div>
+            <div class="timeline-body"><p>@ye As I see it, <em>today</em>, you have two options available to you. First, pass the <code>--hidden</code> flag, which will search hidden files and directories. Second, add your hidden yml files to a whitelist in your <code>.ignore</code> file.</p>
+<p>I think I prefer you create a new issue, since the specific bug in this ticket has been fixed. In this new issue, could you explain why neither of the aforementioned options work for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ye">@ye</a> on 2016-11-07 16:38</div>
+            <div class="timeline-body"><p>@BurntSushi thank you. <code>--hidden</code> flag worked. <code>.ignore</code> file didn't. Thanks for the help!</p>
+<p>Some project owners preferred less issues being opened and always searching for existing issues and tack on rather than open a new ticket. I wasn't sure, so I commented here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-07 16:51</div>
+            <div class="timeline-body"><p>@ye if you'd be willing, i would definitely appreciate a big report on how .ignore didn't work for you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ye">@ye</a> on 2016-11-07 16:56</div>
+            <div class="timeline-body"><p>@BurntSushi Ok, will do.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:42 UTC
+    </footer>
+</body>
+</html>

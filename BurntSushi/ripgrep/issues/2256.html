@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escape sequences included in the replace string are not interpreted  - BurntSushi/ripgrep #2256</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Escape sequences included in the replace string are not interpreted</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2256">#2256</a>
+        opened by <a href="https://github.com/yuki-tsubaki">@yuki-tsubaki</a>
+        on 2022-07-13 05:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/yuki-tsubaki">@yuki-tsubaki</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>I installed from the Arch Linux repositories (<code>pacman -S ripgrep</code>).</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Arch Linux (GNU/Linux).</p>
+<h4>Describe your bug.</h4>
+<p>Escape sequences included in the replacement string (<code>-r</code>), are not interpreted as the character they encode for in the output, and are instead included literally.
+(I assume this is a bug, but it may actually be a feature request.)</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>Run <code>rg</code> using the <code>-r</code> option and giving a replacement string that contains an escape character.
+In my case, running the following command that I was trying to use to parse my battery info with:</p>
+<pre><code class="language-bash">upower -d | rg -Uo -m 1 -e '\p{any}*battery\n\s*present:\s*(\w*)\p{any}*?state:\s*(\w*)\p{any}*?percentage:\s*(\d\d%)\p{any}*' -r 'Battery present: ${1}\nState: ${2}\nPercentage: ${3}'
+</code></pre>
+<p>Results in this:
+<code>Battery present: yes\nState: charging\nPercentage: 59%</code></p>
+<h4>What is the actual behavior?</h4>
+<p>Using the <code>--debug</code> flag and cat with a sample file that has the output of <code>upower -d</code>:</p>
+<pre><code class="language-bash">cat upower_dump | rg -Uo -m 1 --debug -e '\p{any}*battery\n\s*present:\s*(\w*)\p{any}*?state:\s*(\w*)\p{any}*?percentage:\s*(\d\d%)\p{any}*' -r 'Battery present: ${1}\nState: ${2}\nPercentage: ${3}'
+</code></pre>
+<p>Results in this:</p>
+<pre><code>DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+Battery present: yes\nState: charging\nPercentage: 59%
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>I was expecting the output to substitute the proper characters for the escape sequences. Using <code>sd</code>, a Rust <code>sed</code> alternative, I was able to achieve the result I expected ripgrep to output.</p>
+<p>Running the following command:</p>
+<pre><code class="language-bash">upower -d | sd -f ms '.*battery\n\s*present:\s*(\w*)\p{any}*?state:\s*(\w*)\p{any}*?percentage:\s*(\d\d%).*' 'Battery present: ${1}\nState: ${2}\nPercentage: ${3}'
+</code></pre>
+<p>Which results in:</p>
+<pre><code>Battery present: yes
+State: charging
+Percentage: 59%
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-07-13 10:06</div>
+            <div class="timeline-body"><p>This is behaving as documented and as intended.</p>
+<p>See: https://github.com/BurntSushi/ripgrep/discussions/1953</p>
+<p>See: https://github.com/BurntSushi/ripgrep/discussions/2253</p>
+<p>Also, note for future issues, it is helpful to provide the smallest example of your issue. The one you've provided is quite large. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2022-07-13 10:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2022-07-13 10:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2022-07-13 10:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:34 UTC
+    </footer>
+</body>
+</html>

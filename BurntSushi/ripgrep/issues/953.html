@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`Walk` from `ignore` returns an Ok(...) and an Err(...) for the same permission-denied subdirectory - BurntSushi/ripgrep #953</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>Walk</code> from <code>ignore</code> returns an Ok(...) and an Err(...) for the same permission-denied subdirectory</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/953">#953</a>
+        opened by <a href="https://github.com/sashaweiss">@sashaweiss</a>
+        on 2018-06-16 15:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sashaweiss">@sashaweiss</a></div>
+            <div class="timeline-body"><p>Skipped some of the preamble, since this isn't strictly a <code>ripgrep</code> question!</p>
+<p>I'm using <code>ignore 0.4.2</code>, on Mac OSX 10.13.4.</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>When I use a <code>Walk</code> to iterate a directory containing a subdirectory with restricted permissions, it yields two separate entries for that subdirectory - one with an <code>Ok(DirEntry {...})</code> and one with an <code>Err(WithPath {...})</code>.</p>
+<p>Also interestingly, calling the <code>DirEntry::error()</code> method from the <code>DirEntry</code> in the <code>Ok</code> returns <code>None</code>.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p><a href="https://github.com/sashaweiss/ignore_permissions_example">This example repo</a> will demonstrate this behavior!</p>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>I think I expected that calling <code>DirEntry::error()</code> on the <code>DirEntry {...}</code> in the <code>Ok</code> would give me back the same <code>WithPath</code> error, or some other indicator that <code>ignore</code> won't be able to recur into that directory.</p>
+<p>Alternatively, if it's possible for a <code>Walk</code> to build a <code>DirEntry</code> even for a directory that is permission-restricted, maybe it makes sense for there to be another <code>Error</code> variant that contains a <code>DirEntry</code>? A <code>WithDirEntry {...}</code> perhaps?</p>
+<p>I think in either case it'd make sense to eliminate the duplicate entry - in the first case by not returning the <code>Err</code>, and in the second case by not returning the <code>Ok</code>. Off the bat, not sure which would make the most sense. It's also not immediately clear to me how to make sure a solution to this makes sense for permission-restricted <em>files</em>, since so far my discussion of it has been focused on directories (and the fact that <code>ignore</code> won't recur into them).</p>
+<p>My intuition says that the error comes about since <code>ignore</code> can detect the restricted directory while searching its parent directory, and that the error comes about when it tries to dive in - since this doesn't come up for restricted files. If you agree that this is something that should change, I'd be happy to try to help with a PR if you'd like!</p>
+<p>Thanks in advance for your advice! <code>ignore</code> has been awesome to use and exactly what I needed - just want to confirm this behavior with you before building a workaround.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-16 16:11</div>
+            <div class="timeline-body"><p>TL;DR - This looks like expected behavior to me. Thanks for the good bug report though!</p>
+<blockquote>
+<p>When I use a Walk to iterate a directory containing a subdirectory with restricted permissions, it yields two separate entries for that subdirectory - one with an <code>Ok(DirEntry {...})</code> and one with an <code>Err(WithPath {...})</code>.</p>
+</blockquote>
+<p>It's a bit more subtle than that. When you list the contents of <code>sandbox</code>, part of that listing includes <code>restricted_dir</code>, and there is no problem <em>observing</em> the existence of that directory. The subsequent error that occurs comes from attempting to <em>descend</em> into that directory, which is prevented from happening because of the permissions on that entry. In other words, this seems like correct behavior to me. That is, you aren't seeing duplicate entries.</p>
+<blockquote>
+<p>I think I expected that calling <code>DirEntry::error()</code> on the <code>DirEntry {...}</code> in the <code>Ok</code> would give me back the same <code>WithPath</code> error, or some other indicator that ignore won't be able to recur into that directory.</p>
+</blockquote>
+<p>The <code>DirEntry::error()</code> method exists to return errors unrelated to traversing the directory itself, but rather, related to any ancillary behavior required to support filtering. For example, in order to respect <code>.gitignore</code> rules, those files must be opened and parsed. Errors can occur while reading data from that file or while parsing data from that file. These errors don't impact traversal specifically, and shouldn't prevent traversal from continuing. These errors also shouldn't be suppressed completely since the command line application may want to surface them depending on the use case.</p>
+<p>The documentation on the <code>error</code> method isn't great. It gives an example of an error, but is still somewhat cryptic. I think improving the documentation on that method would be a great idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">doc</span> added by @BurntSushi on 2018-06-16 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sashaweiss">@sashaweiss</a> on 2018-06-18 04:33</div>
+            <div class="timeline-body"><p>Gotcha - thanks so much for the detailed response! Glad to hear this is expected. In that case, I'll build a workaround. Shouldn't be a big deal!</p>
+<p>Just for my own clarity - were you asking for help improving the docs on the <code>error</code> method? I'd be skeptical that my suggestions would be useful or accurate, especially given my earlier misinterpretation, but would be happy to try if that's what you meant.</p>
+<p>Thanks again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-18 10:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Just for my own clarity - were you asking for help improving the docs on the error method? I'd be skeptical that my suggestions would be useful or accurate, especially given my earlier misinterpretation, but would be happy to try if that's what you meant.</p>
+</blockquote>
+<p>Actually, suggestions from you would be far more useful than what I could come up with. You're the one using the crate, and you understand your use far better than I do. :-)</p>
+<p>You don't have to submit a PR or anything, but if you did want to help, just leaving some suggestions for things to include in the doc string would be much appreciated! Submitting a PR would be fine, and of course, doing nothing is fine too. :-) I will come up with something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sashaweiss">@sashaweiss</a> on 2018-06-18 13:17</div>
+            <div class="timeline-body"><p>Ok - sounds good! I'm happy to come up with some ideas. I'll keep you posted!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sashaweiss">@sashaweiss</a> on 2018-06-18 15:54</div>
+            <div class="timeline-body"><p>Having read a little deeper, it seems like the only time <code>error</code> would be non-<code>None</code> is in the case that this entry is a poorly-formatted <code>.[git]ignore</code> or <code>exclude</code>. (I initially thought it'd also error if the current entry is a directory containing a poorly formatted one of the above, but I no longer think that's true?)</p>
+<p>If that is the case, it's not clear to me that there's a lot to be added to the docstring for <code>error</code>. However, it might reduce ambiguity to be more concrete about the kind of errors that could be returned?</p>
+<p>I think my confusion came from the ambiguity inherent in &quot;An example of an error is...&quot;. If the only errors are ignore parsing errors, maybe the docstring could be more explicit about that? Unless I misread, of course. In that case, if the set of errors is still relatively discrete maybe the docstring could enumerate them, or say something more along the lines of &quot;This method is intended for detecting that parsing an <code>ignore</code> file errored. While other errors such as <code>&lt;other error case&gt;</code> may occur, these should be relatively rare.&quot;</p>
+<p>Re: the fact that <code>Walk</code> will return two entries for a permission-restricted subdirectory, I was largely able to come to the same conclusion you replied with while I was writing the bug report (i.e. that this could be expected behavior) - hopefully anyone who hits that in the future will be able to do the same, or can use this thread as a reference! So I think that that part of my issue has been documented here already.</p>
+<p>Thanks again for your help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-21 23:59</div>
+            <div class="timeline-body"><p>@sashaweiss The issue here is that I don't want to say, &quot;this will <em>only ever</em> produce <code>ignore</code> related errors,&quot; because that ties my hands in terms of the public API contract. However, I will updated it to say this, which I hope is a little clearer:</p>
+<pre><code class="language-rust">    /// Returns an error, if one exists, associated with processing this entry.
+    ///
+    /// An example of an error is one that occurred while parsing an ignore
+    /// file. Errors related to traversing a directory tree itself are reported
+    /// as part of yielding the directory entry, and not with this method.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-08-22 03:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sashaweiss">@sashaweiss</a> on 2018-08-30 19:33</div>
+            <div class="timeline-body"><p>Awesome - thanks @BurntSushi!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:34 UTC
+    </footer>
+</body>
+</html>

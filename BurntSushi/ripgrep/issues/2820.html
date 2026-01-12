@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--files is listing files that won't be searched into  - BurntSushi/ripgrep #2820</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--files is listing files that won't be searched into</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2820">#2820</a>
+        opened by <a href="https://github.com/fabiospampinato">@fabiospampinato</a>
+        on 2024-05-26 12:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/fabiospampinato">@fabiospampinato</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>13.0.0</p>
+<h3>How did you install ripgrep?</h3>
+<p>brew install ripgrep</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>macOS 12.5.1</p>
+<h3>Describe your bug.</h3>
+<p>The description for the &quot;--files&quot; flag says that it will list files that would be searched into, but if I execute something like this: <code>rg '.' node_modules --files | sort</code> I see top-level files listed also, like <code>./tsconfig.json</code>, which won't actually be searched into, as if I remove the <code>--files</code> flag I don't see any matches from those top-level files.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>Run <code>rg . [PATH] --files</code>, inside a directory containing some top-level files.</p>
+<h3>What is the actual behavior?</h3>
+<p>I see some files listed that exist outside of the root search path I specified.</p>
+<h3>What is the expected behavior?</h3>
+<p>I shouldn't see any files listed that exist outside of the root search path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-26 12:27</div>
+            <div class="timeline-body"><p>In the docs, the usage pattern for <code>--files</code> is:</p>
+<pre><code>rg [OPTIONS] --files [PATH...]
+</code></pre>
+<p>You appear to be using it as if the usage pattern is this:</p>
+<pre><code>rg [OPTIONS] &lt;pattern&gt; --files [PATH...]
+</code></pre>
+<p>The point of <code>rg --files</code> is that it doesn't accept a pattern. You're passing <code>.</code>, which is interpreted as a file path to the current working directory. Which, I believe, explains the behavior you're seeing...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2024-05-26 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-05-26 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fabiospampinato">@fabiospampinato</a> on 2024-05-26 12:45</div>
+            <div class="timeline-body"><p>Aaaaaah ok, thanks for explaining 👍</p>
+<p>Should it not accept a pattern though? 🤔 if it doesn't accept a pattern (even if it doesn't really do anything with it) then this workflow kinda breaks:</p>
+<ol>
+<li>running a normal <code>rg</code> command</li>
+<li>appending &quot;--files&quot; to the previous command to check if the file you expected to be searched into was actually searched into.</li>
+</ol>
+<p>Requiring the user to delete the pattern when passing the &quot;--files&quot; flag seems kinda arbitrary/unexpected to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-26 12:49</div>
+            <div class="timeline-body"><p>I don't understand why <code>--files</code> would take a pattern as an input and then not use it. You'll need to delete the pattern.</p>
+<p>And even if I agreed with you that it should accept a pattern, it would be a giant breaking change. So it's a non-starter. It's not like it's just some optional thing it can ignore if it's there and be fine if it isn't. It's a positional argument. So ripgrep would have to always treat the first positional argument to <code>--files</code> as a pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fabiospampinato">@fabiospampinato</a> on 2024-05-26 12:51</div>
+            <div class="timeline-body"><p>I guess the idea is that it would accept a pattern for consistency with other ways of running the program. I'm not sure if every other non-trivial way of running <code>rg</code> accepts a pattern though so maybe that argument is not that strong.</p>
+<p>Probably not worth breaking the world anyway 👍</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:49 UTC
+    </footer>
+</body>
+</html>

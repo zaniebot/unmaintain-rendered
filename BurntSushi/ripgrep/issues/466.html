@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--vimgrep doesn't print anything when a file is specified - BurntSushi/ripgrep #466</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--vimgrep doesn't print anything when a file is specified</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/466">#466</a>
+        opened by <a href="https://github.com/elirnm">@elirnm</a>
+        on 2017-04-27 23:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/elirnm">@elirnm</a></div>
+            <div class="timeline-body"><p>When a specific file is specified for a search, running rg with <code>--vimgrep</code> results in nothing being printed. The <code>--vimgrep</code> option works fine if a specific file isn't specified.</p>
+<p>This is with rg 0.5.1</p>
+<p>Specifying a specific file (doesn't work):
+<img src="https://cloud.githubusercontent.com/assets/19817004/25508720/f79a5a8c-2b68-11e7-967b-556e2c320935.PNG" alt="capture" /></p>
+<p>Not specifying a specific file (works):
+<img src="https://cloud.githubusercontent.com/assets/19817004/25508756/225f2270-2b69-11e7-8b7b-7c11e2ffba1b.PNG" alt="capt2ure" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-28 11:04</div>
+            <div class="timeline-body"><p>I can't reproduce this problem:</p>
+<pre><code>[andrew@Serval ripgrep-466] echo Haunting &gt; titles.txt
+[andrew@Serval ripgrep-466] rg Haunting
+titles.txt
+1:Haunting
+[andrew@Serval ripgrep-466] rg Haunting titles.txt
+1:Haunting
+[andrew@Serval ripgrep-466] rg --vimgrep Haunting titles.txt
+1:1:Haunting
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpp">@kpp</a> on 2017-04-30 12:27</div>
+            <div class="timeline-body"><p>I have reproduced this problem only on <strong>Windows</strong>. Linux is fine.</p>
+<p><img src="https://cloud.githubusercontent.com/assets/467709/25564322/846ce00e-2db9-11e7-9756-3eb376286185.png" alt="rg" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpp">@kpp</a> on 2017-04-30 12:41</div>
+            <div class="timeline-body"><p>Test it with code on <code>Windows</code>:</p>
+<pre><code>// See: https://github.com/BurntSushi/ripgrep/issues/466
+#[test]
+fn regression_466_vimgrep_fails_on_windows() {
+    let wd = WorkDir::new(&quot;regression_466_vimgrep_fails_on_windows&quot;);
+    let path = &quot;titles.txt&quot;;
+    wd.create(path, &quot;Haunting\n&quot;);
+
+    let mut cmd = wd.command();
+    cmd.arg(&quot;--vimgrep&quot;).arg(&quot;Haunting&quot;).arg(path);
+    let lines: String = wd.stdout(&amp;mut cmd);
+
+    let expected = &quot;\
+1:1:Haunting
+&quot;;
+
+    assert_eq!(lines, expected);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-05-08 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Taverius">@Taverius</a> on 2017-05-29 19:33</div>
+            <div class="timeline-body"><p>I was noticing this too.</p>
+<p>Just to be quadruply sure, I tried all variants of <code>rg</code> v0.5.2 provided: x86/x64, gnu/msvc</p>
+<p>So hey, at least its not a compiler issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elirnm">@elirnm</a> on 2017-06-02 10:45</div>
+            <div class="timeline-body"><p>I did some combination testing on the arguments that <code>--vimgrep</code> is a combination of, and the issue seems to lie with <code>--color</code>. When a file is specified to search, setting either <code>--color never</code> or <code>--color ansi</code> will cause nothing to be printed, while the same command with <code>--color always</code> or <code>--color auto</code> will print the matches.</p>
+<p>Everything behaves as expected if a filepath isn't specified, even if that exact path is given as the value to a <code>-g</code> argument.</p>
+<p>So:
+<code>rg blah test.txt --color &lt;never|ansi&gt;</code> fails
+<code>rg blah test.txt --color &lt;auto|always&gt;</code> succeeds
+<code>rg blah -g test.txt --color &lt;never|ansi|auto|always&gt;</code> succeeds</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andyleejordan">@andyleejordan</a> on 2017-07-06 18:31</div>
+            <div class="timeline-body"><p>To add to this confusing conversation: using rg 0.5.2, I'm getting invisible output, here's a copy paste:</p>
+<pre><code>$ rg -tcmake group.cpp
+src\CMakeLists.txt
+471:  zookeeper/group.cpp
+$ rg -tcmake group.cpp | echo
+src\CMakeLists.txt:  zookeeper/group.cpp
+</code></pre>
+<p>And here's a screenshot:</p>
+<p><img src="https://user-images.githubusercontent.com/2226434/27926796-858c71ca-623e-11e7-8ca6-93cfb4d4e4b8.PNG" alt="ripgrep" /></p>
+<p>The result <code>src\CMakeLists.txt</code> is output, since it copied and pasted into here, but it's not rendering!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elirnm">@elirnm</a> on 2017-07-06 20:39</div>
+            <div class="timeline-body"><p>That is a colorization issue. See #342.</p>
+<hr />
+<p>From: Andrew Schwartzmeyer <a href="mailto:notifications@github.com">notifications@github.com</a>
+Sent: Thursday, July 6, 2017 11:31:18 AM
+To: BurntSushi/ripgrep
+Cc: elirnm; Author
+Subject: Re: [BurntSushi/ripgrep] --vimgrep doesn't print anything when a file is specified (#466)</p>
+<p>To add to this confusing conversation: using rg 0.5.2, I'm getting invisible output, here's a copy paste:</p>
+<p>$ rg -tcmake group.cpp
+src\CMakeLists.txt
+471:  zookeeper/group.cpp
+$ rg -tcmake group.cpp | echo
+src\CMakeLists.txt:  zookeeper/group.cpp</p>
+<p>And here's a screenshot:</p>
+<p>[ripgrep]<a href="https://user-images.githubusercontent.com/2226434/27926796-858c71ca-623e-11e7-8ca6-93cfb4d4e4b8.PNG">https://user-images.githubusercontent.com/2226434/27926796-858c71ca-623e-11e7-8ca6-93cfb4d4e4b8.PNG</a></p>
+<p>The result src\CMakeLists.txt is output, since it copied and pasted into here, but it's not rendering!</p>
+<p>—
+You are receiving this because you authored the thread.
+Reply to this email directly, view it on GitHub<a href="https://github.com/BurntSushi/ripgrep/issues/466#issuecomment-313481076">https://github.com/BurntSushi/ripgrep/issues/466#issuecomment-313481076</a>, or mute the thread<a href="https://github.com/notifications/unsubscribe-auth/AS5iLGb5zQTLijd_I5VZeoVutyeAQTeEks5sLSf2gaJpZM4NK5dA">https://github.com/notifications/unsubscribe-auth/AS5iLGb5zQTLijd_I5VZeoVutyeAQTeEks5sLSf2gaJpZM4NK5dA</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andyleejordan">@andyleejordan</a> on 2017-07-06 21:34</div>
+            <div class="timeline-body"><p>@elirnm thank you a million! This has been aching me since I upgraded.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-22 01:41</div>
+            <div class="timeline-body"><p>I'm not able to reproduce this on Windows in either cygwin or PowerShell. For others, is this bug still happening with the latest version of ripgrep?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elirnm">@elirnm</a> on 2017-10-25 01:55</div>
+            <div class="timeline-body"><p>No, this is working for me now with 0.7.1.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpp">@kpp</a> on 2017-10-28 17:18</div>
+            <div class="timeline-body"><p>This is working for me now with 0.7.1 under Windows &amp; Linux. Would you please add my test from https://github.com/BurntSushi/ripgrep/issues/466#issuecomment-298229947 so we could catch the bug before releasing the code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-31 02:40</div>
+            <div class="timeline-body"><p>I can't reproduce this. Closing.</p>
+<p>(I'd encourage folks that want to add tests to submit PRs. :-))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-01-31 02:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kpp">@kpp</a> on 2018-01-31 22:41</div>
+            <div class="timeline-body"><p>I failed to write regression test. When I call rg from win console, there is no output <code>1:1:Haunting</code>, but when I run test, it passes:</p>
+<pre><code>...
+test regression_428_unrecognized_style ... ok
+test regression_466_vimgrep_fails_on_windows ... ok
+test regression_451_only_matching ... ok
+...
+</code></pre>
+<pre><code>// See: https://github.com/BurntSushi/ripgrep/issues/466
+#[test]
+fn regression_466_vimgrep_fails_on_windows() {
+    let wd = WorkDir::new(&quot;regression_466_vimgrep_fails_on_windows&quot;);
+    let path = &quot;titles.txt&quot;;
+    wd.create(path, &quot;Haunting\n&quot;);
+
+    let mut cmd = wd.command();
+    cmd.arg(&quot;--vimgrep&quot;).arg(&quot;Haunting&quot;).arg(path);
+    let lines: String = wd.stdout(&amp;mut cmd);
+
+    let expected = &quot;\
+1:1:Haunting
+&quot;;
+
+    assert_eq!(lines, expected);
+}
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:10 UTC
+    </footer>
+</body>
+</html>

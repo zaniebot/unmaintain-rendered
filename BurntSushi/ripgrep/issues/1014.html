@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gitignore not used if excludesfile is added via [include] block - BurntSushi/ripgrep #1014</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>gitignore not used if excludesfile is added via [include] block</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1014">#1014</a>
+        opened by <a href="https://github.com/laur89">@laur89</a>
+        on 2018-08-14 10:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/laur89">@laur89</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 0.9.0 (rev e86d3d95c2)
+-SIMD -AVX
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>deb release fetched from github.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Debian testing.</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>Global gitignore file is not picked up if <code>~/.gitconfig</code> doesn't include the reference to ignoresfile directly, but via</p>
+<pre><code>[include]
+    path = /path/to/sub-git-config
+</code></pre>
+<p>and only <code>/path/to/sub-git-config</code> includes</p>
+<pre><code>[core]
+    excludesfile = /home/user/.gitignore
+</code></pre>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<ol>
+<li>move all your ~/.gitconfig content to ~/.gitconfig_include</li>
+<li>replace ~/.gitconfig contents with</li>
+</ol>
+<pre><code>[include]
+    path = ~/.gitconfig_include
+</code></pre>
+<ol start="3">
+<li>search for content/file that includes files matched by your ~/.gitignore</li>
+<li>rg returns the file you expected to be ignored</li>
+</ol>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<p>As can be seen running with <code>--debug</code> flag on, global gitignore file is not picked up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2018-08-14 11:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">icebox</span> added by @BurntSushi on 2018-08-14 11:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-14 11:01</div>
+            <div class="timeline-body"><p>This is a bug, but I'm not sure when or if it will get fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-05-08 11:42</div>
+            <div class="timeline-body"><p>I'm not sure it's worth fixing this. ripgrep isn't ever going to bundle a full git configuration parser, so it's likely there will always be some kind of gap anyway.</p>
+<p>With that said, <a href="https://github.com/BurntSushi/ripgrep/blob/a2e6aec7a4d9382941932245e8854f0ae5703a5e/crates/ignore/src/gitignore.rs#L589-L604">the code for loading your git config</a> is fairly well isolated. So if an industrious individual can find a fix for this that's simple and safe, then I'd be willing to accept a PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-05-08 11:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">icebox</span> removed by @BurntSushi on 2020-05-08 11:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/piyo">@piyo</a> on 2020-05-11 14:50</div>
+            <div class="timeline-body"><p>Thank you for the above clarification. I agree with closing this issue.</p>
+<p>The ripgrep v12.1.0 documentation says &quot;In some cases, ripgrep and git will not always be in sync in terms of which files are ignored&quot;. Currently this issue is one of those cases.</p>
+<p>Can I understand why ripgrep does not ask the git-config executable for the location of the global excludes file? i.e. the one specified by <a href="https://git-scm.com/docs/gitignore#_configuration">core.excludesFile</a> (<code>git config --get core.excludesFile</code>) ? Is it for execution performance reasons or safety reasons?</p>
+<p>It seems <code>rg</code> already provides a workaround. Run the above and supply it to <code>rg</code> directly, ie.</p>
+<pre><code class="language-sh">git_global_exclude_file_memoize=&quot;$(git config --get core.excludesFile)&quot;
+rg --ignore-file=&quot;$git_global_exclude_file_memoize&quot; ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-05-11 15:00</div>
+            <div class="timeline-body"><p>That work-around is pretty good. It's not strictly equivalent since <code>--ignore-file</code> <a href="https://docs.rs/ignore/0.4.15/ignore/struct.WalkBuilder.html#ignore-rules">has a lower precedence than global gitignores</a>, although, the only thing with a lower precedence than global gitignores is <code>--ignore-file</code>, so I guess that works.</p>
+<p>Otherwise, the reason for not using <code>git</code> itself is simply because 1) I'd rather <code>rg</code> didn't unconditionally spawn a sub-process for every execution and 2) it requires <code>git</code> to actually be installed and available for ripgrep to use it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laur89">@laur89</a> on 2020-05-12 16:16</div>
+            <div class="timeline-body"><p>No idea why, but this issue is no longer reproducing for me.
+Gitignore is still including additional config, yet the gitignore settings are now picked up.</p>
+<p>v <code>12.0.1</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-05-12 16:55</div>
+            <div class="timeline-body"><p>ripgrep doesn't follow includes in git config files, so something else must be going on. Run ripgrep with <code>--debug</code> to see where the ignore rules are coming from.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laur89">@laur89</a> on 2020-11-03 14:40</div>
+            <div class="timeline-body"><p>Given we only manage ignores via git, would it be reasonable (read: safe) to symlink <code>.rgignore</code> to wherever our global gitignore file is?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-03 15:03</div>
+            <div class="timeline-body"><p>I think that should be okay. It won't have the same precedence as global gitignores (global has lower precedence than rgignore), but that isn't necessarily a problem in and of itself. Just the only difference I can think of.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/laur89">@laur89</a> on 2020-11-03 15:54</div>
+            <div class="timeline-body"><p>Cheers.
+For others with similar problem - if possible stop defining custom location for <code>core.excludesfile</code> and use the default <code>~/.config/git/ignore</code> as suggested in <a href="https://stackoverflow.com/a/22885996">this SO answer</a>.</p>
+<p>Rg already picks that one up and all the problems go away with none of the workarounds or hacks.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:39 UTC
+    </footer>
+</body>
+</html>

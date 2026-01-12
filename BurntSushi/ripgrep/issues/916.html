@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zombie processes cause rg --files to hang in /proc - BurntSushi/ripgrep #916</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Zombie processes cause rg --files to hang in /proc</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/916">#916</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2018-05-10 10:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 0.8.1 (rev ab64da73ab)
+-SIMD -AVX
+</code></pre>
+<h4>What operating system are you using ripgrep on?</h4>
+<pre><code>&gt; uname -s -r -v -m -p -i -o
+Linux 4.16.7-1-ARCH #1 SMP PREEMPT Wed May 2 21:12:36 UTC 2018 x86_64 unknown unknown GNU/Linux
+</code></pre>
+<h4>Describe the bug.</h4>
+<p>Even if it does not seem like a good idea in general to search the whole file system without excluding special folders like <code>/proc</code> (see also #311: <em>&quot;TL;DR is: don't search /proc&quot;</em>), I think that users will attempt to do so.</p>
+<p>We recently tracked down one specific reproducible state which causes the <code>ignore</code> crate to hang while traversing <code>/proc</code> (see https://github.com/sharkdp/fd/issues/288 for more details). The same bug can be reproduced with <code>rg --files</code>.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<ol>
+<li><p>Make sure that there are no zombie processes on your system (<code>ps -ef | rg '&lt;defunct&gt;'</code>)</p>
+</li>
+<li><p>Run <code>rg --files &gt; /dev/null 2&gt;&amp;1</code> inside <code>/proc</code>. Everything should work fine (process exits after a few seconds).</p>
+</li>
+<li><p>Create a zombie process on purpose
+a. Copy the code from https://stackoverflow.com/a/25228579/704831 into a file called <code>zombie.c</code>
+b. Compile it <code>gcc -o zombie zombie.c</code>
+c. Run it: <code>./zombie</code></p>
+</li>
+<li><p>Run <code>rg --files &gt; /dev/null 2&gt;&amp;1</code> inside <code>/proc</code> again. This seems to hang indefinitely.</p>
+</li>
+<li><p>Get the PID of the zombie process via <code>ps -ef | rg '&lt;defunct&gt;'</code>. Call it <code>$PID</code>.</p>
+</li>
+<li><p>Run <code>rg --glob &quot;\!$PID&quot; --files &gt; /dev/null 2&gt;&amp;1</code>. This should work fine, indicating that the directory traversal hangs in <code>/proc/$PID</code>.</p>
+</li>
+</ol>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<p><code>rg --files</code> hangs indefinitely inside the <code>/proc</code> folder.</p>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p><code>rg --files</code> traverses the <code>/proc</code> folder in finite time.</p>
+<p>Note: <code>find</code>, for example, does not seem to have this problem and finishes in finite time even in the presence of zombie processes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-05-10 11:33</div>
+            <div class="timeline-body"><p>Fascinating bug! <code>strace</code> reveals some of the secrets here:</p>
+<pre><code>execve(&quot;/home/andrew/rust/ripgrep/target/release/rg&quot;, [&quot;rg&quot;, &quot;--files&quot;, &quot;--no-messages&quot;, &quot;-j1&quot;, &quot;/proc/29082&quot;], 0x7ffc2f21e700 /* 87 vars */) = 0
+brk(NULL)                               = 0x55625317e000
+access(&quot;/etc/ld.so.preload&quot;, R_OK)      = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/etc/ld.so.cache&quot;, O_RDONLY|O_CLOEXEC) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=213799, ...}) = 0
+mmap(NULL, 213799, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7f3040e98000
+close(3)                                = 0
+openat(AT_FDCWD, &quot;/usr/lib/libdl.so.2&quot;, O_RDONLY|O_CLOEXEC) = 3
+read(3, &quot;\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0&gt;\0\1\0\0\0@\r\0\0\0\0\0\0&quot;..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=14160, ...}) = 0
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f3040e96000
+mmap(NULL, 2109584, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f3040aa5000
+mprotect(0x7f3040aa8000, 2093056, PROT_NONE) = 0
+mmap(0x7f3040ca7000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x2000) = 0x7f3040ca7000
+close(3)                                = 0
+openat(AT_FDCWD, &quot;/usr/lib/librt.so.1&quot;, O_RDONLY|O_CLOEXEC) = 3
+read(3, &quot;\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0&gt;\0\1\0\0\0000\36\0\0\0\0\0\0&quot;..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=30920, ...}) = 0
+mmap(NULL, 2128376, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f304089d000
+mprotect(0x7f30408a4000, 2093056, PROT_NONE) = 0
+mmap(0x7f3040aa3000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x6000) = 0x7f3040aa3000
+close(3)                                = 0
+openat(AT_FDCWD, &quot;/usr/lib/libpthread.so.0&quot;, O_RDONLY|O_CLOEXEC) = 3
+read(3, &quot;\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0&gt;\0\1\0\0\0\0]\0\0\0\0\0\0&quot;..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=145336, ...}) = 0
+mmap(NULL, 2216400, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f304067f000
+mprotect(0x7f3040698000, 2093056, PROT_NONE) = 0
+mmap(0x7f3040897000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x18000) = 0x7f3040897000
+mmap(0x7f3040899000, 12752, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7f3040899000
+close(3)                                = 0
+openat(AT_FDCWD, &quot;/usr/lib/libgcc_s.so.1&quot;, O_RDONLY|O_CLOEXEC) = 3
+read(3, &quot;\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0&gt;\0\1\0\0\0\0(\0\0\0\0\0\0&quot;..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0644, st_size=747480, ...}) = 0
+mmap(NULL, 2188016, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f3040468000
+mprotect(0x7f304047e000, 2093056, PROT_NONE) = 0
+mmap(0x7f304067d000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x15000) = 0x7f304067d000
+close(3)                                = 0
+openat(AT_FDCWD, &quot;/usr/lib/libc.so.6&quot;, O_RDONLY|O_CLOEXEC) = 3
+read(3, &quot;\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0&gt;\0\1\0\0\0`\20\2\0\0\0\0\0&quot;..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=2065784, ...}) = 0
+mmap(NULL, 3893488, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f30400b1000
+mprotect(0x7f304025f000, 2093056, PROT_NONE) = 0
+mmap(0x7f304045e000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1ad000) = 0x7f304045e000
+mmap(0x7f3040464000, 14576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7f3040464000
+close(3)                                = 0
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f3040e94000
+arch_prctl(ARCH_SET_FS, 0x7f3040e95380) = 0
+mprotect(0x7f304045e000, 16384, PROT_READ) = 0
+mprotect(0x7f304067d000, 4096, PROT_READ) = 0
+mprotect(0x7f3040897000, 4096, PROT_READ) = 0
+mprotect(0x7f3040aa3000, 4096, PROT_READ) = 0
+mprotect(0x7f3040ca7000, 4096, PROT_READ) = 0
+mprotect(0x55625283a000, 176128, PROT_READ) = 0
+mprotect(0x7f3040ecd000, 4096, PROT_READ) = 0
+munmap(0x7f3040e98000, 213799)          = 0
+set_tid_address(0x7f3040e95650)         = 29186
+set_robust_list(0x7f3040e95660, 24)     = 0
+rt_sigaction(SIGRTMIN, {sa_handler=0x7f3040684770, sa_mask=[], sa_flags=SA_RESTORER|SA_SIGINFO, sa_restorer=0x7f3040690dd0}, NULL, 8) = 0
+rt_sigaction(SIGRT_1, {sa_handler=0x7f3040684810, sa_mask=[], sa_flags=SA_RESTORER|SA_RESTART|SA_SIGINFO, sa_restorer=0x7f3040690dd0}, NULL, 8) = 0
+rt_sigprocmask(SIG_UNBLOCK, [RTMIN RT_1], NULL, 8) = 0
+prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+readlink(&quot;/etc/malloc.conf&quot;, 0x7ffc91c9a220, 4096) = -1 ENOENT (No such file or directory)
+open(&quot;/proc/sys/vm/overcommit_memory&quot;, O_RDONLY) = 3
+read(3, &quot;0&quot;, 1)                         = 1
+close(3)                                = 0
+brk(NULL)                               = 0x55625317e000
+mmap(NULL, 2097152, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_NORESERVE, -1, 0) = 0x7f303feb1000
+munmap(0x7f303feb1000, 2097152)         = 0
+mmap(NULL, 4190208, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_NORESERVE, -1, 0) = 0x7f303fcb2000
+munmap(0x7f303fcb2000, 1368064)         = 0
+munmap(0x7f3040000000, 724992)          = 0
+open(&quot;/sys/devices/system/cpu/online&quot;, O_RDONLY|O_CLOEXEC) = 3
+read(3, &quot;0-3\n&quot;, 8192)                  = 4
+close(3)                                = 0
+rt_sigaction(SIGPIPE, {sa_handler=SIG_IGN, sa_mask=[PIPE], sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x7f30400e58e0}, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+mmap(NULL, 2097152, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_NORESERVE, -1, 0) = 0x7f303fc00000
+open(&quot;/proc/self/maps&quot;, O_RDONLY|O_CLOEXEC) = 3
+prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+fstat(3, {st_mode=S_IFREG|0444, st_size=0, ...}) = 0
+read(3, &quot;5562522d5000-55625263a000 r-xp 0&quot;..., 1024) = 1024
+read(3, &quot;06                     /usr/lib/&quot;..., 1024) = 1024
+read(3, &quot; 788474                     /usr&quot;..., 1024) = 1024
+close(3)                                = 0
+sched_getaffinity(29186, 32, [0, 1, 2, 3]) = 32
+rt_sigaction(SIGSEGV, {sa_handler=0x5562524f34b0, sa_mask=[], sa_flags=SA_RESTORER|SA_ONSTACK|SA_SIGINFO, sa_restorer=0x7f3040690dd0}, NULL, 8) = 0
+rt_sigaction(SIGBUS, {sa_handler=0x5562524f34b0, sa_mask=[], sa_flags=SA_RESTORER|SA_ONSTACK|SA_SIGINFO, sa_restorer=0x7f3040690dd0}, NULL, 8) = 0
+sigaltstack(NULL, {ss_sp=NULL, ss_flags=SS_DISABLE, ss_size=0}) = 0
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f3040ecb000
+sigaltstack({ss_sp=0x7f3040ecb000, ss_flags=0, ss_size=8192}, NULL) = 0
+rt_sigaction(SIGPIPE, {sa_handler=SIG_DFL, sa_mask=[PIPE], sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x7f30400e58e0}, {sa_handler=SIG_IGN, sa_mask=[PIPE], sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x7f30400e58e0}, 8) = 0
+getrandom(&quot;&quot;, 0, GRND_NONBLOCK)         = 0
+getrandom(&quot;\xe7\x0e\x06\xc4\x60\xfe\xff\xfc\x06\x8a\x55\x44\x2c\xcb\xeb\xbb&quot;, 16, GRND_NONBLOCK) = 16
+openat(AT_FDCWD, &quot;/home/andrew/.ripgreprc&quot;, O_RDONLY|O_CLOEXEC) = 3
+ioctl(3, FIOCLEX)                       = 0
+read(3, &quot;--max-columns=200\n--colors=match&quot;..., 8192) = 167
+read(3, &quot;&quot;, 8192)                       = 0
+close(3)                                = 0
+ioctl(1, TCGETS, 0x7ffc91c99d10)        = -1 ENOTTY (Inappropriate ioctl for device)
+stat(&quot;/proc/29082&quot;, {st_mode=S_IFDIR|0555, st_size=0, ...}) = 0
+stat(&quot;/proc/29082&quot;, {st_mode=S_IFDIR|0555, st_size=0, ...}) = 0
+ioctl(1, TCGETS, 0x7ffc91c99d10)        = -1 ENOTTY (Inappropriate ioctl for device)
+getcwd(&quot;/proc&quot;, 512)                    = 6
+ioctl(1, TCGETS, 0x7ffc91c99d10)        = -1 ENOTTY (Inappropriate ioctl for device)
+fstat(1, {st_mode=S_IFREG|0664, st_size=7514, ...}) = 0
+fstat(1, {st_mode=S_IFREG|0664, st_size=7570, ...}) = 0
+stat(&quot;/proc/29082&quot;, {st_mode=S_IFDIR|0555, st_size=0, ...}) = 0
+openat(AT_FDCWD, &quot;/home/andrew/.gitconfig&quot;, O_RDONLY|O_CLOEXEC) = 3
+ioctl(3, FIOCLEX)                       = 0
+read(3, &quot;[push]\n\tdefault = simple\n[rerere&quot;..., 8192) = 224
+read(3, &quot;&quot;, 8192)                       = 0
+close(3)                                = 0
+stat(&quot;/home/andrew/.config/git/ignore&quot;, 0x7ffc91c993c0) = -1 ENOENT (No such file or directory)
+stat(&quot;/proc/29082&quot;, {st_mode=S_IFDIR|0555, st_size=0, ...}) = 0
+lstat(&quot;/proc&quot;, {st_mode=S_IFDIR|0555, st_size=0, ...}) = 0
+lstat(&quot;/proc/29082&quot;, {st_mode=S_IFDIR|0555, st_size=0, ...}) = 0
+openat(AT_FDCWD, &quot;/.rgignore&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/.ignore&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/.gitignore&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/.git/info/exclude&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+stat(&quot;/.git&quot;, 0x7ffc91c990d0)           = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/proc/.rgignore&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/proc/.ignore&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/proc/.gitignore&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/proc/.git/info/exclude&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+stat(&quot;/proc/.git&quot;, 0x7ffc91c990d0)      = -1 ENOENT (No such file or directory)
+stat(&quot;/proc/29082&quot;, {st_mode=S_IFDIR|0555, st_size=0, ...}) = 0
+open(&quot;/proc/29082&quot;, O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 3
+fstat(3, {st_mode=S_IFDIR|0555, st_size=0, ...}) = 0
+openat(AT_FDCWD, &quot;/proc/29082/.rgignore&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/proc/29082/.ignore&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/proc/29082/.gitignore&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/proc/29082/.git/info/exclude&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+stat(&quot;/proc/29082/.git&quot;, 0x7ffc91c99670) = -1 ENOENT (No such file or directory)
+getdents(3, /* 51 entries */, 32768)    = 1528
+open(&quot;/proc/29082/task&quot;, O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 4
+fstat(4, {st_mode=S_IFDIR|0555, st_size=0, ...}) = 0
+openat(AT_FDCWD, &quot;/proc/29082/task/.rgignore&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/proc/29082/task/.ignore&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/proc/29082/task/.gitignore&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/proc/29082/task/.git/info/exclude&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+stat(&quot;/proc/29082/task/.git&quot;, 0x7ffc91c99670) = -1 ENOENT (No such file or directory)
+getdents(4, /* 3 entries */, 32768)     = 80
+open(&quot;/proc/29082/task/29082&quot;, O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 5
+fstat(5, {st_mode=S_IFDIR|0555, st_size=0, ...}) = 0
+openat(AT_FDCWD, &quot;/proc/29082/task/29082/.rgignore&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/proc/29082/task/29082/.ignore&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/proc/29082/task/29082/.gitignore&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/proc/29082/task/29082/.git/info/exclude&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+stat(&quot;/proc/29082/task/29082/.git&quot;, 0x7ffc91c99670) = -1 ENOENT (No such file or directory)
+getdents(5, /* 45 entries */, 32768)    = 1328
+open(&quot;/proc/29082/task/29082/fd&quot;, O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = -1 EACCES (Permission denied)
+openat(AT_FDCWD, &quot;/proc/29082/task/29082/fd/.rgignore&quot;, O_RDONLY|O_CLOEXEC) = -1 EACCES (Permission denied)
+openat(AT_FDCWD, &quot;/proc/29082/task/29082/fd/.ignore&quot;, O_RDONLY|O_CLOEXEC) = -1 EACCES (Permission denied)
+openat(AT_FDCWD, &quot;/proc/29082/task/29082/fd/.gitignore&quot;, O_RDONLY|O_CLOEXEC) = -1 EACCES (Permission denied)
+openat(AT_FDCWD, &quot;/proc/29082/task/29082/fd/.git/info/exclude&quot;, O_RDONLY|O_CLOEXEC) = -1 EACCES (Permission denied)
+stat(&quot;/proc/29082/task/29082/fd/.git&quot;, 0x7ffc91c99670) = -1 EACCES (Permission denied)
+open(&quot;/proc/29082/task/29082/fdinfo&quot;, O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = -1 EACCES (Permission denied)
+openat(AT_FDCWD, &quot;/proc/29082/task/29082/fdinfo/.rgignore&quot;, O_RDONLY|O_CLOEXEC) = -1 EACCES (Permission denied)
+openat(AT_FDCWD, &quot;/proc/29082/task/29082/fdinfo/.ignore&quot;, O_RDONLY|O_CLOEXEC) = -1 EACCES (Permission denied)
+openat(AT_FDCWD, &quot;/proc/29082/task/29082/fdinfo/.gitignore&quot;, O_RDONLY|O_CLOEXEC) = -1 EACCES (Permission denied)
+openat(AT_FDCWD, &quot;/proc/29082/task/29082/fdinfo/.git/info/exclude&quot;, O_RDONLY|O_CLOEXEC) = -1 EACCES (Permission denied)
+stat(&quot;/proc/29082/task/29082/fdinfo/.git&quot;, 0x7ffc91c99670) = -1 EACCES (Permission denied)
+open(&quot;/proc/29082/task/29082/ns&quot;, O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = -1 EACCES (Permission denied)
+openat(AT_FDCWD, &quot;/proc/29082/task/29082/ns/.rgignore&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/proc/29082/task/29082/ns/.ignore&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/proc/29082/task/29082/ns/.gitignore&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/proc/29082/task/29082/ns/.git/info/exclude&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+stat(&quot;/proc/29082/task/29082/ns/.git&quot;, 0x7ffc91c99670) = -1 ENOENT (No such file or directory)
+open(&quot;/proc/29082/task/29082/net&quot;, O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 6
+fstat(6, {st_mode=S_IFDIR|0555, st_size=0, ...}) = 0
+openat(AT_FDCWD, &quot;/proc/29082/task/29082/net/.rgignore&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/proc/29082/task/29082/net/.ignore&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/proc/29082/task/29082/net/.gitignore&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/proc/29082/task/29082/net/.git/info/exclude&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+stat(&quot;/proc/29082/task/29082/net/.git&quot;, 0x7ffc91c99670) = -1 ENOENT (No such file or directory)
+getdents(6, 0x7f303fd9f5f0, 32768)      = -1 EINVAL (Invalid argument)
+getdents(6, 0x7f303fd9f5f0, 32768)      = -1 EINVAL (Invalid argument)
+getdents(6, 0x7f303fd9f5f0, 32768)      = -1 EINVAL (Invalid argument)
+getdents(6, 0x7f303fd9f5f0, 32768)      = -1 EINVAL (Invalid argument)
+getdents(6, 0x7f303fd9f5f0, 32768)      = -1 EINVAL (Invalid argument)
+getdents(6, 0x7f303fd9f5f0, 32768)      = -1 EINVAL (Invalid argument)
+getdents(6, 0x7f303fd9f5f0, 32768)      = -1 EINVAL (Invalid argument)
+getdents(6, 0x7f303fd9f5f0, 32768)      = -1 EINVAL (Invalid argument)
+getdents(6, 0x7f303fd9f5f0, 32768)      = -1 EINVAL (Invalid argument)
+getdents(6, 0x7f303fd9f5f0, 32768)      = -1 EINVAL (Invalid argument)
+getdents(6, 0x7f303fd9f5f0, 32768)      = -1 EINVAL (Invalid argument)
+getdents(6, 0x7f303fd9f5f0, 32768)      = -1 EINVAL (Invalid argument)
+getdents(6, 0x7f303fd9f5f0, 32768)      = -1 EINVAL (Invalid argument)
+...
+</code></pre>
+<p>In particular, <code>getdents(6, 0x7f303fd9f5f0, 32768)      = -1 EINVAL (Invalid argument)</code> is repeated in what appears to be an infinite loop. This happens even when ripgrep uses walkdir directly (forced by passing <code>-j1</code>). If I run walkdir's example program on the directory, then I see this output:</p>
+<pre><code>/proc/29271
+/proc/29271/task
+/proc/29271/task/29271
+/proc/29271/task/29271/fd
+ERROR: IO error for operation on /proc/29271/task/29271/fd: Permission denied (os error 13)
+/proc/29271/task/29271/fdinfo
+ERROR: IO error for operation on /proc/29271/task/29271/fdinfo: Permission denied (os error 13)
+/proc/29271/task/29271/ns
+ERROR: IO error for operation on /proc/29271/task/29271/ns: Permission denied (os error 13)
+/proc/29271/task/29271/net
+ERROR: Invalid argument (os error 22)
+ERROR: Invalid argument (os error 22)
+ERROR: Invalid argument (os error 22)
+ERROR: Invalid argument (os error 22)
+...
+</code></pre>
+<p>with the invalid argument error appearing to be coming from a loop.</p>
+<p>If I look at the strace logs in <code>find</code>, I see the same <code>EINVAL</code> errors, but no looping.</p>
+<p>Reading the man page for <code>getdents</code>, it says that <code>EINVAL</code> means &quot;Result buffer is too small.&quot;</p>
+<p>Following the strace logs, the problematic directory appears to be <code>/proc/31439/task/31439/net</code>:</p>
+<pre><code>$ ls /proc/31439/task/31439/net
+ls: reading directory '/proc/31439/task/31439/net': Invalid argument
+</code></pre>
+<p>I've scoured the man pages of <code>readdir(2)</code> (Linux, no longer relevant?), <code>readdir(3)</code> (POSIX) and <code>getdents</code> (the last being the raw syscall), and I can't find <em>anything</em> that specifies the behavior of these routines when an error is returned. In particular, the fact that <code>readdir</code> can return <code>EINVAL</code> isn't apparently specified by POSIX. My guess at this particular moment in time is that the directory stream opened by <code>opendir</code> is not advanced either when this particular error occurs or when any error occurs. This explains the infinite loop, since errors that occur during directory traversal don't stop traversal.</p>
+<p>Given the lack of specification, the next best thing is to go out and look at how tools like <code>find</code> (or probably <code>fts</code>) handle this case. When <code>readdir</code> returns an error, do they give up on reading that directory immediately? Is there case analysis on the type of error where some errors result in giving up but others result in mushing on? I don't know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-05-10 11:34</div>
+            <div class="timeline-body"><p>Thanks for the excellent reproducible bug report!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2018-05-10 11:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2018-05-10 15:21</div>
+            <div class="timeline-body"><p>Thank you for your detailed response.</p>
+<p>I can actually reproduce this by using just <code>std::fs::read_dir</code>:</p>
+<pre><code class="language-rust">use std::env;
+use std::io;
+use std::fs;
+use std::path::Path;
+
+fn visit_dirs(dir: &amp;Path) -&gt; io::Result&lt;()&gt; {
+    for entry in fs::read_dir(dir)? {
+        println!(&quot;{:?}&quot;, entry);
+
+        if let Ok(entry) = entry {
+            let path = entry.path();
+            if path.is_dir() {
+                let _ = visit_dirs(&amp;path);
+            }
+        }
+    }
+    Ok(())
+}
+
+fn main() {
+    let root = env::args().nth(1).unwrap();
+    let _ = visit_dirs(Path::new(&amp;root));
+}
+</code></pre>
+<p>Which hangs in the same loop:</p>
+<pre><code>&gt; cargo run -- /proc/4032
+...
+Err(Os { code: 22, kind: InvalidInput, message: &quot;Invalid argument&quot; })
+Err(Os { code: 22, kind: InvalidInput, message: &quot;Invalid argument&quot; })
+Err(Os { code: 22, kind: InvalidInput, message: &quot;Invalid argument&quot; })
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-05-10 15:23</div>
+            <div class="timeline-body"><p>Ah yeah thanks for doing that. That was going to be my next test, but ran out of time.</p>
+<p>Probably the next step is to scrutinize <code>find</code>/<code>fts</code> and see how they handle the errors returned by <code>readdir</code>. AIUI, <code>fs::read_dir</code> is basically just a pretty thin layer on top of a loop that calls <code>readdir</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2018-05-10 15:24</div>
+            <div class="timeline-body"><p>Oh, I just found this: https://github.com/BurntSushi/walkdir/issues/98</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-05-10 15:26</div>
+            <div class="timeline-body"><p>Nice! Forgot about that. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2018-05-10 17:37</div>
+            <div class="timeline-body"><p>So I did some more debugging and I believe I found the cause of this.</p>
+<p>When called on <code>/proc/$ZOMBIE_PID/net</code>, the <code>readdir_r</code> function</p>
+<pre><code class="language-c">int readdir_r(DIR *dirp, struct dirent *entry, struct dirent **result);
+</code></pre>
+<p>returns error code <code>22</code> (as we have seen above) and, <strong>at the same time</strong>, returns <code>NULL</code> in <code>*result</code>, signalling the end of the directory stream. If I am reading the code in the standard library correctly, this case can not be handled properly at the moment.</p>
+<pre><code class="language-rust">loop {
+    if readdir64_r(self.dirp.0, &amp;mut ret.entry, &amp;mut entry_ptr) != 0 {
+        return Some(Err(Error::last_os_error()))
+    }
+    if entry_ptr.is_null() {
+        return None
+    }
+    if ret.name_bytes() != b&quot;.&quot; &amp;&amp; ret.name_bytes() != b&quot;..&quot; {
+        return Some(Ok(ret))
+    }
+}
+</code></pre>
+<p>(Code from the <code>next</code> function of <code>impl Iterator for ReadDir</code>, see https://github.com/rust-lang/rust/blob/f25c2283b3f8a7518b2f83a252b50d29d9bfbfda/src/libstd/sys/unix/fs.rs#L252-L262)</p>
+<p>To handle this properly (without looping forever), one would probably have to check for <code>entry_ptr.is_null()</code> in the first (<code>Some(Err(...))</code>) case as well and store the result in some internal state of the iterator. On the next call of <code>next</code>, it would have to return <code>None</code>.</p>
+<p>What do you think? Is this something that should be reported upstream?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-05-10 17:44</div>
+            <div class="timeline-body"><p>@sharkdp Nice find! I think I do indeed agree with your conclusion that this should be fixed upstream.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2018-05-10 18:27</div>
+            <div class="timeline-body"><p>Reported here: https://github.com/rust-lang/rust/issues/50619</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-22 00:12</div>
+            <div class="timeline-body"><p>This should be fixed in the next stable release (1.29.0). I've confirmed that it is fixed in the current beta of 1.29.0, but is still present in Rust 1.28.0.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-01-27 18:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:32 UTC
+    </footer>
+</body>
+</html>

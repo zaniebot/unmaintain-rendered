@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat(globset): allow custom component separator characters? - BurntSushi/ripgrep #2703</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat(globset): allow custom component separator characters?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2703">#2703</a>
+        opened by <a href="https://github.com/akx">@akx</a>
+        on 2024-01-05 13:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/akx">@akx</a></div>
+            <div class="timeline-body"><h4>Describe your feature request</h4>
+<p>As discussed on https://github.com/astral-sh/ruff/discussions/8403.</p>
+<p>It could be useful if <code>globset</code> allowed a custom component separator character instead of the default <code>/</code> or <code>\</code> path separator, to make it possible to use <code>globset</code> for non-filename patterns such as Python qualified names.</p>
+<p>In other words, if (mildly mis)using the current <code>globset</code> as-is with <code>{'foo.x.bar', 'foo.y.bar', 'foo.x.y.bar'}</code> as potential targets, both <code>foo.*.bar</code> and <code>foo.**.bar</code> will match all of them; if <code>globset</code> could be told to interpret <code>.</code> as the separator character instead, <code>foo.*.bar</code> wouldn't match <code>foo.x.y.bar</code> (as it wouldn't match a filesystem path <code>foo/x/y/bar</code>).</p>
+<p>One alternative, as discussed on the Ruff issue, is to pre-mangle the globset contents and the strings to be matched to replace dots with slashes, but that would entail additional allocation and copying at some point, which sounds unfortunate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-01-05 14:57</div>
+            <div class="timeline-body"><p>I'll think about this. You caught me at a good time because I am in the process of rewriting <code>globset</code>. So now is a pretty good time for me to experiment with a setting like this. But I'm skeptical.</p>
+<p>Here are some concerns though:</p>
+<ul>
+<li>Globs are pretty tightly coupled to files/directories. For example, they at least have things like, &quot;a trailing <code>/</code> means that it will only match directories.&quot; Such a thing doesn't really make sense for your use case I think. It doesn't necessarily present a showstopping problem, but it is an oddity.</li>
+<li>Similarly, the &quot;require literal leading dot&quot; option that I plan to add also doesn't make a ton of sense if a glob is being used for something other than a file path. Namely, that setting (which will be enabled by default) really only exists because it's a Unix convention to prefix a file with a <code>.</code> if you want it to be hidden. If you changed the separator to <code>.</code> for path matching but didn't disable the &quot;require literal leading dot&quot; setting, then I suppose nothing terrible would happen in your case because the <code>.</code> is incidentally the separator. But if you used something else like <code>:</code>, then it might be a little odd.</li>
+<li>I'm also planning on adding support for walking a directory tree to <code>globset</code>. Its input will be a <code>Glob</code>. What happens if you build a <code>Glob</code> with a separator that isn't a path separator and use it to walk a directory tree? I suppose it could return an error. It's a little ham-fisted.</li>
+<li>While I haven't implemented this yet, globs will also likely need to support detecting absolute paths and handle them specially. File paths have a concept of this, but it doesn't necessarily generalize.</li>
+<li>The <code>globset</code> crate currently (and likely will continue to) implements optimizations based around the assumption is it matching file paths. For example, looking at things like <code>*.{foo,bar,quux}</code> and recognizing that all it needs to do is find the extension of the path and match it.</li>
+<li>In the status quo, it's possible to assume that <code>/</code> is <em>always</em> a separator. I can't think off hand how this might be helpful, but my instincts say it's important. This feature request removes the ability to make that assumption.</li>
+<li>This seems likely to be a feature that has limited utility. In particular, I'd expect that in many cases, separators may be multiple characters. For example, <code>::</code> in Rust. That is quite a bit harder to support. Perhaps implausible.</li>
+</ul>
+<p>As I created that list, I'm afraid I've gotten more and more skeptical of functionality like this unfortunately.</p>
+<blockquote>
+<p>One alternative, as discussed on the Ruff issue, is to pre-mangle the globset contents and the strings to be matched to replace dots with slashes, but that would entail additional allocation and copying at some point, which sounds unfortunate.</p>
+</blockquote>
+<p>Possibly unfortunate, but not necessarily. It really depends. I think it would be prudent to start here. And if it ends up being a perf concern, then I actually think the next best step would be to build your own pattern language specifically for this sort of thing. The part of <code>globset</code> that translates a glob to a regex string is rather small and not hard copy and modify. Then you just need to feed the resulting regexes to <code>regex::RegexSet</code>. It's true that <code>globset</code> has other optimizations, but I think at least some of them are no longer relevant, and others are coupled with the notion of searching file paths anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2024-01-05 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2024-01-05 18:43</div>
+            <div class="timeline-body"><p>Thank you for putting so much thought into this suggestion!</p>
+<p>For Ruff's use case, I think some of the optimizations <code>globset</code> knows for, well, glob sets would be useful – not necessarily the extension matching mentioned above, but matching the entire path by prefix or suffix only is a likely common use case, for e.g. &quot;ban all of <code>package1.legacy.*</code>&quot;. It's of course not an issue to reimplement them however this'll end up getting done, but would be nice to be able to use existing, tested code :)</p>
+<p>But we'll see – if you don't think it's a great idea to allow custom separators (and I don't blame you!), I'll explore other ways of implementing this first (if I have the time and bandwidth, that is...).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-01-05 18:52</div>
+            <div class="timeline-body"><p>Aye. Ideally, we could push those optimizations down into the regex engine. It's in theory more amenable to such things than it was when I wrote <code>globset</code>.</p>
+<p>I do think it would be wise to get a &quot;macro&quot; benchmark here. If real use cases are dominated by something other than filtering out Python paths, then it might not be worth optimizing it too much.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:45 UTC
+    </footer>
+</body>
+</html>

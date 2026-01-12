@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ignore: Avoid contention on num_pending - BurntSushi/ripgrep #2642</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ignore: Avoid contention on num_pending</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/2642">#2642</a>
+        opened by <a href="https://github.com/tavianator">@tavianator</a>
+        on 2023-10-30 20:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tavianator">@tavianator</a></div>
+            <div class="timeline-body"><p>Previously, every worker would increment the shared num_pending count on
+every new work item, and decrement it after finishing them, leading to
+lots of contention.  Now, we only track the number of workers actively
+running, so there is no contention except when workers go to sleep or
+wake up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tavianator">@tavianator</a> on 2023-10-30 20:10</div>
+            <div class="timeline-body"><p>Quick benchmark results (updated):</p>
+<pre><code class="language-console">tavianator@tachyon $ hyperfine -w2 fd-{before,after}&quot; -j24 -u '^$' ~/code/bfs/bench/corpus/chromium&quot;
+Benchmark 1: fd-before -j24 -u '^$' ~/code/bfs/bench/corpus/chromium
+  Time (mean ± σ):     297.6 ms ±  10.9 ms    [User: 3453.3 ms, System: 3379.4 ms]
+  Range (min … max):   279.9 ms … 313.3 ms    10 runs
+ 
+Benchmark 2: fd-after -j24 -u '^$' ~/code/bfs/bench/corpus/chromium
+  Time (mean ± σ):     231.6 ms ±   6.9 ms    [User: 1568.7 ms, System: 3660.1 ms]
+  Range (min … max):   224.6 ms … 248.9 ms    12 runs
+ 
+Summary
+  fd-after -j24 -u '^$' ~/code/bfs/bench/corpus/chromium ran
+    1.29 ± 0.06 times faster than fd-before -j24 -u '^$' ~/code/bfs/bench/corpus/chromium
+tavianator@tachyon $ hyperfine -w2 fd-{before,after}&quot; -j48 -u '^$' ~/code/bfs/bench/corpus/chromium&quot;
+Benchmark 1: fd-before -j48 -u '^$' ~/code/bfs/bench/corpus/chromium
+  Time (mean ± σ):     226.1 ms ±  17.9 ms    [User: 4597.6 ms, System: 4339.5 ms]
+  Range (min … max):   210.0 ms … 260.0 ms    13 runs
+ 
+Benchmark 2: fd-after -j48 -u '^$' ~/code/bfs/bench/corpus/chromium
+  Time (mean ± σ):     199.6 ms ±  17.7 ms    [User: 2232.0 ms, System: 5361.9 ms]
+  Range (min … max):   185.8 ms … 238.4 ms    15 runs
+ 
+Summary
+  fd-after -j48 -u '^$' ~/code/bfs/bench/corpus/chromium ran
+    1.13 ± 0.13 times faster than fd-before -j48 -u '^$' ~/code/bfs/bench/corpus/chromium
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ignore/src/walk.rs</code>:1687 on 2023-10-30 20:51</div>
+            <div class="timeline-body"><p>Can you add a comment explaining the termination logic here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ignore/src/walk.rs</code>:1697 on 2023-10-30 20:58</div>
+            <div class="timeline-body"><p>So I did like how previously there were methods with decentish names that made call sites a bit more descriptive. Maybe something like this:</p>
+<pre><code>// Inactivates a single worker and
+// returns the total number of remaining
+// active workers.
+fn worker_inactivate(&amp;mut self) -&gt; bool { ... }
+
+// Activates a single inactive worker.
+fn worker_activate(&amp;mut self) { ... }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> requested changes on 2023-10-30 20:59</div>
+            <div class="timeline-body"><p>Thanks! I'll need to think on this one. I've had problems with termination in the past and this changes the logic around that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tavianator">@tavianator</a> reviewed on 2023-10-30 21:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tavianator">@tavianator</a> on <code>crates/ignore/src/walk.rs</code>:1687 on 2023-10-30 21:18</div>
+            <div class="timeline-body"><p>I updated the comment with a correctness argument in d6f850f57436301fea602a5b4419ffacb464bcc9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tavianator">@tavianator</a> on <code>crates/ignore/src/walk.rs</code>:1697 on 2023-10-30 21:18</div>
+            <div class="timeline-body"><p>Good idea, done in d6f850f57436301fea602a5b4419ffacb464bcc9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tavianator">@tavianator</a> reviewed on 2023-10-30 21:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tavianator">@tavianator</a> on 2023-10-30 21:21</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks! I'll need to think on this one. I've had problems with termination in the past and this changes the logic around that.</p>
+</blockquote>
+<p>Understandable!  I am reasonably sure of the correctness now that I've strengthened the memory orderings to acquire/release.  But it's not a formal proof, and I haven't tried too hard to break it either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-10-30 21:21</div>
+            <div class="timeline-body"><p>Oh, also, what about the relaxed loads? It looks like they should be fine to me here, but I wonder if Acquire/Release are necessary. I think that's probably why I used <code>SeqCst</code> originally (because I didn't think through what was actually required).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tavianator">@tavianator</a> on 2023-10-30 21:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh, also, what about the relaxed loads? It looks like they should be fine to me here, but I wonder if Acquire/Release are necessary. I think that's probably why I used <code>SeqCst</code> originally (because I didn't think through what was actually required).</p>
+</blockquote>
+<p>I <em>think</em> it was still correct with relaxed accesses due to other orderings imposed by the deque implementation, but it's easier to argue correctness with acquire/release and they're not performance-critical any more so I switched them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tmccombs">@tmccombs</a> approved on 2023-10-31 15:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2023-11-21 23:29</div>
+            <div class="timeline-body"><p>OK, I've tried this out:</p>
+<ol>
+<li>I think I buy that this is a correct change.</li>
+<li>I have actually tried it on a number of corpora and everything looks OK.</li>
+<li>I haven't been able to observe any reliable performance difference. Nevertheless, I buy the argument here.</li>
+</ol>
+<p>Thank you!!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-11-21 23:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-21 23:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-12-19 18:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:11 UTC
+    </footer>
+</body>
+</html>

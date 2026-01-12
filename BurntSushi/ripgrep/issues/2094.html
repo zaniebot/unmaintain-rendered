@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`--max-count` breaks `-passthru` - BurntSushi/ripgrep #2094</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>--max-count</code> breaks <code>-passthru</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2094">#2094</a>
+        opened by <a href="https://github.com/balupton">@balupton</a>
+        on 2021-12-02 05:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/balupton">@balupton</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>n/a</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<pre><code>Darwin redacted 21.1.0 Darwin Kernel Version 21.1.0: Wed Oct 13 17:33:23 PDT 2021; root:xnu-8019.41.5~1/RELEASE_X86_64 x86_64
+</code></pre>
+<h4>Describe your bug.</h4>
+<pre><code class="language-bash">echo $'a\nb\nc\na\nb\nc' | rg --no-line-number --color never --multiline -m 1 --passthru 'b' --replace 'B'
+</code></pre>
+<p>outputs</p>
+<pre><code>a
+B
+</code></pre>
+<p>not the expected output of:</p>
+<pre><code>a
+B
+c
+a
+b
+c
+</code></pre>
+<p>This breaks the beneficial usage of <code>--passthru</code>, which is often used like so:</p>
+<pre><code class="language-bash">rg --multiline --passthru --max-count 1 &quot;$pattern&quot; --replace &quot;$replace&quot; &quot;$file&quot; | sponge &quot;$file&quot;
+</code></pre>
+<p>In my use case, I want to replace the first match with something, and trim away the remaining matches:</p>
+<pre><code class="language-bash">random=&quot;$RANDOM$RANDOM$RANDOM$RANDOM&quot;
+if rg --multiline --passthru --max-count 1 &quot;$pattern&quot; --replace &quot;$random&quot; &quot;$file&quot; | sponge &quot;$file&quot;; then
+    rg --multiline --passthru &quot;$pattern&quot; --replace '' &quot;$file&quot; | sponge &quot;$file&quot; || :
+    rg --multiline --passthru &quot;$random&quot; --replace &quot;$replace&quot; &quot;$file&quot; | sponge &quot;$file&quot;
+fi
+</code></pre>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>Run the code snippet earlier.</p>
+<h4>What is the actual behavior?</h4>
+<p>Run the code snippet earlier.</p>
+<h4>What is the expected behavior?</h4>
+<p>Documented earlier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-12-02 15:09</div>
+            <div class="timeline-body"><p>This is an interesting use case. It's not clear to me that &quot;breaks&quot; is the right word here... If the behavior were as you wanted, someone else might say that &quot;<code>--passthru</code> breaks <code>--max-count</code> because ripgrep continues searching even after it hits the maximum matches.&quot; But, I do tend to think that your suggestion is probably the right one. So I'll mark this as a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2021-12-02 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/balupton">@balupton</a> on 2021-12-03 14:41</div>
+            <div class="timeline-body"><p>As an alternative, a fresh experience that allows one to apply different replacements for different occurrence ranges would be nice, that way I could simplify the use case code prior to something like:</p>
+<pre><code class="language-bash">if rg --quiet &quot;$pattern&quot; &quot;$file&quot;; then
+    # replace the second and more occurrences with nothing
+    rg --multiline --passthru --occurrence=2, &quot;$pattern&quot; --replace '' &quot;$file&quot; | sponge &quot;$file&quot; || :
+    # as that leaves only the first occurrence, we don't need an occurrence range anymore
+    rg --multiline --passthru &quot;$pattern&quot; --replace &quot;$replace&quot; &quot;$file&quot; | sponge &quot;$file&quot;
+fi
+</code></pre>
+<p>I prosed something similar at https://github.com/greymd/teip/issues/27 and here https://github.com/chmln/sd/issues/105#issuecomment-984363282</p>
+<p>Other ranges that could be added, but aren't part of my use case could be:</p>
+<ul>
+<li><code>,5</code> for occurrences 1-5 (inclusive).</li>
+<li><code>5,9</code> for occurrences 5-9 (inclusive).</li>
+<li>I am not sure if <code>5-9</code> is also a convention in other libraries, and I am not sure if the wider convention is for <code>,</code> to be inclusive and <code>-</code> to be exclusive, or if it is the other way round, or if there is no convention.</li>
+</ul>
+<p>Re conventions:</p>
+<ul>
+<li>maths, non-programming:  https://stackoverflow.com/a/4396303/130638  / https://en.wikipedia.org/wiki/Bracket_(mathematics)#Intervals</li>
+<li>rust <code>..</code> exclusive <code>..=</code> inclusive: https://github.com/rust-lang/rust/issues/37854</li>
+<li>scala avoids the issue by using verbage instead http://allaboutscala.com/tutorials/chapter-2-learning-basics-scala-programming/scala-tutorial-learn-use-range-inclusive-exclusive/</li>
+<li>ruby <code>...</code> exclusive, <code>..</code> inclusive: https://www.reddit.com/r/ruby/comments/15omrb/why_is_ruby_range_syntax_this_way_15_exclusive/</li>
+</ul>
+<p><a href="https://docs.rs/regex/latest/regex/#repetitions">Rust regex manual</a> has this:</p>
+<pre><code>x{n,m}    at least n x and at most m x (greedy)
+x{n,}     at least n x (greedy)
+x{n}      exactly n x
+x{n,m}?   at least n x and at most m x (ungreedy/lazy)
+x{n,}?    at least n x (ungreedy/lazy)
+x{n}?     exactly n x
+</code></pre>
+<p><a href="https://www.man7.org/linux/man-pages/man1/cut.1.html">cut manual</a> has this:</p>
+<pre><code>  Use one, and only one of -b, -c or -f.  Each LIST is made up of
+       one range, or many ranges separated by commas.  Selected input is
+       written in the same order that it is read, and is written exactly
+       once.  Each range is one of:
+
+       N      N'th byte, character or field, counted from 1
+
+       N-     from N'th byte, character or field, to end of line
+
+       N-M    from N'th to M'th (included) byte, character or field
+
+       -M     from first to M'th (included) byte, character or field
+</code></pre>
+<p>So seems <code>,</code> and <code>-</code> have been interchangeable as inclusive for the most part.</p>
+<hr />
+<p>For the current functionality, say only caring about passthru up until an occurance. I think that would be better suited by a regex like <code>^.*\nthen what one actually wants</code> without <code>-passthru</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-10-12 16:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:29 UTC
+    </footer>
+</body>
+</html>

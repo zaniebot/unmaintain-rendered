@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>filter out duplicate results - BurntSushi/ripgrep #357</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>filter out duplicate results</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/357">#357</a>
+        opened by <a href="https://github.com/timotheecour">@timotheecour</a>
+        on 2017-02-11 23:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/timotheecour">@timotheecour</a></div>
+            <div class="timeline-body"><p><code>rg pattern dir1/dir2 dir1</code>
+return duplicate results</p>
+<pre><code>dir1/dir2/file_containin_pattern
+dir1/dir2/file_containin_pattern
+</code></pre>
+<p>could we filter out duplicate results? (at least as an option)</p>
+<p>the use case for <code>dir1/dir2 dir1</code> is to list relevant files in <code>dir1/dir2</code> ahead of the other ones in <code>dir1</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-11 23:25</div>
+            <div class="timeline-body"><p>Unlikely. The reason is that determining which results are duplicates is actually quite hard despite the conceptual simplicity. (The file paths alone don't tell the whole story.)</p>
+<p>One possible work-around for you is to execute two searches:</p>
+<pre><code>$ rg pattern dir1/dir2
+$ rg pattern -g '!dir1/dir2' dir1
+</code></pre>
+<p>The second command won't search <code>dir1/dir2</code>, which achieves what you want I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-11 23:26</div>
+            <div class="timeline-body"><p>If you're curious about what goes into determining whether two files are the same or not, you can check out the <a href="https://github.com/BurntSushi/same-file"><code>same-file</code></a> crate, which ripgrep does use in some limited circumstances (unrelated to this feature request though).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timotheecour">@timotheecour</a> on 2017-02-13 02:02</div>
+            <div class="timeline-body"><ul>
+<li>@BurntSushi thanks for the link. After looking at implementation, I wonder why posix function <code>realpath</code> can't be used (on linux/osx) or <code>GetFullPathName</code> (on windows)?</li>
+</ul>
+<p>eg: using d syntax which i'm more familiar with:</p>
+<pre><code class="language-d">auto is_same_file(string a, string b){return realPath(a)==realPath(b);}
+// realPath is a simple D wrapper around posix realpath from C
+</code></pre>
+<ul>
+<li>still though, a partially working filtering would be better than nothing at all, maybe with proper caveats in docs or naming it <code>--experimental-filter-dups</code> (and maybe only on <code>posix</code> for now)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-13 03:13</div>
+            <div class="timeline-body"><p>Computing the real path of every file is extremely expensive. This option is also not possible to implement in constant memory. It is a non starter.</p>
+<p>I'm not particularly interested in adding experimental half baked features.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-13 03:14</div>
+            <div class="timeline-body"><p>I think the answer here is to work around it. If you tell the tool to search the same directory twice, then it should show the same results twice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-02-13 03:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timotheecour">@timotheecour</a> on 2017-02-17 18:33</div>
+            <div class="timeline-body"><p>@BurntSushi</p>
+<ul>
+<li>honest question: is calling <code>realpath</code> on a file really more expensive than opening the file and doing the regex search? It would obviously only be run on the files that pass the various file filters ripgrep already uses</li>
+</ul>
+<blockquote>
+<p>This option is also not possible to implement in constant memory</p>
+</blockquote>
+<ul>
+<li>how is that different from <code>--sort-files</code> in that respect? <code>--sort-files</code>has to use O(N) memory where N=number of output lines produced</li>
+</ul>
+<p>EDIT: actually since we're searching a file-system tree, I guess we can do better than O(N) memory by doing breadth first listing and sorting each directory so it'd be O(D) where D=max number of entries per directory; ignore last point.
+Indeed, I agree it dedup across symlinks has to be O(N) because each output file is potentially a symlink to a previous output file. Still though, I would not expect that to be a real problem for most cases: number of output files produced by an <code>rg</code> search should typically fit in memory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mqudsi">@mqudsi</a> on 2019-07-09 19:52</div>
+            <div class="timeline-body"><p>@BurntSushi I agree with your reasoning 100% on why rg shouldn't try to deduplicate two textually different paths, however I am wondering if there can be an option to prevent the following behavior:</p>
+<pre><code>&gt; cd (mktemp -d)
+&gt; echo foo &gt; ./foo
+&gt; rg . -l ./ ./foo
+./foo
+./foo
+</code></pre>
+<p>without needing to pipe its output to another command to deal with (to avoid buffering and to be able to use <code>--color always</code> without needing to decode then re-add the colors during the filter stage).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-07-09 19:55</div>
+            <div class="timeline-body"><p>I don't think it's ripgrep's responsibility to deduplicate the arguments you give it. If you don't want it searching the same directory twice, then don't give the same directory twice. i.e., Do something to deduplicate the arguments before handing them to ripgrep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mqudsi">@mqudsi</a> on 2019-07-09 19:56</div>
+            <div class="timeline-body"><p>That's certainly fair enough; I was just checking if you would be open to having this be an option within ripgrep itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mqudsi">@mqudsi</a> on 2019-07-10 15:55</div>
+            <div class="timeline-body"><p>(I just saw your reply again by chance and it occurred to me to point out that, strictly speaking, the inputs to <code>rg</code> <em>are</em> deduplicated, but the problem is that they are nested.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:03 UTC
+    </footer>
+</body>
+</html>

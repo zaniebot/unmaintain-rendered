@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Searching for strings that start with a dash is very difficult - BurntSushi/ripgrep #215</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Searching for strings that start with a dash is very difficult</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/215">#215</a>
+        opened by <a href="https://github.com/alejandro5042">@alejandro5042</a>
+        on 2016-11-02 22:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alejandro5042">@alejandro5042</a></div>
+            <div class="timeline-body"><p>Create a file <code>test.txt</code> with the contents <code>-1</code>. The only way you can search this is by a <code>--regexp</code>/<code>-e</code> search:</p>
+<pre><code>0.03 - C:\Dev\Temp\rg-bug-negativenumbers&gt; rg -e &quot;-1&quot;
+test.txt
+1:-1
+</code></pre>
+<p>Calling it without <code>-e</code> doesn't work:</p>
+<pre><code>0.03 - C:\Dev\Temp\rg-bug-negativenumbers&gt; rg -1
+Unknown flag: '-1'
+</code></pre>
+<p>A <code>--fixed-strings</code>/<code>-F</code> search doesn't work either. I expected this to work.</p>
+<pre><code>0.04 - C:\Dev\Temp\rg-bug-negativenumbers&gt; rg -F &quot;-1&quot;
+Unknown flag: '-1'
+</code></pre>
+<p>Other strings that are affected by this: command-line options.</p>
+<p>(@pakdev actually found this issue.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-02 22:59</div>
+            <div class="timeline-body"><p>This is a classic issue with all command line tools. There are two accepted work-arounds. The first one, which you found already, is to explicitly use <code>-e</code>. The second one is to use <code>--</code> to indicate that all subsequent parameters are positional parameters. So in this case, that would be <code>rg -- -1</code>.</p>
+<p>AFAIK, these are widely spread work-arounds. I'm not sure there's much more that can be done, and the same issue afflicts <code>grep</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-11-02 22:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alejandro5042">@alejandro5042</a> on 2016-11-02 23:02</div>
+            <div class="timeline-body"><p>I understand, however, I did expect <code>-F</code> to accept the '-1' parameter.</p>
+<p>Perhaps, we can enforce that the pattern follows <code>-F</code> such that you can find these strings easily, mirroring how <code>-e</code> works:</p>
+<pre><code>      -e, --regexp PATTERN ...   Use PATTERN to search. This option can be
+                                 provided multiple times, where all patterns
+                                 given are searched.
+&gt;&gt;    -F, --fixed-strings ***PATTERN***  Treat the pattern as a literal string instead of &lt;&lt;
+                                         a regular expression.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-02 23:12</div>
+            <div class="timeline-body"><p>I don't think <code>-F</code> should be changed. In its current form, it's precisely identical to <code>grep</code>'s <code>-F</code> flag. Moreover, <code>-F</code> modifies the meaning of <em>all</em> patterns given, not just one. So if you gave <code>-F pat -e pat</code>, what would the behavior be? We could certainly pick one, but it seems like a kludge to me.</p>
+<p>I feel like this is a well understood failure mode for CLI tools and ripgrep provides the work arounds that one would expect already.</p>
+<p>Perhaps there could be an example showing a work around in the docs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @BurntSushi on 2016-11-02 23:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">doc</span> added by @BurntSushi on 2016-11-02 23:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-11-03 16:02</div>
+            <div class="timeline-body"><p>Dupe of https://github.com/BurntSushi/ripgrep/issues/102</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-11-06 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alejandro5042">@alejandro5042</a> on 2016-11-07 15:23</div>
+            <div class="timeline-body"><p>Thanks for the doc change!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alejandro5042">@alejandro5042</a> on 2016-11-10 05:33</div>
+            <div class="timeline-body"><p>FYI - What I did to workaround these issues in my tool was encode the entire fixed string into Unicode code points (<code>\x{FFFF}</code>) and use regex instead. No problem now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-10 11:35</div>
+            <div class="timeline-body"><p>@alejandro5042 Do you mean something like this? <code>rg '\x2Dfoo</code>? Why do that instead of <code>rg -e -foo</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-18 01:37</div>
+            <div class="timeline-body"><p>Note that in the next release (<code>0.3</code>) this is unfortunately going to change because I switched argv parsers in #233. I <a href="https://github.com/kbknapp/clap-rs/issues/742">have a bug report open to fix the issue upstream</a>. The TL;DR is that <code>rg -e -foo</code> won't work, so you'll need to do either <code>rg -- -foo</code> or <code>rg -e [-]foo</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alejandro5042">@alejandro5042</a> on 2016-11-23 02:59</div>
+            <div class="timeline-body"><p>I escape the plain-text because AFAIK that's the only way to search for exactly that text.</p>
+<p>Background: I built a wrapper script around <code>rg.exe</code> to pass the appropriate options and provide a simpler CLI interface for our source code; workaround some PowerShell issues (like this); and an option that returns the results as PowerShell objects for other scripts to consume. I also have the ability to export the results as a CSV file and append metadata such as the label/owner of the file (for pull requests).</p>
+<p>I have a TODO to upgrade to rg 0.3.x and I'll run my tests to verify everything still works with this new argv parser. Thanks for your great utility!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-23 03:44</div>
+            <div class="timeline-body"><p>Great! The good news is that this will get fixed again in 0.3.2, which i can hopefully get out tomorrow or the day after.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:52 UTC
+    </footer>
+</body>
+</html>

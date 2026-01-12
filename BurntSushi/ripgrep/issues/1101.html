@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>typos in man page for --multiline. - BurntSushi/ripgrep #1101</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>typos in man page for --multiline.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1101">#1101</a>
+        opened by <a href="https://github.com/anntzer">@anntzer</a>
+        on 2018-11-04 11:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/anntzer">@anntzer</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.10.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>Arch Linux distro package.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Arch Linux (rolling).</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>The following section of the man page (<code>man rg</code>) contains... incomplete(?) sentences (emphasis mine):</p>
+<blockquote>
+<p>-U, --multiline
+Enable matching across multiple lines.</p>
+</blockquote>
+<blockquote>
+<p>When multiline mode is enabled, ripgrep will lift the restriction that a match
+cannot include a line terminator. For example, <strong>when multiline mode is not codepoint
+other than \n</strong>. Similarly, the regex \n is explicitly forbidden, and if you try to
+use it, ripgrep will return an error. However, <strong>when multiline and regexes like \n</strong>
+are permitted.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-11-05 12:14</div>
+            <div class="timeline-body"><p>This is a strange one... The docs are fine in <code>src/app.rs</code> (the ultimate source of truth), and they even appear to be fine in the auto-generated ASCIIDoc format:</p>
+<pre><code>When multiline mode is enabled, ripgrep will lift the restriction that a match
+cannot include a line terminator. For example, when multiline mode is not
+enabled (the default), then the regex '\p{any}' will match any Unicode
+codepoint other than '\n'. Similarly, the regex '\n' is explicitly forbidden,
+and if you try to use it, ripgrep will return an error. However, when multiline
+mode is enabled, '\p{any}' will match any Unicode codepoint, including '\n',
+and regexes like '\n' are permitted.
+</code></pre>
+<p>But when it gets translated to the man page format, some text gets clipped:</p>
+<pre><code>When multiline mode is enabled, ripgrep will lift the restriction that a match cannot include a line terminator\&amp;. For example, when multiline mode is not codepoint other than
+\fI\en\fR\&amp;. Similarly, the regex
+\fI\en\fR
+is explicitly forbidden, and if you try to use it, ripgrep will return an error\&amp;. However, when multiline and regexes like
+</code></pre>
+<p>From my perspective, this is a bug in the asciidoc converter, unless we are unknowingly using some asciidoc syntax incorrectly. For example, it looks like every line that contains <code>'\\p{any}'</code> gets cut out. So that's likely the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2018-11-05 12:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-11-06 00:56</div>
+            <div class="timeline-body"><p>I'm pretty sure it's because <code>{any}</code> is interpreted as an attribute reference. Some old documentation i found says:</p>
+<blockquote>
+<p>An attribute reference is an attribute name (possibly followed by an additional parameters) enclosed in curly braces. When an attribute reference is encountered it is evaluated and replaced by its corresponding text value. If the attribute is undefined the line containing the attribute is dropped.</p>
+</blockquote>
+<p>Aside from manually escaping those (which would affect the <code>--help</code> output), there's supposed to be a way you can tell the converter to leave them alone by wrapping content in a block and removing <code>attributes</code> from its <code>subs</code> list, so the template would be something like this:</p>
+<pre><code>[subs=&quot;specialcharacters,quotes,specialwords,replacements,macros,replacements2&quot;]
+--
+{OPTIONS}
+--
+</code></pre>
+<p>But i've been trying to get that to work for a while and it just doesn't, i don't know why. The documentation for AsciiDoc is extremely unhelpful</p>
+<p>One thing that <em>does</em> seem to work is to pull out all of the <code>\{(\w+)\}</code> from the formatted options and then call <code>a2x</code> with this for each one: <code>-a$1=&amp;#123;$1}</code>. That way, if it tries to substitute anything, it just gets replaced by the literal version of itself. Feels a bit silly though</p>
+<p><em>Asciidoctor</em> seems to pass it through without any additional changes (even though the documentation says it's 'considered an error'), but it requires Ruby</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-11-06 11:57</div>
+            <div class="timeline-body"><blockquote>
+<p>If the attribute is undefined the line containing the attribute is dropped.</p>
+</blockquote>
+<p>Oof. What a weird failure mode. I'm just going to replace <code>{</code> and <code>}</code> with their escaped forms in the build script. We're already doing a few touchups to the plain text to &quot;convert&quot; it to asciidoc. That seems to fix things. Thanks for the research @okdana! :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-11-06 12:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:44 UTC
+    </footer>
+</body>
+</html>

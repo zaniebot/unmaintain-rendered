@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>glob matching doesn't seem to work consistenly for plain directory match - BurntSushi/ripgrep #1442</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>glob matching doesn't seem to work consistenly for plain directory match</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1442">#1442</a>
+        opened by <a href="https://github.com/w08r">@w08r</a>
+        on 2019-12-06 14:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/w08r">@w08r</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>▶ rg --version                                                                                                                                                                    
+ripgrep 11.0.1
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>Compiled from source</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>MacOS (Catalina)</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>I think that passing a plain directory as argument to <code>-g</code> should match files in that directory. Moreover, prefixing a match string with <code>!</code> should negate the results. This seems to the behaviour most of the time.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<pre><code>## from temp, empty directory
+mkdir a b
+echo hello &gt; a/test.txt
+cp a/test.txt b
+rg -g a hello ## return nothing
+rg -g '!b' hello ## returns match from file in 'a'
+</code></pre>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<p>Above script yields following (showing output of negated search only)</p>
+<pre><code>▶ sh /tmp/run.sh                                                                                                                                                                  
+a/test.txt
+1:hello
+</code></pre>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>Should have yielded results for either both or neither (preferably both) the invocations in the reproduction steps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/w08r">@w08r</a> on 2019-12-06 14:54</div>
+            <div class="timeline-body"><p>I am very new to rust, but if this is an issue you would like mending, I would be happy to have a stab at a PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-12-06 15:01</div>
+            <div class="timeline-body"><p>This is correct behavior. The <code>-g/--glob</code> flag applies to <em>every</em> file path searched. So the <code>-g a</code> behavior will cause ripgrep to descend into your <code>a</code> directory but <em>not</em> your <code>b</code> directory. However, <code>a</code> doesn't match any file inside your <code>a</code> directory. You can confirm this behavior by adding a <code>a/a</code> file:</p>
+<pre><code>$ echo hello &gt; a/a
+$ rg -g a hello
+a/a
+1:hello
+</code></pre>
+<p>If you do want to search everything in <code>a</code>, then you need to use a glob pattern that <em>both</em> matches the directory and the the files inside of it:</p>
+<pre><code>$ rg -g 'a/**' hello
+a/a
+1:hello
+
+a/test.txt
+1:hello
+</code></pre>
+<p>Your negation pattern works as you expect because it avoids descending into the <code>b</code> directory completely.</p>
+<p>With all of this said, while the behavior is correct, the docs for the <code>--glob</code> flag could really be improved, so we can use this ticket to track that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">doc</span> added by @BurntSushi on 2019-12-06 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/w08r">@w08r</a> on 2019-12-06 15:27</div>
+            <div class="timeline-body"><p>Thanks for the quick response, sir, and for the awesome tool!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2020-03-15 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-03-15 17:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:03 UTC
+    </footer>
+</body>
+</html>

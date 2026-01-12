@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>termcolor's StandardStream is not Send-able on Windows platforms - BurntSushi/ripgrep #503</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>termcolor's StandardStream is not Send-able on Windows platforms</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/503">#503</a>
+        opened by <a href="https://github.com/Limeth">@Limeth</a>
+        on 2017-06-04 19:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Limeth">@Limeth</a></div>
+            <div class="timeline-body"><p>Successful build on non-windows: https://travis-ci.org/Limeth/ethaddrgen/jobs/239361468
+Unsuccessful build on windows: https://ci.appveyor.com/project/Limeth/ethaddrgen/build/1.0.11</p>
+<p>As far as I can tell, it is impossible to use termcolor to output to stdout from separate threads.
+I ran into issues trying to create multiple <code>StandardStream::stdout</code>s, only the first instance actually output into the terminal (both <code>cmd</code> and <code>powershell</code>), although outputting into a file worked fine.
+I thought I could fix this issue by having a single instance of Arc&lt;Mutex<StandardStream>&gt;, but that type does not compile for Windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-04 19:56</div>
+            <div class="timeline-body"><p>This does look like a bug. The <code>termcolor</code> implementation stuffs a mutex guard into an internal enum (I believe) only for the purpose of code reuse, but it ends up infecting the <code>StandardStream</code> type when it should only impact the <code>StandardStreamLock</code> type (which I believe should not be <code>Send</code>).</p>
+<blockquote>
+<p>it is impossible to use termcolor to output to stdout from separate threads</p>
+</blockquote>
+<p>You need to be careful. <code>termcolor</code> could use with more docs, but the <a href="https://docs.rs/termcolor/0.3.2/termcolor/#example-using-bufferwriter"><code>Buffer</code> and <code>BufferWriter</code></a> types are provided specifically for the purpose of efficiently writing to stdout with colors in a platform independent way. Namely, if you're writing to stdout on Windows from multiple threads and you don't use the buffer types, then you will need to be careful to lock stdout and apply color settings and reset them before releasing the lock, otherwise you'll end up with color settings from multiple threads influencing each other.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2017-06-04 19:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/remram44">@remram44</a> on 2017-08-27 04:07</div>
+            <div class="timeline-body"><p>I ran into this, was very surprised to see my code didn't compile on Windows although I made sure to use multiplatform dependencies. I'm using a <code>StandardStream</code> in a <a href="https://docs.rs/log/0.3.8/log/trait.Log.html"><code>log::Log</code></a> implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-08-27 15:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-08-27 15:06</div>
+            <div class="timeline-body"><p><code>termcolor 0.3.3</code> is on crates.io with a fix for this.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:12 UTC
+    </footer>
+</body>
+</html>

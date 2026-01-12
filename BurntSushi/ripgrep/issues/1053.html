@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Discussion] Fuzzy Search - BurntSushi/ripgrep #1053</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Discussion] Fuzzy Search</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1053">#1053</a>
+        opened by <a href="https://github.com/Miserlou">@Miserlou</a>
+        on 2018-09-13 18:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Miserlou">@Miserlou</a></div>
+            <div class="timeline-body"><p>(This isn't a bug report, just an idea for discussion/feature request!)</p>
+<p>I've been using <code>ack</code>, <code>ag</code>, and now <code>rg</code> for years now. Thanks ever so much for this tool - I use it literally hundreds of times a day!</p>
+<p>Something that I've always wanted in this family is the ability to perform a fuzzy search. For instance, an <code>rg search --fuzzy</code> would include all of the places that I've created the typo <code>saerch</code> in my code. (The behavior is not too dissimilar to <code>--smart-case</code>, but for character changes rather than capitalization changes.)</p>
+<p>Perhaps, if the implementation allows, this could be extended to allow an <code>--edit-distance</code>, such that <code>rg search --fuzzy --edit-distance 2</code> would return <code>saecrh</code>, but <code>rg search --fuzzy --edit-distance 1</code> wouldn't.</p>
+<p>I realize that this is probably quite difficult given how much everything relies on regular expressions, and this might require a change to Rust's regex under the hood, which is a huge ask. But, I just wanted to throw it out there to see if this is at all possible. It'd make my life a lot easier and would add powerful new capabilities to the tool.</p>
+<p>Thanks for your consideration and time!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-09-13 18:21</div>
+            <div class="timeline-body"><p>Thanks for the idea! While I agree this would be quite cool, you are indeed correct that this is a rather large feature request and unlikely to happen at all. At least, inside of ripgrep. For that reason, I'm going to close this.</p>
+<p>With that said, ripgrep recently gained the ability to use any kind of regex engine. With that functionality, it would in theory be possible to build a literal-only matching engine that used a levenshtein automaton to implement edit distance like search. It's a substantial thing to do, but it's tractable and the ripgrep architecture is amenable to it.</p>
+<p>More generally, to handle your use case in a more robust way, I think I'd like to see a high quality code oriented fulltext search tool. It's something I've always wanted to build, and even thought about including it in ripgrep at one point: https://github.com/BurntSushi/ripgrep/issues/95 --- Alas, there is only so much time in the day.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-09-13 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2018-09-13 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/forrestthewoods">@forrestthewoods</a> on 2018-09-14 09:43</div>
+            <div class="timeline-body"><p>Funny story, I came here to ask this exact question. Lo and behold someone beat me to the punch by 15 hours! Funny how that works.</p>
+<p>Well, almost exact. @Miserlou appears to be specifically asking a levenshtein distance search. I'm more interested in fuzzy matching the way it's done for filenames in Sublime Text or VS Code.</p>
+<p>A couple of years back I wrote a blog post about my attempts to reverse engineer sublime text's fuzzy match. It works quite well imho. https://blog.forrestthewoods.com/reverse-engineering-sublime-text-s-fuzzy-match-4cffeed33fdb</p>
+<p>Different ranking formulas would be more appropriate for different inputs. I only attempted to craft one for things such as filenames and function names. I do not currently handle character swaps.</p>
+<p>So, I also think fuzzy matching would be useful in ripgrep. :) I wonder if there is a path that could provide high value at lower cost? What if you didn't care about character swaps? Maybe that simplification doesn't help enough for it to be worthwhile. I don't know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-09-14 13:23</div>
+            <div class="timeline-body"><p>@forrestthewoods I don't have the bandwidth to do the leg work or the mentoring required to bring a major feature like this into ripgrep. Instead, I recommend that someone come up with a vision for how it works and go build it. ripgrep is itself split into libraries, so plenty of code reuse is possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ijt">@ijt</a> on 2019-10-05 16:09</div>
+            <div class="timeline-body"><p>@Miserlou, I published a crate that could be a building block for something closer to what you had in mind: <a href="https://github.com/ijt/trigram">github.com/ijt/trigram</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ijt">@ijt</a> on 2019-10-07 17:18</div>
+            <div class="timeline-body"><p>I wrote a tool to do this based on trigrams: https://github.com/ijt/fum. You can try it with <code>cargo install fum</code> and then <code>fum pattern</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Miserlou">@Miserlou</a> on 2019-10-07 17:20</div>
+            <div class="timeline-body"><p>Issac! This is awesome!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ijt">@ijt</a> on 2019-10-07 17:22</div>
+            <div class="timeline-body"><p>Thanks @Miserlou, it was fun to write. Can you tell me a bit more about the use cases that motivated you to start this issue? I think <code>fum</code> may have to be changed radically to make it performant, and it would help to understand what are the most important ways it will be used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Miserlou">@Miserlou</a> on 2019-10-07 17:25</div>
+            <div class="timeline-body"><p>Basically my use case is that I have a typo or I can't remember what I called a variable in my codebase, so if I <code>fum search</code> it will find where I wrote <code>saerch</code>, or <code>Search</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ijt">@ijt</a> on 2019-10-07 19:32</div>
+            <div class="timeline-body"><p>Got it. As it stands, <code>fum</code> will not find <code>saerch</code> when queried with <code>search</code> since those have a similarity of 0.27 but the default threshold is 0.4. A threshold flag would help, but you'd have to know to change it. I suspect a more effective approach to the problem of typos in the code would be some sort of spell checker / fixer. For Rust code it would mostly be needed for comments, since the compiler would probably catch most typos in the code anyway, assuming the things being called or constructed don't already have typos in their names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jcguu95">@jcguu95</a> on 2020-03-17 12:28</div>
+            <div class="timeline-body"><p>@ijt your <code>trigram</code> is cool! I'm also thinking about a searching tool that doesn't just search lines, as most of my plain-text notes are organized to have less than 72 characters per line. Your tool might be useful when I build it. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/taleinat">@taleinat</a> on 2020-05-10 14:06</div>
+            <div class="timeline-body"><p>Anyone thinking of working on this is welcome to take a look at the code in my https://github.com/taleinat/fuzzysearch repo, which does Levenshtein-distance based ad-hoc fuzzy searches. It's not a command line tool, but the algorithms could be easily re-used, though they are written in Python (with some optimizations in Cython and C).</p>
+<p>If anyone wants to take a shot at this, I'd be happy to provide guidance and support!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/moeabdol">@moeabdol</a> on 2022-05-04 03:01</div>
+            <div class="timeline-body"><p>It is possible to interactivly switch between ripgrep and fzf during search. Two well respected tools that perfectly fit this scenario.
+<a href="https://github.com/junegunn/fzf/blob/master/ADVANCED.md#switching-between-ripgrep-mode-and-fzf-mode">ripgrep with fzf</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/temberature">@temberature</a> on 2022-08-09 16:37</div>
+            <div class="timeline-body"><blockquote>
+<p>It is possible to interactivly switch between ripgrep and <em>fzf</em> during search. Two well respected tools that perfectly fit this scenario. <a href="https://github.com/junegunn/fzf/blob/master/ADVANCED.md#switching-between-ripgrep-mode-and-fzf-mode">ripgrep with <em>fzf</em></a></p>
+</blockquote>
+<p>ripgrep and fzf are piped together, not as a unify function.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:41 UTC
+    </footer>
+</body>
+</html>

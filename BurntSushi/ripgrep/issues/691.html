@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exclusion globbing (`-g '!expr'`) does not work properly with double quotes - BurntSushi/ripgrep #691</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Exclusion globbing (<code>-g '!expr'</code>) does not work properly with double quotes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/691">#691</a>
+        opened by <a href="https://github.com/akien-mga">@akien-mga</a>
+        on 2017-11-26 21:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/akien-mga">@akien-mga</a></div>
+            <div class="timeline-body"><p>After hitting this issue relatively often since I started using ripgrep, I finally understood what the exact issue appears to be.</p>
+<p>When trying to exclude a given folder from my search paths with the globbing option <code>-g</code>, it fails if the expression string is enclosed with double quotes (<code>&quot;</code>). It works fine with simple quotes (<code>'</code>):</p>
+<pre><code>$ rg -g &quot;!thirdparty&quot; test
+bash: !thirdparty: event not found
+
+$ rg -g '!thirdparty' test
+servers/visual_server.h:        RID _make_test_cube();
+servers/visual_server.h:        RID test_texture;
+[...]
+</code></pre>
+<p>I don't know if the issue can be fixed in ripgrep or if it's a limitation of Bash, but I've been using <code>'</code> and <code>&quot;</code> interchangeably for many years in my shell without notable issues.</p>
+<p>Environment:</p>
+<ul>
+<li>Mageia 6 x86_64</li>
+<li>ripgrep 0.7.1 / -AVX -SIMD, built with cargo 0.22.0 and rustc 1.21.0</li>
+<li>bash 4.3.48</li>
+</ul>
+<p><em>Edit:</em> Upgraded ripgrep to 0.7.1, same issue (report was originally about 0.6.0).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-11-26 22:32</div>
+            <div class="timeline-body"><p>That is just the way history expansion works in bash. It's similar to <code>$</code> in that it expands inside double-quotes but not single-quotes. You have four options:</p>
+<ul>
+<li>Use single-quotes to suppress expansion</li>
+<li>Use a back-slash to escape the <code>!</code> (<code>\!thirdparty</code>)</li>
+<li>Disable history expansion by running <code>set +H</code> or adding it to your profile</li>
+<li>Change the history-expansion character by setting the <code>histchars</code> variable; for example, <code>histchars='%^#'</code> will change it from <code>!</code> to <code>%</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akien-mga">@akien-mga</a> on 2017-11-26 22:40</div>
+            <div class="timeline-body"><p>Thanks a lot for the detailed answer! I think I'll start using <code>\!</code> for ripgrep, that's something I should easily remember and avoid bad surprise when I pick the wrong quotes.</p>
+<p>Closing as it's not a bug, though it might be worth adding a mention to this in the <code>--help</code> output if other shells work similarly - if it's only bash, it's maybe not worth cluttering the docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @akien-mga on 2017-11-26 22:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:22 UTC
+    </footer>
+</body>
+</html>

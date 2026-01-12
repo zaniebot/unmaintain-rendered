@@ -22,43 +22,108 @@
 
     <div class="timeline">
         <div class="timeline-entry">
-            <div class="timeline-header">Issue opened by <a href="https://github.com/NMertsch">@NMertsch</a> on 2026-01-12 13:43</div>
+            <div class="timeline-header"><a href="https://github.com/NMertsch">@NMertsch</a></div>
             <div class="timeline-body"><h3>Summary</h3>
-<p>Currently, package projects (<code>uv init --package</code>) automatically are added to <code>uv.lock</code> as editable. This makes sense.
-But it also means that <code>no-build = true</code> applies to them, and not just to dependencies.</p>
 <p>I'd like to have the following:</p>
 <ol>
-<li>External dependencies are not build, unless explicitly allowed with <code>no-binary-package</code></li>
-<li>My project is built</li>
+<li>External dependencies are not built, unless explicitly allowed with <code>no-binary-package</code> (basically: I want to install wheels, not sdists)</li>
+<li><code>uv sync</code> can create/update the venv</li>
+<li><code>uv build</code> can package my package (e.g. for <code>uv publish</code>)</li>
 </ol>
-<p>Point 1 is achieved with <code>no-build = true</code>. I think it is reasonable to expect point 2 without additional configuration.</p>
+<p>However, that's not possible with packages (<code>uv init --package</code>):</p>
+<ol>
+<li><code>no-build = true</code> correctly prevents sdist installs, but then</li>
+<li><code>uv sync</code> only works after also configuring <code>no-binary-package = [&quot;my-package&quot;]</code></li>
+<li><code>uv build</code> <a href="https://github.com/astral-sh/uv/issues/17416#issuecomment-3739349716">only works with the <code>uv_build</code> backend</a>. I have to remove <code>no-build = true</code> to make it work with other backends.</li>
+</ol>
+<p>I think points 2 and 3 should work out of the box.</p>
 <h3>How to reproduce</h3>
 <pre><code class="language-bash"># create new package
-uv init --package my-project
-cd my-project
+uv init --package --build-backend setuptools my-package
+cd my-package
 
 # set `no-build = true`
 echo '[tool.uv]' &gt;&gt; pyproject.toml
 echo 'no-build = true' &gt;&gt; pyproject.toml
 
 # interact with the package
-uv sync  # error: Distribution `my-project==0.1.1 @ editable+.` can't be installed because it is marked as `--no-build` but has no binary distribution
+uv sync  # error: Distribution `my-package==0.1.0 @ editable+.` can't be installed because it is marked as `--no-build` but has no binary distribution
 
 # explicitly allow uv to build my own package
-echo 'no-binary-package' = [&quot;my-project&quot;] &gt;&gt; pyproject.toml
+echo 'no-binary-package = [&quot;my-package&quot;]' &gt;&gt; pyproject.toml
 
 # interact with the package
 uv sync  # works
+
+# build the package
+uv build  # Failed to build, Building source distributions is disabled
 </code></pre>
 </div>
         </div>
         <div class="timeline-entry">
             <div class="event">Label <span class="label">enhancement</span> added by @NMertsch on 2026-01-12 13:43</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-12 15:09</div>
+            <div class="timeline-body"><p>Can you explain (3)? Why does setuptools fail?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NMertsch">@NMertsch</a> on 2026-01-12 15:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you explain (3)? Why does setuptools fail?</p>
+</blockquote>
+<p>I don't think setuptools fails. To me, &quot;Building source distributions is disabled&quot; implies that uv didn't invoke setuptools at all due to <code>no-build = true</code>.</p>
+<p>But when running <code>uv init --package my-package</code> (without <code>--build-backend setuptools</code>), <code>uv build</code> works just fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-12 15:58</div>
+            <div class="timeline-body"><p>I'm confused that you said</p>
+<blockquote>
+<p>uv build doesn't work at all for setuptools projects</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-12 15:59</div>
+            <div class="timeline-body"><p>You're saying it works for the <code>uv_build</code> backend but not any other ones?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NMertsch">@NMertsch</a> on 2026-01-12 16:00</div>
+            <div class="timeline-body"><p>Sorry for the confusion. What I meant was:</p>
+<ul>
+<li><code>uv build</code> with backend <code>setuptools</code> works, unless <code>no-build = true</code>.</li>
+<li><code>uv build</code> with backend <code>uv_build</code> works, independently of <code>no-build = true</code>.</li>
+</ul>
+<p>I didn't test other backends. Give me a few minutes to try them all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NMertsch">@NMertsch</a> on 2026-01-12 16:11</div>
+            <div class="timeline-body"><p>I now tried steps from the original post on all supported build backends. Results:</p>
+<ul>
+<li>uv: works</li>
+<li>hatch: error</li>
+<li>flit: error</li>
+<li>pdm: error</li>
+<li>poetry: error</li>
+<li>maturin: skipped (no rust toolchain installed)</li>
+<li>scikit: error</li>
+</ul>
+<p>The error always looks the same:</p>
+<pre><code class="language-text">Building source distribution...
+  × Failed to build `C:\Users\...\my-package`
+  ╰─▶ Building source distributions is disabled
+</code></pre>
+<p>(Updated the original post: setuptools -&gt; all backends besides uv_build)</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 14:09:38 UTC
+        Synced at 2026-01-12 17:33:50 UTC
     </footer>
 </body>
 </html>

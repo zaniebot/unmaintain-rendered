@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can't search for &quot;-&gt;&quot; with --fixed-strings - BurntSushi/ripgrep #639</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Can't search for &quot;-&gt;&quot; with --fixed-strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/639">#639</a>
+        opened by <a href="https://github.com/Wilfred">@Wilfred</a>
+        on 2017-10-12 14:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Wilfred">@Wilfred</a></div>
+            <div class="timeline-body"><pre><code>$ rg -F &quot;-&gt;&quot;
+error: Found argument '-&gt;' which wasn't expected, or isn't valid in this context
+
+USAGE:
+
+    rg [OPTIONS] &lt;pattern&gt; [&lt;path&gt; ...]
+    rg [OPTIONS] [-e PATTERN | -f FILE ]... [&lt;path&gt; ...]
+    rg [OPTIONS] --files [&lt;path&gt; ...]
+    rg [OPTIONS] --type-list
+
+For more information try --help
+</code></pre>
+<p>I wanted to search for the literal string <code>-&gt;</code> (used in Python type annotations). I can work around this with a normal regexp search and <code>--</code>:</p>
+<pre><code>$ rg -- &quot;-&gt;&quot;
+</code></pre>
+<p>but I can't see any way of passing this argument to <code>-F</code>:</p>
+<pre><code>$ rg -F &quot;-&gt;&quot; --
+error: Found argument '-&gt;' which wasn't expected, or isn't valid in this context
+</code></pre>
+<p>In this case, <code>-&gt;</code> is a valid regular expression, but if I'm searching for a more elaborate expression like <code>-&gt; Optional[</code> I would like to be able to use <code>-F</code>.</p>
+<p>Is this impossible, or am I missing a way of passing this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-12 14:51</div>
+            <div class="timeline-body"><p><code>-F</code> is a flag that does not accept any arguments, as documented. The invocation <code>rg -F &quot;-&gt;&quot; --</code> therefore doesn't really make sense. <code>rg -F -- -&gt;</code> or <code>rg -F -e -&gt;</code> should both work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-12 14:52</div>
+            <div class="timeline-body"><p>Note that <code>rg --help</code> says:</p>
+<blockquote>
+<p>A regular expression used for searching. To match a pattern beginning with a dash, use
+the -e/--regexp option.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Wilfred">@Wilfred</a> on 2017-10-12 18:52</div>
+            <div class="timeline-body"><p>Aha, that makes sense. I'd misunderstood the flag and assumed it took an argument.</p>
+<p>Thanks for your help! :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Wilfred on 2017-10-12 18:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:18 UTC
+    </footer>
+</body>
+</html>

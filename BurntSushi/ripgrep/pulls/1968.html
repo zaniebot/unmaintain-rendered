@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lock stdout before printing an error message to stderr - BurntSushi/ripgrep #1968</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Lock stdout before printing an error message to stderr</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/1968">#1968</a>
+        opened by <a href="https://github.com/film42">@film42</a>
+        on 2021-08-10 05:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/film42">@film42</a></div>
+            <div class="timeline-body"><p>This avoids interleaving error messages messages when search is writing to stdout.</p>
+<p>Closes #1941</p>
+<p>There are probably a few other places we'd want to make a similar patch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-08-10 14:53</div>
+            <div class="timeline-body"><blockquote>
+<p>There are probably a few other places we'd want to make a similar patch.</p>
+</blockquote>
+<p>I believe the only other place is in the logger? Maybe it would make sense to write our own <code>eprintln_locked</code> macro that does this, and then just replace every call to <code>eprintln!</code> in <code>crates/core</code> with that new macro.</p>
+<p>I think this patch is right, but it's an unfortunate abstraction violation. This only works because the buffer printer in <code>search_parallel</code> will acquire the same stdout lock, which is done inside of <code>termcolor</code>. To avoid the abstraction violation, I think we'd need <em>another</em> mutex in <code>crates/core</code> itself, but I'm not so sure it's worth it.</p>
+<p>To mitigate the abstraction violation, could you make the comment added here mention and acknowledge the abstraction violation? Basically what I said above. And if we put this in its own macro, we only need to write this comment once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/film42">@film42</a> on 2021-08-10 19:19</div>
+            <div class="timeline-body"><p>Adding a new macro certainly cleans things up a lot. I added a comment in the code (but not as part of the public documentation) since a comment about an abstraction violation may not be useful to the user outside of the code. Happy to make that part of the public docs though.</p>
+<p>In my first cut, I added a lazy static rwlock and mapped the <code>read</code> to <code>STDOUT</code> with <code>write</code> mapping to <code>STDERR</code> to keep logging decently quick even with a mutex, but ultimately, locking <code>STDOUT</code> was a lot cleaner and intuitive. It also accomplishes the same thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-07-08 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-07-08 22:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-07-10 17:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:03 UTC
+    </footer>
+</body>
+</html>

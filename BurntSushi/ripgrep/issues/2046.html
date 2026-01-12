@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Feature Request] Pass arguments to --pre command - BurntSushi/ripgrep #2046</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Feature Request] Pass arguments to --pre command</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2046">#2046</a>
+        opened by <a href="https://github.com/toonn">@toonn</a>
+        on 2021-10-29 23:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/toonn">@toonn</a></div>
+            <div class="timeline-body"><h4>Describe your feature request</h4>
+<p>I'm writing a Git pre-commit hook that should prevent me from committing certain sections I have marked <code>DO NOT COMMIT</code>.</p>
+<p>I would like to do something like the following because I only want to grep the parts of files that have been staged:</p>
+<pre><code>rg -Fl --pre 'git diff --cached -- $1'  'DO NOT COMMIT'
+</code></pre>
+<p>However, the <code>--pre</code> argument only supports either commands found on the <code>PATH</code> or an absolute path to a file. Right now I'm working around this by using an absolute path to a script, <code>~/src/repo/.git/hooks/git-diff-cached.sh</code>, but this is a very inelegant approach. It requires me to hardcode the repo's path in the hook. If I want to use this hook in multiple repos I have to either update that path every time or put the script in one central location.</p>
+<p>I've attempted to use process substitution, <code>rg -Fl --pre &lt;(printf 'git diff --cached -- $1')  'DO NOT COMMIT'</code> but named pipes are created without execute permission.</p>
+<p>Hence, my feature request. Would it be possible to add a flag specifying arguments to be passed to the preprocessing command or having a separate <code>--pre-script</code> flag we can pass a string to rather than a file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-10-30 02:10</div>
+            <div class="timeline-body"><p>I'm not quite following here. Why not do something like <code>git diff ... | rg ...</code> in your hook? The pre flag should really only be relevant when you need to apply a transformation on the content in order to get it from a non-UTF-8 encoding (like a PDF) to a UTF-8 encoding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/toonn">@toonn</a> on 2021-10-30 12:25</div>
+            <div class="timeline-body"><p>That's because I want to output the filename of the files containing the erroneously committed sections. If there's a match I already know the contents and <code>-l</code> would give me <code>&lt;stdin&gt;</code>, which is useless.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-10-30 13:10</div>
+            <div class="timeline-body"><p>Ah I see. Yeah, this isn't really how the <code>--pre</code> flag is intended to be used. This is also a good example of the XY problem: you have a problem, came up with a solution and that solution doesn't quite fit. Which turns into a feature request to tweak that solution, but without actually discussing the full scope of the original problem you're trying to solve. So in that vein, I <em>think</em> the problem you're trying to solve is something like this: I want to write a pre-commit hook that detects if a substring exists in the diffs of any staged files, and if such a substring exists, print the name of the file.</p>
+<p>So I think I would solve that problem like so:</p>
+<pre><code>for f in $(git diff --cached --name-only); do
+ if git diff --cached -- &quot;$f&quot; | rg -qF &quot;TESTING&quot;; then
+   echo $f
+ fi
+done
+</code></pre>
+<p>As for your actual request, the reason why I won't add it is because it complicates things quite a bit. There's a categorical difference between &quot;execute a path&quot; and &quot;execute a path with some arguments.&quot; At the OS level, those arguments need to be specified individually, which means ripgrep has to split those arguments somehow. Or accept the arguments in a way where they are already split.</p>
+<blockquote>
+<p>It requires me to hardcode the repo's path in the hook.</p>
+</blockquote>
+<p>Also, I don't think this is true. You should be able to put a script in a repo and then call that script from a git hook. It's not clear to me why you think you need to hard code an absolute path to do this. In particular, from <code>man githooks</code>:</p>
+<blockquote>
+<p>Before Git invokes a hook, it changes its working directory to either $GIT_DIR in a bare repository or the root of the working tree in a non-bare repository.</p>
+</blockquote>
+<p>So just pass a relative path to the <code>--pre</code> flag? Should work fine.</p>
+<blockquote>
+<p>However, the <code>--pre</code> argument only supports either commands found on the <code>PATH</code> or an absolute path to a file.</p>
+</blockquote>
+<p>What gives you that idea?</p>
+<pre><code>$ tree
+.
+├── foo
+└── tester
+
+0 directories, 2 files
+
+$ cat foo
+abc
+def
+hij
+klm
+nop
+
+$ cat tester
+#!/bin/sh
+
+exec tac &quot;$@&quot;
+
+$ rg '^\w' foo
+1:abc
+2:def
+3:hij
+4:klm
+5:nop
+
+$ rg '^\w' foo --pre tac
+1:nop
+2:klm
+3:hij
+4:def
+5:abc
+
+$ rg '^\w' foo --pre ./tester
+1:nop
+2:klm
+3:hij
+4:def
+5:abc
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/toonn">@toonn</a> on 2021-10-30 14:44</div>
+            <div class="timeline-body"><p>This could indeed be solved with nested for loops. But I hope you can see how it would be a lot more convenient if I could pass a simple command in-line.</p>
+<p>The reason I didn't think relative paths would work is I tried it (used a path relative to the hook though, seems like the reason it didn't work, my bad) <em>and</em> the documentation:</p>
+<blockquote>
+<p>This option expects the COMMAND program to either be an absolute path or to be available in your PATH.</p>
+</blockquote>
+<p>I think the feature request does fit the existing option very well but I understand there can be implementation issues that would make a new option necessary. Being able to write a single-line preprocessor is incredibly useful, it could even subsume the current behavior because you could run <code>exec ./my-script</code> or similar. I saw there were a lot of issues about compression levels, this would be easily addressed by being able to pass arguments.</p>
+<p>Doesn't ripgrep already need to deal with argument splitting or is that taken care of by the shell? If it is, couldn't the feature just rely on invoking a shell, something like <code>bash -c 'user command'</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-10-30 15:11</div>
+            <div class="timeline-body"><blockquote>
+<p>This could indeed be solved with nested for loops. But I hope you can see how it would be a lot more convenient if I could pass a simple command in-line.</p>
+</blockquote>
+<p>Of course. But the win here is <em>very</em> small and the costs required to achieve that win are pretty high. It's not like the shell I wrote for you is terribly complicated here. And this isn't even something you need to run by hand a lot. You're looking to shove this into a pre-commit hook script and then forget about it. It doesn't make sense to optimize for convenience in those sorts of scenarios IMO.</p>
+<blockquote>
+<p>saw there were a lot of issues about compression levels, this would be easily addressed by being able to pass arguments.</p>
+</blockquote>
+<p>It's also easily solved with a wrapper script.</p>
+<blockquote>
+<p>Doesn't ripgrep already need to deal with argument splitting or is that taken care of by the shell?</p>
+</blockquote>
+<p>The shell.</p>
+<blockquote>
+<p>If it is, couldn't the feature just rely on invoking a shell, something like <code>bash -c 'user command'</code>?</p>
+</blockquote>
+<p>That's a non-starter because it relies on executing a shell. Doesn't work if bash isn't installed.</p>
+<p>I think the bottom line here is that the existing facilities are flexible enough to make pretty much anything work, with a simple implementation and obvious behavior, even if it isn't always the most convenient.</p>
+<p>It looks like the docs should be updated, but otherwise this is <code>wontfix</code>. Sorry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">doc</span> added by @BurntSushi on 2021-10-30 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/toonn">@toonn</a> on 2021-10-30 16:30</div>
+            <div class="timeline-body"><p>Would a patch that implements a new flag or expands on the behavior of <code>--pre</code> have a chance of being accepted?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-10-30 16:48</div>
+            <div class="timeline-body"><p>In order to answer that, I have to know what new behavior it implements... If you're talking about this feature request, then no, it wouldn't, for reasons I already described.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/florianpircher">@florianpircher</a> on 2022-06-22 22:46</div>
+            <div class="timeline-body"><p>I would love an arguments parameter for <code>--pre</code> as well. For me, a command that I work with validates the file if run as <code>COMMAND FILE</code> and pretty-prints its otherwise binary contents with <code>COMMAND -p FILE</code> (and there are other output forms that are sometimes desired like <code>COMMAND -convert json FILE</code> or <code>COMMAND -convert xml FILE</code>). Sure, I could create a custom script for each output format and specify that script as the command, but allowing for arguments to the command would simplify the process:</p>
+<pre><code>rg --pre COMMAND --pre-args '-p' FILE
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-06-22 23:01</div>
+            <div class="timeline-body"><p>@florianpircher Yes, the intended path here would indeed be to create a custom script for each thing you need.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/florianpircher">@florianpircher</a> on 2022-06-23 07:46</div>
+            <div class="timeline-body"><p>OK, understandable. I guess this issue can be closed then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-24 20:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">doc</span> removed by @BurntSushi on 2023-11-24 20:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2023-11-24 20:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/toonn">@toonn</a> on 2023-11-25 14:01</div>
+            <div class="timeline-body"><p>@BurntSushi, you said <a href="https://github.com/BurntSushi/ripgrep/issues/2046#issuecomment-955297724">earlier up the thread</a> that the docs should be updated to properly reflect that <code>--pre</code> works with paths relative to the current working directory. Could this issue be reopened until that is addressed? It doesn't seem to be changed in the man page for 13.0.0 that I have locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @BurntSushi on 2023-11-25 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> removed by @BurntSushi on 2023-11-25 14:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">doc</span> added by @BurntSushi on 2023-11-25 14:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-11-25 14:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-25 20:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/toonn">@toonn</a> on 2023-11-25 21:58</div>
+            <div class="timeline-body"><p>Thank you! :heart:</p>
+<p>I still wish the feature would be considered but clearer docs always help.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:27 UTC
+    </footer>
+</body>
+</html>

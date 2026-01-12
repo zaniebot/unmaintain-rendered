@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How To Convert Case Using ripgrep - BurntSushi/ripgrep #1546</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How To Convert Case Using ripgrep</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1546">#1546</a>
+        opened by <a href="https://github.com/blueray453">@blueray453</a>
+        on 2020-04-08 08:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueray453">@blueray453</a></div>
+            <div class="timeline-body"><p>I am using:</p>
+<pre><code>$ rg --version
+ripgrep 12.0.1
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+
+$ rg  --pcre2-version
+PCRE2 10.32 is available
+JIT is available
+</code></pre>
+<p>https://www.regular-expressions.info/pcre2.html#subext says:</p>
+<blockquote>
+<p>Starting with version 10.21, PCRE2 offers an extended replacement string syntax that you can enable by including PCRE2_SUBSTITUTE_EXTENDED with the matching options when calling pcre2_substitute().
+...
+With PCRE2, any case conversion escape cancels the preceding escape. So you can’t combine them and even \u or \l will end a run of \U or \L.
+...
+Case conversion runs through conditionals. Any case conversion in effect before the conditional also applies to the conditional. If the conditional contains its own case conversion escapes in the part of the conditional that is actually used, then those remain in effect after the conditional. So you could use ${1:+\U:\L}${2} to insert the text matched by the second capturing group in uppercase if the first group participated, and in lowercase if it didn’t.</p>
+</blockquote>
+<p>So, what I understand from this is there is probably a way to convert case using <code>rg -P</code>.</p>
+<p>Something Like: <code>echo &quot;test ING&quot; | rg -P '[a-z]'  -r '\U\1'</code></p>
+<p>However It results in : <code>\U\1\U\1\U\1\U\1 ING</code></p>
+<p>So, I think <code>rg -P</code> is not understanding <code>\U</code>. Is it because extended replacement string syntax is not enabled? What can be done about that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2020-04-08 11:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-04-08 11:04</div>
+            <div class="timeline-body"><p>Duplicate of https://github.com/BurntSushi/ripgrep/issues/1538</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-04-08 11:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueray453">@blueray453</a> on 2020-04-08 11:37</div>
+            <div class="timeline-body"><p>My issue was different though. Let me rephrase.</p>
+<p>As per my understanding, <code>rg</code>'s <code>-P</code> let us use pcre2 regex engine.</p>
+<p>PCRE2 10.21 onward offers an extended replacement string syntax.</p>
+<p>My <code>--pcre2-version</code> is 10.32.</p>
+<p>So, When I am using:</p>
+<p><code>echo &quot;test ING&quot; | rg -P '[a-z]' -r '\U\1'</code></p>
+<p>why is it  showing <code>\U\1\U\1\U\1\U\1 ING</code>?</p>
+<blockquote>
+<p>extended replacement string syntax that you can enable by including PCRE2_SUBSTITUTE_EXTENDED with the matching options when calling pcre2_substitute().</p>
+</blockquote>
+<p>Have you not done that? If I want to do it, where shall I make the changes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-04-08 11:56</div>
+            <div class="timeline-body"><p>Yes, I know what you meant. But using the PCRE2 regex engine doesn't mean that ripgrep also uses PCRE2's replacement syntax. ripgrep uses the <code>interpolate</code> method on the <code>Captures</code> trait from the <code>grep-matcher</code> crate: https://docs.rs/grep-matcher/0.1.4/grep_matcher/trait.Captures.html#method.interpolate</p>
+<p>The PCRE2 implementation of the <code>Captures</code> trait is here: https://github.com/BurntSushi/ripgrep/blob/f51b762c6da202247f609bf8494fb82b31f9c285/crates/pcre2/src/matcher.rs#L348-L356</p>
+<p>It is intentionally missing the <code>interpolate</code> method so that all regex engines use the same replacement syntax. The reasoning for this is described in #1538.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:09 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>globset: `serde` feature - cannot deserialize `String` into `Glob` - BurntSushi/ripgrep #2386</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>globset: <code>serde</code> feature - cannot deserialize <code>String</code> into <code>Glob</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2386">#2386</a>
+        opened by <a href="https://github.com/jeertmans">@jeertmans</a>
+        on 2022-12-31 17:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jeertmans">@jeertmans</a></div>
+            <div class="timeline-body"><p>Hi, I hope that posting issues about subcrates is ok.</p>
+<h4>What version of globset are you using?</h4>
+<p><code>globset = { version = &quot;0.4.9&quot;, features = [&quot;serde1&quot;] }</code>.</p>
+<h4>Describe your bug.</h4>
+<p>Because the implementation of trait <code>Deserialize</code> uses <code>&amp;str</code>, it does not accept deserializing owned <code>String</code>.</p>
+<p>https://github.com/BurntSushi/ripgrep/blob/61101289fabc032fd8e90009c41d0b78e6dfc9a2/crates/globset/src/serde_impl.rs#L15-L22</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>This problem occurred to me when I tried to parse <code>Glob</code>s from a <code>toml::Value</code> object (already obtained from a file). As <code>toml::Value</code> owns strings, it caused a problem.</p>
+<p>If needed, I can include a MWE (but quite large).</p>
+<h4>What is the actual behavior?</h4>
+<p>When parsing some globs, here is the error obtained:</p>
+<pre><code>Error: TomlDecode(Error { inner: ErrorInner { kind: Custom, line: None, col: 0, at: None, message: &quot;invalid type: string \&quot;src/**.rs\&quot;, expected a borrowed string&quot;, key: [] } })
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>Not sure if it is interesting performance-wise, but using a custom <code>deserialize_with</code> function, with <code>String</code> instead of <code>&amp;str</code>, fixes the problem (<code>glob.as_str()</code>) has to be used afterward).</p>
+<p>I can provide tests and make a PR if you are ok with this solution. Otherwise, I am also open to discussions :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-12-31 18:01</div>
+            <div class="timeline-body"><p>I don't think perf is relevant here, since building a glob from a string is quite expensive. Here are the things that will make a PR easier to merge:</p>
+<ul>
+<li>Small change with tests.</li>
+<li>No breaking changes.</li>
+<li>Have someone with more experience with Serde APIs sign off on this. From your issue, I'm not actually totally sure whether this is a problem with how you're using Serde or if it's truly a problem with how Serde is impled in `globset.</li>
+</ul>
+<p>@LPGhatguy could you please review this? You're the one who originally added Serde support to <code>globset</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jeertmans">@jeertmans</a> on 2023-01-01 12:20</div>
+            <div class="timeline-body"><p>Thanks for the quick reply!</p>
+<p>After comparing with what is done in the <a href="https://github.com/tailhook/serde-regex/blob/336bb456ecd146ba9e3fcc2fef71870f603d72c5/src/lib.rs#L179-L191"><code>regex_serde</code> crate</a>, I changed from <code>String</code> to <code>Cow&lt;str&gt;</code>, in the hope (?) to avoid unnecessary copy.</p>
+<p>I created a runnable example that illustrates the error, and how using a different deserialize function can solve it: see https://www.rustexplorer.com/b/qagwmp.</p>
+<p>The code is reproduced here:</p>
+<pre><code class="language-rust">/*
+[dependencies]
+serde = { version = &quot;1&quot;, features = [&quot;derive&quot;] }
+globset = { version = &quot;0.4.9&quot;, features = [&quot;serde1&quot;] }
+toml = &quot;0.5.10&quot;
+*/
+
+use globset::Glob;
+use serde::{Deserialize, Deserializer};
+
+#[derive(Debug, Deserialize)]
+struct S {
+    // (un)comment the following line to see the error
+    //#[serde(deserialize_with = &quot;deserialize_glob&quot;)]
+    #[allow(unused)]
+    glob: Glob,
+}
+
+#[allow(unused)]
+fn deserialize_glob&lt;'de, D: Deserializer&lt;'de&gt;&gt;(
+    deserializer: D,
+) -&gt; std::result::Result&lt;Glob, D::Error&gt; {
+    use serde::de::Error;
+    use std::borrow::Cow;
+    let glob = &lt;Cow&lt;str&gt; as Deserialize&gt;::deserialize(deserializer)?;
+
+    Glob::new(&amp;glob).map_err(D::Error::custom)
+}
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let string = &quot;glob = '*.md'&quot;;
+
+    // Parse toml from borrowed string into S
+    let _: S = toml::from_str(string)?;
+
+    // Parse toml from borrowed string into intermediate toml::Value
+    let v: toml::Value = toml::from_str(string)?;
+
+    // Convert toml::Value into S
+    //   will fail without custom deserialize function
+    //   because v owns the String
+    let _: S = v.try_into()?;
+
+    Ok(())
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LPGhatguy">@LPGhatguy</a> on 2023-01-08 05:19</div>
+            <div class="timeline-body"><p>Based on how <a href="https://docs.rs/serde/latest/src/serde/de/impls.rs.html#1822-1834"><code>serde::Deserialize</code> is implemented for <code>Cow&lt;'a, T&gt;</code></a>, I don't think that using <code>Cow&lt;str&gt;</code> will behave any differently than <code>String</code>.</p>
+<p>I think the correct solution here is to implement our own visitor that handles both the borrowed and owned case. Always using the owned case (using <code>String</code> or <code>Cow&lt;str&gt;</code>) will always allocate, even when we don't need to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jeertmans">@jeertmans</a> on 2023-01-08 10:36</div>
+            <div class="timeline-body"><p>Hi @LPGhatguy, I have updated the PR accordingly :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-07-07 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-07-08 22:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:36 UTC
+    </footer>
+</body>
+</html>

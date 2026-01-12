@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Somehow `--no-ignore` does not searches dotfiles - BurntSushi/ripgrep #2638</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Somehow <code>--no-ignore</code> does not searches dotfiles</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2638">#2638</a>
+        opened by <a href="https://github.com/xnuk">@xnuk</a>
+        on 2023-10-22 14:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/xnuk">@xnuk</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<pre><code>ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h3>How did you install ripgrep?</h3>
+<p><a href="https://archlinux.org/packages/extra/x86_64/ripgrep/"><code>pacman -S ripgrep</code></a></p>
+<pre><code class="language-sh">$ sha256sum $(which rg)
+2724960723c7204008ca21c783cb89ee1318cfdb0822dc757c528e6af0b637d6  /usr/bin/rg
+</code></pre>
+<h3>What operating system are you using ripgrep on?</h3>
+<ul>
+<li>OS: Arch Linux x86_64</li>
+<li>Kernel: 6.5.7-zen2-1-zen</li>
+</ul>
+<h3>Describe your bug.</h3>
+<p>Cannot search for dotfiles even if <code>--no-ignore-*</code> options are given.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<h3>Arch Linux</h3>
+<pre><code>$ echo apple &gt; ./.dotfile
+
+$ rg --no-config --no-ignore apple
+
+$ rg --debug --no-config --no-ignore apple
+DEBUG|rg::args|crates/core/args.rs:527: not reading config files because --no-config is present
+DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(apple)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1741: ignoring ./.dotfile: Ignore(IgnoreMatch(Hidden))
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+
+$ rg --debug --no-config --no-ignore \
+	--no-ignore-dot \
+	--no-ignore-exclude \
+	--no-ignore-files \
+	--no-ignore-global \
+	--no-ignore-messages \
+	--no-ignore-parent \
+	--no-ignore-vcs \
+	apple
+(same output as above)
+
+$ cat ./.dotfile
+apple
+</code></pre>
+<h3>Alpine Linux 3.18.4 amd64 in container (Podman 4.7.1)</h3>
+<pre><code class="language-Dockerfile">FROM --platform=linux/amd64 alpine:3.18.4
+WORKDIR /root/
+
+RUN wget -O ./ripgrep.tar.gz \
+	https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz
+RUN tar -xOf ./ripgrep.tar.gz ripgrep-13.0.0-x86_64-unknown-linux-musl/rg &gt; ./rg
+RUN chmod +x ./rg
+
+RUN sha256sum ./ripgrep.tar.gz
+# ee4e0751ab108b6da4f47c52da187d5177dc371f0f512a7caaec5434e711c091  ./ripgrep.tar.gz
+
+RUN sha256sum ./rg
+# 4ef156371199b3ddac1bf584e0e52b1828279af82e4ea864b4d9c816adb5db40  ./rg
+
+RUN ./rg --version
+# ripgrep 13.0.0 (rev af6b6c543b)
+# -SIMD -AVX (compiled)
+# +SIMD +AVX (runtime)
+
+RUN echo apple &gt; ./.dotfile
+
+RUN ./rg --debug --no-config apple || true
+# DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(apple)], limit_size: 250, limit_class: 10 }
+# DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+
+RUN ./rg --debug --no-config --no-ignore apple || true
+# DEBUG|rg::args|crates/core/args.rs:527: not reading config files because --no-config is present
+# DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(apple)], limit_size: 250, limit_class: 10 }
+# DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+
+RUN ./rg --debug --no-config --no-ignore \
+	--no-ignore-dot \
+	--no-ignore-exclude \
+	--no-ignore-files \
+	--no-ignore-global \
+	--no-ignore-messages \
+	--no-ignore-parent \
+	--no-ignore-vcs \
+	apple || true
+# DEBUG|rg::args|crates/core/args.rs:527: not reading config files because --no-config is present
+# DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(apple)], limit_size: 250, limit_class: 10 }
+# DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+
+RUN cat ./.dotfile
+# apple
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<p>See above.</p>
+<p>While making reproducible way in Alpine Linux, I surprised that Arch Linux version has this log while Alpine version doesn't have:</p>
+<pre><code>DEBUG|ignore::walk|crates/ignore/src/walk.rs:1741: ignoring ./.dotfile: Ignore(IgnoreMatch(Hidden))
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<pre><code>$ rg --no-config --no-ignore apple
+.dotfile
+1:apple
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-10-22 14:32</div>
+            <div class="timeline-body"><p>This is correct and expected behavior. Could you please share why you thought otherwise?</p>
+<p>From the man page:</p>
+<pre><code>       --no-ignore
+           Don’t respect ignore files (.gitignore, .ignore,
+           etc.). This implies --no-ignore-dot,
+           --no-ignore-exclude, --no-ignore-global,
+           no-ignore-parent and --no-ignore-vcs.
+</code></pre>
+<p>And also:</p>
+<pre><code>       -., --hidden
+           Search hidden files and directories. By default,
+           hidden files and directories are skipped. Note that
+           if a hidden file or a directory is whitelisted in an
+           ignore file, then it will be searched even if this
+           flag isn’t provided.
+
+           A file or directory is considered hidden if its base
+           name starts with a dot character (.). On operating
+           systems which support a hidden file attribute, like
+           Windows, files with this attribute are also
+           considered hidden.
+
+           This flag can be disabled with --no-hidden.
+</code></pre>
+<p>This is also discussed in some depth in the <a href="https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#automatic-filtering">GUIDE's section on automatic filtering</a>.</p>
+<p>The <code>--debug</code> output is even telling you that it was ignored because it was hidden, not because it matched a glob in a <code>.gitignore</code> file.</p>
+<p>I can't explain the differences in logging output between Archlinux and Alpine here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-10-22 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2023-10-22 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xnuk">@xnuk</a> on 2023-10-22 15:22</div>
+            <div class="timeline-body"><p>Okay then I should use <code>rg --hidden --no-ignore</code>, or <code>rg -uu</code> for short (I just read <code>rg --help</code> again). But I think I will eventually face the same brain fart and search for this issue again since, maybe,  it's similar words.</p>
+<blockquote>
+<p>Could you please share why you thought otherwise?</p>
+</blockquote>
+<p>My thought, maybe, was that ripgrep is 'ignoring dot files from search result' so I should do <code>--no-ignore-dot</code> which is included by <code>--no-ignore</code>.</p>
+<blockquote>
+<p>I can't explain the differences in logging output between Archlinux and Alpine here.</p>
+</blockquote>
+<p>I also didn't get used to Alpine, so free to ignore this for now. Here's interesting result in Alpine btw:</p>
+<pre><code class="language-Dockerfile">RUN ./rg --debug --no-config --hidden --no-ignore apple || true
+# DEBUG|rg::args|crates/core/args.rs:527: not reading config files because --no-config is present
+# DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(apple)], limit_size: 250, limit_class: 10 }
+# DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-10-22 15:27</div>
+            <div class="timeline-body"><blockquote>
+<p>My thought, maybe, was that ripgrep is 'ignoring dot files from search result' so I should do <code>--no-ignore-dot</code> which is included by <code>--no-ignore</code>.</p>
+</blockquote>
+<p>Gotya. The naming is unfortunate, but the docs for <code>--no-ignore-dot</code> do specifically call this out and suggest <code>-./--hidden</code>.</p>
+<pre><code>       --no-ignore-dot
+           Don’t respect .ignore files.
+
+           This does not affect whether ripgrep will ignore
+           files and directories whose names begin with a dot.
+           For that, see the -./--hidden flag.
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:43 UTC
+    </footer>
+</body>
+</html>

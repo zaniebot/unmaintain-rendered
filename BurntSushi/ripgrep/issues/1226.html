@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misinterpreting '.gitignore' - BurntSushi/ripgrep #1226</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Misinterpreting '.gitignore'</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1226">#1226</a>
+        opened by <a href="https://github.com/Alexander-Shukaev">@Alexander-Shukaev</a>
+        on 2019-03-25 22:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Alexander-Shukaev">@Alexander-Shukaev</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 0.10.0
+-SIMD -AVX (compiled)
++SIMD -AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>Package manager.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Arch Linux.</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>I have <code>.git</code> repository at the root (<code>/</code>) of the OS installation and <code>.gitignore</code>.  When I run <code>rg -S --no-heading --line-number --color never --follow --hidden --smart-case gitignore .</code>, I see <code>rg</code> trying to match too many files which should have been excluded by <code>.gitignore</code>.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<pre><code>/.gitignore
+</code></pre>
+<pre><code>*
+
+!*/
+
+!/.gitignore
+!/README.md
+!*.pacnew
+!*.pacsave
+!*/tmp??????
+
+/home/
+/tmp/
+/usr/share/vim/
+</code></pre>
+<pre><code>cd / &amp;&amp; rg -S --no-heading --line-number --color never --follow --hidden --smart-case gitignore .
+</code></pre>
+<p>One should only be able to search through the files which are unignored by exclamation <code>!</code>.</p>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<pre><code>DEBUG|grep_regex::literal|grep-regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(XXX), Complete(xXX), Complete(XxX), Complete(xxX), Complete(XXx), Complete(xXx), Complete(Xxx), Complete(xxx)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|globset/src/lib.rs:424: glob converted to regex: Glob { glob: &quot;**/*&quot;, re: &quot;(?-u)^(?:/?|.*/).*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false, backslash_escape: true }, tokens: Tokens([RecursivePrefix, ZeroOrMore]) }
+DEBUG|globset|globset/src/lib.rs:424: glob converted to regex: Glob { glob: &quot;**/*&quot;, re: &quot;(?-u)^(?:/?|.*/).*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false, backslash_escape: true }, tokens: Tokens([RecursivePrefix, ZeroOrMore]) }
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|globset/src/lib.rs:424: glob converted to regex: Glob { glob: &quot;*/tmp??????&quot;, re: &quot;(?-u)^[^/]*/tmp[^/][^/][^/][^/][^/][^/]$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([ZeroOrMore, Literal('/'), Literal('t'), Literal('m'), Literal('p'), Any, Any, Any, Any, Any, Any]) }
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 5 literals, 0 basenames, 2 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 3 regexes
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./.gitignore: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!/.gitignore&quot;, actual: &quot;.gitignore&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./proc: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./root: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./run: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./lost+found: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./home: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/home/&quot;, actual: &quot;home&quot;, is_whitelist: false, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./root/.cache: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./sys: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./run/media: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./root/Music: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./TODO: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./proc/fb: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./run/udisks2: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./root/.cache/qt_compose_cache_little_endian_a3f81c1986b340b2a51b29c86e1d8456: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./sys/kernel: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./root/.mysql_history: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./opt: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./proc/fs: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./run/media/aks: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./run/lightdm.pid: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./root/.cache/ccache: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./sys/power: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./root/.emacs.d: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./dev: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./run/udisks2/mounted-fs: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./proc/bus: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./sys/kernel/notes: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./run/postgresql: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./root/.cache/dconf: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./sys/class: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./root/.gitconfig: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./lib64: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./opt/smartgit: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./proc/dma: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./sys/kernel/mm: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./run/NetworkManager: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./root/.cache/sessions: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./sys/devices: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./root/Pictures: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./etc: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./opt/exodus: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./proc/irq: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./sys/kernel/uevent_seqnum: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./run/atd.pid: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./proc/fs/ext4: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./sys/dev: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./root/.ssh: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./.git: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./opt/dropbox: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./proc/net: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./sys/kernel/profiling: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./run/dbus: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./proc/fs/jbd2: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./sys/hypervisor: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./root/Videos: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./boot: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./opt/tor-browser: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./proc/sys: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./sys/kernel/vmcoreinfo: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./run/cups: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./proc/fs/nfsd: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./sys/fs: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./root/.local: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./opt/pgsql-9.6: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./bin: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./proc/tty: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./sys/kernel/kexec_crash_size: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./sys/kernel/tracing: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./sys/kernel/slab: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./root/.cache/ccache/7: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./root/Public: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./sys/power/wakeup_count: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./sys/power/pm_test: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./sys/power/resume: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./sys/power/pm_print_times: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./sys/power/wake_unlock: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./sys/kernel/iommu_groups: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./root/.cache/ccache/4: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./root/Desktop: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./root/Templates: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./proc/acpi: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./run/utmp: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./sys/bus: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./sys/power/pm_wakeup_irq: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./sys/kernel/security: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./root/.cache/ccache/1: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./lib: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./root/.hplip: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./proc/keys: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./run/user: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./sys/firmware: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./sys/power/pm_trace_dev_match: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./sys/kernel/irq: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./root/.cache/ccache/ccache.conf: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./tmp: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/tmp/&quot;, actual: &quot;tmp&quot;, is_whitelist: false, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./root/.config: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./proc/kmsg: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./run/svnserve: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./sys/block: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./sys/power/wake_lock: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./sys/power/state: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./sys/power/resume_offset: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./sys/power/mem_sleep: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./root/.android: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./root/Documents: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./run/sudo: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./sys/module: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./sys/kernel/fscaps: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./root/.cache/ccache/b: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1614: whitelisting ./sbin: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./sys/power/image_size: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./proc/misc: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+...
+</code></pre>
+<p><strong>NOTE:</strong> There is obviously a lot more output following.</p>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>It should have only found matches in e.g. <code>/.gitignore</code> or any other unignored file which has <code>.gitignore</code> string but there should be either none or very little.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Alexander-Shukaev">@Alexander-Shukaev</a> on 2019-03-25 22:45</div>
+            <div class="timeline-body"><p>On a side note, in the similar case, <code>ag</code> (@ggreer) finds nothing (which is also wrong).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-03-25 22:53</div>
+            <div class="timeline-body"><p>The debug logs are telling you what the problem is. <code>!*/</code> is whitelisting every <code>/foo</code> where <code>foo</code> is a directory. But those are directories. The debug logs are also telling you that many files are being ignored, because of your initial <code>*</code> rule, which seems correct.</p>
+<p>The issue template asks for details about <em>behavior</em>. The debug logs are useful for explaining behavior, but they are not themselves a behavior.</p>
+<p>Could you please provide a simple example that someone else can reproduce that indicates the bug? Include not only the debug output, but the actual output itself. Please do your best to minimize the problem to only a few small files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Alexander-Shukaev">@Alexander-Shukaev</a> on 2019-03-25 23:13</div>
+            <div class="timeline-body"><p>I will try to create a small scenario.  Meanwhile, please have a look at this excerpt of non-debug output:</p>
+<pre><code>./.gitignore:15:!/.gitignore
+./root/.opensipsctlrc: No such file or directory (os error 2)
+File system loop found: ./proc/thread-self/cwd points to an ancestor .
+File system loop found: ./proc/thread-self/root points to an ancestor .
+...
+File system loop found: ./proc/29798/task/29828/root points to an ancestor .
+File system loop found: ./proc/29798/task/29829/root points to an ancestor .
+./proc/31087/task/24861: No such file or directory (os error 2)
+./root/.emacs.d/elpa/magit-20190305.1106/magit.el:579:    (require 'magit-gitignore)
+./root/.emacs.d/elpa/magit-20190305.1106/magit-autoloads.el:1131:;;;### (autoloads nil &quot;magit-gitignore&quot; &quot;magit-gitignore.el&quot; (0 0
+./root/.emacs.d/elpa/magit-20190305.1106/magit-autoloads.el:1133:;;; Generated autoloads from magit-gitignore.el
+./root/.emacs.d/elpa/magit-20190305.1106/magit-autoloads.el:1134: (autoload 'magit-gitignore &quot;magit-gitignore&quot; nil t)
+./root/.emacs.d/elpa/magit-20190305.1106/magit-autoloads.el:1136:(autoload 'magit-gitignore-in-topdir &quot;magit-gitignore&quot; &quot;\
+./root/.emacs.d/elpa/magit-20190305.1106/magit-autoloads.el:1137:Add the Git ignore RULE to the top-level \&quot;.gitignore\&quot; file.
+./root/.emacs.d/elpa/magit-20190305.1106/magit-autoloads.el:1143:(autoload 'magit-gitignore-in-subdir &quot;magit-gitignore&quot; &quot;\
+./root/.emacs.d/elpa/magit-20190305.1106/magit-autoloads.el:1144:Add the Git ignore RULE to a \&quot;.gitignore\&quot; file.
+./root/.emacs.d/elpa/magit-20190305.1106/magit-autoloads.el:1146:\&quot;.gitignore\&quot; file in that directory.  Since such files are
+./root/.emacs.d/elpa/magit-20190305.1106/magit-autoloads.el:1152:(autoload 'magit-gitignore-in-gitdir &quot;magit-gitignore&quot; &quot;\
+./root/.emacs.d/elpa/magit-20190305.1106/magit-autoloads.el:1158:(autoload 'magit-gitignore-on-system &quot;magit-gitignore&quot; &quot;\
+./root/.emacs.d/elpa/magit-20190305.1106/magit-autoloads.el:1164:(autoload 'magit-skip-worktree &quot;magit-gitignore&quot; &quot;\
+./root/.emacs.d/elpa/magit-20190305.1106/magit-autoloads.el:1169:(autoload 'magit-no-skip-worktree &quot;magit-gitignore&quot; &quot;\
+./root/.emacs.d/elpa/magit-20190305.1106/magit-autoloads.el:1174:(if (fboundp 'register-definition-prefixes) (register-definition-prefixes &quot;magit-gitignore&quot; '(&quot;magit-&quot;)))
+./root/.emacs.d/elpa/magit-20190305.1106/magit-mode.el:379:           (define-key map (kbd &quot;C-c C-i&quot;) 'magit-gitignore))
+./root/.emacs.d/elpa/magit-20190305.1106/magit-mode.el:397:           (define-key map (kbd   &quot;i&quot;) 'magit-gitignore)
+./root/.emacs.d/elpa/magit-20190305.1106/magit-mode.el:398:           (define-key map (kbd   &quot;I&quot;) 'magit-gitignore)))
+./root/.emacs.d/elpa/magit-20190305.1106/magit-mode.el:527:    [&quot;Ignore globally&quot; magit-gitignore-globally t]
+./root/.emacs.d/elpa/magit-20190305.1106/magit-mode.el:528:    [&quot;Ignore locally&quot; magit-gitignore-locally t]
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:1:;;; magit-gitignore.el --- intentionally untracked files  -*- lexical-binding: t -*-
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:26:;; This library implements gitignore commands.
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:37:;;;###autoload (autoload 'magit-gitignore &quot;magit-gitignore&quot; nil t)
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:38:(define-transient-command magit-gitignore ()
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:40:  :man-page &quot;gitignore&quot;
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:41:  [&quot;Gitignore&quot;
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:42:   (&quot;t&quot; &quot;shared at toplevel (.gitignore)&quot;
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:43:    magit-gitignore-in-topdir)
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:44:   (&quot;s&quot; &quot;shared in subdirectory (path/to/.gitignore)&quot;
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:45:    magit-gitignore-in-subdir)
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:47:    magit-gitignore-in-gitdir)
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:48:   (&quot;g&quot; magit-gitignore-on-system
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:57:;;; Gitignore Commands
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:60:(defun magit-gitignore-in-topdir (rule)
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:61:  &quot;Add the Git ignore RULE to the top-level \&quot;.gitignore\&quot; file.
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:64:  (interactive (list (magit-gitignore-read-pattern)))
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:66:    (magit--gitignore rule &quot;.gitignore&quot;)
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:67:    (magit-run-git &quot;add&quot; &quot;.gitignore&quot;)))
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:70:(defun magit-gitignore-in-subdir (rule directory)
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:71:  &quot;Add the Git ignore RULE to a \&quot;.gitignore\&quot; file.
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:73:\&quot;.gitignore\&quot; file in that directory.  Since such files are
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:76:  (interactive (list (magit-gitignore-read-pattern)
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:79:    (let ((file (expand-file-name &quot;.gitignore&quot; directory)))
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:80:      (magit--gitignore rule file)
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:81:      (magit-run-git &quot;add&quot; &quot;.gitignore&quot;))))
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:84:(defun magit-gitignore-in-gitdir (rule)
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:87:  (interactive (list (magit-gitignore-read-pattern)))
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:88:  (magit--gitignore rule (magit-git-dir &quot;info/exclude&quot;))
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:92:(defun magit-gitignore-on-system (rule)
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:95:  (interactive (list (magit-gitignore-read-pattern)))
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:96:  (magit--gitignore rule
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:101:(defun magit--gitignore (rule file)
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:114:(defun magit-gitignore-read-pattern ()
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:154:(provide 'magit-gitignore)
+./root/.emacs.d/elpa/magit-20190305.1106/magit-gitignore.el:155:;;; magit-gitignore.el ends here
+./root/.emacs.d/elpa/gitattributes-mode-20180318.1956/gitattributes-mode.el:163:    ;; Pattern highlight similar to `gitignore-mode-font-lock-keywords'
+./root/.emacs.d/elpa/gitignore-mode-20180318.1956/gitignore-mode-autoloads.el:1:;;; gitignore-mode-autoloads.el --- automatically extracted autoloads
+./root/.emacs.d/elpa/gitignore-mode-20180318.1956/gitignore-mode-autoloads.el:9:;;;### (autoloads nil &quot;gitignore-mode&quot; &quot;gitignore-mode.el&quot; (0 0 0
+./root/.emacs.d/elpa/gitignore-mode-20180318.1956/gitignore-mode-autoloads.el:11:;;; Generated autoloads from gitignore-mode.el
+./root/.emacs.d/elpa/gitignore-mode-20180318.1956/gitignore-mode-autoloads.el:13:(autoload 'gitignore-mode &quot;gitignore-mode&quot; &quot;\
+./root/.emacs.d/elpa/gitignore-mode-20180318.1956/gitignore-mode-autoloads.el:14:A major mode for editing .gitignore files.
+./root/.emacs.d/elpa/gitignore-mode-20180318.1956/gitignore-mode-autoloads.el:18:(dolist (pattern (list &quot;/\\.gitignore\\'&quot; &quot;/info/exclude\\'&quot; &quot;/git/ignore\\'&quot;)) (add-to-list 'auto-mode-alist (cons pattern 'gitignore-mode)))
+./root/.emacs.d/elpa/gitignore-mode-20180318.1956/gitignore-mode-autoloads.el:20:(if (fboundp 'register-definition-prefixes) (register-definition-prefixes &quot;gitignore-mode&quot; '(&quot;gitignore-mode-font-lock-keywords&quot;)))
+./root/.emacs.d/elpa/gitignore-mode-20180318.1956/gitignore-mode-autoloads.el:30:;;; gitignore-mode-autoloads.el ends here
+./root/.emacs.d/elpa/gitignore-mode-20180318.1956/gitignore-mode.el:1:;;; gitignore-mode.el --- Major mode for editing .gitignore files -*- lexical-binding: t; -*-
+./root/.emacs.d/elpa/gitignore-mode-20180318.1956/gitignore-mode.el:29:;; A major mode for editing .gitignore files.
+./root/.emacs.d/elpa/gitignore-mode-20180318.1956/gitignore-mode.el:35:(defvar gitignore-mode-font-lock-keywords
+./root/.emacs.d/elpa/gitignore-mode-20180318.1956/gitignore-mode.el:43:(define-derived-mode gitignore-mode conf-unix-mode &quot;Gitignore&quot;
+./root/.emacs.d/elpa/gitignore-mode-20180318.1956/gitignore-mode.el:44:  &quot;A major mode for editing .gitignore files.&quot;
+./root/.emacs.d/elpa/gitignore-mode-20180318.1956/gitignore-mode.el:48:  (setq font-lock-defaults '(gitignore-mode-font-lock-keywords t t))
+./root/.emacs.d/elpa/gitignore-mode-20180318.1956/gitignore-mode.el:52:(dolist (pattern (list &quot;/\\.gitignore\\'&quot;
+./root/.emacs.d/elpa/gitignore-mode-20180318.1956/gitignore-mode.el:55:  (add-to-list 'auto-mode-alist (cons pattern 'gitignore-mode)))
+./root/.emacs.d/elpa/gitignore-mode-20180318.1956/gitignore-mode.el:58:(provide 'gitignore-mode)
+./root/.emacs.d/elpa/gitignore-mode-20180318.1956/gitignore-mode.el:62:;;; gitignore-mode.el ends here
+File system loop found: ./sys/class/thermal/cooling_device1/device/thermal_cooling points to an ancestor ./sys/class/thermal/cooling_device1
+./root/.emacs.d/elpa/gitignore-mode-20180318.1956/gitignore-mode-pkg.el:2:(define-package &quot;gitignore-mode&quot; &quot;20180318.1956&quot; &quot;Major mode for editing .gitignore files&quot; 'nil :commit &quot;55468314a5f6b77d2c96be62c7005ac94545e217&quot; :keywords '(&quot;convenience&quot; &quot;vc&quot; &quot;git&quot;) :authors '((&quot;Sebastian Wiesner&quot; . &quot;lunaryorn@gmail.com&quot;)) :maintainer '(&quot;Jonas Bernoulli&quot; . &quot;jonas@bernoul.li&quot;) :url &quot;https://github.com/magit/git-modes&quot;)
+File system loop found: ./sys/class/powercap/intel-rapl:0:0/device/subsystem points to an ancestor ./sys/class/powercap
+./root/.emacs.d/elpa/auctex-12.1.2/ChangeLog.1:1441:	* .gitignore: Ignore only preview.el in top directory.
+./root/.emacs.d/elpa/auctex-12.1.2/ChangeLog.1:1632:	Remove also a gitignore
+./root/.emacs.d/elpa/auctex-12.1.2/ChangeLog.1:1634:	* Makefile.in (EXCLUDEDFILES): Add latex/.gitignore to excluded files.
+./root/.emacs.d/elpa/auctex-12.1.2/ChangeLog.1:1649:	* .gitignore: Ignore some files automatically created during compilation.
+./root/.emacs.d/elpa/auctex-12.1.2/ChangeLog.1:4141:	* .gitignore: Add ChangeLog and auto dirs in tests.
+./root/.emacs.d/elpa/auctex-12.1.2/ChangeLog.1:4531:	* .gitignore: Do not ignore auto.el.
+./root/.emacs.d/elpa/auctex-12.1.2/ChangeLog.1:5639:	* .gitignore: Merge from preview/.gitignore.
+./root/.emacs.d/elpa/auctex-12.1.2/ChangeLog.1:5688:	* preview/.gitignore: Remove.
+./root/.emacs.d/elpa/auctex-12.1.2/ChangeLog.1:6001:	* .gitignore: Ignore preview/preview.el.
+./root/.emacs.d/elpa/auctex-12.1.2/ChangeLog.1:7646:	* doc/.gitignore: Rename from .cvsignore.
+./root/.emacs.d/elpa/auctex-12.1.2/ChangeLog.1:7648:	* preview/.gitignore: Ditto.
+./root/.emacs.d/elpa/auctex-12.1.2/ChangeLog.1:7650:	* preview/latex/.gitignore: Ditto.
+File system loop found: ./sys/class/thermal/thermal_zone0/device/thermal_zone points to an ancestor ./sys/class/thermal/thermal_zone0
+./root/.emacs.d/elpa/auctex-12.1.2/Makefile.in:63:EXCLUDEDFILES=autogen.sh .gitignore doc/.gitignore doc/tex-ref.log \
+./root/.emacs.d/elpa/auctex-12.1.2/Makefile.in:64:	latex/.gitignore README.GIT tests build-aux
+File system loop found: ./sys/class/thermal/thermal_zone0/cdev3/subsystem points to an ancestor ./sys/class/thermal
+File system loop found: ./sys/class/thermal/thermal_zone0/cdev1/subsystem points to an ancestor ./sys/class/thermal
+...
+./proc/5004/cwd/.config/chromium/SingletonCookie: No such file or directory (os error 2)
+./proc/6220/task/6220/cwd/hdcommon.py: Permission denied (os error 13)
+./proc/6220/cwd/test/.gitignore:5:!/.gitignore
+./proc/6259/task/6259/cwd/hdcommon.py: Permission denied (os error 13)
+./proc/6259/cwd/test/.gitignore:5:!/.gitignore
+./proc/10697/cwd/.thunderbird/1202x2s4.default/lock: No such file or directory (os error 2)
+./proc/10697/cwd/.config/chromium-backup-crashrecovery-20190104_233215/SingletonSocket: No such file or directory (os error 2)
+...
+./proc/10697/cwd/.config/chromium-backup-crashrecovery-20190104_233215/SingletonCookie: No such file or directory (os error 2)
+./proc/20596/task/20596/cwd/hdcommon.py: Permission denied (os error 13)
+./proc/20597/task/20597/cwd/hdcommon.py./proc/20596/cwd/test/.gitignore:5:!/.gitignore
+: Permission denied (os error 13)
+./proc/20597/cwd/test/.gitignore:5:!/.gitignore
+./proc/27309/task/27309/fd: No such file or directory (os error 2)
+./proc/27309/task/27309/ns: No such file or directory (os error 2)
+</code></pre>
+<p>My observations:</p>
+<ol>
+<li>The first match is correct.</li>
+<li>All the errors are quite noisy, I understand that since directories were whitelisted it needs to recurse in each of them and check each filename against whitelisted patterns.  However, I'm not sure whether it should really attempt to access all these files if they don't match whitelisted patterns but I might be wrong here.  Anyway, is there a way to reduce that noise?</li>
+<li>There are more matches with <code>gitignore</code>, which should have definitely been ignored because the files they were found in do not match whitelisted patterns.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-03-25 23:25</div>
+            <div class="timeline-body"><blockquote>
+<p>All the errors are quite noisy, I understand that since directories were whitelisted it needs to recurse in each of them and check each filename against whitelisted patterns. However, I'm not sure whether it should really attempt to access all these files if they don't match whitelisted patterns but I might be wrong here. Anyway, is there a way to reduce that noise?</p>
+</blockquote>
+<p>It definitely has to access all of the files, not just for searching, but just for walking the directory hierarchy, since you've whitelisted all directories. The &quot;detected a loop&quot; messages are because you asked ripgrep to follow symbolic links.</p>
+<p>Use <code>--no-messages</code> or redirect stderr to squash error messages. My guess is that a similar invocation of <code>find</code> (with <code>-L</code>) will display similar error messages.</p>
+<blockquote>
+<p>There are more matches with gitignore, which should have definitely been ignored because the files they were found in do not match whitelisted patterns.</p>
+</blockquote>
+<p>Based on the limited data you've given me, I agree. But I need to see the debug logs for <em>those</em> paths. But trying to reproduce this in a more limited scenario doesn't seem to work:</p>
+<pre><code>$ tree
+.
+└── root
+
+1 directory, 0 files
+
+$ cat .ignore
+*
+
+!*/
+
+!/.gitignore
+!/README.md
+!*.pacnew
+!*.pacsave
+!*/tmp??????
+
+/home/
+/tmp/
+/usr/share/vim/
+
+$ cat root/.emacs.d/elpa/magit-20190305.1106/magit.el
+test
+
+$ rg --follow --hidden --files .
+
+$ rg --follow --hidden --files . --debug
+DEBUG|rg::config|src/config.rs:39: /home/andrew/.ripgreprc: arguments loaded from config file: [&quot;--max-columns=500&quot;, &quot;--colors=match:bg:0xff,0x7f,0x00&quot;, &quot;--colors=match:fg:white&quot;, &quot;--colors=line:none&quot;, &quot;--colors=line:fg:magenta&quot;, &quot;--colors=path:fg:green&quot;, &quot;--type-add=got:*_test.go&quot;]
+DEBUG|rg::args|src/args.rs:518: final argv: [&quot;rg&quot;, &quot;--max-columns=500&quot;, &quot;--colors=match:bg:0xff,0x7f,0x00&quot;, &quot;--colors=match:fg:white&quot;, &quot;--colors=line:none&quot;, &quot;--colors=line:fg:magenta&quot;, &quot;--colors=path:fg:green&quot;, &quot;--type-add=got:*_test.go&quot;, &quot;--follow&quot;, &quot;--hidden&quot;, &quot;--files&quot;, &quot;.&quot;, &quot;--debug&quot;]
+DEBUG|globset|globset/src/lib.rs:429: glob converted to regex: Glob { glob: &quot;**/*&quot;, re: &quot;(?-u)^(?:/?|.*/)[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, ZeroOrMore]) }
+DEBUG|globset|globset/src/lib.rs:429: glob converted to regex: Glob { glob: &quot;**/*&quot;, re: &quot;(?-u)^(?:/?|.*/)[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, ZeroOrMore]) }
+DEBUG|globset|globset/src/lib.rs:429: glob converted to regex: Glob { glob: &quot;*/tmp??????&quot;, re: &quot;(?-u)^[^/]*/tmp[^/][^/][^/][^/][^/][^/]$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([ZeroOrMore, Literal('/'), Literal('t'), Literal('m'), Literal('p'), Any, Any, Any, Any, Any, Any]) }
+DEBUG|globset|globset/src/lib.rs:434: built glob set; 5 literals, 0 basenames, 2 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 3 regexes
+DEBUG|ignore::walk|ignore/src/walk.rs:1617: ignoring ./.ignore: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.ignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1620: whitelisting ./root: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.ignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1620: whitelisting ./root/.emacs.d: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.ignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1620: whitelisting ./root/.emacs.d/elpa: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.ignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1620: whitelisting ./root/.emacs.d/elpa/magit-20190305.1106: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.ignore&quot;), original: &quot;!*/&quot;, actual: &quot;**/*&quot;, is_whitelist: true, is_only_dir: true })))
+DEBUG|ignore::walk|ignore/src/walk.rs:1617: ignoring ./root/.emacs.d/elpa/magit-20190305.1106/magit.el: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.ignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-03-25 23:28</div>
+            <div class="timeline-body"><p>Also, when showing output of a command, please include the full command used to generate that output, just like I did in my previous comment.</p>
+<p>Thank you for looking for a smaller example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Alexander-Shukaev">@Alexander-Shukaev</a> on 2019-03-25 23:53</div>
+            <div class="timeline-body"><p>Right,</p>
+<pre><code>.
+├── .git/
+├── .gitignore
+├── test/
+│   ├── elpa/
+│   │   ├── .git/
+│   │   ├── .gitignore
+│   │   └── zzz
+│   └── yyy
+└── xxx
+
+19 directories, 28 files
+</code></pre>
+<pre><code>./.gitignore
+</code></pre>
+<pre><code>*
+
+!*/
+
+!/.gitignore
+</code></pre>
+<p>Every other file (<code>xxx</code>, <code>yyy</code>, <code>zzz</code>) contains <code>gitignore</code> pattern.</p>
+<pre><code>./test/elpa/.gitignore
+</code></pre>
+<p>is empty:</p>
+<pre><code></code></pre>
+<p>Now, if you simply either <code>mkdir ./test/elpa/.git</code> or <code>touch ./test/elpa/.git</code>, then</p>
+<pre><code>rg -S --no-heading --line-number --color never --follow --hidden --smart-case gitignore .
+./.gitignore:5:!/.gitignore
+./test/elpa/zzz:1:gitignore
+</code></pre>
+<p>but if you otherwise <code>rm -f -r ./test/elpa/.git</code>, then</p>
+<pre><code>rg -S --no-heading --line-number --color never --follow --hidden --smart-case gitignore .
+./.gitignore:5:!/.gitignore
+</code></pre>
+<p>It means that those other weird matches were due to presence of more nested <code>.gitignore</code> files which were also accompanied by either <code>.git</code> files or directories (in the same directories) as it most probably nullifies the parent <code>.gitignore</code>.  Is this mimicking the real Git behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-03-26 00:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Is this mimicking the real Git behavior?</p>
+</blockquote>
+<p>Yes. From what I can tell, what you're seeing is expected behavior. <code>.gitignore</code> files from parent git repos don't impact sub-directories which contain git repositories. This would be disastrous if it did. Many folks, including myself, for example, have their home directory in a git repository with typically odd <code>.gitignore</code> files for dealing with junk in <code>$HOME</code> that you don't want tracked.</p>
+<p>Consider using a <code>.ignore</code> file if you want ignore rules to descend arbitrarily into directories without regard to whether a git repository exists or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-03-26 00:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2019-03-26 00:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Alexander-Shukaev">@Alexander-Shukaev</a> on 2019-03-26 00:16</div>
+            <div class="timeline-body"><p>Thank you for the explanation.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:51 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Negation pattern/whitelisting is ignored from `--ignore-file` - BurntSushi/ripgrep #2777</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Negation pattern/whitelisting is ignored from <code>--ignore-file</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2777">#2777</a>
+        opened by <a href="https://github.com/noirbizarre">@noirbizarre</a>
+        on 2024-04-09 17:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/noirbizarre">@noirbizarre</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>ripgrep 14.1.0</p>
+<p>features:-simd-accel,-pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2</p>
+<p>PCRE2 is not available in this build of ripgrep.</p>
+<h3>How did you install ripgrep?</h3>
+<p>Pacman</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Archlinux</p>
+<h3>Describe your bug.</h3>
+<p>Negation patterns are ignored from <code>--ignore-file</code> while documentation says it should take precedence</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<ul>
+<li>Create an empty repository (<code>mkdir case &amp;&amp; cd case &amp;&amp; git init</code>)</li>
+<li>create an hidden file: <code>touch .hidden</code></li>
+<li>add <code>.hidden</code> to the <code>.gitignore</code> file</li>
+<li>create a <code>search.ignore</code> file whitelisting the <code>.hidden</code> file: <code>!.hidden</code></li>
+<li>run <code>rg --files --hidden --ignore-file=search.ignore</code></li>
+</ul>
+<h3>What is the actual behavior?</h3>
+<p><code>.hidden</code> file is not whitelisted and is missing from result while it should be there.</p>
+<p>Here the actual output with <code>rg --files --hidden --ignore-file=search.ignore --debug</code>:</p>
+<pre><code class="language-console">rg: DEBUG|rg::flags::parse|/home/noirbizarre/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.0/crates/core/flags/parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|/home/noirbizarre/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.0/crates/core/flags/hiargs.rs:1099: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=false, stdin_consumed=false, mode=Files)
+rg: DEBUG|rg::flags::hiargs|/home/noirbizarre/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.0/crates/core/flags/hiargs.rs:1109: heuristic chose to search ./
+rg: DEBUG|rg::flags::hiargs|/home/noirbizarre/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.0/crates/core/flags/hiargs.rs:1260: found hostname for hyperlink configuration: archxps
+rg: DEBUG|rg::flags::hiargs|/home/noirbizarre/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.0/crates/core/flags/hiargs.rs:1270: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|/home/noirbizarre/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.0/crates/core/flags/hiargs.rs:174: using 8 thread(s)
+rg: DEBUG|globset|/home/noirbizarre/.cargo/registry/src/index.crates.io-6f17d22bba15001f/globset-0.4.14/src/lib.rs:453: built glob set; 0 literals, 1 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|globset|/home/noirbizarre/.cargo/registry/src/index.crates.io-6f17d22bba15001f/globset-0.4.14/src/lib.rs:448: glob converted to regex: Glob { glob: &quot;.vscode/*&quot;, re: &quot;(?-u)^\\.vscode/[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true, empty_alternates: false }, tokens: Tokens([Literal('.'), Literal('v'), Literal('s'), Literal('c'), Literal('o'), Literal('d'), Literal('e'), Literal('/'), ZeroOrMore]) }
+rg: DEBUG|globset|/home/noirbizarre/.cargo/registry/src/index.crates.io-6f17d22bba15001f/globset-0.4.14/src/lib.rs:453: built glob set; 4 literals, 6 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
+rg: DEBUG|globset|/home/noirbizarre/.cargo/registry/src/index.crates.io-6f17d22bba15001f/globset-0.4.14/src/lib.rs:453: built glob set; 0 literals, 1 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|ignore::walk|/home/noirbizarre/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ignore-0.4.22/src/walk.rs:1799: ignoring ./.hidden: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;.hidden&quot;, actual: &quot;**/.hidden&quot;, is_whitelist: false, is_only_dir: false })))
+search.ignore
+.git/HEAD
+.git/config
+.git/description
+.git/info/exclude
+.git/hooks/update.sample
+.git/hooks/sendemail-validate.sample
+.git/hooks/push-to-checkout.sample
+.git/hooks/prepare-commit-msg.sample
+.git/hooks/pre-receive.sample
+.git/hooks/pre-rebase.sample
+.git/hooks/pre-push.sample
+.git/hooks/pre-merge-commit.sample
+.git/hooks/pre-commit.sample
+.git/hooks/pre-applypatch.sample
+.git/hooks/post-update.sample
+.git/hooks/fsmonitor-watchman.sample
+.git/hooks/commit-msg.sample
+.git/hooks/applypatch-msg.sample
+.gitignore
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>Ignore provided with <code>--ignore-file</code> should take precedence and whitelist previously ignored patterns.
+Here's the expected output:</p>
+<pre><code class="language-console">$ rg --files --hidden --ignore-file=search.ignore
+search.ignore
+.gitignore
+.git/config
+.git/description
+.git/HEAD
+.git/info/exclude
+.git/hooks/pre-merge-commit.sample
+.git/hooks/pre-commit.sample
+.git/hooks/pre-applypatch.sample
+.git/hooks/post-update.sample
+.git/hooks/fsmonitor-watchman.sample
+.git/hooks/commit-msg.sample
+.git/hooks/applypatch-msg.sample
+.git/hooks/update.sample
+.git/hooks/prepare-commit-msg.sample
+.git/hooks/sendemail-validate.sample
+.git/hooks/pre-receive.sample
+.git/hooks/push-to-checkout.sample
+.git/hooks/pre-rebase.sample
+.git/hooks/pre-push.sample
+.hidden
+</code></pre>
+<h3>Note</h3>
+<p>Adding the same negation pattern to the <code>.ignore</code> file works as expected and whitelist <code>.hidden</code>:</p>
+<pre><code class="language-console">rg: DEBUG|rg::flags::parse|/home/noirbizarre/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.0/crates/core/flags/parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|/home/noirbizarre/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.0/crates/core/flags/hiargs.rs:1099: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=false, stdin_consumed=false, mode=Files)
+rg: DEBUG|rg::flags::hiargs|/home/noirbizarre/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.0/crates/core/flags/hiargs.rs:1109: heuristic chose to search ./
+rg: DEBUG|rg::flags::hiargs|/home/noirbizarre/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.0/crates/core/flags/hiargs.rs:1260: found hostname for hyperlink configuration: archxps
+rg: DEBUG|rg::flags::hiargs|/home/noirbizarre/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.0/crates/core/flags/hiargs.rs:1270: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|/home/noirbizarre/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.0/crates/core/flags/hiargs.rs:174: using 8 thread(s)
+rg: DEBUG|globset|/home/noirbizarre/.cargo/registry/src/index.crates.io-6f17d22bba15001f/globset-0.4.14/src/lib.rs:448: glob converted to regex: Glob { glob: &quot;.vscode/*&quot;, re: &quot;(?-u)^\\.vscode/[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true, empty_alternates: false }, tokens: Tokens([Literal('.'), Literal('v'), Literal('s'), Literal('c'), Literal('o'), Literal('d'), Literal('e'), Literal('/'), ZeroOrMore]) }
+rg: DEBUG|globset|/home/noirbizarre/.cargo/registry/src/index.crates.io-6f17d22bba15001f/globset-0.4.14/src/lib.rs:453: built glob set; 4 literals, 6 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
+rg: DEBUG|globset|/home/noirbizarre/.cargo/registry/src/index.crates.io-6f17d22bba15001f/globset-0.4.14/src/lib.rs:453: built glob set; 0 literals, 1 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|globset|/home/noirbizarre/.cargo/registry/src/index.crates.io-6f17d22bba15001f/globset-0.4.14/src/lib.rs:453: built glob set; 0 literals, 1 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|ignore::walk|/home/noirbizarre/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ignore-0.4.22/src/walk.rs:1802: whitelisting ./.hidden: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.ignore&quot;), original: &quot;!.hidden&quot;, actual: &quot;**/.hidden&quot;, is_whitelist: true, is_only_dir: false })))
+.ignore
+search.ignore
+.git/HEAD
+.git/config
+.git/description
+.git/info/exclude
+.git/hooks/update.sample
+.git/hooks/sendemail-validate.sample
+.git/hooks/push-to-checkout.sample
+.git/hooks/prepare-commit-msg.sample
+.git/hooks/pre-receive.sample
+.git/hooks/pre-rebase.sample
+.git/hooks/pre-push.sample
+.git/hooks/pre-merge-commit.sample
+.git/hooks/pre-commit.sample
+.git/hooks/pre-applypatch.sample
+.git/hooks/post-update.sample
+.git/hooks/fsmonitor-watchman.sample
+.git/hooks/commit-msg.sample
+.git/hooks/applypatch-msg.sample
+.gitignore
+.hidden
+</code></pre>
+<p>Given standard ignore patterns are properly handled from <code>--ignore-file</code>, it means that only <code>--ignore-file</code> negation patterns are broken</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-04-09 18:02</div>
+            <div class="timeline-body"><p>This is correct behavior. From the man page:</p>
+<pre><code>       The precedence of ignore rules is as follows, with later items overriding earlier items:
+
+       •  Files given by --ignore-file.
+
+       •  Global gitignore rules, e.g., from $HOME/.config/git/ignore.
+
+       •  Local rules from .git/info/exclude.
+
+       •  Rules from .gitignore.
+
+       •  Rules from .ignore.
+
+       •  Rules from .rgignore.
+</code></pre>
+<p>In other words, <code>--ignore-file</code> has the lowest precedence and is overruled by your <code>.gitignore</code>. The whitelist rule in <code>.ignore</code> works because <code>.ignore</code> specifically has higher precedence.</p>
+<p>The docs for <code>--ignore-file</code> appear misleading or perhaps even wrong:</p>
+<pre><code>       --ignore-file=PATH
+           Specifies a path to one or more gitignore formatted rules files.  These patterns are applied after the  patterns  found  in
+           .gitignore,  .rgignore  and  .ignore  are applied and are matched relative to the current working directory. Multiple addi‐
+           tional ignore files can be specified by using this flag repeatedly. When specifying multiple ignore  files,  earlier  files
+           have lower precedence than later files.
+
+           If  you  are looking for a way to include or exclude files and directories directly on the command line, then use -g/--glob
+           instead.
+</code></pre>
+<p>This should be rephrased to say that they have lower precedence than rules from other ignore files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">doc</span> added by @BurntSushi on 2024-04-09 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/noirbizarre">@noirbizarre</a> on 2024-04-09 18:13</div>
+            <div class="timeline-body"><p>OK, make sense.</p>
+<p>Is there a way to provide a global override file so ?</p>
+<p>Main use case: I have some personal files which I ignore globally using a global git ignore (let's say <code>.envrc</code> or <code>.mise.toml</code>) that I know I always want to find in search results (this is why I have <code>!.mise.toml</code> and <code>!.envrc</code> in my <code>~/.config/search.ignore</code>)</p>
+<p>Ideally, to make everyone happy, there should be both:</p>
+<ul>
+<li>a <code>--ignore-file-override</code> parameter or equivalent to be able to specify on-demand</li>
+<li>a <code>$RG_IGNORE_FILE_OVERRIDE</code> environment variable to be able to specify once globally or by environment</li>
+</ul>
+<p>If there is no such possibility, would you accept a pull-request adding it (it might take time, I'm no rust expert, still learning) ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-04-09 18:31</div>
+            <div class="timeline-body"><p>Sure, you could create a <code>/.rgignore</code> since any <code>.rgignore</code> file has precedence over all other <code>.gitignore</code> files, for example. ripgrep will ascend parent directories to find ignore files.</p>
+<p>Otherwise, no, I'm not accepting any major changes to how ignore rules work in ripgrep right now. Not until the system has been re-thought and probably redesigned.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/noirbizarre">@noirbizarre</a> on 2024-04-09 18:54</div>
+            <div class="timeline-body"><p>Too bad, one <code>.ignore</code> or <code>.rgignore</code> by repository doesn't really scale because I have a huge amount of repositories to handle (I started with that and then submitted the issue when I realized the amount of file I have to create, a lifetime of projects history, each one having a combination of multiple files or directories I gitignored but need to match using rg).</p>
+<p>I'll wait for the redesign. Thanks for the quick and precise answers !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-04-09 19:02</div>
+            <div class="timeline-body"><p>You don't need to put a <code>.rgignore</code> in each repository. I'm not sure where you got that from. You only need to put it in a shared parent directory. Hence the suggestion to use <code>/.rgignore</code>. That's <code>/</code>, the root of your <em>file system</em>. Not the root of each project directory. Of course, it doesn't have to be in the root of your file system. If all your repos are in <code>~/clones</code>, then you could put it at <code>~/clones/.rgignore</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/noirbizarre">@noirbizarre</a> on 2024-04-09 19:41</div>
+            <div class="timeline-body"><blockquote>
+<p>You only need to put it in a shared parent directory.</p>
+</blockquote>
+<p>Oh, that will do it !! Thanks for the tip, I wasn't aware that parent files are processed ! 🙏🏼
+<strong>Edit:</strong> working just fine, solved my issue !</p>
+<blockquote>
+<p>I'm not sure where you got that from.</p>
+</blockquote>
+<p>Hard to answer. This has been a long journey (not) finding this right info:</p>
+<p>The <code>rg --help</code> section about <code>--ignore-file</code> only talks about the current working directory for those files. And this is also the one that made me think there was a bug given it says clearly <code>These patterns are applied after the patterns found in .gitignore...</code></p>
+<pre><code>--ignore-file=PATH
+        Specifies a path to one or more gitignore formatted rules files. These
+        patterns are applied after the patterns found in .gitignore, .rgignore
+        and .ignore are applied and are matched relative to the current working
+        directory. Multiple additional ignore files can be specified by using
+        this flag repeatedly. When specifying multiple ignore files, earlier
+        files have lower precedence than later files.
+</code></pre>
+<p>Then I found the <a href="https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#automatic-filtering">User Guide dedicated section</a> referenced in the README, but it only talks about git specific ignore files (including only globals from <code>core.excludesFile</code> and current dir <code>.ignore</code> that override, no reference to <code>--ignore-file</code> nor to parent files).</p>
+<p>So I read comments from all the PRs on the topics trying to find data and one was saying that only the current repository <code>.(rg|git|)ignore</code> files are handled (and that <code>rg</code> is converging toward using <code>.ignore</code>) as well as the &quot;global ignore files&quot; but without details on what it means.</p>
+<p>I wasn't even aware that there is a <code>man</code> page, it's not said once in the README, the User guide or the <code>--help</code> (or more precisely I missed it if this is the case).</p>
+<p>So clearly a documentation issue and I might submit PR clarifying that between the readme, the help, the user guide and the manpage. Would you accept such pull request ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-04-09 21:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Hard to answer. This has been a long journey (not) finding this right info</p>
+</blockquote>
+<p>Ah yeah, sorry, I was referencing <a href="https://github.com/BurntSushi/ripgrep/issues/2777#issuecomment-2045840094">my prior comment</a> where I suggested <code>/.rgignore</code>. :-)</p>
+<p>Otherwise I agree that the whole UX around ignore rules is sub-optimal. There are also legitimate bugs with its implementation. So it's all a bit of a mess unfortunately, but <em>mostly</em> works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-04-09 21:09</div>
+            <div class="timeline-body"><blockquote>
+<p>So clearly a documentation issue and I might submit PR clarifying that between the readme, the help, the user guide and the manpage. Would you accept such pull request ?</p>
+</blockquote>
+<p>Yes I'd be happy to try and work with you on that. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2025-10-11 01:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-10-11 02:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:47 UTC
+    </footer>
+</body>
+</html>

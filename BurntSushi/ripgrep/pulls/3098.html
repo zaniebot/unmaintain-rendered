@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow constructing an empty GlobSet in const - BurntSushi/ripgrep #3098</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow constructing an empty GlobSet in const</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/3098">#3098</a>
+        opened by <a href="https://github.com/dtolnay">@dtolnay</a>
+        on 2025-07-08 07:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dtolnay">@dtolnay</a></div>
+            <div class="timeline-body"><p>My use case: I have a struct that contains a GlobSet, among other information:</p>
+<pre><code class="language-rust">pub struct Thing {
+    pub extra_srcs: GlobSet,
+    pub flags: Vec&lt;String&gt;,
+    ...
+}
+</code></pre>
+<p>and some instances of this struct held in a different data structure — imagine this is akin to Cargo.toml's <code>[dependencies]</code> and <code>[target.'cfg(…)'.dependencies]</code>:</p>
+<pre><code class="language-rust">pub struct ConfigFile {
+    common: Option&lt;Thing&gt;,
+    platform_specific: BTreeMap&lt;Platform, Thing&gt;,
+}
+</code></pre>
+<p>and a function where it would be really convenient to be able to use a const to get a sufficiently long-lived reference to a static Thing containing an empty globset:</p>
+<pre><code class="language-rust">impl ConfigFile {
+    pub fn things(&amp;self) -&gt; impl Iterator&lt;Item = &amp;Thing&gt; {
+        self.common
+            .iter()
+            .chain(self.platform_specific.values())
+            .chain([
+                const {
+                    &amp;Thing {
+                        extra_srcs: GlobSet::empty(),  // &lt;---
+                        flags: Vec::new(),
+                        ...
+                    }
+                },
+                ...
+            ])
+    }
+}
+</code></pre>
+<p>Without being able to call <code>GlobSet::empty()</code> in const, I would need to do one of the following workarounds instead:</p>
+<ul>
+<li><p>Store <code>Option&lt;GlobSet&gt;</code> instead of just <code>GlobSet</code>, where <code>None</code> means the same thing as <code>GlobSet::empty()</code>.</p>
+</li>
+<li><p>Find a place to put my constant Thing at runtime, either inside <code>ConfigFile</code> (awkward) or some other storage that is passed in to <code>things</code> (awkward).</p>
+</li>
+<li><p>Switch to <code>Cow&lt;'_, Thing&gt;</code> and sprinkle the implementation of <code>things</code> with <code>Cow::Owned</code> and <code>map(Cow::Borrowed)</code>.</p>
+</li>
+<li><p>Clone everything every time we iterate this data structure.</p>
+</li>
+<li><p>Something with a <code>static</code> <code>OnceLock</code>.</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2025-08-20 00:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-08-20 00:01</div>
+            <div class="timeline-body"><p>Makes sense to me! Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-09-20 01:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:21 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attempt at a unified diff output format for use with --replace - BurntSushi/ripgrep #2149</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Attempt at a unified diff output format for use with --replace</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/2149">#2149</a>
+        opened by <a href="https://github.com/ghost">@ghost</a>
+        on 2022-02-23 20:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ghost">@ghost</a></div>
+            <div class="timeline-body"><p>This is a draft for what could be a unified diff output for ripgrep when using the <code>--replace</code> option.</p>
+<p>The chance for acceptance is low considering the feature request #74 was closed,
+however this is an implementation of @samuelcolvin suggestion to produce a diff output format
+instead of actually writing to files. The job of changing files can then be handed to something like <code>patch</code> or <code>git apply</code>.</p>
+<p>I wanted to at least investigate what this would look like and managed to get something working,
+so I hope this can be a way to discuss around some actual code. @BurntSushi stated they were
+actively looking to moving more functionality into a library, so I'm not sure if this was totally dismissed.</p>
+<p>I ran into a few problems with the replacement buffer which seems to contain more than the original match
+and I managed to reproduce this with ripgrep 13.0.0, notes are in the code. I managed to get it working by
+modifying the replacement, not sure but it could be related to #2095.
+There is also no support for additional context, as that would require keeping track of it before and after a match
+to then produce the correct hunk header with context included, and I'm not very familiar with the code or rust
+to come up with a nice way to do that.</p>
+<p>The implementation is mostly taken from the JSON printer with necessary parts replaced.
+It can handle multiline replacements that differ in the amount of lines before/after replacement.</p>
+<p>I've tested mostly with running the following in the ripgrep repo:</p>
+<pre><code>rg -U '\.A\n' --replace 'BB'
+rg -U '.A\nB' --replace 'BB' UNLICENSE
+</code></pre>
+<p>as these also produced the spurious output I found with rg 13.0.0.</p>
+<p>Outstanding stuff to leave draft status:</p>
+<ul>
+<li>[ ] unit tests</li>
+<li>[ ] better flag handling (--diff should somehow require you to use --replace)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @ghost on 2022-02-23 20:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "attempt to hack together a diff output" to "Attempt at a unified diff output format for use with --replace" by @ghost on 2022-02-23 20:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ghost">@ghost</a> reviewed on 2022-02-23 20:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ghost">@ghost</a> on <code>crates/printer/src/util.rs</code>:108 on 2022-02-23 20:36</div>
+            <div class="timeline-body"><p>This is probably wrong, but I'm relying on the original line terminators instead of reproducing it in the printer. I'm not sure how to fix it properly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ghost">@ghost</a> reviewed on 2022-02-24 18:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ghost">@ghost</a> on <code>crates/printer/src/util.rs</code>:108 on 2022-02-24 18:19</div>
+            <div class="timeline-body"><p>At least all tests seem to pass.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-08 14:00</div>
+            <div class="timeline-body"><p>Thanks for working on this. But as discussed in #74, this really isn't something I want to support. It's the kind of feature that begs more features. I don't want it in ripgrep. I think search-and-replace is a complicated enough task that some other tool should try to solve it. (And indeed, several have. But the UX is difficult to get right I think. Yet another reason I don't want to touch this particular problem.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-07-08 14:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:05 UTC
+    </footer>
+</body>
+</html>

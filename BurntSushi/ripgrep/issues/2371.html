@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option for writing results to file - BurntSushi/ripgrep #2371</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Option for writing results to file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2371">#2371</a>
+        opened by <a href="https://github.com/Simran-B">@Simran-B</a>
+        on 2022-12-15 23:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Simran-B">@Simran-B</a></div>
+            <div class="timeline-body"><h4>Describe your feature request</h4>
+<p>An option <code>--output</code> or <code>--outfile</code> to write what ripgrep would print in a terminal to a file instead but byte-exact.</p>
+<p>Usually, you would pipe the stdout to a file like <code>rg &quot;expr&quot; infile.txt &gt; outfile.txt</code> to do this. However, there are circumstances where this doesn't work as expected:</p>
+<ul>
+<li><p>Line breaks may not be preserved by the terminal as-is.
+Both cmd.exe (using conhost.exe) and PowerShell (pwsh using the Terminal app) on Windows turn <code>\r</code> and <code>\n</code> into <code>\r\n</code>. A sequence of <code>\n\r</code> ends up as <code>\r\n\r\n</code>. Furthermore, a trailing newline (<code>\r\n</code>) is appended.</p>
+<p>Git Bash from Git for Windows leaves the line breaks as they are but appends a trailing <code>\n</code>.</p>
+<p><code>\r</code> makes the terminals on Windows write over the current line, but it's difficult to understand what's going on because redirecting the output to a file does not give you the exact byte stream either.</p>
+</li>
+<li><p>Special terminal characters can mess with the redirection
+https://github.com/BurntSushi/ripgrep/issues/1309#issuecomment-633927149</p>
+</li>
+<li><p>Spaces after the command might end up in the output (although this appears to be limited to spaces before <code>|</code> and cmd.exe)
+https://github.com/BurntSushi/ripgrep/issues/1500</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-12-16 00:30</div>
+            <div class="timeline-body"><p>I suppose an <code>--outfile</code> would be a fine thing to add. It solves a real problem, although I note that it sounds like it papers over some rather subtle issues in various Windows environments. One wonders how one is supposed to know to use <code>--outfile</code> when output redirection exists. But for those that do know, it seems useful and should have low implementation cost.</p>
+<p>I'm not sure what the flag name should be. I am more partial to <code>--outpath</code> personally. I think <code>--output</code> is perhaps a bit too vague and <code>--outfile</code> is not quite as precise as <code>--outpath</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2022-12-16 00:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @BurntSushi on 2022-12-16 00:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Simran-B">@Simran-B</a> on 2022-12-16 22:06</div>
+            <div class="timeline-body"><p>Yes, it's more of a workaround for a problem outside ripgrep's control. I would appreciate it, nonetheless.</p>
+<p>I think it's sufficient to give the option an intuitive name so that people looking for this kind of functionality can easily find it, accompanied by a <code>--help</code> text explaining the reason for this option and that you may use redirection instead (with caveats).</p>
+<p>The only existing options to specify file(path)s seem to be:</p>
+<ul>
+<li><code>-f, --file &lt;PATTERNFILE&gt;...</code></li>
+<li><code>--ignore-file &lt;PATH&gt;...</code></li>
+</ul>
+<p><code>--output-file &lt;PATH&gt;</code> would fit well into this naming scheme. <code>-O</code> would be free as shorthand, but it might be better to reserve it for a more commonly used future option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dibrinsofor">@dibrinsofor</a> on 2023-10-05 13:06</div>
+            <div class="timeline-body"><p>was this ever worked on?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-10-05 13:43</div>
+            <div class="timeline-body"><p>No. If it was, you'd very likely see an update of some kind in this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-24 18:54</div>
+            <div class="timeline-body"><p>I looked into this and I don't understand why this option is needed. The linked issues don't appear to be related to this. And the OP here describes problems with writing to a Windows terminal. But redirecting stdout means that ripgrep is no longer writing to a terminal.</p>
+<p>I think the biggest problem with the way this feature request is that there are zero instructions for reproducing a real problem. Imagine, for example, that I add an <code>--outfile</code> flag. How do I test that it solves the problem here?</p>
+<p>If someone wants to write up more detail with a real reproduction that I can follow, then I might be willing to re-open this and add support for a <code>--outfile</code> flag. But I'm going to pass for now because it seems like an unnecessary complication.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-24 18:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:35 UTC
+    </footer>
+</body>
+</html>

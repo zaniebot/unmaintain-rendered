@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combination of --no-ignore, --sort, and search path of a symbolic link to a directory causes panic - BurntSushi/ripgrep #1389</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Combination of --no-ignore, --sort, and search path of a symbolic link to a directory causes panic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1389">#1389</a>
+        opened by <a href="https://github.com/HarrisonMc555">@HarrisonMc555</a>
+        on 2019-09-25 22:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/HarrisonMc555">@HarrisonMc555</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 11.0.2
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p><code>brew install ripgrep</code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>macOS Mojave 10.14.6 (18G95)</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>When I run the following command that searches a symbolic link, ripgrep panics (after displaying output):</p>
+<p><code>rg -n --hidden --no-ignore --color=always --sort path pattern ~/symbolic-link-to-directory</code></p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>Use the previous flags on a symbolic link to a directory.</p>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<pre><code>$ rg --debug -n --hidden --no-ignore --color=always --sort path every baz
+DEBUG|rg::config|src/config.rs:40: /Users/harrisonmccullough/.ripgreprc: arguments loaded from config file: [&quot;--smart-case&quot;]
+DEBUG|rg::args|src/args.rs:560: final argv: [&quot;rg&quot;, &quot;--smart-case&quot;, &quot;--debug&quot;, &quot;-n&quot;, &quot;--hidden&quot;, &quot;--no-ignore&quot;, &quot;--color=always&quot;, &quot;--sort&quot;, &quot;path&quot;, &quot;every&quot;, &quot;baz&quot;]
+DEBUG|grep_regex::literal|grep-regex/src/literal.rs:59: literal prefixes detected: Literals { lits: [Complete(EVERY), Complete(eVERY), Complete(EvERY), Complete(evERY), Complete(EVeRY), Complete(eVeRY), Complete(EveRY), Complete(eveRY), Complete(EVErY), Complete(eVErY), Complete(EvErY), Complete(evErY), Complete(EVerY), Complete(eVerY), Complete(EverY), Complete(everY), Complete(EVERy), Complete(eVERy), Complete(EvERy), Complete(evERy), Complete(EVeRy), Complete(eVeRy), Complete(EveRy), Complete(eveRy), Complete(EVEry), Complete(eVEry), Complete(EvEry), Complete(evEry), Complete(EVery), Complete(eVery), Complete(Every), Complete(every)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|globset/src/lib.rs:435: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+baz/file2.txt
+1:Hello everyone
+thread 'main' panicked at 'called `Option::unwrap()` on a `None` value', src/libcore/option.rs:347:21
+stack backtrace:
+   0: std::sys::unix::backtrace::tracing::imp::unwind_backtrace
+   1: std::sys_common::backtrace::print
+   2: std::panicking::default_hook::{{closure}}
+   3: std::panicking::default_hook
+   4: std::panicking::rust_panic_with_hook
+   5: std::panicking::continue_panic_fmt
+   6: rust_begin_unwind
+   7: core::panicking::panic_fmt
+   8: core::panicking::panic
+   9: rg::try_main
+  10: rg::main
+  11: std::rt::lang_start::{{closure}}
+  12: std::panicking::try::do_call
+  13: __rust_maybe_catch_panic
+  14: std::rt::lang_start_internal
+  15: main
+</code></pre>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>Not panic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/HarrisonMc555">@HarrisonMc555</a> on 2019-09-25 22:10</div>
+            <div class="timeline-body"><p>After further experimentation, it looks like it is the combination of the following:</p>
+<ul>
+<li>The search path is a symbolic link to a directory</li>
+<li>The <code>--no-ignore</code> flag is set</li>
+<li>The <code>--sort</code> flag is set (with something other than <code>none</code>)</li>
+</ul>
+<p>I used the <code>--no-config</code> flag and got the same results.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-09-25 22:32</div>
+            <div class="timeline-body"><p>Please provide a complete reproduction, as the issue template requests. Please provide commands to setup an identical corpus, for example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/HarrisonMc555">@HarrisonMc555</a> on 2019-09-25 22:51</div>
+            <div class="timeline-body"><pre><code class="language-bash">mkdir mydir
+ln -s mydir mylink
+echo &quot;text in file&quot; &gt;&gt; mydir/file.txt
+rg text --no-ignore --sort path # no search path is OK
+rg text --no-ignore --sort path mydir # regulary directory is also OK
+rg text --no-ignore --sort path mylink # symbolic link to directory is NOT OK
+</code></pre>
+<p>If you either remove all ripgrep configuration files or include the <code>--no-config</code> flag you get the same results.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Panics for unknown reason" to "Combination of --no-ignore, --sort, and search path of a symbolic link to a directory causes panic" by @HarrisonMc555 on 2019-09-25 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nikofil">@nikofil</a> on 2019-10-02 09:31</div>
+            <div class="timeline-body"><p>Hey! I wanted to contribute to ripgrep as I use it a lot, so I made a PR to fix this issue. Hope that's ok!</p>
+<p>This was caused by https://github.com/BurntSushi/ripgrep/blob/8892bf648cfec111e6e7ddd9f30e932b0371db68/ignore/src/walk.rs#L1036-L1040 where you get whether a file is a directory or not using <code>is_dir()</code>. When symlinks are not followed, however, this will return <code>false</code> even in the case of a symlink that points to a directory. Then, when ripgrep gets an event signaling that the directory listing is over https://github.com/BurntSushi/ripgrep/blob/8892bf648cfec111e6e7ddd9f30e932b0371db68/ignore/src/walk.rs#L949-L951 it tries to get the parent <code>Ignore</code> object which doesn't exist in this case, causing a panic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-02-17 22:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:01 UTC
+    </footer>
+</body>
+</html>

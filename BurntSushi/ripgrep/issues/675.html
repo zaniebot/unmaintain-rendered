@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Initial query speed - BurntSushi/ripgrep #675</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Initial query speed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/675">#675</a>
+        opened by <a href="https://github.com/ianchanning">@ianchanning</a>
+        on 2017-11-11 16:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ianchanning">@ianchanning</a></div>
+            <div class="timeline-body"><p>Thank you for this awesome tool! I'm using it daily in Vim.</p>
+<p>I'm using ripgrep 0.7.1 on Windows. It is taking 10s to search a directory with ~26,000 files (of which ~23,000 files are in the <code>node_modules</code> directory - which I'm trying to ignore)</p>
+<pre><code>C:\Users\Ian&gt;rg --version
+ripgrep 0.7.1
+-AVX -SIMD
+</code></pre>
+<p>I installed it from the <a href="https://chocolatey.org/packages/ripgrep">chocolatey package</a>. I am running on 64-bit Windows 10, with 8 GB RAM and an Intel i5-3320M 2.6 GHz CPU.</p>
+<p>Running the following command initially takes 9 - 10 seconds to fully complete:</p>
+<pre><code>rg --vimgrep -tphp --type-add &quot;ctp:*.ctp&quot; -tctp --glob !.svn --glob !node_modules
+</code></pre>
+<p>This is still faster than grep, so I have zero complaints, but I'm trying to figure out if I'm doing something wrong or if this is the expected performance.</p>
+<p>This purely seems to be some initial index building, once that is done, all queries are sub-second.</p>
+<p>Please let me know if there are some better debug info that I can give you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-11-13 11:42</div>
+            <div class="timeline-body"><blockquote>
+<p>This purely seems to be some initial index building, once that is done, all queries are sub-second.</p>
+</blockquote>
+<p>ripgrep builds no indices, but your intuition might not be that far off.</p>
+<p>Firstly, if the first search is slow and all subsequent searches are fast, then what specific problem are you reporting?</p>
+<p>Second, this particular behavior is indicative of ripgrep needing to read your corpus from disk in order to search it. Once it's done the first time, the operating system will usually keep those files in a cache in RAM, which makes subsequent searches much faster. Most codebases these days fit into memory and most folks probably search their codebase multiple times, so the &quot;search while everything is in cache&quot; is the common case.</p>
+<p>When files need to be read from disk, then most tools will likely perform at similar speeds, since they tend to be blocked on I/O.</p>
+<p>Thirdly, why are you explicitly ignoring <code>node_modules</code>? Isn't that directory in your <code>.gitignore</code>? Similarly, <code>.svn</code> is hidden, so it is ignored by default.</p>
+<p>Anyway, I'm not entirely sure what you're asking here. If you just want to know how everything works, then read the blog post: http://blog.burntsushi.net/ripgrep/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-11-13 11:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ianchanning">@ianchanning</a> on 2017-11-13 22:00</div>
+            <div class="timeline-body"><p>Thanks for your reply! Mostly this is just rookie fumbling, trying to see if I'm doing something obviously wrong.</p>
+<p>I now understand what you mean that it's loading into RAM vs file access. The search is phenomenal once it is loaded into RAM and works amazingly for repeated queries.</p>
+<p>You're right I don't need to include <code>.svn</code>, my mistake that was just from experimenting. I excluded <code>node_modules</code> because where as you respect <code>.gitignore</code> I don't think you take into account <code>svn:ignore</code> and I'm using subversion. I could create a <code>.gitignore</code>, but there's only the one directory I need to ignore and it's just the command I store in my <code>.vimrc</code>.</p>
+<p>I was just a bit confused by my experience of taking 9-10s for searching 3,000 (100 MB worth) files vs the various performance metrics you use which you have e.g. 0.3s (http://blog.burntsushi.net/ripgrep/#linux-literal-default) for multiple GB worth of project directory. I've got a fairly old ThinkPad T430 with an SSD but I imagine that the specs of the your machine vs mine plus Windows vs Linux I/O speeds would explain the performance differences.</p>
+<p>This initial search is only for the first search that I'll do each day or after starting from sleep / hibernate. But it was a daily occurance, so my mind wandered whilst waiting for the initial query :) I'd have thought that it should stick around in RAM longer though, so on starting from sleep / hibernate I thought that it loads what was in RAM back into there. But it seems to me that the RAM being used for ripgrep is getting cleared each time I close my laptop.</p>
+<p>I think one of the issues is purely perceived performance. Which I've figured out now is due to Vim's synchronous nature by default. If you do a search using ripgrep in Vim nothing happens until the search is complete. However using the AsyncRun plugin for Vim 8, you start getting results back much quicker.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-11-14 12:20</div>
+            <div class="timeline-body"><blockquote>
+<p>don't think you take into account svn:ignore and I'm using subversion.</p>
+</blockquote>
+<p>Ah I see, yes, that's correct.</p>
+<blockquote>
+<p>I was just a bit confused by my experience of taking 9-10s for searching 3,000 (100 MB worth) files vs the various performance metrics you use which you have e.g. 0.3s (http://blog.burntsushi.net/ripgrep/#linux-literal-default) for multiple GB worth of project directory. I've got a fairly old ThinkPad T430 with an SSD but I imagine that the specs of the your machine vs mine plus Windows vs Linux I/O speeds would explain the performance differences.</p>
+</blockquote>
+<p>You read the methodology section, right? It very carefully explains that the benchmarks are setup such that the cache is warm before extracting a sample time.</p>
+<p>With that said, taking 10s to search 100MB on an SSD does indeed sound egregiously bad. I have the exact same laptop as you (with an SSD, using Linux), and that kind of timing isn't what I'd expect. Unfortunately, I don't really have any way to debug it without being able to reproduce it, so I think you're pretty much on your own here. You'd need to investigate yourself and figure out the source of the problem. If I might brainstorm some ideas for you:</p>
+<ol>
+<li>Consider more rigorously testing other tools and compare timings. If search is truly blocked on I/O, then any non-toy search program should take roughly the same amount of time.</li>
+<li>Consider testing tools that just crawl the directory and print file names without looking at the contents of a file (e.g., <code>find</code>). If that is also very slow, then that gives some clue that perhaps something is funky with directory traversal.</li>
+<li>Consider controlling your environment more rigorously. Do you have other programs running that are eating up CPU or memory while executing a search?</li>
+<li>Are you <em>sure</em> that you're only searching 100MB? Maybe ripgrep is actually looking in <code>node_modules</code> after all? You can check by running ripgrep with the <code>--files</code> flag.</li>
+<li>On Linux, I know how to flush the I/O cache such that the next time I run ripgrep, the OS will be forced to read from disk. You might consider figuring out how to do this on Windows so that it's easier to test your problem. Having to suspend or reboot your computer for every single test isn't practical.</li>
+</ol>
+<p>None of these things will necessarily give you the answer you seek, but they will help to form a more complete picture of what's going on. If you report your results back here, then it might help further.</p>
+<blockquote>
+<p>I'd have thought that it should stick around in RAM longer though, so on starting from sleep / hibernate I thought that it loads what was in RAM back into there. But it seems to me that the RAM being used for ripgrep is getting cleared each time I close my laptop.</p>
+</blockquote>
+<p>Yeah I don't know anything about that when it comes to Windows, sorry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ianchanning">@ianchanning</a> on 2017-11-14 16:17</div>
+            <div class="timeline-body"><p>Brilliant, thankyou. That's actually I guess what I was after, a sensible set of tests that I can run as I don't know enough about memory issues. I did a quick check and the queries are still coming from RAM after briefly putting the laptop to sleep and waking it again.</p>
+<p>I've got a dual boot with Fedora, so I'll do some performance checks against my code base on there.</p>
+<p>But for now I think this can be closed, you've explained a lot! I'll add any results I get back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ianchanning on 2017-11-14 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-11-14 16:24</div>
+            <div class="timeline-body"><p>Sounds good! Note that on Linux, you can flush the page cache with <code>sudo sh -c 'echo 3 &gt; /proc/sys/vm/drop_caches'</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:21 UTC
+    </footer>
+</body>
+</html>

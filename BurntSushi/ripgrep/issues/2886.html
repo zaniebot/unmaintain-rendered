@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ripgrep misbehaves and has huge CPU usage runing on VSCodium from inside distrobox - BurntSushi/ripgrep #2886</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ripgrep misbehaves and has huge CPU usage runing on VSCodium from inside distrobox</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2886">#2886</a>
+        opened by <a href="https://github.com/MateusRodCosta">@MateusRodCosta</a>
+        on 2024-09-11 16:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MateusRodCosta">@MateusRodCosta</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>No idea, apparently it's from either VSCodium or a VSCodium extension</p>
+<h3>How did you install ripgrep?</h3>
+<p>Same as above, it's apparently internal to either VSCodium or from a VSCodium extension</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Host is Fedora Silverblue 40. ripgrep is apparently invoked by something from a VSCodium install inside a Fedora 40 distrobox.</p>
+<h3>Describe your bug.</h3>
+<p>Ever so often when using VSCodium I will notice a random high CPU usage while I am not compiling anything or otherwise doing something that makes sense to trigger it.
+By looking at any system resource monitor usage I will notice that it's usually cause by VSCodium, more precisely by a <code>rg</code>.</p>
+<p>I usually solve this by killing it and the issue goes away for a while. It could be caused by any reason ranging from the atomic/immutable nature of the host file system or the container nature of the distrobox.</p>
+<p>The command that is run is apparently as follow:</p>
+<pre><code>/usr/share/codium/resources/app/node_modules.asar.unpacked/@vscode/ripgrep/bin/rg --files --hidden --case-sensitive --no-require-git -g **/package.json -g !**/.git -g !**/.svn -g !**/.hg -g !**/CVS -g !**/.DS_Store -g !**/Thumbs.db -g !**/{node_modules,.vscode-test}/** --no-ignore --follow --no-config --no-ignore-global
+</code></pre>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>Install VSCodium inside a distrobox, use normally</p>
+<h3>What is the actual behavior?</h3>
+<p>Huge unneeded CPU usage by ripgrep</p>
+<h3>What is the expected behavior?</h3>
+<p>No unneeded CPU usage</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MateusRodCosta">@MateusRodCosta</a> on 2024-09-11 16:35</div>
+            <div class="timeline-body"><p>Potentially related to https://github.com/microsoft/vscode/issues/225767, in case it's not a ripgrep issue but one in how VS Code uses it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-11 16:38</div>
+            <div class="timeline-body"><p>This isn't actionable on my end. Most of your issue is explaining an interaction point with a piece of software that uses ripgrep, and you haven't identified any specific issue with ripgrep itself. Ripgrep using CPU isn't a ripgrep problem. It's just doing what has been asked of it.</p>
+<p>You need to provide an MRE for ripgrep specifically. I'm not going to install random IDEs to guess at and debug your workflow in the hope of reproducing the same thing as you. You need to provide not just a specific ripgrep command, but a corpus along with expected and actual results.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-09-11 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2024-09-11 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MateusRodCosta">@MateusRodCosta</a> on 2024-09-11 17:20</div>
+            <div class="timeline-body"><blockquote>
+<p>This isn't actionable on my end. Most of your issue is explaining an interaction point with a piece of software that uses ripgrep, and you haven't identified any specific issue with ripgrep itself. Ripgrep using CPU isn't a ripgrep problem. It's just doing what has been asked of it.</p>
+</blockquote>
+<p>Ah, my bad, yeah it's likely some weird interaction between VS Code (or one of its extensions) and ripgrep, no idea if distrobox even matters here.</p>
+<blockquote>
+<p>You need to provide an MRE for ripgrep specifically. I'm not going to install random IDEs to guess at and debug your workflow in the hope of reproducing the same thing as you. You need to provide not just a specific ripgrep command, but a corpus along with expected and actual results.</p>
+</blockquote>
+<p>I am not very sure how to debug this, as I don't know if it's a native VSCode feature that triggers it or a extension. I will see if I can reproduce and then I might re-open if it turns out to be ripgrep-specific. Or, in case it's not, report to the appropriate channels.</p>
+<p>I did find this pointing that a specific VS Code extensions (in this case one related to PHP) was able to trigger it:
+https://community.devsense.com/d/877-high-cpu-usage-of-rg-process-when-symlinks-are-used
+There is also this closed issue: https://github.com/microsoft/vscode/issues/186279</p>
+<p>In any case I will investigate further and I might come back when I get more info, sorry for the inconvenience and thanks for the patience.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MateusRodCosta">@MateusRodCosta</a> on 2024-09-14 15:03</div>
+            <div class="timeline-body"><p>@BurntSushi I did figure out something that might be close to a &quot;MRE&quot;, I maintain three flatpaks for Flathub (ChibiTracker, Digital and dtipbijays).
+Apparently sometimes when I build one of those flatpaks, rg might start taking ~80% and basically never stopping taking
+CPU (it even starts spinning the laptop fans). When that happens apparently just deleting the <code>build-dir/</code> (where the files that will be in the final flatpak are saved) and <code>.flatpak-builder/</code> (where any compilation step actually happens) folders will just make the <code>rg</code> process go away.</p>
+<p>I would guess then that VSCode is telling ripgrep to keep accessing files in those folder and, in case there are too many files, it takes too long to complete and uses a lot of CPU for prolonged time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-14 15:36</div>
+            <div class="timeline-body"><p>An MRE means you can provide precise instructions for another human to reproduce the issue you're seeing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MateusRodCosta">@MateusRodCosta</a> on 2024-12-16 20:54</div>
+            <div class="timeline-body"><p>Ok, I do have a bit more info on what is likely to be causing this.</p>
+<ul>
+<li>This issue seems to only appear when after building a relatively complex flatpak</li>
+<li>This likely is because of the <code>.flatpak-builder/</code> (files used during the build) and <code>builddir/</code> (output folder) directories</li>
+<li>This is potentially caused by the aforementioned folders containing many files and not being on <code>.gitignore</code></li>
+<li>In certain situations, usually at the same time as the high CPU usage, the VCS VS Code integration also complains it can't track that many files at once</li>
+<li>Always by just deleting <code>.flatpak-builder/</code> an <code>builddir/</code> the CPU usage gets lowered soon after</li>
+</ul>
+<p>So, some VS Code component uses ripgrep to track the several files on the project, and the flatpak building trips it up.
+It could potentially be VCS, search, file list or something of the sort.</p>
+<blockquote>
+<p>An MRE means you can provide precise instructions for another human to reproduce the issue you're seeing.</p>
+</blockquote>
+<p>The issue here is that I really can't think of any MRE that wouldn't be: &quot;download this manifest and build the flatpak using flatpak-builder&quot;.
+Because I don't know yet how to fully separate it from &quot;ripgrep has an issue with the flatpak build files&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MateusRodCosta">@MateusRodCosta</a> on 2024-12-16 21:00</div>
+            <div class="timeline-body"><p>For reference, https://github.com/microsoft/vscode/issues/233703 is a newer issue that seems more closely related to this, I will move to following that</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:50 UTC
+    </footer>
+</body>
+</html>

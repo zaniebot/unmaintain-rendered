@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`grep -v -f file` and `rg -v -f file` differ - BurntSushi/ripgrep #3001</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>grep -v -f file</code> and <code>rg -v -f file</code> differ</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3001">#3001</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-02-26 16:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>While I don't maintain any guarantees with grep specifically, it was my intent to match its behavior here. Moreover, ripgrep's behavior is internally inconsistent:</p>
+<pre><code>$ echo wat | rg -f /dev/null
+$ echo wat | rg -v -f /dev/null
+$ echo wat | grep -f /dev/null
+$ echo wat | grep -v -f /dev/null
+wat
+$ echo wat | rg -f &lt;(echo)
+wat
+$ echo wat | rg -v -f &lt;(echo)
+$ echo wat | grep -f &lt;(echo)
+wat
+$ echo wat | grep -v -f &lt;(echo)
+$
+</code></pre>
+<p>Specifically, the fact that the first two commands above <em>both</em> report no results is wrong.</p>
+<h3>Discussed in https://github.com/BurntSushi/ripgrep/discussions/3000</h3>
+<div type='discussions-op-text'>
+
+<p><sup>Originally posted by <strong>datatraveller1</strong> February 26, 2025</sup>
+I want to list all found values from a search and all not found values from a search.
+The following is a simplified example. The values searched for are listed in the file search_for.txt.</p>
+<p><strong>search_for.txt:</strong></p>
+<pre><code>1
+2
+3
+</code></pre>
+<p>The file in which these values are searched is named searched_in.txt.</p>
+<p><strong>searched_in.txt:</strong></p>
+<pre><code>item 1
+item 2
+</code></pre>
+<p>I use the following commands (note that I'm on MS Windows):</p>
+<p><strong>find entries of file search_for.txt:</strong></p>
+<pre><code>rg --file=search_for.txt --only-matching searched_in.txt &gt; found.txt
+</code></pre>
+<p><strong>not found entries of file search_for.txt:</strong></p>
+<pre><code>rg --invert-match --file=found.txt search_for.txt &gt; not_found.txt
+</code></pre>
+<p>The result is correct:</p>
+<p><strong>found.txt:</strong></p>
+<pre><code>1
+2
+</code></pre>
+<p><strong>not_found.txt:</strong></p>
+<pre><code>3
+</code></pre>
+<p>Great so far.
+However, if I change the content of file search_for.txt so nothing is found...
+<strong>search_for.txt:</strong></p>
+<pre><code>4
+5
+6
+</code></pre>
+<p>... with the two above commands, the file <strong>found.txt</strong> gets created as a <strong>0 bytes file</strong> (which is correct, because nothing is found) but the file <strong>not_found.txt</strong> gets also created as a <strong>0 bytes file</strong> which doesn't match my expectations.
+I have wished to see all values of file search_for.txt as result for the command
+<em>rg --invert-match --file=found.txt search_for.txt &gt; not_found.txt</em>
+<strong>not_found.txt, wished result:</strong></p>
+<pre><code>4
+5
+6
+</code></pre>
+<p>Isn't the inversion of nothing everything?
+If this is the expected behaviour, is there a special flag to achieve what I want for --file and 0 bytes content of this file?</div></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2025-02-26 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2025-07-27 19:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-09-20 01:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:54 UTC
+    </footer>
+</body>
+</html>

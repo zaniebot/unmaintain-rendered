@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add configurable hyperlinks - BurntSushi/ripgrep #2483</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add configurable hyperlinks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/2483">#2483</a>
+        opened by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a>
+        on 2023-04-02 17:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ltrzesniewski">@ltrzesniewski</a></div>
+            <div class="timeline-body"><p>This PR adds hyperlinks to search results in terminals which support them:</p>
+<p><img src="https://user-images.githubusercontent.com/7913492/229365208-8e89dbb0-53d1-4e82-b6ed-3d27004dd830.png" alt="image" /></p>
+<p>Compared to the previous PR (#2322), it adds a <code>--hyperlink-format PATTERN</code> command line option which lets you configure the output.</p>
+<p><code>PATTERN</code> can be:</p>
+<ul>
+<li>An URL pattern with the following placeholders:<ul>
+<li><code>{file}</code> for the absolute file name. This one is required.<ul>
+<li>Without the leading <code>/</code> on Unix (as this makes the patterns more intuitive and multi-platform)</li>
+<li>With <code>\</code> replaced by <code>/</code> on Windows</li>
+</ul>
+</li>
+<li><code>{line}</code> for the line number of the result.</li>
+<li><code>{column}</code> for the column number of the result. <code>{line}</code> is required if this is used.</li>
+<li><code>{host}</code> for the hostname. This becomes <code>wsl$/{distro}</code> on WSL.</li>
+</ul>
+</li>
+<li>An alias to a well-known pattern, such as <code>vscode</code>. Only a few are currently defined but hopefully more could be added over time, on the same principle as file types (<code>default_types.rs</code>). A few special aliases are included:<ul>
+<li><code>file</code> for the default <code>file://</code> scheme</li>
+<li><code>none</code> to disable hyperlinks (it aliases to the empty string)</li>
+</ul>
+</li>
+</ul>
+<p>The default patterns are the ones which are the most widely supported:</p>
+<ul>
+<li>Unix: <code>file://{host}/{file}</code></li>
+<li>Windows: <code>file:///{file}</code></li>
+<li>WSL: <code>file://wsl$/{distro}/{file}</code></li>
+</ul>
+<p>This makes ripgrep only output hyperlinks on the file headings by default, like in the screenshot above.</p>
+<p>If a patten includes <code>{line}</code> however, each line prelude becomes a link. Here's an example with <code>--hyperlink-format vscode</code>:</p>
+<p><img src="https://user-images.githubusercontent.com/7913492/229365867-aa1c8387-61f0-4f1b-9b2d-bb7ed06748af.png" alt="image" /></p>
+<p>The idea is for a user to add <code>--hyperlink-format</code> to their configuration file to enable more features.</p>
+<p>This PR depends on https://github.com/BurntSushi/termcolor/pull/65 to write hyperlink control codes to the terminal. I had to make changes to the CI in order to build ripgrep without that PR having shipped. I'll revert them once the updated termcolor crate is published. Of course, if any change is requested there, I'll update this PR accordingly.</p>
+<p>I tried my best to write high-quality code, I hope it's good enough, but I'd appreciate any feedback on how I could have done things better, since Rust isn't my day-to-day language. 🙂</p>
+<p>Please ignore the long commit history, I'll either clean it up or just squash it once the changes are approved.</p>
+<p>Closes #665
+Supersedes #2322</p>
+<blockquote>
+<p><strong>Note</strong></p>
+<ul>
+<li>Preview optimized builds can be found <a href="https://github.com/ltrzesniewski/ripgrep/actions/workflows/preview.yml?query=is%3Asuccess">here</a>, for those interested. Just pick the newest build, and you'll find artifacts for Linux/Windows/macOS.</li>
+<li>For Windows Terminal users, <a href="https://github.com/microsoft/terminal/pull/14993">this change</a> needs to ship before any scheme other than the default can be used.</li>
+</ul>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fabian-thomas">@fabian-thomas</a> on 2023-04-02 17:24</div>
+            <div class="timeline-body"><p>Works well for me. One minor thing I noticed, is that the last colon ist embedded in the link label. Visually it would be more pleasant to exclude that, but opinions on that might differ. Thanks for implementing this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fabian-thomas">@fabian-thomas</a> on 2023-04-02 17:31</div>
+            <div class="timeline-body"><p>And one more minor thing. The column seems to be off by one. I would assume it to be zero-based.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-04-02 19:23</div>
+            <div class="timeline-body"><p>Thanks for your feedback! 🙂</p>
+<blockquote>
+<p>One minor thing I noticed, is that the last colon ist embedded in the link label. Visually it would be more pleasant to exclude that, but opinions on that might differ.</p>
+</blockquote>
+<p>Yes, I thought about it, and I think you're right - it would probably look better.</p>
+<p>But I didn't want to change the existing code too much: currently there is one function per field (file/line/column/byte offset), which writes the field value followed by its separator (it may be different for the file). I'd have to break that design in order to end the hyperlink right before the last separator.</p>
+<p>I'll see if I can come up with something clean though.</p>
+<blockquote>
+<p>The column seems to be off by one. I would assume it to be zero-based.</p>
+</blockquote>
+<p>It works fine for me, at least in VSCode. Maybe your editor uses zero-based columns? In that case, I may have to add a <code>{column0}</code> placeholder (please tell me if you can come up with a better name, naming is hard).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fabian-thomas">@fabian-thomas</a> on 2023-04-02 19:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Yes, I thought about it, and I think you're right - it would probably look better.</p>
+<p>But I didn't want to change the existing code too much: currently there is one function per field (file/line/column/byte offset), which writes the field value followed by its separator (it may be different for the file). I'd have to break that design in order to end the hyperlink right before the last separator.</p>
+<p>I'll see if I can come up with something clean though.</p>
+</blockquote>
+<p>If it would require major modifications, I think it can just stay like that. It's really minor for me.</p>
+<blockquote>
+<p>It works fine for me, at least in VSCode. Maybe your editor uses zero-based columns? In that case, I may have to add a <code>{column0}</code> placeholder (please tell me if you can come up with a better name, naming is hard).</p>
+</blockquote>
+<p>I'm using emacs. I'm not sure if there is support for custom URIs like with vscode. I use my own scripts so it's not that important for me. I can just substract one from each passed column. I guess I was wrong here. I just found it odd that something is 1-based, but lines are 1-based too. So I would wait for other people to report issues with that before you implement a switch for that. 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/misaki-web">@misaki-web</a> on 2023-04-09 14:46</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li>An alias to a well-known pattern, such as <code>vscode</code>. Only a few are currently defined but hopefully more could be added over time</li>
+</ul>
+</blockquote>
+<p>Hyperlinks in <code>ripgrep</code> results would be a very useful feature! By the way, some time ago, I wrote <a href="https://github.com/misaki-web/grepp"><code>grep+</code>, a script improving grep results display</a> (hyperlinks, alignment and syntax highlighting). Example:</p>
+<p><img src="https://raw.githubusercontent.com/misa-ki/grepp/main/assets/default-dark.png" alt="grep+ default dark theme" /></p>
+<p>In order to open results to a specific file and line when clicking on hyperlinks, I created a custom scheme (<code>grep+:///path/to/file:line_number</code>, with fallback to the scheme <code>file:///path/to/file</code> if needed) supporting about 20 editors:</p>
+<pre><code>atom {file}:{line}
+code -g {file}:{line}
+eclipse {file}:{line}
+emacsclient +{line} {file}
+geany +{line} {file}
+gedit {file} +{line}
+gvim {file} +{line}
+jedit {file} +line:{line}
+kate -l {line} {file}
+kile --line {line} {file}
+kwrite -l {line} {file}
+micro -parsecursor true {file}:{line}
+nano +{line} {file}
+notepadqq -l {line} {file}
+pluma {file} +{line}
+qtcreator {file} +{line}
+scite {file} -goto:{line}
+vim {file} +{line}
+vi {file} +{line}
+</code></pre>
+<p>It allows to open files to a specific line (or column, but I've not added column support in <code>grep+</code>) with any editor, no matter if there's a scheme like <code>vscode://</code> or not. It may not be in the scope of <code>ripgrep</code> to support any editor, but I mention it here for brainstorming.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-04-09 15:47</div>
+            <div class="timeline-body"><p>@misaki-web Thanks, I added the <code>grep+</code> scheme to the list in this PR. 🙂</p>
+<p>@fabian-thomas I made the hyperlink end before the last field separator, and it looks better indeed:</p>
+<p><img src="https://user-images.githubusercontent.com/7913492/230782664-7b4117c0-9f9e-49fc-bf09-0b3bcbe1456d.png" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-06-05 11:23</div>
+            <div class="timeline-body"><p>@BurntSushi since I know you're careful about the dependency tree of ripgrep, and this PR currently adds a dependency to <code>once_cell</code>, would it be better to raise the MSRV to 1.70 in order to replace that crate with the implementation from <code>std</code>?</p>
+<p>(note that this PR also adds a dependency to <code>gethostname</code> to handle the <code>{host}</code> placeholder, I hope that's ok)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-06-05 11:43</div>
+            <div class="timeline-body"><p>I haven't reviewed this PR yet. There is <em>a lot</em> of code here. It may be warranted, but I really just haven't sat down to explore the design space myself yet.</p>
+<p><code>once_cell</code> is a fine dependency, but yes, raising the MSRV to the latest Rust stable release is perfectly okay for ripgrep. If given the choice, I would indeed rather use <code>std</code> instead of adding a dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-06-05 11:50</div>
+            <div class="timeline-body"><p>No worries, I understand it's a large change and I don't want to rush you. 🙂</p>
+<p>I'll make the switch to <code>std</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rmartine-ias">@rmartine-ias</a> on 2023-06-14 19:56</div>
+            <div class="timeline-body"><p>Thanks for making <code>PATTERN</code> a configurable string, this feature will be very useful to me. I use a pile of horrible hacks that requires file path URLs to always have a <code>#</code> fragment, even if there is no line number. (So I'd be setting <code>'file://{host}/{file}#'</code>)</p>
+<p>(iTerm2 can be set, in the fragment case (but not for all links, regardless of fragment status), to use Semantic History rules for hyperlinks, which lets you run a coprocess when they're clicked on instead of passing to the OS, which lets me stack several more hacks to get the link to open in a vim pane in the current tmux window.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-06-15 12:56</div>
+            <div class="timeline-body"><p>I'm glad you find it useful! 😄</p>
+<p>May I ask you a little question, since you seem to be a proficient macOS user? Are you aware of any popular macOS apps which provide custom URL handlers that users may want to use to open ripgrep links?</p>
+<p>I could add them to the <a href="https://github.com/ltrzesniewski/ripgrep/blob/hyperlinks-cfg/crates/printer/src/hyperlink_aliases.rs">aliases list</a> in this PR, as it's currently a little short.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rmartine-ias">@rmartine-ias</a> on 2023-06-16 18:57</div>
+            <div class="timeline-body"><p>I think there are probably quite a few, which is why the configurability is good. Here are the editors iTerm2 has for opening files with:</p>
+<img width="195" alt="Screenshot 2023-06-16 at 12 22 02 PM" src="https://github.com/BurntSushi/ripgrep/assets/107639398/ea079cae-aee1-48db-8c9f-c42794b0bfff">
+
+<p>I'm not sure how many of them have their own path handlers. I know a few people who use MacVim, <a href="https://macvim.org/docs/gui_mac.txt.html#mvim%3A%2F%2F">which has one</a>. I think Atom has fallen out of favor, while Sublime is reasonably popular. If you're adding built-in support for vscode, might as well add vscodium as well.</p>
+<p>If you're really trying to pack features in, you could add a git remote URL scheme that hyperlinks to <code>https://your.git.host/current-repo/tree/current-branch/{path}</code> or something but I think that's a little out of scope for an MVP ;p</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-06-16 20:16</div>
+            <div class="timeline-body"><p>Great, thanks for this list! I've added a few aliases.</p>
+<p>I'm not really trying to pack features in, but I thought having a built-in list of common URL patterns would be nice to have. 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-07 21:48</div>
+            <div class="timeline-body"><p>It's bad juju to merge master back into a feature branch.</p>
+<p>There's 35 commits here. I'm presuming this is an artifact of development. If so, please rebase this onto master and squash it down to one commit.</p>
+<p>If that is too much work, then I would say skip it because I haven't reviewed this PR yet and I dunno if I will accept it. A 1K line diff is a red flag to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitchcapper">@mitchcapper</a> on 2023-07-07 22:23</div>
+            <div class="timeline-body"><p>Well they are writing a new feature in and tried to do it in a very dynamic/generic way rather than just hardcoding a single hyperlink format. I am also guessing they expected the squash+merge but it shouldn't be an issue to rebase onto master with a single commit.  POC at: https://github.com/mitchcapper/ripgrep/compare/master...pr_rebased</p>
+<p>As for the number of lines most is the new hyperlink class (almost 700 of the 1000) with the largest number of changes in the standard printer where 130 of the 200 new lines are all together for the new structured writer.   It is a good bit of code but at least not massive changes to a lot of existing code.   Full stats for the PR are:</p>
+<pre><code>  1  0  .gitignore
+  1  0  complete/_rg
+  1  0  tests/regression.rs
+  1  1  README.md
+  2  0  crates/printer/Cargo.toml
+  
+  4  1  Cargo.toml
+  6  0  crates/printer/src/lib.rs
+  9  1  crates/printer/src/counter.rs  
+  17 2  crates/core/args.rs  
+  21 0  crates/cli/src/wtr.rs
+  21 0  crates/core/app.rs
+  23 0  crates/printer/src/hyperlink_aliases.rs
+  38 2  crates/core/path_printer.rs
+  45 7  crates/printer/src/util.rs 
+  60 13 crates/printer/src/summary.rs
+  200   58 crates/printer/src/standard.rs
+  662   0  crates/printer/src/hyperlink.rs
+</code></pre>
+<p>Hopefully it is considered, it is a nice addition</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-07-07 22:46</div>
+            <div class="timeline-body"><p>Sorry, I thought you'd rather have a PR without merge conflicts. Yes, I totally expected to squash this into a single commit, and will do so right now since you prefer it that way.</p>
+<p>But it depends on https://github.com/BurntSushi/termcolor/pull/65, which means it still has a few changes that can't be merged as-is (in the CI and Cargo.toml). It's ready for review though.</p>
+<p>I understand it's a large change, but it adds a brand new feature, which I tried to keep isolated. As @mitchcapper points out, most of the new code is in a separate file. I did my best to write good code, with comments and tests, and that unfortunately doesn't make it short.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-08 00:03</div>
+            <div class="timeline-body"><p>Thanks. Yes, no conflicts is good. But not with merge commits. :-) Check out the commit history of ripgrep. There are no merge commits anywhere. (Except for the beginning IIRC.)</p>
+<p>I appreciate the work done here. I don't even know whether I'm going to support hyperlinks at all yet. I think it's likely, but it's something I have to sit down and think through myself. I understand y'all did a lot of that work already, but once I merge something like this, it then becomes my responsibility. So it has to be something I'm happy to continue to maintain indefinitely.</p>
+<p>Anywho, I'm going through the process of clearing out the backlog so that I can put out a new release, and I plan to review this soon. But it could take some time.</p>
+<p>The partial point of my comments here are to set expectations. I generally prefer folks to get an OK from me before spending so much time on something like this for that reason. I hate to see folks spend a bunch of time on work that doesn't wind up getting merged. I realize this is difficult to do because I have bursts of activity at unpredictable points. My schedule and workflow for my free time projects unfortunately makes a lot of my projects less friendly to contributions than I would like.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-07-08 00:31</div>
+            <div class="timeline-body"><p>No worries, I understand the expectations very well, as I have similar ones for my own projects.</p>
+<p>You seemed to be open to this feature, and I <em>really</em> wanted to have it in a tool I use every day. Besides, developing this helped me tremendously with learning Rust, so I consider this a very positive experience even if it doesn't end up being merged.</p>
+<p>Once you think it through, I'll be happy to implement any changes you'll request until you're satisfied. That'll be another opportunity to play with the language. :slightly_smiling_face:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dandavison">@dandavison</a> on 2023-07-12 20:06</div>
+            <div class="timeline-body"><p>Hi @ltrzesniewski, re https://github.com/BurntSushi/ripgrep/issues/86#issuecomment-1633123047 the JetBrains URL protocols I'm aware of are documented at https://dandavison.github.io/delta/grep.html (I don't remember where I got them from but I remember testing it with PyCharm at least).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-18 22:29</div>
+            <div class="timeline-body"><p>I've done a very quick review, and I have to say, this is an extremely high quality PR. It looks like you put a ton of effort into this. I like the idea of configuring hyperlink format as you've done since it doesn't seem like we can get away with just one format.</p>
+<p>I need to do a deeper review of how everything fits together, but I'd say I'm pretty likely to accept this PR or something close to it. You don't need to do anything from this point I think, I'll take it over from here.</p>
+<p>I do have a high level question though: are these hyperlinks enabled by default? If so, how necessary do you think that is? My problem is that, AIUI, emitting hyperlinks requires path canonicalization, which I perceive to be a somewhat heavyweight operation. I'm not sure I want that to happen by default (even if it's just when writing to a tty).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-09-18 22:54</div>
+            <div class="timeline-body"><p>Thanks for your kind words, I'm glad you like it! 🙂</p>
+<blockquote>
+<p>are these hyperlinks enabled by default?</p>
+</blockquote>
+<p>Currently they're enabled by default when color is enabled and termcolor supports them (which means we're not using the old Windows console host).</p>
+<blockquote>
+<p>If so, how necessary do you think that is?</p>
+</blockquote>
+<p>I think that's the most user-friendly solution. I don't expect most users to configure <code>--hyperlink-format</code> in a config file, but I suppose they'd enjoy having hyperlinks by default.</p>
+<blockquote>
+<p>emitting hyperlinks requires path canonicalization, which I perceive to be a somewhat heavyweight operation</p>
+</blockquote>
+<p>This is done once per matching file, and then cached for subsequent matches in the same file: I added a <code>hyperlink_path</code> field to <code>PrinterPath</code> which stores this data.</p>
+<p>I admit I didn't run any benchmark, but I wouldn't expect this to be an issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-19 02:34</div>
+            <div class="timeline-body"><p>The <code>gethostname</code> dependency is a problem. ripgrep is still currently using <code>winapi</code> for Windows bindings, but <code>gethostname</code> utilizes the new <code>windows-targets</code> stuff from Microsoft. Arguably ripgrep should switch, but:</p>
+<ol>
+<li>It's a big effort.</li>
+<li>I perceive the Windows crates out of Microsoft as high-churn.</li>
+<li>I'd like to investigate how much work it would be to just maintain the bindings I need myself since <code>winapi</code> is de facto unmaintained. I already maintain the <code>winapi-util</code> crate, so there is a central place for them to exist. Not great from an ecosystem perspective, but more cohesive for my use cases.</li>
+</ol>
+<p>There's also the problem that <code>gethostname</code> is a micro-crate IMO, and I generally try to avoid such things. Taking a quick glance at it, it's just a couple dozen lines of not-too-tricky FFI. Plus, it panics when an error occurs. I'd rather that bubble up an error.</p>
+<p>So I will probably:</p>
+<ul>
+<li>Add a hostname wrapper to <code>winapi-util</code>.</li>
+<li>Find some place to stick the Unix wrapper... Probably <code>grep-cli</code>? Not sure. (It also looks like <code>grep-printer</code> is calling the actual <code>gethostname</code> function every time it needs it, but such things should be cached once per process execution since I think it's safe to assume it won't change. Or if it will, that it's okay to use the hostname computed at startup throughout the lifetime of a typically short-lived process such as ripgrep.)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-09-19 08:59</div>
+            <div class="timeline-body"><blockquote>
+<p>It also looks like <code>grep-printer</code> is calling the actual <code>gethostname</code> function every time it needs it, but such things should be cached once per process execution since I think it's safe to assume it won't change.</p>
+</blockquote>
+<p>It's called a single time per process, then embedded in the <code>HyperlinkPattern</code> as a constant string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dandavison">@dandavison</a> reviewed on 2023-09-19 10:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dandavison">@dandavison</a> on <code>crates/core/app.rs</code>:1521 on 2023-09-19 10:35</div>
+            <div class="timeline-body"><p>Another type of file link that will be useful for people to construct is a link to the file and line in a remote Git hosting app, such as</p>
+<pre><code>https://github.com/BurntSushi/ripgrep/blob/master/crates/core/main.rs#L7
+</code></pre>
+<p>This is typically the form of link that is most useful to share with colleagues. Here the prefix portion (after host) also varies according to the local state of the repo that the file is in. I just wanted to mention this: I can imagine users asking for ways to make this convenient, but I'm not sure what if anything should be done there. Obviously it's technically possible to read the required repo metadata from disk, but that would be taking on completely new areas of responsibility. Perhaps they'd need to write a wrapper for ripgrep that sets <code>--hyperlink-format</code> dynamically per-repo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-09-19 11:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/core/app.rs</code>:1521 on 2023-09-19 11:41</div>
+            <div class="timeline-body"><p>I agree that such a thing could be useful, and indeed, ripgrep should not do it. It looks to be like it could be done in a wrapper script given the functionally that this PR exposes. Would you agree with that?</p>
+<p>I actually have a little script I use for generating github permalinks (that I call from my editor): https://github.com/BurntSushi/dotfiles/blob/4f29beb508708e8a88676ffa194f0dc9c19057ae/bin/github-link</p>
+<p>But it very intentionally only works for a tiny number of cases. It is actually a quite complex thing to do in the general case, and itself probably wants to be configurable in various ways. Definitely not going to be rolling that logic in ripgrep.</p>
+<p>We should resist the urge to just keep piling things on. This hyperlink feature is principally useful so that folks can click to open results. And it needs to expose enough flexibility for custom links because one format won't work everywhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-20 15:03</div>
+            <div class="timeline-body"><p>OK, <a href="https://docs.rs/winapi-util/latest/winapi_util/sysinfo/fn.get_computer_name.html"><code>winapi-util</code> now has its own safe wrapper for getting the computer name</a>. It also supports fetching all different possible computer names, in case we need to pivot to something other than what the <code>gethostname</code> crate uses by default. It is also fallible, although I do agree with the <code>gethostname</code> crate docs that it <em>should</em> never return an error. But since it's interface with the OS and ripgrep runs on a lot of different systems, I'd rather play it safe. Especially since there is essentially no cost to doing so. (I'll do the same for Unix targets as well.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-21 17:57</div>
+            <div class="timeline-body"><p>@ltrzesniewski How did you come up with <code>wsl$/{distro}</code> as the hostname for WSL?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-09-21 18:16</div>
+            <div class="timeline-body"><p>I use WSL so I knew that Windows lets you access files from your WSL filesystems through a share named <code>\\wsl$\&lt;distro&gt;</code>. Of course I tested such links: they let you open a file on a Linux filesystem in your Windows' VSCode for instance.</p>
+<p><a href="https://learn.microsoft.com/en-us/windows/wsl/filesystems">Here are some docs</a> about the <code>\\wsl$</code> share  and file system interop with WSL.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-21 18:26</div>
+            <div class="timeline-body"><p>@ltrzesniewski Hmmm okay, thank you for that link! It looks like it's a &quot;share&quot; though and not really a hostname? I suppose the alternative would be to introduce a new <code>{share}</code> variable or something in a <code>HyperlinkPattern</code>, but that doesn't seem great...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-09-21 18:36</div>
+            <div class="timeline-body"><p>Yes, I wondered about that because it's not technically a hostname, but in the end I thought it would be best to have the same hyperlink pattern work on Linux and WSL: you may want to reuse the same config file on multiple platforms. Also, it's what just works by default on WSL.</p>
+<p>Not sure if relevant, but note that Microsoft announced very recently <a href="https://devblogs.microsoft.com/commandline/windows-subsystem-for-linux-september-2023-update">future networking changes</a> to WSL. I'm not really a networking expert so take it with a grain of salt, but it may be possible that one day WSL could be accessible through its own hostname, though I wouldn't expect for this to be enabled by default. Looks like that would require setting <code>networkingMode</code> to <code>mirrored</code>, and the post says it would enable you to &quot;Connect to WSL directly from your local area network (LAN)&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-21 18:45</div>
+            <div class="timeline-body"><p>Yeah I am very very apprehensive about shoe-horning things that aren't hostnames into a hostname placeholder. I understand it might give a little more convenience to the end user, but if WSL ever does have &quot;real&quot; hostnames, then fixing ripgrep will become a nightmare because there will be a bunch of end-user configuration already using <code>{hostname}</code> in WSL.</p>
+<p>Basically, once ripgrep comes out with this hyperlink format string, then changing it in the future in a non-compatible way is going to be so nightmarish that I'm unlikely to do it. So this basically biases the design into a conservative area even if it means less convenience.</p>
+<p>It almost looks like <code>wsl$\{distro}\</code> is a file path prefix than a hostname. So we could add a <code>{wslprefix}</code> parameter, and when <code>WSL_DISTRO_NAME</code> isn't set, it expands to the empty string. That should enable one to have the same configuration in WSL and non-WSL environments.</p>
+<p>There is still the potential issue that <code>{hostname}</code> expands to something in WSL that doesn't work. But I don't have a WSL setup to test that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-21 19:02</div>
+            <div class="timeline-body"><p>I am also conflicted about calling <code>canonicalize</code> here, and I wonder whether it makes more sense to just build relative paths manually by just appending them to the current working directory. Otherwise, with canonicalization, users may click on a file path and have it open a path that, while it may point to the same file, could be completely different from the one they could actually see when they clicked on it. I've found this to be quite annoying and unexpected in other contexts.</p>
+<p>Did you call canonicalize for any other reason?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-09-21 19:03</div>
+            <div class="timeline-body"><p>Yeah I understand.</p>
+<p>The problem with WSL is that its hostname is currently the same as the Windows one, so you're right: the generated link won't work if you put <code>{host}</code> in the pattern.</p>
+<p>This can be easily fixed with a custom pattern such as <code>file://wsl$/Ubuntu/{file}</code> for instance. The <code>{wslprefix}</code> placeholder would certainly make it easier: <code>file://{wslprefix}/{file}</code> but that pattern wouldn't work on a &quot;real&quot; Linux.</p>
+<p>Maybe something like <code>{wslhost}</code> which would expand to the hostname on a real Linux and to <code>wsl$/&lt;distro&gt;</code> on WSL (the current <code>{host}</code> implementation basically) would be better since it would always work?</p>
+<p>That way we could have a <code>{host}</code> placeholder without any magic, and a <code>{wslhost}</code> which indicates it has some WSL support in its name.</p>
+<p>(as an aside, I suppose you could consider <code>wsl$</code> as a &quot;virtual&quot; hostname, since you can access it just like an SMB share: it lists the WSL distros as subdirectories.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-09-21 19:10</div>
+            <div class="timeline-body"><p>Hmm canonicalizing seemed the right thing to do. ~Does it do anything else than concatenating the path to the current working directory while also handling <code>../</code>  and <code>./</code> correctly?~</p>
+<blockquote>
+<p>Otherwise, with canonicalization, users may click on a file path and have it open a path that, while it may point to the same file, could be completely different from the one they could actually see when they clicked on it</p>
+</blockquote>
+<p>~How would that be possible?~</p>
+<p>Ok, it expands symlinks. I suppose it would indeed be better to leave them as-is while handling <code>.</code> and <code>..</code> properly. Looks like we need <a href="https://doc.rust-lang.org/std/path/fn.absolute.html"><code>path::absolute</code></a>, but it's unstable. 😞</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-21 20:02</div>
+            <div class="timeline-body"><p>I don't think <code>std::path::absolute</code> works either sadly, because that leaves <code>..</code> in the path on Unix. I commented here: https://github.com/rust-lang/rust/issues/92750#issuecomment-1730218090</p>
+<p>OK, it looks like we'll probably want to use canonicalize for now because it will at least work, but it is definitely not my preference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-09-21 20:16</div>
+            <div class="timeline-body"><p>Wow ok, I should have actually read the docs page. I must say a function named <code>path::absolute</code> that can return <code>..</code> parts is <em>very</em> surprising to me.</p>
+<p>Having a <code>..</code> symlink not pointing to its parent dir is a pathological case, but I can understand it needs to be considered since it's possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-21 20:19</div>
+            <div class="timeline-body"><p>Yeah. We can always revisit this too. I'll stick with <code>canonicalize</code> for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-21 20:26</div>
+            <div class="timeline-body"><p>Actually, do we really need to get rid of <code>..</code> in the path in the first place? I assumed we did, but I just looked through <a href="https://datatracker.ietf.org/doc/html/rfc8089">RFC 8089</a>, and I don't see anything about resolving things like <code>.</code> and <code>..</code> out of the path. And it's worth pointing out that if there is a <code>.</code> or a <code>..</code> in the path, then it's only there because the user typed it somewhere. So retaining it seems okay? (Echoing the comment from @ChrisDenton on the issue about <code>std::path::absolute</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-09-21 20:34</div>
+            <div class="timeline-body"><p>I made a quick test on Windows: <code>file://</code> doesn't handle <code>..</code> but <code>vscode://</code> does. Looks like this depends on the app associated with the URI scheme.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-21 20:36</div>
+            <div class="timeline-body"><p>Oof. Wow. What an absolute mess.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-09-21 20:43</div>
+            <div class="timeline-body"><p>Yes, unfortunately, <code>file://</code> handling isn't exactly great on Windows. 😞</p>
+<p>You may want to canonicalize on Windows only, since it's done lexically, and skip it on Linux if it handles those URIs properly (you'd have to test this, I don't have a Linux GUI). This wouldn't work on WSL with paths containing <code>..</code> along with the <code>file://</code> scheme, but you may consider this as a corner case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-09-21 20:46</div>
+            <div class="timeline-body"><p>Oh wait, actually <code>canonicalize</code> calls <code>GetFinalPathNameByHandleW</code> on Windows (which is not lexical, since the file is opened to get its handle), and <code>absolute</code> calls <code>GetFullPathNameW</code> (which seems to be lexical).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Frenzie">@Frenzie</a> on 2023-09-21 20:53</div>
+            <div class="timeline-body"><blockquote>
+<p>skip it on Linux if it handles those URIs properly (you'd have to test this, I don't have a Linux GUI).</p>
+</blockquote>
+<p>Yes, at a glance it does what you expect. (I.e., file://tmp/lala/../bla.txt opens /tmp/bla.txt), but I might not be testing the precise context you expect.</p>
+<p>I'd swear Explorer did too for that matter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-21 20:55</div>
+            <div class="timeline-body"><p>Yeah, even though I am on Linux, I don't really have links-in-terminals setup. I don't expect to be a user of this feature in general. The only &quot;GUI&quot; I use is a web browser, and very occasionally <code>git gui</code>. Everything else is in the terminal, and terminal hyperlinks seem to be most useful for opening them in other non-terminal GUI applications.</p>
+<p>So I'm probably just going to have to stick with canonicalize for now, since that seems to give the best chance of the link actually working.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChrisDenton">@ChrisDenton</a> on 2023-09-21 21:00</div>
+            <div class="timeline-body"><p>Just to be clear, Windows is the easy case in terms of <code>..</code>. A <code>..</code> component will always be resolved lexically so if all else fails you could even do it manually. Unixes are trickier because <code>..</code> is a link. On Linux there's not a good solution if a protocol does not support <code>..</code> components. Canonicalization is really the only option unless you're ok with potentially opening a different file to the one you expected to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-21 21:03</div>
+            <div class="timeline-body"><p>Right. The issue is knowing (on Unix, where handling <code>..</code> is trickier) whether the application that handles the link supports <code>..</code> in the path or not. Maybe it works just about everywhere and maybe not. I dunno.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Frenzie">@Frenzie</a> on 2023-09-21 21:06</div>
+            <div class="timeline-body"><p>It's not quite clear to me where this theoretical <code>..</code> would be coming from btw? User config only?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-21 21:09</div>
+            <div class="timeline-body"><p>Just what the user types. For example, <code>rg foo ../sibling-of-parent/dir/foo</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-22 17:56</div>
+            <div class="timeline-body"><p>@ltrzesniewski In your PR, I found this comment about constructing the hyperlink on Unix:</p>
+<pre><code class="language-rust">        // On Unix, this function returns the absolute file path without the
+        // leading slash, as it makes for more natural hyperlink format, for
+        // instance:
+        //
+        //   file://{host}/{file}   instead of   file://{host}{file}
+        //   vscode://file/{file}   instead of   vscode://file{file}
+        //
+        // It also allows for the format to be multi-platform.
+</code></pre>
+<p>I am trying to decide whether it makes sense to strip the leading <code>/</code> from a file. On the one hand, I see the convenience in how one writes the hyperlink format strings when stripping it. On the other, it feels strange to me, because at least on Unix, an absolute path without a leading slash is a bit of a weird thing. Moreover, RFC 8089 defines the <code>absolute-path</code> component to include the leading slash (including on Windows). So I'm not sure what was meant by the format being multi-platform. I think, for example, that <code>vscode://file{file}</code> would work on both Unix and Windows. So would <code>file://{file}</code> and <code>file://{host}{file}</code> (modulo the bit about certain things on Windows not liking the host).</p>
+<p>I guess from my view, I would rather the variables be easier and more intuitive to understand as individual pieces than to make the format as a whole a little more natural to look at. When someone is trying to write a new hyperlink format, it will require reasoning about each individual part, and <code>/foo/bar/baz</code> except without the leading <code>/</code> just seems a bit too unexpected from my perspective.</p>
+<p>I'm also thinking of renaming <code>{file}</code> to <code>{path}</code>. I think the latter is a bit more precise and is more in line with the terminology used by RFC 8089.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-22 18:00</div>
+            <div class="timeline-body"><p>If we leave the leading slash on Unix, I think the implication is that I would <em>add</em> a leading slash on Windows. Which I guess also feels a little unintuitive to me from the Windows perspective. There, you'd expect an absolute local path to start with a drive letter I think. But maybe this is less bad than removing the leading slash on Unix?</p>
+<p>Another way to think about it is, as I said above, that <code>{file}</code> is really just <code>path-absolute</code> from RFC 8089 (and actually defined in <a href="https://datatracker.ietf.org/doc/html/rfc3986">RFC 3986</a>). And in that context, it has the leading slash.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-09-22 19:32</div>
+            <div class="timeline-body"><p>Well TBH I'd prefer removing the leading slash, because it feels more natural and intuitive that way IMO.</p>
+<p>You'd have to write <code>editor:/{file}</code> instead of <code>editor://{file}</code>. That <code>editor:/</code> part feels wrong with a single slash, and using <code>editor://{file}</code> would produce <code>editor:///foo/bar/baz</code> with three slashes.</p>
+<p><code>vscode://file{file}</code> wouldn't work on Windows as that would generate <code>vscode://fileC:/foo/bar/baz</code> - you'd have to prefix the path with a slash on Windows as you said, which feels wrong.</p>
+<p>On the other hand, if you don't prefix the path with a slash on Windows, the patterns would become platform-specific, and you'd have to write them twice in <code>hyperlink_aliases.rs</code> with <code>#[cfg(unix)]</code> and <code>#[cfg(windows)]</code>.</p>
+<p>But more importantly, you <em>know</em> the path will be canonicalized and are reasoning with that in mind, but I wouldn't expect the users to think about this detail. They may expect <code>{file}</code> to generate a relative path (just like what's shown in the terminal), one which doesn't start with a slash, or simply not think about this. And I certainly wouldn't expect them to compare the hyperlink format against RFC 8089. 😅</p>
+<p>That's why I think a pattern such as <code>file://{host}/{file}</code> feels more natural.</p>
+<blockquote>
+<p>I'm also thinking of renaming <code>{file}</code> to <code>{path}</code>.</p>
+</blockquote>
+<p>As you prefer. Both seem fine to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-22 20:07</div>
+            <div class="timeline-body"><p>Yes, I would add a leading slash to Windows paths. I've tried this out and I like it best among all choices that I can think of. I don't see any one choice that leads to good and intuitive behavior in all cases.</p>
+<p>I don't think there are any cases where you need to write <code>editor:/{path}</code> when <code>{path}</code> contains a leading slash. Here are my rewritten aliases for example:</p>
+<pre><code>pub(crate) const HYPERLINK_PATTERN_ALIASES: &amp;[(&amp;str, &amp;str)] = &amp;[
+    #[cfg(not(windows))]
+    (&quot;file&quot;, &quot;file://{host}{path}&quot;),
+    #[cfg(windows)]
+    (&quot;file&quot;, &quot;file://{path}&quot;),
+    // https://github.com/misaki-web/grepp
+    (&quot;grep+&quot;, &quot;grep+://{path}:{line}&quot;),
+    (&quot;kitty&quot;, &quot;file://{host}{path}#{line}&quot;),
+    // https://macvim.org/docs/gui_mac.txt.html#mvim%3A%2F%2F
+    (&quot;macvim&quot;, &quot;mvim://open?url=file://{path}&amp;line={line}&amp;column={column}&quot;),
+    (&quot;none&quot;, &quot;&quot;),
+    // https://github.com/inopinatus/sublime_url
+    (&quot;subl&quot;, &quot;subl://open?url=file://{path}&amp;line={line}&amp;column={column}&quot;),
+    // https://macromates.com/blog/2007/the-textmate-url-scheme/
+    (&quot;textmate&quot;, &quot;txmt://open?url=file://{path}&amp;line={line}&amp;column={column}&quot;),
+    // https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls
+    (&quot;vscode&quot;, &quot;vscode://file{path}:{line}:{column}&quot;),
+    (&quot;vscode-insiders&quot;, &quot;vscode-insiders://file{path}:{line}:{column}&quot;),
+    (&quot;vscodium&quot;, &quot;vscodium://file{path}:{line}:{column}&quot;),
+];
+</code></pre>
+<blockquote>
+<p>But more importantly, you know the path will be canonicalized and are reasoning with that in mind, but I wouldn't expect the users to think about this detail. They may expect {file} to generate a relative path (just like what's shown in the terminal), one which doesn't start with a slash, or simply not think about this. And I certainly wouldn't expect them to compare the hyperlink format against RFC 8089.</p>
+</blockquote>
+<p>The docs for the format will need to explicitly mention that <code>{path}</code> is absolute and starts with a leading slash. I could also rename it (or add an alias) called <code>{path:absolute}</code> to make things even clearer.</p>
+<p>My reasoning for sticking closer to the RFC is that, in my experience with these sorts of things, the RFC winds up serving as a lowest common denominator. And if we introduce concepts that diverge from the RFC, then it's plausible they can be combined in ways we didn't anticipate (perhaps with future features) that lead to a worse experience than if we just stuck with the RFC. This is a very hand-wavy argument and I could absolutely be wrong, but this is just what my experience says in these sorts of scenarios.</p>
+<p>Finally, ideally, most users won't need to actually write their own hyperlink format and can instead select from one of the existing pre-defined formats. I expect that list to grow over time too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-22 20:39</div>
+            <div class="timeline-body"><p>The next change I'm looking to make involves the syntax of the format. I like the interpolation syntax, <code>{var}</code>, for variables. But, I think we'll want special syntax for aliases. For example, <code>[vscode]</code> instead of <code>vscode</code>. The special syntax makes it a little less convenience, but provides an opportunity for improving failure modes. For example, this is not a great failure mode:</p>
+<pre><code>$ rg 'Result&lt;Hyperlink' --hyperlink-format vscodee
+the {path} placeholder is required in a hyperlink format
+</code></pre>
+<p>And we'll also want to make it possible to escape special characters. Just like <code>$</code> can be escaped with <code>$$</code> in ripgrep's <code>-r/--replace</code> flag, we can allow doubling like <code>[[</code> and <code>{{</code> to stand-in as a literal <code>[</code> and <code>{</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-09-22 20:52</div>
+            <div class="timeline-body"><blockquote>
+<p>The special syntax makes it a little less convenience, but provides an opportunity for improving failure modes.</p>
+</blockquote>
+<p>Maybe we could improve the error message instead, for instance by providing a list of known aliases when there's no <code>{path}</code> placeholder? TBH I wanted to do that but didn't implement it since I wasn't sure the PR would be accepted.</p>
+<p>But since those aliases would mainly be used in a config file, the <code>[]</code> characters wouldn't cause much inconvenience I suppose.</p>
+<p>Also <code>--hyperlink-format [none]</code> doesn't feel right IMO (for the <code>none</code> alias I mean).</p>
+<blockquote>
+<p>And we'll also want to make it possible to escape special characters.</p>
+</blockquote>
+<p>Yes, I also thought about that, but in the end I didn't think it was necessary since I didn't expect <code>{</code> to be included literally in a URL.</p>
+<p>I suppose <code>[</code> wouldn't really be a special character since it would only be used for aliases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-22 21:52</div>
+            <div class="timeline-body"><p>My frame of reference here are these two points:</p>
+<ol>
+<li>We should make failure modes good because this is a fairly complex feature.</li>
+<li>Once we ship this, making incompatible changes will become nearly impossible. So if it ever turns out that someone needs to write a literal <code>{</code> they will be shit out of luck unless we handle that case initially.</li>
+</ol>
+<p>I'll continue to noodle on the syntax.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-09-23 05:11</div>
+            <div class="timeline-body"><p>Actually, a simple solution could be:</p>
+<ul>
+<li>if there's no <code>:</code> in the argument, then treat it as an alias, and show an appropriate error when unknown</li>
+<li>if there is one, treat it as a pattern and require <code>{path}</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-23 19:41</div>
+            <div class="timeline-body"><p>I wonder if it makes sense to include <code>wsl$/Ubuntu</code> as a prefix of <code>{path}</code> automatically whenever <code>WSL_DISTRO_NAME</code> is set. But I don't think that's right. And I note that <em>most</em> of the aliases in this PR, at least as written, won't include the <code>wsl$</code> prefix at all because, in this PR, it's only inserted if <code>{host}</code> is present. And on Windows, by default, in this PR, <code>{host}</code> is absent from the default hyperlink format.</p>
+<p>So I guess, under what conditions does this <code>wsl$/{distro}</code> prefix need to be inserted? I wonder if it makes sense to ship this initially without any WSL-specific knowledge at all, and let folks configure it as needed until we can get a firmer grasp.</p>
+<p>.....</p>
+<p>Now that I've typed all of that out, I realize the <code>cfg(windows)</code> is probably not set in WSL, is it? Instead, I imagine <code>cfg(unix)</code> is. Which means the default hyperlink format does include the WSL prefix.</p>
+<p>I could find very little documentation or acknowledgment of how WSL paths fit into file URIs. Maybe I'm not looking in the right place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-09-23 20:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Now that I've typed all of that out, I realize the <code>cfg(windows)</code> is probably not set in WSL, is it? Instead, I imagine <code>cfg(unix)</code> is.</p>
+</blockquote>
+<p>Yes, WSL2 runs a real <a href="https://github.com/microsoft/WSL2-Linux-Kernel">Linux kernel</a> under Windows, and it can execute standard Linux binaries. We're in <code>cfg(unix)</code> territory.</p>
+<blockquote>
+<p>I wonder if it makes sense to ship this initially without any WSL-specific knowledge at all, and let folks configure it as needed until we can get a firmer grasp.</p>
+</blockquote>
+<p>Sure, you can just skip it. I added this as a little convenience feature because I thought it would be nice to have and easy to implement. I suppose people who use ripgrep under WSL will know how to customize their hyperlink patterns. Sorry for the additional trouble. 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-23 20:30</div>
+            <div class="timeline-body"><p>No no, not trouble at all. It's great that you put that in there, because it would have been an unknown unknown otherwise.</p>
+<p>I think what I'll do is provide a <code>{wslprefix}</code> variable that expands to <code>wsl$/{distro}</code> where <code>{distro}=WSL_DISTRO_NAME</code>, but only when <code>{distro}</code> is non-empty. However, I'll stop short of using <code>{wslprefix}</code> anywhere in the default formats and let users add it in themselves. Once we get a feel for what works well, we should be able to add it to some or all of the default formats. (Or potentially even make it a prefix of <code>{path}</code> in all cases? Dunno.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-09-23 20:40</div>
+            <div class="timeline-body"><p>If you're curious about WSL paths, here's an example of what the Windows Explorer shows:</p>
+<p><img src="https://github.com/BurntSushi/ripgrep/assets/7913492/3c79c3de-d577-492f-aa0f-d37e0bed75a4" alt="image" /></p>
+<p>It shows <code>wsl$</code> as a CIFS server on the network, and <code>Ubuntu</code> (in my case) as a share on that server. The share contains the root of the Linux filesystem.</p>
+<p>Since you can get access to the Linux filesystem in the same way as a remote CIFS share on the network, <code>wsl$</code> being a virtual hostname, I replaced <code>{host}</code> with <code>wsl$/{distro}</code> in this PR.</p>
+<hr />
+<blockquote>
+<p>I think what I'll do is provide a <code>{wslprefix}</code> variable that expands to <code>wsl$/{distro}</code> where <code>{distro}=WSL_DISTRO_NAME</code>, but only when <code>{distro}</code> is non-empty.</p>
+</blockquote>
+<p>That would be nice to have, since you can't expand environment variables in ripgrep config files, so you'd have to hardcode the distro name without it.</p>
+<blockquote>
+<p>However, I'll stop short of using <code>{wslprefix}</code> anywhere in the default formats and let users add it in themselves.</p>
+</blockquote>
+<p>Yes, you'd have to replace <code>{host}</code> with <code>{wslprefix}</code> in any case - using those placeholders together doesn't really make sense.</p>
+<p>That's why I think having a <code>{wslhost}</code> placeholder which expands to either <code>{host}</code> or <code>wsl$/{distro}</code> would be a better option, since you'd be able to use the same ripgrep config file on WSL and on a real Linux.</p>
+<p>And I agree that having just a plain <code>{host}</code> by default is the best (least surprising) option. 👍</p>
+<blockquote>
+<p>Or potentially even make it a prefix of <code>{path}</code> in all cases? Dunno.</p>
+</blockquote>
+<p>Yeah, I don't know either. 😕</p>
+<p>Both options would work, but I initially put it into <code>{host}</code> because <code>wsl$</code> is a kind of virtual host.</p>
+<p>I suppose having a WSL-specific placeholder would be the better option, as if you prefix it to <code>{path}</code> there wouldn't be a way to opt out of this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-23 20:49</div>
+            <div class="timeline-body"><p>Gotya. Yeah, there are a lot of options here. We could also add a <code>{wslpath}</code> variable or something. I'm also open to a <code>{wslhost}</code> variable. But I think just starting with <code>{wslprefix}</code> for now is the most conservative option. It gives us some flexibility to maneuver in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-09-25 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/garawaa">@garawaa</a> on 2024-07-12 16:39</div>
+            <div class="timeline-body"><p>I implemented a gui wrapper to it. you can download it at https://github.com/garawaa/ripgrep-gui</p>
+<h3>with result files:</h3>
+<ul>
+<li>open in system default editor or viewer.</li>
+<li>copy file path</li>
+<li>show in explorer(windows)</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:08 UTC
+    </footer>
+</body>
+</html>

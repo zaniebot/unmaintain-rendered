@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>allow handling lookbehind assertions of non-fixed length - BurntSushi/ripgrep #1025</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>allow handling lookbehind assertions of non-fixed length</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1025">#1025</a>
+        opened by <a href="https://github.com/timotheecour">@timotheecour</a>
+        on 2018-08-23 13:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/timotheecour">@timotheecour</a></div>
+            <div class="timeline-body"><p>using this pattern <code>(?&lt;=(foo|mybar)mypattern</code> results in:
+<code>error compiling pattern at offset 0: lookbehind assertion is not fixed length</code>
+this severely limits usability of lookbehind assertions
+is that a limitation with rust's version of pcre2 ?
+it doesn't look like a fundamental limitation: other languages/libraries handle lookbehind assertions of non-fixed length just fine (eg https://dlang.org/phobos/std_regex.html and IIRC, also https://nim-lang.org/docs/re.html)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-08-23 13:27</div>
+            <div class="timeline-body"><p>It's a limitation of PCRE itself</p>
+<p>https://www.pcre.org/current/doc/html/pcre2pattern.html#SEC20</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-23 13:29</div>
+            <div class="timeline-body"><blockquote>
+<p>is that a limitation with rust's version of pcre2?</p>
+</blockquote>
+<p>There is no &quot;Rust&quot; version PCRE2. This is a limitation of PCRE2 itself, as you can see, the same error occurs with <code>grep -P</code> (using PCRE1) and <code>pcre2grep</code> (using PCRE2):</p>
+<pre><code>$ grep -P '(?&lt;=(foo|mybar))mypattern' -r
+grep: lookbehind assertion is not fixed length
+$ pcre2grep '(?&lt;=(foo|mybar))mypattern' -r
+pcre2grep: Error in command-line regex at offset 0: lookbehind assertion is not fixed length
+</code></pre>
+<p>If you <a href="https://www.pcre.org/current/doc/html/pcre2pattern.html#lookbehind">consult the PCRE2 documentation</a>, you'll see that you can actually rewrite your pattern without the superfluous parentheses, and it will work:</p>
+<pre><code>$ rg -P '(?&lt;=foo|mybar)mypattern'
+</code></pre>
+<p>You have a few choices here:</p>
+<ol>
+<li>Lobby PCRE2 to lift this restriction. If they lift it, then you can use it inside ripgrep.</li>
+<li>Find a different code search tool that supports your desired semantics. (I am not aware of one.)</li>
+<li>Maintain a fork of ripgrep and add support for an additional regex engine that supports the semantics you want.</li>
+</ol>
+<p>This is classic example of how adding features has a snowball effect and generates more maintenance burden. At some point, I have to say No. Also, I don't buy your claim of &quot;severely limits usability of lookbehind assertions.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-08-23 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-08-23 13:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:39 UTC
+    </footer>
+</body>
+</html>

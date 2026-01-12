@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>different result between `cat file | rg` and calling rg directly - BurntSushi/ripgrep #1212</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>different result between <code>cat file | rg</code> and calling rg directly</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1212">#1212</a>
+        opened by <a href="https://github.com/vrischmann">@vrischmann</a>
+        on 2019-03-08 15:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/vrischmann">@vrischmann</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 0.10.0 (rev 8a7db1a918)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>From the deb file from GitHub.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Debian 9.8, kernel 4.9</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>First of all I'm not sure it's a bug directly with ripgrep.</p>
+<p>I have a file of size <code>34359738196</code> (32GB ~).</p>
+<p>I'm seeing a difference when calling ripgrep via a pipe, like this:</p>
+<pre><code>$ cat /data/vincent/x32 | rg -N --no-filename --stats foobar
+DEBUG|grep_regex::literal|grep-regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(foobar)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+
+0 matches
+0 matched lines
+0 files contained matches
+1 files searched
+0 bytes printed
+4403625046 bytes searched
+3.140673 seconds spent searching
+3.143315 seconds</code></pre>
+<p>and calling ripgrep directly with the file, like this:</p>
+<pre><code>$ rg -N --no-filename --stats foobar /data/vincent/x32
+DEBUG|grep_regex::literal|grep-regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(foobar)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+
+0 matches
+0 matched lines
+0 files contained matches
+1 files searched
+0 bytes printed
+34359738196 bytes searched
+12.918476 seconds spent searching
+13.652422 seconds</code></pre>
+<p>Unfortunately I can't upload the file, it's full of sensitive information. I could generate an equivalent file of the same size and test that.</p>
+<p>I also tested on another server with Debian 9.6, kernel 4.9 and I get the exact same bytes searched result.</p>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>I would expect piping to ripgrep to produce equivalent results.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-03-08 15:45</div>
+            <div class="timeline-body"><p>It's almost certainly because the file contains a <code>NUL</code> byte, and therefore, binary detection kicks in. Unfortunately, binary detection depends on the method of searching. In your first example, ripgrep is forced to use a roll buffer. In the latter example, ripgrep is probably memory mapping it. To confirm, use the <code>-a/--text</code> flag to force searching (just like you would with <code>grep</code>).</p>
+<p>There are a couple other tickets open for improving this state of affairs with respect to binary data.</p>
+<p>If this doesn't fix your problem, then please show the output with the <code>--trace</code> flag for each. It would also help if there was a way to minimize the input. But try the <code>-a</code> flag first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2019-03-08 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vrischmann">@vrischmann</a> on 2019-03-08 15:51</div>
+            <div class="timeline-body"><p>Thanks, that was it.</p>
+<p>I actually thought about that and used <code>hexdump -s 4403625046 -n 100</code> to take a look at the data but didn't see a NUL byte anywhere so I assumed that wasn't it, but the byte is probably somewhere before or after then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @vrischmann on 2019-03-08 15:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:50 UTC
+    </footer>
+</body>
+</html>

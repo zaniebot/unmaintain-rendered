@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature Request: search for binary data by supplying a hex string - BurntSushi/ripgrep #2809</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature Request: search for binary data by supplying a hex string</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2809">#2809</a>
+        opened by <a href="https://github.com/RecRanger">@RecRanger</a>
+        on 2024-05-16 03:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/RecRanger">@RecRanger</a></div>
+            <div class="timeline-body"><h4>Describe your feature request</h4>
+<p>I wish I could use this tool to search for binary contents within files, similar to <a href="https://github.com/tmbinc/bgrep">bgrep</a>.</p>
+<p>By supplying a <code>--hex</code> flag, followed by bytes in hex, I wish it could search the file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-16 12:57</div>
+            <div class="timeline-body"><p>You already can:</p>
+<pre><code>$ printf 'abc\xFF\xFE\xAAxyz' | rg -ao '(?-u:\xFF\xFE\xAA)' | xxd
+00000000: fffe aa0a                                ....
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-05-16 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2024-05-16 12:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RecRanger">@RecRanger</a> on 2024-05-23 16:33</div>
+            <div class="timeline-body"><p>Does this support non-unicode sequences?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-23 16:46</div>
+            <div class="timeline-body"><p>Huh? My example demonstrates definitively that it does...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-23 16:46</div>
+            <div class="timeline-body"><p><code>\xFF\xFE</code> is not valid UTF-8.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RecRanger">@RecRanger</a> on 2024-05-24 01:46</div>
+            <div class="timeline-body"><p>Awesome, thanks! Unfortunately the average Joe doesn't know how to identify a valid unicode string from hex chars. Thanks for your help :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RecRanger">@RecRanger</a> on 2024-05-26 08:50</div>
+            <div class="timeline-body"><p>Can you explain why you use <code>-a</code> here? The documentation isn't very clear on what the flag actually changes:</p>
+<pre><code>  -a, --text                      Search binary files as if they were text.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-26 11:51</div>
+            <div class="timeline-body"><p>Because you're looking at the succinct docs. Use <code>--help</code> (as <code>-h</code> says at the top) to see the expanded docs:</p>
+<pre><code>    -a, --text
+        This flag instructs ripgrep to search binary files as if they were
+        text. When this flag is present, ripgrep's binary file detection is
+        disabled. This means that when a binary file is searched, its contents
+        may be printed if there is a match. This may cause escape codes to be
+        printed that alter the behavior of your terminal.
+
+        When binary file detection is enabled, it is imperfect. In general, it
+        uses a simple heuristic. If a NUL byte is seen during search, then the
+        file is considered binary and searching stops (unless this flag is
+        present). Alternatively, if the --binary flag is used, then ripgrep
+        will only quit when it sees a NUL byte after it sees a match (or
+        searches the entire file).
+
+        This flag overrides the --binary flag.
+
+        This flag can be disabled with --no-text.
+</code></pre>
+<p>The <code>-a/--text</code> flag is pretty standard among greps. It disables binary detection. By default, greps will treat <code>\x00</code> (<code>NUL</code>) as indicating that a file is binary data and maybe should be skipped or at least not printed to a terminal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RecRanger">@RecRanger</a> on 2024-05-27 09:00</div>
+            <div class="timeline-body"><blockquote>
+<p>By default, greps will treat \x00 (NUL) as indicating that a file is binary data and maybe should be skipped or at least not printed to a terminal.</p>
+</blockquote>
+<p>I still can't wrap my head around how this differs from the <code>--binary</code> flag, which also means &quot;files should not be skipped, even if it's binary&quot;. Funny that <code>--text</code> and <code>--binary</code> have nearly identical meanings, depsite being opposites generally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-27 12:16</div>
+            <div class="timeline-body"><ul>
+<li>The default for recursive search is to completely skip binary files. That is, whenever a NUL byte is seen, ripgrep immediately stops the search and skips the rest of the file.</li>
+<li>When <code>--binary</code> is given, it means, &quot;ripgrep should not omit matches in files that are binary data, but otherwise should still be careful about printing binary data to a terminal.&quot; So when a NUL byte is found, if a match hasn't been found yet, ripgrep will continue searching. If a match is found, then a message is printed and the rest of the file is skipped: <code>binary file matches (found &quot;\0&quot; byte around offset 0)</code>.</li>
+<li>When <code>--text</code> is given, it means, &quot;ripgrep should treat all files as text files and not concern itself with binary data.&quot; In this case, there is no NUL byte detection or guarding against printing binary data to your terminal.</li>
+</ul>
+<p>I probably would have chosen a different model for exposing this, but it wasn't worth abdicating the <code>-a/--text</code> flag which is widely supported.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:49 UTC
+    </footer>
+</body>
+</html>

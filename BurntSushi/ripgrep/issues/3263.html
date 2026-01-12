@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`foo/*/*` gitignore rule is not respected - BurntSushi/ripgrep #3263</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>foo/*/*</code> gitignore rule is not respected</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3263">#3263</a>
+        opened by <a href="https://github.com/injust">@injust</a>
+        on 2026-01-09 19:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/injust">@injust</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[x] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>ripgrep 15.1.0</p>
+<h3>How did you install ripgrep?</h3>
+<p>Homebrew</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>macOS 15.7.3</p>
+<h3>Describe your bug.</h3>
+<p>In my dotfiles repo, I have several submodules in <code>catppuccin/</code>, e.g. <code>catpuccin/bat</code>. I gitignore <code>catppuccin/*/*</code> to ignore the <em>contents</em> of the submodules, but not the submodules themselves.</p>
+<p>However, ripgrep doesn't respect this gitignore rule.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<ol>
+<li>Check out my <a href="https://github.com/injust/dotfiles">dotfiles repo</a>, including submodules</li>
+<li><code>rg DOCTYPE</code></li>
+</ol>
+<h3>What is the actual behavior?</h3>
+<p>This line seems interesting:</p>
+<pre><code>rg: DEBUG|globset|crates/globset/src/lib.rs:506: glob `Glob(&quot;catppuccin/*/*&quot;)` converted to regex: `&quot;(?-u)^catppuccin/[^/]*/[^/]*$&quot;`
+</code></pre>
+<p>Full logs:</p>
+<pre><code>rg: DEBUG|rg::flags::config|crates/core/flags/config.rs:41: /Users/jsu/.config/ripgrep/config: arguments loaded from config file: []
+rg: DEBUG|rg::flags::parse|crates/core/flags/parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:954: read CWD from environment: /Users/jsu/code/dotfiles
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1092: number of paths given to search: 0
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1117: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=false, stdin_consumed=false, mode=Search(Standard))
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1127: heuristic chose to search ./
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1278: found hostname for hyperlink configuration: MBP-A1989
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1288: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:175: using 8 thread(s)
+rg: DEBUG|grep_regex::config|/private/tmp/ripgrep-20251023-8578-1g1ja4/ripgrep-15.1.0/crates/regex/src/config.rs:175: assembling HIR from 1 fixed string literals
+rg: DEBUG|ignore::gitignore|crates/ignore/src/gitignore.rs:398: opened gitignore file: /Users/jsu/.config/git/ignore
+rg: DEBUG|globset|crates/globset/src/lib.rs:506: glob `Glob(&quot;**/Icon[\r]&quot;)` converted to regex: `&quot;(?-u)^(?:/?|.*/)Icon[\r]$&quot;`
+rg: DEBUG|globset|crates/globset/src/lib.rs:506: glob `Glob(&quot;**/._*&quot;)` converted to regex: `&quot;(?-u)^(?:/?|.*/)\\._[^/]*$&quot;`
+rg: DEBUG|globset|crates/globset/src/lib.rs:515: built glob set; 0 literals, 16 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 2 regexes
+rg: DEBUG|ignore::gitignore|crates/ignore/src/gitignore.rs:398: opened gitignore file: ./.gitignore
+rg: DEBUG|globset|crates/globset/src/lib.rs:506: glob `Glob(&quot;catppuccin/*/*&quot;)` converted to regex: `&quot;(?-u)^catppuccin/[^/]*/[^/]*$&quot;`
+rg: DEBUG|globset|crates/globset/src/lib.rs:515: built glob set; 7 literals, 1 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
+rg: DEBUG|ignore::gitignore|crates/ignore/src/gitignore.rs:398: opened gitignore file: ./.git/info/exclude
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./.DS_Store: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/jsu/.config/git/ignore&quot;), original: &quot;.DS_Store&quot;, actual: &quot;**/.DS_Store&quot;, is_whitelist: false, is_only_dir: false })))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./.ruff_cache: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./.gitmodules: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./.gitignore: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./raycast: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;raycast/&quot;, actual: &quot;**/raycast&quot;, is_whitelist: false, is_only_dir: true })))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./.ssh: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./.prettierrc.yaml: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./.screenrc: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./.hushlogin: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./.git: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./git/.DS_Store: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/jsu/.config/git/ignore&quot;), original: &quot;.DS_Store&quot;, actual: &quot;**/.DS_Store&quot;, is_whitelist: false, is_only_dir: false })))
+rg: DEBUG|rg::haystack|crates/core/haystack.rs:70: ignoring ./git/catppuccin.gitconfig: failed to pass haystack filter: file type: Some(FileType { is_file: false, is_dir: false, is_symlink: true, .. }), metadata: Ok(Metadata { file_type: FileType { is_file: false, is_dir: false, is_symlink: true, .. }, permissions: Permissions(FilePermissions { mode: 0o120755 (lrwxr-xr-x) }), len: 40, modified: SystemTime { tv_sec: 1767712730, tv_nsec: 666419329 }, accessed: SystemTime { tv_sec: 1767712730, tv_nsec: 666419329 }, created: SystemTime { tv_sec: 1767712730, tv_nsec: 666419329 }, .. })
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./micro/buffers: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;micro/buffers/&quot;, actual: &quot;micro/buffers&quot;, is_whitelist: false, is_only_dir: true })))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./catppuccin/.DS_Store: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/jsu/.config/git/ignore&quot;), original: &quot;.DS_Store&quot;, actual: &quot;**/.DS_Store&quot;, is_whitelist: false, is_only_dir: false })))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./fish/fisher: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;fish/fisher/&quot;, actual: &quot;fish/fisher&quot;, is_whitelist: false, is_only_dir: true })))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./micro/.DS_Store: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/jsu/.config/git/ignore&quot;), original: &quot;.DS_Store&quot;, actual: &quot;**/.DS_Store&quot;, is_whitelist: false, is_only_dir: false })))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./zed/.DS_Store: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/jsu/.config/git/ignore&quot;), original: &quot;.DS_Store&quot;, actual: &quot;**/.DS_Store&quot;, is_whitelist: false, is_only_dir: false })))
+iStat Menus Settings.ismp7
+2:&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./fish/.DS_Store: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/jsu/.config/git/ignore&quot;), original: &quot;.DS_Store&quot;, actual: &quot;**/.DS_Store&quot;, is_whitelist: false, is_only_dir: false })))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./catppuccin/bat/.DS_Store: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/jsu/.config/git/ignore&quot;), original: &quot;.DS_Store&quot;, actual: &quot;**/.DS_Store&quot;, is_whitelist: false, is_only_dir: false })))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./micro/plug: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;micro/plug/&quot;, actual: &quot;micro/plug&quot;, is_whitelist: false, is_only_dir: true })))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./catppuccin/micro/.DS_Store: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/jsu/.config/git/ignore&quot;), original: &quot;.DS_Store&quot;, actual: &quot;**/.DS_Store&quot;, is_whitelist: false, is_only_dir: false })))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./catppuccin/delta/.DS_Store: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/jsu/.config/git/ignore&quot;), original: &quot;.DS_Store&quot;, actual: &quot;**/.DS_Store&quot;, is_whitelist: false, is_only_dir: false })))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./zed/prompts: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;zed/prompts/&quot;, actual: &quot;zed/prompts&quot;, is_whitelist: false, is_only_dir: true })))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./catppuccin/bat/.editorconfig: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./catppuccin/btop/.DS_Store: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/jsu/.config/git/ignore&quot;), original: &quot;.DS_Store&quot;, actual: &quot;**/.DS_Store&quot;, is_whitelist: false, is_only_dir: false })))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./micro/backups: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;micro/backups/&quot;, actual: &quot;micro/backups&quot;, is_whitelist: false, is_only_dir: true })))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./catppuccin/micro/.editorconfig: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./catppuccin/delta/.editorconfig: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./catppuccin/bat/.git: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./catppuccin/btop/.editorconfig: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./catppuccin/micro/.github: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./catppuccin/delta/.github: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./catppuccin/delta/.git: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./catppuccin/btop/.git: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./catppuccin/micro/.git: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./catppuccin/bat/.vscode: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1942: ignoring ./catppuccin/delta/assets/.gitkeep: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|grep_printer::standard|/private/tmp/ripgrep-20251023-8578-1g1ja4/ripgrep-15.1.0/crates/printer/src/standard.rs:830: ignoring catppuccin/delta/assets/macchiato.webp: found binary data at offset 7
+rg: DEBUG|grep_printer::standard|/private/tmp/ripgrep-20251023-8578-1g1ja4/ripgrep-15.1.0/crates/printer/src/standard.rs:830: ignoring catppuccin/btop/assets/macchiato.webp: found binary data at offset 7
+rg: DEBUG|grep_printer::standard|/private/tmp/ripgrep-20251023-8578-1g1ja4/ripgrep-15.1.0/crates/printer/src/standard.rs:830: ignoring catppuccin/delta/assets/mocha.webp: found binary data at offset 7
+rg: DEBUG|grep_printer::standard|/private/tmp/ripgrep-20251023-8578-1g1ja4/ripgrep-15.1.0/crates/printer/src/standard.rs:830: ignoring catppuccin/btop/assets/mocha.webp: found binary data at offset 7
+rg: DEBUG|grep_printer::standard|/private/tmp/ripgrep-20251023-8578-1g1ja4/ripgrep-15.1.0/crates/printer/src/standard.rs:830: ignoring catppuccin/btop/assets/frappe.webp: found binary data at offset 7
+rg: DEBUG|grep_printer::standard|/private/tmp/ripgrep-20251023-8578-1g1ja4/ripgrep-15.1.0/crates/printer/src/standard.rs:830: ignoring catppuccin/delta/assets/frappe.webp: found binary data at offset 7
+rg: DEBUG|grep_printer::standard|/private/tmp/ripgrep-20251023-8578-1g1ja4/ripgrep-15.1.0/crates/printer/src/standard.rs:830: ignoring catppuccin/btop/assets/latte.webp: found binary data at offset 7
+rg: DEBUG|grep_printer::standard|/private/tmp/ripgrep-20251023-8578-1g1ja4/ripgrep-15.1.0/crates/printer/src/standard.rs:830: ignoring catppuccin/delta/assets/latte.webp: found binary data at offset 7
+rg: DEBUG|grep_printer::standard|/private/tmp/ripgrep-20251023-8578-1g1ja4/ripgrep-15.1.0/crates/printer/src/standard.rs:830: ignoring catppuccin/btop/assets/screenshot.webp: found binary data at offset 7
+rg: DEBUG|grep_printer::standard|/private/tmp/ripgrep-20251023-8578-1g1ja4/ripgrep-15.1.0/crates/printer/src/standard.rs:830: ignoring catppuccin/micro/assets/macchiato.webp: found binary data at offset 6
+rg: DEBUG|grep_printer::standard|/private/tmp/ripgrep-20251023-8578-1g1ja4/ripgrep-15.1.0/crates/printer/src/standard.rs:830: ignoring catppuccin/delta/assets/preview.webp: found binary data at offset 7
+rg: DEBUG|grep_printer::standard|/private/tmp/ripgrep-20251023-8578-1g1ja4/ripgrep-15.1.0/crates/printer/src/standard.rs:830: ignoring catppuccin/micro/assets/mocha.webp: found binary data at offset 6
+rg: DEBUG|grep_printer::standard|/private/tmp/ripgrep-20251023-8578-1g1ja4/ripgrep-15.1.0/crates/printer/src/standard.rs:830: ignoring catppuccin/bat/assets/macchiato.webp: found binary data at offset 6
+rg: DEBUG|grep_printer::standard|/private/tmp/ripgrep-20251023-8578-1g1ja4/ripgrep-15.1.0/crates/printer/src/standard.rs:830: ignoring catppuccin/micro/assets/latte.webp: found binary data at offset 6
+rg: DEBUG|grep_printer::standard|/private/tmp/ripgrep-20251023-8578-1g1ja4/ripgrep-15.1.0/crates/printer/src/standard.rs:830: ignoring catppuccin/micro/assets/frappe.webp: found binary data at offset 6
+rg: DEBUG|grep_printer::standard|/private/tmp/ripgrep-20251023-8578-1g1ja4/ripgrep-15.1.0/crates/printer/src/standard.rs:830: ignoring catppuccin/bat/assets/mocha.webp: found binary data at offset 6
+rg: DEBUG|grep_printer::standard|/private/tmp/ripgrep-20251023-8578-1g1ja4/ripgrep-15.1.0/crates/printer/src/standard.rs:830: ignoring catppuccin/micro/assets/preview.webp: found binary data at offset 6
+
+catppuccin/bat/themes/Catppuccin Macchiato.tmTheme
+2:&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
+765:        &lt;string&gt;HTML/XML DOCTYPE as keyword&lt;/string&gt;
+rg: DEBUG|grep_printer::standard|/private/tmp/ripgrep-20251023-8578-1g1ja4/ripgrep-15.1.0/crates/printer/src/standard.rs:830: ignoring catppuccin/bat/assets/latte.webp: found binary data at offset 6
+rg: DEBUG|grep_printer::standard|/private/tmp/ripgrep-20251023-8578-1g1ja4/ripgrep-15.1.0/crates/printer/src/standard.rs:830: ignoring catppuccin/bat/assets/preview.webp: found binary data at offset 7
+rg: DEBUG|grep_printer::standard|/private/tmp/ripgrep-20251023-8578-1g1ja4/ripgrep-15.1.0/crates/printer/src/standard.rs:830: ignoring catppuccin/bat/assets/frappe.webp: found binary data at offset 6
+
+catppuccin/bat/themes/Catppuccin Mocha.tmTheme
+2:&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
+765:        &lt;string&gt;HTML/XML DOCTYPE as keyword&lt;/string&gt;
+
+catppuccin/bat/themes/Catppuccin Frappe.tmTheme
+2:&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
+765:        &lt;string&gt;HTML/XML DOCTYPE as keyword&lt;/string&gt;
+
+catppuccin/bat/themes/Catppuccin Latte.tmTheme
+2:&lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
+765:        &lt;string&gt;HTML/XML DOCTYPE as keyword&lt;/string&gt;
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>Results in <code>catppuccin/bat/themes/</code> should be ignored.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`foo/*/*` gitignore is ignored" to "`foo/*/*` gitignore rule is not respected" by @injust on 2026-01-09 19:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2026-01-09 19:20</div>
+            <div class="timeline-body"><p>This is expected behavior. <code>.gitignore</code> files don't apply across git repository boundaries. Since <code>catppuccin/bat</code> is actually a separate git repository, the <code>.gitignore</code> in the root of the parent repository is ignored.</p>
+<p>You can disable this checking with <code>--no-require-git</code>. With that flag, ripgrep will disregard the existence of <code>.git</code> and always respect <code>.gitignore</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2026-01-09 19:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2026-01-09 19:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/injust">@injust</a> on 2026-01-09 19:37</div>
+            <div class="timeline-body"><p>Thanks for the explanation, <code>--no-require-git</code> solves my problem.</p>
+<blockquote>
+<p><code>.gitignore</code> files don't apply across git repository boundaries</p>
+</blockquote>
+<p>Just to confirm, this is a ripgrep implementation detail? Since Git respects the gitignore rule in the way I expected.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:01 UTC
+    </footer>
+</body>
+</html>

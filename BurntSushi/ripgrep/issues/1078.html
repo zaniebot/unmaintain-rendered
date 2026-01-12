@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>-M should show a preview of the line  if the line is too long - BurntSushi/ripgrep #1078</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>-M should show a preview of the line  if the line is too long</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1078">#1078</a>
+        opened by <a href="https://github.com/dylan-chong">@dylan-chong</a>
+        on 2018-10-05 04:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylan-chong">@dylan-chong</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.10.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>Homebrew</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Mac high sierra 10.13.6</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>When I specify a line length with -M, and a line is too long, I cannot see
+anything about what the line is. The silver searcher does what I believe to be
+a more useful behaviour, which is show a preview of the line for the first lot
+of characters. This is much more useful because I can tell whether this line is
+generated JavaScript or not, especially if I specify the line length of -M to
+be something higher like 100.</p>
+<p>Please change the behaviour to be more like the silver searcher</p>
+<pre><code># Current behaviour
+&gt; \rg -M 15 Hello
+ios/ToDoLater.xcodeproj/project.pbxproj
+696:[Omitted long line with 1 matches]
+
+# Ideal behaviour
+&gt; \ag -W 15 Hello
+ios/ToDoLater.xcodeproj/project.pbxproj
+696:                    productName  [...]
+
+# What the line looks like without the column limit
+&gt; \rg Hello
+ios/ToDoLater.xcodeproj/project.pbxproj
+696:                    productName = &quot;Hello World&quot;;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-10-05 10:36</div>
+            <div class="timeline-body"><p>I don't think I'm willing to change the existing behavior here.</p>
+<p>The problem I have with ag's behavior is that it makes it much less obvious that a line has been truncated. I guess this is more of a display/UX problem that could be solved as opposed to a problem with the idea itself.</p>
+<p>If we do this, it will probably have to be behind a flag, e.g., <code>--max-columns-preview</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2018-10-05 10:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-10-05 10:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-10-05 11:14</div>
+            <div class="timeline-body"><p>For whatever it might be worth, i found ripgrep's <code>-M</code> surprising and unhelpful when i first switched over as well. Not just because my brain's been tainted by <code>ag</code> use (though that may be part of it), but because the proposed (<code>ag</code>-like) behaviour seems consistent with the way the other <code>--max-*</code> options work; <code>--max-count</code> just stops after that many matches, and <code>--max-depth</code> just stops after that many directory levels, so i expected <code>--max-columns</code> to just stop after that many columns.</p>
+<p>I know how much you care about BC, and i don't often run into files with stupidly long lines anyway, so i never mentioned it — but i ended up just removing <code>-M</code> from my alias because, whenever i did encounter them, having it there was more irritating than not.</p>
+<p>I don't currently have any strong opinions on the UX/BC stuff other than that, but there's another perspective for you, in any case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-10-05 11:19</div>
+            <div class="timeline-body"><p>@okdana Thanks! If <code>--max-columns-preview</code> became a thing, do you think you would add <code>-M {n} --max-columns-preview</code> to your alias?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-10-05 11:31</div>
+            <div class="timeline-body"><p>For sure, yeah</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BenSandeen">@BenSandeen</a> on 2018-11-02 21:18</div>
+            <div class="timeline-body"><p>I don't know if you want this here are or as its own separate issue, but it would be nice if ripgrep had flags analogous to <code>-A</code> and <code>-B</code> for truncating characters before and after a match in extremely long lines (e.g., minified javascript files).</p>
+<p>I find myself often enough having to scroll for tens of seconds, searching for the match.  I know there's an easy enough workaround by piping the output into <code>less</code> if you're using a bash shell (thank goodness for the Windows Subsystem for Linux!), but I'd have no idea how to do that in a Windows command prompt or powershell.</p>
+<p>I think it would be nice to have ripgrep truncate long lines by default.  If, say, 500 characters before and after the match were retained, that would still make it clear that there's a lot of stuff in the line without overwhelming the output.  This 500 character before and after default would, I hope, not artificially truncate long lines in normal files.</p>
+<p>If this idea has support, I'd be happy to take a stab at implementing it (although it'd be nice to be pointed in the right direction).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-11-02 22:56</div>
+            <div class="timeline-body"><p>@BenSandeen That sounds like a different feature than this. I'm not sure it's a good fit though.</p>
+<p>I don't think any sort of trimming/truncation will ever happen by default though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-04-12 17:24</div>
+            <div class="timeline-body"><p>@okdana You mentioned that you liked how <code>ag</code> handled this, but I can't get <code>ag</code> to trim long lines at all. (I'm looking at it so that I can compare its behavior.) I don't see any relevant options other than <code>--print-long-lines</code>, but it implies that its long line limit is enabled by default (which the docs claim to be 2K). But I can't get it to work, even with a very long line (&gt;8000 bytes).</p>
+<p>... okay, looking at ag's source, I see why:</p>
+<p>https://github.com/ggreer/the_silver_searcher/blob/965f71dcbc9d98da5347f1256f650f8b7dcf4625/src/options.h#L67</p>
+<p>Ah okay, looking at <code>print.c</code>, I see there is a <code>width</code> option:</p>
+<p>https://github.com/ggreer/the_silver_searcher/blob/965f71dcbc9d98da5347f1256f650f8b7dcf4625/src/print.c#L135-L137</p>
+<p>Working backwards from that lead me to its <code>-W/--width</code> flag, which is not in its man page (where I was looking), but is in its <code>--help</code> output.</p>
+<p>All right, so its behavior appears to be that it cuts off the line at the given number of bytes, and then prints a <code> [...]</code> suffix.</p>
+<p>Should ripgrep do the same thing? Or should it use something more conspicuous like it does today, e.g., <code>[Omitted remainder of long line]</code> or perhaps even better, <code>[Omitted remainder of long line with N additional matches]</code>. Although that's a bit wordy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2019-04-12 18:06</div>
+            <div class="timeline-body"><p>Oh, yeah. I had to go back and check too, i honestly haven't touched <code>ag</code> in so long now.</p>
+<p>I personally like the <code>[...]</code> thing, it's very brief and straight-forward. An indication of how many unprinted matches there are sounds like a good idea too, though. What about something in between, like <code>[... N more matches]</code>?</p>
+<p>If you're concerned about conspicuousness you might also consider giving it its own colour/style thing (possibly configured by default?), e.g. <code>--colors=omit:fg:yellow</code>.</p>
+<p>Just random thoughts though; i don't think i feel <em>super</em> strongly about it. My use case for this is preventing absurdly long lines (like minified JavaScript) from flooding my screen, so a few-dozen characters doesn't make too big a difference to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-04-12 18:12</div>
+            <div class="timeline-body"><p>I like <code>[... N more matches]</code>. :-) I'll start without a new color category, and we can add that in later if there's demand for it.</p>
+<p>Actually doing this, I see why I did it the way I did it. It is... quite thorny to get this right with respect to coloring matches and multiline results.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-04-14 23:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AtomicNess123">@AtomicNess123</a> on 2021-05-05 09:38</div>
+            <div class="timeline-body"><p>How to get long lines printed? I am getting the &quot;[Omitted long line with 1 matches]&quot; result. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-05 11:03</div>
+            <div class="timeline-body"><p>You're getting that because that's what you asked for. It's not enabled by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AtomicNess123">@AtomicNess123</a> on 2021-05-05 11:05</div>
+            <div class="timeline-body"><p>Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/logiota">@logiota</a> on 2024-10-22 22:31</div>
+            <div class="timeline-body"><p>when I run
+rg  --max-columns-preview 12 'memory'</p>
+<p>I get</p>
+<p>rg: memory: IO error for operation on memory: No such file or directory (os error 2)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:42 UTC
+    </footer>
+</body>
+</html>

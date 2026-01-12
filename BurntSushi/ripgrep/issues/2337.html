@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>the `--stats` flag should note that it is unconditionally enabled when `--json` is used - BurntSushi/ripgrep #2337</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>the <code>--stats</code> flag should note that it is unconditionally enabled when <code>--json</code> is used</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2337">#2337</a>
+        opened by <a href="https://github.com/cstyles">@cstyles</a>
+        on 2022-10-24 06:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cstyles">@cstyles</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 13.0.0
+-SIMD -AVX (compiled)</p>
+<h4>How did you install ripgrep?</h4>
+<p>Homebrew</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>macOS 12.6</p>
+<h4>Describe your bug.</h4>
+<p>When ripgrep is invoked with <code>--json</code>, the final line is always a stats summary. It seems like this is included implicitly whenever <code>--json</code> is used. However, I would expect that explicitly including <code>--no-stats</code> would disable the summary.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>Invoke ripgrep with both the <code>--json</code> and <code>--no-stats</code> flags.</p>
+<h4>What is the actual behavior?</h4>
+<pre><code>$ rg --debug --json --no-stats pattern file.txt
+DEBUG|rg::config|crates/core/config.rs:40: /Users/cstyles/.ripgreprc: arguments loaded from config file: [&quot;--smart-case&quot;, &quot;--max-columns=300&quot;, &quot;--max-columns-preview&quot;]
+DEBUG|rg::args|crates/core/args.rs:543: final argv: [&quot;rg&quot;, &quot;--smart-case&quot;, &quot;--max-columns=300&quot;, &quot;--max-columns-preview&quot;, &quot;--debug&quot;, &quot;--json&quot;, &quot;--no-stats&quot;, &quot;pattern&quot;, &quot;file.txt&quot;]
+DEBUG|grep_regex::literal|crates/regex/src/literal.rs:109: required literals found: [Cut(PATTE), Cut(pATTE), Cut(PaTTE), Cut(paTTE), Cut(PAtTE), Cut(pAtTE), Cut(PatTE), Cut(patTE), Cut(PATtE), Cut(pATtE), Cut(PaTtE), Cut(paTtE), Cut(PAttE), Cut(pAttE), Cut(PattE), Cut(pattE), Cut(PATTe), Cut(pATTe), Cut(PaTTe), Cut(paTTe), Cut(PAtTe), Cut(pAtTe), Cut(PatTe), Cut(patTe), Cut(PATte), Cut(pATte), Cut(PaTte), Cut(paTte), Cut(PAtte), Cut(pAtte), Cut(Patte), Cut(patte)]
+DEBUG|grep_regex::matcher|crates/regex/src/matcher.rs:50: extracted fast line regex: (?-u:PATTE|pATTE|PaTTE|paTTE|PAtTE|pAtTE|PatTE|patTE|PATtE|pATtE|PaTtE|paTtE|PAttE|pAttE|PattE|pattE|PATTe|pATTe|PaTTe|paTTe|PAtTe|pAtTe|PatTe|patTe|PATte|pATte|PaTte|paTte|PAtte|pAtte|Patte|patte)
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 4 basenames, 2 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+{&quot;type&quot;:&quot;begin&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;file.txt&quot;}}}
+{&quot;type&quot;:&quot;match&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;file.txt&quot;},&quot;lines&quot;:{&quot;text&quot;:&quot;pattern\n&quot;},&quot;line_number&quot;:2,&quot;absolute_offset&quot;:7,&quot;submatches&quot;:[{&quot;match&quot;:{&quot;text&quot;:&quot;pattern&quot;},&quot;start&quot;:0,&quot;end&quot;:7}]}}
+{&quot;type&quot;:&quot;end&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;file.txt&quot;},&quot;binary_offset&quot;:null,&quot;stats&quot;:{&quot;elapsed&quot;:{&quot;secs&quot;:0,&quot;nanos&quot;:42958,&quot;human&quot;:&quot;0.000043s&quot;},&quot;searches&quot;:1,&quot;searches_with_match&quot;:1,&quot;bytes_searched&quot;:21,&quot;bytes_printed&quot;:233,&quot;matched_lines&quot;:1,&quot;matches&quot;:1}}}
+{&quot;data&quot;:{&quot;elapsed_total&quot;:{&quot;human&quot;:&quot;0.001521s&quot;,&quot;nanos&quot;:1521416,&quot;secs&quot;:0},&quot;stats&quot;:{&quot;bytes_printed&quot;:233,&quot;bytes_searched&quot;:21,&quot;elapsed&quot;:{&quot;human&quot;:&quot;0.000043s&quot;,&quot;nanos&quot;:42958,&quot;secs&quot;:0},&quot;matched_lines&quot;:1,&quot;matches&quot;:1,&quot;searches&quot;:1,&quot;searches_with_match&quot;:1}},&quot;type&quot;:&quot;summary&quot;}
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>Including the <code>--no-stats</code> flag should disable the stats summary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-10-24 12:10</div>
+            <div class="timeline-body"><p>This is intended behavior at the moment: https://github.com/BurntSushi/ripgrep/blob/eab044d829e1f5bcd1d3fd6a6f49ff732240da09/crates/core/args.rs#L1558-L1566</p>
+<p>I'm not inclined to change this. But the <code>--stats</code> flag could use an extra sentence noting that it appears in the JSON output unconditionally and can't be disabled. There is no real benefit to disabling it. It only uses one line, and the JSON format itself requires the work needed to compute the stats anyway. So there's really no extra cost.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">doc</span> added by @BurntSushi on 2022-10-24 12:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "When invoked with `--json`, ripgrep does not honor the `--no-stats` flag" to "the `--stats` flag should note that it is unconditionally enabled when `--json` is used" by @BurntSushi on 2022-10-24 12:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cstyles">@cstyles</a> on 2022-10-24 18:23</div>
+            <div class="timeline-body"><blockquote>
+<p>So there's really no extra cost.</p>
+</blockquote>
+<p>The cost comes in the form of complexity in whatever consumes the JSON output. Even if I don't care about the statistics, I still need to add logic to either handle or ignore them. It's not a huge deal but being able to exclude them would be nice and, IMO, more intuitive and consistent. Ultimately it's your call though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-10-24 18:27</div>
+            <div class="timeline-body"><p>I acknowledge there is an increase in complexity, but one that is extremely small IMO. Small enough to keep it unconditionally enabled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cstyles">@cstyles</a> on 2022-10-25 23:29</div>
+            <div class="timeline-body"><p>True. My thought was that the required change to ripgrep / grep-printer would also be extremely small. That said, if you disagree I won't be offended. Feel free to close this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-11-24 19:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-25 20:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:35 UTC
+    </footer>
+</body>
+</html>

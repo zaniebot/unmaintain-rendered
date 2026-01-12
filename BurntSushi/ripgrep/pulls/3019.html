@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix glob pattern to correctly ignore directories with only dots - BurntSushi/ripgrep #3019</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix glob pattern to correctly ignore directories with only dots</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/3019">#3019</a>
+        opened by <a href="https://github.com/pi55man">@pi55man</a>
+        on 2025-03-29 16:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pi55man">@pi55man</a></div>
+            <div class="timeline-body"><p>This PR addresses <a href="https://github.com/BurntSushi/ripgrep/issues/2990">issue #2990</a>, where <code>ripgrep</code> did not properly ignore directories named only with dots (e.g., <code>.</code>, <code>..</code>, <code>...</code>) when using negated glob patterns (<code>-g '!dir'</code>).</p>
+<p>Previously, the <code>file_name</code> function in <code>globset</code> only checked if the last byte was a dot (<code>.</code>), which led to incorrect behavior. This caused:</p>
+<ul>
+<li><code>rg --files -g '!asdf.'</code> still listing <code>asdf./foo</code></li>
+<li>But <code>rg --files -g '!asdf'</code> correctly ignoring <code>asdf/foo</code></li>
+</ul>
+<h3>Fix</h3>
+<p>The function now ensures that entire filenames made only of dots are ignored by using:</p>
+<pre><code class="language-rust">if path.iter().all(|&amp;b| b == b'.') {
+    return None;
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-17 21:26</div>
+            <div class="timeline-body"><p>Thank you for looking into this!</p>
+<p>The status quo was certainly wrong, but this isn't quite right either. This is checking the entire path, which does more work than is necessary (although it is likely to short circuit very early on most paths). It's also not quite the semantics I was going for.</p>
+<p>I wanted to <a href="https://doc.rust-lang.org/std/path/struct.Path.html#method.file_name">imitate the corresponding routine on <code>std::path::Path</code></a>, but it looks like I flubbed it.</p>
+<p>What this should be doing is checking if the entire file name is <code>..</code>, and if it is, returning <code>None</code>.</p>
+<p>Also, for changes like this, it is customary to include a regression test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-08-17 21:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:19 UTC
+    </footer>
+</body>
+</html>

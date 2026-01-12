@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wrong &quot;Permission denied&quot; error message on hidden files - BurntSushi/ripgrep #630</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Wrong &quot;Permission denied&quot; error message on hidden files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/630">#630</a>
+        opened by <a href="https://github.com/fcantournet">@fcantournet</a>
+        on 2017-10-09 15:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/fcantournet">@fcantournet</a></div>
+            <div class="timeline-body"><p><code>rg</code> refuses to search hidden files, reporting a permission denied error.</p>
+<pre><code> fcantournet ~ $ ls -lah .bashrc 
+-rw-r--r-- 1 fcantournet fcantournet 4,0K oct.   3 14:09 .bashrc
+ fcantournet ~ $ rg -i complete .bashrc
+.bashrc: Permission denied (os error 13)
+</code></pre>
+<p>This is only true directly from my home directory.  if I move the file to a directory inside my home then it works.</p>
+<pre><code> fcantournet  ~  $  ls -lah testrg/
+total 12K
+drwxrwxr-x  2 fcantournet fcantournet 4,0K oct.   9 17:28 .
+drwxr-xr-x 39 fcantournet fcantournet 4,0K oct.   9 17:28 ..
+-rw-r--r--  1 fcantournet fcantournet 4,0K oct.   9 17:28 .bashrc
+ fcantournet  ~  $  rg --debug bash /home/fcantournet/testrg/.bashrc 
+DEBUG:grep::search: regex ast:
+Literal {
+    chars: [
+        'b',
+        'a',
+        's',
+        'h'
+    ],
+    casei: false
+}
+DEBUG:grep::literals: literal prefixes detected: Literals { lits: [Complete(bash)], limit_size: 250, limit_class: 10 }
+DEBUG:rg::args: will try to use memory maps
+1:# ~/.bashrc: executed by bash(1) for non-login shells.
+2:# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+12:# See bash(1) for more options
+18:# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+111:# ~/.bash_aliases, instead of adding them here directly.
+112:# See /usr/share/doc/bash-doc/examples in the bash-doc package.
+114:if [ -f ~/.bash_aliases ]; then
+115:    . ~/.bash_aliases
+119:# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+120:# sources /etc/bash.bashrc).
+122:  if [ -f /usr/share/bash-completion/bash_completion ]; then
+123:    . /usr/share/bash-completion/bash_completion
+124:  elif [ -f /etc/bash_completion ]; then
+125:    . /etc/bash_completion
+129:[ -f ~/.fzf.bash ] &amp;&amp; source ~/.fzf.bash
+</code></pre>
+<p>Version is 0.5.2. I'll try with 0.6.0 asap.</p>
+<p>debug output :</p>
+<pre><code>rg --debug bash /home/fcantournet/.bashrc 
+DEBUG:grep::search: regex ast:
+Literal {
+    chars: [
+        'b',
+        'a',
+        's',
+        'h'
+    ],
+    casei: false
+}
+DEBUG:grep::literals: literal prefixes detected: Literals { lits: [Complete(bash)], limit_size: 250, limit_class: 10 }
+DEBUG:rg::args: will try to use memory maps
+/home/fcantournet/.bashrc: Permission denied (os error 13)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-09 15:30</div>
+            <div class="timeline-body"><p>What version of ripgrep? What is the output with the --debug flag?</p>
+<p>On Oct 9, 2017 11:27 AM, &quot;Félix Cantournet&quot; <a href="mailto:notifications@github.com">notifications@github.com</a>
+wrote:</p>
+<blockquote>
+<p>rg refuses to search hidden files, reporting a permission denied error.</p>
+<p>fcantournet ~ $ ls -lah .bashrc
+-rw-r--r-- 1 fcantournet fcantournet 4,0K oct.   3 14:09 .bashrc
+fcantournet ~ $ rg -i complete .bashrc
+.bashrc: Permission denied (os error 13)</p>
+<p>—
+You are receiving this because you are subscribed to this thread.
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/BurntSushi/ripgrep/issues/630">https://github.com/BurntSushi/ripgrep/issues/630</a>, or mute the thread
+<a href="https://github.com/notifications/unsubscribe-auth/AAb34i83fPs0KNWxuQBPXcge-Q19RnAQks5sqjt9gaJpZM4PyqfK">https://github.com/notifications/unsubscribe-auth/AAb34i83fPs0KNWxuQBPXcge-Q19RnAQks5sqjt9gaJpZM4PyqfK</a>
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fcantournet">@fcantournet</a> on 2017-10-09 15:37</div>
+            <div class="timeline-body"><p>@BurntSushi It appears to be fixed in 0.6.0. :ok_hand:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-10-09 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fcantournet">@fcantournet</a> on 2017-11-30 15:24</div>
+            <div class="timeline-body"><p>For what it's worth : the behavior I encountered has nothing to do with ripgrep and everything to do with running inside snap default confinement.</p>
+<p>If you end up here someday : <code>snap install rg --classic</code> will solve your problems.
+The default <code>strict</code> confinement has some weird interactions with hidden files..</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:18 UTC
+    </footer>
+</body>
+</html>

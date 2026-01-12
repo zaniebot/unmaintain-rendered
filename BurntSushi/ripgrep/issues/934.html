@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$HOME/.gitignore is incorrectly used when searching in other directories such as /tmp - BurntSushi/ripgrep #934</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>$HOME/.gitignore is incorrectly used when searching in other directories such as /tmp</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/934">#934</a>
+        opened by <a href="https://github.com/joshunger">@joshunger</a>
+        on 2018-06-02 15:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/joshunger">@joshunger</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 0.8.1
+-SIMD -AVX
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<pre><code> brew install ripgrep
+</code></pre>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>mac 10.13.4</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>Create a <code>.gitignore</code> in your <code>$HOME</code> directory.  Cd over to <code>/tmp</code>, mkdir a pattern excluded in <code>.gitignore</code> and execute <code>rg</code>.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<pre><code>echo &quot;*.apk&quot; &gt; ~/.gitignore
+cd /tmp
+touch foo.apk
+rg --debug --files
+DEBUG/grep::search/grep/src/search.rs:195: regex ast:
+Repeat {
+    e: Literal {
+        chars: [
+            'z'
+        ],
+        casei: false
+    },
+    r: Range {
+        min: 0,
+        max: Some(
+            0
+        )
+    },
+    greedy: true
+}
+DEBUG/globset/globset/src/lib.rs:401: built glob set; 0 literals, 0 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.keystone_install_lock: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./foo.apk: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/junger/.gitignore&quot;), original: &quot;*.apk&quot;, actual: &quot;**/*.apk&quot;, is_whitelist: false, is_only_dir: false })))
+</code></pre>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<p>See above.</p>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>ripgrep should not use .gitignore in your $HOME directory when searching in other directories such as <code>/tmp</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from ".gitignore is used in $HOME when searching in other directorys such as /tmp" to "$HOME/.gitignore is not ignored when searching in other directorys such as /tmp" by @joshunger on 2018-06-02 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "$HOME/.gitignore is not ignored when searching in other directorys such as /tmp" to "$HOME/.gitignore is incorrectly used when searching in other directorys such as /tmp" by @joshunger on 2018-06-02 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "$HOME/.gitignore is incorrectly used when searching in other directorys such as /tmp" to "$HOME/.gitignore is incorrectly used when searching in other directories such as /tmp" by @joshunger on 2018-06-02 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-02 15:31</div>
+            <div class="timeline-body"><p>Hmm, I can't seem to reproduce this issue on master:</p>
+<pre><code>$ pwd
+/tmp/ripgrep-934
+$ echo foo &gt; $HOME/.gitignore
+$ cat $HOME/.gitignore
+foo
+$ touch foo bar
+$ rg --files
+bar
+foo
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshunger">@joshunger</a> on 2018-06-02 15:37</div>
+            <div class="timeline-body"><p>How do I install master?</p>
+<pre><code>➜  /tmp mkdir ripgrep-934
+➜  /tmp cd ripgrep-934 
+➜  ripgrep-934 echo foo &gt; $HOME/.gitignore
+➜  ripgrep-934 cat $HOME/.gitignore
+foo
+➜  ripgrep-934 touch foo bar
+➜  ripgrep-934 rg --files
+bar
+➜  ripgrep-934 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-02 15:37</div>
+            <div class="timeline-body"><p>I can't reproduce this in <code>0.8.1</code> either.</p>
+<p>Do you have any global git configuration set? For example, if you have <code>core.excludesFile</code> set in your <code>~/.gitconfig</code> to <code>$HOME/.gitignore</code>, then that might be the cause. Indeed, if I add</p>
+<pre><code>[core]
+  excludesFile = /home/andrew/.gitignore
+</code></pre>
+<p>to my <code>$HOME/.gitconfig</code>, then I can reproduce the problem:</p>
+<pre><code>$ rg --files
+bar
+</code></pre>
+<p>where my <code>--debug</code> output is:</p>
+<pre><code>DEBUG/grep::search/grep/src/search.rs:195: regex ast:
+Repeat {
+    e: Literal {
+        chars: [
+            'z'
+        ],
+        casei: false
+    },
+    r: Range {
+        min: 0,
+        max: Some(
+            0
+        )
+    },
+    greedy: true
+}
+DEBUG/globset/globset/src/lib.rs:401: built glob set; 0 literals, 1 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./foo: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/home/andrew/.gitignore&quot;), original: &quot;foo&quot;, actual: &quot;**/foo&quot;, is_whitelist: false, is_only_dir: false })))
+</code></pre>
+<p>This does actually seem like a bug to me. I don't think ripgrep should be applying global gitignore rules outside of a git repo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-02 15:38</div>
+            <div class="timeline-body"><blockquote>
+<p>How do I install master?</p>
+</blockquote>
+<p>The README has build instructions. But given my previous comment, I don't think it's necessary, assuming the issue here is indeed your global git config.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshunger">@joshunger</a> on 2018-06-02 15:40</div>
+            <div class="timeline-body"><p>@BurntSushi awesome catch!</p>
+<pre><code>➜  ripgrep-934 git config --global -l       
+hub.host=...
+hub.protocol=http
+hub.host=...
+hub.host=...
+hub.host=...
+hub.host=...
+core.excludesfile=~/.gitignore
+➜  ripgrep-934 
+</code></pre>
+<p>I also have a ton of <code>hub.host</code> but that can be ignored. 🤔</p>
+<p>I also don't recalled why this is set in <code>excludesfile</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2018-06-02 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/roblourens">@roblourens</a> on 2018-06-02 18:16</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think ripgrep should be applying global gitignore rules outside of a git repo.</p>
+</blockquote>
+<p>Even inside a git repo, this might be confusing for the same reasons that led me to use <code>--no-ignore-parent</code> in vscode. If it still uses global gitignore rules in git repos, it would be nice to be able to disable that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-07-22 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-22 14:45</div>
+            <div class="timeline-body"><p>This bug is fixed on master, and @roblourens I've added a new <code>--no-ignore-global</code> flag that should do what you want!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joshunger">@joshunger</a> on 2018-07-22 22:03</div>
+            <div class="timeline-body"><p>Thanks @BurntSushi !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/roblourens">@roblourens</a> on 2018-07-23 01:18</div>
+            <div class="timeline-body"><p>Thanks, reopening the vscode issue to use it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sgraham">@sgraham</a> on 2018-11-27 20:58</div>
+            <div class="timeline-body"><p>In case anyone else lands here and was using this as a &quot;feature&quot; (with apologies for the xkcd.com/1172/):</p>
+<p>I had been using this bug to add a local <code>.gitignore</code> at the root of a tree that isn't itself a git repo to ignore additional things inside child git repos. Renaming <code>.gitignore</code> to <code>.rgignore</code> restores the previous behaviour.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:33 UTC
+    </footer>
+</body>
+</html>

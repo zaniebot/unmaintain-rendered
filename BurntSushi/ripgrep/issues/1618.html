@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>grep-searcher: Advance LineStep without iterating - BurntSushi/ripgrep #1618</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>grep-searcher: Advance LineStep without iterating</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1618">#1618</a>
+        opened by <a href="https://github.com/XAMPPRocky">@XAMPPRocky</a>
+        on 2020-06-13 18:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/XAMPPRocky">@XAMPPRocky</a></div>
+            <div class="timeline-body"><p>I've been using <code>grep_searcher::LineStep</code> for a new feature in tokei that requires the level of control it provides and it has been great to use so far. The one minor nit I've come across is that is no way to advance <code>LineStep</code> without <code>next</code>, when there are times where I want to be able to skip to a certain part of the file. This is currently possible by creating a new <code>LineStep</code> that starts at that position, but it would be nice if I didn't need to re-assign just to update <code>LineStep</code>'s position.</p>
+<h3>Example</h3>
+<pre><code class="language-rust">let mut stepper = LineStep::new(b'\n', 0, lines.len());
+
+while let Some((start, end)) = stepper.next(lines) {
+    if let Some(position) = /* some parse function */ {
+        // Current
+        stepper = LineStep::new(b'\n', position, lines.len());
+        // Proposed
+        stepper.advance_to(position);
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-06-15 11:34</div>
+            <div class="timeline-body"><p>This seems fine to me. A PR is welcome. The docs for <code>advance_to</code> probably need a bit of detail. e.g., If the position you advance to is in the middle of a line, then the subsequent line reported may be incomplete (missing the part of the line before the position it was advanced to).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2020-06-15 11:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:11 UTC
+    </footer>
+</body>
+</html>

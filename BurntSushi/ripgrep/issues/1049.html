@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>-z archive search option does not work for foo.gz files - BurntSushi/ripgrep #1049</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>-z archive search option does not work for foo.gz files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1049">#1049</a>
+        opened by <a href="https://github.com/kaushalmodi">@kaushalmodi</a>
+        on 2018-09-12 18:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kaushalmodi">@kaushalmodi</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.10.0 (rev 7ebed3ace6)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>Built from git repo.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>RHEL 6.8</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>I tried searching an archive file (help-mode.el.gz) for the first time today, but it didn't work.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<ol>
+<li>Download the attached (see below) <code>help-mode.el.gz</code> file (it's from a regular Emacs build) to a dir of your choice.</li>
+<li>cd to that dir</li>
+<li><code>rg -z 'easymenu'</code>.</li>
+</ol>
+<ul>
+<li>I also tried <code>rg -z -a 'easymenu' help-mode.el.gz</code>. But that didn't work either.</li>
+</ul>
+<ol start="4">
+<li>Nothing will be returned.</li>
+</ol>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<p><code>help-mode.el.gz</code> is a .gz of <code>help-mode.el</code> which contains this line on line 34: <code>(eval-when-compile (require 'easymenu))</code>.</p>
+<p>I was expecting the <code>rg -z</code> to find that line, but it didn't.</p>
+<pre><code>km²~/temp/:&gt; rg -z -a 'easymenu' help-mode.el.gz --debug
+
+DEBUG|grep_regex::literal|grep-regex/src/literal.rs:100: required literals found: [Cut(EASY), Cut(eASY), Cut(EaSY), Cut(eaSY), Cut(EAsY), Cut(eAsY), Cut(EasY), Cut(easY), Cut(EAſY), Cut(eAſY), Cut(EaſY), Cut(eaſY), Cut(EASy), Cut(eASy), Cut(EaSy), Cut(eaSy), Cut(EAsy), Cut(eAsy), Cut(Easy), Cut(easy), Cut(EAſy), Cut(eAſy), Cut(Eaſy), Cut(eaſy)]
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|globset/src/lib.rs:424: glob converted to regex: Glob { glob: &quot;**/*.*~&quot;, re: &quot;(?-u)^(?:/?|.*/).*\\..*\\~$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false, backslash_escape: true }, tokens: Tokens([RecursivePrefix, ZeroOrMore, Literal('.'), ZeroOrMore, Literal('~')]) }
+DEBUG|globset|globset/src/lib.rs:424: glob converted to regex: Glob { glob: &quot;**/*#*#&quot;, re: &quot;(?-u)^(?:/?|.*/).*\\#.*\\#$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false, backslash_escape: true }, tokens: Tokens([RecursivePrefix, ZeroOrMore, Literal('#'), ZeroOrMore, Literal('#')]) }
+DEBUG|globset|globset/src/lib.rs:424: glob converted to regex: Glob { glob: &quot;**/*#*.*#&quot;, re: &quot;(?-u)^(?:/?|.*/).*\\#.*\\..*\\#$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false, backslash_escape: true }, tokens: Tokens([RecursivePrefix, ZeroOrMore, Literal('#'), ZeroOrMore, Literal('.'), ZeroOrMore, Literal('#')]) }
+DEBUG|globset|globset/src/lib.rs:424: glob converted to regex: Glob { glob: &quot;**/sos.log*&quot;, re: &quot;(?-u)^(?:/?|.*/)sos\\.log.*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('s'), Literal('o'), Literal('s'), Literal('.'), Literal('l'), Literal('o'), Literal('g'), ZeroOrMore]) }
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 1 literals, 22 basenames, 12 extensions, 0 prefixes, 4 suffixes, 3 required extensions, 4 regexes
+DEBUG|grep_cli::decompress|grep-cli/src/decompress.rs:202: help-mode.el.gz: error spawning command '&quot;gzip&quot; &quot;-d&quot; &quot;-c&quot; &quot;help-mode.el.gz&quot;': Not a directory (os error 20) (falling back to uncompressed reader)
+</code></pre>
+<p>This seems to be the key:</p>
+<blockquote>
+<p>DEBUG|grep_cli::decompress|grep-cli/src/decompress.rs:202: help-mode.el.gz: error spawning command '&quot;gzip&quot; &quot;-d&quot; &quot;-c&quot; &quot;help-mode.el.gz&quot;': Not a directory (os error 20) (falling back to uncompressed reader)</p>
+</blockquote>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>It should have found that line with <code>easymenu</code> string.</p>
+<h3>Attachments</h3>
+<p><a href="https://github.com/BurntSushi/ripgrep/files/2376479/help-mode.el.gz">help-mode.el.gz</a></p>
+<hr />
+<p><strong>Updates</strong></p>
+<ul>
+<li>Fix typo <em>s/easymode/easymenu/</em></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-09-12 19:59</div>
+            <div class="timeline-body"><p>Thanks for the detailed bug report! I appreciate you filing it.</p>
+<p>I can't reproduce this. In particular, <code>zcat help-mode.el.gz | rg easymode</code> returns nothing, so therefore, <code>rg -z easymode</code> will necessarily also return nothing.</p>
+<p>If I pick something that is in your file, then ripgrep works as expected:</p>
+<pre><code>$ rg emacs-lisp-mode
+$ rg emacs-lisp-mode -z
+help-mode.el.gz
+466:          (set-syntax-table emacs-lisp-mode-syntax-table)
+619:    (with-syntax-table emacs-lisp-mode-syntax-table
+</code></pre>
+<p>With that said, I do not get the same error in my <code>--debug</code> logs as you with respect to gzip not being a directory. The obvious thing for you to try is to actually run the gzip command that ripgrep is running and debug it from there. For example, <code>gzip -d -c help-mode.el.gz</code>. Does that fail? If so, then why? How should ripgrep cause your version of <code>gzip</code> to decompress the given file and print the contents to stdout?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-09-12 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2018-09-12 20:05</div>
+            <div class="timeline-body"><blockquote>
+<p>zcat help-mode.el.gz | rg easymode</p>
+</blockquote>
+<p>Sorry, typo in the report <em>s/easymode/easymenu/</em>, but the same issue still persists.. I will fix the typo.</p>
+<p>That said,</p>
+<ul>
+<li><code>zcat help-mode.el.gz | rg easymenu</code> works.</li>
+<li><code>gzip -d -c help-mode.el.gz</code> does not fail.. it spits out the contents to the stdout</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2018-09-12 20:07</div>
+            <div class="timeline-body"><p><img src="https://user-images.githubusercontent.com/3578197/45450364-0173e900-b6a6-11e8-97a3-c7a25f27b0c1.png" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2018-09-12 20:08</div>
+            <div class="timeline-body"><p>May be the gzip handling from inside rg is OS specific? I am on RHEL 6.8.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-09-12 20:13</div>
+            <div class="timeline-body"><p>I don't see why it would be. The message it spits out to you should be exactly the command that ripgrep runs. I don't know what's going on, sorry. The next step I'd take is to run ripgrep under <code>strace</code> and see if you can find the exact <code>gzip</code> command that is being run and confirm that everything lines up. If not, then perhpas we've found the problem. If so, then... I'm not sure where else to look.</p>
+<p>For giggles, do you know if this worked with ripgrep 0.9.0? If you don't know, can you download the Linux binary from github releases and try it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2018-09-12 20:26</div>
+            <div class="timeline-body"><p>Thanks for those pointers. Turns out that the rg binary (even v 0.10.0) downloaded from releases works fine! So somehow my local build has this issue..</p>
+<p><a href="https://ptpb.pw/JCSW/bash">Here</a> is my rg build script in bash.. the relevant part (I think) is:</p>
+<pre><code class="language-sh"># Disable debug info to reduce build size (size drops from 25MB to 5.8MB)
+# https://github.com/BurntSushi/ripgrep/issues/413
+sed -r -i.bkp 's/^(\s*debug\s*=\s*)true/\1false/' Cargo.toml
+
+# Delete all the build directories here, as we need the build directory to
+# contain *only one* dir at the end of each build.. so that we can blindly do:
+#   cd ./target/x86_64-unknown-linux-musl/release/build/ripgrep-*/out/
+# .. as you see later. That way, we don't have to have complicated script to
+# figure out which of all the build directories is the latest.
+rm -rf ./target/x86_64-unknown-linux-musl/release/build/ripgrep-*
+
+# Build
+# https://github.com/BurntSushi/ripgrep/issues/85#issuecomment-249428112
+rustup target add x86_64-unknown-linux-musl
+RUSTFLAGS=&quot;-C target-cpu=native&quot; rustup run stable cargo build --target x86_64-unknown-linux-musl --release
+</code></pre>
+<p>Do you see anything wrong in that? I have been building rg using that script for few years! now. It's just that I tried out the <code>-z</code> switch and it didn't work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-09-12 20:59</div>
+            <div class="timeline-body"><p>Nothing obviously stands out at me, no. One possibility is that given you're on RHEL 6.8, you might be compiling with a much older version of musl than what is contained in the releases on github. So to rule that out, here are some thoughts:</p>
+<ol>
+<li>Check which version of musl you're building with. How old is it? If it's old, can you upgrade? If so, does that fix it?</li>
+<li>Try doing just a normal <code>cargo build --release</code> without any other shenanigans, which should build with your local copy of glibc. Does that work?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2018-09-12 21:09</div>
+            <div class="timeline-body"><blockquote>
+<p>One possibility is that given you're on RHEL 6.8, you might be compiling with a much older version of musl than what is contained in the releases on github.</p>
+</blockquote>
+<p>That seems to be the problem because my local build with x86_64-unknown-linux-gnu target (default) works fine.</p>
+<p>I added the musl target using <code>rustup target add x86_64-unknown-linux-musl</code>, but looks like something else is also needed to be installed locally? musl? How do I find my musl version? (sorry for being naive)</p>
+<hr />
+<p>As the issue is already resolved, I will close this. Thanks for your help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kaushalmodi on 2018-09-12 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-09-12 21:14</div>
+            <div class="timeline-body"><blockquote>
+<p>I added the musl target using <code>rustup target add x86_64-unknown-linux-musl</code>, but looks like something else is also needed to be installed locally? musl? How do I find my musl version? (sorry for being naive)</p>
+</blockquote>
+<p>Right. AFAIK, <code>rustup target add x86_64-unknown-linux-musl</code> just adds the Rust bits to use musl, such as Rust's standard library compiled with musl. Honestly, if you're just building this binary for yourself, I would use glibc. The only reason I use musl in the releases is because it creates a fully static binary that's nice for distributing, but it doesn't matter much if you're the only one using your build.</p>
+<p>In terms of having musl installed... That's really a question for your Linux distro. You need to use your package manager to discover what, if any, musl package is installed. If you didn't install it with your package manager, then... good luck. :-)</p>
+<p>Here's my package info for musl:</p>
+<pre><code>$ pacman -Qi musl
+Name            : musl
+Version         : 1.1.20-1
+Description     : Lightweight implementation of C standard library
+Architecture    : x86_64
+URL             : http://www.musl-libc.org/
+Licenses        : MIT
+Groups          : None
+Provides        : None
+Depends On      : None
+Optional Deps   : None
+Required By     : None
+Optional For    : None
+Conflicts With  : None
+Replaces        : None
+Installed Size  : 3.58 MiB
+Packager        : Sergej Pupykin &lt;pupykin.s+arch@gmail.com&gt;
+Build Date      : Thu 06 Sep 2018 04:59:42 PM EDT
+Install Date    : Sat 08 Sep 2018 01:35:53 PM EDT
+Install Reason  : Explicitly installed
+Install Script  : No
+Validated By    : Signature
+</code></pre>
+<p>And the list of files in my installed musl package, in case that's helpful to you: https://gist.github.com/5c6681c37d7f00d9e2ee32cd5e5170d4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2018-09-12 21:19</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>I am feeling so dumb at the moment. I never had musl installed :P</p>
+<p>I just discovered https://www.musl-libc.org/download.html</p>
+<p>So if I reach a deadend there, I'll give up on musl. I like static binaries so I went the musl route to begin with.. I thought it was a &quot;magic switch&quot; that rustc used :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2018-09-12 21:20</div>
+            <div class="timeline-body"><p>OK, installing musl was easy.. I ended up with https://ptpb.pw/hcY4.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-09-12 21:26</div>
+            <div class="timeline-body"><p>@kaushalmodi Note that I could be wrong about needing to have musl installed. That might only be necessary if you're building with PCRE2 support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2018-09-12 21:27</div>
+            <div class="timeline-body"><p>Hmm, <code>musl-gcc</code> is installed (musl 1.1.20), its include/ and lib/ dir are along with my other libraries' include/ and lib/ dirs. And still I am getting the same gzip error. Looks like I need to stick with the dynamic binary for now.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:40 UTC
+    </footer>
+</body>
+</html>

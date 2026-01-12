@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix compression tests in QEMU cross-compilation environments - BurntSushi/ripgrep #3248</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix compression tests in QEMU cross-compilation environments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/3248">#3248</a>
+        opened by <a href="https://github.com/OctopusET">@OctopusET</a>
+        on 2025-12-17 16:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/OctopusET">@OctopusET</a></div>
+            <div class="timeline-body"><h2>Problem</h2>
+<p>Compression tests (lz4, brotli, zstd) fail on <code>riscv64</code> when running under QEMU user-mode emulation. The tests attempt to execute compression commands even when the required tools are missing, instead of skipping as expected.</p>
+<h2>Root Cause</h2>
+<p>This is caused by a known limitation in QEMU user-mode's <code>posix_spawn</code> implementation. When spawning a non-existent command:</p>
+<ul>
+<li><strong>Expected:</strong> <code>posix_spawn</code> returns <code>ENOENT</code> (Error).</li>
+<li><strong>QEMU:</strong> <code>posix_spawn</code> returns <code>0</code> (Success), but the child process silently fails with exit code <code>127</code>.</li>
+</ul>
+<p><strong>Technical Details:</strong></p>
+<ol>
+<li>glibc 2.34+ attempts <code>clone3()</code>, which QEMU rejects with <code>ENOSYS</code>.</li>
+<li>It falls back to <code>clone(CLONE_VM | CLONE_VFORK | ...)</code>.</li>
+<li>QEMU silently strips <code>CLONE_VM</code> because it cannot share address spaces in process-based emulation (<a href="https://gitlab.com/qemu-project/qemu/-/blob/master/linux-user/syscall.c#L6729-6731">syscall.c:6729-6731</a>).</li>
+<li>Consequently, <code>fork()</code> is used (Copy-on-Write).</li>
+<li>When the child writes the error code (<code>errno</code>) to the memory, it writes to its <em>own</em> copy. The parent reads the original memory (where error is 0) and assumes success.</li>
+</ol>
+<p>This issue specifically affects newer environments (glibc 2.34+, e.g., Ubuntu 22.04+). Older environments like Ubuntu 20.04 (glibc 2.31) are unaffected because they handle <code>vfork</code> fallbacks differently, masking the QEMU bug.</p>
+<h2>Why this fix is needed</h2>
+<p>Currently, <code>aarch64</code> tests pass only because the CI uses Ubuntu 20.04 (glibc 2.31). Once <code>cross-rs</code> or CI images update to Ubuntu 22.04+ (glibc 2.35+), <code>aarch64</code> and other architectures will start failing too. This PR prevents future breakages across all architectures.</p>
+<h2>The Fix</h2>
+<p>Updated <code>cmd_exists()</code> to verify that the command <strong>executed successfully</strong> (exit code 0), rather than just checking if the spawn call itself returned <code>Ok</code>.</p>
+<ul>
+<li><strong>Native / Normal:</strong> Returns <code>Err(NotFound)</code> -&gt; function returns <code>false</code>.</li>
+<li><strong>QEMU (Bugged):</strong> Returns <code>Ok(ExitStatus(127))</code> -&gt; <code>status.success()</code> is <code>false</code> -&gt; function returns <code>false</code>.</li>
+</ul>
+<p>I also removed the <code>#[cfg(not(target_arch = &quot;riscv64&quot;))]</code> guards from the compression tests as they are no longer needed.</p>
+<h2>Verification</h2>
+<p>Verified on an x86_64 host cross-compiling to <code>riscv64</code> and <code>aarch64</code> (via QEMU user-mode). Tests now correctly skip when compression tools are missing, and pass when they are present.</p>
+<h2>Reference</h2>
+<ul>
+<li>Related Rust issue: https://github.com/rust-lang/rust/issues/90825</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-12-17 16:37</div>
+            <div class="timeline-body"><p>Wow, amazing analysis! Thank you. Seems like it was quite gnarly to debug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-12-17 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-12-17 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/OctopusET">@OctopusET</a> on 2025-12-17 16:39</div>
+            <div class="timeline-body"><p>I couldn't understand why only risc-v tests are failing. Turns out it was QEMU+glibc issue.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:26 UTC
+    </footer>
+</body>
+</html>

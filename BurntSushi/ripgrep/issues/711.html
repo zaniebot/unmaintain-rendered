@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directory separators not normalised on Windows - BurntSushi/ripgrep #711</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Directory separators not normalised on Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/711">#711</a>
+        opened by <a href="https://github.com/mrmonday">@mrmonday</a>
+        on 2017-12-11 10:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mrmonday">@mrmonday</a></div>
+            <div class="timeline-body"><p>Using either cmd or git bash on windows:</p>
+<pre><code>$ rg --version
+ripgrep 0.6.0
+-AVX -SIMD
+
+$ find .
+.
+./a
+./a/c
+./a/c/b
+$ cat a/c/b
+aaaa
+bbbb
+cccc
+
+$ rg aa a/
+a/c\b
+1:aaaa
+
+</code></pre>
+<p>Here the output mixed <code>/</code> and <code>\</code> as directory separators - they should be normalised for consistency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-12-11 12:06</div>
+            <div class="timeline-body"><p>This looks like a duplicate of #275. In particular, what should the paths be normalized to? Does <code>--path-separator</code> fix this issue for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2017-12-11 12:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-12-11 12:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mrmonday">@mrmonday</a> on 2017-12-12 09:09</div>
+            <div class="timeline-body"><p>That works, I'll set up an alias.</p>
+<p>I thought it might be good to normalise by default, so I did a little investigation:</p>
+<ul>
+<li><code>grep</code> in git bash (find does similarly):<pre><code>$ grep -r aa 'a\'
+a\/c/b:aaaa
+$ grep -r aa 'a/'
+a/c/b:aaaa
+</code></pre>
+</li>
+<li><code>findstr</code> in cmd: I couldn't find a way to make it recurse, but it prints exactly as passed</li>
+<li><code>dir</code> in cmd: This always normalises to <code>\</code></li>
+<li><code>Get-ChildItem a/ -Recurse</code> in powershell normalises to <code>\</code></li>
+</ul>
+<p>I'm no expert in Window's command line utilities, but my minor investigation reveals quite a mixed bag of results - there's no definitive &quot;ripgrep should do this because it's what everything else does&quot;.</p>
+<p>I'll close this, since <code>--path-separator</code> is a sufficient workaround. Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mrmonday on 2017-12-12 09:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2017-12-29 11:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:23 UTC
+    </footer>
+</body>
+</html>

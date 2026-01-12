@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>potential missed optimization in extracting a capture group - BurntSushi/ripgrep #1981</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>potential missed optimization in extracting a capture group</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1981">#1981</a>
+        opened by <a href="https://github.com/vlmutolo">@vlmutolo</a>
+        on 2021-08-30 01:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/vlmutolo">@vlmutolo</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>Arch Linux's <code>pacman</code>.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Arch Linux</p>
+<h4>The Missed Optimization (?)</h4>
+<p>It seems like the following two commands should perform the same task, and that the first should be either faster than or the same speed as the second.</p>
+<pre><code class="language-bash">… | rg -or '$1' '&quot;value&quot;:&quot;([^&quot;]+)&quot;,&quot;type&quot;'
+</code></pre>
+<pre><code class="language-bash">… | rg -o '&quot;value&quot;:&quot;[^&quot;]+&quot;,&quot;type&quot;' | rg -r '' '(?:^&quot;value&quot;:&quot;|&quot;,&quot;type&quot;$)'
+</code></pre>
+<p>Instead, the second, pipelined version is four times slower on my machine.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>I don't think I can post the data directly here, but I can link to it. It's an open data set. The following command should download it. (The <code>-L</code> is necessary for <code>curl</code> to follow the redirects.)</p>
+<p>Fair warning, the compressed file is something like 11GB. Also, I believe the decompressed file is over 100GB, so you probably don't want to extract it.</p>
+<pre><code class="language-bash">curl -L https://opendata.rapid7.com/sonar.rdns_v2/2021-07-28-1627430820-rdns.json.gz -o 2021-07-28-1627430820-rdns.json.gz
+</code></pre>
+<p>If you'd rather not download a big file of domain names, the data generally take the form of the following.</p>
+<pre><code class="language-json">{&quot;timestamp&quot;:&quot;&lt;unix timestamp&gt;&quot;,&quot;name&quot;:&quot;&lt;IPv4 Address&gt;&quot;,&quot;value&quot;:&quot;&lt;oddly long domain name&gt;&quot;,&quot;type&quot;:&quot;&lt;three-letter code&gt;&quot;}
+</code></pre>
+<p>Then, I time the following two commands.</p>
+<pre><code class="language-bash">gzip -dc ./2021-07-28-1627430820-rdns.json.gz | head -n 1000000 | rg -or '$1' '&quot;value&quot;:&quot;([^&quot;]+)&quot;,&quot;type&quot;' | wc -l
+</code></pre>
+<pre><code class="language-bash">gzip -dc ./2021-07-28-1627430820-rdns.json.gz | head -n 1000000 | rg -o '&quot;value&quot;:&quot;[^&quot;]+&quot;,&quot;type&quot;' | rg -r '' '(?:^&quot;value&quot;:&quot;|&quot;,&quot;type&quot;$)'
+</code></pre>
+<p>The first version takes 2.7s, and the second takes 0.67s.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-08-30 02:05</div>
+            <div class="timeline-body"><p>Have you rerun the commands to make sure the difference is reproducible?</p>
+<p>Without looking into it yet, the slower command uses capturing groups. The faster one doesn't. Dealing with capturing groups takes more work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vlmutolo">@vlmutolo</a> on 2021-08-30 02:10</div>
+            <div class="timeline-body"><p>I've re-run the commands several times and the behavior is consistent.</p>
+<p>I did think the issue might be the capturing group, but I'm not super familiar with regex engines. I'm not sure if the two commands I posted should be considered &quot;the same&quot; or not, but I wanted to log this here just in case the expected behavior was in fact that they take the same time, or in case anyone else was confused by this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vlmutolo">@vlmutolo</a> on 2021-08-30 02:21</div>
+            <div class="timeline-body"><p>I tried the command</p>
+<pre><code class="language-bash">gzip -dc ./2021-07-28-1627430820-rdns.json.gz | head -n 1000000 | rg -o '&quot;value&quot;:&quot;[^&quot;]+&quot;,&quot;type&quot;' | rg -r '' '(^&quot;value&quot;:&quot;|&quot;,&quot;type&quot;$)'
+</code></pre>
+<p>and it takes 3.5s, compared to 0.67s without the capture group. So you were right about what's causing the slow down.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:26 UTC
+    </footer>
+</body>
+</html>

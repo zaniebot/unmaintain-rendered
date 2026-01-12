@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rg takes up all memory (&gt;10GB) - BurntSushi/ripgrep #1553</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rg takes up all memory (&gt;10GB)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1553">#1553</a>
+        opened by <a href="https://github.com/albertz">@albertz</a>
+        on 2020-04-17 10:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/albertz">@albertz</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 11.0.1 (rev 973de50c9e)
+-SIMD -AVX (compiled)
++SIMD -AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>Via VSCode, Version: 1.44.0
+Commit: 2aae1f26c72891c399f860409176fe435a154b13
+Date: 2020-04-08T08:23:56.137Z
+Electron: 7.1.11
+Chrome: 78.0.3904.130
+Node.js: 12.8.1
+V8: 7.8.279.23-electron.0
+OS: Darwin x64 17.7.0</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Linux (via the VSCode SSH extension, where VSCode itself runs on Mac).</p>
+<h4>Describe your bug.</h4>
+<p>The <code>rg</code> process takes a lot of memory (&gt;10GB) when searching through a very big directory (several 100GB, also slow NFS, also having a couple of symlinks, which also might be circular).
+In the extreme case, it crashes the whole system.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>Have a very big directory (several 100GB, also slow NFS, also having a couple of symlinks, which also might be circular).</p>
+<p>VSCode (<a href="https://github.com/microsoft/vscode-ripgrep/issues/11">via</a>, <a href="https://github.com/microsoft/vscode/issues/95201">via</a>, <a href="https://github.com/microsoft/vscode-python/issues/11173">via</a>) starts it like this:
+<code>rg --files --hidden --case-sensitive -g **/*.ipynb -g !**/.git -g !**/.svn -g !**/.hg -g !**/CVS -g !**/.DS_Store -g !**/__pycache__ -g !**/*.pyc --no-ignore --follow --no-config --no-ignore-global</code></p>
+<h4>What is the actual behavior?</h4>
+<p>It starts the search. However, I can see that the memory just increases, and the process never manages to finish.</p>
+<p>See <code>ps axu</code> on the Linux SSH server, and search for the <code>rg</code> process by VSCode:</p>
+<pre><code>USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+zeyer    14685  117 53.7 8244360 8231756 ?     Sl   11:12  13:09 /u/zeyer/.vscode-server/bin/0ba0ca52957102ca3527cf479571617f0de6ed50/node_modules/vscode-ripgrep/bin/rg --files --hidden --case-sensitive -g **/*.ipynb -g !**/.git -g !**/.svn -g !**/.hg -g !**/CVS -g !**/.DS_Store -g !**/__pycache__ -g !**/*.pyc --no-ignore --follow --no-config --no-ignore-global
+zeyer    20113 87.3 12.8 1978088 1965448 ?     Sl   11:30   4:42 /u/zeyer/.vscode-server/bin/2aae1f26c72891c399f860409176fe435a154b13/node_modules/vscode-ripgrep/bin/rg --files --hidden --case-sensitive -g **/*.ipynb -g !**/.git -g !**/.svn -g !**/.hg -g !**/CVS -g !**/.DS_Store -g !**/__pycache__ -g !**/*.pyc --no-ignore --follow --no-config --no-ignore-global
+</code></pre>
+<p>The <code>cwd</code> of that process is a VSCode setup, which is the very big project directory. Many of the files are behind some symlinks, but I partly want to follow symlinks. (I'm not sure how to selectively disable to not follow some of the symlinks.)</p>
+<p>I think the issue is that the directory is just very big.</p>
+<p>I happened already multiple times that the Linux server became unresponsive because all memory was occupied, and luckily the Linux OOM killer killed <code>rg</code> and the system recovered a while later. This is what I see in <code>dmesg -T</code>:</p>
+<pre><code>[Tue Apr 14 11:14:15 2020] [ pid ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj name
+...
+[Tue Apr 14 11:14:15 2020] [27303]  2574 27303  2550868  2546981 20484096        0             0 rg
+...
+[Tue Apr 14 11:14:15 2020] Out of memory: Kill process 27303 (rg) score 528 or sacrifice child
+[Tue Apr 14 11:14:15 2020] Killed process 27303 (rg) total-vm:10203472kB, anon-rss:10187924kB, file-rss:0kB, shmem-rss:0kB
+[Tue Apr 14 11:14:15 2020] oom_reaper: reaped process 27303 (rg), now anon-rss:0kB, file-rss:0kB, shmem-rss:0kB
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>It should never happen (crashing my whole system because OOM), even if the user opens a immensely huge directory (or let's say an infinite big virtual FUSE directory).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-04-17 11:14</div>
+            <div class="timeline-body"><p>This is, coincidentally, probably a duplicate of https://github.com/BurntSushi/ripgrep/issues/1550</p>
+<p>There are cases where ripgrep may use a lot of memory. They are documented in the man page. Please consult those to see if they match your use case.</p>
+<p>But unfortunately, this ticket is not actionable. Without a reproduction, there is really nothing I can do, sorry. If you can come up with a reproduction, then I'm happy to re-open.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-04-17 11:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2020-04-17 11:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-04-17 11:16</div>
+            <div class="timeline-body"><p>(You're also using an old version of ripgrep, which is generally not supported. Although I don't expect upgrading to fix your problem.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/albertz">@albertz</a> on 2020-04-17 11:42</div>
+            <div class="timeline-body"><p>Just wondering: The case if there are circular dependencies in symlinks is handled correctly though, right? It would not loop forever and always get deeper and deeper.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-04-17 11:52</div>
+            <div class="timeline-body"><p>Yes. ripgrep has symlink loop detection.</p>
+<p>If you want to debug this yourself, you could try removing <code>--follow</code>. You could also try using <code>--threads 1</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Shnatsel">@Shnatsel</a> on 2020-04-18 17:02</div>
+            <div class="timeline-body"><p>Latest master might work for you now that #1554 is merged</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/albertz">@albertz</a> on 2020-04-18 17:05</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:10 UTC
+    </footer>
+</body>
+</html>

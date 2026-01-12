@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make --glob respect ignore files with an option (feature request) - BurntSushi/ripgrep #1808</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make --glob respect ignore files with an option (feature request)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1808">#1808</a>
+        opened by <a href="https://github.com/ilyagr">@ilyagr</a>
+        on 2021-02-28 00:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ilyagr">@ilyagr</a></div>
+            <div class="timeline-body"><p>I think the <code>--glob</code> and <code>--type</code> options would be more useful if they respected ignored files. If possible, I would like there to be an option to make them behave that way.</p>
+<p>Currently, <code>rg --glob '*text*'</code> is equivalent to <code>rg --glob '*text*' -uuu</code> in every way (as far as I can tell).  This is annoying, for example, in the following example (simplified a little from what I encountered):</p>
+<pre><code class="language-bash">$ ls -a
+./  ../  .git/  .gitignore  README-debian.txt  README.md  README.md~
+$ cat .gitignore
+*~
+$ rg --files  # Looks good
+README.md
+README-debian.txt
+$ rg --files --glob 'README*'
+README.md
+README.md~
+README-debian.txt
+</code></pre>
+<p>I'd like there to be an option <code>--weakglobs</code> that would make inclusive globs (see below) and <code>--type</code> have a lesser priority than ignore files. I would put it into my config file. It would work as follows:</p>
+<pre><code class="language-bash">$ rg --weakglobs --files --glob 'README*' 
+README.md
+README-debian.txt
+$ rg --weakglobs --files --glob 'README*' -u
+README.md
+README.md~
+README-debian.txt
+</code></pre>
+<p>I think this behavior is strictly more capable than the current behavior, since <code>rg --weakglobs --files --glob 'README*' -uuu</code> is equivalent to <code>rg  --files --glob 'README*'</code>.</p>
+<p>There is a caveat: the excluding globs (the ones with <code>!</code>) already work as they should (for instance, <code>-u</code> flags are not useless in the presence of <code>-g !something</code>). Their behavior should not change. In other words, they should continue to have priority over ignore files: if a gitignore file has a line like <code>!file</code>, it should still be possible to exclude it from ripgrep with <code>-g !file</code>.</p>
+<p>So, the documentation would be something like:</p>
+<blockquote>
+<p><code>--weakglobs</code></p>
+<p>Make searches with <code>--glob</code> and <code>--type</code> skip hidden files and respect all of the ignore logic. This has no effect on globs that start with <code>!</code>. Ignore logic can still be partially or fully disabled with <code>-u</code> and similar flags.</p>
+</blockquote>
+<p>P.S. Thank you for such a wonderful piece of software!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ilyagr">@ilyagr</a> on 2021-02-28 07:42</div>
+            <div class="timeline-body"><p>If you can see yourself accepting a pull request for this, I'd probably enjoy implementing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-01 12:59</div>
+            <div class="timeline-body"><p>I've given this some thought. First, some details to clarify.</p>
+<p>Using the <code>-g/--glob</code> flag does not automatically imply <code>-uuu</code>. For example:</p>
+<pre><code>$ tree
+.
+├── bar
+│   ├── README-debian.txt
+│   ├── README.md
+│   └── README.md~
+├── foo
+│   ├── README-debian.txt
+│   ├── README.md
+│   └── README.md~
+├── README-debian.txt
+├── README.md
+└── README.md~
+
+2 directories, 9 files
+
+$ rg --files
+foo/README-debian.txt
+foo/README.md
+README-debian.txt
+README.md
+
+$ rg --files -g 'README*'
+foo/README-debian.txt
+foo/README.md
+foo/README.md~
+README-debian.txt
+README.md
+README.md~
+
+$ rg --files -g 'README*' -u
+README.md
+README-debian.txt
+README.md~
+foo/README-debian.txt
+foo/README.md
+foo/README.md~
+bar/README.md~
+bar/README-debian.txt
+bar/README.md
+</code></pre>
+<p>Notice here that <code>bar</code> remains absent from both listings, but once I add <code>-u</code>, <code>bar</code> appears. This is because the interaction between <code>-g/--glob</code> and gitignore is a bit subtle. Namely, that globs given on the CLI are semantically a gitignore file themselves (with whitelist/blacklist semantics inverted) and then given the highest precedence. So when you use, <code>README*</code>, that is in effect whitelisting every file path starting with <code>README</code>. Since it has the highest precedence, it overrides any conflicting gitignore rules in, say, a <code>.gitignore</code> file, like in your example. But since <code>README*</code> does not match <code>bar</code>, there is no conflict in rules and <code>bar</code> is still ignored.</p>
+<p>When I encoded this logic, my thinking was that if you specified a glob at the CLI, then that should be given the highest priority.  But even this appears inconsistent. Namely, <code>rg --files -g 'bar/*'</code> returns no results, which seems to contradict my claim that globs given on the CLI have the highest precedent. The reason is that <code>bar/*</code> doesn't actually match <code>bar</code>, so you actually need <code>{bar,bar/*}</code>, which is a bit weird.</p>
+<p>I suspect when I encoded this logic I was <em>also</em> thinking about blacklist globs. Namely, if we moved all CLI globs down to the lowest priority, then <em>any</em> whitelist glob in a gitignore file is going to override that and prevent the CLI blacklist glob from working as one might expect. For example, let's say I add a <code>README-debian.txt~</code> file and tweak my <code>.gitignore</code>:</p>
+<pre><code>$ cat .gitignore
+*~
+!*-debian.txt~
+/bar
+</code></pre>
+<p>That is, ignore all files ending in <code>~</code>, except for files ending in <code>-debian.txt~</code>. Listing files with ripgrep and using blacklist globs works as one might expect:</p>
+<pre><code>$ rg --files
+foo/README-debian.txt
+foo/README.md
+README-debian.txt
+README.md
+README-debian.txt~
+
+$ rg --files -g '!*~'
+foo/README-debian.txt
+foo/README.md
+README-debian.txt
+README.md
+</code></pre>
+<p>If we make all CLI globs lower precedence, then in this example, the whitelist glob in the <code>.gitignore</code> file would actually override the glob given at the CLI and <code>README-debian.txt~</code> would be listed.</p>
+<p>So it does seem like your insight here is spot on: whitelist globs should get lower precedence, but blacklist globs should get higher precedence.</p>
+<p>I <em>think</em> I agree with this request. And in particular, I'd like to see this fixed rather than worked around with another flag like <code>--weakglob</code>. IMO, supporting both behaviors makes an already complex filter logic a lot worse, and I do not want to maintain both modes. Moreover, I like the idea of this behavior being the default because it makes the interaction between ignore files and CLI globs more sensible, and moreover, makes it more intuitive to use the various <code>-u</code> flags in conjunction with the <code>-g</code> flag. That is, this way of doing things can be more intuitively described as, &quot;CLI globs are the last filter to apply, after all ignore logic has been applied.&quot; (I think.)</p>
+<p>It would be useful to think about other cases that might be changed by this behavior.</p>
+<p>Implementing this could also be tricky. I don't think the code is really setup to give different precedence to whitelist and blacklist globs. But maybe it's as simple as partitioning them... But if you do that, you now lose the fact that whitelist and blacklist globs can interleave with each other. Namely, <code>-g 'README*' -g '!README*~' -g 'README-debian.txt~'</code> should work today and really should continue to work as one might expect. But having different precedence for whitelist and blacklist globs may make this impractical.</p>
+<p>So I'm not quite sure what to do here. Sorry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2021-03-01 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ilyagr">@ilyagr</a> on 2021-03-06 08:23</div>
+            <div class="timeline-body"><p>Sorry it took me a while to respond, and thank you very much for such a nice reply!</p>
+<blockquote>
+<p>Using the <code>-g/--glob</code> flag does not automatically imply <code>-uuu</code>.</p>
+</blockquote>
+<p>Yes, you are right, that's an excellent example. You forgot to mention that <code>bar</code> is in the <code>.gitignore</code> (in case somebody reading this later doesn't figure it out immediately; perhaps it's best to edit your comment and remove this sentence).</p>
+<blockquote>
+<p>Namely, <code>rg --files -g 'bar/*'</code> returns no results</p>
+</blockquote>
+<p>This is a bit weird indeed. I think you mentioned in https://github.com/BurntSushi/ripgrep/issues/1654 (or elsewhere?) that it's a performance optimization. It is a good advertisement for my proposal, since this particular weirdness would be gone with the weak glob behavior. I just hope I haven't missed some new inconsistency that may appear because of weaker globs.</p>
+<blockquote>
+<p>If we make all CLI globs lower precedence, then in this example, the whitelist glob in the <code>.gitignore</code> file would actually override the glob given at the CLI and <code>README-debian.txt~</code> would be listed.</p>
+</blockquote>
+<p>Yes, that's exactly what I meant to avoid.</p>
+<blockquote>
+<p>So it does seem like your insight here is spot on: whitelist globs should get lower precedence, but blacklist globs should get higher precedence.</p>
+<p>I <em>think</em> I agree with this request.</p>
+</blockquote>
+<p>😊 🐶 😺</p>
+<blockquote>
+<p>And in particular, I'd like to see this fixed rather than worked around with another flag like <code>--weakglob</code>.</p>
+</blockquote>
+<p>The purist in me is overjoyed to hear it, though on my own I'd be hesitant to go that far immediately. Do you think there doesn't even need to be a transition period?</p>
+<blockquote>
+<p>Moreover, I like the idea of this behavior being the default because it makes the interaction between ignore files and CLI globs more sensible, and moreover, makes it more intuitive to use the various <code>-u</code> flags in conjunction with the <code>-g</code> flag.</p>
+</blockquote>
+<p>:)</p>
+<blockquote>
+<p>That is, this way of doing things can be more intuitively described as, &quot;CLI globs are the last filter to apply, after all ignore logic has been applied.&quot; (I think.)</p>
+</blockquote>
+<p>I think that description is right. For the cases I thought of so far, the patch below seems like its behavior should match this as well.</p>
+<blockquote>
+<p>It would be useful to think about other cases that might be changed by this behavior.</p>
+</blockquote>
+<p>Yes, and I don't claim to have thought it through exhaustively yet. I tried the patch below, and was surprised that it didn't seem to break any tests immediately. I'm not sure if I ran them correctly. The next thing I'd do is to try to write some tests it does change. It might also be nice to go through various glob-related issues in this repository, and see whether they'd become better or worse.</p>
+<p>I'm not sure exactly when I'll be able to do it, though. My free time is somewhat unpredictable at this point.</p>
+<blockquote>
+<p>Implementing this could also be tricky.</p>
+</blockquote>
+<p>I'm not sure I've accounted for everything, but when I looked, it seemed to me that the code is set up perfectly for this change. Ignoring tests, documentation, and any command-line flag, the change may be just a line <a href="https://github.com/BurntSushi/ripgrep/blob/c5ea5a13df8de5b7823e5ecad00bad1c4c4c854d/crates/ignore/src/dir.rs#L365-L374">here</a>:</p>
+<pre><code class="language-diff">diff --git a/crates/ignore/src/dir.rs b/crates/ignore/src/dir.rs
+index 296c803..c6d2064 100644
+--- a/crates/ignore/src/dir.rs
++++ b/crates/ignore/src/dir.rs
+@@ -365,13 +365,13 @@ impl Ignore {
+         if !self.0.overrides.is_empty() {
+             let mat = self
+                 .0
+                 .overrides
+                 .matched(path, is_dir)
+                 .map(IgnoreMatch::overrides);
+-            if !mat.is_none() {
++            if mat.is_ignore() {
+                 return mat;
+             }
+         }
+</code></pre>
+<p>I think the overrides here are the list of all the globs, positive and negative. If a negative globs matched the file in question, <code>mat</code> will be <code>Ignore</code>, and we abort. As a <a href="https://github.com/BurntSushi/ripgrep/blob/c5ea5a13df8de5b7823e5ecad00bad1c4c4c854d/crates/ignore/src/overrides.rs#L80-L84">comment for <code>Override.matched</code> describes</a>, if we are dealing with a file and there are any positive globs in the list, <code>mat</code> should never be <code>None</code>. If any positive globs match, we move on to checking whether we should reject the file based on patterns from ignore files and hidden files. If no positive globs match, <code>mat</code> should be <code>Ignore</code> and we abort.</p>
+<p>TODO: I haven't yet thought through whether this does the right thing for directories.</p>
+<p>TODO 2: (<strong>Later edit</strong>: I don't think this matters very much. The question of whether <em>everything</em> one would want can be accomplished with a one-line diff is not that important, after all.) Now that I look at it again, a week later, I'm not sure when <a href="https://github.com/BurntSushi/ripgrep/blob/c5ea5a13df8de5b7823e5ecad00bad1c4c4c854d/crates/ignore/src/dir.rs#L390">line #390</a> may be hit (is it ever?), and whether that still works correctly. I'm also not exactly sure where the hidden files are checked. But then it's getting late, and I'm getting tired.</p>
+<blockquote>
+<p>Namely, <code>-g 'README*' -g '!README*~' -g 'README-debian.txt~'</code> should work today and really should continue to work as one might expect. But having different precedence for whitelist and blacklist globs may make this impractical.</p>
+</blockquote>
+<p>I need to write some tests. I think the diff I have above may already work correctly in this case. As far as I can tell, all the globs (positive and negative) are checked together, as a group, at the <code>dir.rs</code> lines I pointed out above. The outcome of that process is recorded in <code>mat</code>.  We just have to make sure this process (completely internal to that if statement) checks globs in the correct order, and it probably already does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ilyagr">@ilyagr</a> on 2021-03-06 22:38</div>
+            <div class="timeline-body"><p>Here is a way to think of the weak globs behavior that makes it conceptually simpler than the current behavior. Hopefully, it will also make it easier to reason about whether weak globs are a good idea.</p>
+<h2>Conceptual framework</h2>
+<p>With weakglobs, there is only <strong>one</strong> mechanism in <code>rg</code> that increases the set of files that is to be searched: <code>rg</code> goes through every filename and directory given to it. If none were given, it defaults to <code>.</code>.</p>
+<p>There are at least <strong>two</strong> ~~ignore engines~~ <strong>independent filters</strong> that reduce the set of files that is to be searched.  (~~I can't quite come up with a better word for &quot;ignore engine&quot;, but there should be one~~ <strong>Update:</strong> Filters! They are called filters! I may later replace &quot;ignore engines&quot; with &quot;filters&quot; in the rest of this comment)</p>
+<ul>
+<li>Ignore files and hidden files.</li>
+<li><code>--glob</code>s, both positive and negative</li>
+</ul>
+<p>Each of these filters has some complex internal logic (ignores with <code>!</code> can make hidden files visible, the order in which you specify globs matters, etc), but since each of them can <strong>only reduce</strong> the set of files to be searched, they are conceptually independent of each other. In particular, it doesn't matter which of these ~~engines~~ filters is applied first.</p>
+<p>This also explains why, I think, the code is set up perfectly for this: the ignore engines are already there. They just have three outcomes (whitelist, ignore, neutral) instead of two (neutral, ignore). This is useful to support their internal logic, but it shouldn't be hard to make sure that 'whitelist' and 'neutral' behave the same way in the function that I referenced in my previous comment.</p>
+<h3>Unresolved issues</h3>
+<p>At the moment, I can only think of one: what to do with <code>--type</code> and <code>--type-not</code>. I can think of two possibilities:</p>
+<ol>
+<li>Make it a third ignore engine. This seems to be close to how it's currently implemented.</li>
+<li>(My current preference) Make it part of the <code>--glob</code> engine. So, <code>--type yaml</code> is exactly equivalent <code>-g '*.yaml' -g '*.yml'</code>in the same position in the argument list. <code>--type-not yaml</code> is equivalent to <code>-g '!*.yaml' -g '!*.yml'</code>.</li>
+</ol>
+<p>At the moment, I don't know whether the current behavior matches either of these and, if not, whether that's desirable.</p>
+<p>Can you think of any other <code>ripgrep</code> functionality that wouldn't fit into this framework?</p>
+<h2>Use-cases</h2>
+<p>I've thought of a couple of use-cases. Let's take the file structure in the beginning of your comment https://github.com/BurntSushi/ripgrep/issues/1808#issuecomment-787930233, and let's say <code>*~</code> and <code>bar</code> are in the <code>.gitignore</code>.</p>
+<h3>1. Mostly happy example</h3>
+<p>Let's say I want to find all the <code>*.md</code> files, even inside <code>bar</code>. I have two good options that would work just as they work today: 1) Boring old <code>-u</code> or 2) <code>rg --files --glob '*.md' . bar/</code>.</p>
+<p>With current globs, there is also the option of <code>rg-no-weakglob --files --glob '*.md' --glob 'bar'</code>; this would no longer work. I think the other options are better already, but if anyone has gotten used to typing this, they would have to learn the new way. It might be a good riddance, considering your example of <code>rg-no-weakglob --files -g 'bar/*'</code> having surprising behavior.</p>
+<h3>2. Less happy</h3>
+<p>With weak-globs, it becomes difficult to reproduce your example of <code>rg-no-weakglob --files -g 'README*'</code>. One key question is whether there's an uncontrived situation when someone might expect that behavior (as opposed to the normal behavior, or the behavior with <code>-uuu</code>) in real life.</p>
+<h3>3. Very happy example</h3>
+<p>(For completeness) my original example of wanting to find all the <code>README*</code>files, but skip the ignored ones.</p>
+<hr />
+<p>I think it's now pretty straightforward for me to reason about what the weak glob behavior can and cannot do. I still plan to try to learn a little about how people use <code>--glob</code> and when people miss not having <code>--include</code> by looking through the issues a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ilyagr">@ilyagr</a> on 2021-03-10 04:06</div>
+            <div class="timeline-body"><h2>Resolving the <code>--type</code> &quot;unresolved issue&quot;</h2>
+<p>TLDR: Regarding <code>--type</code>, I think we should just keep the way it behaves now. There should be a separate proposal to change its behavior (~~I might file another issue~~ <strong>Update:</strong> This is not exactly the same, but would include most of https://github.com/BurntSushi/ripgrep/issues/809).</p>
+<p>For related reasons, we should also rename this proposal to something like &quot;globs respect ignores&quot; instead of &quot;weak globs&quot;.</p>
+<hr />
+<p>I realized that, currently, <code>ripgrep</code> does not follow either of the options for the behavior of <code>--type</code> that I described in the above comment. Instead, <code>-g</code> always has priority over <code>--type</code>.</p>
+<p>So, there are now three potential behaviors on the table when both <code>-g</code> and <code>--type</code> are specified:</p>
+<ol>
+<li><p><code>--type</code> is a separate ~~ignore engine~~ filter (see my comment above), so it can only <em>remove</em> files from consideration. I think this would be very straightforward to implement, but I now also think it's not the most useful behavior.</p>
+</li>
+<li><p>&quot;Order matters&quot;: <code>--type yaml</code> is exactly equivalent <code>-g '*.yaml' -g '*.yml'</code>in the same position in the argument list. <code>--type-not yaml</code> is equivalent to <code>-g '!*.yaml' -g '!*.yml'</code>.</p>
+<p>This might require changing how command-line arguments are parsed, so that we remember the order until after the point when all the <code>--type-add</code> and <code>--type-clear</code> are processed.</p>
+</li>
+<li><p><strong>Current behavior:</strong> globs have priority over <code>--type</code>. It should be quite easy to implement the rest of this proposal but keep this behavior for <code>--type</code>. There are some issues with it (see below), but ultimately we should probably stick with it.</p>
+<p>(<strong>Update 2021-03-19:</strong> after writing some tests, I realized that the <em>actual</em> current behavior is more complicated than I thought. Currently, <code>--type</code> does not treat hidden files and ignored files in the same way, while <code>--glob</code> does. I'll shortly link a PR that will fix that)</p>
+</li>
+</ol>
+<p>To illustrate what they mean, consider 4 invocations:</p>
+<pre><code>a. rg --files --type txt -g '!*.txt'
+b. rg --files -g '!*.txt' --type txt 
+c. rg --files --type-not txt -g '*.txt'
+d. rg --files -g '*.txt' --type-not txt
+</code></pre>
+<p>They would work differently depending on which option we pick for <code>--type</code> behavior:
+| #  | Behavior                     | Invocations that show text files | Implementation difficulty |
+|----|------------------------------|----------------------------------|---------------------------|
+| 1. | <code>--type</code> is a separate filter | None of them ~(not as useful)~     | Easy                      |
+| 2. | Order matters                | <code>b.</code> and <code>c.</code>                    | Possibly hard             |
+| 3. | Current behavior             | <code>c.</code> and <code>d.</code>                    | Easy                      |</p>
+<p>The reason I call option 1 &quot;~not as useful~&quot; is that switching to that behavior ~would remove~ the possibility of using <code>--type lisp -g '!*.el'</code> to search lisp files that aren't Emacs-lisp. (<strong>Update 2021-03-20</strong>: I think this paragraph is wrong; it now seems to me that this example would work great with option 1. I'm no longer certain option 1 is less useful; I should think of more examples.)</p>
+<h3>Thoughts on option #3 (current behavior)</h3>
+<p>I don't think #3 makes quite as much sense as #2, especially in light of the rest of the proposal. It will be harder to document and explain. Ultimately, however, it does make sense; <code>--type</code> and <code>--glob</code> would be parts of the same filter, just as in #2. Moreover, with option #3, I'm pretty sure the rest of the proposal can be implemented with all the significant changes limited to that one function in the <code>ignore</code> crate of <code>ripgrep</code>.</p>
+<p>In this version of the larger proposal, globs remain stronger than <code>--type</code>. So, we need a better name for the proposal than &quot;weak globs&quot;. The best I've come up with so far is  &quot;globs respect ignores&quot;.</p>
+<p>Still, I think behavior #2 is better in terms of being slightly more useful (e.g. <code>-g 'README*' --type-not md</code> would work; it doesn't now) and a lot easier to explain.  Regardless of whether the &quot;globs respect ignores&quot; proposal is implemented, at some point changing <code>--type</code> to behavior #2 would be an improvement, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aswild">@aswild</a> on 2021-03-17 23:16</div>
+            <div class="timeline-body"><p>As a transitioning ag-&gt;rg user, I have a related feature request, and found this issue before opening a new one.</p>
+<p>I'm trying to find the right invocation for &quot;search &lt;type&gt; files that also contain &lt;pattern&gt; in their name.&quot;</p>
+<p>~~For example, in ag, I can use <code>ag --rs -G test ...</code>~~ to search for Rust files that have <code>test</code> somewhere in the filename. I had hoped that <code>rg -t rs -g '*test*' ...</code> would be equivalent, but as detailed here, the <code>-g test</code> overrides all the type filtering logic and the results include non-rust files. (On top of that, it's clunkier to type the extra quotes and <code>*</code>s in <code>'*test*'</code> to make it a proper glob pattern than interpreting the argument as a regex like ag does)</p>
+<p>Is this something that could be considered?</p>
+<p>* Edit: Combining file types with <code>-G</code> in <code>ag</code> is something I implemented in my own fork a few years ago and not a feature in the standard version. Oops, I've been patching ag so heavily that I sometimes forget which features are stock and which ones I've added myself, I didn't mean to misrepresent things here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ilyagr">@ilyagr</a> on 2021-03-20 01:46</div>
+            <div class="timeline-body"><p>@aswild I'm not the decider here, but your comment gave me some food for thought.</p>
+<p>What you are asking for is how the &quot;Behavior 1: <code>--type</code> is a separate filter&quot; from my comment above would work. I declared this behavior useless in the comment, but I hadn't looked at how <code>ag</code> works, and now there's at least one person who thinks it would be a good thing. Perhaps I should give it a little more thought.</p>
+<p>My feeling was that <code>-t rs -g '*test*'</code> should ultimately become equivalent to <code>-g '*.rs' -g '*test*'</code>, which would behave as it does now. (What would be different is that <code>-g</code> would no longer always override <code>--type-not</code>.) To find Rust files that also have test in them, one would use <code>-g '*test*.rs'</code>. This has the advantage of being conceptually simple; I also thought it was the most flexible option, but now I'll think again.</p>
+<p>The behavior you suggest would be more important for something like <code>-t lisp</code>, since that covers several extensions. Without that behavior, achieving the effect you asked for would require <code>-g '*test*.el' -g '*test*.sc' &lt;3 more of these&gt;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aswild">@aswild</a> on 2021-03-20 06:04</div>
+            <div class="timeline-body"><p>I accidentally lied about how <code>ag</code> works, filtering based on both file type and an additional regex is something I added in my fork, it doesn't work that way in the stock version (comment above edited).</p>
+<p>In my mental model I tend to think of file types as a &quot;baseline&quot; that are OR'd together, and then additional manual filters like globs are AND'd on top of that. But the specific semantics definitely get complicated and there's cases where that doesn't really make sense.</p>
+<p>I used rust as an example off the top of my head, but it's true this applies more for file types that have multiple extensions.</p>
+<p>I don't really have a good holistic suggestion for how all these filter complexities should interact, so these are just my two cents; I appreciate the thought and effort being put in here.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:19 UTC
+    </footer>
+</body>
+</html>

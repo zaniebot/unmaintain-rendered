@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rg/globset raises error for &quot;dangling '\'&quot; in .gitignore - BurntSushi/ripgrep #2236</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rg/globset raises error for &quot;dangling ''&quot; in .gitignore</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2236">#2236</a>
+        opened by <a href="https://github.com/mike-hart">@mike-hart</a>
+        on 2022-06-14 10:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mike-hart">@mike-hart</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>cargo install</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>AMI Linux 1</p>
+<h4>Describe your bug.</h4>
+<p>Several of our repos have a pattern in their <code>.gitignore</code> file which <code>git grep</code> is fine with, but <code>rg</code> shows an error for.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<pre><code class="language-bash">git init foo &amp;&amp; cd foo
+echo &quot;^\.git\/&quot; &gt;.gitignore
+rg sometext
+</code></pre>
+<h4>What is the actual behavior?</h4>
+<p>Show the command you ran and the actual output. Include the <code>--debug</code> flag in
+your invocation of ripgrep.</p>
+<p>If the output is large, put it in a gist: https://gist.github.com/</p>
+<p>If the output is small, put it in code fences:</p>
+<pre><code>DEBUG|grep_regex::literal|/home/user/.cargo/registry/src/github.com-1ecc6299db9ec823/grep-regex-0.1.9/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(sometext)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|/home/user/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.8/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/home/user/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.8/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/home/user/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.8/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/home/user/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.8/src/lib.rs:416: glob converted to regex: Glob { glob: &quot;**/Icon*&quot;, re: &quot;(?-u)^(?:/?|.*/)Icon[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('I'), Literal('c'), Literal('o'), Literal('n'), ZeroOrMore]) }
+DEBUG|globset|/home/user/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.8/src/lib.rs:416: glob converted to regex: Glob { glob: &quot;.coverage.*&quot;, re: &quot;(?-u)^\\.coverage\\.[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([Literal('.'), Literal('c'), Literal('o'), Literal('v'), Literal('e'), Literal('r'), Literal('a'), Literal('g'), Literal('e'), Literal('.'), ZeroOrMore]) }
+DEBUG|globset|/home/user/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.8/src/lib.rs:421: built glob set; 12 literals, 8 basenames, 10 extensions, 0 prefixes, 0 suffixes, 2 required extensions, 2 regexes
+./.gitignore: line 1: error parsing glob '^\.git\/': dangling '\'
+DEBUG|ignore::walk|/home/user/.cargo/registry/src/github.com-1ecc6299db9ec823/ignore-0.4.18/src/walk.rs:1741: ignoring ./.gitignore: Ignore(IgnoreMatch(Hidden))
+DEBUG|ignore::walk|/home/user/.cargo/registry/src/github.com-1ecc6299db9ec823/ignore-0.4.18/src/walk.rs:1741: ignoring ./.git: Ignore(IgnoreMatch(Hidden))
+No files were searched, which means ripgrep probably applied a filter you didn't expect.
+Running with --debug will show why files are being skipped.
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>Ripgrep/globset should not consider this an error as <code>git grep</code> does not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2022-06-14 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-06-14 14:41</div>
+            <div class="timeline-body"><p>This is fixed.</p>
+<p>It's worth pointing out that escaping a <code>/</code> is superfluous. So while it's technically permissible, it isn't accomplishing anything by being there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mike-hart">@mike-hart</a> on 2022-06-14 15:35</div>
+            <div class="timeline-body"><p>Although I appreciate it's superfluous, I don't manage (or have sufficient input-into/control-of) all the repositories I read from. As it's permissible it's great that it's no longer an error, thank you.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:33 UTC
+    </footer>
+</body>
+</html>

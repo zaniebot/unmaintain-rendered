@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow escaping &lt; and &gt; - BurntSushi/ripgrep #1151</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow escaping &lt; and &gt;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1151">#1151</a>
+        opened by <a href="https://github.com/mqudsi">@mqudsi</a>
+        on 2018-12-30 15:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mqudsi">@mqudsi</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.10.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p><code>cargo</code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>FreeBSD 12</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>Depending on the particular variant of regex used, it is sometimes needed to escape a literal <code>&lt;</code> and <code>&gt;</code> in a regex and sometimes not. <code>rg</code> does not use named captures and thus <code>&gt;</code> and <code>&lt;</code> are not considered special characters that need to be escaped in its regex syntax.</p>
+<p>If you write pcre2-ish regexes by default, you may be accustomed to escaping these literals. If you do so, ripgrep errors out:</p>
+<pre><code>mqudsi@ZBOOK /m/c/U/m/r/a/t/debug&gt; rg '\&lt;'
+regex parse error:
+    \&lt;
+    ^^
+error: unrecognized escape sequence
+</code></pre>
+<p>May I humbly request that <code>\&gt;</code> and <code>\&lt;</code> be treated as legal escapes evaluating to <code>&gt;</code> and <code>&lt;</code> for compatibility purposes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-12-30 15:16</div>
+            <div class="timeline-body"><blockquote>
+<p><code>rg</code> does not use named captures and thus <code>&gt;</code> and <code>&lt;</code> are not considered special characters that need to be escaped in its regex syntax.</p>
+</blockquote>
+<p>ripgrep does support named captures:</p>
+<pre><code>$ echo foo123bar | rg '(?P&lt;number&gt;[0-9]+)' -or 'the number: $number'
+the number: 123
+</code></pre>
+<p>However, neither <code>&lt;</code> nor <code>&gt;</code> need to be escapeable because they can only appear after a specific sequence of characters (namely, <code>(?P</code>), where both <code>(</code> and <code>?</code> are escapeable.</p>
+<p>With that said, I'm going to pass on this for two reasons:</p>
+<ol>
+<li>This is a property of the underlying regex engine, not ripgrep, and I have generally remained quite conservative with respect to escape sequences in order to make it possible to expand the syntax in a backwards compatible manner.</li>
+<li>Incidentally, <code>\&lt;</code> and <code>\&gt;</code> do actually have special meaning in some regex engines that correspond to zero width assertions for left and right word boundaries, respectively. There is even a <a href="https://github.com/rust-lang/regex/issues/469">tracking ticket</a> on the regex engine to consider supporting them. If the regex engine added support for nominal escapes of <code>&lt;</code> and <code>&gt;</code>, then the left/right word boundary feature couldn't be added without a backwards incompatible change.</li>
+</ol>
+<blockquote>
+<p>for compatibility purposes?</p>
+</blockquote>
+<p>In the future, please include <strong>specific concrete use cases</strong>. &quot;compatibility purposes&quot; is not particularly compelling to me in isolation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-12-30 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2018-12-30 15:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mqudsi">@mqudsi</a> on 2018-12-30 15:48</div>
+            <div class="timeline-body"><p>Thank you.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:47 UTC
+    </footer>
+</body>
+</html>

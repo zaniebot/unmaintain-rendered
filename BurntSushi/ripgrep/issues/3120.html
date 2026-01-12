@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empty matches are reported as occurring inside UTF-8 characters - BurntSushi/ripgrep #3120</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Empty matches are reported as occurring inside UTF-8 characters</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3120">#3120</a>
+        opened by <a href="https://github.com/IsaacOscar">@IsaacOscar</a>
+        on 2025-08-05 14:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/IsaacOscar">@IsaacOscar</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[x] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<pre><code>ripgrep 14.1.1
+
+features:+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2
+
+PCRE2 10.43 is available (JIT is available)
+</code></pre>
+<h3>How did you install ripgrep?</h3>
+<p><code>zypper in rg</code>.
+(the same issue also occurs when manually building from the master branch).</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>openSUSE Tumbleweed</p>
+<h3>Describe your bug.</h3>
+<p>Basically empty regex's will match inside UTF-8 sequences, used together with the <code>--replace</code> option, you can then output invalid UTF-8, despite none of the input being invalid.</p>
+<p>This issue is bassically the same as the one I reported here https://github.com/rust-lang/regex/discussions/1276 with the regex crate, which is apparently intended behaviour.</p>
+<p>I am unsure if this behaviour makes sense however with ripgrep, as I always use it on valid UTF-8 files (unless I use <code>--text</code> of course).</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<pre><code>echo 😃 | rg '' --vimgrep
+echo 😃 | rg '' -r '&lt;$0&gt;'
+</code></pre>
+<p>(Using the <code>--pcre</code> and/or <code>--encoding UTF-8</code> flags will give the same results).</p>
+<h3>What is the actual behavior?</h3>
+<p>It prints</p>
+<pre><code>&lt;stdin&gt;:1:1:😃
+&lt;stdin&gt;:1:2:😃
+&lt;stdin&gt;:1:3:😃
+&lt;stdin&gt;:1:4:😃
+&lt;stdin&gt;:1:5:😃
+&lt;&gt;�&lt;&gt;�&lt;&gt;�&lt;&gt;�&lt;&gt;
+</code></pre>
+<p>The above indicates that regex is matching at each of the 4 bytes that make up  '😃' (plus once again at the end).
+The last line is invalid UTF-8, piping it through <code>hexdump -C</code> yields:</p>
+<pre><code>00000000  3c 3e f0 3c 3e 9f 3c 3e  98 3c 3e 83 3c 3e 0a     |&lt;&gt;.&lt;&gt;.&lt;&gt;.&lt;&gt;.&lt;&gt;.|
+0000000f
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>I expect it to print:</p>
+<pre><code>&lt;stdin&gt;:1:1:😃
+&lt;stdin&gt;:1:5:😃
+&lt;&gt;😃&lt;&gt;
+</code></pre>
+<p>I.e. match before and after the character (and not <em>inside</em> it).</p>
+<p>The above can be obtained by changing the regex to <code>(?=.|$)</code>, which works as <code>.</code> can only match a valid UTF-8 sequence.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IsaacOscar">@IsaacOscar</a> on 2025-08-05 14:51</div>
+            <div class="timeline-body"><p>I see this is similar to the previously closed bug https://github.com/BurntSushi/ripgrep/issues/937, but I can't reproduce the problems shown there as ripgrep isn't emitting colour changes for empty matches.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-05 14:59</div>
+            <div class="timeline-body"><p>This is definitely intended behavior because ripgrep can't know whether the haystack is valid UTF-8 or not. So there is no notion of codepoint boundary.</p>
+<p>I am <em>potentially</em> open to changing something here. For example, perhaps UTF-8 mode in the regex engine can be enabled when <code>-E utf8</code> is provided, since in that case, there is a UTF-8 validity guarantee. But you haven't said why you care about this, so it isn't clear to me that it's worth doing anything here. In particular, regexes that match the empty string are pretty unusual.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2025-08-05 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IsaacOscar">@IsaacOscar</a> on 2025-08-05 15:15</div>
+            <div class="timeline-body"><p>Yes this is definitely a minor issue, I only found it when experimenting with regexes.
+(I discovered a <code>\C</code> pattern for PCRE2 that explicitly matches individual bytes, and that definitely can be used to print invalid UTF-8, but I was very surprised that I could also do that without using PCRE2.</p>
+<p>Personally I think  <code>-E utf8</code> should give you a warning message if your files isn't actually in UTF-8 (like you currently get when searching binary files without <code>--text</code>). This hasn't actually caused me any problems so far. (In fact this should probably be the default behaviour, I usually think of a binary file as a non-UTF-8 file, not a file with a null-byte).</p>
+<p>Also I absolutely have had regexes match the empty string (usually because I'm using lookaround assertions), which are useful with <code>-r</code> to insert text in-between stuff (of course I could just use a non-empty matching regex and <code>$0</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-23 01:16</div>
+            <div class="timeline-body"><p>Thinking about this, I'm not really sure there is much to do here.</p>
+<p>If someone wanted to submit a patch for enabling UTF-8 mode in <code>regex-automata</code> when <code>-E utf8</code> is provided, then I'd be open to considering that. But otherwise, I'm not really sure this is something that needs to be fixed.</p>
+<blockquote>
+<p>Personally I think -E utf8 should give you a warning message if your files isn't actually in UTF-8 (like you currently get when searching binary files without --text).</p>
+</blockquote>
+<p>That's not what ripgrep does. Without <code>--text</code>, ripgrep just looks for a NUL byte. Which is actually valid UTF-8.</p>
+<p>I want to be very clear here: by default, ripgrep does not do any UTF-8 validity checking. You can only opt into that with <code>-E utf8</code>, in which case, ripgrep will do transcoding and automatically substitute the Unicode replacement codepoint:</p>
+<pre><code>$ printf '\xFF' | rg '' | xxd
+00000000: ff0a                                     ..
+$ printf '\xFF' | rg -E utf8 '' | xxd
+00000000: efbf bd0a                                ....
+</code></pre>
+<p>The above is behaving as intended. This is why we <em>could</em> enable <code>regex-automata</code>'s UTF-8 mode when <code>-E utf8</code> is given, because it will <em>guarantee</em> that the haystack is valid UTF-8.</p>
+<p>But this is a very niche and subtle thing that I'm not sure is worth doing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-09-23 01:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:57 UTC
+    </footer>
+</body>
+</html>

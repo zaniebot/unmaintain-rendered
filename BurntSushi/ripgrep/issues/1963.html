@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature: --ignored-files, the inverse of --files - BurntSushi/ripgrep #1963</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature: --ignored-files, the inverse of --files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1963">#1963</a>
+        opened by <a href="https://github.com/zachriggle">@zachriggle</a>
+        on 2021-08-03 18:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zachriggle">@zachriggle</a></div>
+            <div class="timeline-body"><p>As always, thanks @BurntSushi for making RipGrep.  It's made my life immeasurably better and probably saved many, many hours waiting for other, slower grep tools.  Please consider adding a &quot;Sponsor&quot; button to the repo, so I can buy you a beer (https://github.com/sponsors).</p>
+<p>One thing that is useful sometimes is the <code>--files</code> flag, so I can see what files would be searched (i.e. those which are not ignored by any e.g. <code>.gitignore</code> or <code>.rgignore</code> or other ignore files).</p>
+<p>It would be nice to have the inverse of this, perhaps <code>--ignored-files</code>, which prints out all files that are NOT searched.</p>
+<p>My specific use-case is a tool that wraps <code>rg</code>, where the user may have specified a custom ignore file or have a <code>.rgignore</code> file.  When there are NO matches for a given search, I'd like some way to be able to inform the user what files were skipped.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-08-03 18:24</div>
+            <div class="timeline-body"><blockquote>
+<p>It would be nice to have the inverse of this, perhaps --ignored-files, which prints out all files that are NOT searched.</p>
+</blockquote>
+<p>I think it would be better to just implement this outside of ripgrep since you need this in the context of a wrapper tool. It's easy to do with standard Unix tooling:</p>
+<pre><code>$ rg --files | sort &gt; /tmp/search-yes
+$ rg --files -uuu | sort &gt; /tmp/search-all
+$ comm -13 /tmp/search-yes /tmp/search-all &gt; /tmp/search-no
+</code></pre>
+<p>In contrast, modifying ripgrep to support the proposed option is actually quite difficult. Most of the directory traversal code is tightly coupled with the assumption that we only care about files that match the ignore rules. Thus, implementing this feature requires de-coupling that assumption and therefore making the code more complex. It's just not worth it. Sorry.</p>
+<blockquote>
+<p>Please consider adding a &quot;Sponsor&quot; button to the repo, so I can buy you a beer (https://github.com/sponsors).</p>
+</blockquote>
+<p>I appreciate the thought. See the FAQ: https://github.com/BurntSushi/ripgrep/blob/master/FAQ.md#donations</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-08-03 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2021-08-03 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zachriggle">@zachriggle</a> on 2021-08-03 18:27</div>
+            <div class="timeline-body"><p>That makes sense!  Since this is not a hot code path / common scenario, dumping the output to disk and just <code>diff</code>'ing (or <code>comm</code>'ing) is an easy enough fix.  Thanks for the consideration!</p>
+<p><em>(Side bar: I just learned about <code>comm</code> earlier today, neat to see it show up this afternoon!)</em></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:25 UTC
+    </footer>
+</body>
+</html>

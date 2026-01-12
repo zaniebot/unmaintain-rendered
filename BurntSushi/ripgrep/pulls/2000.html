@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Re-enable mmap on 32-bit architectures - BurntSushi/ripgrep #2000</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Re-enable mmap on 32-bit architectures</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/2000">#2000</a>
+        opened by <a href="https://github.com/adamreichold">@adamreichold</a>
+        on 2021-09-23 07:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/adamreichold">@adamreichold</a></div>
+            <div class="timeline-body"><p>memmap2 v0.3.0 introduced a <a href="https://github.com/RazrFalcon/memmap2-rs/commit/5e271224c8411c89b42060294f9393cfc7b12a2a">regression</a> when trying to map files larger than 4GB on 32-bit architectures which was subsequently <a href="https://github.com/RazrFalcon/memmap2-rs/commit/9aa838aed99a4879d8357ff295a0ca1c98ba1ae5">fixed</a> in v0.3.1.</p>
+<p>This commit bumps locked version of the memmap2 dependency to the current v0.5.0 and reverts fdfc418be55ff91e0c2efad6a3e27db054cb5534 to re-enable mmap on 32-bit architectures as a different approach to fixing #1911.</p>
+<p>This was tested to report matches from the end of a 5GB file using MinGW and Wine:</p>
+<pre><code>~/.wine/drive_c&gt; wine rg.exe 3z5llj3n8b56dcpoj5aj4rlmq3bdpie wikidatawiki-20210901-pages-articles1.xml-p1p441397 --debug
+DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(3z5llj3n8b56dcpoj5aj4rlmq3bdpie)], limit_size: 250, limit_class: 10 }
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: gzip: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: gzip: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: bzip2: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: bzip2: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: xz: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: xz: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: lz4: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: xz: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: brotli: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: zstd: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: zstd: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: uncompress: could not find executable in PATH
+DEBUG|grep_searcher::searcher::mmap|crates/searcher/src/searcher/mmap.rs:86: wikidatawiki-20210901-pages-articles1.xml-p1p441397: failed to open memory map: memory map length overflows usize
+1727003:      &lt;sha1&gt;3z5llj3n8b56dcpoj5aj4rlmq3bdpie&lt;/sha1&gt;
+</code></pre>
+<p>whereas still using memmap2 v0.3.0 but fdfc418be55ff91e0c2efad6a3e27db054cb5534 reverted would silently fail</p>
+<pre><code>~/.wine/drive_c&gt; wine rg.exe 3z5llj3n8b56dcpoj5aj4rlmq3bdpie wikidatawiki-20210901-pages-articles1.xml-p1p441397 --debug
+DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(3z5llj3n8b56dcpoj5aj4rlmq3bdpie)], limit_size: 250, limit_class: 10 }
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: gzip: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: gzip: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: bzip2: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: bzip2: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: xz: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: xz: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: lz4: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: xz: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: brotli: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: zstd: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: zstd: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates/cli/src/decompress.rs:482: uncompress: could not find executable in PATH
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamreichold">@adamreichold</a> on 2023-05-19 12:09</div>
+            <div class="timeline-body"><p>I would be grateful for a short feedback whether this is wanted at all.</p>
+<p>I think the root cause for the issues is highly likely to have been the bug in memmap2. Since that dependency has been bumped in the meantime, I don't think the workaround needs to be kept around.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-05-19 12:22</div>
+            <div class="timeline-body"><p>I think I buy it. Your research is enough to give me some confidence that this won't re-occur. If it does, we can re-apply the patch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2023-05-19 12:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-05-19 12:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-05-19 12:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:03 UTC
+    </footer>
+</body>
+</html>

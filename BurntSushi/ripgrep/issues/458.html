@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Over time the rg processes use more and more memory - BurntSushi/ripgrep #458</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Over time the rg processes use more and more memory</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/458">#458</a>
+        opened by <a href="https://github.com/setharnold">@setharnold</a>
+        on 2017-04-24 00:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/setharnold">@setharnold</a></div>
+            <div class="timeline-body"><p>Hello; I noticed that rg seems to use more and more memory over time. All the threads started out with less than two gigabytes in VIRT and RES columns in top, but after thirty minutes of wall-clock time, all the threads are above three gigabytes.</p>
+<pre><code>  PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND                                        
+15911 sarnold   20   0    7.3m   2.2m   1.9m D 10.2  0.0   0:33.33 du                                             
+15841 sarnold   20   0 3147.2m 2.984g   3.7m D  2.3  2.4   0:27.50 rg                                             
+15854 sarnold   20   0 3147.2m 2.984g   3.7m D  2.3  2.4   0:27.64 rg                                             
+15869 sarnold   20   0 3147.2m 2.984g   3.7m D  2.3  2.4   0:27.38 rg                                             
+15846 sarnold   20   0 3147.2m 2.984g   3.7m D  2.0  2.4   0:27.50 rg                                             
+15849 sarnold   20   0 3147.2m 2.984g   3.7m D  2.0  2.4   0:27.19 rg                                             
+15856 sarnold   20   0 3147.2m 2.984g   3.7m D  2.0  2.4   0:27.10 rg                                             
+15860 sarnold   20   0 3147.2m 2.984g   3.7m D  2.0  2.4   0:27.54 rg                                             
+15861 sarnold   20   0 3147.2m 2.984g   3.7m D  2.0  2.4   0:27.11 rg                                             
+15867 sarnold   20   0 3147.2m 2.984g   3.7m D  2.0  2.4   0:27.32 rg                                             
+15871 sarnold   20   0 3147.2m 2.984g   3.7m D  2.0  2.4   0:26.76 rg                                             
+15834 sarnold   20   0   41.9m   4.7m   3.0m R  1.6  0.0   0:20.33 top                                            
+15842 sarnold   20   0 3147.2m 2.984g   3.7m D  1.6  2.4   0:27.42 rg                                             
+15847 sarnold   20   0 3147.2m 2.984g   3.7m D  1.6  2.4   0:27.41 rg                                             
+15848 sarnold   20   0 3147.2m 2.984g   3.7m D  1.6  2.4   0:26.91 rg                                             
+15852 sarnold   20   0 3147.2m 2.984g   3.7m D  1.6  2.4   0:27.03 rg                                             
+15857 sarnold   20   0 3147.2m 2.984g   3.7m D  1.6  2.4   0:26.95 rg                                             
+15863 sarnold   20   0 3147.2m 2.984g   3.7m D  1.6  2.4   0:27.34 rg                                             
+15864 sarnold   20   0 3147.2m 2.984g   3.7m D  1.6  2.4   0:27.30 rg                                             
+15865 sarnold   20   0 3147.2m 2.984g   3.7m D  1.6  2.4   0:27.14 rg                                             
+15870 sarnold   20   0 3147.2m 2.984g   3.7m D  1.6  2.4   0:26.79 rg                                             
+15840 sarnold   20   0 3147.2m 2.984g   3.7m D  1.3  2.4   0:27.54 rg                                             
+15843 sarnold   20   0 3147.2m 2.984g   3.7m D  1.3  2.4   0:27.34 rg                                             
+15844 sarnold   20   0 3147.2m 2.984g   3.7m D  1.3  2.4   0:27.27 rg                                             
+15845 sarnold   20   0 3147.2m 2.984g   3.7m D  1.3  2.4   0:26.97 rg                                             
+15850 sarnold   20   0 3147.2m 2.984g   3.7m D  1.3  2.4   0:27.78 rg                                             
+15851 sarnold   20   0 3147.2m 2.984g   3.7m D  1.3  2.4   0:27.50 rg                                             
+15853 sarnold   20   0 3147.2m 2.984g   3.7m D  1.3  2.4   0:27.79 rg                                             
+15855 sarnold   20   0 3147.2m 2.984g   3.7m D  1.3  2.4   0:27.56 rg                                             
+15858 sarnold   20   0 3147.2m 2.984g   3.7m D  1.3  2.4   0:27.58 rg                                             
+15859 sarnold   20   0 3147.2m 2.984g   3.7m D  1.3  2.4   0:27.00 rg                                             
+15862 sarnold   20   0 3147.2m 2.984g   3.7m D  1.3  2.4   0:27.43 rg                                             
+15866 sarnold   20   0 3147.2m 2.984g   3.7m D  1.3  2.4   0:28.04 rg                         
+</code></pre>
+<p>and then several minutes later:</p>
+<pre><code>  PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND                                        
+15911 sarnold   20   0    7.4m   2.2m   1.9m D  8.9  0.0   1:03.98 du                                             
+15852 sarnold   20   0 3347.2m 3.184g   3.7m D  3.0  2.5   0:31.66 rg                                             
+15861 sarnold   20   0 3347.2m 3.184g   3.7m D  3.0  2.5   0:31.90 rg                                             
+15842 sarnold   20   0 3347.2m 3.184g   3.7m D  2.3  2.5   0:31.92 rg                                             
+15844 sarnold   20   0 3347.2m 3.184g   3.7m D  2.3  2.5   0:31.82 rg                                             
+15848 sarnold   20   0 3347.2m 3.184g   3.7m D  2.3  2.5   0:31.50 rg                                             
+15849 sarnold   20   0 3347.2m 3.184g   3.7m D  2.3  2.5   0:31.81 rg                                             
+15855 sarnold   20   0 3347.2m 3.184g   3.7m D  2.3  2.5   0:32.03 rg                                             
+15856 sarnold   20   0 3347.2m 3.184g   3.7m D  2.3  2.5   0:31.69 rg                                             
+15859 sarnold   20   0 3347.2m 3.184g   3.7m D  2.3  2.5   0:31.56 rg                                             
+15862 sarnold   20   0 3347.2m 3.184g   3.7m D  2.3  2.5   0:32.10 rg                                             
+15868 sarnold   20   0 3347.2m 3.184g   3.7m D  2.3  2.5   0:31.71 rg                                             
+15869 sarnold   20   0 3347.2m 3.184g   3.7m D  2.3  2.5   0:32.06 rg                                             
+15841 sarnold   20   0 3347.2m 3.184g   3.7m D  2.0  2.5   0:32.07 rg                                             
+15847 sarnold   20   0 3347.2m 3.184g   3.7m D  2.0  2.5   0:31.74 rg                                             
+15850 sarnold   20   0 3347.2m 3.184g   3.7m D  2.0  2.5   0:32.41 rg                                             
+15853 sarnold   20   0 3347.2m 3.184g   3.7m D  2.0  2.5   0:32.24 rg                                             
+15864 sarnold   20   0 3347.2m 3.184g   3.7m D  2.0  2.5   0:31.99 rg                                             
+15843 sarnold   20   0 3347.2m 3.184g   3.7m D  1.6  2.5   0:31.96 rg                                             
+15845 sarnold   20   0 3347.2m 3.184g   3.7m D  1.6  2.5   0:31.60 rg                                             
+15851 sarnold   20   0 3347.2m 3.184g   3.7m D  1.6  2.5   0:31.97 rg                                             
+15854 sarnold   20   0 3347.2m 3.184g   3.7m D  1.6  2.5   0:32.40 rg                                             
+15857 sarnold   20   0 3347.2m 3.184g   3.7m D  1.6  2.5   0:31.77 rg                                             
+15858 sarnold   20   0 3347.2m 3.184g   3.7m D  1.6  2.5   0:32.32 rg                                             
+15860 sarnold   20   0 3347.2m 3.184g   3.7m D  1.6  2.5   0:31.97 rg                                             
+15867 sarnold   20   0 3347.2m 3.184g   3.7m D  1.6  2.5   0:32.06 rg                                             
+15870 sarnold   20   0 3347.2m 3.184g   3.7m R  1.6  2.5   0:31.27 rg                                             
+15871 sarnold   20   0 3347.2m 3.184g   3.7m D  1.6  2.5   0:31.38 rg                                             
+15840 sarnold   20   0 3347.2m 3.184g   3.7m D  1.3  2.5   0:32.28 rg                                             
+15863 sarnold   20   0 3347.2m 3.184g   3.7m D  1.3  2.5   0:31.74 rg                                             
+15865 sarnold   20   0 3347.2m 3.184g   3.7m D  1.3  2.5   0:31.77 rg                                             
+15834 sarnold   20   0   41.9m   4.7m   3.0m R  1.0  0.0   0:23.40 top                                            
+15846 sarnold   20   0 3347.2m 3.184g   3.7m D  1.0  2.5   0:31.93 rg                                             
+15866 sarnold   20   0 3347.2m 3.184g   3.7m D  1.0  2.5   0:32.53 rg                                             
+</code></pre>
+<p>Is this enough to worry about?</p>
+<p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-24 00:34</div>
+            <div class="timeline-body"><p>I'm sorry, but this isn't enough data for me to give a helpful response. What command are you running? What version of ripgrep are you using? Can you reproduce this behavior on a public repository so that I can try reproducing it? If not, can you isolate the behavior to a single file? Do other programs, like <code>grep</code>, have the same behavior when running equivalent commands?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/setharnold">@setharnold</a> on 2017-04-24 01:01</div>
+            <div class="timeline-body"><p>Sorry.</p>
+<p>The command is: <code>rg -j 32 &quot;hello world&quot;</code></p>
+<p>I installed ripgrep via <code>cargo install ripgrep</code>; <code>cargo install --list</code> reports <code>ripgrep v0.5.1</code></p>
+<p>I can't give access to the machine in question but the dataset is public: the 'main' portion of Ubuntu source packages, unpacked; it's around 470GB of data in what I think is around 22M files and directories.</p>
+<p>The data being searched is roughly the unpacked contents of the main packages from Ubuntu.</p>
+<p>Grep's memory use at start:</p>
+<pre><code>17316 sarnold   20   0   14.1m   2.5m   2.1m D  5.6  0.0   0:03.91 grep                                           
+</code></pre>
+<p>and after only five minutes:</p>
+<pre><code>17316 sarnold   20   0   14.4m   3.0m   2.2m D  1.3  0.0   0:10.43 grep                                           
+</code></pre>
+<p>I expect grep to still be running when I return, if it is I'll grab another line of its memory use at that point.</p>
+<p>I can also give a try at reproducing this on smaller portions of the search space.</p>
+<p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-24 01:17</div>
+            <div class="timeline-body"><blockquote>
+<p>I can't give access to the machine in question but the dataset is public: the 'main' portion of Ubuntu source packages, unpacked; it's around 470GB of data in what I think is around 22M files and directories.</p>
+</blockquote>
+<p>Can you teach me how to get that data on to a box? You may assume that I can spin up an Ubuntu 16.04 box on AWS. :-)</p>
+<blockquote>
+<p>I expect grep to still be running when I return, if it is I'll grab another line of its memory use at that point.</p>
+</blockquote>
+<blockquote>
+<p>I can also give a try at reproducing this on smaller portions of the search space.</p>
+</blockquote>
+<p>Sorry, but can you also share the <code>grep</code> command you're using? And can you take that command, do <code>s/grep/rg</code>, run that, and check its memory use? The key here is to do a one-for-one comparison. If you're using <code>find | xargs grep</code>, then you should also try <code>find | xargs rg -j1</code>, for example. The <code>-j1</code> flag is important, since it puts ripgrep into single threaded mode and avoids unbounded output buffer growth.</p>
+<hr />
+<p>Here's me thinking off the cuff here:</p>
+<p>Since ripgrep runs in parallel, it has to buffer the entire output of searching a single file in memory. These buffers are reused, but they are never &quot;shrunk.&quot; So if a search for <code>hello world</code> caused a significant number of results to appear from a single file, then it's possible the output buffers grew very large.</p>
+<p>Another possibility is that there is a bug in the <em>input</em> buffer handling, where it found a file that didn't trip its binary file detection but otherwise contains a very long line. As with output buffers, input buffers are reused and never shrunk.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/setharnold">@setharnold</a> on 2017-04-24 07:09</div>
+            <div class="timeline-body"><p>Sadly <code>rg</code> finished while I was away; <code>grep -r &quot;hello world&quot;</code> is still running:</p>
+<pre><code>17316 sarnold   20   0  119.6m 108.1m   2.2m D  5.9  0.1  22:30.33 grep
+</code></pre>
+<p>So grep went from 14M to 120M. Maybe rg going from 2gigs to 4gigs is no big deal.</p>
+<p>Just for kicks here's the <code>time rg &quot;hello world&quot;</code> output:</p>
+<pre><code>real	151m47.449s
+user	9m31.520s
+sys	76m3.020s
+</code></pre>
+<p>I don't have the easiest mechanism to get just the Ubuntu sources unpacked; worse yet, I did the work six months ago and didn't take notes.</p>
+<p>This will be insanely wasteful -- it copies EVERYTHING from the archives. That's fine for my uses but needless for this experiment:</p>
+<ul>
+<li>Mirror all the things:</li>
+</ul>
+<pre><code>#!/bin/bash
+rsync --recursive --times --links --hard-links \
+  --stats \
+  --exclude &quot;Packages*&quot; --exclude &quot;Sources*&quot; \
+  --exclude &quot;Release*&quot; --exclude &quot;InRelease&quot; \
+  --exclude &quot;Translation*&quot; --exclude &quot;Index&quot; \
+  rsync://archive.ubuntu.com/ubuntu /srv/mirror/ubuntu
+
+rsync --recursive --times --links --hard-links \
+  --stats --delete --delete-after \
+  rsync://archive.ubuntu.com/ubuntu /srv/mirror/ubuntu
+</code></pre>
+<p>(This could probably be reduced to copying only the 'ubuntu/pool/main/' tree and probably --exclude &quot;*deb&quot; to get only sources, but I haven't tested these changes. There are local archives in S3 but I doubt they are rsync targets; if you want to try those, maybe the 'debmirror' tool may be a better starting point.)</p>
+<ul>
+<li>Unpack all the things:
+I'm guessing at the command line I would have used; something like:</li>
+</ul>
+<pre><code>mkdir -p /srv/trees/ubuntu/
+cd /srv/trees/ubuntu
+
+for f in /srv/mirror/ubuntu/pool/main/*/*/*.dsc ; do g=${f#/srv/mirror/ubuntu/pool/} ; dpkg-source -x $f ${g%.dsc} ; done
+</code></pre>
+<p>The idea is to turn absolute filenames like <code>/srv/mirror/ubuntu/pool/main/a/axis/axis_1.4-16.dsc</code> into relative directory names for the dpkg-source -x command like <code>main/a/axis/axis_1.4-16</code></p>
+<p>(I haven't tested this on full-blown data but it should be close. Six months ago I used task-spooler to run multiple jobs at once; maybe gnu parallel would do the job easier.)</p>
+<ul>
+<li>Search all the things</li>
+</ul>
+<pre><code>cd /srv/trees/ubuntu/main/
+rg -j 32 &quot;hello world&quot;
+</code></pre>
+<p>The full Ubuntu archive takes roughly 1.1 TB on my machine; the unpacked sources for 'main' here are roughly 470 GB.</p>
+<p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-24 10:52</div>
+            <div class="timeline-body"><p>Hmm, yes... If <code>grep</code> is using ~100MB and ripgrep is running 32 threads, then <code>32 * 100MB = ~3GB</code> seems like reasonable memory usage. I feel like I'm reading tea leaves a bit here, but it sounds like this is probably connected to some set of files that cause the input buffer to grow large. If that's true, then I'd guess that <code>rg -j1</code> would have similar memory usage as <code>grep</code>.</p>
+<p>I think it would be interesting to know exactly which types of files cause this, since ideally, the input buffer stays relatively small. IIRC, the input buffer grows until it fits at least one line in memory. So if you have a 100MB JSON file (for example) that is all on one line, then that could cause the spike.</p>
+<p>I'd still like to take a look at this, but your result from <code>grep</code> significantly lowers the priority for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lespea">@lespea</a> on 2017-04-24 14:45</div>
+            <div class="timeline-body"><p>After each file has been processed, would it be possible to just look at how big the buffer is before you reuse it and if it's really large, maybe just shrink it down first?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-24 15:09</div>
+            <div class="timeline-body"><p>@lespea Well... sure. But step 1 is figuring out the problem. And that solution isn't universally good. If every file in the corpus requires a large buffer, then you end up doing needless allocation thrashing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-05-08 21:34</div>
+            <div class="timeline-body"><p>I'm going to close this. I think the fact that grep uses a similar amount of memory (proportional to the number of threads) means that there probably isn't anything seriously wrong here. I do think it would be fun to take at the corpus and get a clearer understanding of where memory is going, but if I'm going to be realistic, I don't think I'll be downloading 470GB to an AWS server any time soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-05-08 21:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:09 UTC
+    </footer>
+</body>
+</html>

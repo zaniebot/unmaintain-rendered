@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>printer: deduplicate hyperlink alias names - BurntSushi/ripgrep #3103</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>printer: deduplicate hyperlink alias names</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/3103">#3103</a>
+        opened by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a>
+        on 2025-07-16 20:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ltrzesniewski">@ltrzesniewski</a></div>
+            <div class="timeline-body"><p>This refactors the way hyperlink aliases are handled by embedding the code in a <code>HyperlinkAlias</code> type.</p>
+<p>Currently, this removes a duplicate alias list from the <code>HyperlinkFormat</code> flag in <code>defs.rs</code>, but it should also provide the required features to avoid adding additional duplicates in the following PRs:</p>
+<ul>
+<li>#3096</li>
+<li>#3102</li>
+</ul>
+<p>/cc @ilyagr @okdana</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2025-07-16 20:24</div>
+            <div class="timeline-body"><p>Well, apparently this would require bumping the MSRV to 1.80.</p>
+<p>Not sure if that's ok or if I should try to find another way around this. I have another PR (#2865) which needs a bump to 1.79, so I admit a bump would be convenient 😅.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2025-09-06 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-06 13:23</div>
+            <div class="timeline-body"><p>Thank you for adding this! I ended up re-working this a bit to make the API a little less convenient, but in exchange, it should hopefully be easier to evolve in semver compatible ways if necessary. That is, the revised API doesn't encode as many assumptions.</p>
+<p>I was somewhat on the fence about accepting this. I'm not really a huge fan of this much ceremony just to avoid a little duplication. In particular, there are other ways to ensure things don't get out of sync, i.e., a CI test or something. But I think overall this is a pretty small and reasonable change, and it might be useful to consumers of <code>grep-printer</code> to be able to see the list of supported aliases in a programmatic fashion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2025-09-07 22:00</div>
+            <div class="timeline-body"><p>Thanks for accepting this and using it in the other PRs! I thought the <code>grep-printer</code> crate was internal to ripgrep, so its API could be flexible. I'll keep this in mind.</p>
+<p>Just one nitpick on <code>display_priority</code>: I think I'd rather use a signed type, so some aliases could eventually be forced to be at the <em>end</em> of the list. Maybe <code>Option</code> wouldn't be needed in that case, as the default priority could be 0.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-07 22:33</div>
+            <div class="timeline-body"><p>Thanks for checking it out! A signed type is probably wiser. But users of the crate can't rely on any specific priority that is given for an alias and there is no way for users to create a new alias or assign a priority. So its meaning is entirely under the control of the implementation.</p>
+<p>But yeah, I am very grumpy about ripgrep's crates being on crates.io. I kind of regret doing it because it invites so much ceremony. But there are a healthy number of dependents of the <code>grep</code> crate (which is just a facade for crates like <code>grep-printer</code>). Because it's all on crates.io, a semver boundary really does have to be respected unfortunately.</p>
+<p>I am more lenient about breaking changes than I usually am for more fundamental &quot;ecosystem&quot; crates. But I do still try to avoid them when it isn't too much of a pain otherwise. I'm just used to it after years of doing it with other crates.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-19 02:31</div>
+            <div class="timeline-body"><p>I changed the type of priority from <code>Option&lt;u16&gt;</code> to <code>Option&lt;i16&gt;</code>.</p>
+<p>The <code>Option</code> could probably be dropped, but I left it there. I think either option is workable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-09-20 01:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-09-20 11:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:22 UTC
+    </footer>
+</body>
+</html>

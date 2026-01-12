@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RipGrep ignoring files from a .gitignore in a parent directory - BurntSushi/ripgrep #611</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>RipGrep ignoring files from a .gitignore in a parent directory</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/611">#611</a>
+        opened by <a href="https://github.com/samsondav">@samsondav</a>
+        on 2017-09-23 11:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samsondav">@samsondav</a></div>
+            <div class="timeline-body"><p>I have a node app for which all of the useful application code is ignored by the <code>.dockerignore</code> since we only copy the compiled files to docker.</p>
+<p>The compiled files are useless for searching and are ignored by the <code>.gitignore</code> file, which is correct.</p>
+<p>I want to &quot;ignore&quot; the <code>.dockerignore</code> file. The docs don't seem to specify how to do that, is there a way?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-09-23 11:29</div>
+            <div class="timeline-body"><p>Could you please describe what you want in more precise terms? It would help if you gave an example. Namely, I don't know what you mean by &quot;ignoring&quot; <code>.dockerignore</code>. It is a hidden file, so it is automatically ignored by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-09-23 11:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samsondav">@samsondav</a> on 2017-09-23 17:50</div>
+            <div class="timeline-body"><p>@BurntSushi</p>
+<p>Sorry I wasn't clear.</p>
+<p>I mean that the <code>.dockerignore</code> contains some ignore rules that I don't want ripgrep to use. So how can I configure it not to load ignore rules from this file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-09-23 18:42</div>
+            <div class="timeline-body"><p>ripgrep doesn't load ignore rules from <code>.dockerignore</code> files. Please
+provide a reproducible example so that I can help you figure out the actual
+problem.</p>
+<p>On Sep 23, 2017 1:51 PM, &quot;Sam Davies&quot; <a href="mailto:notifications@github.com">notifications@github.com</a> wrote:</p>
+<blockquote>
+<p>@BurntSushi <a href="https://github.com/burntsushi">https://github.com/burntsushi</a></p>
+<p>Sorry I wasn't clear.</p>
+<p>I mean that the .dockerignore contains some ignore rules that I don't
+want ripgrep to use. So how can I configure it not to load ignore rules
+from this file.</p>
+<p>—
+You are receiving this because you were mentioned.
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/BurntSushi/ripgrep/issues/611#issuecomment-331658049">https://github.com/BurntSushi/ripgrep/issues/611#issuecomment-331658049</a>,
+or mute the thread
+<a href="https://github.com/notifications/unsubscribe-auth/AAb34kWg5SJvOeKcuJDM3T9dcSKYIvA2ks5slUUEgaJpZM4PhhiC">https://github.com/notifications/unsubscribe-auth/AAb34kWg5SJvOeKcuJDM3T9dcSKYIvA2ks5slUUEgaJpZM4PhhiC</a>
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samsondav">@samsondav</a> on 2017-09-24 07:23</div>
+            <div class="timeline-body"><p>Ahh, you are quite right. It only loads ignore matches from the <code>.gitignore</code> file. The <code>.dockerignore</code> was a red herring.</p>
+<p>I ran RipGrep again with <code>--debug</code> and found this output:</p>
+<pre><code>$ pwd
+/Users/sam/code/nested/local-stack/app-react
+$ rg mypattern
+...
+DEBUG:ignore::walk: ignoring ./app: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/sam/code/nested/local-stack/.gitignore&quot;), original: &quot;app&quot;, actual: &quot;**/app&quot;, is_whitelist: false, is_only_dir: false })))
+...
+</code></pre>
+<p>I have a directory called <code>app</code> in the directory above the current one. This is gitignored by a <code>.gitignore</code> file in the directory above.</p>
+<p>It seems that the rules from the <code>.gitignore</code> in the directory above are being applied incorrectly to this directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samsondav">@samsondav</a> on 2017-09-24 07:25</div>
+            <div class="timeline-body"><p>The directory format looks like this:</p>
+<pre><code>project
+\-app
+\-.gitignore # contains `app`
+\-app-react
+  \-app # I want to search inside this directory but rg is ignoring it even if I run from app-react
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Can't configure Ripgrep to "ignore" a particular "*ignore" file." to "RipGrep ignoring files from a .gitignore in a parent directory" by @samsondav on 2017-09-24 07:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-09-24 07:31</div>
+            <div class="timeline-body"><p>How is it incorrect? The <a href="https://git-scm.com/docs/gitignore"><code>gitignore</code> documentation</a> states:</p>
+<blockquote>
+<p>When deciding whether to ignore a path, Git normally checks gitignore patterns from multiple sources, with the following order of precedence, from highest to lowest (within one level of precedence, the last matching pattern decides the outcome):</p>
+<p>... Patterns read from a .gitignore file in the same directory as the path, or <strong>in any parent directory</strong>, with patterns in the higher level files (up to the toplevel of the work tree) being overridden by those in lower level files down to the directory containing the file. These patterns match relative to the location of the .gitignore file. A project normally includes such .gitignore files in its repository, containing patterns for files generated as part of the project build.</p>
+</blockquote>
+<p>You can use the <code>--no-ignore-parent</code> option to disable this behaviour:</p>
+<blockquote>
+<p>--no-ignore-parent
+Don't respect ignore files (.gitignore, .ignore, etc.) in parent directories.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samsondav">@samsondav</a> on 2017-09-24 07:44</div>
+            <div class="timeline-body"><p>I dug into this further.</p>
+<p>Turns out it was a weird issue to do with submodules. Not a fault of RipGrep.</p>
+<p>This issue can be closed. Thanks for your help! ❤️ 💛 💙 💚 💜</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-09-24 11:18</div>
+            <div class="timeline-body"><p>Also, if your gitignore file contains an <code>app</code> rule, then that will cause<em>all</em> child directories and files named <code>app</code> to be ignored. If you only want to ignore the top level app directory, then you can use <code>/app</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-09-24 11:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-09-24 11:19</div>
+            <div class="timeline-body"><p>In the future, obese start by trying to recreate a minimal reproducible example. That will cut through most misunderstandings like a hot knife through butter. :-)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:17 UTC
+    </footer>
+</body>
+</html>

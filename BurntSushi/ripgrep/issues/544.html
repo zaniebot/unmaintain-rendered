@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixed width line numbers - BurntSushi/ripgrep #544</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fixed width line numbers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/544">#544</a>
+        opened by <a href="https://github.com/PeterSP">@PeterSP</a>
+        on 2017-07-07 14:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PeterSP">@PeterSP</a></div>
+            <div class="timeline-body"><p>It would be nice to be able to see the indentation level of searched text line up. One way to do this would be to have fixed width line numbers in search results. This could be accomplished through an option flag and left-padding with either spaces or zeroes when the flag is active.</p>
+<p>As this is primarily of interest for matches within a file, only the matches within a file need be considered for how wide the line numbers should be. Alternatively, one could have a pre-determined width (i.e. 6) and overflow larger line numbers.</p>
+<p>Implemented, this could look either like this:</p>
+<pre><code>$ rg needle --fixed-width-line-numbers
+haystack.txt:
+ 12:    needle {
+144:      needle {
+
+silo.txt:
+  16:  } needle {
+ 256:    } // needle 1
+ 512:    } // needle 2
+1024:  } // needles
+
+warehouse.txt:
+   1234:  - needle ( 5 boxes )
+1234567:  - needle ( 20 boxes ) 
+</code></pre>
+<p>Or like this:</p>
+<pre><code>$ rg needle --fixed-width-line-numbers
+haystack.txt:
+    12:    needle {
+   144:      needle {
+
+silo.txt:
+    16:  } needle {
+   256:    } // needle 1
+   512:    } // needle 2
+  1024:  } // needles
+
+warehouse.txt:
+  1234:  - needle (5 boxes)
+1234567:  - needle (20 boxes)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-07 14:52</div>
+            <div class="timeline-body"><p>I think this has been suggested before, but you can't determine the correct padding without reading the entire file first (which isn't going to happen), and not having the correct padding seems like a bummer to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-07-07 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PeterSP">@PeterSP</a> on 2017-07-07 15:10</div>
+            <div class="timeline-body"><p>Yes, for Solution 1 one would have to first find all the matches then figure out the padding, which would slow down results.</p>
+<p>Solution 2 avoids that. One could even allow a width argument for people who know the line number limit they're going to see. That said, solution 2 isn't a complete solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-07-07 16:27</div>
+            <div class="timeline-body"><p>For a while (before it got cumbersome to use) i had a wrapper script for <code>ag</code> which passed the output to <code>sed</code> so it could zero-pad all of the line numbers. I just fixed it at 6 digits, which was suitable for 99% of the files i was looking at, though admittedly a bit noisy in the typical case of only 3- or 4-digit line counts.</p>
+<p>So... if the feature <em>does</em> seem interesting, i think the solution with the best effort-to-functionality ratio would probably be to just have a <code>--line-number-width=6</code> or whatever that people could put in their aliases.</p>
+<p>On a related note, i actually <em>dislike</em> seeing the indentation in the output. It generally doesn't convey anything useful to me when removed of its context, so my wrapper script also eliminated that. So instead of something like this:</p>
+<pre><code>% ag -w let globset/src/pathutil.rs
+16:    let path = path.as_ref().as_os_str().as_bytes();
+26:    let last_slash = memrchr(b'/', path).map(|i| i + 1).unwrap_or(0);
+78:    let name = unsafe { os_str_as_u8_slice(name) };
+146:                let got = file_name_ext(OsStr::new($file_name));
+162:                let got = normalize_path(Cow::Owned($path.to_vec()));
+</code></pre>
+<p>It would give this:</p>
+<pre><code>% ag -w let globset/src/pathutil.rs
+000016:let path = path.as_ref().as_os_str().as_bytes();
+000026:let last_slash = memrchr(b'/', path).map(|i| i + 1).unwrap_or(0);
+000078:let name = unsafe { os_str_as_u8_slice(name) };
+000146:let got = file_name_ext(OsStr::new($file_name));
+000162:let got = normalize_path(Cow::Owned($path.to_vec()));
+</code></pre>
+<p>That might be a peculiar preference tho</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PeterSP">@PeterSP</a> on 2017-07-09 12:57</div>
+            <div class="timeline-body"><p>I feel like I would prefer space-padding to zero-padding.</p>
+<p>I will confess that I was struck by a desire to line up the line numbers because the introduced difference in indentation bothered me, moreso than because I wanted to see the level of indentation. That suggests I might prefer stripping or truncating the whitespace also.</p>
+<p>I think that might be out of scope for this issue, however.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-22 01:21</div>
+            <div class="timeline-body"><p>If someone wants to do the work to thread through a <code>--line-number-width</code> flag, then I think I would be OK maintaining it, but I'm unlikely to do this myself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2017-10-22 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @BurntSushi on 2017-10-22 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @BurntSushi on 2017-10-22 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/balajisivaraman">@balajisivaraman</a> on 2017-12-30 05:26</div>
+            <div class="timeline-body"><p>If someone hasn't already, I'd be happy to try my hand at this as it looks like a good first issue for me.</p>
+<p>Just to clarify, the way I understand it, the requirement is as follows:</p>
+<ul>
+<li>Users should be able to specify a <code>--line-number-width</code> flag and the printed line number should be left padded for that width with empty spaces.</li>
+<li>If the above flag is not specified, no padding will happen.</li>
+<li>Should we also add a <code>--line-number-padding-char</code> to allow users to specify the character to use for padding, defaulting to SPACE if none is specified?</li>
+</ul>
+<p>I'll begin working on it right away.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-12-30 06:05</div>
+            <div class="timeline-body"><p>Perhaps it's a bit too clever/unnecessary, but maybe the argument to <code>--line-number-width</code> could work like integer format strings in <code>printf</code>: If leading zeroes are present in the number (<code>--line-number-width=06</code>, pad with zeroes; otherwise (<code>--line-number-width=6</code>) pad with spaces.</p>
+<p>Not sure it's really important to be able to specify the padding character at all, but having a whole separate option for it seems a bit over-kill somehow.</p>
+<p>The rest sounds right tho</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-12-30 13:45</div>
+            <div class="timeline-body"><p>I definitely don't want two flags for this. I like @okdana's idea to use printf style.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-12-30 13:46</div>
+            <div class="timeline-body"><p>@balajisivaraman Otherwise, I think your plan sounds pretty good to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-01-01 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gerrit-K">@Gerrit-K</a> on 2020-04-03 11:35</div>
+            <div class="timeline-body"><p>For those who found this issue ranked first on google and wonder where this feature is: it was removed a couple of months later in #795</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:14 UTC
+    </footer>
+</body>
+</html>

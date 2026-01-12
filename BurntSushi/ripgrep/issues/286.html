@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting ripgrep to a file within the search directory will cause rg to also search that file - BurntSushi/ripgrep #286</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Redirecting ripgrep to a file within the search directory will cause rg to also search that file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/286">#286</a>
+        opened by <a href="https://github.com/Ophirr33">@Ophirr33</a>
+        on 2016-12-22 19:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Ophirr33">@Ophirr33</a></div>
+            <div class="timeline-body"><p>This leads to ripgrep searching its own output, taking a lot of time and eating up disk space. Here's a minimal example:</p>
+<pre><code>mkdir rg-test &amp;&amp; cd rg-test
+echo &quot;hello&quot; &gt; found.txt
+rg -e &quot;hello&quot; &gt; tmp.txt
+rg -e &quot;hello&quot; &gt; tmp2.txt&quot;
+rg -e &quot;hello&quot; &gt; tmp3.txt&quot;
+</code></pre>
+<p>Then, running <code>rg -e &quot;hello&quot;</code> will output the following:</p>
+<pre><code>found.txt
+1:hello
+
+tmp.txt
+1:found.txt:hello
+2:tmp.txt:found.txt:hello
+
+tmp2.txt
+1:found.txt:hello
+2:tmp.txt:found.txt:hello
+3:tmp.txt:tmp.txt:found.txt:hello
+4:tmp2.txt:found.txt:hello
+5:tmp2.txt:tmp.txt:found.txt:hello
+6:tmp2.txt:tmp.txt:tmp.txt:found.txt:hello 
+
+tmp3.txt
+1:found.txt:hello
+2:tmp.txt:found.txt:hello
+3:tmp.txt:tmp.txt:found.txt:hello
+4:tmp2.txt:found.txt:hello
+5:tmp2.txt:tmp.txt:found.txt:hello
+6:tmp2.txt:tmp.txt:tmp.txt:found.txt:hello
+7:tmp2.txt:tmp2.txt:found.txt:hello
+8:tmp2.txt:tmp2.txt:tmp.txt:found.txt:hello
+9:tmp2.txt:tmp2.txt:tmp.txt:tmp.txt:found.txt:hello
+10:tmp3.txt:found.txt:hello
+11:tmp3.txt:tmp.txt:found.txt:hello
+12:tmp3.txt:tmp.txt:tmp.txt:found.txt:hello
+13:tmp3.txt:tmp2.txt:found.txt:hello
+14:tmp3.txt:tmp2.txt:tmp.txt:found.txt:hello
+15:tmp3.txt:tmp2.txt:tmp.txt:tmp.txt:found.txt:hello
+16:tmp3.txt:tmp2.txt:tmp2.txt:found.txt:hello
+17:tmp3.txt:tmp2.txt:tmp2.txt:tmp.txt:found.txt:hello
+18:tmp3.txt:tmp2.txt:tmp2.txt:tmp.txt:tmp.txt:found.txt:hello
+</code></pre>
+<p>When doing the same with grep instead, we get the expected output (and switching hello with yellow)</p>
+<pre><code>found2.txt
+1:yellow
+
+temp.txt
+1:./found2.txt:yellow
+
+temp2.txt
+1:./found2.txt:yellow
+2:./temp.txt:./found2.txt:yellow
+
+temp3.txt
+1:./found2.txt:yellow
+2:./temp.txt:./found2.txt:yellow
+3:./temp2.txt:./found2.txt:yellow
+4:./temp2.txt:./temp.txt:./found2.txt:yellow
+</code></pre>
+<p>The more searches that ripgrep reports, the bigger the file blow up is (I did this on a ripgrep search that had 17,000 hits...). Currently, this can be worked around just by piping to a file outside the directory being searched, or piping into a pager instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-23 11:46</div>
+            <div class="timeline-body"><p>I think we can probably fix this by getting the file descriptor of where stdout is being redirected and then make sure we don't search any file with that same descriptor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2016-12-23 11:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/retep998">@retep998</a> on 2017-01-02 17:59</div>
+            <div class="timeline-body"><p>On Windows you'd solve this by getting the ID of the file. Call <code>GetFileInformationByHandle</code> and examine the <code>dwVolumeSerialNumber</code> <code>nFileIndexHigh</code> and <code>nFileIndexLow</code> fields.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-08 17:26</div>
+            <div class="timeline-body"><p>@retep998 There's some subtle additional details. <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa363788(v=vs.85">From MSDN</a>.aspx):</p>
+<blockquote>
+<p>The identifier that is stored in the nFileIndexHigh and nFileIndexLow members is called the file ID. Support for file IDs is file system-specific. File IDs are not guaranteed to be unique over time, because file systems are free to reuse them. In some cases, the file ID for a file can change over time.</p>
+</blockquote>
+<p>AFAIK, the only way to get a guarantee that the file index numbers aren't reused is if you keep the file handle open. Which I guess is fine in this case, since we only need to keep one handle (stdout) open for the lifetime of the process.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-08 17:27</div>
+            <div class="timeline-body"><p>I guess this applies similarly on Linux too. You can't rely on <em>just</em> the inode number, since your directory might span multiple mount points.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-08 18:26</div>
+            <div class="timeline-body"><p>There's enough subtlety here that I'm going to push this logic into a new independent crate, and then use that inside of <em>both</em> ripgrep and <code>walkdir</code>. <code>walkdir</code> does expose <code>is_same_file</code>, but the API operates on paths, and we'd ideally not need to stat the <code>stdout</code> file every single time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-01-09 21:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:59 UTC
+    </footer>
+</body>
+</html>

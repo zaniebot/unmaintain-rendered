@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High CPU usage when piping into less? - BurntSushi/ripgrep #258</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>High CPU usage when piping into less?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/258">#258</a>
+        opened by <a href="https://github.com/danielcompton">@danielcompton</a>
+        on 2016-12-01 02:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/danielcompton">@danielcompton</a></div>
+            <div class="timeline-body"><p>This is a weird behaviour, and may not be ripgrep's fault, but I thought I'd mention it in case.</p>
+<p>I piped rg into less with <code>rg cmd | less</code> and looked at the first page of results, left them there and continued working. After a while I noticed that my CPU usage was high and rg was using 200% of my 400% CPU's available. If I run the command without <code>less</code> and time it, it takes around 0.5 seconds, but with less, the CPU sits at 200% continually.</p>
+<p>If I type <code>G</code> then less goes to the end of the window and the <code>rg</code> process exits.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-01 02:14</div>
+            <div class="timeline-body"><p>That's... strange. I kind of wonder whether it's related to #200, but I don't think it is.</p>
+<p>I can't actually reproduce this either. If I run <code>rg PM_SUSPEND | less</code> in a checkout of https://github.com/BurntSushi/linux, then it seems to work fine. No CPU pegging.</p>
+<p>What version of ripgrep are you running? OS? Shell?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2016-12-01 02:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielcompton">@danielcompton</a> on 2016-12-01 02:31</div>
+            <div class="timeline-body"><p>I'm on macOS 10.12.1, using ripgrep 0.3.1 and fish, version 2.4.0. I can also reproduce this in bash 3.2.57.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-01 02:34</div>
+            <div class="timeline-body"><p>@danielcompton Can you try this? (So we're searching the exact same data.)</p>
+<pre><code>$ git clone --depth 1 git://github.com/BurntSushi/linux
+$ cd linux
+$ rg PM_SUSPEND | less
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielcompton">@danielcompton</a> on 2016-12-01 02:54</div>
+            <div class="timeline-body"><p>Interestingly, the behaviour doesn't show up on your linux example. I was able to create a minimal example at https://gist.github.com/danielcompton/cc667b4904609de88c9008f60e11564c. Having those two files in a directory is all that is needed to reproduce it. Removing either one stops reproduction, though I suspect that may just be due to terminal window size.</p>
+<p>EDIT: actually you can reproduce it if you just copy the encore.js.map file twice in the same directory.</p>
+<p>The sourcemap file is extremely long (146k characters) and was presumably all being passed to less? This may be the issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-01 03:05</div>
+            <div class="timeline-body"><p>Hmm, I still can't produce on either Mac or Linux. Not sure what's going on. I could maybe see if <code>less</code> was pegging your CPU (which happens to me if I page through it quickly), but the fact that <code>rg</code> is pegging your CPU is very strange.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-01 03:16</div>
+            <div class="timeline-body"><p>@danielcompton Do other search tools exhibit this behavior? e.g., <code>grep -r cmd | less</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielcompton">@danielcompton</a> on 2016-12-01 03:19</div>
+            <div class="timeline-body"><p><code>grep -r cmd ./ | less</code> doesn't exhibit that behaviour.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielcompton">@danielcompton</a> on 2016-12-01 03:21</div>
+            <div class="timeline-body"><pre><code class="language-sh">$ pwd
+/private/tmp/taoensso
+$ ls
+encore.js.map      encore.js.map copy
+$ rg cmd | less
+# hangs ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-01 12:17</div>
+            <div class="timeline-body"><p>So I'm not quite sure how to move forward on this one. I can't reproduce it so I don't know how to fix it, and I'm not quite sure what debugging steps I would try next. If you're interested in getting into the nitty gritty, then I can think of a few things we can try:</p>
+<ol>
+<li>While <code>rg</code> is hanging in <code>less</code>, find its <code>pid</code> and run <code>strace -p PID</code>.</li>
+<li>Does Mac have <code>perf</code>? I'm guessing not. This would be useful because you could run something like <code>perf top -p PID</code> to see exactly what the process is actually doing.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielcompton">@danielcompton</a> on 2016-12-01 21:12</div>
+            <div class="timeline-body"><p>I ran <code>rg cmd | less</code> in one shell and <code>dtrace -p PID</code> on the other and saw:</p>
+<pre><code>$ sudo dtruss -p 3955
+dtrace: system integrity protection is on, some features will not be available
+
+SYSCALL(args) 		 = return
+__semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+__semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+__semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+__semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+__semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+__semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+__semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+__semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+__semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+__semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+# ... lots of those, coming 10 at a time
+# eventually I quit less
+__semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+__semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+sigreturn(0x7FFF5062BC80, 0x1E, 0x0)		 = 0 Err#-2
+__pthread_canceled(0x0, 0x1E, 0x0)		 = -1 Err#22
+__semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+psynch_mutexdrop(0x10FC172C0, 0x20000000303, 0x200)		 = 0 0
+psynch_mutexwait(0x10FC172C0, 0x10000000303, 0x100)		 = 771 0
+sigaltstack(0x700000D5DC28, 0x0, 0x100)		 = 0 0
+munmap(0x10F88E000, 0x20000)		 = 0 0
+getdirentries64(0x7, 0x7F834F800000, 0x1000)		 = 0 0
+close_nocancel(0x7)		 = 0 0
+__semwait_signal(0x1503, 0x0, 0x0)		 = -1 Err#4
+dtrace: error on enabled probe ID 2315 (ID 901: syscall::thread_selfid:return): invalid user access in action #5 at DIF offset 0
+^C
+</code></pre>
+<p>Err#60 is ETIMEDOUT</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-01 21:13</div>
+            <div class="timeline-body"><p>@danielcompton Thanks! I'm not quite sure what to make of that, but I'll noodle on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielcompton">@danielcompton</a> on 2016-12-01 21:32</div>
+            <div class="timeline-body"><p>Here's a slightly more complete trace from start to finish:</p>
+<details>
+<pre>
+<code>
+$ sudo dtruss -n rg
+dtrace: system integrity protection is on, some features will not be available
+
+<pre><code>PID/THRD  SYSCALL(args) 		 = return</code></pre>
+<p>7202/0x8448c:  thread_selfid(0x0, 0x0, 0x0)		 = 541836 0
+7202/0x8448c:  issetugid(0x0, 0x0, 0x0)		 = 0 0
+7202/0x8448c:  csops(0x0, 0x0, 0x7FFF5E82A6A0)		 = 0 0
+7202/0x8448c:  shared_region_check_np(0x7FFF5E827CD8, 0x0, 0x7FFF5E82A6A0)		 = 0 0
+7202/0x8448c:  getpid(0x7FFF5E827CD8, 0x0, 0x7FFF5E82A6A0)		 = 7202 0
+7202/0x8448c:  proc_info(0x2, 0x1C22, 0x8)		 = 1272 0
+7202/0x8448c:  stat64(&quot;/usr/lib/libSystem.B.dylib\0&quot;, 0x7FFF5E829998, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libcache.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libcommonCrypto.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libcompiler_rt.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libcopyfile.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libcorecrypto.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libdispatch.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libdyld.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libkeymgr.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/liblaunch.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libmacho.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libquarantine.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libremovefile.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libsystem_asl.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libsystem_blocks.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libsystem_c.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libsystem_configuration.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libsystem_coreservices.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libsystem_coretls.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libsystem_dnssd.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libsystem_info.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libsystem_kernel.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libsystem_m.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libsystem_malloc.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libsystem_network.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libsystem_networkextension.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libsystem_notify.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libsystem_platform.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libsystem_pthread.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libsystem_sandbox.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libsystem_secinit.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libsystem_symptoms.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libsystem_trace.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libunwind.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/system/libxpc.dylib\0&quot;, 0x7FFF5E8295A8, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/libobjc.A.dylib\0&quot;, 0x7FFF5E828868, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/libauto.dylib\0&quot;, 0x7FFF5E828748, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/libc++abi.dylib\0&quot;, 0x7FFF5E828748, 0x8)		 = 0 0
+7202/0x8448c:  stat64(&quot;/usr/lib/libc++.1.dylib\0&quot;, 0x7FFF5E828748, 0x8)		 = 0 0
+7202/0x8448c:  open(&quot;/dev/dtracehelper\0&quot;, 0x2, 0x7FFF5E82A570)		 = 3 0
+7202/0x8448c:  ioctl(0x3, 0x80086804, 0x7FFF5E82A4F8)		 = 0 0
+7202/0x8448c:  close(0x3)		 = 0 0
+7202/0x8448c:  thread_selfid(0x3, 0x80086804, 0x7FFF5E82A4F8)		 = 541836 0
+7202/0x8448c:  bsdthread_register(0x7FFFBE499214, 0x7FFFBE499204, 0x2000)		 = 1073741919 0
+7202/0x8448c:  mprotect(0x101661000, 0x88, 0x1)		 = 0 0
+7202/0x8448c:  mprotect(0x101663000, 0x1000, 0x0)		 = 0 0
+7202/0x8448c:  mprotect(0x101679000, 0x1000, 0x0)		 = 0 0
+7202/0x8448c:  mprotect(0x10167A000, 0x1000, 0x0)		 = 0 0
+7202/0x8448c:  mprotect(0x101690000, 0x1000, 0x0)		 = 0 0
+7202/0x8448c:  mprotect(0x101691000, 0x1000, 0x1)		 = 0 0
+7202/0x8448c:  mprotect(0x101661000, 0x88, 0x3)		 = 0 0
+7202/0x8448c:  mprotect(0x101661000, 0x88, 0x1)		 = 0 0
+7202/0x8448c:  ulock_wake(0x1, 0x7FFF5E829D0C, 0x0)		 = -1 Err#2
+7202/0x8448c:  issetugid(0x1, 0x7FFF5E829D0C, 0x0)		 = 0 0
+7202/0x8448c:  getpid(0x1, 0x7FFF5E829D0C, 0x0)		 = 7202 0
+7202/0x8448c:  stat64(&quot;/AppleInternal/XBS/.isChrooted\0&quot;, 0x7FFF5E829BC8, 0x0)		 = -1 Err#2
+7202/0x8448c:  stat64(&quot;/AppleInternal\0&quot;, 0x7FFF5E829C60, 0x0)		 = -1 Err#2
+7202/0x8448c:  csops(0x1C22, 0x7, 0x7FFF5E8296F0)		 = -1 Err#22
+dtrace: error on enabled probe ID 2158 (ID 561: syscall::sysctl:return): invalid kernel access in action #11 at DIF offset 40
+7202/0x8448c:  csops(0x1C22, 0x7, 0x7FFF5E828FD0)		 = -1 Err#22
+7202/0x8448c:  readlink(&quot;/etc/je_malloc.conf\0&quot;, 0x7FFF5E829920, 0x400)		 = -1 Err#2
+7202/0x8448c:  issetugid(0x10158A586, 0x7FFF5E829920, 0x400)		 = 0 0
+7202/0x8448c:  mmap(0x0, 0x200000, 0x3, 0x1002, 0xFFFFFFFF, 0x0)		 = 0x101692000 0
+7202/0x8448c:  munmap(0x101692000, 0x200000)		 = 0 0
+7202/0x8448c:  mmap(0x0, 0x3FF000, 0x3, 0x1002, 0xFFFFFFFF, 0x0)		 = 0x101692000 0
+7202/0x8448c:  munmap(0x101692000, 0x16E000)		 = 0 0
+7202/0x8448c:  munmap(0x101A00000, 0x91000)		 = 0 0
+dtrace: error on enabled probe ID 2158 (ID 561: syscall::sysctl:return): invalid kernel access in action #11 at DIF offset 40
+7202/0x8448c:  mmap(0x0, 0x200000, 0x3, 0x1002, 0xFFFFFFFF, 0x0)		 = 0x101A00000 0
+7202/0x8448c:  sigaction(0xD, 0x7FFF5E82B718, 0x7FFF5E82B740)		 = 0 0
+dtrace: error on enabled probe ID 2158 (ID 561: syscall::sysctl:return): invalid kernel access in action #11 at DIF offset 40
+7202/0x8448c:  getrlimit(0x1003, 0x7FFF5E82B740, 0x7FFFC7055E00)		 = 0 0
+7202/0x8448c:  mmap(0x7FFF5E02C000, 0x1000, 0x0, 0x1012, 0xFFFFFFFF, 0x0)		 = 0x7FFF5E02C000 0
+7202/0x8448c:  sigaction(0xB, 0x7FFF5E82B748, 0x0)		 = 0 0
+7202/0x8448c:  sigaction(0xA, 0x7FFF5E82B748, 0x0)		 = 0 0
+7202/0x8448c:  sigaltstack(0x0, 0x7FFF5E82B740, 0x0)		 = 0 0
+7202/0x8448c:  mmap(0x0, 0x20000, 0x3, 0x1002, 0xFFFFFFFF, 0x0)		 = 0x101692000 0
+7202/0x8448c:  sigaltstack(0x7FFF5E82B740, 0x0, 0x3)		 = 0 0
+7202/0x8448c:  open(&quot;/dev/urandom\0&quot;, 0x1000000, 0x1B6)		 = 3 0
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+7202/0x8448c:  close(0x3)		 = 0 0
+7202/0x8448c:  ioctl(0x0, 0x4004667A, 0x7FFF5E7FEA9C)		 = 0 0
+7202/0x8448c:  stat64(&quot;./\0&quot;, 0x7FFF5E7FE7B0, 0x7FFF5E7FEA9C)		 = 0 0
+7202/0x8448c:  ioctl(0x1, 0x4004667A, 0x7FFF5E7FEA9C)		 = -1 Err#25
+7202/0x8448c:  ioctl(0x1, 0x40487413, 0x7FFF5E7FEAA0)		 = -1 Err#25
+7202/0x8448c:  ioctl(0x1, 0x4004667A, 0x7FFF5E7FEA9C)		 = -1 Err#25
+7202/0x8448c:  ioctl(0x1, 0x40487413, 0x7FFF5E7FEAA0)		 = -1 Err#25
+7202/0x8448c:  open_nocancel(&quot;.\0&quot;, 0x0, 0x1)		 = 3 0
+7202/0x8448c:  fstat64(0x3, 0x7FFF5E7FE8D0, 0x1)		 = 0 0
+7202/0x8448c:  fcntl_nocancel(0x3, 0x32, 0x7FFF5E7FE440)		 = 0 0
+7202/0x8448c:  close_nocancel(0x3)		 = 0 0
+7202/0x8448c:  stat64(&quot;/private/tmp\0&quot;, 0x7FFF5E7FE840, 0x7FFF5E7FE440)		 = 0 0
+7202/0x8448c:  ioctl(0x1, 0x4004667A, 0x7FFF5E7FEA9C)		 = -1 Err#25
+7202/0x8448c:  ioctl(0x1, 0x40487413, 0x7FFF5E7FEAA0)		 = -1 Err#25
+7202/0x8448c:  ioctl(0x1, 0x4004667A, 0x7FFF5E7FEA9C)		 = -1 Err#25
+7202/0x8448c:  ioctl(0x1, 0x40487413, 0x7FFF5E7FEAA0)		 = -1 Err#25
+dtrace: error on enabled probe ID 2158 (ID 561: syscall::sysctl:return): invalid kernel access in action #11 at DIF offset 40
+7202/0x8448c:  sigaction(0x2, 0x7FFF5E827D98, 0x7FFF5E827DC0)		 = 0 0
+7202/0x8448c:  bsdthread_create(0x101518BD0, 0x101A1B0A0, 0x200000)		 = 246964224 0
+7202/0x8448f:  thread_selfid(0x0, 0x0, 0x0)		 = 541839 0
+7202/0x8448f:  sigaltstack(0x0, 0x70000EB85E90, 0x0)		 = 0 0
+7202/0x8448c:  stat64(&quot;./\0&quot;, 0x7FFF5E827A60, 0x200000)		 = 0 0
+7202/0x8448f:  mmap(0x0, 0x20000, 0x3, 0x1002, 0xFFFFFFFF, 0x0)		 = 0x1016B2000 0
+7202/0x8448f:  sigaltstack(0x70000EB85E90, 0x0, 0x3)		 = 0 0
+7202/0x8448c:  open(&quot;/Users/danielcompton/.gitconfig\0&quot;, 0x1000000, 0x1B6)		 = 3 0
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+7202/0x8448c:  close(0x3)		 = 0 0
+7202/0x8448c:  stat64(&quot;/Users/danielcompton/.gitignore\0&quot;, 0x7FFF5E826620, 0x2000)		 = 0 0
+7202/0x8448c:  open(&quot;/Users/danielcompton/.gitignore\0&quot;, 0x1000000, 0x1B6)		 = 3 0
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+7202/0x8448c:  close(0x3)		 = 0 0
+7202/0x8448c:  lstat64(&quot;./\0&quot;, 0x7FFF5E8279A0, 0x2000)		 = 0 0
+7202/0x8448c:  bsdthread_create(0x101518BD0, 0x101A1B390, 0x200000)		 = 249073664 0
+7202/0x84490:  thread_selfid(0x0, 0x0, 0x0)		 = 541840 0
+7202/0x84490:  sigaltstack(0x0, 0x70000ED88E90, 0x0)		 = 0 0
+7202/0x8448c:  bsdthread_create(0x101518BD0, 0x101A1B4B0, 0x200000)		 = 251183104 0
+7202/0x84490:  mmap(0x0, 0x20000, 0x3, 0x1002, 0xFFFFFFFF, 0x0)		 = 0x1016D2000 0
+7202/0x8448c:  bsdthread_create(0x101518BD0, 0x101A1B490, 0x200000)		 = 253292544 0
+7202/0x84490:  sigaltstack(0x70000ED88E90, 0x0, 0x3)		 = 0 0
+7202/0x84491:  thread_selfid(0x0, 0x0, 0x0)		 = 541841 0
+7202/0x84491:  sigaltstack(0x0, 0x70000EF8BE90, 0x0)		 = 0 0
+7202/0x8448c:  bsdthread_create(0x101518BD0, 0x101A1B480, 0x200000)		 = 255401984 0
+7202/0x84491:  mmap(0x0, 0x20000, 0x3, 0x1002, 0xFFFFFFFF, 0x0)		 = 0x1016F2000 0
+7202/0x84492:  thread_selfid(0x0, 0x0, 0x0)		 = 541842 0
+7202/0x84493:  thread_selfid(0x0, 0x0, 0x0)		 = 541843 0
+7202/0x84491:  sigaltstack(0x70000EF8BE90, 0x0, 0x3)		 = 0 0
+7202/0x84492:  sigaltstack(0x0, 0x70000F18EE90, 0x0)		 = 0 0
+7202/0x8448c:  bsdthread_create(0x101518BD0, 0x101A1B460, 0x200000)		 = 257511424 0
+7202/0x84493:  sigaltstack(0x0, 0x70000F391E90, 0x0)		 = 0 0
+7202/0x84490:  mmap(0x0, 0x200000, 0x3, 0x1002, 0xFFFFFFFF, 0x0)		 = 0x101C00000 0
+7202/0x84494:  thread_selfid(0x0, 0x0, 0x0)		 = 541844 0
+7202/0x84492:  mmap(0x0, 0x20000, 0x3, 0x1002, 0xFFFFFFFF, 0x0)		 = 0x101712000 0
+7202/0x8448c:  bsdthread_create(0x101518BD0, 0x101A1B440, 0x200000)		 = 259620864 0
+7202/0x84493:  mmap(0x0, 0x20000, 0x3, 0x1002, 0xFFFFFFFF, 0x0)		 = 0x101732000 0
+7202/0x84494:  sigaltstack(0x0, 0x70000F594E90, 0x0)		 = 0 0
+7202/0x84492:  sigaltstack(0x70000F18EE90, 0x0, 0x3)		 = 0 0
+7202/0x84493:  sigaltstack(0x70000F391E90, 0x0, 0x3)		 = 0 0
+7202/0x84495:  thread_selfid(0x0, 0x0, 0x0)		 = 541845 0
+7202/0x84494:  mmap(0x0, 0x20000, 0x3, 0x1002, 0xFFFFFFFF, 0x0)		 = 0x101752000 0
+7202/0x84495:  sigaltstack(0x0, 0x70000F797E90, 0x0)		 = 0 0
+7202/0x84494:  sigaltstack(0x70000F594E90, 0x0, 0x3)		 = 0 0
+7202/0x84491:  mmap(0x0, 0x200000, 0x3, 0x1002, 0xFFFFFFFF, 0x0)		 = 0x101E00000 0
+7202/0x8448c:  bsdthread_create(0x101518BD0, 0x101A1B430, 0x200000)		 = 261730304 0
+7202/0x84495:  mmap(0x0, 0x20000, 0x3, 0x1002, 0xFFFFFFFF, 0x0)		 = 0x101772000 0
+7202/0x84496:  thread_selfid(0x0, 0x0, 0x0)		 = 541846 0
+7202/0x84495:  sigaltstack(0x70000F797E90, 0x0, 0x3)		 = 0 0
+7202/0x84496:  sigaltstack(0x0, 0x70000F99AE90, 0x0)		 = 0 0
+7202/0x84490:  stat64(&quot;/\0&quot;, 0x70000ED84070, 0x3)		 = 0 0
+7202/0x84490:  open_nocancel(&quot;.\0&quot;, 0x0, 0x1)		 = 3 0
+7202/0x84490:  fstat64(0x3, 0x70000ED83E10, 0x1)		 = 0 0
+7202/0x84492:  mmap(0x0, 0x200000, 0x3, 0x1002, 0xFFFFFFFF, 0x0)		 = 0x102000000 0
+7202/0x84496:  mmap(0x0, 0x20000, 0x3, 0x1002, 0xFFFFFFFF, 0x0)		 = 0x101792000 0
+7202/0x84490:  fcntl_nocancel(0x3, 0x32, 0x7F886B800000)		 = 0 0
+7202/0x8448c:  bsdthread_create(0x101518BD0, 0x101A1B420, 0x200000)		 = 263839744 0
+7202/0x84496:  sigaltstack(0x70000F99AE90, 0x0, 0x3)		 = 0 0
+7202/0x84497:  thread_selfid(0x0, 0x0, 0x0)		 = 541847 0
+7202/0x84490:  close_nocancel(0x3)		 = 0 0
+7202/0x84493:  mmap(0x0, 0x200000, 0x3, 0x1002, 0xFFFFFFFF, 0x0)		 = 0x102200000 0
+7202/0x84497:  sigaltstack(0x0, 0x70000FB9DE90, 0x0)		 = 0 0
+7202/0x84494:  mmap(0x0, 0x200000, 0x3, 0x1002, 0xFFFFFFFF, 0x0)		 = 0x102400000 0
+7202/0x84497:  mmap(0x0, 0x20000, 0x3, 0x1002, 0xFFFFFFFF, 0x0)		 = 0x1017B2000 0
+7202/0x84496:  mmap(0x0, 0x200000, 0x3, 0x1002, 0xFFFFFFFF, 0x0)		 = 0x102600000 0
+7202/0x84490:  stat64(&quot;/private/tmp\0&quot;, 0x70000ED83D80, 0x7F886B800000)		 = 0 0
+7202/0x84497:  sigaltstack(0x70000FB9DE90, 0x0, 0x3)		 = 0 0
+7202/0x84490:  stat64(&quot;/private/tmp\0&quot;, 0x70000ED84070, 0x7F886B800000)		 = 0 0
+7202/0x84497:  mmap(0x0, 0x200000, 0x3, 0x1002, 0xFFFFFFFF, 0x0)		 = 0x102800000 0
+7202/0x84490:  open(&quot;/.rgignore\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84490:  open(&quot;/.ignore\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84490:  open(&quot;/.gitignore\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84490:  open(&quot;/.git/info/exclude\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84490:  stat64(&quot;/.git\0&quot;, 0x70000ED850C0, 0x1B6)		 = -1 Err#2
+7202/0x84490:  open(&quot;/private/.rgignore\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84490:  open(&quot;/private/.ignore\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84490:  open(&quot;/private/.gitignore\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84490:  open(&quot;/private/.git/info/exclude\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84490:  stat64(&quot;/private/.git\0&quot;, 0x70000ED850C0, 0x1B6)		 = -1 Err#2
+7202/0x84490:  open_nocancel(&quot;./\0&quot;, 0x1100004, 0x3)		 = 3 0
+7202/0x84490:  fstatfs64(0x3, 0x70000ED85588, 0x3)		 = 0 0
+7202/0x84490:  open(&quot;./.rgignore\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84490:  open(&quot;./.ignore\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84490:  open(&quot;./.gitignore\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84490:  open(&quot;./.git/info/exclude\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84490:  stat64(&quot;./.git\0&quot;, 0x70000ED850C0, 0x1B6)		 = -1 Err#2
+7202/0x84490:  getdirentries64(0x3, 0x7F886A801000, 0x1000)		 = 592 0
+7202/0x84495:  mmap(0x0, 0x200000, 0x3, 0x1002, 0xFFFFFFFF, 0x0)		 = 0x102A00000 0
+7202/0x84490:  open(&quot;/dev/urandom\0&quot;, 0x1000000, 0x1B6)		 = 4 0
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+7202/0x84490:  close(0x4)		 = 0 0
+7202/0x84497:  open_nocancel(&quot;./com.apple.launchd.9MQHNvz3e1\0&quot;, 0x1100004, 0x1F)		 = 4 0
+7202/0x84491:  open_nocancel(&quot;./com.apple.launchd.hHuMtZqn5P\0&quot;, 0x1100004, 0x1F)		 = 5 0
+7202/0x84490:  open(&quot;./rsync-media.job.err\0&quot;, 0x1000000, 0x1B6)		 = 6 0
+7202/0x84497:  fstatfs64(0x4, 0x70000FB9A588, 0x1F)		 = 0 0
+7202/0x84491:  fstatfs64(0x5, 0x70000EF88588, 0x1F)		 = 0 0
+7202/0x84497:  open(&quot;./com.apple.launchd.9MQHNvz3e1/.rgignore\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84494:  open_nocancel(&quot;./devio_semaphore_USB_Receiver@14100000\0&quot;, 0x1100004, 0x28)		 = -1 Err#13
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+7202/0x84492:  open_nocancel(&quot;./com.apple.launchd.ObsTDNSlpi\0&quot;, 0x1100004, 0x1F)		 = 7 0
+7202/0x84490:  close(0x6)		 = 0 0
+7202/0x84491:  open(&quot;./com.apple.launchd.hHuMtZqn5P/.rgignore\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84497:  open(&quot;./com.apple.launchd.9MQHNvz3e1/.ignore\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84496:  open_nocancel(&quot;./encore\0&quot;, 0x1100004, 0x9)		 = 6 0
+7202/0x84492:  fstatfs64(0x7, 0x70000F18B588, 0x1F)		 = 0 0
+7202/0x84490:  open(&quot;./rsync-media.job.out\0&quot;, 0x1000000, 0x1B6)		 = 8 0
+7202/0x84496:  fstatfs64(0x6, 0x70000F997588, 0x9)		 = 0 0
+7202/0x84491:  open(&quot;./com.apple.launchd.hHuMtZqn5P/.ignore\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84497:  open(&quot;./com.apple.launchd.9MQHNvz3e1/.gitignore\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84492:  open(&quot;./com.apple.launchd.ObsTDNSlpi/.rgignore\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2132 (ID 165: syscall::write:return): invalid kernel access in action #13 at DIF offset 92
+7202/0x84491:  open(&quot;./com.apple.launchd.hHuMtZqn5P/.gitignore\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84490:  close(0x8)		 = 0 0
+7202/0x84497:  open(&quot;./com.apple.launchd.9MQHNvz3e1/.git/info/exclude\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+dtrace: error on enabled probe ID 2132 (ID 165: syscall::write:return): invalid kernel access in action #13 at DIF offset 92
+7202/0x84496:  open(&quot;./encore/.rgignore\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84492:  open(&quot;./com.apple.launchd.ObsTDNSlpi/.ignore\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84491:  open(&quot;./com.apple.launchd.hHuMtZqn5P/.git/info/exclude\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84490:  getdirentries64(0x3, 0x7F886A801000, 0x1000)		 = 0 0
+7202/0x84497:  stat64(&quot;./com.apple.launchd.9MQHNvz3e1/.git\0&quot;, 0x70000FB9A0C0, 0x1B6)		 = -1 Err#2
+7202/0x84496:  open(&quot;./encore/.ignore\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84492:  open(&quot;./com.apple.launchd.ObsTDNSlpi/.gitignore\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+dtrace: error on enabled probe ID 2132 (ID 165: syscall::write:return): invalid kernel access in action #13 at DIF offset 92
+7202/0x84491:  stat64(&quot;./com.apple.launchd.hHuMtZqn5P/.git\0&quot;, 0x70000EF880C0, 0x1B6)		 = -1 Err#2
+dtrace: error on enabled probe ID 2132 (ID 165: syscall::write:return): invalid kernel access in action #13 at DIF offset 92
+7202/0x84496:  open(&quot;./encore/.gitignore\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84490:  close_nocancel(0x3)		 = 0 0
+7202/0x84492:  open(&quot;./com.apple.launchd.ObsTDNSlpi/.git/info/exclude\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+dtrace: error on enabled probe ID 2132 (ID 165: syscall::write:return): invalid kernel access in action #13 at DIF offset 92
+7202/0x84496:  open(&quot;./encore/.git/info/exclude\0&quot;, 0x1000000, 0x1B6)		 = -1 Err#2
+7202/0x84497:  getdirentries64(0x4, 0x7F886C000000, 0x1000)		 = 104 0
+7202/0x84492:  stat64(&quot;./com.apple.launchd.ObsTDNSlpi/.git\0&quot;, 0x70000F18B0C0, 0x1B6)		 = -1 Err#2
+dtrace: error on enabled probe ID 2132 (ID 165: syscall::write:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2132 (ID 165: syscall::write:return): invalid kernel access in action #13 at DIF offset 92
+7202/0x84496:  stat64(&quot;./encore/.git\0&quot;, 0x70000F9970C0, 0x1B6)		 = -1 Err#2
+7202/0x84491:  getdirentries64(0x5, 0x7F886C800000, 0x1000)		 = 80 0
+7202/0x84497:  open(&quot;/dev/urandom\0&quot;, 0x1000000, 0x1B6)		 = 3 0
+7202/0x84492:  getdirentries64(0x7, 0x7F886D000000, 0x1000)		 = 88 0
+7202/0x84496:  getdirentries64(0x6, 0x7F886D800000, 0x1000)		 = 136 0
+7202/0x84491:  open(&quot;/dev/urandom\0&quot;, 0x1000000, 0x1B6)		 = 8 0
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+7202/0x84497:  close(0x3)		 = 0 0
+7202/0x84492:  open(&quot;/dev/urandom\0&quot;, 0x1000000, 0x1B6)		 = 9 0
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+7202/0x84496:  open(&quot;/dev/urandom\0&quot;, 0x1000000, 0x1B6)		 = 3 0
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+7202/0x84491:  close(0x8)		 = 0 0
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+7202/0x84492:  close(0x9)		 = 0 0
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+7202/0x84496:  close(0x3)		 = 0 0
+7202/0x84497:  getdirentries64(0x4, 0x7F886C000000, 0x1000)		 = 0 0
+7202/0x84497:  close_nocancel(0x4)		 = 0 0
+7202/0x84491:  getdirentries64(0x5, 0x7F886C800000, 0x1000)		 = 0 0
+7202/0x84492:  getdirentries64(0x7, 0x7F886D000000, 0x1000)		 = 0 0
+7202/0x84491:  close_nocancel(0x5)		 = 0 0
+7202/0x84496:  open(&quot;./encore/encore.js.map\0&quot;, 0x1000000, 0x1B6)		 = 3 0
+7202/0x84492:  close_nocancel(0x7)		 = 0 0
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+7202/0x84496:  close(0x3)		 = 0 0
+dtrace: error on enabled probe ID 2132 (ID 165: syscall::write:return): invalid kernel access in action #13 at DIF offset 92
+7202/0x84496:  open(&quot;./encore/encore.js.map copy\0&quot;, 0x1000000, 0x1B6)		 = 3 0
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+dtrace: error on enabled probe ID 2134 (ID 163: syscall::read:return): invalid kernel access in action #13 at DIF offset 92
+7202/0x84496:  close(0x3)		 = 0 0
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#60
+7202/0x84496:  write(0x1, &quot;\0&quot;, 0x23CBD)		 = -1 Err#32
+7202/0x84496:  getdirentries64(0x6, 0x7F886D800000, 0x1000)		 = 0 0
+7202/0x84496:  close_nocancel(0x6)		 = 0 0
+7202/0x84496:  sigaltstack(0x70000F99AEC0, 0x0, 0x1000)		 = 0 0
+7202/0x84492:  sigaltstack(0x70000F18EEC0, 0x0, 0x1000)		 = 0 0
+7202/0x84490:  sigaltstack(0x70000ED88EC0, 0x0, 0x1000)		 = 0 0
+7202/0x84497:  sigaltstack(0x70000FB9DEC0, 0x0, 0x1000)		 = 0 0
+7202/0x84494:  sigaltstack(0x70000F594EC0, 0x0, 0x1)		 = 0 0
+7202/0x84491:  sigaltstack(0x70000EF8BEC0, 0x0, 0x1000)		 = 0 0
+7202/0x84495:  sigaltstack(0x70000F797EC0, 0x0, 0x3)		 = 0 0
+7202/0x84493:  sigaltstack(0x70000F391EC0, 0x0, 0x3)		 = 0 0
+7202/0x84496:  munmap(0x101792000, 0x20000)		 = 0 0
+7202/0x84490:  munmap(0x1016D2000, 0x20000)		 = 0 0
+7202/0x84492:  munmap(0x101712000, 0x20000)		 = 0 0
+7202/0x84497:  munmap(0x1017B2000, 0x20000)		 = 0 0
+7202/0x84494:  munmap(0x101752000, 0x20000)		 = 0 0
+7202/0x84493:  munmap(0x101732000, 0x20000)		 = 0 0
+7202/0x84491:  munmap(0x1016F2000, 0x20000)		 = 0 0
+7202/0x84495:  munmap(0x101772000, 0x20000)		 = 0 0
+7202/0x84490:  __disable_threadsignal(0x1, 0x20000, 0x1000)		 = 0 0
+7202/0x84496:  __disable_threadsignal(0x1, 0x20000, 0x1000)		 = 0 0
+7202/0x84492:  __disable_threadsignal(0x1, 0x20000, 0x1000)		 = 0 0
+7202/0x84497:  __disable_threadsignal(0x1, 0x20000, 0x1000)		 = 0 0
+7202/0x84493:  __disable_threadsignal(0x1, 0x20000, 0x3)		 = 0 0
+7202/0x84494:  __disable_threadsignal(0x1, 0x20000, 0x1)		 = 0 0
+7202/0x84491:  __disable_threadsignal(0x1, 0x20000, 0x1000)		 = 0 0
+7202/0x84495:  __disable_threadsignal(0x1, 0x20000, 0x3)		 = 0 0
+7202/0x8448c:  __semwait_signal(0x1503, 0x0, 0x0)		 = 0 0
+7202/0x8448c:  __semwait_signal(0x160B, 0x0, 0x0)		 = 0 0
+7202/0x8448c:  __semwait_signal(0x1D03, 0x0, 0x0)		 = 0 0
+7202/0x8448c:  __semwait_signal(0x1903, 0x0, 0x0)		 = 0 0
+7202/0x8448c:  __semwait_signal(0x1A03, 0x0, 0x0)		 = 0 0
+7202/0x8448c:  __semwait_signal(0x1B03, 0x0, 0x0)		 = 0 0
+7202/0x8448c:  __semwait_signal(0x170B, 0x0, 0x0)		 = 0 0
+7202/0x8448c:  __semwait_signal(0x1E03, 0x0, 0x0)		 = 0 0
+7202/0x8448c:  sigaltstack(0x7FFF5E82AE98, 0x0, 0x0)		 = 0 0
+7202/0x8448c:  munmap(0x101692000, 0x20000)		 = 0 0
+7202/0x8448f:  __semwait_signal(0x903, 0x0, 0x1)		 = -1 Err#4
+^C
+</code>
+</pre></p>
+</details>
+
+<p>You can ignore the <code>dtrace: error on enabled probe ID 2134</code> lines, as that is just from macOS System Integrity Protection.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/iliekturtles">@iliekturtles</a> on 2016-12-06 21:56</div>
+            <div class="timeline-body"><p>I can also reproduce this issue on Windows using <code>more.com</code> (as well as on Windows in a bash environment with <code>less</code>): <code>&gt; rg -i &quot;&lt;elided pattern&gt;&quot; | more.com</code>.</p>
+<p>One thing I noticed is that for small outputs it looks like <code>rg</code> can write all of it's output to <code>less</code>' buffer and exit. If the full output is too large <code>rg</code> seems to spin waiting for <code>less</code> to allocate a larger buffer. If you run to the end of the output and leave <code>less</code> running <code>rg</code> will exit and of course CPU usage drops off.</p>
+<p>EDIT: Could it also be very long lines in the output? Both @danielcompton's gist and my private files have a lot of output on a single line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielcompton">@danielcompton</a> on 2016-12-06 21:58</div>
+            <div class="timeline-body"><p>Ah yes, forgot to mention I can reproduce this with <code>more</code> as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-01-07 02:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-07 02:51</div>
+            <div class="timeline-body"><p>It turns out that &quot;noodling&quot; on this problem was exactly what was needed.</p>
+<p>I ended up figuring out how to produce this. Basically, it happens whenever you:</p>
+<ol>
+<li>Pipe the output of ripgrep into a pager (or otherwise cause writes to <code>stdout</code> to block).</li>
+<li>The number of directories to search is less than the number of threads ripgrep uses.</li>
+</ol>
+<p>The issue here is that when one thread blocks on writing to <code>stdout</code> <em>and</em> there is no more work to be done, then the rest of the worker threads will <em>spin</em> on the multi-producer multi-consumer queue and therefore burn the CPU. (We don't use a blocking queue because we don't really know when directory traversal is finished.) I fixed this by inserting a very short sleep whenever a worker can't get work from the queue. This still pegs the CPU a bit, but it is much much less than before.</p>
+<p>This also caused me to realized another shortcoming of the existing iterator. It was running searches for all direct children of a directory in the same thread. So if you ran ripgrep on a single directory with lots of files, you wouldn't get any parallelism! Owch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-07 02:52</div>
+            <div class="timeline-body"><p>Thanks so much for reporting this and digging into it! It was a tricky one!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielcompton">@danielcompton</a> on 2017-01-07 21:42</div>
+            <div class="timeline-body"><p>Thanks for fixing it, you did the hard work :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielcompton">@danielcompton</a> on 2017-01-07 21:43</div>
+            <div class="timeline-body"><p>Is there a build I can verify this against?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-07 22:59</div>
+            <div class="timeline-body"><p>@danielcompton No, you'd have to compile from source. I plan to make a release soon though!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:56 UTC
+    </footer>
+</body>
+</html>

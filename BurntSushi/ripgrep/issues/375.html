@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generated zsh completion script is broken - BurntSushi/ripgrep #375</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Generated zsh completion script is broken</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/375">#375</a>
+        opened by <a href="https://github.com/kastiglione">@kastiglione</a>
+        on 2017-02-21 21:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kastiglione">@kastiglione</a></div>
+            <div class="timeline-body"><p>It's cool that part of the build system generates completions for the various shells. However, the zsh completion script is broken. After typing <code>rg &lt;TAB&gt;</code> it completes either <code>PATTERN</code> or <code>PATH</code>, literally. Attempting <code>rg somepattern &lt;TAB&gt;</code> will complete flags rather than a path. This is with version 0.4.0 from homebrew. Perhaps a newer version of clap fixes this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-21 22:06</div>
+            <div class="timeline-body"><p>Yeah, this isn't really a feature I can maintain or fix. I don't have the expertise. :-(</p>
+<p>This should be filed against the clap repo and/or the feature should be removed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-02-21 22:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kastiglione">@kastiglione</a> on 2017-02-21 23:27</div>
+            <div class="timeline-body"><p>I'll report there and follow up here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2017-02-22 04:03</div>
+            <div class="timeline-body"><p>I said this in the clap issue, but just for awareness I'll say it here too; I believe this has to do with Zsh completions in general and not specific to what clap is generating. Generating the literal word <code>PATTERN</code> or <code>PATH</code> for positional/free arguments is simply because there's no way know what exactly to complete.. clap doesn't know what a <code>PATTERN</code> is supposed to be, so the placeholder of the argument name is used. Bash <em>does</em> fall back to path completion (<em>not</em> based on the argument name, but if there's nothing else to complete), but AFAIK there isn't a way to do this in Zsh. The only part of clap that <em>could</em> make this better is kbknapp/clap-rs#568 allowing you to write arbitrary Rust code to use while completing, but it would only make this better if someone wrote the additional Rust code to use when attempting to complete a <code>PATTERN</code> or <code>PATH</code>, i.e. it won't magically fix it.</p>
+<p>As far as &quot;broken&quot; I'd say that's a slight stretch because I use it daily (Zsh is my daily shell and I use <code>rg</code> frequently).</p>
+<pre><code>$ rg -&lt;tab&gt;
+$ rg --&lt;tab&gt;
+$ rg [pattern] --f&lt;tab&gt;
+$ rg -f&lt;tab&gt;
+</code></pre>
+<p>All do exactly what I'd expect, and IMO does it better than even Bash because there are short/long flags listed together, they have some help context, and even allow one to scroll through the options.</p>
+<p>As for completing <code>$ rg somepattern &lt;tab&gt;</code>, yes, this should be either the literal <code>PATH</code> (see comments above) or list options/flags if no other positional/free args exist. However, unlike in Bash I'm not aware of a way to say, &quot;This arg comes first, this one second, etc.&quot; in Zsh. If someone knows a way, I'd love to hear it! (Seriously. I'm not being facetious)</p>
+<p>Of course I'm totally willing, and would be even be happy to be proven wrong and shown where the error is, or how the generated Zsh completion code can be made better. Saying I'm an expert in Zsh completion scripts would be stretch of the imagination of epic proportions! :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-22 12:05</div>
+            <div class="timeline-body"><p>@kbknapp Thanks for looking into it! I'll comment on the clap issue so we don't have an echo effect. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-09 13:12</div>
+            <div class="timeline-body"><p>I'm going to close this because I don't know what the next steps are on ripgrep's side of things.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-04-09 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Brottweiler">@Brottweiler</a> on 2017-04-10 19:43</div>
+            <div class="timeline-body"><p>Would it be possible to remove the Zsh completions? I rather have no completion, so that I can complete filenames/folders using regular Zsh completion, than having broken completion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueyed">@blueyed</a> on 2017-04-10 19:45</div>
+            <div class="timeline-body"><p>Makes sense to me, too.
+And then it could be re-added to zsh-completions again (https://github.com/zsh-users/zsh-completions/commit/b7c11f4020246a533cb470d50b94598e190164e9).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-10 20:26</div>
+            <div class="timeline-body"><blockquote>
+<p>I rather have no completion, so that I can complete filenames/folders using regular Zsh completion, than having broken completion.</p>
+</blockquote>
+<p>I don't quite understand. Why not just ignore the zsh completion file that's in the ripgrep distribution? Moreover, there is at least one other person in this thread that claims that current completion script <em>isn't</em> broken, so it seems a little rude to just up and remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueyed">@blueyed</a> on 2017-04-10 22:09</div>
+            <div class="timeline-body"><p>@BurntSushi
+Good point about just ignoring it. IIRC I am using the old version from zsh-completions myself (after asking for yours to get installed for the Arch package).</p>
+<p>For whom does it work properly though?!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-10 23:37</div>
+            <div class="timeline-body"><p>@blueyed @kbknapp said:</p>
+<blockquote>
+<p>As far as &quot;broken&quot; I'd say that's a slight stretch because I use it daily (Zsh is my daily shell and I use rg frequently).</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thom-nic">@thom-nic</a> on 2017-04-25 15:35</div>
+            <div class="timeline-body"><p>Can anyone point to a &quot;correct&quot; _rg site-function that can be loaded while we wait for this to get fixed in the linked project?  I've found a <a href="http://stackoverflow.com/a/17984833/213983">SO post</a> that explains how to override the builtin site-functions, now I just need a fixed version to use instead!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueyed">@blueyed</a> on 2017-04-25 16:27</div>
+            <div class="timeline-body"><p>@thom-nic
+https://github.com/zsh-users/zsh-completions/commit/b7c11f4020246a533cb470d50b94598e190164e9</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:05 UTC
+    </footer>
+</body>
+</html>

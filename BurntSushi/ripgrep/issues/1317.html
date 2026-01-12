@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--count does not return 0 - BurntSushi/ripgrep #1317</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--count does not return 0</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1317">#1317</a>
+        opened by <a href="https://github.com/OJFord">@OJFord</a>
+        on 2019-07-02 14:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/OJFord">@OJFord</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 11.0.1
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>brew</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Darwin 18.6.0</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<pre><code>$ rg --count 'this does not match anything' f
+$
+$ rg --count 'this does match something' f
+1
+$
+</code></pre>
+<p>For scripting purposes, I'd have preferred <code>0</code> than no output.</p>
+<p>I thought I might have to accept that it's done in pursuit of compatibility, but:</p>
+<pre><code>$ grep --count 'this does not match anything' f
+0
+$
+</code></pre>
+<p>The exit code is 1 too, which is also a break from grep, and not desirable IMO, or maybe it's just because there really was a hard error, which is also what stopped any output?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-07-02 14:50</div>
+            <div class="timeline-body"><p>Interesting. I'm not sure this was intentional. Or at least, I can't think of any particular reason why I did this. However, if you run ripgrep over a <em>directory</em> with the <code>--count</code> flag, then it will not print file paths with zero matches. grep does, but that divergence was intentional on my part because otherwise the output contains a lot of noise.</p>
+<blockquote>
+<p>The exit code is 1 too, which is also a break from grep, and not desirable IMO</p>
+</blockquote>
+<p>An exit code of <code>1</code> for a non-match is correct and consistent with grep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2019-07-02 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/OJFord">@OJFord</a> on 2019-07-02 14:52</div>
+            <div class="timeline-body"><blockquote>
+<p>An exit code of 1 for a non-match is correct and consistent with grep.</p>
+</blockquote>
+<p>~Not when <code>--count</code> is supplied, it exits <code>0</code> and with stdout '0'.~</p>
+<p>Edit: Oh, no, sorry!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cebaa">@cebaa</a> on 2019-08-27 14:00</div>
+            <div class="timeline-body"><p>@BurntSushi</p>
+<p>Not sure if this is a right ticket to discuss this, but a short comment on this:</p>
+<blockquote>
+<p>but that divergence was intentional on my part because otherwise the output contains a lot of noise.</p>
+</blockquote>
+<p>With <code>grep -cH needle app.log*</code>, you get something like:</p>
+<pre><code>app.log.2019-08-24:0
+app.log.2019-08-25:3
+app.log.2019-08-26:5
+app.log.2019-08-27:0
+</code></pre>
+<p>which is visually useful for cases such as &quot;interesting things happened on 25th and 26th, but not on 24th and 27th&quot;.</p>
+<p>The difference is in the &quot;not on 24th and 27th&quot; part - without <code>rg</code> outputting zero counts it's not possible to distinguish between:</p>
+<ul>
+<li>No matches in those files</li>
+<li>Those files do not even exist</li>
+<li>You messed up a pattern and it's not matching files it should</li>
+</ul>
+<p>It might be good to consider a flag to include zero counts as well. IMO it would help with sanity double-checks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-08-27 14:13</div>
+            <div class="timeline-body"><p>@cebaa I think that's a separate issue from this one. Might be good to open a new one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cebaa">@cebaa</a> on 2019-09-08 13:38</div>
+            <div class="timeline-body"><p>@BurntSushi Roger that, opened https://github.com/BurntSushi/ripgrep/issues/1370</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Backgammon-">@Backgammon-</a> on 2019-09-25 15:41</div>
+            <div class="timeline-body"><p>If I need to write shell arithmetic involving a count which can be zero (not that it matters, but I am counting connected external monitors), then the fact that ripgrep gives nothing instead of <code>0</code> is unnecessarily inconvenient and inconsistent, both with grep and with itself (compare if <code>wc</code> printed nothing when run on a single empty file).</p>
+<pre><code class="language-bash-3.2$">bash-3.2$ echo $(( 2 - $(grep -c 'matching string' myfile) ))
+1
+bash-3.2$ echo $(( 2 - $(grep -c 'nonmatching string' myfile) ))
+2
+bash-3.2$ echo $(( 2 - $(rg -c 'matching string' myfile) ))
+1
+bash-3.2$ echo $(( 2 - $(rg -c 'nonmatching string' myfile) ))
+bash: 2 -  : syntax error: operand expected (error token is &quot; &quot;)
+</code></pre>
+<p>Working around it is easy enough (grep, or god forbid, add a conditional) but it would be nice if I didn't have to.</p>
+<p>To preserve your intent re: noise: rather than diverging from grep by making zero counts print nothing, I think it would be better to give <code>0</code> when the count is actually zero, make <code>--count</code> over a directory omit empty counts by default, and add a flag to not omit empty counts when running over directories. This is slightly different from @cebaa's request, which just asks for the flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-05-08 11:38</div>
+            <div class="timeline-body"><p>This can be mitigated with the <code>--include-zero</code> flag, which was added in #1405 (commit https://github.com/BurntSushi/ripgrep/commit/a070722ff27c7d57d47b1766de9d253fbfe5bef9) and is available in ripgrep 12.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-05-08 11:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:57 UTC
+    </footer>
+</body>
+</html>

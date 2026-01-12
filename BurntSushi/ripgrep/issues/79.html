@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inconsistent interpretation of .gitignore - BurntSushi/ripgrep #79</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Inconsistent interpretation of .gitignore</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/79">#79</a>
+        opened by <a href="https://github.com/Geal">@Geal</a>
+        on 2016-09-25 09:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Geal">@Geal</a></div>
+            <div class="timeline-body"><p>Hi!</p>
+<p>First things first, great work on rg, it's amazingly fast :)</p>
+<p>I got an issue with .gitignore usage, here's how you can reproduce:</p>
+<ol>
+<li>get a local clone of https://github.com/rust-lang/rust</li>
+<li>go in the <code>src/</code> subdirectory</li>
+<li>With <code>grep</code>:</li>
+</ol>
+<pre><code>$ grep -nr &quot;Index&lt;Ran&quot; .
+./libcore/slice.rs:628:impl&lt;T&gt; ops::Index&lt;RangeFull&gt; for [T] {
+./test/run-pass/slice.rs:23:impl Index&lt;Range&lt;Foo&gt;&gt; for Foo {
+./test/run-pass/slice.rs:30:impl Index&lt;RangeTo&lt;Foo&gt;&gt; for Foo {
+./test/run-pass/slice.rs:37:impl Index&lt;RangeFrom&lt;Foo&gt;&gt; for Foo {
+./test/run-pass/slice.rs:44:impl Index&lt;RangeFull&gt; for Foo {
+</code></pre>
+<ol>
+<li>With <code>rg</code>:</li>
+</ol>
+<pre><code>$ rg -n &quot;Index&lt;Ran&quot; .
+libcore/slice.rs
+628:impl&lt;T&gt; ops::Index&lt;RangeFull&gt; for [T] {
+</code></pre>
+<ol>
+<li>With <code>rg --no-ignore</code>:</li>
+</ol>
+<pre><code>$ rg --no-ignore -n &quot;Index&lt;Ran&quot; .
+libcore/slice.rs
+628:impl&lt;T&gt; ops::Index&lt;RangeFull&gt; for [T] {
+
+test/run-pass/slice.rs
+23:impl Index&lt;Range&lt;Foo&gt;&gt; for Foo {
+30:impl Index&lt;RangeTo&lt;Foo&gt;&gt; for Foo {
+37:impl Index&lt;RangeFrom&lt;Foo&gt;&gt; for Foo {
+44:impl Index&lt;RangeFull&gt; for Foo {
+</code></pre>
+<p>The <code>.gitignore</code> file contains <code>/test/</code> at <a href="https://github.com/rust-lang/rust/blob/master/.gitignore#L84">line 84</a> so rg should ignore <code>&lt;ROOT&gt;/test/</code>, not <code>&lt;ROOT&gt;/src/test</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 12:59</div>
+            <div class="timeline-body"><p>This looks like a duplicate of some bugs I've fixed recently, specifically with respect to anchored patterns such as <code>/test/</code>. I'll get a new release out today. (Or you can try compiling master to confirm it is fixed.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 18:33</div>
+            <div class="timeline-body"><p>I can indeed confirm that this is fixed in current master:</p>
+<pre><code>[andrew@Cheetah src] rg &quot;Index&lt;Ran&quot;
+test/run-pass/slice.rs
+23:impl Index&lt;Range&lt;Foo&gt;&gt; for Foo {
+30:impl Index&lt;RangeTo&lt;Foo&gt;&gt; for Foo {
+37:impl Index&lt;RangeFrom&lt;Foo&gt;&gt; for Foo {
+44:impl Index&lt;RangeFull&gt; for Foo {
+
+libcore/slice.rs
+621:impl&lt;T&gt; ops::Index&lt;RangeFull&gt; for [T] {
+</code></pre>
+<p>Specifically, this is a dupe of #25.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-09-25 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Geal">@Geal</a> on 2016-09-26 09:04</div>
+            <div class="timeline-body"><p>ok, thanks! I'll update.</p>
+<p>On Sun, Sep 25, 2016 at 8:33 PM, Andrew Gallant notifications@github.com
+wrote:</p>
+<blockquote>
+<p>Closed #79 https://github.com/BurntSushi/ripgrep/issues/79.</p>
+<p>—
+You are receiving this because you authored the thread.
+Reply to this email directly, view it on GitHub
+https://github.com/BurntSushi/ripgrep/issues/79#event-801571210, or mute
+the thread
+https://github.com/notifications/unsubscribe-auth/AAHSADGr28KKGxoMs9MpJw8_9vfGARM7ks5qtr51gaJpZM4KF2zd
+.</p>
+</blockquote>
+<h2></h2>
+<p>http://geoffroycouprie.com/</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:41 UTC
+    </footer>
+</body>
+</html>

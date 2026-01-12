@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Negate an entry in .gitignore - BurntSushi/ripgrep #1734</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Negate an entry in .gitignore</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1734">#1734</a>
+        opened by <a href="https://github.com/zachriggle">@zachriggle</a>
+        on 2020-11-18 01:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zachriggle">@zachriggle</a></div>
+            <div class="timeline-body"><p>I would like the ability to instruct <code>ripgrep</code> to search a directory, even though it's in a repo's <code>.gitignore</code>.  I know I can ignore the <em>entire</em> ignore file, but there's really just one directory that I want to omit.</p>
+<p>There are several workarounds below, but none of them work ideally for my workflow.</p>
+<h2>Remove it from the .gitignore</h2>
+<p>I can remove the line from my local copy, but it would be better for my <code>ripgrep</code> tooling / process to be able to descend into that directory.  This also means that other users of my tooling would also have to modify the <code>.gitignore</code>.</p>
+<h2>Specify the directory explicitly</h2>
+<p>I know I can also explicitly search that directory by providing it on the command-line, but this negates all of the other e.g. <code>.rgignore</code> and e.g. <code>-t c</code> flags.</p>
+<h2>Specify its negation in an <code>--ignore-file</code></h2>
+<p>This would be ideal, but it appears that this doesn't work.</p>
+<h2>Use <code>--no-ignore-vcs</code></h2>
+<p>This works, but affects the entire <code>.gitignore</code> file, while I only care about one specific entry.</p>
+<h2>Perform the search from outside the repo</h2>
+<p>This works, but is not ideal.  If I have <code>foo/myrepo/.gitignore</code>, performing the search from <code>foo</code> does not pull in the .gitignore file, and the search works as I'd like it to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-18 01:55</div>
+            <div class="timeline-body"><blockquote>
+<p>If I have foo/myrepo/.gitignore, performing the search from foo does not pull in the .gitignore file, and the search works as I'd like it to.</p>
+</blockquote>
+<p>That sounds like a bug to me. ripgrep should still respect your gitignore in that case. Could you please file a new bug with a test case that I can reproduce?</p>
+<p>As for this issue, just put <code>!dir</code> in a <code>.ignore</code> or <code>.rgignore</code> file to whitelist it. If that doesn't work, then please provide a reproducible test case.</p>
+<p>Your <code>--ignore-file</code> approach probably isn't working because local gitignore rules take precedent. But <code>.ignore</code> and <code>.rgignore</code> take precedent over <code>.gitignore</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2020-11-18 01:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zachriggle">@zachriggle</a> on 2020-11-18 01:59</div>
+            <div class="timeline-body"><p>This is pretty simple to repro, here you go:</p>
+<p><em>EDIT</em>: Realized this isn't what you're looking for, see second post.  This shows how I would like this Feature Request to accomplish, though.</p>
+<pre><code>$ git init
+Initialized empty Git repository in ...
+
+$ cat .gitignore
+ignored-dir
+
+$ cat .rgiginore
+!ignored-dir
+
+$ cat ignored-dir/foo.c
+hello
+
+$ tree
+.
+├── [   6]  foo.c
+└── [  96]  ignored-dir
+    └── [   6]  foo.c
+
+1 directory, 2 files
+
+$ rg hello
+foo.c
+1:hello
+
+$ rg --no-ignore-vcs hello
+ignored-dir/foo.c
+1:hello
+
+foo.c
+1:hello
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zachriggle">@zachriggle</a> on 2020-11-18 02:14</div>
+            <div class="timeline-body"><p>Ah I see, you wanted me to repro something else entirely.  I can't repro it with a basic case, unfortunately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-18 17:34</div>
+            <div class="timeline-body"><p>But what you posted was what I was looking for? I asked for two reproductions. One of them was about ripgrep ignoring <code>.gitignore</code> when a search starts outside a git directory. The other was whether a whitelisted directory in an <code>.rgignore</code> file worked or not. I can't reproduce it though:</p>
+<pre><code>$ tree
+.
+├── foo.c
+└── ignored-dir
+    └── foo.c
+
+1 directory, 2 files
+
+$ cat .gitignore
+ignored-dir
+
+$ cat .rgignore
+!ignored-dir
+
+$ rg hello
+foo.c
+1:hello
+
+ignored-dir/foo.c
+1:hello
+</code></pre>
+<p>ripgrep is, as far as I can tell, behaving not only as expected, but is doing exactly what you want. Putting <code>ignored-dir</code> in the <code>.rgignore</code> file whitelists <code>ignored-dir</code> and causes ripgrep to search it.</p>
+<p>So either there is more info about your environment that you've left out (I don't see <code>rg --version</code> or <code>rg --debug</code> output anywhere, for example), or I don't understand what you're asking for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zachriggle">@zachriggle</a> on 2020-11-18 21:13</div>
+            <div class="timeline-body"><p>Look a bit closer, <code>ignored-dir/foo.c</code> is not discovered unless <code>--no-ignore-vcs</code> is passed.  The behavior you described is indeed what I want, but not what happens on my end.  I do see that it's working as-desired in your example.</p>
+<p>I've attached my test directory, and version information.</p>
+<pre><code>$ rg --version
+ripgrep 12.1.1
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<p>I've attached the exact working directory I have.</p>
+<p><a href="https://github.com/BurntSushi/ripgrep/files/5562752/issue-1734.zip">issue-1734.zip</a></p>
+<pre><code>$ cd issue-1734
+$ rg hello
+foo.c
+1:hello
+</code></pre>
+<p>It shouldn't make any difference, but this is happening on macOS.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-18 22:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Look a bit closer, <code>ignored-dir/foo.c</code> is not discovered unless <code>--no-ignore-vcs</code> is passed. The behavior you described is indeed what I want, but not what happens on my end.</p>
+</blockquote>
+<p>Yes, I saw that. Now look at my transcript. <code>ignored-dir/foo.c</code> is discovered <em>without</em> passing <code>--no-ignore-vcs</code>. I presumed that was the point.</p>
+<p>As for your zip file, it's not a ripgrep problem. It's a user error:</p>
+<pre><code>$ rg hello
+foo.c
+1:hello
+
+$ mv .rgiginore .rgignore
+
+$ rg hello
+foo.c
+1:hello
+
+ignored-dir/foo.c
+1:hello
+</code></pre>
+<p>You misspelled <code>.rgignore</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-11-18 22:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @BurntSushi on 2020-11-18 22:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2020-11-18 22:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zachriggle">@zachriggle</a> on 2020-11-19 07:34</div>
+            <div class="timeline-body"><p>Now I feel dumb.  Thanks for setting me straight, I appreciate your time &lt;3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zachriggle">@zachriggle</a> on 2020-11-19 23:05</div>
+            <div class="timeline-body"><p>Following up on this, your example does work (I had a misnamed .rgignore), however the negation does NOT work when using <code>--ignore-file</code>.</p>
+<p>Using the same example as above, with the corrected filename:</p>
+<pre><code>$ rg hello
+ignored-dir/foo.c
+1:hello
+
+foo.c
+1:hello
+
+$ mv .rgignore rgignore
+
+$ rg hello --ignore-file ./rgignore
+foo.c
+1:hello
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-20 00:22</div>
+            <div class="timeline-body"><p>Right. As I said, <code>--ignore-file</code> has lower precedence than <code>.gitignore</code>, so the ignore rule in the gitignore wins. The <code>--ignore-file</code> flag is meant for global ignore rules which can be overridden by more specific rules in your directory tree. If you need higher precdent rules, use the <code>-g/--glob</code> flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zachriggle">@zachriggle</a> on 2020-11-20 01:19</div>
+            <div class="timeline-body"><p>I missed the precedence comment, thanks for reiterating why it doesn't work.</p>
+<p>As a follow-up, is there a <em>reason</em> that <code>.gitignore</code> takes precedence over <code>--ignore-file</code>, but not <code>.rgignore</code>?  I'd expect <code>.rgignore</code> to just be a &quot;default&quot; <code>--ignore-file</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-20 02:06</div>
+            <div class="timeline-body"><p>The reason is that it's the scheme I chose. <code>--ignore-file</code>, as I said, is meant to be a set of global rules given to every invocation, usually via a config file or an alias. <code>.gitignore</code> is the approximate &quot;ground truth.&quot; <code>.rgignore</code> is meant to be a way to tailor it even further on a <em>per directory</em> basis.</p>
+<p>There is also an <code>.ignore</code> file, which is meant to be an application agnostic way to added gitignore overrides. <code>.rgignore</code> is meant to be specific to ripgrep.</p>
+<p>Think about it this way. Let's say you built a search tool that respected your gitignore rules. What's the <em>first</em> thing you do? Well, you provide a way to override those gitignore rules because you might want to search something that is ignored by git. That's what <code>.ignore</code>/<code>.rgignore</code> are. The <code>--ignore-file</code> flag came much later to satisfy a more niche use case.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:16 UTC
+    </footer>
+</body>
+</html>

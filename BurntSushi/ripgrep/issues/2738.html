@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[feature] Line masking (ignoring lines or part of lines in matching but displayed in output) - BurntSushi/ripgrep #2738</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[feature] Line masking (ignoring lines or part of lines in matching but displayed in output)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2738">#2738</a>
+        opened by <a href="https://github.com/quidnu">@quidnu</a>
+        on 2024-02-18 20:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/quidnu">@quidnu</a></div>
+            <div class="timeline-body"><h4>Describe your feature request</h4>
+<p>I want to search SRT-like subtitle/transcript files using --multiline that have metadata interleaved in them which I would like to ignore for the purposes of string matching but which I want to be returned in the output context.</p>
+<p>To elaborate: The files look something like this:</p>
+<pre><code>3
+00:03:33,630 --&gt; 00:03:35,000
+On the red stage,
+
+4
+00:03:35,090 --&gt; 00:03:37,840
+foo removed the bar,
+baz green and red.
+</code></pre>
+<p>and I would like to be able to match <code>red stage, foo</code> even though there is intervening metadata.</p>
+<p>I would also be able to do something similar for file formats where meta data is appended to the end of each line</p>
+<pre><code>red stage, -- 00:30:35
+foo -- 00:31:22
+</code></pre>
+<p>In both cases I want to output the matching lines as they appear in the input (and possibly context using -C), including metadata (I'm ultimately looking for the timestamp) so simply pre-processing the input and stripping out the metadata won't work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-18 22:43</div>
+            <div class="timeline-body"><p>Shell pipelines are your best bet. e.g., <code>rg -U 'red stage,\p{any}*foo' | rg 'red|foo'</code>.</p>
+<p>Otherwise, your task seems pretty specialized. If you need to do one or two ad hoc queries, then ripgrep is probably a good fit. But if you need something more systematic and flexible, I'd probably build a bespoke tool for it personally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/quidnu">@quidnu</a> on 2024-02-19 15:04</div>
+            <div class="timeline-body"><p>Actually I misunderstood what multiline does, I want to match phrases across line breaks something like &quot;red\s\stage\sfoo&quot; but that's easy to do and okay (if you put aside the interleaved metadata problem). I think your example doesn't work because it would match 'red stage, blue stage, foo'.</p>
+<p>I think what I'll end up doing is pre-processing the file, removing the metadata, extracting the matching line numbers from rg and printing those lines in the original file using sed/awk.</p>
+<p>(I understand that it's probably too far afield of what rg is intended to do, but what I was originally thinking was that you would be able to, in the most general case, do something like <code>rg --extractor-fn &quot;jq '.text'&quot;</code> to be able to search only the text across lines (and still output the entire data structure) of something like <code>{'ts': 111, 'text': 'this text continues on'}</code> <code>{'ts':112, 'text': ' the next line'}</code>. Or for simpler cases that can be handled with regex: <code>rg --mask &quot;-- \d\d:\d\d$</code>&quot;)</p>
+<p>Anyway thanks and feel free to close.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-19 15:07</div>
+            <div class="timeline-body"><p>Yeah ripgrep isn't arbitrarily flexible like that. With that said, it does have the <code>--pre</code> flag, which lets you run any program to transform the input in whatever way you want before ripgrep will search it. The docs give an example of how to use ripgrep to transparently search the plain text of PDF files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-02-19 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2024-02-19 15:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:46 UTC
+    </footer>
+</body>
+</html>

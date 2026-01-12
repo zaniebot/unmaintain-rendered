@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>empty pattern doesn't display utf8 - BurntSushi/ripgrep #937</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>empty pattern doesn't display utf8</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/937">#937</a>
+        opened by <a href="https://github.com/jbolila">@jbolila</a>
+        on 2018-06-03 13:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jbolila">@jbolila</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.8.1
+-SIMD -AVX</p>
+<h4>How did you install ripgrep?</h4>
+<p><code>cargo install ripgrep -f</code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Linux Debian 9.</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>On empty patterns utf8 strings aren't presented with the correct encode.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<pre><code class="language-bash">❯ rg -S -n --color=always '' Cargo.toml
+1:[package]
+2:authors = [&quot;Jo[0mo Bolila &lt;j**&gt;&quot;]
+..
+❯ rg -S -n --color=always 'au' Cargo.toml
+2:authors = [&quot;João Bolila &lt;j**&gt;&quot;]
+</code></pre>
+<p>Or with any utf8 content.</p>
+<p>https://github.com/lotabout/skim/issues/83</p>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<p>Doesn't display correctly on empty patterns</p>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>Display always like when has a pattern match.</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-03 14:06</div>
+            <div class="timeline-body"><p>Initially, I couldn't reproduce this:</p>
+<pre><code>$ cat test1
+ã
+$ rg --color always '' test1
+1:ã
+</code></pre>
+<p>On a hunch, I tried a different terminal emulator (specifically, <code>xterm</code>):</p>
+<pre><code>$ rg --color always '' test1
+1:��
+</code></pre>
+<p>So that did the trick.</p>
+<p>The specific problem here is that you're searching with an empty pattern, which matches at <em>every</em> position, even between UTF-8 code units. I suspect this itself might actually be a bug in the regex engine. A simple fix on ripgrep's side of things would be to simply not emit color escapes for zero width matches, since those color escapes aren't visually observable by humans. This would fix things because the reason why you're seeing bad output is presumably because there is a color escape sequence between UTF-8 code units, and your terminal emulator chokes on it. However, some folks are using ripgrep's color escapes to determine match locations, so I don't think I can make that change until ripgrep has a structured output feature.</p>
+<p>So, you're pretty much stuck with this behavior for now. You might re-visit why it is you're feeding an empty pattern to ripgrep if you're looking for a workaround.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2018-06-03 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-03 14:32</div>
+            <div class="timeline-body"><p>I filed a bug against the regex engine. Fixing that would also fix this bug. https://github.com/rust-lang/regex/issues/484</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-08-20 11:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:33 UTC
+    </footer>
+</body>
+</html>

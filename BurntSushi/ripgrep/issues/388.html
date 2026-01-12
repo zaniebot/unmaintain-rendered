@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provide a `--directories` option to list directories - BurntSushi/ripgrep #388</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Provide a <code>--directories</code> option to list directories</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/388">#388</a>
+        opened by <a href="https://github.com/mikepqr">@mikepqr</a>
+        on 2017-03-01 06:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mikepqr">@mikepqr</a></div>
+            <div class="timeline-body"><p>I'm <a href="http://blog.owen.cymru/fzf-ripgrep-navigate-with-bash-faster-than-ever-before/">using ripgrep with <code>fzf</code></a> to fly around my filesystem much faster than I could by using <code>find</code> with <code>fzf</code>.</p>
+<p>This approach uses <code>rg --files</code>, which is not only a nice terse, sensible alternative to a long, pedantic <code>find</code> command. It's also orders of magnitude faster!</p>
+<p>It would be great if I could do <code>rg --directories</code> and have it work just like <code>rg --files</code>, but give me all the directories, rather than all the files.</p>
+<p><code>find</code> obviously supports a huge variety of options that are out of scope for a tool focussed on searching within files. This particular use case seems (to me at least! ymmv!) common enough that it  might be worth supporting with ripgrep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bag-man">@bag-man</a> on 2017-03-01 08:23</div>
+            <div class="timeline-body"><p>+1!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-01 12:08</div>
+            <div class="timeline-body"><p>This is a dupe of #169, which I closed on the grounds that it is out of scope. Please read that issue though, because it includes ideas for workarounds. Do they work for you?</p>
+<p>My strong preference here is for someone to write a Rust tool that does this for you. It would be relatively simple to do today, since all of the directory traversal and <code>gitignore</code> code has been factored out into separate libraries. The <code>--files</code> listing is a <em>secondary</em> feature of ripgrep. It is intended to tell you what files ripgrep will search.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-01 12:09</div>
+            <div class="timeline-body"><p>@bag-man Please avoid <code>+1</code> comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikepqr">@mikepqr</a> on 2017-03-01 13:30</div>
+            <div class="timeline-body"><p>Thanks! Sorry I didn't search old isuses!</p>
+<p>Piping <code>rg --hidden --files --null | xargs -0 dirname | uniq</code> to <code>fzf</code> works perfectly for me. Thank you.</p>
+<p>(<code>rg --hidden --files --null | xargs -0 dirname | sort -u</code> works less well because nothing comes out of the pipeline until rg is finished, so I can't start searching in <code>fzf</code> immediately)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-01 13:41</div>
+            <div class="timeline-body"><p>@williamsmj Since #169, ripgrep has grown a <code>--sort-files</code> flag which will do what you want. It will force ripgrep to use a single thread, but it will emit results incrementally instead of blocking until the entire traversal is complete.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-03-01 13:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikepqr">@mikepqr</a> on 2017-03-01 13:47</div>
+            <div class="timeline-body"><p>So <code>rg --hidden --sort-files --files --null 2&gt; /dev/null | xargs -0 dirname | uniq</code>?</p>
+<p>Or can I drop some part of the pipeline?</p>
+<p>Note the important thing about piping through <code>sort</code> for this use case is the <code>-u</code> not the sort.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-01 13:50</div>
+            <div class="timeline-body"><p>@williamsmj Ah I see. If you don't care about the sort, then it'd be fine to drop <code>--sort-files</code> so long as <code>uniq</code> does what you want. Otherwise, it looks good to me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ddickstein">@ddickstein</a> on 2017-05-21 02:32</div>
+            <div class="timeline-body"><p>I still got duplicates when I tried this command.  Removing <code>--sort-files</code> and replacing <code>uniq</code> with <code>sort -u</code> seemed to work more reliably.  Perhaps there's a bug in the sort?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-05-21 04:07</div>
+            <div class="timeline-body"><p>@ddickstein can you open a new issue with a reproducible example? ripgrep should never be showing the same file path twice in the output of --files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ddickstein">@ddickstein</a> on 2017-05-21 11:17</div>
+            <div class="timeline-body"><p>Well the duplicates would appear with the <code>dirname</code> call, right?  The idea here is that we have a list of sorted files, then we call <code>dirname</code> on all of them (introducing duplicates), but then we call <code>uniq</code> which resolves duplicate directory names.  Since there were duplicates in output and I'm assuming there isn't a bug in <code>uniq</code> though it's limited by the need for its input to be sorted, I would guess that the problem is because of a sorting failure with <code>--sort-files</code> rather than a deduping failure with <code>--files</code>.  The problem disappeared when I instead did sort+unique at the end by omitting <code>--sort-files</code> and replacing <code>uniq</code> with <code>sort -u</code>.  I can try to reproduce at some point and file an issue, but with that change my setup is working the way I'd like.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-05-21 14:57</div>
+            <div class="timeline-body"><p>@ddickstein Oh I see. <code>--sort-files</code> is correct as far as I can see. <code>--sort-files</code> sorts the complete file paths, which happens before <code>dirname</code> is applied. For example, this is valid sorted output of <code>rg --files --sorted-files</code>:</p>
+<pre><code>a/b.txt
+a/c/foo.txt
+a/d.txt
+</code></pre>
+<p>But if you apply <code>dirname</code> to each, then you get</p>
+<pre><code>a
+a/c
+a
+</code></pre>
+<p>So basically, you need to sort/dedup after applying <code>dirname</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ddickstein">@ddickstein</a> on 2017-05-21 21:09</div>
+            <div class="timeline-body"><p>Oh interesting.  So if it sorted by file type (file v directory) and then alphabetically instead of just alphabetizing file paths then it would have worked?  I wonder what the other use cases would be for one kind of sort vs the other.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matematikaadit">@matematikaadit</a> on 2017-10-21 22:20</div>
+            <div class="timeline-body"><p>Relevant project, https://github.com/sharkdp/fd. A simple, fast and user-friendly alternative to find.
+It also uses <code>regex</code> and <code>ignore</code> crates.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:05 UTC
+    </footer>
+</body>
+</html>

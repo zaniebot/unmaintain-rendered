@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color output character in VIM with --vimgrep --color never  - BurntSushi/ripgrep #1566</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Color output character in VIM with --vimgrep --color never</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1566">#1566</a>
+        opened by <a href="https://github.com/mangelozzi">@mangelozzi</a>
+        on 2020-05-03 03:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mangelozzi">@mangelozzi</a></div>
+            <div class="timeline-body"><p>I've have seen a few issues about color codes added in windows when they shouldnt be, but the issues have been closed because they have not been reproducible, hopefully this one is.</p>
+<h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 12.0.1 (rev 1d5b1011e5)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p><code>scoop</code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Windows 10</p>
+<h4>Describe your bug.</h4>
+<p>When calling rg from neovim, there are character which mess up return value, I suspect they are color codes. These occurs even with <code>--color never</code></p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<ol>
+<li>Add the below script to <code>init.vim</code></li>
+<li>Save the file</li>
+<li>Then inspect <code>:messages</code></li>
+</ol>
+<pre><code>function! myautoload#OnStdout(job_id, data, event)
+    for line in a:data
+        echom a:event.&quot;&gt;&gt;&gt;&quot;.string(line)
+    endfor
+endfun
+function! myautoload#OnStderr(job_id, data, event)
+    echom &quot;My STDERR, job_id:&quot;.a:job_id.&quot; event:&quot;.a:event.&quot; data:&quot;.string(a:data)
+endfun
+function! myautoload#OnExit(job_id, data, event)
+    echom &quot;My EXIT, job_id:&quot;.a:job_id.&quot; event:&quot;.a:event.&quot; data:&quot;.string(a:data)
+endfun
+function! myautoload#TestJobStart()
+    let cmd = [&quot;rg&quot;, &quot;--vimgrep&quot;,&quot;--color&quot;, &quot;never&quot;, &quot;endfun&quot;]
+    let s:opts_dict= {
+                \ 'on_exit'  : function('myautoload#OnExit'),
+                \ 'on_stdout': function('myautoload#OnStdout'),
+                \ 'on_stderr': function('myautoload#OnStderr'),
+                \ 'pty' : v:true,
+                \ 'stdout_buffered':1,
+                \ 'rpc': v:false}
+    let terminal_buf_nr = jobstart(cmd, s:opts_dict)
+endfunction
+call myautoload#TestJobStart()
+</code></pre>
+<h4>What is the actual behavior?</h4>
+<p>Escape codes are added, I am guessing these are color codes?
+e.g. <code>^[[0K^M'</code> or <code>^[[0K^[[?25l^M</code> or <code>^[[0K^[[?25h</code></p>
+<pre><code>Trailing whitespace stripped &amp; Auto Indented.
+&quot;init.vim&quot; 481L, 19701C written
+stdout&gt;&gt;&gt;'^[[0m^[[0Kinit - Copy.vim:134:1:endfunction^[[0K^[[?25l^M'
+stdout&gt;&gt;&gt;'init - Copy.vim:363:1:endfunction^[[0K^M'
+stdout&gt;&gt;&gt;'init.vim:155:1:endfunction^[[0K^M'
+stdout&gt;&gt;&gt;'init.vim:386:1:endfunction^[[0K^M'
+stdout&gt;&gt;&gt;'init.vim:468:55:    let cmd = [&quot;rg&quot;, &quot;--vimgrep&quot;,&quot;--color&quot;, &quot;never&quot;, &quot;endfuncti^[[0Ko^M'
+stdout&gt;&gt;&gt;'n&quot;]^[[0K^M'
+stdout&gt;&gt;&gt;'init.vim:477:1:endfunction^[[0K^M'
+stdout&gt;&gt;&gt;'temp.vim:11:1:endfunction^[[0K^M'
+stdout&gt;&gt;&gt;'autoload\myautoload.vim:67:1:endfunction^[[0K^M'
+stdout&gt;&gt;&gt;'autoload\plug.vim:2410:1:endfunction^[[0K^M'
+stdout&gt;&gt;&gt;'autoload\plug.vim:2414:1:endfunction^[[0K^M'
+stdout&gt;&gt;&gt;'autoload\plug.vim:2468:1:endfunction^[[0K^M'
+stdout&gt;&gt;&gt;'autoload\plug.vim:2486:1:endfunction^[[0K^M'
+stdout&gt;&gt;&gt;'autoload\plug.vim:2518:1:endfunction^[[0K^M'
+stdout&gt;&gt;&gt;'autoload\plug.vim:2522:1:endfunction^[[0K^M'
+stdout&gt;&gt;&gt;'init\coc.vim:38:1:endfunction^[[0K^M'
+stdout&gt;&gt;&gt;'init\coc.vim:62:1:endfunction^[[0K^M'
+stdout&gt;&gt;&gt;'init\visual.vim:79:1:endfunction^[[0K^M'
+stdout&gt;&gt;&gt;'old\visual_dict.vim:97:1:endfunction^[[0K^M'
+stdout&gt;&gt;&gt;'old\text_object_entire_snippets.vim:372:1:endfunction^[[0K^M'
+stdout&gt;&gt;&gt;'^[[0K^[[?25h'
+My EXIT, job_id:96 event:exit data:0
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>No color codes to be added.</p>
+<h4>What do you think ripgrep should have done?</h4>
+<p>Not add colour codes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-05-03 04:05</div>
+            <div class="timeline-body"><p>Those don't appear to be added by ripgrep. They are probably coming from somewhere else, but I don't know where because I don't quite understand that vimscript at first glance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-05-03 04:07</div>
+            <div class="timeline-body"><p>What is ripgrep actually searching here?</p>
+<p>When <code>--color never</code> is given, ripgrep will definitely not emit color codes. I'm pretty confident about that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mangelozzi">@mangelozzi</a> on 2020-05-03 08:54</div>
+            <div class="timeline-body"><p>Thanks for the reply. With you certainity, and after much searching I came across this post:
+<a href="https://github.com/neovim/neovim/issues/11726">Inexplicable ANSI escape sequences in output of jobs with pty on win32</a>
+Which explains its a neovim windows issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mangelozzi on 2020-05-03 08:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mangelozzi">@mangelozzi</a> on 2020-05-03 08:55</div>
+            <div class="timeline-body"><blockquote>
+<p>What is ripgrep actually searching here?</p>
+<p>When <code>--color never</code> is given, ripgrep will definitely not emit color codes. I'm pretty confident about that.</p>
+</blockquote>
+<p>For interests sake, it was searching for the term <code>endfun</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-05-03 12:57</div>
+            <div class="timeline-body"><p>Aye. I saw its query. But I can't tell what it is actually searching. That is, where is it getting its corpus? What is its input?</p>
+<p>This might be relevant for another ticket you filed: https://github.com/neovim/neovim/issues/12239</p>
+<p>Namely, if ripgrep thinks it is supposed to read stdin, then it will block forever. I don't actually know what your intent is here. Is ripgrep supposed to be searching stdin? Or the current working directory? Best to make it explicit. Either <code>rg pattern -</code> for searching stdin or <code>rg pattern ./</code> for searching the current working directory.</p>
+<p>Or maybe you are getting the input from elsewhere. Not sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mangelozzi">@mangelozzi</a> on 2020-05-03 16:36</div>
+            <div class="timeline-body"><p>You were right <code>rg pattern ./</code> did the trick. its strange that without the <code>./</code> it worked in ubuntu, and windows CMD, and in windows vim with <code>:!rg pattern</code>, but not with jobstart(). That you so much!! I have spent many many hours trying to figure out the jobstart(), but that wasnt the case. Ps thanks for <code>--vimgrep</code>, such a useful flag!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @mangelozzi on 2020-05-03 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mangelozzi on 2020-05-03 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-05-03 16:41</div>
+            <div class="timeline-body"><p>No problem. The issue is that tty detection is a platform specific operation, and given that you're dealing with weird pty things on Windows, it seemed like a likely source of problems. :-) In effect, without the <code>./</code>, ripgrep has to <em>guess</em> what to search. This works in the vast majority of cases, but can fail badly in weird cases like this.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:10 UTC
+    </footer>
+</body>
+</html>

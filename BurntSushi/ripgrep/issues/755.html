@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gitignore not quite respected? - BurntSushi/ripgrep #755</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>gitignore not quite respected?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/755">#755</a>
+        opened by <a href="https://github.com/davidszotten">@davidszotten</a>
+        on 2018-01-18 15:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a></div>
+            <div class="timeline-body"><p>Hi. Thanks for an awesome library. If i understand things correctly, this isn't quite right..</p>
+<pre><code>$ ls .foo/
+bar
+
+$ git status --short
+?? .foo/
+
+$ cat .gitignore
+.*
+!.foo
+
+$ rg --files
+[empty]
+
+$ rg --version
+ripgrep 0.7.1
+-AVX -SIMD
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-18 15:28</div>
+            <div class="timeline-body"><p>The problem here reveals itself if you run ripgrep with the <code>--debug</code> flag. In particular:</p>
+<pre><code>DEBUG:ignore::walk: ignoring ./.baz: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;.*&quot;, actual: &quot;**/.*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG:ignore::walk: ignoring ./.gitignore: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;.*&quot;, actual: &quot;**/.*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG:ignore::walk: ignoring ./.gitignore.swp: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;.*&quot;, actual: &quot;**/.*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG:ignore::walk: whitelisting ./.foo: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!.foo&quot;, actual: &quot;**/.foo&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG:ignore::walk: ignoring ./.git: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;.*&quot;, actual: &quot;**/.*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG:ignore::walk: ignoring ./.foo/bar: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;.*&quot;, actual: &quot;**/.*&quot;, is_whitelist: false, is_only_dir: false }))
+</code></pre>
+<p>Notice that <code>.foo</code> is correctly whitelisted, but <code>.foo/bar</code> is still ignored. The reason is that the <code>.*</code> pattern matches <code>.foo/bar</code>, and as far as I can tell, these are correct gitignore semantics from <code>man gitignore</code>:</p>
+<blockquote>
+<p>If the pattern does not contain a slash /, Git treats it as a shell glob pattern and checks for a match against the pathname relative to the location of the .gitignore file (relative to the toplevel of the work tree if not from a .gitignore file).</p>
+</blockquote>
+<p>That is, in the rule <code>.*</code>, the <code>.</code> will match the <code>.</code> in <code>.foo/bar</code>, and the <code>*</code> will match the rest. This is in contrast to what happens when a <code>/</code> is in the glob:</p>
+<blockquote>
+<p>Otherwise, Git treats the pattern as a shell glob suitable for consumption by fnmatch(3) with the FNM_PATHNAME flag: wildcards in the pattern will not match a / in the pathname. For example, &quot;Documentation/*.html&quot; matches &quot;Documentation/git.html&quot; but not &quot;Documentation/ppc/ppc.html&quot; or &quot;tools/perf/Documentation/perf.html&quot;.</p>
+</blockquote>
+<p>In particular, <code>*</code> can no longer match a <code>/</code>.</p>
+<p>It does seem like <code>git</code> has a different interpretation of the <code>.*</code> pattern. In particular, <code>.foo/bar</code> isn't ignored by <code>git</code>, but I don't understand why.</p>
+<p>You should be able to fix this by replacing <code>.*</code> with <code>**/.*</code>. In particular, this will ensure that the <code>.</code> can only match in the basename of a file path, since the trailing <code>*</code> in this case will never match a <code>/</code> (because the glob contains a slash).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2018-01-18 15:54</div>
+            <div class="timeline-body"><blockquote>
+<p>In particular, <code>.foo/bar</code> isn't ignored by git, but I don't understand why.</p>
+</blockquote>
+<p>is this a bug in git?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-18 15:55</div>
+            <div class="timeline-body"><p>@davidszotten I don't know, that's not my call to make.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-18 15:56</div>
+            <div class="timeline-body"><p>This wouldn't be the first inconsistency: https://github.com/BurntSushi/ripgrep/issues/373</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2018-01-23 10:02</div>
+            <div class="timeline-body"><p>thanks for the amazingly detailed and helpful response!</p>
+<p>not sure how you prefer to manage your issues, but feel free to close this if you want</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-01-23 13:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:24 UTC
+    </footer>
+</body>
+</html>

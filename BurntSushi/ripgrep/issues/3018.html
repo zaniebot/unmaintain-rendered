@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Globset: curly bracket pattern does not support n items - BurntSushi/ripgrep #3018</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Globset: curly bracket pattern does not support n items</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3018">#3018</a>
+        opened by <a href="https://github.com/ODAncona">@ODAncona</a>
+        on 2025-03-25 03:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ODAncona">@ODAncona</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[x] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>globset = &quot;0.4.15&quot;</p>
+<h3>How did you install ripgrep?</h3>
+<p>Cargo</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Linux, macOs</p>
+<h3>Describe your bug.</h3>
+<p>In the documentation, it's stated</p>
+<blockquote>
+<p>{a,b} matches a or b where a and b are arbitrary glob patterns. (N.B. Nesting {...} is not currently allowed.)</p>
+</blockquote>
+<p>Nesting is not currently supported, how ever, what about {a,b,c} ?</p>
+<p>It leads to unpredictable behavior. For instance, the first (a) misses.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>I made this unit test in code2prompt repo to test it</p>
+<pre><code class="language-rs">    #[test]
+    fn test_brace_expansion_first_item() {
+        let env = TestEnv::new();
+        let mut cmd = env.command();
+        cmd.arg(&quot;--include&quot;)
+            .arg(&quot;lowercase/{foo.py,bar.py,baz.py}&quot;)
+            .arg(&quot;--exclude&quot;)
+            .arg(&quot;lowercase/{qux.txt,corge.txt,grault.txt}&quot;)
+            .assert()
+            .success();
+
+        let output = env.read_output();
+
+        assert!(contains(&quot;foo.py&quot;).eval(&amp;output));
+        assert!(contains(&quot;content foo.py&quot;).eval(&amp;output));
+        assert!(contains(&quot;bar.py&quot;).eval(&amp;output));
+        assert!(contains(&quot;content bar.py&quot;).eval(&amp;output));
+        assert!(contains(&quot;baz.py&quot;).eval(&amp;output));
+        assert!(contains(&quot;content baz.py&quot;).eval(&amp;output));
+        assert!(contains(&quot;qux.txt&quot;).not().eval(&amp;output));
+        assert!(contains(&quot;corge.txt&quot;).not().eval(&amp;output));
+        assert!(contains(&quot;grault.txt&quot;).not().eval(&amp;output));
+    }
+</code></pre>
+<p>or could use this</p>
+<pre><code class="language-rs">let mut builder = GlobSetBuilder::new();
+// This will automatically expand to multiple patterns
+builder.add_pattern(&quot;lowercase/{foo.py,bar.py,baz.py}&quot;)?;
+let set = builder.build()?;
+
+// This will match as expected
+assert!(set.is_match(&quot;lowercase/foo.py&quot;));
+assert!(set.is_match(&quot;lowercase/bar.py&quot;));
+assert!(set.is_match(&quot;lowercase/baz.py&quot;));
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<p>Only bar.py,baz.py matches</p>
+<h3>What is the expected behavior?</h3>
+<p>foo.py should match as well as bar.py,baz.py</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ODAncona">@ODAncona</a> on 2025-03-25 03:44</div>
+            <div class="timeline-body"><p>I kindly asked Claude 3.7 that provided me this answer
+Maybe it could be useful ?</p>
+<pre><code class="language-md">
+# Implementing Brace Expansion for Globset
+
+After analyzing the code, I can see the issue with brace expansion in globset. Currently, when a pattern like `lowercase/{foo.py,bar.py,baz.py}` is used, it's handled as a single regex pattern with alternation `(?:foo\.py|bar\.py|baz\.py)` rather than being expanded to multiple distinct patterns.
+
+## The Solution
+
+The key fix is to implement brace expansion at the `GlobSetBuilder` level. Here's my implementation approach:
+
+```rust
+impl GlobSetBuilder {
+    /// Add a pattern string to this set.
+    /// Automatically expands brace patterns into multiple glob patterns.
+    pub fn add_pattern(&amp;mut self, pattern: &amp;str) -&gt; Result&lt;&amp;mut GlobSetBuilder, Error&gt; {
+        let expanded = expand_braces(pattern);
+        
+        for exp in expanded {
+            match Glob::new(&amp;exp) {
+                Ok(glob) =&gt; self.pats.push(glob),
+                Err(e) =&gt; return Err(e),
+            }
+        }
+        Ok(self)
+    }
+
+    // Keep existing add() method for backward compatibility
+    pub fn add(&amp;mut self, pat: Glob) -&gt; &amp;mut GlobSetBuilder {
+        self.pats.push(pat);
+        self
+    }
+}
+
+/// Expands brace patterns in a glob string into multiple glob strings.
+/// For example, &quot;a{b,c}d&quot; expands to [&quot;abd&quot;, &quot;acd&quot;].
+fn expand_braces(pattern: &amp;str) -&gt; Vec&lt;String&gt; {
+    // If no braces, return the pattern as is
+    if !pattern.contains('{') || !pattern.contains('}') {
+        return vec![pattern.to_string()];
+    }
+    
+    // Find the first matching pair of braces
+    let mut depth = 0;
+    let mut start_idx = None;
+    
+    for (i, c) in pattern.chars().enumerate() {
+        match c {
+            '{' =&gt; {
+                depth += 1;
+                if depth == 1 {
+                    start_idx = Some(i);
+                }
+            }
+            '}' =&gt; {
+                if depth == 1 &amp;&amp; start_idx.is_some() {
+                    // Found a matching pair
+                    let prefix = &amp;pattern[0..start_idx.unwrap()];
+                    let suffix = &amp;pattern[i+1..];
+                    let options_str = &amp;pattern[start_idx.unwrap()+1..i];
+                    
+                    // Parse options, handling nested commas properly
+                    let mut options = Vec::new();
+                    let mut start = 0;
+                    let mut nested_depth = 0;
+                    
+                    for (j, ch) in options_str.chars().enumerate() {
+                        match ch {
+                            '{' =&gt; nested_depth += 1,
+                            '}' =&gt; nested_depth -= 1,
+                            ',' if nested_depth == 0 =&gt; {
+                                options.push(&amp;options_str[start..j]);
+                                start = j + 1;
+                            }
+                            _ =&gt; {}
+                        }
+                    }
+                    
+                    // Add the last option
+                    options.push(&amp;options_str[start..]);
+                    
+                    // Recursively expand each option with the prefix and suffix
+                    let mut expanded = Vec::new();
+                    for opt in options {
+                        let new_pattern = format!(&quot;{}{}{}&quot;, prefix, opt, suffix);
+                        // Recursively expand in case there are more braces
+                        for exp in expand_braces(&amp;new_pattern) {
+                            expanded.push(exp);
+                        }
+                    }
+                    
+                    return expanded;
+                }
+                depth -= 1;
+            }
+            _ =&gt; {}
+        }
+    }
+    
+    // If we get here, there was no matching pair of braces
+    vec![pattern.to_string()]
+}
+</code></pre>
+<h2>Usage</h2>
+<p>With this implementation, users can now do:</p>
+<pre><code class="language-rust">let mut builder = GlobSetBuilder::new();
+// This will automatically expand to multiple patterns
+builder.add_pattern(&quot;lowercase/{foo.py,bar.py,baz.py}&quot;)?;
+let set = builder.build()?;
+
+// This will match as expected
+assert!(set.is_match(&quot;lowercase/foo.py&quot;));
+assert!(set.is_match(&quot;lowercase/bar.py&quot;));
+assert!(set.is_match(&quot;lowercase/baz.py&quot;));
+</code></pre>
+<h2>Key Features of This Implementation</h2>
+<ol>
+<li><strong>Non-breaking change</strong>: Adds a new method rather than changing existing behavior</li>
+<li><strong>Recursive expansion</strong>: Correctly handles nested braces like <code>{a,b{c,d}}</code></li>
+<li><strong>Proper nesting</strong>: Handles commas inside nested braces correctly</li>
+<li><strong>Simple API</strong>: A single method call handles all the expansion complexity</li>
+</ol>
+<p>This approach maintains compatibility with existing code while adding the much-needed brace expansion functionality in a clean, intuitive way.</p>
+<pre><code></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-03-25 03:47</div>
+            <div class="timeline-body"><p>Huh? I can't tell what the heck you're saying. Ate you reporting a bug? If so, please provide an MRE.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ODAncona">@ODAncona</a> on 2025-03-25 18:49</div>
+            <div class="timeline-body"><p>@BurntSushi</p>
+<p>The issue is specifically for <code>globset</code> crate.</p>
+<p>This is the MRE.</p>
+<pre><code class="language-rs">let mut builder = GlobSetBuilder::new();
+builder.add_pattern(&quot;folder/{foo,bar,baz}&quot;)?;
+let set = builder.build()?;
+
+assert!(set.is_match(&quot;folder/foo&quot;));
+assert!(set.is_match(&quot;folder/bar&quot;));
+assert!(set.is_match(&quot;folder/baz&quot;));
+</code></pre>
+<p>It looks like you are using regex to handle the glob <code>foo/{a,b}</code> that will match <code>foo/a</code> or <code>foo/b</code>.</p>
+<p>However, this syntax doesn't work: <code>foo/{a,b,c,...,n}</code> which should match <code>foo/a</code>, <code>foo/b</code>, <code>foo/c</code>, ... , <code>foo/n</code>.</p>
+<p>I provided the files <code>globset/lib.rs</code> and <code>globset/glob.rs</code> to Claude (Anthropic LLM) to ask him what changes should be done to globset codebase in order to support the syntax <code>foo/{a,b,c,d,...}</code> and provided the answer.</p>
+<p>I thought you could directly identify if the proposed code was horsesh*t or useful as I'm not familiar with <code>globset</code> repo. And I wanted to hear you about that syntax ? I'm not sure to understand what is specified in the doc.</p>
+<blockquote>
+<p>{a,b} matches a or b where a and b are arbitrary glob patterns. (N.B. Nesting {...} is not currently allowed.)</p>
+</blockquote>
+<p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-03-25 20:13</div>
+            <div class="timeline-body"><p>Again... <em>wat</em>?</p>
+<p>Your program doesn't even compile. I had to change it to this:</p>
+<pre><code class="language-rust">use globset::{Glob, GlobSetBuilder};
+
+fn main() -&gt; anyhow::Result&lt;()&gt; {
+    let mut builder = GlobSetBuilder::new();
+    builder.add(Glob::new(&quot;folder/{foo,bar,baz}&quot;)?);
+    let set = builder.build()?;
+
+    assert!(set.is_match(&quot;folder/foo&quot;));
+    assert!(set.is_match(&quot;folder/bar&quot;));
+    assert!(set.is_match(&quot;folder/baz&quot;));
+
+    Ok(())
+}
+</code></pre>
+<p>With this <code>Cargo.toml</code>:</p>
+<pre><code class="language-toml">[package]
+publish = false
+name = &quot;globset-i3018&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2024&quot;
+
+[dependencies]
+anyhow = &quot;1.0.97&quot;
+globset = &quot;0.4.16&quot;
+
+[[bin]]
+name = &quot;globset-i3018&quot;
+path = &quot;main.rs&quot;
+
+[profile.release]
+debug = true
+</code></pre>
+<p>And when I run it, all assertions pass, as expected:</p>
+<pre><code>$ cargo r
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.00s
+     Running `target/debug/globset-i3018`
+$
+</code></pre>
+<p>So I don't see any problem here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-03-25 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2025-03-25 20:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:54 UTC
+    </footer>
+</body>
+</html>

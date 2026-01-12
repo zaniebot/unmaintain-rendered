@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignoring glob pattern with other pattern for files… - BurntSushi/ripgrep #2055</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ignoring glob pattern with other pattern for files…</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2055">#2055</a>
+        opened by <a href="https://github.com/ghost">@ghost</a>
+        on 2021-11-10 16:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ghost">@ghost</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<pre><code>dnf install 
+ripgrep-13.0.0-1.fc34.x86_64
+</code></pre>
+<h4>What operating system are you using ripgrep on?</h4>
+<pre><code>Linux nightwatch 5.14.16-201.fc34.x86_64 #1 SMP Wed Nov 3 13:57:29 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+</code></pre>
+<h4>Describe your bug.</h4>
+<p>Glob is only ignored if I do not glob files.</p>
+<p>Note that I am using <code>zsh</code>, thus the escaped <code>!</code>.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<pre><code>√ ; mkdir ook eek monkey
+√ ; echo &quot;test&quot; &gt; (ook|eek|monkey)/file
+√ ; rg &quot;test&quot;
+monkey/file
+1:test
+
+eek/file
+1:test
+
+ook/file
+1:test
+</code></pre>
+<h4>What is the actual behavior?</h4>
+<p>This is the expected behaviour with no extra filtering.</p>
+<pre><code>√ ; rg &quot;test&quot; -g &quot;\!ook&quot;
+monkey/file
+1:test
+
+eek/file
+1:test
+</code></pre>
+<p>This is what happens when I ask <code>rg</code>  to look at all the files called <code>file</code>. Yes, this is a simple case.</p>
+<pre><code>√ ; rg &quot;test&quot; -g &quot;\!ook&quot; **/file
+ook/file
+1:test
+
+monkey/file
+1:test
+
+eek/file
+1:test
+
+√ ; rg &quot;test&quot; **/file -g &quot;\!ook&quot;
+ook/file
+1:test
+
+monkey/file
+1:test
+
+eek/file
+1:test
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>I expected anything in the <code>ook</code> to be ignored despite it matching the second glob.</p>
+<p>I used a similar command on a large code base and want to search only golang files but not those in <code>vendor/</code> so what I want is this:</p>
+<pre><code>rg -g &quot;\!vendor&quot; &quot;someName&quot; **/*.go
+</code></pre>
+<p>Which does not ignore anything in <code>vendor/</code>…</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-11-10 16:27</div>
+            <div class="timeline-body"><p>This is correct and expected behavior. If you give a file path to ripgrep on the CLI, then ripgrep always searches it, regardless of any other rules.</p>
+<p>If you want to, for example, &quot;only search golang files but not those in <code>vendor</code>,&quot; then you could do:</p>
+<pre><code>rg 'someName' -tgo -g '!vendor'
+</code></pre>
+<p>Or you could use <code>find</code> to construct the list of files you want to search.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2021-11-10 16:44</div>
+            <div class="timeline-body"><p>Right, it was me not understanding. Thank you for your help!</p>
+<p><code>rg 'someName' -tgo -g '!vendor'</code> does indeed do what I need.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ghost on 2021-11-10 16:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:28 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom ignore files can not be used exclusively - BurntSushi/ripgrep #800</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Custom ignore files can not be used exclusively</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/800">#800</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2018-02-13 21:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
+            <div class="timeline-body"><h4>What version of the ignore crate are you using?</h4>
+<p>ignore-0.4.0</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>It would be great if the custom ignore files (that are available since ignore-0.4.0) could be used exclusively without having to enable <code>.ignore</code> or <code>.gitignore</code> files as well.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>Run the following test case:</p>
+<pre><code class="language-rust">#[test]
+fn custom_ignore() {
+    let td = TempDir::new(&quot;walk-test-&quot;).unwrap();
+    let custom_ignore = &quot;.customignore&quot;;
+    mkdirp(td.path().join(&quot;a&quot;));
+    wfile(td.path().join(custom_ignore), &quot;foo&quot;);
+    wfile(td.path().join(&quot;foo&quot;), &quot;&quot;);
+    wfile(td.path().join(&quot;a/foo&quot;), &quot;&quot;);
+    wfile(td.path().join(&quot;bar&quot;), &quot;&quot;);
+    wfile(td.path().join(&quot;a/bar&quot;), &quot;&quot;);
+
+    let mut builder = WalkBuilder::new(td.path());
+
+    // THE FOLLOWING FOUR LINES HAVE BEEN
+    // ADDED W.R.T. AN EXISTING TEST CASE
+    builder.ignore(false);
+    builder.git_ignore(false);
+    builder.git_global(false);
+    builder.git_exclude(false);
+
+    builder.add_custom_ignore_filename(&amp;custom_ignore);
+    assert_paths(td.path(), &amp;builder, &amp;[&quot;bar&quot;, &quot;a&quot;, &quot;a/bar&quot;]);
+}
+</code></pre>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<p>The test case fails because the <code>foo</code> files are not ignored:</p>
+<pre><code>---- walk::tests::custom_ignore stdout ----
+	thread 'walk::tests::custom_ignore' panicked at 'assertion failed: `(left == right)`
+  left: `[&quot;a&quot;, &quot;a/bar&quot;, &quot;a/foo&quot;, &quot;bar&quot;, &quot;foo&quot;]`,
+ right: `[&quot;a&quot;, &quot;a/bar&quot;, &quot;bar&quot;]`', src/walk.rs:1554:8
+</code></pre>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>The test case succeeds.</p>
+<h4>Analysis</h4>
+<p>The cause for this behavior is the following function in <code>ignore/src/dir.rs</code>:</p>
+<pre><code class="language-rust">    fn has_any_ignore_options(&amp;self) -&gt; bool {
+        self.ignore || self.git_global || self.git_ignore || self.git_exclude
+    }
+</code></pre>
+<p>.. which returns <code>false</code> if all of these are disabled. This, in turn, causes <code>Ignore::matched</code> to skip ignore files alltogether:</p>
+<pre><code class="language-rust">        if self.0.opts.has_any_ignore_options() {
+            let mat = self.matched_ignore(path, is_dir);
+            if mat.is_ignore() {
+                return mat;
+            } else if mat.is_whitelist() {
+                whitelisted = mat;
+            }
+        }
+</code></pre>
+<p>If the above behavior is actually intended, a simple bugfix would be to add the following:</p>
+<pre><code class="language-rust">        if self.0.opts.has_any_ignore_options() || !self.0.custom_ignore_filenames.is_empty() {
+            // ...
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-13 22:00</div>
+            <div class="timeline-body"><p>Thanks for the clear bug report! This definitely sounds like a bug, and <code>has_any_ignore_options</code> should probably be removed in favor of a predicate that covers all of the cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2018-02-13 22:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2018-02-13 22:23</div>
+            <div class="timeline-body"><p>By the way, ripgrep itself is not &quot;affected&quot; (I think) because the custom ignore file (<code>.rgignore</code>) is always enabled together with <code>.ignore</code>. Therefore, <code>IgnoreOptions::ignore</code> will be enabled if <code>.rgignore</code> files should be used and <code>has_any_ignore_options()</code> returns <code>true</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-13 23:21</div>
+            <div class="timeline-body"><p>@sharkdp Yup I believe you're right. Thanks for noticing this and filing a bug. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-02-14 11:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:26 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support for symlinked .zst files - BurntSushi/ripgrep #3249</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support for symlinked .zst files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3249">#3249</a>
+        opened by <a href="https://github.com/kenorb">@kenorb</a>
+        on 2025-12-20 17:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kenorb">@kenorb</a></div>
+            <div class="timeline-body"><p>The following example of grep'ing .gz file works:</p>
+<pre><code>$ echo test | gzip &gt; test.txt.gz
+$ ln -vs test.txt.gz test.lnk.txt.gz
+'test.lnk.txt.gz' -&gt; 'test.txt.gz'
+$ rg -zL . test.lnk.txt.gz 
+1:test
+$ zgrep test test.lnk.txt.gz
+test
+</code></pre>
+<p>but when the file is in .zst format, it won't work:</p>
+<pre><code>$ echo test | zstd -o test.txt.zst
+/*stdin*\            :360.00%   (     5 B =&gt;     18 B, test.txt.zst)          
+$ ln -vs test.txt.zst test.lnk.txt.zst
+'test.lnk.txt.zst' -&gt; 'test.txt.zst'
+$ rg -Lz . test.lnk.txt.zst
+rg: test.lnk.txt.zst: &lt;stderr is empty&gt;
+$ zstdgrep test test.lnk.txt.zst
+test
+</code></pre>
+<p>I'm not sure if this is related to GH-2811, but in general regular symlinked files in .gz format seems to work fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-20 17:40</div>
+            <div class="timeline-body"><p>I don't think this is a problem with ripgrep. It looks like <code>zstd</code> doesn't behave as predictably as <code>gzip</code>:</p>
+<pre><code>$ zstd -q -d -c test.lnk.txt.zst
+$ zstd -q -d -c test.txt.zst
+test
+</code></pre>
+<p>I don't see anything relevant in <code>man zstd</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kenorb">@kenorb</a> on 2025-12-20 17:45</div>
+            <div class="timeline-body"><p>Can <code>zstdcat</code> be used instead? It's part of <code>zstd</code> package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-12-20 17:47</div>
+            <div class="timeline-body"><p>I would rather see a bug filed against <code>zstd</code>. And if they won't fix it, then I'm willing to consider alternatives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-12-20 17:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:01 UTC
+    </footer>
+</body>
+</html>

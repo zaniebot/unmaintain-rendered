@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using rg on a terminal prints loads of empty lines - BurntSushi/ripgrep #99</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Using rg on a terminal prints loads of empty lines</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/99">#99</a>
+        opened by <a href="https://github.com/dersebi">@dersebi</a>
+        on 2016-09-26 06:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dersebi">@dersebi</a></div>
+            <div class="timeline-body"><p>Using ripgrep on a Linux terminal prints loads of empty lines. I tried searching a big directory for a word without any additional options and there is pages of empty lines.
+When redirecting the oputput to a file it does not include the empty lines.</p>
+<p>I tested with a smaller directory and there are less empty lines.</p>
+<p>As output redirection does not have a problem this might be related to special terminal characters?</p>
+<p>My test system is an Ubuntu 14.04 LTS and I tested with uxterm and gnome-terminal.
+I built ripgrep using cargo in release mode. My Rust version is 1.11.0.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-26 09:42</div>
+            <div class="timeline-body"><p>Could you provide some input, preferably a single file, where this happens?
+A screen shot or dump of the output would be helpful.</p>
+<p>On Sep 26, 2016 2:52 AM, &quot;dersebi&quot; notifications@github.com wrote:</p>
+<blockquote>
+<p>Using ripgrep on a Linux terminal prints loads of empty lines. I tried
+searching a big directory for a word without any additional options and
+there is pages of empty lines.
+When redirecting the oputput to a file it does not include the empty lines.</p>
+<p>I tested with a smaller directory and there are less empty lines.</p>
+<p>As output redirection does not have a problem this might be related to
+special terminal characters?</p>
+<p>My test system is an Ubuntu 14.04 LTS and I tested with uxterm and
+gnome-terminal.
+I built ripgrep using cargo in release mode. My Rust version is 1.11.0.</p>
+<p>—
+You are receiving this because you are subscribed to this thread.
+Reply to this email directly, view it on GitHub
+https://github.com/BurntSushi/ripgrep/issues/99, or mute the thread
+https://github.com/notifications/unsubscribe-auth/AAb34kiUf_g054LJJNefay4e5CC9P8SNks5qt2u7gaJpZM4KGMR_
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dersebi">@dersebi</a> on 2016-09-26 12:54</div>
+            <div class="timeline-body"><p>A simple test case would be the following:</p>
+<pre><code>me@ubuntu:~ $ mkdir test
+me@ubuntu:~ $ cd test
+me@ubuntu:~/test $ echo &quot;Hello World&quot;&gt;test1
+me@ubuntu:~/test $ rg World
+test1
+1:Hello World
+me@ubuntu:~/test $ touch test2
+me@ubuntu:~/test $ rg World
+test1
+1:Hello World
+
+me@ubuntu:~/test $
+me@ubuntu:~/test $ touch test3
+me@ubuntu:~/test $ rg World
+test1
+1:Hello World
+
+
+me@ubuntu:~/test $
+</code></pre>
+<p>I haven't verified this, but is seems to add an empty line for each file without a match.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-26 13:07</div>
+            <div class="timeline-body"><p>Weird, I can't reproduce:</p>
+<pre><code>[andrew@Serval 99] l
+total 0
+[andrew@Serval 99] echo &quot;Hello World&quot; &gt; test1
+[andrew@Serval 99] rg World
+test1
+1:Hello World
+[andrew@Serval 99] touch test2
+[andrew@Serval 99] rg World
+test1
+1:Hello World
+[andrew@Serval 99] touch test3
+[andrew@Serval 99] rg World
+test1
+1:Hello World
+</code></pre>
+<p>Could you try your test case again with <code>--color=never</code>? Also, what is the output of <code>echo $TERM</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dersebi">@dersebi</a> on 2016-09-26 13:51</div>
+            <div class="timeline-body"><p><code>--color=never</code> yields the same result with the empty lines, except that it is not colored (obviously)
+<code>TERM</code> is set to <code>xterm</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-26 20:57</div>
+            <div class="timeline-body"><p>Hmm, I'm not sure what's causing this and I can't reproduce it. :-/</p>
+<p>Probably my next step is firing up an Ubuntu 14.04 VM, and it may take me a while to get to that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2016-09-26 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nextlogic-ono">@nextlogic-ono</a> on 2016-09-26 23:12</div>
+            <div class="timeline-body"><p>I can reproduce this on Ubuntu 16.04 64bit (single core) on bash with 0.2.0</p>
+<blockquote>
+<p>$ echo yes &gt;a.txt
+$ echo no &gt;b.txt
+$ touch c.txt
+$ rg yes
+a.txt
+1:yes
+(blank line here)
+(blank line here)</p>
+</blockquote>
+<p>But I can't reproduce this on CentOS 6.8 (4 cores).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-26 23:34</div>
+            <div class="timeline-body"><p>@windware AH! Dammit. This is another single threaded bug. I really wish I could DRY that up. Thank you so much for looking into this because you just saved me a bunch of time!</p>
+<p>(P.S. Try running <code>rg -j1 ...</code> on Centos and it should repro.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nextlogic-ono">@nextlogic-ono</a> on 2016-09-26 23:40</div>
+            <div class="timeline-body"><p>-j1 did it on CentOS but it only produced a single blank line with my above example.
+-j2 also made a single blank line but -j3 and -j4 removed it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-09-26 23:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-26 23:57</div>
+            <div class="timeline-body"><p>OK, this should be fixed. This was a regression I introduced last night. :-(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dersebi">@dersebi</a> on 2016-09-27 06:33</div>
+            <div class="timeline-body"><p>Fixed indeed. Much better, thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:43 UTC
+    </footer>
+</body>
+</html>

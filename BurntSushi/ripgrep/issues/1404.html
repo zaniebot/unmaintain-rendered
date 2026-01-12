@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display a warning when searching within an ignored directory - BurntSushi/ripgrep #1404</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Display a warning when searching within an ignored directory</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1404">#1404</a>
+        opened by <a href="https://github.com/Manishearth">@Manishearth</a>
+        on 2019-10-15 01:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Manishearth">@Manishearth</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>$ rg --version
+ripgrep 11.0.2
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>Cargo</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Ubuntu</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>Sometimes you end up inside a directory that's actually gitignored, and search for stuff. Of course, no file will get searched, and you will be confused.</p>
+<p>If ripgrep ends up not searching any files and it happens to be in a situation where there <em>are</em> files to search that it cannot because of the ignore file, it should probably display a warning saying &quot;some files were skipped because of the ignore file, try <code>--no-ignore-vcs</code> to include&quot;.</p>
+<p>I don't know if ripgrep ever shows warnings, but this would be a nice place to do so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-10-15 01:59</div>
+            <div class="timeline-body"><p>This feature actually existed at one point. Unfortunately, it looks like it has evaporated, probably intentionally during a refactor. Getting this back in is a good idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/coderkalyan">@coderkalyan</a> on 2019-10-22 00:01</div>
+            <div class="timeline-body"><p>Hi, I'd like to try to implement this for #hacktoberfest. I understand the feature request, but does someone have a simple example I could use to test this feature? In addition, what's the layout of this codebase - where would this feature be implemented?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/genivia-inc">@genivia-inc</a> on 2020-01-20 19:40</div>
+            <div class="timeline-body"><p>Removing UI usage confusion is always a good thing. I am sure I'm preaching to the choir here, but I'd suggest either with by issuing warnings, or even better by <a href="https://en.wikipedia.org/wiki/Principle_of_least_astonishment">POLA</a> design.</p>
+<p>Following POLA, files and directories specified as arguments to <code>rg</code> (i.e. to be explicitly searched) should never be ignored. It's utterly confusing when that happens. So I came up <a href="https://github.com/Genivia/ugrep#ignore">with an alternative</a> that both respects <code>.gitignore</code> and files and directories specified as arguments to be searched. Furthermore, I though it would be a good idea to have option <code>--stats</code> extended to show the selection criteria applied to the search results and the locations of each <code>.gitignore</code> found when applied to the results.</p>
+<p>For example, searching the working directory that has a <code>.gitignore</code>, while also searching the <code>Makefile</code> even though it is excluded by a <code>.gitignore</code> rule, now produces predictable results:</p>
+<pre><code>$ ugrep -rl --ignore-files --stats 'c++' . Makefile
+...
+Makefile
+...
+Searched 43 files with 8 threads in 1 directory: 42 matching
+The following pathname selections and restrictions were applied:
+--ignore-files='.gitignore'
+  ./.gitignore exclusions were applied to .
+</code></pre>
+<p>Narrowing this down to searching just the <code>Makefile</code> when option <code>--ignore-files</code> is also used produces predictable results:</p>
+<pre><code>$ ugrep -l --ignore-files --stats 'c++' Makefile
+Makefile
+Searched 1 file: 1 matching
+The following pathname selections and restrictions were applied:
+--ignore-files='.gitignore'
+</code></pre>
+<p>Note that in this case it is very clear the <code>.gitignore</code> was not applied to the results. This makes sense as there is no directory to search recursively.</p>
+<p>Perhaps this approach is useful. Others have found it to be less confusing, especially when adding option <code>--ignore-files</code> to a command alias such as <code>alias egrep='ugrep --ignore-files'</code> for example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-01-20 21:20</div>
+            <div class="timeline-body"><p>@genivia-inc Sorry, but this is the ripgrep issue tracker, not ugrep's. ripgrep will search files that are explicitly given as arguments but would otherwise be ignored via <code>.gitignore</code>. So that shouldn't be a problem and it isn't the same bug reported in this ticket.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/genivia-inc">@genivia-inc</a> on 2020-01-22 16:24</div>
+            <div class="timeline-body"><p>@burntsushi Your sarcasm is inappropriate. I am merely pointing to an alternative approach to report <code>.gitignore</code> exclusions afterwards e.g. with <code>--stats</code>. We are all benefitting from open discussions, right?</p>
+<p>I agree that warnings are fine too. Just sharing my observation as potentially useful, as I stated in my closing argument. Whatever works best to deal with POLA problems and improving the overall UX is up to users to decide, which should be applauded.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-01-22 17:16</div>
+            <div class="timeline-body"><p>I wasn't being sarcastic. This isn't the place to unsolicitedly discuss tangentially related issues that are specific to some other tool. I'm going to mark further such comments from you as off topic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2020-03-15 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">gitignore</span> added by @BurntSushi on 2020-05-08 11:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/goto-engineering">@goto-engineering</a> on 2020-12-05 02:14</div>
+            <div class="timeline-body"><p>So I just tried this, and the behavior is slightly more subtle.</p>
+<p>With this .gitignore:</p>
+<pre><code>ignored_dir
+</code></pre>
+<p>running <code>rg</code> from the root does not search files in <code>ignored_dir</code>. However, if you cd into <code>ignored_dir</code> and then search, <code>rg</code> will find things. This is likely because the directory was ignored, not the files in the directory.</p>
+<p>If we add the glob to .gitignore:</p>
+<pre><code>ignored_dir/**
+</code></pre>
+<p>Then <code>cd</code> into <code>ignored_dir</code> and searching there does not find anything.</p>
+<p>So in the literal sense, <code>rg</code> already behaves as the OP wishes it to. It seems to me that a warning for the glob case would be helpful, though, especially in cases where literally every candidate file is being ignored. (I've actually run into this in real-life usage when I had forgotten I'm in <code>node_modules</code> or something of that nature.)</p>
+<p>@BurntSushi Does that seem like a reasonable idea? Would you say only in the everything-ignored case or in every case where there's an ignore on some files that were under consideration?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-12-05 03:44</div>
+            <div class="timeline-body"><p>That's the idea and it's how the original warning message worked. If ripgrep is invoked with no arguments and nothing is searched, then ripgrep should emit a warning. The particulars of git ignore rules are just motivating use cases. The existence of the warning message shouldn't need to care about git ignore rules specifically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/goto-engineering">@goto-engineering</a> on 2020-12-05 04:05</div>
+            <div class="timeline-body"><p>Can you point me to a commit/place where this feature existed? Happy to try and bring it back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-12-05 16:52</div>
+            <div class="timeline-body"><p>@goto-engineering https://github.com/BurntSushi/ripgrep/blob/6799dcfc0ee63d741cd721c3311852a1b01449d8/src/main.rs#L409-L413</p>
+<p>I think it got removed when I moved things over to libripgrep in 0.10.0. I can't remember why.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/goto-engineering">@goto-engineering</a> on 2020-12-05 18:26</div>
+            <div class="timeline-body"><p>Got it, I'll take a look. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2021-05-30 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-06-01 01:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:02 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I believe the Windows release workflow is broken - BurntSushi/ripgrep #1820</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>I believe the Windows release workflow is broken</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1820">#1820</a>
+        opened by <a href="https://github.com/commonquail">@commonquail</a>
+        on 2021-03-14 20:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/commonquail">@commonquail</a></div>
+            <div class="timeline-body"><h4>Describe your bug.</h4>
+<p>I'm reasonably convinced the release workflow is broken for the <code>windows-2019</code> platform, probably since commit 13d77ab6463a55ac4ca604076c1da74661b26d69 which switched to <a href="https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#environment-files">the new environment files</a>. There has been no release since then to prove or disprove my theory.</p>
+<p>When updating the environment, the syntax appears to be sensitive to the executing shell, and the default shell on <code>windows-2019</code> is <code>pwsh</code>. Therefore, either the filename should be <code>$env:GITHUB_ENV</code> or the <code>shell</code> should be overridden.</p>
+<p>The retrieval syntax appears to be platform agnostic.</p>
+<p><a href="https://github.com/BurntSushi/ripgrep/blob/c7730d1f3a366e42fdd497a1e0db4bf090de415c/.github/workflows/release.yml#L131-L137">When this release workflow activates Cross</a> the script uses the default shell with the Unix syntax so the <code>CROSS</code> and <code>TARGET_</code> variables do not get updated on <code>windows-2019</code>.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>The job definition</p>
+<pre><code class="language-yaml">  set-env-on-windows:
+    name: set-env-on-windows
+    runs-on: windows-2019
+    env:
+      T_SET_ENV_WITH_GLOBAL: &quot;yes&quot;
+    steps:
+      - name: set-default
+        run: printf 'T_SET_ENV_WITH_DEFAULT=%s\n' &quot;yes&quot; &gt;&gt; $GITHUB_ENV
+      - name: set-bash
+        shell: bash
+        run: printf 'T_SET_ENV_WITH_BASH=%s\n' &quot;yes&quot; &gt;&gt; $GITHUB_ENV
+      - name: set-ps
+        shell: pwsh
+        run: printf 'T_SET_ENV_WITH_PWSH=%s\n' &quot;yes&quot; &gt;&gt; $env:GITHUB_ENV
+
+      - name: get-default
+        run: printenv | grep T_SET_
+      - name: get-bash
+        shell: bash
+        run: printenv | grep T_SET_
+      - name: get-ps
+        shell: bash
+        run: printenv | grep T_SET_
+</code></pre>
+<p>produces the output</p>
+<pre><code>2021-03-14T20:05:58.5118148Z ##[section]Starting: Request a runner to run this job
+2021-03-14T20:05:58.6883178Z Can't find any online and idle self-hosted runner in current repository that matches the required labels: 'windows-2019'
+2021-03-14T20:05:58.6883259Z Can't find any online and idle self-hosted runner in current repository's account/organization that matches the required labels: 'windows-2019'
+2021-03-14T20:05:58.6883470Z Found online and idle hosted runner in current repository's account/organization that matches the required labels: 'windows-2019'
+2021-03-14T20:05:58.8104618Z ##[section]Finishing: Request a runner to run this job
+2021-03-14T20:06:04.5087304Z Current runner version: '2.277.1'
+2021-03-14T20:06:04.5294640Z ##[group]Operating System
+2021-03-14T20:06:04.5295547Z Microsoft Windows Server 2019
+2021-03-14T20:06:04.5295959Z 10.0.17763
+2021-03-14T20:06:04.5296276Z Datacenter
+2021-03-14T20:06:04.5296618Z ##[endgroup]
+2021-03-14T20:06:04.5297143Z ##[group]Virtual Environment
+2021-03-14T20:06:04.5297599Z Environment: windows-2019
+2021-03-14T20:06:04.5298021Z Version: 20210219.1
+2021-03-14T20:06:04.5298744Z Included Software: https://github.com/actions/virtual-environments/blob/win19/20210219.1/images/win/Windows2019-Readme.md
+2021-03-14T20:06:04.5299933Z ##[endgroup]
+2021-03-14T20:06:04.5301655Z ##[group]GITHUB_TOKEN Permissions
+2021-03-14T20:06:04.5302852Z Actions: write
+2021-03-14T20:06:04.5303237Z Checks: write
+2021-03-14T20:06:04.5303623Z Contents: write
+2021-03-14T20:06:04.5303995Z Deployments: write
+2021-03-14T20:06:04.5304425Z Issues: write
+2021-03-14T20:06:04.5304788Z Metadata: read
+2021-03-14T20:06:04.5305341Z OrganizationPackages: write
+2021-03-14T20:06:04.5305842Z Packages: write
+2021-03-14T20:06:04.5306223Z PullRequests: write
+2021-03-14T20:06:04.5306725Z RepositoryProjects: write
+2021-03-14T20:06:04.5307178Z SecurityEvents: write
+2021-03-14T20:06:04.5307620Z Statuses: write
+2021-03-14T20:06:04.5308072Z ##[endgroup]
+2021-03-14T20:06:04.5310571Z Prepare workflow directory
+2021-03-14T20:06:04.6121512Z Prepare all required actions
+2021-03-14T20:06:05.6673134Z ##[group]Run printf 'T_SET_ENV_WITH_DEFAULT=%s\n' &quot;yes&quot; &gt;&gt; $GITHUB_ENV
+2021-03-14T20:06:05.6675261Z [36;1mprintf 'T_SET_ENV_WITH_DEFAULT=%s\n' &quot;yes&quot; &gt;&gt; $GITHUB_ENV[0m
+2021-03-14T20:06:05.6754739Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command &quot;. '{0}'&quot;
+2021-03-14T20:06:05.6755473Z env:
+2021-03-14T20:06:05.6756336Z   T_SET_ENV_WITH_GLOBAL: yes
+2021-03-14T20:06:05.6756779Z ##[endgroup]
+2021-03-14T20:06:07.3110439Z ##[group]Run printf 'T_SET_ENV_WITH_BASH=%s\n' &quot;yes&quot; &gt;&gt; $GITHUB_ENV
+2021-03-14T20:06:07.3111331Z [36;1mprintf 'T_SET_ENV_WITH_BASH=%s\n' &quot;yes&quot; &gt;&gt; $GITHUB_ENV[0m
+2021-03-14T20:06:07.3127574Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+2021-03-14T20:06:07.3128190Z env:
+2021-03-14T20:06:07.3128536Z   T_SET_ENV_WITH_GLOBAL: yes
+2021-03-14T20:06:07.3128940Z ##[endgroup]
+2021-03-14T20:06:07.6269265Z ##[group]Run printf 'T_SET_ENV_WITH_PWSH=%s\n' &quot;yes&quot; &gt;&gt; $env:GITHUB_ENV
+2021-03-14T20:06:07.6270033Z [36;1mprintf 'T_SET_ENV_WITH_PWSH=%s\n' &quot;yes&quot; &gt;&gt; $env:GITHUB_ENV[0m
+2021-03-14T20:06:07.6327201Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command &quot;. '{0}'&quot;
+2021-03-14T20:06:07.6327677Z env:
+2021-03-14T20:06:07.6328268Z   T_SET_ENV_WITH_GLOBAL: yes
+2021-03-14T20:06:07.6328720Z   T_SET_ENV_WITH_BASH: yes
+2021-03-14T20:06:07.6329114Z ##[endgroup]
+2021-03-14T20:06:08.2681951Z ##[group]Run printenv | grep T_SET_
+2021-03-14T20:06:08.2682625Z [36;1mprintenv | grep T_SET_[0m
+2021-03-14T20:06:08.2742327Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command &quot;. '{0}'&quot;
+2021-03-14T20:06:08.2742959Z env:
+2021-03-14T20:06:08.2743362Z   T_SET_ENV_WITH_GLOBAL: yes
+2021-03-14T20:06:08.2743819Z   T_SET_ENV_WITH_BASH: yes
+2021-03-14T20:06:08.2744224Z   T_SET_ENV_WITH_PWSH: yes
+2021-03-14T20:06:08.2744610Z ##[endgroup]
+2021-03-14T20:06:08.9118350Z T_SET_ENV_WITH_BASH=yes
+2021-03-14T20:06:08.9119331Z T_SET_ENV_WITH_GLOBAL=yes
+2021-03-14T20:06:08.9120268Z T_SET_ENV_WITH_PWSH=yes
+2021-03-14T20:06:08.9378651Z ##[group]Run printenv | grep T_SET_
+2021-03-14T20:06:08.9379560Z [36;1mprintenv | grep T_SET_[0m
+2021-03-14T20:06:08.9401086Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+2021-03-14T20:06:08.9401844Z env:
+2021-03-14T20:06:08.9402675Z   T_SET_ENV_WITH_GLOBAL: yes
+2021-03-14T20:06:08.9403101Z   T_SET_ENV_WITH_BASH: yes
+2021-03-14T20:06:08.9403515Z   T_SET_ENV_WITH_PWSH: yes
+2021-03-14T20:06:08.9404337Z ##[endgroup]
+2021-03-14T20:06:09.0096778Z T_SET_ENV_WITH_BASH=yes
+2021-03-14T20:06:09.0097376Z T_SET_ENV_WITH_GLOBAL=yes
+2021-03-14T20:06:09.0098024Z T_SET_ENV_WITH_PWSH=yes
+2021-03-14T20:06:09.0292141Z ##[group]Run printenv | grep T_SET_
+2021-03-14T20:06:09.0292833Z [36;1mprintenv | grep T_SET_[0m
+2021-03-14T20:06:09.0308375Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+2021-03-14T20:06:09.0309205Z env:
+2021-03-14T20:06:09.0309594Z   T_SET_ENV_WITH_GLOBAL: yes
+2021-03-14T20:06:09.0310051Z   T_SET_ENV_WITH_BASH: yes
+2021-03-14T20:06:09.0310457Z   T_SET_ENV_WITH_PWSH: yes
+2021-03-14T20:06:09.0310897Z ##[endgroup]
+2021-03-14T20:06:09.0981363Z T_SET_ENV_WITH_BASH=yes
+2021-03-14T20:06:09.0981952Z T_SET_ENV_WITH_GLOBAL=yes
+2021-03-14T20:06:09.0982898Z T_SET_ENV_WITH_PWSH=yes
+2021-03-14T20:06:09.1012180Z Cleaning up orphan processes
+</code></pre>
+<p>Observe that <code>T_SET_ENV_WITH_DEFAULT</code> never appears in the environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-14 20:47</div>
+            <div class="timeline-body"><p>Aye thanks. I'll keep this in mind next time I do a release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2021-03-14 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-06-01 01:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:19 UTC
+    </footer>
+</body>
+</html>

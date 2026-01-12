@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiline lookbehind, empty submatches array - BurntSushi/ripgrep #1412</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Multiline lookbehind, empty submatches array</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1412">#1412</a>
+        opened by <a href="https://github.com/roblourens">@roblourens</a>
+        on 2019-10-28 04:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/roblourens">@roblourens</a></div>
+            <div class="timeline-body"><p>If I search with a lookbehind pattern that matches a newline, and use the <code>--json</code> flag, I get the match info but it has an empty <code>submatches</code> array. Example:</p>
+<pre><code>$ echo -e 'foo\nbar' &gt; test.txt
+$ rg --auto-hybrid-regex --multiline --json '(?&lt;=foo\n)bar' test.txt
+{&quot;type&quot;:&quot;begin&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;test.txt&quot;}}}
+{&quot;type&quot;:&quot;match&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;test.txt&quot;},&quot;lines&quot;:{&quot;text&quot;:&quot;bar\n&quot;},&quot;line_number&quot;:2,&quot;absolute_offset&quot;:4,&quot;submatches&quot;:[]}}
+{&quot;type&quot;:&quot;end&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;test.txt&quot;},&quot;binary_offset&quot;:null,&quot;stats&quot;:{&quot;elapsed&quot;:{&quot;secs&quot;:0,&quot;nanos&quot;:40700,&quot;human&quot;:&quot;0.000041s&quot;},&quot;searches&quot;:1,&quot;searches_with_match&quot;:1,&quot;bytes_searched&quot;:8,&quot;bytes_printed&quot;:183,&quot;matched_lines&quot;:1,&quot;matches&quot;:0}}}
+{&quot;data&quot;:{&quot;elapsed_total&quot;:{&quot;human&quot;:&quot;0.002328s&quot;,&quot;nanos&quot;:2328499,&quot;secs&quot;:0},&quot;stats&quot;:{&quot;bytes_printed&quot;:183,&quot;bytes_searched&quot;:8,&quot;elapsed&quot;:{&quot;human&quot;:&quot;0.000041s&quot;,&quot;nanos&quot;:40700,&quot;secs&quot;:0},&quot;matched_lines&quot;:1,&quot;matches&quot;:0,&quot;searches&quot;:1,&quot;searches_with_match&quot;:1}},&quot;type&quot;:&quot;summary&quot;}
+</code></pre>
+<p>Compare to what I get when matching with lookbehind on one line:</p>
+<pre><code>$ rg --auto-hybrid-regex --multiline --json '(?&lt;=b)ar' test.txt 
+...
+{&quot;type&quot;:&quot;match&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;test.txt&quot;},&quot;lines&quot;:{&quot;text&quot;:&quot;bar\n&quot;},&quot;line_number&quot;:2,&quot;absolute_offset&quot;:4,&quot;submatches&quot;:[{&quot;match&quot;:{&quot;text&quot;:&quot;ar&quot;},&quot;start&quot;:1,&quot;end&quot;:3}]}}
+</code></pre>
+<p>Or just matching that line</p>
+<pre><code>$ rg --auto-hybrid-regex --multiline --json 'bar' test.txt
+...
+{&quot;type&quot;:&quot;match&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;test.txt&quot;},&quot;lines&quot;:{&quot;text&quot;:&quot;bar\n&quot;},&quot;line_number&quot;:2,&quot;absolute_offset&quot;:4,&quot;submatches&quot;:[{&quot;match&quot;:{&quot;text&quot;:&quot;bar&quot;},&quot;start&quot;:0,&quot;end&quot;:3}]}}
+</code></pre>
+<p>Same with lookahead that matches a newline.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2020-03-15 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alessandroasm">@alessandroasm</a> on 2020-10-05 18:47</div>
+            <div class="timeline-body"><p>Hi, I looked into what is happening in this case.</p>
+<p>https://github.com/BurntSushi/ripgrep/blob/def993bad1a9275cdc249f04048e5b2065b79f05/crates/printer/src/json.rs#L604-L614</p>
+<p>The issue is that <code>grep_searcher::SinkMatch</code> doesn't store captured groups. When <code>JSONSink</code> needs details about capture groups, it reruns the matcher against the bytes in <code>SinkMatch</code>, but those bytes only contain the current line, which in turn results in a non-match scenario.</p>
+<p>I think the way to go here will be including submatch data in <code>grep_searcher::SinkMatch</code>. That way we won't need to rerun the matcher to get this information.</p>
+<p>@BurntSushi I can implement that if you agree to this changes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2021-05-31 22:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-06-01 01:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:02 UTC
+    </footer>
+</body>
+</html>

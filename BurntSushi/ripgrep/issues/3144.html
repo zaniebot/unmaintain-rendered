@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gitignore rules not behaving correctly when inside a subdirectory - BurntSushi/ripgrep #3144</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Gitignore rules not behaving correctly when inside a subdirectory</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3144">#3144</a>
+        opened by <a href="https://github.com/JelteF">@JelteF</a>
+        on 2025-09-10 08:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JelteF">@JelteF</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[x] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>Latest <code>main</code> (but also with official 14.1.1 build)</p>
+<pre><code>❯ ../ripgrep/target/release/rg --version
+ripgrep 14.1.1 (rev 119a58a400)
+
+features:-pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2
+
+PCRE2 is not available in this build of ripgrep.
+</code></pre>
+<h3>How did you install ripgrep?</h3>
+<p>Both cargo and binary from github releases</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Ubuntu 24.04</p>
+<h3>Describe your bug.</h3>
+<p>The gitignore logic has a bug where it's ignoring files that should not be ignored when the current working directory is not at the root of the repo.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>I created this <a href="https://github.com/JelteF/ripgrep-ignore-failure">tiny git repo to show the bug</a>. If you check out that repo and you run <code>rg xyz</code>, you will find the file <code>abc/cmd/abc/hello</code> when in the root of the repo. But when navigating to the <code>abc</code> directory that same <code>rg xyz</code> suddenly cannot find any files anymore and ripgrep tells you:</p>
+<pre><code>rg: No files were searched, which means ripgrep probably applied a filter you didn't expect.
+Running with --debug will show why files are being skipped.
+</code></pre>
+<p>The structure of the repo:</p>
+<pre><code>.
+├── abc
+│   └── cmd
+│       └── abc
+│           └── hello
+└── .gitignore
+</code></pre>
+<p>And the <code>.gitignore</code> file contains the single line <code>/abc/abc</code> (obviously in the actual case where I ran into this problem, that file exists and needed to be ignored.</p>
+<h3>What is the actual behavior?</h3>
+<pre><code>rg xyz --debug
+rg: DEBUG|rg::flags::parse|/home/jelte/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ripgrep-14.1.1/crates/core/flags/parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|/home/jelte/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ripgrep-14.1.1/crates/core/flags/hiargs.rs:1083: number of paths given to search: 0
+rg: DEBUG|rg::flags::hiargs|/home/jelte/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ripgrep-14.1.1/crates/core/flags/hiargs.rs:1108: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=false, stdin_consumed=false, mode=Search(Standard))
+rg: DEBUG|rg::flags::hiargs|/home/jelte/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ripgrep-14.1.1/crates/core/flags/hiargs.rs:1118: heuristic chose to search ./
+rg: DEBUG|rg::flags::hiargs|/home/jelte/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ripgrep-14.1.1/crates/core/flags/hiargs.rs:1269: found hostname for hyperlink configuration: jduck
+rg: DEBUG|rg::flags::hiargs|/home/jelte/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ripgrep-14.1.1/crates/core/flags/hiargs.rs:1279: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|/home/jelte/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ripgrep-14.1.1/crates/core/flags/hiargs.rs:174: using 12 thread(s)
+rg: DEBUG|globset|/home/jelte/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/globset-0.4.16/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|ignore::gitignore|/home/jelte/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ignore-0.4.23/src/gitignore.rs:393: opened gitignore file: /home/jelte/dotfiles/git/gitignore_global
+rg: DEBUG|globset|/home/jelte/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/globset-0.4.16/src/lib.rs:448: glob converted to regex: Glob { glob: &quot;**/.DS_Store?&quot;, re: &quot;(?-u)^(?:/?|.*/)\\.DS_Store[^/]$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true, empty_alternates: false }, tokens: Tokens([RecursivePrefix, Literal('.'), Literal('D'), Literal('S'), Literal('_'), Literal('S'), Literal('t'), Literal('o'), Literal('r'), Literal('e'), Any]) }
+rg: DEBUG|globset|/home/jelte/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/globset-0.4.16/src/lib.rs:448: glob converted to regex: Glob { glob: &quot;**/._*&quot;, re: &quot;(?-u)^(?:/?|.*/)\\._[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true, empty_alternates: false }, tokens: Tokens([RecursivePrefix, Literal('.'), Literal('_'), ZeroOrMore]) }
+rg: DEBUG|globset|/home/jelte/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/globset-0.4.16/src/lib.rs:448: glob converted to regex: Glob { glob: &quot;**/Icon?&quot;, re: &quot;(?-u)^(?:/?|.*/)Icon[^/]$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true, empty_alternates: false }, tokens: Tokens([RecursivePrefix, Literal('I'), Literal('c'), Literal('o'), Literal('n'), Any]) }
+rg: DEBUG|globset|/home/jelte/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/globset-0.4.16/src/lib.rs:448: glob converted to regex: Glob { glob: &quot;**/.*.*.*.sw?&quot;, re: &quot;(?-u)^(?:/?|.*/)\\.[^/]*\\.[^/]*\\.[^/]*\\.sw[^/]$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true, empty_alternates: false }, tokens: Tokens([RecursivePrefix, Literal('.'), ZeroOrMore, Literal('.'), ZeroOrMore, Literal('.'), ZeroOrMore, Literal('.'), Literal('s'), Literal('w'), Any]) }
+rg: DEBUG|globset|/home/jelte/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/globset-0.4.16/src/lib.rs:448: glob converted to regex: Glob { glob: &quot;**/.*.*.sw?&quot;, re: &quot;(?-u)^(?:/?|.*/)\\.[^/]*\\.[^/]*\\.sw[^/]$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true, empty_alternates: false }, tokens: Tokens([RecursivePrefix, Literal('.'), ZeroOrMore, Literal('.'), ZeroOrMore, Literal('.'), Literal('s'), Literal('w'), Any]) }
+rg: DEBUG|globset|/home/jelte/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/globset-0.4.16/src/lib.rs:448: glob converted to regex: Glob { glob: &quot;**/.*.sw?&quot;, re: &quot;(?-u)^(?:/?|.*/)\\.[^/]*\\.sw[^/]$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true, empty_alternates: false }, tokens: Tokens([RecursivePrefix, Literal('.'), ZeroOrMore, Literal('.'), Literal('s'), Literal('w'), Any]) }
+rg: DEBUG|globset|/home/jelte/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/globset-0.4.16/src/lib.rs:453: built glob set; 4 literals, 9 basenames, 19 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 6 regexes
+rg: DEBUG|ignore::gitignore|/home/jelte/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ignore-0.4.23/src/gitignore.rs:393: opened gitignore file: /home/jelte/opensource/ripgrep-ignore-failure/.gitignore
+rg: DEBUG|globset|/home/jelte/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/globset-0.4.16/src/lib.rs:453: built glob set; 1 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|ignore::gitignore|/home/jelte/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ignore-0.4.23/src/gitignore.rs:393: opened gitignore file: /home/jelte/opensource/ripgrep-ignore-failure/.git/info/exclude
+rg: DEBUG|ignore::walk|/home/jelte/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ignore-0.4.23/src/walk.rs:1799: ignoring ./cmd/abc: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/home/jelte/opensource/ripgrep-ignore-failure/.gitignore&quot;), original: &quot;/abc/abc&quot;, actual: &quot;abc/abc&quot;, is_whitelist: false, is_only_dir: false })))
+rg: No files were searched, which means ripgrep probably applied a filter you didn't expect.
+Running with --debug will show why files are being skipped.
+</code></pre>
+<p>This seems to be the problematic line from the debug output:</p>
+<pre><code>rg: DEBUG|ignore::walk|/home/jelte/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ignore-0.4.23/src/walk.rs:1799: ignoring ./cmd/abc: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/home/jelte/opensource/ripgrep-ignore-failure/.gitignore&quot;), original: &quot;/abc/abc&quot;, actual: &quot;abc/abc&quot;, is_whitelist: false, is_only_dir: false })))
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>The <code>cmd/abc/hello</code> file should have been searched and returned a match.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-10 11:51</div>
+            <div class="timeline-body"><p>Dupe of #829, #2731, #2747, #2778, #2836, #3144</p>
+<p>It was fixed by #2933.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-09-10 11:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2025-09-10 11:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:58 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature request: Include compressed files when both -t and -z are enabled - BurntSushi/ripgrep #1179</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature request: Include compressed files when both -t and -z are enabled</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1179">#1179</a>
+        opened by <a href="https://github.com/haqle314">@haqle314</a>
+        on 2019-01-28 21:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/haqle314">@haqle314</a></div>
+            <div class="timeline-body"><p>The flag <code>-z</code> should automatically update the patterns used by<code>-t</code>,
+allowing optional compressed file type extension.</p>
+<p>Let's say I have 2 markdown files, one is compressed, one is not.</p>
+<pre><code>echo &quot;hello&quot; &gt; test1.md
+echo &quot;hello&quot; | gzip &gt; test2.md.gz
+</code></pre>
+<h2>Current behavior</h2>
+<p>Compressed markdown file is not searched</p>
+<pre><code>rg -z -l -t markdown hello
+# test1.md
+</code></pre>
+<h2>Suggested behavior</h2>
+<p>Also consider compressed markdown files when <code>-z</code> is specified.</p>
+<pre><code>rg -z -l -t markdown hello
+# test1.md
+# test2.md.gz
+</code></pre>
+<p>Currently, to get this behavior, I have to manually redefine the <code>markdown</code> type</p>
+<pre><code>rg --type-add 'markdown:*.{md,markdown,mdown,mkdn}{,.gz,.bz2,.xz,.lzma,.lz4}' -z -l -t markdown hello
+# test1.md
+# test2.md.gz
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-01-28 21:22</div>
+            <div class="timeline-body"><p>I'm going to have to decline. I don't think the <code>-t/--type</code> flag should be automatically expanded like this. This is what type definitions are for. You also don't need to re-create the glob definitions, e.g., <code>--type-add 'markdown:include:md,bzip2,gzip,lz4,lzma,xz'</code> will do what you want and will automatically get updated as new globs are added to the existing definitions. Alternatively, just use <code>rg -g '*.md*' -z foo</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-01-28 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2019-01-28 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/haqle314">@haqle314</a> on 2019-01-29 03:51</div>
+            <div class="timeline-body"><p>Your <code>--type-add</code> suggestion doesn't produce the desired behavior though.
+Now every compressed file is considered, not just compressed markdown files.</p>
+<pre><code>echo &quot;hello&quot; | gzip &gt; test3.py.gz
+rg --type-add 'markdown:include:md,bzip2,gzip,lz4,lzma,xz' -z -l -tmarkdown hello
+# test1.md
+# test3.py.gz
+# test2.md.gz
+</code></pre>
+<p>You're right in that I can roll it <code>-g '*.md*'</code> or something similar. But that's
+not ideal either, sometime, people use <code>.</code> as a delimiter and you end up with
+files such as <code>something.md.else.txt</code></p>
+<p>Also, I don't know if this matters or not, but the type markdown now has a duplicate
+for each of the original glob pattern.</p>
+<pre><code>rg --type-add 'markdown:include:md,gzip' --type-list | grep ^markdown
+# markdown: *.gz, *.markdown, *.markdown, *.md, *.md, *.mdown, *.mdown, *.mkdn, *.mkdn
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:49 UTC
+    </footer>
+</body>
+</html>

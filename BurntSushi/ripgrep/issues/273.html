@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement such `--files-from` option - BurntSushi/ripgrep #273</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement such <code>--files-from</code> option</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/273">#273</a>
+        opened by <a href="https://github.com/ngirard">@ngirard</a>
+        on 2016-12-07 16:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ngirard">@ngirard</a></div>
+            <div class="timeline-body"><p>A recurring workflow of mine is to search within an existing list of files.</p>
+<p>Currently I'm living by
+<code>$(generate list of files) | while read f; do rg pattern &quot;$f&quot;; done</code>
+which is both inconvenient and inefficient.</p>
+<p>Ack <a href="http://beyondgrep.com/ack-2.0/">does provide</a> a <code>--files-from</code> option. Implementing it would allow me to type
+<code>rg pattern --list-from &lt;(gen list)</code>
+to fulfill my needs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-07 16:34</div>
+            <div class="timeline-body"><p>It seems like there are a few ways to do this without building it into ripgrep. Here are a couple:</p>
+<pre><code>[andrew@Cheetah 273] echo test &gt; foo
+[andrew@Cheetah 273] echo test &gt; bar
+[andrew@Cheetah 273] echo test &gt; baz
+[andrew@Cheetah 273] cat &gt; file-list &lt;&lt;EOF
+&gt; foo
+&gt; bar
+&gt; baz
+&gt; EOF
+[andrew@Cheetah 273] xargs rg test &lt; file-list
+foo
+1:test
+
+bar
+1:test
+
+baz
+1:test
+</code></pre>
+<pre><code>[andrew@Cheetah 273] rg test $(cat file-list)
+bar
+1:test
+
+foo
+1:test
+
+baz
+1:test
+</code></pre>
+<p>I don't think either of these approaches is less efficient than what ripgrep would do if it were built-in. The only caveat here is that if your file list is big enough, you'll need to use <code>xargs</code>, which will split up the argument list correctly.</p>
+<p>Could you explain in more detail why these approaches don't work for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2016-12-07 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngirard">@ngirard</a> on 2016-12-07 16:48</div>
+            <div class="timeline-body"><p>Sure. None of your proposed alternatives work with filenames containing spaces.
+Try e.g.</p>
+<pre><code>echo test &gt; &quot;foo a&quot;
+echo &quot;foo a&quot; &gt; file-list
+xargs rg test &lt; file-list
+foo: No such file or directory (os error 2)
+a: No such file or directory (os error 2)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-07 17:02</div>
+            <div class="timeline-body"><p>I guess the standard solution to that is to delimit your file paths will a NUL terminator (e.g., <code>find ./ -print0</code>) and then tell <code>xargs</code> to read them using <code>xargs -0</code>.</p>
+<p>If you aren't generating files with <code>find</code> (or some other tool that can be made to emit NUL terminators), then it seems like you should be able to use <code>xargs -d'\n' rg test &lt; file-list</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngirard">@ngirard</a> on 2016-12-07 17:57</div>
+            <div class="timeline-body"><p>Fair enough. So, for the record, instead of the syntax I proposed
+<code>rg pattern --list-from &lt;(gen list)</code></p>
+<p>I can achieve the same results using
+<code>xargs -d'\n' -a &lt;(gen list) rg pattern</code></p>
+<p>Not as convenient, but I can very well live with that.
+Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-07 18:23</div>
+            <div class="timeline-body"><p>Yes, I think I'd prefer that at this point.</p>
+<p>Popping up a level, do also note that ripgrep provides the <code>-g/--glob</code> flag, which allows you to apply ad hoc filters on which files/directories are searched. This obviously only works for simplistic cases where your rules are simple, but it does cover a lot of the simpler uses of <code>find ./ ... | xargs grep ...</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-12-07 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kshenoy">@kshenoy</a> on 2018-12-14 16:12</div>
+            <div class="timeline-body"><p>@BurntSushi My use-case is similar to his where I compile a list of files I'm interested in and search only those files instead of letting ripgrep loose on my entire project which would take a lot longer. Like you suggested, I've been using <code>xargs -d '\n' rg PATTERN &lt; FILELIST</code>.</p>
+<p>Next, I wanted to search only some specific filetypes (say C++ source files) within FILELIST so I tried to add a <code>-tcsrc</code> (csrc is a type I created which is defined in ~/.ripgreprc config file) but that doesn't work as ripgrep seems to ignore any glob/type arguments if provided with an explicit list of files to search from. So I ended up doing <code>xargs -d '\n' rg PATTERN &lt; &lt;(rg '\.(cc|cpp)$' FILELIST)</code> to pre-process the FILELIST before running.</p>
+<p>This is kinda bad as I've defined the csrc type elsewhere but I'm not able to use it in this context. Is there a better way to go about this? It'd be nice if ripgrep filters the list of files provided using the type/glob argument if one is provided eg. <code>xargs &lt; FILELIST rg -tcsrc PATTERN</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-12-14 16:27</div>
+            <div class="timeline-body"><p>@kshenoy ripgrep has, and probably always will, explicitly ignore any filtering for file paths that are explicitly given on the command line. I realize that for your particular niche case, this isn't what you want, but to do otherwise would grossly complicate the already complex filtering logic that ripgrep performs. e.g., running <code>rg foo blah.py</code> and getting nothing back even if there was a match because <code>blah.py</code> is in your <code>.gitignore</code> would be quite an egregious UX fail. You might instead argue that file type filtering is different because it's explicitly provided on the command line, but it's still something that violates what is now a pretty iron clad rule: &quot;If you give a file path to ripgrep, it will search it.&quot;</p>
+<blockquote>
+<p>My use-case is similar to his where I compile a list of files I'm interested in and search only those files instead of letting ripgrep loose on my entire project which would take a lot longer.</p>
+</blockquote>
+<p>You might instead consider using a <code>.ignore</code> or <code>.rgignore</code> file to dictate which files should be skipped when searching your project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kshenoy">@kshenoy</a> on 2018-12-14 18:20</div>
+            <div class="timeline-body"><blockquote>
+<p>&quot;If you give a file path to ripgrep, it will search it.&quot;</p>
+</blockquote>
+<p>That's a reasonable rule to follow. I agree that doing anything else would involve prioritizing between different ways to include/exclude files. Thanks for the clarification.</p>
+<blockquote>
+<p>You might instead consider using a .ignore or .rgignore file to dictate which files should be skipped when searching your project.</p>
+</blockquote>
+<p>I did consider doing that. However, we use Perforce at work and it's easier to compile a list to search through using <code>p4 have ...</code> than to compile a list to ignore. I opted to create a <a href="https://gist.github.com/kshenoy/d2d1c7b19eafb043d36239264e758b62">wrapper around rg</a> which adds the --files-from option similar to ack. It may be a little over-engineered :) but it seems to work. Any suggestions for improvement are welcome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fent">@fent</a> on 2019-09-27 01:27</div>
+            <div class="timeline-body"><p>it would be nice to be able to pipe a list of files to ripgrep. right now, I searched for a second pattern in files matching a first pattern with</p>
+<pre><code class="language-bash">rg &quot;pattern2&quot; --files-without-match $(rg &quot;pattern1&quot; --files-with-matches)
+</code></pre>
+<p>when it would be nice to do the following because I usually think of the first pattern first</p>
+<pre><code class="language-bash">rg &quot;pattern1&quot; --files-with-matches | rg &quot;pattern2&quot; --files-without-matches
+</code></pre>
+<p>although, this use case is unique since I'm using <code>--files-without-matches</code>, which doesn't work with xargs since xargs calls a different ripgrep process for each file, and so ripgrep will end up printing a bunch more files than I intended it to</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/habamax">@habamax</a> on 2020-05-25 09:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Could you explain in more detail why these approaches don't work for you?</p>
+</blockquote>
+<p>What about windows?</p>
+<p>Main issue that there is no xargs.</p>
+<p>And if you try to add all files to command line:</p>
+<pre><code>rg &quot;pattern&quot; C:/longpath1/file1 C:/longpath2/file2 ... C:/longpath200/file200</code></pre>
+<p>then it exceeds maximum command length and doesn't work.</p>
+<p>I want to search all vimhelp files provided in vim runtime path and there are a lot of files (including various plugin documentation).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @BurntSushi on 2020-11-09 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-09 12:27</div>
+            <div class="timeline-body"><p>I'm re-opening this because it seems impossible or difficult to work around this when xargs is not present.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-09 12:28</div>
+            <div class="timeline-body"><p>What should the flag name for this be? <code>--files-from</code> has been proposed. Is that the best name?</p>
+<p>Also, should files specified via this method be subject to smart filtering or globs? Files specified on the command line are not, so I would think these shouldn't be either. That is, files to be searched via this method should act as if they were given on the command line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2020-11-09 12:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngirard">@ngirard</a> on 2020-11-09 13:32</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm re-opening this because it seems impossible or difficult to work around this when xargs is not present.</p>
+</blockquote>
+<p>That's a great news !</p>
+<blockquote>
+<p>What should the flag name for this be? <code>--files-from</code> has been proposed. Is that the best name?</p>
+</blockquote>
+<p>I proposed <code>files-from</code> after Tar:</p>
+<pre><code class="language-sh">man tar|rg -s -A8 -- '-T, --files-from'
+
+       -T, --files-from=FILE
+              Get names to extract or create from FILE.
+
+              Unless specified otherwise, the FILE must contain a list of names separated by ASCII LF (i.e. one name per line).  The names read are handled the same way as command line arguments.  They  undergo  quote  removal  and
+              word splitting, and any string that starts with a - is handled as tar command line option.
+
+              If this behavior is undesirable, it can be turned off using the --verbatim-files-from option.
+
+              The --null option instructs tar that the names in FILE are separated by ASCII NUL character, instead of LF.  It is useful if the list is generated by find(1) -print0 predicate.
+</code></pre>
+<blockquote>
+<p>Files specified on the command line are not, so I would think these shouldn't be either.</p>
+</blockquote>
+<p>Seconded.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2020-11-09 15:31</div>
+            <div class="timeline-body"><p><code>file</code>, <code>rsync</code>, and (as mentioned in the OP) <code>ack</code> also use <code>--files-from</code>.</p>
+<p><code>file</code> basically treats the paths as if they were given on the command line. <code>rsync</code> treats them kind of like includes relative to the source directory, but it also applies include/exclude patterns to them. <code>ack</code> treats them like how <code>rg</code> would treat paths given on the command line — glob patterns and type filters don't apply to them. I guess that's a strong precedent</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-09 15:36</div>
+            <div class="timeline-body"><p>@okdana Aye. I also think that if the list of files is given explicitly like this, then users can use other mechanisms of filtering very easily before passing the file to ripgrep. For example, you might use <code>git ls-files</code> to get a list of files tracked by git instead of needing to rely on ripgrep's smart filtering.</p>
+<p>And also, come to think of it, if we did allow gitignore or other filters to apply to the list of files given, that would probably prevent this feature from being implemented in any reasonable time frame. gitignore matching, for example, is pretty heavily coupled to directory traversal. Applying <code>-g/--glob</code> rules would probably be easy though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timotheecour">@timotheecour</a> on 2020-11-09 16:52</div>
+            <div class="timeline-body"><ul>
+<li>I don't care much about the name of the flag so long these work:</li>
+</ul>
+<pre><code>find / | rg pattern --file-from
+rg --file-from=FILE
+</code></pre>
+<ul>
+<li><code>find / | rg pattern --file-from</code> should start processing right away in a streaming fashion, and not wait for stdin to be closed (likewise with <code>rg --file-from=FILE</code>)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-09 16:56</div>
+            <div class="timeline-body"><p>@timotheecour I would expect you to have to write <code>find / | rg pattern --files-from -</code>, where the <code>-</code> is an idiom for opening stdin.</p>
+<p>Executing the search before stdin is closed is interesting. That will require some re-factoring inside ripgrep, since right now, it stores the complete set of paths to search in memory. (Because it was always in memory via CLI arguments.) I agree that streaming is probably the right option, although that may be an enhancement that comes after the initial feature lands, depending on how difficult that refactoring is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timotheecour">@timotheecour</a> on 2020-11-09 17:20</div>
+            <div class="timeline-body"><blockquote>
+<p>enhancement that comes after the initial feature lands</p>
+</blockquote>
+<p>totally fine, then let's keep this issue open till then :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-09 17:31</div>
+            <div class="timeline-body"><p>No, if that happens, then I'll close this issue and open a new one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vovcacik">@vovcacik</a> on 2021-10-29 20:50</div>
+            <div class="timeline-body"><p>Using xargs adds few seconds to the execution time when the file list contains 20 000 paths. <code>xargs.exe -a &quot;%tmp%\filelist.txt&quot; -d '\n' rg foobar</code>. Its fine, but ripgrep itself is way faster on the same directory tree that filelist.txt was generated from. I am using <code>fzf</code> to select the files to search in for ripgrep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dgutov">@dgutov</a> on 2022-04-17 02:59</div>
+            <div class="timeline-body"><p>Another possible motivation is that using <code>xargs</code> leads to non-optimal performance. E.g. inside a checkout of <a href="https://github.com/mozilla/gecko-dev/">gecko-dev</a>,</p>
+<pre><code class="language-sh">$ time git ls-files -z | xargs -0 rg symlinks &gt;/dev/null
+_______________________________________________________
+Executed in    1,99 secs    fish           external
+   usr time    2,64 secs  434,00 micros    2,64 secs
+   sys time    2,67 secs   88,00 micros    2,67 secs
+</code></pre>
+<p>but if I just add <code>-P4</code> to <code>xargs</code>'s arguments, the performance improves dramatically:</p>
+<pre><code class="language-sh">$ time git ls-files -z | xargs -0 -P4 rg symlinks &gt;/dev/null
+________________________________________________________
+Executed in  811,66 millis    fish           external
+   usr time    3,41 secs      0,00 millis    3,41 secs
+   sys time    3,26 secs      1,77 millis    3,25 secs
+</code></pre>
+<p>That's a more than 2x improvement.</p>
+<p>IIUC the <code>-P</code> option is unsafe to use (can lead to broken mixing of outputs), but it should demonstrate that somewhere inside the processing gets parallelized poorly. And it's not like there can be a lot of lock contention during output: the result is only 500 lines for this example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/safinaskar">@safinaskar</a> on 2023-02-14 14:26</div>
+            <div class="timeline-body"><p>@BurntSushi , let me share big feedback on using <code>rg</code> (especially <code>xargs rg</code>). I hope this post will be useful for you and for other people using <code>xargs rg</code>. My rg version is 13.0.0.</p>
+<p>Several years ago I started writing script called <code>host-find</code> for searching my home directory. My task was very special: this script should skip all Chrome profiles (Chrome profile is any directory, which has <code>NativeMessagingHosts</code> subdirectory) and skip all git submodules (git submodule is any directory, which has <code>.git</code> regular file as opposed to <code>.git</code> directory). (Of course, this is very special task, so I'm not asking for adding this to rg.)</p>
+<p>So I wrote C++ program called <code>my-find</code> which prepares file list I need. And then I wrote bash script <code>host-find</code>, which essentially does <code>my-find ... | xargs ... grep --color=always ... | less -R</code> (actual command line is bigger, of course).</p>
+<p>And this <code>host-find</code> did its functions well for some years. But yesterday I decided to speed up it, so I decided to replace grep with rg.</p>
+<p>First of all I needed to know whether <code>rg</code> can read file list from stdin (so that I can remove <code>xargs</code>). I found this bug report (i. e. https://github.com/BurntSushi/ripgrep/issues/273 ), so it seems it cannot. So I decided to use <code>xargs rg</code>.</p>
+<p>Then I needed to know what rg options make rg fully compatible with grep (so that I can simply replace <code>grep</code> with <code>rg</code> in my command line). I have read README, FAQ and <code>rg --help</code>. All this texts (at first sight) say that <code>rg -uuu</code> is similar to <code>grep -r</code>. But I kept reading and doing experiments and found that this is lie! It turned out that <code>grep</code> always keeps order of files supplied as arguments intact. But <code>rg</code> can reorder them. (And I need predictable order!). So:</p>
+<p><strong>Bug # 1</strong>. Docs may be interpreted as saying that <code>rg -uuu</code> is equivalent to <code>grep -r</code>, but this is not true.</p>
+<p>It would be great if <code>rg</code> docs will present some <code>rg</code> command, which will be fully compatible with <code>grep</code>.</p>
+<p>Moreover:</p>
+<p><strong>Bug # 2</strong>. I was unable to find a way to keep argument order intact. <code>rg -j 1</code> seems to work, but this is not documented.</p>
+<p>Fortunately, <code>my-find</code> outputs files in sorted order, so I simply added <code>--sort=path</code> to <code>rg</code> invocation. But here lies another problem: what exactly &quot;sorted&quot; means? <code>my-find</code> employs very particular sorting order: is splits path to parts and then sorts resulting word arrays lexicographically. In other words, <code>my-find</code> sorts path in this order:</p>
+<pre><code class="language-text">a/a
+a+
+a0
+</code></pre>
+<p>What order <code>rg --sort=path</code> uses? (Remember that I use <code>xargs rg</code>, so <code>rg</code> may be invoked many times!) If it uses different order, this will mean that files will be sorted using one method inside one <code>rg</code> invocation, but sorted using different method between <code>rg</code> invocations (inside one <code>xargs</code> invocation).</p>
+<p>So I did experiments and fortunately I found that <code>rg --sort=path</code> sorting is compatible with <code>my-find</code> sorting. But this is not documented and I reported this separately. So:</p>
+<p><strong>Bug # 3</strong>. I reported it here: https://github.com/BurntSushi/ripgrep/issues/2418</p>
+<hr />
+<p>When <code>rg</code> output is redirected and you use <code>-B</code> and <code>-A</code> options (it is redirected to <code>less</code> in my case and I actually use <code>-B</code> and <code>-A</code>), <code>rg</code> inserts <code>--</code> between found matches. But <code>--</code> is not inserted between different invocations of <code>rg</code> inside one <code>xargs</code> invocation. But I found solution: just add <code>--heading</code>. So:</p>
+<p><strong>Advice for xargs users</strong>. Add <code>--heading</code>.</p>
+<p>But what if particular <code>rg</code> invocation will get exactly one file? Then heading will not be displayed. So:</p>
+<p><strong>Advice for xargs users</strong>. Add <code>/dev/null</code>. I. e.: <code>xargs ... rg &quot;$REGEX&quot; /dev/null</code>. Heading will be always displayed.</p>
+<hr />
+<p>Some my files have actual <code>--</code> in them. So it is impossible to distinguish real &quot;--&quot; with rg-generated one (when using <code>-B</code>, <code>-A</code> and <code>--heading</code>). Because rg-generated <code>--</code> is colorless even when I pass <code>--color=always</code>. So:</p>
+<p><strong>Bug # 4</strong>. <code>--</code> is colorless even in color mode</p>
+<p>I found a workaround:</p>
+<p><strong>General advice</strong>. Pass <code>--line-number</code> when using <code>-B</code> (or <code>-A</code>) and <code>--heading</code></p>
+<hr />
+<p>I have read rg changelog and found that rg sometimes does breaking changes. So I added to my script this:</p>
+<pre><code class="language-bash">if [ &quot;$(rg --version | head -n 1)&quot; != &quot;ripgrep 13.0.0&quot; ]; then
+  echo &quot;${0##*/}: rg problems&quot; &gt;&amp;2
+  exit 1
+fi
+</code></pre>
+<hr />
+<p>Actual <code>rg</code> invocation in my <code>host-find</code> script looks similar to this:</p>
+<pre><code class="language-bash">my-find ... | { xargs -d '\n' --no-run-if-empty -- rg -uuu --heading --color=always --no-messages -B 10 -A 10 --no-config --sort=path --line-number -- &quot;$REGEX&quot; /dev/null || :; } | less -R
+</code></pre>
+<p>Notes:</p>
+<ul>
+<li><code>-d '\n'</code> mean that <code>xargs</code> should not apply special processing to its input. <code>xargs</code> should simply split lines and do nothing else</li>
+<li><code>--no-run-if-empty</code> - it seems this option is not needed, because I already passed <code>/dev/null</code> to <code>rg</code>. But I pass <code>--no-run-if-empty</code> just in case</li>
+<li>It seems <code>-uuu</code> is not needed, because I pass files themselves to <code>rg</code>. But, again, I pass <code>-uuu</code> just in case</li>
+<li>I passed <code>--no-messages</code>, because sometimes I have no read permission</li>
+<li>I pass <code>--</code> before <code>&quot;$REGEX&quot;</code>, because regex may begin with <code>-</code></li>
+<li>If any <code>rg</code> invocation doesn't find matches, <code>rg</code> will return 1. Thus <code>xargs</code> will return non-zero. And my script will fail, because it has <code>set -e</code>. So I added <code>|| :</code></li>
+</ul>
+<hr />
+<p>So I eventually overcame all <code>xargs rg</code> quirks. I actually got speed up. :) New version of <code>host-find</code> works for 10.48 s on my data. Previous (grep-based) version worked 60.53 s on same data. (<code>rg</code> is single threaded because of <code>--sort=path</code>, so multi threaded version will be even faster.)</p>
+<p>All these bugs are subjective, so I didn't report most of them as separate reports. But if you ( @BurntSushi ) want, I will do this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-02-14 14:44</div>
+            <div class="timeline-body"><p>Thanks for the feedback but in the future, please just file a new issue instead of attaching to an existing one. The vast majority of your comment is irrelevant to his issue.</p>
+<p>Also, most of the problems you ran into are also quirks of grep. The <code>--</code> issue for example and the heading issue. You could just do <code>--no-heading</code> and get grep output format, for example.</p>
+<p>To comment specifically on a couple things...</p>
+<blockquote>
+<p><strong>Bug # 1</strong>. Docs may be interpreted as saying that <code>rg -uuu</code> is equivalent to <code>grep -r</code>, but this is not true.</p>
+</blockquote>
+<p>The README says, &quot;Automatic filtering can be disabled with rg -uuu.&quot; And that's not a lie. And the docs for the <code>-u</code> flag say:</p>
+<pre><code>    -u, --unrestricted
+            Reduce the level of &quot;smart&quot; searching. A single -u won't respect .gitignore
+            (etc.) files (--no-ignore). Two -u flags will additionally search hidden files
+            and directories (-./--hidden). Three -u flags will additionally search binary
+            files (--binary).
+
+            'rg -uuu' is roughly equivalent to 'grep -r'.
+</code></pre>
+<p>And in context, that is absolutely correct. It obviously doesn't mean that <code>rg -uuu</code> is <a href="https://github.com/BurntSushi/ripgrep/blob/master/FAQ.md#posix4ever">precisely equivalent to <code>grep -r</code> in literally every possible way</a>. It means that ripgrep will search the same set of files.</p>
+<blockquote>
+<p>It would be great if <code>rg</code> docs will present some <code>rg</code> command, which will be fully compatible with <code>grep</code>.</p>
+</blockquote>
+<p>It never will because ripgrep never was, is or will be fully compatible with grep. Once again: https://github.com/BurntSushi/ripgrep/blob/master/FAQ.md#posix4ever</p>
+<blockquote>
+<p><strong>Bug # 2</strong>. I was unable to find a way to keep argument order intact. <code>rg -j 1</code> seems to work, but this is not documented.</p>
+</blockquote>
+<p>It's not documented because it's not guaranteed. <a href="https://pubs.opengroup.org/onlinepubs/9699919799/utilities/grep.html">No such documentation exists for grep either.</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eyalk11">@eyalk11</a> on 2023-08-25 17:35</div>
+            <div class="timeline-body"><p>Another motivation is that using it inside vim with git ls files is really cumbersome and not os dependent.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:57 UTC
+    </footer>
+</body>
+</html>

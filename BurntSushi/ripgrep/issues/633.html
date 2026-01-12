@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File list performance with symlinks on Windows - BurntSushi/ripgrep #633</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>File list performance with symlinks on Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/633">#633</a>
+        opened by <a href="https://github.com/chrmarti">@chrmarti</a>
+        on 2017-10-10 22:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chrmarti">@chrmarti</a></div>
+            <div class="timeline-body"><p>I'm investigating a report that listing files (<code>--files</code>) on Windows when following symlinks (<code>--follow</code>) takes much more time than without symlinks.</p>
+<p>It appears that in some cases <code>cnpm</code> (an <code>npm</code> replacement) uses symlinks to organize the <code>node_modules</code> folder and that then slows down ripgrep. (https://github.com/Microsoft/vscode/issues/35659#issuecomment-335535129 has an example <code>package.json</code> that when installed using <code>cnpm i</code> reproduces the problem.)</p>
+<p>Looking at the trace in Process Monitor I see many files being opened for reading metadata in <code>DirEntryRaw:from_link</code> and to detect loops in same_file's <code>Handle::from_path</code>.</p>
+<p>One area where this might be improved is where <code>check_symlink_loop()</code> loops over parent directories of each symlinked directory, causing is_same_file to open the same parent directory once for each of its symlinked subdirectories. Maybe a directory's id could be cached for the duration of its content being traversed?</p>
+<p>/cc @roblourens</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrmarti">@chrmarti</a> on 2017-10-10 22:12</div>
+            <div class="timeline-body"><p>From a recording in Process Monitor:
+<img src="https://user-images.githubusercontent.com/9205389/31413294-6afa6288-adcd-11e7-9e45-89451e310c8e.png" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-10 22:21</div>
+            <div class="timeline-body"><blockquote>
+<p>Maybe a directory's id could be cached for the duration of its content being traversed?</p>
+</blockquote>
+<p>AFAIK, this is technically incorrect. See this comment here: https://github.com/BurntSushi/same-file/blob/master/src/win.rs#L19-L58</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrmarti">@chrmarti</a> on 2017-10-10 22:51</div>
+            <div class="timeline-body"><p>Maybe the cache could keep the directories open to avoid the filesystem reusing the index numbers. That shouldn't be too expensive, because for each 'cursor' (not sure if it's all threads) in the traversal you'd only need to keep the parent directories open which should be few.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-21 04:13</div>
+            <div class="timeline-body"><p>I have an attempt at fixing this here: https://github.com/BurntSushi/walkdir/pull/85/commits/5bcc5b87ee08a58a7f2a7ef4b1d23392b55155bb --- It's in the directory traversal library, so I still need to pull it into ripgrep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-10-22 02:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-22 12:11</div>
+            <div class="timeline-body"><p>This should be fixed in ripgrep 0.7.0. I didn't actually test that it resolves the performance problem, but the symlink loop checking should be opening far fewer file handles. We can definitely re-open this if it's still a problem (and having an easy to use test corpus to try this on would be a huge help, e.g., what steps can I take with <code>cnpm</code> to setup a directory big enough to notice this problem).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @BurntSushi on 2017-10-22 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-22 14:36</div>
+            <div class="timeline-body"><p>Unfortunately, I had to partially revert the optimization for the parallel iterator, which is used by default in ripgrep. The problem is that hanging on to file handles in the parallel iterator can cause file descriptor limits to be exceeded quite easily since many directories are being traversed in parallel. I say &quot;partially&quot; revert because we are at least keeping the same child handle open while walking up the ancestor path, but unfortunately, we are still opening a handle to each ancestor in that loop.</p>
+<p>If ripgrep is run with a single thread (<code>-j1</code>), then it will use the standard <code>walkdir</code> iterator, which still retains this optimization in full. So we should at least be able to test with that to see if this is the optimization that fixes this issue, and if so, brainstorm solutions for the parallel iterator.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrmarti">@chrmarti</a> on 2017-10-24 17:42</div>
+            <div class="timeline-body"><p>Great, thanks @BurntSushi! When testing it I see it panicking after a few (maybe unrelated) errors:</p>
+<pre><code>PS C:\devel\35659\cipchk&gt; (Measure-Command { &amp; 'C:\devel\ripgrep\target\debug\rg.exe' --files --no-ignore --hidden --follow -j1 -- . | Measure-Object –Line | Out-Default }).TotalSeconds
+File system loop found: .\node_modules\babel-core\node_modules\babel-register\node_modules\babel-core points to an ancestor .\node_modules\babel-core
+.\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-template\node_modules\babel-traverse\node_modules\babel-messages\node_modules\babel-runtime\node_modules\core-js\library\fn\dom-collections: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-template\node_modules\babel-traverse\node_modules\babel-messages\node_modules\babel-runtime\node_modules\core-js\library\fn\function\virtual: The system cannot find the path specified. (os error 3)
+.\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-template\node_modules\babel-traverse\node_modules\babel-messages\node_modules\babel-runtime\node_modules\core-js\library\fn\number\virtual: The system cannot find the path specified. (os error 3)
+.\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-template\node_modules\babel-traverse\node_modules\babel-messages\node_modules\babel-runtime\node_modules\core-js\library\fn\string\virtual: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\fn\array\virtual: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\fn\dom-collections: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\fn\function\virtual: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\fn\number\virtual: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\fn\string\virtual: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\array: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\date: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\dom-collections: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\error: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\function: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\json: The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\map: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\math: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\number: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\object: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\promise: The system cannot find the path specified. (os error 3)
+thread 'main' panicked at 'BUG: list/path stacks out of sync', src\libcore\option.rs:819:4
+note: Run with `RUST_BACKTRACE=1` for a backtrace.
+
+ Lines Words Characters Property
+ ----- ----- ---------- --------
+243633
+
+
+11.98369
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-24 17:47</div>
+            <div class="timeline-body"><p>@chrmarti Thanks! Few questions:</p>
+<ol>
+<li>Does that happen with ripgrep 0.6.0?</li>
+<li>Can you run it with <code>RUST_BACKTRACE=1</code>?</li>
+<li>Would it be possible to list out the steps I'd need to follow to reproduce your results?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrmarti">@chrmarti</a> on 2017-10-24 17:53</div>
+            <div class="timeline-body"><p>This is from running https://github.com/BurntSushi/ripgrep/commit/1aec4b11231ccb7de92e3008408e4d06a714d106 . A simple reproducible case on my machine is:</p>
+<pre><code>cnpm i babel-preset-es2015
+&amp; 'C:\devel\ripgrep\target\debug\rg.exe' --files --follow -j1 -- . | Measure-Object –Line
+</code></pre>
+<p>The full output with this and <code>RUST_BACKTRACE=1</code> is:</p>
+<pre><code>PS C:\devel\35659\panick&gt; &amp; 'C:\devel\ripgrep\target\debug\rg.exe' --files --follow -j1 -- . | Measure-Object –Line
+.\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-template\node_modules\babel-traverse\node_modules\babel-messages\node_modules\babel-runtime\node_modules\core-js\library\fn\dom-collections: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-template\node_modules\babel-traverse\node_modules\babel-messages\node_modules\babel-runtime\node_modules\core-js\library\fn\function\virtual: The system cannot find the path specified. (os error 3)
+.\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-template\node_modules\babel-traverse\node_modules\babel-messages\node_modules\babel-runtime\node_modules\core-js\library\fn\number\virtual: The system cannot find the path specified. (os error 3)
+.\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-template\node_modules\babel-traverse\node_modules\babel-messages\node_modules\babel-runtime\node_modules\core-js\library\fn\string\virtual: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\fn\array\virtual: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\fn\dom-collections: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\fn\function\virtual: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\fn\number\virtual: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\fn\string\virtual: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\array: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\date: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\dom-collections: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\error: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\function: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\json: The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\map: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\math: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\number: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\object: The system cannot find the path specified. (os error 3)
+The system cannot find the path specified. (os error 3)
+.\node_modules\babel-plugin-transform-es2015-classes\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-helper-get-function-arity\node_modules\babel-runtime\node_modules\core-js\library\fn\promise: The system cannot find the path specified. (os error 3)
+thread 'main' panicked at 'BUG: list/path stacks out of sync', src\libcore\option.rs:819:4
+stack backtrace:
+   0: std::sys_common::backtrace::_print
+             at C:\projects\rust\src\libstd\sys_common\backtrace.rs:94
+   1: std::panicking::default_hook::{{closure}}
+             at C:\projects\rust\src\libstd\panicking.rs:379
+   2: std::panicking::default_hook
+             at C:\projects\rust\src\libstd\panicking.rs:396
+   3: std::panicking::rust_panic_with_hook
+             at C:\projects\rust\src\libstd\panicking.rs:611
+   4: std::panicking::begin_panic_new&lt;alloc::string::String&gt;
+             at C:\projects\rust\src\libstd\panicking.rs:553
+   5: std::panicking::begin_panic_fmt
+             at C:\projects\rust\src\libstd\panicking.rs:521
+   6: std::panicking::rust_begin_panic
+             at C:\projects\rust\src\libstd\panicking.rs:497
+   7: core::panicking::panic_fmt
+             at C:\projects\rust\src\libcore\panicking.rs:92
+   8: core::option::expect_failed
+             at C:\projects\rust\src\libcore\option.rs:819
+   9: core::option::Option&lt;walkdir::Ancestor&gt;::expect&lt;walkdir::Ancestor&gt;
+             at C:\projects\rust\src\libcore\option.rs:302
+  10: walkdir::IntoIter::pop
+             at C:\Users\chrmarti\.cargo\registry\src\github.com-1ecc6299db9ec823\walkdir-2.0.1\src\lib.rs:867
+  11: walkdir::{{impl}}::next
+             at C:\Users\chrmarti\.cargo\registry\src\github.com-1ecc6299db9ec823\walkdir-2.0.1\src\lib.rs:663
+  12: ignore::walk::{{impl}}::next::{{closure}}
+             at C:\devel\ripgrep\ignore\src\walk.rs:820
+  13: core::option::Option&lt;core::result::Result&lt;walkdir::DirEntry, walkdir::Error&gt;&gt;::or_else&lt;core::result::Result&lt;walkdir::DirEntry, walkdir::Error&gt;,closure&gt;
+             at C:\projects\rust\src\libcore\option.rs:658
+  14: ignore::walk::{{impl}}::next::{{closure}}
+             at C:\devel\ripgrep\ignore\src\walk.rs:736
+  15: core::option::Option&lt;&amp;mut ignore::walk::WalkEventIter&gt;::and_then&lt;&amp;mut ignore::walk::WalkEventIter,core::result::Result&lt;ignore::walk::WalkEvent, walkdir::Error&gt;,closure&gt;
+             at C:\projects\rust\src\libcore\option.rs:605
+  16: rg::run_files_one_thread
+             at C:\devel\ripgrep\src\main.rs:226
+  17: rg::run
+             at C:\devel\ripgrep\src\main.rs:75
+  18: core::ops::function::FnOnce::call_once&lt;fn(alloc::arc::Arc&lt;rg::args::Args&gt;) -&gt; core::result::Result&lt;u64, alloc::boxed::Box&lt;Error&gt;&gt;,(alloc::arc::Arc&lt;rg::args::Args&gt;)&gt;
+             at C:\projects\rust\src\libcore\ops\function.rs:143
+  19: core::result::Result&lt;alloc::arc::Arc&lt;rg::args::Args&gt;, alloc::boxed::Box&lt;Error&gt;&gt;::and_then&lt;alloc::arc::Arc&lt;rg::args::Args&gt;,alloc::boxed::Box&lt;Error&gt;,u64,fn(alloc::arc::Arc&lt;rg::args::Args&gt;) -&gt; core::result::Result&lt;u64, alloc::boxed::Box&lt;Error&gt;&gt;&gt;
+             at C:\projects\rust\src\libcore\result.rs:602
+  20: rg::main
+             at C:\devel\ripgrep\src\main.rs:58
+  21: panic_unwind::__rust_maybe_catch_panic
+             at C:\projects\rust\src\libpanic_unwind\lib.rs:98
+  22: std::rt::lang_start
+             at C:\projects\rust\src\libstd\rt.rs:52
+  23: main
+  24: __scrt_common_main_seh
+             at f:\dd\vctools\crt\vcstartup\src\startup\exe_common.inl:253
+  25: BaseThreadInitThunk
+
+ Lines Words Characters Property
+ ----- ----- ---------- --------
+164666
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrmarti">@chrmarti</a> on 2017-10-30 17:54</div>
+            <div class="timeline-body"><p>Btw., would it be an option to say that duplicate/missing results are unlikely and not fatal when you don't keep the files open while comparing ids? Maybe that could be enabled by a command line flag?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-30 17:56</div>
+            <div class="timeline-body"><p>@chrmarti That thought has crossed my mind, and it is tempting to take. It's a tough balance to strike, and I'd rather not make something like this configurable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-01 02:07</div>
+            <div class="timeline-body"><p>@chrmarti It looks like your <a href="https://github.com/BurntSushi/ripgrep/issues/633#issuecomment-339076246">comment containing the panic</a> isn't actually related to symlinks, but rather, the length of the path name. As an example, I tried running this in <code>cmd</code>:</p>
+<pre><code>$ dir C:\Users\andrew\work\bugs\ripgrep-633\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-template\node_modules\babel-traverse\node_modules\babel-messages\node_modules\babel-runtime\node_modules\core-js\library\fn\reflect
+</code></pre>
+<p>This told me the directory couldn't be found. I then removed the <code>\reflect</code> suffix and ran:</p>
+<pre><code>$ dir C:\Users\andrew\work\bugs\ripgrep-633\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-template\node_modules\babel-traverse\node_modules\babel-messages\node_modules\babel-runtime\node_modules\core-js\library\fn
+</code></pre>
+<p>This showed me the contents of the directory, which included a <code>reflect</code> sub-directory. I then tried cd'ing into <code>fn</code> and running <code>dir reflect</code>, but I got the same error. I then tried this:</p>
+<pre><code>$ dir \\?\C:\Users\andrew\work\bugs\ripgrep-633\node_modules\babel-helper-define-map\node_modules\babel-helper-function-name\node_modules\babel-template\node_modules\babel-traverse\node_modules\babel-messages\node_modules\babel-runtime\node_modules\core-js\library\fn\reflect
+</code></pre>
+<p>My understanding is that the <code>\\?\</code> prefix permits the use of long path names, and this did indeed work. To me this implies that one of the bugs here is #364. With that said, ripgrep absolutely should not panic, so that's <em>another</em> bug.</p>
+<p>I did a little more investigation in the <code>node_modules</code> directory, and it's... kind of ridiculous. ripgrep doesn't just slow down on Windows, it also slows on Linux, and for good reason. Running against <code>cnpm</code>:</p>
+<pre><code>$ time rg --files -L -uu -j1 ./ | wc -l
+2175424
+
+real    0m4.899s
+user    0m1.938s
+sys     0m5.431s
+</code></pre>
+<p>And now running against <code>npm</code> (specifically, the result of <code>npm i babel-preset-es2015</code>):</p>
+<pre><code>$ time rg --files -L -uu -j1 ./ | wc -l
+3128
+
+real    0m0.019s
+user    0m0.004s
+sys     0m0.023s
+</code></pre>
+<p>So <code>cnpm</code> is adding over 2.1 million additional file entries. (On Windows, I get only ~1.3 million entries, likely because ripgrep doesn't descend beyond the maximum file path length.) That's a <strong>three order of magnitude</strong> increase. To ground you a bit, the entire Linux kernel source tree is a mere 56,919 files while the entire chromium repository is 234,000 files. Something seems very wrong in <code>cnpm</code> land, and I'm not sure ripgrep is going to be able to do much to improve the situation. (If anything, the long path name bug is probably helping matters here by preventing ripgrep from exploring the entire tree.) Note that you might want to make sure your stderr handling is decent on your end, since ripgrep is emitting lots of errors.</p>
+<p>I compared ripgrep's time to traverse the directory with parallelism enabled (because the single threaded walker has the bug you found) with the time it takes for <code>find</code> to run under cygwin on my Windows laptop. (Windows 10, 128GB SSD.) I redirected both programs to another file. <code>find</code> found more entries (seemingly because it handles long path names? but it reported a similar number as <code>find</code> does on my Linux machine). ripgrep took about 20 seconds while <code>find</code> took almost <strong>9 minutes</strong>. This isn't a surprise because the total output of <code>find</code> is almost a gigabyte while ripgrep's is about 25% of that. So you have hundreds of megabytes flowing through your pipe any time you try to crawl a cnpm produced <code>node_modules</code> directory with <code>-L/--follow</code> enabled. Just from eyeballing, it kind of seems like ripgrep's performance with respect to symlinks specifically is actually pretty decent. But there is just a metric shit ton of them.</p>
+<p>So here's my summary:</p>
+<ul>
+<li>ripgrep can't handle long path names. That's a problem and I don't really know how to fix it. See #364.</li>
+<li>There is a bug in single threaded directory traversal on Windows. I haven't dug into this yet, but it should definitely get fixed.</li>
+<li>If ripgrep is going to print hundreds of MB worth of file paths, you're probably in for a bad time.</li>
+<li>I am by no means a Windows expert, so my intuition here could be way off. Please be on the look out for very basic mistakes on my part, and be skeptical of anything I say w.r.t. to Windows. :-)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-01 02:07</div>
+            <div class="timeline-body"><p>cc @roblourens</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-01 02:10</div>
+            <div class="timeline-body"><p>w.r.t. long file names, @retep998 <a href="https://github.com/BurntSushi/ripgrep/issues/364#issuecomment-280148931">claims that I can enable a switch in a manifest</a> to turn on long file name support in Windows 10, but I don't understand how to do that. That would certainly be easier than doing path conversion manually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrmarti">@chrmarti</a> on 2018-02-01 07:27</div>
+            <div class="timeline-body"><p>@BurntSushi Makes sense, thanks for the detailed explanation!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/roblourens">@roblourens</a> on 2018-02-01 16:08</div>
+            <div class="timeline-body"><blockquote>
+<p>So cnpm is adding over 2.1 million additional file entries.</p>
+</blockquote>
+<p>Wow. I'm guessing this is because of duplicates in the node_modules tree. Common dependencies are probably symlinked in multiple times, everywhere they are required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-02-01 22:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-01 22:12</div>
+            <div class="timeline-body"><p>@chrmarti All right, I've fixed <code>walkdir</code> and updated ripgrep to bring in the new <code>walkdir</code> release which should fix the panic you reported above.</p>
+<p>I'm going to mark this issue as fixed since I think all issues that I'm aware of are either fixed (the panic is fixed and I think symlink performance is reasonable) or tracked elsewhere (e.g., #364 for long path names).</p>
+<p>I'd be happy to revisit the symlink performance issue if there's compelling evidence that we can do measurably better. A good example there might be showing the execution of another tool that can 1) successfully traverse <code>cnpm</code>'s <code>node_modules</code> directory contents and 2) print every file path that it visits and 3) doing it in a way that is faster than ripgrep today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/warpdesign">@warpdesign</a> on 2018-02-13 10:22</div>
+            <div class="timeline-body"><p>I am using VS Code and the last version has a performance <a href="https://github.com/Microsoft/vscode/issues/35659">bug</a> which seems to be related to this one.</p>
+<p>I downgraded to RG version <code>0.6.0</code> and the performance problem is gone.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-13 12:07</div>
+            <div class="timeline-body"><p>@warpdesign Thanks for the tip! Unfortunately, it doesn't really help. We need more details. Could you please open a new bug and fill in the issue template? Please remember that this is the ripgrep repo, and bugs should be reported against ripgrep using <code>rg</code> commands.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2018-02-20 12:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:18 UTC
+    </footer>
+</body>
+</html>

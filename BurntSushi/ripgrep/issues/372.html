@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home as git repo: troubles with ignore files - BurntSushi/ripgrep #372</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Home as git repo: troubles with ignore files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/372">#372</a>
+        opened by <a href="https://github.com/mllg">@mllg</a>
+        on 2017-02-21 09:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mllg">@mllg</a></div>
+            <div class="timeline-body"><p>I've set up my $HOME as git repository to manage my dotfiles. Thus, I ignore all files via <code>~/.gitignore</code> and force-add the config files I want to track with git.</p>
+<p>This now causes some troubles:</p>
+<ol>
+<li>If I am in a project directory with its own gitignore/ignore files, I obviously want to use them, so I just call <code>rg [pattern]</code> which then works nicely out of the box.</li>
+<li>If I am in a directory without any ignore files, the parent ignore file in $HOME is parsed and I have to use <code>rg -u [pattern]</code> to avoid this. If rg now descents down into subdirectories with ignore files, these are also not parsed.</li>
+<li>If I un-ignore all files via <code>!*</code> in <code>~/.ignore</code>, all files are searched, including hidden files (which I can filter out by ignoring them again with <code>.*</code> in <code>~/.ignore</code>) and binary files (which I can not filter out).</li>
+</ol>
+<p>I was hoping to find a way to have <code>rg</code> act identical in all directories, i.e. the same way as <code>~/.gitignore</code> would not exist. I've tried adding <code>^.gitignore</code> into <code>~/.ignore</code> but this did not help.</p>
+<p>Is there an option I've overlooked to achieve this behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-21 11:55</div>
+            <div class="timeline-body"><blockquote>
+<p>If I am in a directory without any ignore files, the parent ignore file in $HOME is parsed and I have to use rg -u [pattern] to avoid this. If rg now descents down into subdirectories with ignore files, these are also not parsed.</p>
+</blockquote>
+<p>Yup, this is intended behavior. This isn't something that ripgrep imposes. These are the semantics of <code>gitignore</code> matching as described in <code>man gitignore</code>.</p>
+<p>A very simple work-around is to run <code>rg [pattern] *</code>, which will override your <code>$HOME/.gitignore</code> because the paths are explicitly provided.</p>
+<blockquote>
+<p>If I un-ignore all files via <code>!*</code> in ~/.ignore, all files are searched, including hidden files (which I can filter out by ignoring them again with <code>.*</code> in ~/.ignore) and binary files (which I can not filter out).</p>
+</blockquote>
+<p>You might try something like <code>![!.]*</code> in your <code>$HOME/.ignore</code> to whitelist all non-hidden files, although I suppose this large achieves the same thing as adding <code>!*</code> and <code>.*</code>.</p>
+<p>Binary files should be automatically filtered out even if they aren't in your <code>.gitignore</code>. Are you seeing something different?</p>
+<blockquote>
+<p>I was hoping to find a way to have rg act identical in all directories, i.e. the same way as ~/.gitignore would not exist. I've tried adding ^.gitignore into ~/.ignore but this did not help.</p>
+</blockquote>
+<p>You could try using <code>--no-ignore-parent</code>, which specifically won't acknowledge <code>.gitignore</code> files in parent directories. The option isn't exactly short, so you'd probably want to create an alias of some sort.</p>
+<p>FWIW, I also have a similar setup as you. I don't often search in my <code>$HOME</code> outside of other git directories, but when I do, I just use <code>rg [pattern] *</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-02-21 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mllg">@mllg</a> on 2017-02-21 12:32</div>
+            <div class="timeline-body"><blockquote>
+<p>A very simple work-around is to run rg [pattern] *, which will override your $HOME/.gitignore because the paths are explicitly provided.</p>
+</blockquote>
+<p>This is probably what I was looking for! :smile:</p>
+<blockquote>
+<p>Binary files should be automatically filtered out even if they aren't in your .gitignore. Are you seeing something different?</p>
+</blockquote>
+<p>You' re right, I should have read the output more carefully. I got tons of additional output complaining about illegal <code>.gitignore</code> files (&quot;invalid use of **; must be one path component&quot;) which were in a large repository in a subdir.</p>
+<blockquote>
+<p>You could try using --no-ignore-parent, which specifically won't acknowledge .gitignore files in parent directories. The option isn't exactly short, so you'd probably want to create an alias of some sort.</p>
+<p>FWIW, I also have a similar setup as you. I don't often search in my $HOME outside of other git directories, but when I do, I just use rg [pattern] *.</p>
+</blockquote>
+<p>Works perfectly for me. Thanks for your answer and thanks for ripgrep!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mllg on 2017-02-21 12:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-21 12:38</div>
+            <div class="timeline-body"><blockquote>
+<p>I got tons of additional output complaining about illegal .gitignore files (&quot;invalid use of **; must be one path component&quot;) which were in a large repository in a subdir.</p>
+</blockquote>
+<p>Ah hmm. Unless there's a bug in ripgrep, that means you have some incorrect rules in your <code>.gitignore</code>. :-) I guess <code>git</code> is probably just not telling you.</p>
+<p>Glad it all worked out!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:04 UTC
+    </footer>
+</body>
+</html>

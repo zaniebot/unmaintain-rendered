@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>improve stdin detection on Windows - BurntSushi/ripgrep #643</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>improve stdin detection on Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/643">#643</a>
+        opened by <a href="https://github.com/stej">@stej</a>
+        on 2017-10-19 09:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/stej">@stej</a></div>
+            <div class="timeline-body"><p>Using version 0.6.0</p>
+<p>I tried to parse some text and for each parsed term to call rg. Something like this (added newlines fo readibility):</p>
+<pre><code>rg -F &quot;.EmailHtml.HandleAttribute&quot; -g 2017-10-18* -B 3 |
+rg &quot;.*? machine (\d+) Back.*&quot; -r &quot;$1&quot; |
+powershell -command &quot;$input | % { rg -g 2017-10-18* \&quot;machine $_ Action \d+\&quot; }&quot;
+</code></pre>
+<p>However, this doesn't work. I'm able to get much more simple example like this:</p>
+<p><code>echo a|powershell -command &quot;d:\prgs\rg.exe -g 2017-10-18* test &quot;</code> doesn't output anything
+<code>powershell -command &quot;d:\prgs\rg.exe -g 2017-10-18* test &quot;</code> - searches for &quot;test&quot; as expected (not that only the <code>echo a|</code> is missing there)</p>
+<p>Does anybody here any idea why rg doesn't work when called from PowerShell when something is sent through pipeline into PowerShell?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-19 11:14</div>
+            <div class="timeline-body"><p>I don't know PowerShell, but from my point of view, your command doesn't really make sense. It seems like you're trying to pipe text into ripgrep to search, but you're still using the <code>-g</code> flag to filter files to search. But if you're searching stdin, it doesn't make sense to filter files.</p>
+<p>If ripgrep is having a problem detecting that it should search stdin, you might consider trying <code>rg test -</code>, where the <code>-</code> forces ripgrep to search stdin.</p>
+<p>Otherwise, you might need to wait for someone who understands PowerShell to respond to this. Sorry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-10-19 11:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stej">@stej</a> on 2017-10-19 12:19</div>
+            <div class="timeline-body"><p>You are right, the first sample doesn't make sense. I didn't notice it because I discovered that I was quickly started following the &quot;pipe&quot; problem.</p>
+<p>It is really question here for anyone with deep inside about how that in PowerShell works. No problem with ripgrep, just asking here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-19 12:35</div>
+            <div class="timeline-body"><p>@stej Did you try using <code>-</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stej">@stej</a> on 2017-10-19 13:13</div>
+            <div class="timeline-body"><p>@BurntSushi just <code>-</code>? In what command?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stej">@stej</a> on 2017-10-19 13:17</div>
+            <div class="timeline-body"><p>Btw. this is for comparison when I tried Process Monitor to check the command line itself</p>
+<p><img src="https://user-images.githubusercontent.com/253560/31772536-550ab30a-b4e0-11e7-978a-154ae01d1855.png" alt="image" /></p>
+<p>and now without the pipe. Output in the console suggests that rg really started searching</p>
+<p><img src="https://user-images.githubusercontent.com/253560/31772597-82c5c546-b4e0-11e7-8d9d-d0f7815a4e66.png" alt="image" /></p>
+<p>The cmdline is the same. PowerShell doesn't change the way how rg is called.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-19 13:33</div>
+            <div class="timeline-body"><p>@stej Instead of <code>echo foo | rg test</code>, try <code>echo foo | rg test -</code>. Please also try running ripgrep with the <code>--debug</code> flag.</p>
+<p>I otherwise don't know how to read your screenshots. Can you interpret them for me?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stej">@stej</a> on 2017-10-20 05:59</div>
+            <div class="timeline-body"><p>After I reread your comments, I realized that I really did simplify the examples too much. It's probably needed do invoke rg in inner pipeline.
+So I rewrote them and added the --debug switch.</p>
+<p><strong>Environment:</strong>
+Directory c:\temp with 3 log files. One of them contains the wanted string &quot;1778071&quot;</p>
+<p><strong>Commands and results:</strong></p>
+<p><code>rg 1778071 --debug</code> - found the lines</p>
+<pre><code>C:\temp&gt;rg 1778071 --debug
+DEBUG:grep::search: regex ast:
+Literal {
+    chars: [
+        '1',
+        '7',
+        '7',
+        '8',
+        '0',
+        '7',
+        '1'
+    ],
+    casei: false
+}
+DEBUG:grep::literals: literal prefixes detected: Literals { lits: [Complete(1778071)], limit_size: 250, limit_class: 10 }
+2017-10-18-09.txt
+61107:2017-10-18 09:36:50.353 DEBUG VM1 1778071 Action 1064692 set Running.
+61108:2017-10-18 09:36:50.769 ERROR VM1 1778071 System.ArgumentException: Illegal characters in path.
+</code></pre>
+<p><code>powershell &quot;rg 1778071 --debug&quot;</code> - found the line</p>
+<pre><code>C:\temp&gt;powershell &quot;rg 1778071 --debug&quot;
+DEBUG:grep::search: regex ast:
+Literal {
+    chars: [
+        '1',
+        '7',
+        '7',
+        '8',
+        '0',
+        '7',
+        '1'
+    ],
+    casei: false
+}
+DEBUG:grep::literals: literal prefixes detected: Literals { lits: [Complete(1778071)], limit_size: 250, limit_class: 10 }
+2017-10-18-09.txt
+61107:2017-10-18 09:36:50.353 DEBUG VM1 1778071 Action 1064692 set Running.
+61108:2017-10-18 09:36:50.769 ERROR VM1 1778071 System.ArgumentException: Illegal characters in path.
+</code></pre>
+<p><code>echo 1778071| powershell &quot;$input | % { rg $_ --debug }&quot;</code> - <strong>didn't find</strong> the line</p>
+<pre><code>C:\temp&gt;echo 1778071| powershell &quot;$input | % { rg $_ --debug }&quot;
+DEBUG:grep::search: regex ast:
+Literal {
+    chars: [
+        '1',
+        '7',
+        '7',
+        '8',
+        '0',
+        '7',
+        '1'
+    ],
+    casei: false
+}
+DEBUG:grep::literals: literal prefixes detected: Literals { lits: [Complete(1778071)], limit_size: 250, limit_class: 10 }
+</code></pre>
+<hr />
+<p>Note that the string goes really into the pipeline and is standard string as expected.</p>
+<pre><code>C:\temp&gt;echo 1778071| powershell &quot;$input | % { write-host $_ $_.gettype() }&quot;
+1778071 System.String                                                &lt;= written by the write-host
+</code></pre>
+<p>I tried the <code>-</code> at the end like this <code>echo 1778071| powershell &quot;$input | % { rg $_ -}&quot;</code> but it didn't change the incorrect result. Btw. I didn't find the meaning of the char in command line help. Is that something like <em>this is end of the command</em> ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stej">@stej</a> on 2017-10-20 06:07</div>
+            <div class="timeline-body"><p>Ah, this is pretty interesting. It's probably the pipe in front of the powershell command.</p>
+<pre><code>C:\temp&gt;echo 1778071| powershell &quot;rg 17 --debug&quot;
+DEBUG:grep::search: regex ast:
+Literal {
+    chars: [
+        '1',
+        '7'
+    ],
+    casei: false
+}
+DEBUG:grep::literals: literal prefixes detected: Literals { lits: [Complete(17)], limit_size: 250, limit_class: 10 }
+1778071
+</code></pre>
+<pre><code>C:\temp&gt;rg 17 --debug
+DEBUG:grep::search: regex ast:
+Literal {
+    chars: [
+        '1',
+        '7'
+    ],
+    casei: false
+}
+DEBUG:grep::literals: literal prefixes detected: Literals { lits: [Complete(17)], limit_size: 250, limit_class: 10 }
+....... a lot of found lines from the log file here
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-20 11:38</div>
+            <div class="timeline-body"><p>I'm still finding it <em>very</em> hard to interpret your comments. I can't tell which commands are running as expected for you and which you think are wrong. For example, <code>echo 1778071| powershell &quot;rg 17 --debug&quot;</code> seems to output what I would expect (<code>1778071</code>), but the rest of your comment suggests you think that's wrong? In your future comments, could you please be <strong>very explicit</strong> about what the expected output and the actual output are of each command?</p>
+<p>To answer your question about <code>-</code>, it is a standard convention in UNIX command line tools to interpret <code>-</code> as &quot;read input from stdin.&quot; For example, consider the following commands:</p>
+<pre><code>$ rg foo
+$ rg foo C:\temp\some-file
+$ rg foo -
+</code></pre>
+<p>The first command recursively searches the entire current directory for the pattern <code>foo</code>. The second command searches only <code>C:\temp\some-file</code> for <code>foo</code>. The third command searches stdin for <code>-</code>, but since there is nothing feeding input into <code>rg</code>'s stdin, it should hang forever.</p>
+<p>Now observe these commands:</p>
+<pre><code>$ echo barfoobaz | rg foo
+$ echo barfoobaz | rg foo -
+</code></pre>
+<p><em>Ideally</em>, they are equivalent, in that they both search the stdin content <code>barfoobaz</code> for the pattern <code>foo</code>. But notice that the first command <code>rg foo</code> is the same as the first command above. But above, it recursively searched the current directory. In this context, it is search stdin. How does ripgrep know to do that? Because it's supposed to be able to check whether something is on stdin or not, and it will modify its behavior appropriately.</p>
+<p>This behavior works reliably on UNIX, but there have been issues on Windows. This is why I've suggested that you use <code>-</code>. <strong>However</strong>, your bug report is still so unclear to me that this is a <strong>shot in the dark</strong>, I don't actually know that this is the problem you're experiencing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stej">@stej</a> on 2017-10-20 13:50</div>
+            <div class="timeline-body"><p>I'm sorry for lack of detail. I'll try to describe the previous commands in more detail.</p>
+<p>The command <code>rg 17 --debug</code> is pretty clear. We can agree that it starts searching in current directory and tries to find any line that matches <code>17</code>.</p>
+<p>On the other hand the commnad <code>echo 1778071| powershell &quot;rg 17 --debug&quot;</code> is more complex.</p>
+<p>At the beginning it's good to note that usually people use PowerShell in interactive mode.
+But it's possible to run just some commands in PowerShell and then exit it and continue in previous shell e.g. in cmd.exe.
+So <code>PowerShell &quot;somecommand&quot;</code> runs PowerShell and the interpreter in PowerShell runs the <code>command</code>.</p>
+<p>Reading pipeline input in PowerShell:
+Example:</p>
+<pre><code>c:\&gt;powershell &quot;1;2;3&quot; | powershell &quot;[string]$input&quot;
+1 2 3
+</code></pre>
+<p>first command outputs 3 numbers to stdout. The second command somehow catches <strong>all</strong> the stdin input, converts it to string and sends to output.</p>
+<p>I shown the way how to consume pipeline input in powershell -- it's via <code>$input</code> variable (or at least I don't know any other way).</p>
+<p>More comples command:</p>
+<pre><code>powershell &quot;1..10 | % { start-sleep -sec 1; $_ }&quot; | powershell &quot;$input | % { write-host $_ -foreground Green }&quot;
+</code></pre>
+<p>prints a number every second in green color. It is artifical of course, because it could be all done in one command.</p>
+<p>So the first command <code>powershell &quot;1..10 | % { start-sleep -sec 1; $_ }&quot;</code>  sends every second one number to output. The <code>%</code> is alias for <code>For-EachObject</code> command. The <code>{ ... }</code> is lambda to be done for each item in pipeline.</p>
+<p>And the second command reads the numbers from input (via <code>$input</code> variable) and writes to stdout.</p>
+<hr />
+<p>Now back to the example with echo and rg</p>
+<pre><code>echo 1778071| powershell &quot;rg 17 --debug&quot;
+</code></pre>
+<p>Echo sends something to pipe. It is sent to PowerShell, which should execute command <code>rg 17</code>. So in other words it <em>ignores</em> the pipeline input and simply executes <code>rg 17</code> which means &quot;look for 17 in local directory&quot;.
+Anyway, it seems that rg somehow interprets the command line and reads from pipe? Because command <code>echo 123|powershell &quot;rg 2&quot;</code> really finds <code>123</code>.
+Which is surprising to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-20 14:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Anyway, it seems that rg somehow interprets the command line and reads from pipe? Because command <code>echo 123|powershell &quot;rg 2&quot;</code> really finds <code>123</code>. Which is surprising to me.</p>
+</blockquote>
+<p>Why is that surprising? That sounds correct to me. Why are you piping <code>123</code> into <code>rg 2</code> at all if you don't want <code>rg</code> to search <code>123</code>? It might help to describe the actual problem you're trying to solve.</p>
+<p>In any case, if you want to force ripgrep to search the current directory, then just tell it to do that. <code>echo ... | rg 2 ./</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dieggsy">@dieggsy</a> on 2017-10-20 14:26</div>
+            <div class="timeline-body"><p>@stej can you give a simple example of the command you want to run, and what you want it to output? It's kind of hard to understand what you're trying to do and where you think the problem is.</p>
+<p>for example,
+command:
+<code>echo 'a' | rg 'foo'</code>
+expected output:
+<code>[whatever you want]</code>
+actual output:
+<code>[whatever you're getting]</code></p>
+<p><strong>EDIT:</strong> guess you've given a couple, but the intent or point is still unclear I guess.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stej">@stej</a> on 2017-10-23 06:38</div>
+            <div class="timeline-body"><p><strong>Example</strong>: We have some log files that contain bunch of errors. Some files have almost no errors, some have large number (&gt;= 5). And we need to find all logged in users from the files with large number of errors.</p>
+<p>Example file where <strong>I don't</strong> want to search in:</p>
+<pre><code>INFO user@example.com logged in
+ERROR some processing failed
+</code></pre>
+<p>Example file that I <strong>need to inspect</strong> for all logged in users:</p>
+<pre><code>INFO user@example.com logged in
+INFO user@example2.com logged in
+INFO user@example.com logged in
+ERROR some processing failed
+ERROR some processing failed
+ERROR some processing failed
+ERROR some processing failed
+ERROR some processing failed
+</code></pre>
+<p><strong>The command</strong> I would use (split for readability):</p>
+<pre><code>rg error -i -c |                      &lt;&lt; parse just counts
+powershell &quot;                          
+  foreach($fc in $input) {            &lt;&lt; iterate over items in pipeline, contains large.txt:5, normal.txt:1
+    $file,[int]$count=$fc -split ':'  &lt;&lt; interpret the count number ($fc contains e.g. 'large.txt:11')
+    if ($count -ge 5) {               &lt;&lt; decide whether running rg is needed
+      rg logged -g $file              &lt;&lt; run rg on the concrete file (e.g. 'large.txt:11')
+    }
+  }
+&quot;
+</code></pre>
+<p>On one line:</p>
+<pre><code>rg error -i -c | powershell &quot;foreach($fc in $input) { $file,[int]$count=$fc -split ':'; if ($count -ge 10) { rg logged -g $file } }&quot;
+</code></pre>
+<p><strong>Result:</strong>
+this command doesn't find anything.</p>
+<p><strong>Workaround:</strong>
+Use .\ as @BurntSushi suggested. Then it works and searches in the given file. The final command that works is</p>
+<pre><code>rg error -i -c | powershell &quot;foreach($fc in $input) { $file,[int]$count=$fc -split ':'; if ($count -ge 2) { rg logged -g $file .\ } }&quot;
+</code></pre>
+<p>and the command outputs</p>
+<pre><code>large.txt
+1:INFO user@example.com logged in
+2:INFO user@example2.com logged in
+3:INFO user@example.com logged in
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-23 11:07</div>
+            <div class="timeline-body"><p>@stej Thanks, that's <em>much</em> better. I agree with you that this is a bug. However, I don't know how to fix it. Someone with more Windows knowledge needs to either teach me or submit a PR themselves. I can outline the problem though.</p>
+<p>ripgrep uses a fair bit of logic to determine what things it should search. This method collects all of the file paths (including <code>-</code>, which is interpreted as stdin):</p>
+<p>https://github.com/BurntSushi/ripgrep/blob/1aec4b11231ccb7de92e3008408e4d06a714d106/src/args.rs#L367-L386</p>
+<p>Since no explicit file paths are given, ripgrep falls back to grabbing a collection of &quot;default&quot; paths. Mostly, this is a matter of determining whether to search the current working directory, or stdin:</p>
+<p>https://github.com/BurntSushi/ripgrep/blob/1aec4b11231ccb7de92e3008408e4d06a714d106/src/args.rs#L388-L404</p>
+<p>This logic is necessary to differentiate commands like <code>echo foo | rg wat</code> (where ripgrep should be searching stdin) and <code>rg wat</code> (where ripgrep should be searching the current working directory).</p>
+<p>Since our set of file paths is empty, we can distill this logic down to two checks. Is there a tty on stdin? Is stdin readable? In your case, my guess is that ripgrep correctly determines that there is no tty on stdin (if there was, it would then search the CWD). Which means it falls down to <code>stdin_is_readable</code>, which on Unix is implemented like so:</p>
+<p>https://github.com/BurntSushi/ripgrep/blob/1aec4b11231ccb7de92e3008408e4d06a714d106/src/args.rs#L993-L1004</p>
+<p>But on Windows is implemented like this:</p>
+<p>https://github.com/BurntSushi/ripgrep/blob/1aec4b11231ccb7de92e3008408e4d06a714d106/src/args.rs#L1006-L1012</p>
+<p>We default to <code>true</code> here to basically ignore this property on Windows because I don't know how to do it. If we defaulted to <code>false</code>, then ripgrep would <em>always</em> search the CWD, even in cases like <code>echo foo | rg wat</code>, which is undesirable. That means the only way to fix this bug is to improve detection on Windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2017-10-23 11:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @BurntSushi on 2017-10-23 11:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @BurntSushi on 2017-10-23 11:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/parkovski">@parkovski</a> on 2017-11-11 16:58</div>
+            <div class="timeline-body"><p>The Windows equivalent of that Unix code uses <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364960(v=vs.85">GetFileType</a>.aspx), <code>is_file</code> becomes <code>FILE_TYPE_DISK</code>, <code>is_fifo</code> becomes <code>FILE_TYPE_PIPE</code>, and regular console stdin would be <code>FILE_TYPE_CHAR</code>.</p>
+<p><code>DWORD</code> is typedef'd as <code>unsigned long</code>, which is always 32 bits on Windows, so <code>u32</code>, and I haven't looked at <code>same_file</code>, but if it gives you the return value of either <code>GetStdHandle(STD_INPUT_HANDLE)</code> or <code>CreateFile(&quot;CONIN$&quot;, ...)</code> then just pass that to <code>GetFileType</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mqudsi">@mqudsi</a> on 2017-12-23 18:36</div>
+            <div class="timeline-body"><p>Note that WSL's tty is notable <em>not</em> implemented as a console, so functions like <code>WriteConsoleOutput</code> would be broken. <code>GetStdHandle</code> should be fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/powercode">@powercode</a> on 2018-03-09 11:55</div>
+            <div class="timeline-body"><p><code>$input</code> in powershell is an IEnumerable that is only available once all of stdin is read. PowerShell will then enumerate each item of the input and write it to is's pipeline, as objects of type <code>System.String</code>.
+The pipeline in PowerShell is not the same as <code>stdin</code>.</p>
+<p><code>[string]$input</code> is a type conversion in powershell, that instructs PowerShell to convert the content of the IEnumerable $input into a System.String, which powershell does by joining $input with the content of <code>$ofs</code>, which by default is <code>&lt;space&gt;</code>.</p>
+<p>A somewhat idiomatic powershell solution would look something like this:</p>
+<pre><code class="language-powershell">class LineMatch{
+	[int] $Line
+	[string] $Text
+
+	[string] ToString() { return &quot;{0}: {1}&quot; -f $this.Line, $this.Text}
+}
+
+class FileMatch{
+	[string] $Path
+	[System.Collections.Generic.List[LineMatch]] $Lines = [System.Collections.Generic.List[LineMatch]]::new()
+	[string] ToString() {return $this.Path}
+ }
+
+ function Get-RGMatch {
+	 [OutputType([FileMatch])]
+	 param(
+		 [Parameter(Mandatory)]
+		 [string] $Pattern
+	 )
+	$rgoutput = rg --heading --line-number $Pattern
+	switch -regex($rgoutput){
+		'^[^\d]\w' {
+				$p = [FileMatch] @{
+					Path=$_
+				}
+				continue
+			}
+		'^(\d+):(.*)' {
+				$line = [LineMatch] @{
+					Line=[int]$matches.1
+					Text=$matches.2
+				}
+				$p.Lines.Add($line)
+				continue
+			}
+		'^\s*$' {
+				$p
+				$p=$null
+				continue
+			}
+		default {Write-Warning &quot;$_&quot;}
+	}
+	$p
+}
+
+Get-RGMatch 'class' | where Count -gt 5 | sort Path | format-table -AutoSize
+</code></pre>
+<p>It would basically parse the ripgrep output and create objects of the output.
+It then filters the output based on the <code>Count</code> property of the <code>FileMatch</code>s, and removes all objects that has less than 5 matching lines and outputs the contents of the group, sorted byt <code>Path</code></p>
+<pre><code>Path                                                            Count Lines
+----                                                            ----- -----
+docs\cmdlet-example\command-line-simple-example.md                  7 {7: Because the binary module's assembly will be created as a .NET Standard 2.0 class library,, 46: 1. Use the `dotnet` CLI to create a starter `classlib` project based on .NET Sta...
+src\libpsl-native\test\googletest\include\gtest\gtest.h           111 {68: // Depending on the platform, different string classes are available., 70: // class ::string, which has the same interface as ::std::string, but, 77: // If the user's ::std::s...
+src\libpsl-native\test\googletest\include\gtest\gtest-message.h     6 {34: // This header file defines the Message class., 59: // The Message class works like an ostream repeater., 83: // class hides this difference by treating a NULL char pointer as...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/powercode">@powercode</a> on 2018-03-09 11:57</div>
+            <div class="timeline-body"><p>#848 Is a feature request to make that parsing more straight forward and cheaper.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-03-09 12:01</div>
+            <div class="timeline-body"><p>@powercode Could you please state more clearly what you're trying to say? It sounds like you're trying to help someone write a better PowerShell script, but I don't see how that fixes the bug here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Ripgrep used in PowerShell inside pipe" to "improve stdin detection on Windows" by @BurntSushi on 2018-04-24 00:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-08-20 11:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:19 UTC
+    </footer>
+</body>
+</html>

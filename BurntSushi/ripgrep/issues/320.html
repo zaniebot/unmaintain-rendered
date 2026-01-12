@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Output only matched patterns (data extraction) - BurntSushi/ripgrep #320</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Output only matched patterns (data extraction)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/320">#320</a>
+        opened by <a href="https://github.com/hrxn">@hrxn</a>
+        on 2017-01-14 06:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hrxn">@hrxn</a></div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>just been trying ripgrep for the first time, but I couldn't find an easy and straightforward way to just output the matching pattern.</p>
+<p>For example, trying to search in a file like this:
+<code>rg &quot;(\{.*\}\})&quot; example.txt</code></p>
+<p>The regex matching works as intended, correct result is highlighted in bold red text.</p>
+<p>But when I tried to redirect (&quot;pipe&quot;) the output to another program I realized that the actual output is still the unchanged input.</p>
+<p>Am I missing something here? I couldn't find an option just for this output, seemed pretty straightforward to me, but neither <code>rg --help</code> or the front page here seem to mention something..</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-14 12:50</div>
+            <div class="timeline-body"><p>It's a missing feature: #34. It's on my list of things to do soon, but it's part of a larger refactoring effort, so it might take a little longer.</p>
+<p>There is a work around today though. You can use the <code>-r/--replace</code> flag:</p>
+<pre><code>rg &quot;(\{.*\}\})&quot; example.txt -r '$1'</code></pre>
+<p>I think that should do it. (On mobile so i haven't checked.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hrxn">@hrxn</a> on 2017-01-15 02:50</div>
+            <div class="timeline-body"><p><code>rg &quot;(\{.*\}\})&quot; example.txt -r '$1'</code></p>
+<p>Not really. Replacing works as intended apparently, in this case:</p>
+<ul>
+<li>match and take capture group 1</li>
+<li>replace with reference 1, i.e. capture group 1 again</li>
+</ul>
+<p>But the thing is, the actual output is still unchanged, because the program always returns the whole line where the match was found.</p>
+<p>To help illustrate things better, I made an example file: https://fnpaste.com/YZvd</p>
+<p>But I found a way around this: Changing the rx syntax to match the whole line, and then replace the whole line with capture group 1.</p>
+<p>For example:
+<code>rg &quot;.*40 (\{.*\}\}).*&quot; example.txt -r &quot;$1&quot;</code></p>
+<p>This gives me the desired part. But there is a big caveat: I use the <code>40 </code> as an anchor to make the group match the correct part, but this is specific for this example only, I don't actually know the value.</p>
+<p>I tried <code>&quot;.*(\{.*\}\}).*&quot;</code> in my text editor and it actually works there, whereas the same pattern only matches the last <code>{...}}</code> part of the target inside the line with rg.</p>
+<p>I'm not really familiar with the intricacies of regular expressions in Rust, so this needs a bit of tweaking, I guess, although it should definitely be possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-15 21:29</div>
+            <div class="timeline-body"><p>You're right. I forgot to add that you need to make your regex match the entire line in order for <code>-r/--replace</code> to work like <code>-o/--only-matching</code>.</p>
+<p>I think this gives the desired output for you though:</p>
+<pre><code>$ rg '^.*?(\{.*\}\}).*?$' example.txt -r '$1'
+</code></pre>
+<p>The trick is to make the <code>.*</code> lazy by using <code>.*?</code>. When it's lazy, it will try to match the least possible. Otherwise, it tries to match the most possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hrxn">@hrxn</a> on 2017-01-15 23:52</div>
+            <div class="timeline-body"><p>Thanks!</p>
+<p>That did the trick just fine, greedy vs. lazy, obviously..</p>
+<p>I'll close this issue for now.
+We have a good workaround, and you already said that this is on your list of things to do, so I guess all is fine..</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @hrxn on 2017-01-15 23:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shmerl">@shmerl</a> on 2022-09-30 06:16</div>
+            <div class="timeline-body"><p>Is there some easy syntax to output only certain but several capture group indexes?</p>
+<p>Let's say with pcregrep there is a way to do this:</p>
+<pre><code>echo 'foo bar baz qux' | pcregrep -o1 -o2 '(bar )baz (qux)'
+</code></pre>
+<p>Which will produce:</p>
+<pre><code>bar qux
+</code></pre>
+<p>I suppose that --replace method with capturing the whole line would help, but something easier would be useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-09-30 10:39</div>
+            <div class="timeline-body"><p>Sure:</p>
+<pre><code>echo 'foo bar baz qux' | rg '(bar )baz (qux)' -or '$1$2'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-09-30 10:40</div>
+            <div class="timeline-body"><p>If you have more questions, please use Discussions instead of burying them in old issues. :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:01 UTC
+    </footer>
+</body>
+</html>

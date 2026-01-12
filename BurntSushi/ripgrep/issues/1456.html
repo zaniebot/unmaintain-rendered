@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Globs and filepath depth - BurntSushi/ripgrep #1456</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Globs and filepath depth</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1456">#1456</a>
+        opened by <a href="https://github.com/wcpines">@wcpines</a>
+        on 2020-01-08 19:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/wcpines">@wcpines</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 11.0.2
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p><code>brew install ripgrep</code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p><code>macos 10.5.1</code></p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>NB: There have been questions around this topic before, but I haven't been able to find the answer in past issues.  Apologies if I missed something!</p>
+<p><code>rg -g '*glob*' </code> does not match against filespaths of any depth</p>
+<p>In plain english, I want to search files whose path contains <code>foo</code> and whose content contains the pattern <code>.*bar$</code></p>
+<h4>Expected behavior</h4>
+<p>My understanding is that I should be able to accomplish this with</p>
+<p><code>rg -g  '*foo*' .*bar$</code></p>
+<p>As a concrete example (though I've removed the code and only returned result counts)</p>
+<pre><code class="language-sh">rg -g '*ulia*' titleize\|titlecase | wc -l
+# =&gt; 0
+</code></pre>
+<p>^ I expect to get 3. I can achieve this with the following:</p>
+<pre><code class="language-sh">rg --files | rg ulia | xargs rg -l titleize\|titlecase | wc -l
+# =&gt; 3
+</code></pre>
+<p>I think I expect the globbing to work somewhat similarly to the <code>ag</code> interface, e.g.
+<code> ag -G ulia &quot;titleize|titlecase&quot;</code></p>
+<p>Perhaps I don't understand how unix globs work with nested file paths.</p>
+<p>Thanks for your time!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wcpines">@wcpines</a> on 2020-01-09 18:15</div>
+            <div class="timeline-body"><p>Possibly related: https://github.com/BurntSushi/ripgrep/issues/1442</p>
+<p>More details in the docs for globs would be great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-01-09 18:23</div>
+            <div class="timeline-body"><p>Thanks for the report. Unfortunately, I don't think I see a reproducible test case here. Just trying in the ripgrep repo seems to work just fine:</p>
+<pre><code>$ rg fixed-strings -g '*args*'
+src/args.rs
+690:            if self.is_present(&quot;fixed-strings&quot;) {
+1366:    /// Note that if -F/--fixed-strings is set, then all patterns will be
+1420:    /// if -F/--fixed-strings is set.
+1429:    /// if -F/--fixed-strings is set.
+1456:    /// -F/--fixed-strings flag is set. Otherwise, the pattern is returned
+1459:        if self.is_present(&quot;fixed-strings&quot;) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-01-09 18:23</div>
+            <div class="timeline-body"><p>#1442 is different. #1442 is providing a glob pattern that matches a directory which then expects ripgrep to match everything <em>inside</em> that directory as well. But the glob pattern is also applied to everything inside the directory as-is, and it correctly doesn't match.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wcpines">@wcpines</a> on 2020-01-09 20:29</div>
+            <div class="timeline-body"><p>I think what I'm looking for is directory matches as well. Using the source tree again:</p>
+<p>( A )</p>
+<pre><code class="language-sh">==$ rg -l -g '*src*' LineIter | wc -l
+       0
+</code></pre>
+<p>( B )</p>
+<pre><code class="language-sh">==$ rg --files | rg src | xargs rg -l LineIter | wc -l
+       4
+</code></pre>
+<p>I think (A) is not how you intend <code>rg</code> to be used, or at least not in order to achieve (B). But I think this is a common mistake for folks coming from <code>ag</code>. I'm hoping to better understand how to achieve something like (B) with the <code>-g</code> flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-01-09 20:36</div>
+            <div class="timeline-body"><p>@wcpines Ah I see. The key thing you're missing is that, in globs, wildcards like <code>*</code> often do not match path separators such as <code>/</code>. You can see that <code>grep</code> behaves the same:</p>
+<pre><code>$ grep -r LineIter -l --include '*src*'
+$
+</code></pre>
+<p>Usually, the way to do what you want is with recursive globs:</p>
+<pre><code>$ rg LineIter -l -g '**/src/**'
+grep-printer/src/util.rs
+grep-searcher/src/sink.rs
+grep-searcher/src/lib.rs
+grep-searcher/src/lines.rs
+</code></pre>
+<p>Where <code>**/src/**</code> basically says, &quot;match any file path where <code>src</code> is a component in that path.&quot;</p>
+<p>For <code>ag</code>, it uses regexes, which often do not have the same &quot;wildcards do not match path separators&quot; restriction. ripgrep does not support filtering files via regex. So if you want that, then you'll want to use <code>xargs</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wcpines">@wcpines</a> on 2020-01-09 22:31</div>
+            <div class="timeline-body"><p>If it's part of the path OR the filename, my understanding is to either</p>
+<ul>
+<li>pass multiple globs ( <code>-g '*src*' -g '**/src/**'</code>)</li>
+<li>use the pipeline + xargs approach in (B)</li>
+</ul>
+<p>Is this correct?</p>
+<p>Also, thanks so much for your time and help here.  (Feel free to close this issue out!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-01-09 23:10</div>
+            <div class="timeline-body"><p>@wcpines Almost. Just <code>-g '**/src/**'</code> is enough, since that will match a file named <code>src</code>. The key is that <code>**/src/**</code> matches any path that has <code>src</code> as part of its name. If you want to write a glob that matches <code>src</code> literally anywhere, e.g., even in <code>foo/foosrcfoo/foo</code>, then I guess you would need <code>**/*src*/**</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-01-09 23:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wcpines">@wcpines</a> on 2020-01-10 01:33</div>
+            <div class="timeline-body"><p>Thanks again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/balki">@balki</a> on 2020-01-24 03:07</div>
+            <div class="timeline-body"><blockquote>
+<p>@wcpines Almost. Just <code>-g '**/src/**'</code> is enough, since that will match a file named <code>src</code>. The key is that <code>**/src/**</code> matches any path that has <code>src</code> as part of its name.</p>
+</blockquote>
+<p>@BurntSushi The glob works with <code>-g</code> but not when added as a type using <code>--type-add</code>. Is there a way to add as a type?</p>
+<pre><code>% mkdir -p foo/{src,test}
+% echo &quot;hello&quot; &gt; foo/src/main.c
+% echo &quot;hello&quot; &gt; foo/test/main.c
+% rg -g &quot;**/src/**&quot; hello 
+foo/src/main.c
+1:hello
+% rg hello 
+foo/test/main.c
+1:hello
+
+foo/src/main.c
+1:hello
+% rg --type-add &quot;src:**/src/**&quot; -t src hello 
+% 
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-01-24 11:37</div>
+            <div class="timeline-body"><p>@balki Yes, that is intended behavior. &quot;file types&quot; don't apply to directories: https://github.com/BurntSushi/ripgrep/blob/98de8d248a677bbdb5ab46f53a58ceabbc24a2df/ignore/src/types.rs#L503-L507</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:04 UTC
+    </footer>
+</body>
+</html>

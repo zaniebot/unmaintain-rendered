@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Files committed to a git repo that also match `.gitignore` are not searched - BurntSushi/ripgrep #2075</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Files committed to a git repo that also match <code>.gitignore</code> are not searched</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2075">#2075</a>
+        opened by <a href="https://github.com/infokiller">@infokiller</a>
+        on 2021-11-17 10:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/infokiller">@infokiller</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>Replace this text with the output of <code>rg --version</code>.</p>
+<pre><code>ripgrep 13.0.0 (rev 7ec2fd51ba)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>Github binary release.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Linux 5.14.16-hardened1-1-hardened</p>
+<h4>Describe your bug.</h4>
+<p>ripgrep doesn't show files committed to a git repo if t hey are also ignored. <code>git ls-files</code> works correctly.
+Seems related to #778</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<pre><code class="language-sh">build_oci_img () {
+  docker build &quot;$@&quot; - &lt;&lt;'EOF'
+  FROM rust:1.56.1-slim-bullseye
+  RUN apt-get update &amp;&amp; apt-get install -y --no-install-recommends git curl bash
+  RUN curl -fsSL https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep_13.0.0_amd64.deb -o ripgrep.deb &amp;&amp; dpkg -i ripgrep.deb
+  # Required for git init to work
+  RUN git config --global user.email test@mail.com &amp;&amp; git config --global user.name test
+  WORKDIR /repo
+  RUN git -c init.defaultBranch=master init
+EOF
+}
+
+docker run --rm -i --entrypoint=bash &quot;$(build_oci_img -q)&quot; &lt;&lt;-'EOF'
+  set -x
+  git --version
+  rg --version
+  touch file
+  git add file
+  git commit -m test
+  git ls-files
+  rg --files
+  echo file &gt; .gitignore
+  git ls-files
+  rg --debug --files
+EOF
+</code></pre>
+<h4>What is the actual behavior?</h4>
+<pre><code>&gt; rg --debug --files
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 1 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1741: ignoring ./.gitignore: Ignore(IgnoreMatch(Hidden))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1741: ignoring ./.git: Ignore(IgnoreMatch(Hidden))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1741: ignoring ./file: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;file&quot;, actual: &quot;**/file&quot;, is_whitelist: false, is_only_dir: false })))
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>Show the files if they are part of the git repo like <code>git ls-files does</code>, even if they match git ignore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-11-17 14:22</div>
+            <div class="timeline-body"><p>Dupe of #1530.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-11-17 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2021-11-17 14:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:28 UTC
+    </footer>
+</body>
+</html>

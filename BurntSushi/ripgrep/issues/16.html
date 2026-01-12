@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignoring of subdirectories is inconsistent with git - BurntSushi/ripgrep #16</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ignoring of subdirectories is inconsistent with git</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/16">#16</a>
+        opened by <a href="https://github.com/dmit">@dmit</a>
+        on 2016-09-23 15:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dmit">@dmit</a></div>
+            <div class="timeline-body"><p>I have an entry <code>target/</code> in .gitignore to ignore all <code>target</code> directories in the project. <code>ag</code> handles it fine and ignores all matching directories. <code>rg</code> only ignores the matching top level directory. If I change the pattern to <code>**/target/</code> then <code>rg</code> works as expected, but <code>ag</code> stops ignoring all <code>target</code> directories. In both cases <code>git</code> ignores both the top level directory and the subdirectories.</p>
+<p>Here's a shell session to illustrate the issue:</p>
+<pre><code>/p/tmp&gt; rg --version
+0.1.16
+/p/tmp&gt; git init abc
+Initialized empty Git repository in /private/tmp/abc/.git/
+/p/tmp&gt; cd abc/
+/p/t/abc&gt; mkdir ghi
+/p/t/abc&gt; mkdir -p def/ghi
+/p/t/abc&gt; echo ghi/ &gt; .gitignore
+/p/t/abc&gt; echo xyz &gt; ghi/toplevel.txt
+/p/t/abc&gt; echo xyz &gt; def/ghi/subdir.txt
+/p/t/abc&gt; ag xyz
+/p/t/abc&gt; rg xyz
+def/ghi/subdir.txt
+1:xyz
+/p/t/abc&gt; git status
+On branch master
+
+Initial commit
+
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+
+        .gitignore
+
+nothing added to commit but untracked files present (use &quot;git add&quot; to track)
+/p/t/abc&gt; echo '**/ghi/' &gt; .gitignore
+/p/t/abc&gt; ag xyz
+def/ghi/subdir.txt
+1:xyz
+
+ghi/toplevel.txt
+1:xyz
+/p/t/abc&gt; rg xyz
+No files were searched, which means ripgrep probably applied a filter you didn't expect. Try running again with --debug.
+/p/t/abc&gt; git status
+On branch master
+
+Initial commit
+
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+
+        .gitignore
+
+nothing added to commit but untracked files present (use &quot;git add&quot; to track)
+</code></pre>
+<pre><code>DEBUG:rg::ignore: ./ghi ignored by Pattern { from: &quot;./.gitignore&quot;, original: &quot;ghi/&quot;, pat: &quot;ghi&quot;, whitelist: false, only_dir: true }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2016-09-24 02:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 02:20</div>
+            <div class="timeline-body"><p>Confirmed. This one is embarrassing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 20:07</div>
+            <div class="timeline-body"><p>The specific problem here was a bug translating the <code>.gitignore</code> path into a glob with the right semantics defined by <code>gitignore</code>. Specifically, it was being treated as an absolute path, which of course, it's not (because it lacks the leading <code>/</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-09-24 20:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:36 UTC
+    </footer>
+</body>
+</html>

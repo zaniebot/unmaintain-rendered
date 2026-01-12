@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rg does not ignore files listed in .git/info/exclude in git linked worktrees - BurntSushi/ripgrep #1445</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rg does not ignore files listed in .git/info/exclude in git linked worktrees</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1445">#1445</a>
+        opened by <a href="https://github.com/krobelus">@krobelus</a>
+        on 2019-12-10 23:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/krobelus">@krobelus</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 11.0.2 (same in master I think)</p>
+<h4>How did you install ripgrep?</h4>
+<p>https://www.archlinux.org/packages/community/x86_64/ripgrep/</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Arch Linux</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>If I exclude a file privately in <code>.git/info/exclude</code>, ripgrep ignores that file as expected - but only when searching inside the main worktree. In linked worktrees, the file is not ignored.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<pre><code class="language-sh">#!/bin/sh
+rm -rf repro repro-worktree
+
+git init repro
+cd repro
+touch committed
+git add committed
+git commit -m 'initial commit'
+echo ignored &gt; .git/info/exclude
+git worktree add ../repro-worktree
+cd ../repro-worktree
+touch ignored
+
+echo
+echo '$ rg --files'
+rg --files
+echo '$ git ls-files; git ls-files --exclude-standard --others'
+git ls-files; git ls-files --exclude-standard --others
+</code></pre>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<pre><code>$ rg --files
+ignored
+committed
+</code></pre>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>I think it should behave like <code>git ls-files; git ls-files --exclude-standard --others</code>:</p>
+<pre><code>$ rg --files
+committed
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-02-17 22:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:04 UTC
+    </footer>
+</body>
+</html>

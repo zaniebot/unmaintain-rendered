@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[feat] skip/silence permission denied - BurntSushi/ripgrep #2861</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[feat] skip/silence permission denied</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2861">#2861</a>
+        opened by <a href="https://github.com/mazunki">@mazunki</a>
+        on 2024-07-29 17:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mazunki">@mazunki</a></div>
+            <div class="timeline-body"><p>I often find myself grepping for something on my whole system as a user, and while I can often just run <code>rg</code> as root to match files which I don't have permission to read, I know for a fact there's no point looking in files which I don't have access to.</p>
+<p>Because of this, I would like to add something like <code>--suppress-error=nopermission</code> to my default ripgrep alias. I can silence all errors with <code>2&gt;&amp;-</code>, which returns errno=2 telling me something went wrong. I don't want to suppress all errors, just those related to permission issues.</p>
+<p>Is this a feature which is currently possible, and I just missed it? If it doesn't exist, is this a feature worth considering? If this is the case, I'd be willing to give Rust a go.</p>
+<p>If this is something we want to add, what should the flag and its options look like? Should we have separate options for just silencing the errors (exit code stays 2), vs skipping the files entirely (exit successfully)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-29 17:13</div>
+            <div class="timeline-body"><p>I think you probably want <code>--no-messages</code>, although that will suppress more than permission errors.</p>
+<p>I don't think I want ripgrep to go down the rabbit hole of trying to classify errors and then building a system on top of that classification for whitelisting/blacklisting each kind of error. Like, I realize that &quot;I just want to suppress permission errors&quot; is in and of itself pretty simple. And it wouldn't be that absurd to add one single flag for this one single use case like, <code>--suppress-permission-errors</code>. But it's a little odd, very bespoke and likely difficult to discover. And the alternative of adding a fuller system is probably a much bigger increase in scope than you are picturing here.</p>
+<p>Instead, there are a few different paths for you to take, not all of which present a perfect solution:</p>
+<ul>
+<li>Do a very crude filtering step by redirecting stderr to stdout, and then filtering out any lines containing things that look like permission errors.</li>
+<li>Redirect stderr to a separate log file and search it after the fact for any errors that aren't permission errors.</li>
+<li>Develop a <code>.rgignore</code> file that prevents ripgrep from descending into most of the directories that you don't have access to. I'm willing to bet that the <a href="https://en.wikipedia.org/wiki/Pareto_principle">Pareto principle</a> applies here, and that you'll be able to get the error messages down to tolerable levels without a lot of work.</li>
+<li>Use <code>--no-messages</code> and live with the fact that some errors won't be surfaced. Note that <code>--no-messages</code> is likely better for you than <code>&amp;&gt;/dev/null</code>. Compare, for example, the outputs of <code>rg '(' &amp;&gt; /dev/null</code> and <code>rg '(' --no-messages</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-07-29 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mazunki">@mazunki</a> on 2024-07-29 17:56</div>
+            <div class="timeline-body"><p>Thanks for the reply, I will probably build up the ignore file as you suggested.</p>
+<p>I understand the concerns of classifying errors. I haven't checked the code, so I have no clue how that's set up. I kind of assumed the errors had their own types, but I guess that's why errno=2 includes both syntax errors and permission errors, for instance. I will definitely use <code>--no-messages</code> instead from now on :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-07-29 17:58</div>
+            <div class="timeline-body"><p>Aye. And yeah, errors do not have their own types. Most errors are treated the same: they're just chained together and bubbled up be emitted to stderr. There are some very broad exceptions to this. Errors related to gitignore parsing are treated differently. And errors related to a broken pipe will cause ripgrep to exit gracefully, as is the custom with Unix CLI tools.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:50 UTC
+    </footer>
+</body>
+</html>

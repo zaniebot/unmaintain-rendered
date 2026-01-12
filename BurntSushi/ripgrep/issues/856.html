@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive search and replace using ripgrep crates - BurntSushi/ripgrep #856</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Interactive search and replace using ripgrep crates</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/856">#856</a>
+        opened by <a href="https://github.com/felipesere">@felipesere</a>
+        on 2018-03-12 23:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/felipesere">@felipesere</a></div>
+            <div class="timeline-body"><p>I am thinking of writing a rust tool that allows me to search and replace terms (simple ones at least) interactively across a tree a files.</p>
+<p>When I say interactive, I mean in the same way <code>git add -p</code> allows you decide whether to add (or skip, or quit etc) each hunk individually.</p>
+<p>These are the options git offers:
+<img width="509" alt="screen shot 2018-03-12 at 23 41 24" src="https://user-images.githubusercontent.com/1850188/37315057-7fb23700-264f-11e8-8156-e3d77d8664e3.png"></p>
+<p>I am wondering if I could use some the brilliant crates you have built :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-03-13 00:08</div>
+            <div class="timeline-body"><p>Maybe? The question you're asking is <em>really</em> broad, and there are probably a billion and one ways of solving it. Can you add more details? Could you also please peruse the crates docs? That might help give more answers or lead you to more specific questions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-03-13 02:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/felipesere">@felipesere</a> on 2018-03-13 13:35</div>
+            <div class="timeline-body"><p>Maybe its better if I describe what I would like to be able to do... and how I think it could be setup? I was a little intimidated by your brilliant blog post explaining ripgrep 😺</p>
+<p>Given a folder containing the source code for some project, I'd like to run</p>
+<pre><code>riplace foo bar
+</code></pre>
+<p>And it would look for <em>all</em> instances of <code>foo</code> and ask me if I want to replace it with <code>bar</code> <em>in place</em>.
+The way it would ask me would be one by one, allowing me to say &quot;yes, yes, yes, ...no not that one, yes to that one, no, yes, yes, no&quot; .</p>
+<p>The difficulty I see running the search &quot;interactively&quot;, meaning riplace should stop when it finds a hit and then allow me to change the file in the precise location.</p>
+<p>To be really similar to git, it would also be nice to be able to skip/&quot;leave undecided&quot; individual replacements but also entire files. That would be like saying &quot;Actually skip any hit you find in this file from here forward&quot;.</p>
+<p>I assume I'd need the regex, grep, glob, and walkdir crates?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-03-13 18:55</div>
+            <div class="timeline-body"><p>@felipesere Thanks for writing that out more clearly, I think I have a better idea of what you're trying to do.</p>
+<p>Fist, I can say some things with near certainty:</p>
+<ul>
+<li>If you need to do regex search, then yeah, you'll definitely want the <code>regex</code> crate.</li>
+<li>Since you want to recursively traverse a directory, then <code>walkdir</code> is definitely the crate to use for that. <strong>However</strong>, if you want to copy ripgrep's approach of respecting <code>.gitignore</code> and the like, then you should probably use the <code>ignore</code> crate, which comes with its own directory walker (built on <code>walkdir</code>) that automatically filters results based on <code>.gitignore</code>. There's also a parallel walker too, although I imagine it would be simpler to use the single threaded walker when combining that with interactive replace.</li>
+<li>The <code>globset</code> crate (<strong>not</strong> <code>glob</code>) is probably not something you need to use directly unless you want to roll your own filtering and avoid using the <code>ignore</code> crate.</li>
+<li>The <code>grep</code> crate might help you, but be warned, it will be rewritten at some point and might not help you as much as you hope. It depends. If you only use memory maps to search files, then the <code>grep</code> crate might work OK for you. You might consider trying to implement your program without the <code>grep</code> crate first to get a better handle on what you need.</li>
+</ul>
+<p>A key problem you need to solve is the actual file mutation itself. You need to make sure you <em>never</em> corrupt user's files, for example. Usually this is done by writing to a temporary file first, and then doing an atomic <code>mv tmp-file real-file</code>. ripgrep and its code won't really help you with this part, since it explicitly will never mutate your files.</p>
+<p>I'm happy to continue answering questions!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/felipesere">@felipesere</a> on 2018-03-14 16:33</div>
+            <div class="timeline-body"><p>My current thinking is to split &quot;searching for and collecting hits&quot; from &quot;modifying the file&quot;.
+I see though, that the <code>grep</code> crates gives me the line that matched but not the line number. :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-03-14 18:03</div>
+            <div class="timeline-body"><blockquote>
+<p>I see though, that the grep crates gives me the line that matched but not the line number. :(</p>
+</blockquote>
+<p>Right. As I said, if you're using memory maps or are OK loading the entire file into memory, then it is pretty easy to track line numbers yourself.</p>
+<p>The <code>grep</code> crate is pretty low level. That makes it flexible, but yes, if you want to build the tool you have in mind, you will need to get your hands dirty.</p>
+<p>At some point, <code>grep</code> will become more like &quot;use ripgrep as a library,&quot; but that is a long way off.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/felipesere">@felipesere</a> on 2018-03-25 11:11</div>
+            <div class="timeline-body"><p>I looked through <code>grep</code> but I couldn't figure out how to track the line number of any matches.
+If I interpret it correctly, it searches across a <code>[u8]</code>, meaning I'd have to look for <code>\n</code> myself? (assuming linux/mac for a second).</p>
+<p>Actually, I've read the source some more. Is the following intuition right?
+Grep will search in a buffer and return byte-offsets to the start and end,
+the streaming_search then takes the <code>start_offset</code> and uses <code>bytecount:count(.., eol)</code> to look for end-of-lines <em>up to</em> start_offset? It optimises the counting by remembering the count so far and narrowing down the slice for <code>bytecount:count</code> down to <code>last_line</code> to <code>upto</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-03-25 11:37</div>
+            <div class="timeline-body"><p>Yes, you need to teach them yourself. Like I said, grep is a low level building block right now, and tracking lines has costs associated with it.</p>
+<p>I'd suggest looking at ripgrep's memory map searcher as the simplest use of the grep crate that tracks line numbers. It is in <code>src/search_buffer.rs</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/felipesere">@felipesere</a> on 2018-04-20 07:19</div>
+            <div class="timeline-body"><p>This has been solved by facebooks <code>fastmod</code> https://github.com/facebookincubator/fastmod</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @felipesere on 2018-04-20 07:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:29 UTC
+    </footer>
+</body>
+</html>

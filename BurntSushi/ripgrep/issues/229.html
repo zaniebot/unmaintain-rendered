@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>smart-case sensitivity is fooled by brackets in search pattern - BurntSushi/ripgrep #229</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>smart-case sensitivity is fooled by brackets in search pattern</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/229">#229</a>
+        opened by <a href="https://github.com/ngirard">@ngirard</a>
+        on 2016-11-09 22:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ngirard">@ngirard</a></div>
+            <div class="timeline-body"><p>As title says, the case sensivity is not respected any more when the search pattern contains capitals within brackets.
+As an example,
+<code>rg --smart-case '[EÉ]conomie'</code>
+returns also lowercase matches (&quot;economie&quot;).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-09 22:58</div>
+            <div class="timeline-body"><p>I see. Under what circumstances should an uppercase literal be detected? Would <code>\p{Lu}</code> qualify? What about <code>[[:upper:]]</code>? Or what about <code>[@-a]</code>, which contains <code>A-Z</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2016-11-09 22:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2016-11-09 22:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-15 23:24</div>
+            <div class="timeline-body"><p>Some more thoughts on this.</p>
+<ol>
+<li>There is an uppercase literal in the regex pattern itself. For example, <code>[A-Z]foo</code> contains an uppercase literal, and therefore the search would be case sensitive. Another example, <code>foo\p{Lu}</code> (where <code>\p{Lu}</code> is the set of all uppercase Unicode letters) contains no uppercase literals and therefore would be a case insensitive search.</li>
+<li>There are no literal characters at all. For example, <code>\p{Lu}</code> contains no literals, and therefore should be a case sensitive search.</li>
+</ol>
+<p>(2) is actually slightly tricky to implement because the regex parser is a bit too ambitious. e.g., After parsing, there's no actual way to distinguish <code>\p{Lu}</code> from its correspond character class as if it were manually typed by the user.</p>
+<p>This is kind of why I hate the smart case feature and why it's not the default. In the simple case, it has nice behavior, but when your regex grows beyond literals, its behavior becomes unclear and less intuitive.</p>
+<p>In the absence of input from others, I think I'd like to just implement rule (1) and call it a day. It would, for example, work in @ngirard's case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-11-28 22:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:53 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error parsing regex near '(?&lt;=\{\' at character offset 2: Unrecognized flag: '&lt;'. (Allowed flags: i, m, s, U, u, x.) - BurntSushi/ripgrep #628</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Error parsing regex near '(?&lt;={' at character offset 2: Unrecognized flag: '&lt;'. (Allowed flags: i, m, s, U, u, x.)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/628">#628</a>
+        opened by <a href="https://github.com/nbari">@nbari</a>
+        on 2017-10-09 08:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nbari">@nbari</a></div>
+            <div class="timeline-body"><p>Having this input:</p>
+<pre><code>{{{
+      How 
+      R 
+      U
+}}}
+
+{{{ Hi }}}</code></pre>
+<p>And Wanting the output:</p>
+<pre><code> How
+ R
+ U
+
+ Hi</code></pre>
+<p>I tried to use this regex: <code>[^{\}]+(?=})</code>, the one after testing in python:</p>
+<pre><code class="language-python">&gt;&gt;&gt; import re
+&gt;&gt;&gt; p = re.compile('[^{\}]+(?=})')
+&gt;&gt;&gt; foo = '''
+... {{{
+...       How 
+...       R 
+...       U
+... }}}
+... 
+... {{{ Hi }}}'''
+&gt;&gt;&gt; p.findall(foo)
+['\n      How \n      R \n      U\n', ' Hi ']
+</code></pre>
+<p>I tested also here: https://regex101.com/r/ASFIFa/1</p>
+<p>Next, I wanted to give a try to <code>rg</code> using something like this:</p>
+<pre><code>  rg '[^{\}]+(?=})' input.txt</code></pre>
+<p>or</p>
+<pre><code>rg -e '[^{\}]+(?=})' input.txt</code></pre>
+<p>But always get this:</p>
+<pre><code>Error parsing regex near '}]+(?=})' at character offset 9: Unrecognized flag: '='. (Allowed flags: i, m, s, U, u, x.)</code></pre>
+<p>With <code>ag</code> seems to be working:</p>
+<pre><code>$ ag -o '[^{\}]+(?=})' input.txt
+
+      How 
+      R 
+      U
+
+ Hi 
+</code></pre>
+<p>Any idea about how could I use <code>rg</code> to get the desired output?</p>
+<p>Thanks in advance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-10-09 09:04</div>
+            <div class="timeline-body"><p>A few problems:</p>
+<ol>
+<li><p><code>rg</code> returns whole lines by default rather than just the matches.</p>
+</li>
+<li><p>The regex engine <code>rg</code> uses doesn't support look-around assertions.</p>
+</li>
+<li><p><code>rg</code> is line-based — essentially it breaks the input up into lines and searches each one separately. It can not match across lines.</p>
+</li>
+</ol>
+<p>You can use <code>--replace</code> in many cases to simulate the effect of look-around (in this case by deleting the closing brace)... but there is no way to get around the third issue given that exact input. You might be able to massage it a little with <code>perl</code> or <code>sed</code>, but that would only work on a per-file basis obv.</p>
+<p>Another option would be to use <code>ag</code>, which does support look-around and multi-line matching:</p>
+<pre><code>% cat test.txt
+{{{
+      How 
+      R 
+      U
+}}}
+
+{{{ Hi }}}
+% ag -o '[^{\}]+(?=})' test.txt
+
+      How 
+      R 
+      U
+
+ Hi 
+</code></pre>
+<p>edit: Oops, i missed that you already tried <code>ag</code>. Disregard that bit i guess.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-09 10:46</div>
+            <div class="timeline-body"><p>Thanks @okdana!</p>
+<p>@nbari This behavior is documented in the README: https://github.com/BurntSushi/ripgrep#why-shouldnt-i-use-ripgrep</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-10-09 10:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:18 UTC
+    </footer>
+</body>
+</html>

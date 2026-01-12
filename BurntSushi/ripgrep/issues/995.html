@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ripgrep should parse also $XDG_CONFIG_DIR/.git/config - BurntSushi/ripgrep #995</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ripgrep should parse also $XDG_CONFIG_DIR/.git/config</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/995">#995</a>
+        opened by <a href="https://github.com/hauleth">@hauleth</a>
+        on 2018-07-28 11:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hauleth">@hauleth</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 0.8.1 (rev c8e9f25b85)
++SIMD -AVX
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>BurntSushi's Brew repository</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<pre><code>Darwin Niuniobook 17.5.0 Darwin Kernel Version 17.5.0: Fri Apr 13 19:32:32 PDT 2018; root:xnu-4570.51.2~1/RELEASE_X86_64 x86_64
+</code></pre>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>Ripgrep looks for definition of global <code>gitignore</code> in <code>$HOME/.gitconfig</code> file only, while Git (at least in version 2.18.0) supports only &quot;standard&quot; <code>$XDG_CONFIG_DIR/git/config</code> location.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>Have anything set in Git file pointed by <code>core.excludesfile</code> and move your <code>.gitconfig</code> to <code>~/.config/git/config</code>. Now RipGrep will search in files it should ignore.</p>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<p>Expected:</p>
+<pre><code>DEBUG/grep::search/grep/src/search.rs:195: regex ast:
+Literal {
+    chars: [
+        'p',
+        'a',
+        'c',
+        'k',
+        'a',
+        'g',
+        'e'
+    ],
+    casei: false
+}
+DEBUG/grep::literals/grep/src/literals.rs:38: literal prefixes detected: Literals { lits: [Complete(package)], limit_size: 250, limit_class: 10 }
+DEBUG/globset/globset/src/lib.rs:396: glob converted to regex: Glob { glob: &quot;**/.DS_Store?&quot;, re: &quot;(?-u)^(?:/?|.*/)\\.DS_Store.$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false }, tokens: Tokens([RecursivePrefix, Literal('.'), Literal('D'), Literal('S'), Literal('_'), Literal('S'), Literal('t'), Literal('o'), Literal('r'), Literal('e'), Any]) }
+DEBUG/globset/globset/src/lib.rs:396: glob converted to regex: Glob { glob: &quot;**/._*&quot;, re: &quot;(?-u)^(?:/?|.*/)\\._.*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false }, tokens: Tokens([RecursivePrefix, Literal('.'), Literal('_'), ZeroOrMore]) }
+DEBUG/globset/globset/src/lib.rs:396: glob converted to regex: Glob { glob: &quot;tags.*&quot;, re: &quot;(?-u)^tags\\.[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true }, tokens: Tokens([Literal('t'), Literal('a'), Literal('g'), Literal('s'), Literal('.'), ZeroOrMore]) }
+DEBUG/globset/globset/src/lib.rs:396: glob converted to regex: Glob { glob: &quot;**/perf.data*&quot;, re: &quot;(?-u)^(?:/?|.*/)perf\\.data.*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false }, tokens: Tokens([RecursivePrefix, Literal('p'), Literal('e'), Literal('r'), Literal('f'), Literal('.'), Literal('d'), Literal('a'), Literal('t'), Literal('a'), ZeroOrMore]) }
+DEBUG/globset/globset/src/lib.rs:401: built glob set; 2 literals, 17 basenames, 20 extensions, 0 prefixes, 1 suffixes, 2 required extensions, 4 regexes
+DEBUG/globset/globset/src/lib.rs:401: built glob set; 12 literals, 4 basenames, 2 extensions, 0 prefixes, 0 suffixes, 2 required extensions, 0 regexes
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.envrc: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;.envrc&quot;, actual: &quot;**/.envrc&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.iex.exs: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.credo.exs: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./pg_indices.sql: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.sql&quot;, actual: &quot;**/*.sql&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./sample.sql: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.sql&quot;, actual: &quot;**/*.sql&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.tool-versions: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./uploads: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;uploads&quot;, actual: &quot;**/uploads&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.tool-versions-e: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/hauleth/Workspace/hauleth/dotfiles/git/ignore&quot;), original: &quot;.tool-versions-e&quot;, actual: &quot;**/.tool-versions-e&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./tags: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/hauleth/Workspace/hauleth/dotfiles/git/ignore&quot;), original: &quot;/tags&quot;, actual: &quot;tags&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./pg_waits.sql: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.sql&quot;, actual: &quot;**/*.sql&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.elixir_ls: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/hauleth/Workspace/hauleth/dotfiles/git/ignore&quot;), original: &quot;.elixir_ls&quot;, actual: &quot;**/.elixir_ls&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.dockerignore: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.gitignore: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./test/serializers/fixture.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./test/serializers/fixture_categories_update.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./test/serializers/fixture_price_update.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.sobelow: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./_build: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/_build&quot;, actual: &quot;_build&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./db: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/db&quot;, actual: &quot;db&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./deps: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/deps&quot;, actual: &quot;deps&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./log: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/log&quot;, actual: &quot;log&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./doc: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/doc&quot;, actual: &quot;doc&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.gitlab-ci.yml: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.formatter.exs: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.git: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.projections.json: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/*.json&quot;, actual: &quot;*.json&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/globset/globset/src/lib.rs:396: glob converted to regex: Glob { glob: &quot;*&quot;, re: &quot;(?-u)^[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true }, tokens: Tokens([ZeroOrMore]) }
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/ui: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/priv/ui&quot;, actual: &quot;priv/ui&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/globset/globset/src/lib.rs:401: built glob set; 2 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
+DEBUG/ignore::walk/ignore/src/walk.rs:1431: whitelisting ./rel/config.exs: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./rel/.gitignore&quot;), original: &quot;!/config.exs&quot;, actual: &quot;config.exs&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1431: whitelisting ./rel/.gitignore: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./rel/.gitignore&quot;), original: &quot;!/.gitignore&quot;, actual: &quot;.gitignore&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG/globset/globset/src/lib.rs:401: built glob set; 3 literals, 1 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./assets/.babelrc: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./assets/yarn-error.log: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/hauleth/Workspace/hauleth/dotfiles/git/ignore&quot;), original: &quot;*.log&quot;, actual: &quot;**/*.log&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./assets/node_modules: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./assets/.gitignore&quot;), original: &quot;/node_modules&quot;, actual: &quot;node_modules&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./assets/.editorconfig: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./assets/.gitignore: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./assets/.gitattributes: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./assets/.eslintignore: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./assets/.gitlab-ci.yml: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./assets/coverage: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./assets/.gitignore&quot;), original: &quot;/coverage&quot;, actual: &quot;coverage&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/static/api.html.gz: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/hauleth/Workspace/hauleth/dotfiles/git/ignore&quot;), original: &quot;*.gz&quot;, actual: &quot;**/*.gz&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/static/api-80327c94ee2a2bb64e24c103260f6019.html.gz: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/hauleth/Workspace/hauleth/dotfiles/git/ignore&quot;), original: &quot;*.gz&quot;, actual: &quot;**/*.gz&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/static/.keep: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/static/access-f7cd8ee569a9b4cef078cd39a7f742e8.txt.gz: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/hauleth/Workspace/hauleth/dotfiles/git/ignore&quot;), original: &quot;*.gz&quot;, actual: &quot;**/*.gz&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/static/robots.txt.gz: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/hauleth/Workspace/hauleth/dotfiles/git/ignore&quot;), original: &quot;*.gz&quot;, actual: &quot;**/*.gz&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/static/robots-af4b612dcd1660973481595c0c34f7a4.txt.gz: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/hauleth/Workspace/hauleth/dotfiles/git/ignore&quot;), original: &quot;*.gz&quot;, actual: &quot;**/*.gz&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/static/access.txt.gz: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/hauleth/Workspace/hauleth/dotfiles/git/ignore&quot;), original: &quot;*.gz&quot;, actual: &quot;**/*.gz&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/repo/seeds/medications.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/repo/seeds/allergies_non_drug.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/repo/seeds/complaints.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/repo/seeds/states_and_cities.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/repo/seeds/conditions.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/repo/seeds/immunizations.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/repo/seeds/allergies_drug.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/repo/seeds/anesthesias.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/repo/seeds/substances.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/repo/seeds/surgical_procedures.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./assets/app/.eslintrc.js: Ignore(IgnoreMatch(Hidden))
+</code></pre>
+<p>Got:</p>
+<pre><code>DEBUG/grep::search/grep/src/search.rs:195: regex ast:
+Literal {
+    chars: [
+        'p',
+        'a',
+        'c',
+        'k',
+        'a',
+        'g',
+        'e'
+    ],
+    casei: false
+}
+DEBUG/grep::literals/grep/src/literals.rs:38: literal prefixes detected: Literals { lits: [Complete(package)], limit_size: 250, limit_class: 10 }
+DEBUG/globset/globset/src/lib.rs:401: built glob set; 12 literals, 4 basenames, 2 extensions, 0 prefixes, 0 suffixes, 2 required extensions, 0 regexes
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.envrc: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;.envrc&quot;, actual: &quot;**/.envrc&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.iex.exs: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.credo.exs: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./pg_indices.sql: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.sql&quot;, actual: &quot;**/*.sql&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./sample.sql: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.sql&quot;, actual: &quot;**/*.sql&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.tool-versions: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./uploads: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;uploads&quot;, actual: &quot;**/uploads&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.tool-versions-e: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./pg_waits.sql: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.sql&quot;, actual: &quot;**/*.sql&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.elixir_ls: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.dockerignore: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.gitignore: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.sobelow: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./_build: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/_build&quot;, actual: &quot;_build&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./db: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/db&quot;, actual: &quot;db&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./deps: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/deps&quot;, actual: &quot;deps&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./log: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/log&quot;, actual: &quot;log&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./doc: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/doc&quot;, actual: &quot;doc&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.gitlab-ci.yml: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.formatter.exs: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.git: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./.projections.json: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/*.json&quot;, actual: &quot;*.json&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/globset/globset/src/lib.rs:396: glob converted to regex: Glob { glob: &quot;*&quot;, re: &quot;(?-u)^[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true }, tokens: Tokens([ZeroOrMore]) }
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/ui: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/priv/ui&quot;, actual: &quot;priv/ui&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/globset/globset/src/lib.rs:401: built glob set; 2 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./test/serializers/fixture.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./test/serializers/fixture_categories_update.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1431: whitelisting ./rel/config.exs: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./rel/.gitignore&quot;), original: &quot;!/config.exs&quot;, actual: &quot;config.exs&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./test/serializers/fixture_price_update.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/globset/globset/src/lib.rs:401: built glob set; 3 literals, 1 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG/ignore::walk/ignore/src/walk.rs:1431: whitelisting ./rel/.gitignore: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./rel/.gitignore&quot;), original: &quot;!/.gitignore&quot;, actual: &quot;.gitignore&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./assets/.babelrc: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./assets/node_modules: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./assets/.gitignore&quot;), original: &quot;/node_modules&quot;, actual: &quot;node_modules&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./assets/.editorconfig: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./assets/.gitignore: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./assets/.gitattributes: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./assets/.eslintignore: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./assets/.gitlab-ci.yml: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./assets/coverage: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./assets/.gitignore&quot;), original: &quot;/coverage&quot;, actual: &quot;coverage&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/static/.keep: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./assets/app/.eslintrc.js: Ignore(IgnoreMatch(Hidden))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/repo/seeds/medications.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/repo/seeds/allergies_non_drug.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/repo/seeds/complaints.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/repo/seeds/states_and_cities.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/repo/seeds/conditions.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/repo/seeds/immunizations.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/repo/seeds/allergies_drug.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/repo/seeds/anesthesias.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/repo/seeds/substances.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk/ignore/src/walk.rs:1428: ignoring ./priv/repo/seeds/surgical_procedures.csv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.csv&quot;, actual: &quot;**/*.csv&quot;, is_whitelist: false, is_only_dir: false })))
+</code></pre>
+<p>See that in second version <code>/Users/hauleth/Workspace/hauleth/dotfiles/git/ignore</code> isn't mentioned even once.</p>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>Should fallback to <code>${XDG_CONFIG_DIR:-$HOME/.config}/git/config</code> if lookup for <code>core.excludefile</code> in <code>$HOME/.gitconfig</code> failed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-07-28 14:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:37 UTC
+    </footer>
+</body>
+</html>

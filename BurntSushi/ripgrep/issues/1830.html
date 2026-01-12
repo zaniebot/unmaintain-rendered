@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support git textconv-like feature - BurntSushi/ripgrep #1830</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support git textconv-like feature</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1830">#1830</a>
+        opened by <a href="https://github.com/zachriggle">@zachriggle</a>
+        on 2021-03-20 00:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zachriggle">@zachriggle</a></div>
+            <div class="timeline-body"><p>Git has a neat feature, called <code>textconv</code>, that is used when generating diffs, or when searching code with git-grep.</p>
+<p>You can do lots of neat pre-processing, e.g. to reformat source code on-the-fly or unwrap wrapped lines, so that each expression fully fits on one line.</p>
+<p>It would be nice if RipGrep supported a <code>--textconv</code> flag, which invokes a script/binary with the original data as <code>stdin</code> and then <code>rg</code> works on the output of the script.</p>
+<p>This does introduce a good deal of performance overhead, but the benefits that it provides are immeasurable (and it's an optional, default-off flag).</p>
+<h3>Example 1</h3>
+<p>A simple example would be to replace tabs with newlines.</p>
+<pre><code class="language-sh">$ cat fix-whitespace
+sed -E 's|\t|    |g'
+$ rg --textconv fix-whitespace -e foo
+</code></pre>
+<h3>Example 2</h3>
+<p>A more complex example does expression wrapping, so that</p>
+<pre><code class="language-c">$ cat foo.c
+int main() {
+    void foo = bar(a,
+               b,
+               c);
+};
+</code></pre>
+<p>I have a <code>sed</code> script (which I can't share due to it being an internal tool) called <code>formatting-unwrap</code> that converts this.</p>
+<pre><code class="language-c">$ formatting-unwrap &lt; foo.c
+int main() {
+    void foo = bar(a, b, c);
+};
+</code></pre>
+<p>This makes grep results much more useful, for example if I'm looking for lines that contain <code>bar</code> calls with variable <code>c</code>.</p>
+<pre><code>git grep -e bar --and -e c
+</code></pre>
+<p>Without the <code>--textconv</code> flag, no matches are found.  With <code>--textconv</code> passed and some settings (e.g. <code>git -c &quot;diff.c.textconv=formatting-unwrap&quot;</code>), we can find matches.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-20 00:47</div>
+            <div class="timeline-body"><p>Why doesn't the <code>--pre</code> flag work for your use case? See: https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#preprocessor</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zachriggle">@zachriggle</a> on 2021-03-20 00:51</div>
+            <div class="timeline-body"><p>Indeed it does! I had no idea about that flag, that's really great!  Thanks again for making such a great tool &lt;3</p>
+<p>I definitely need to RTFM some more.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zachriggle on 2021-03-20 00:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:20 UTC
+    </footer>
+</body>
+</html>

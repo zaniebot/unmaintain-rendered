@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>line numbers only when reading file (and tty) - BurntSushi/ripgrep #380</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>line numbers only when reading file (and tty)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/380">#380</a>
+        opened by <a href="https://github.com/Dieterbe">@Dieterbe</a>
+        on 2017-02-24 15:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Dieterbe">@Dieterbe</a></div>
+            <div class="timeline-body"><p>Hello,
+first of, ripgrep is slick. thank you very much. I have one letter of the alphabet (<code>r</code>) dedicated to just ripgrep. because typing <code>rg</code> would be too much for me. that's how much i use it. my alias actually invokes <code>rg -j1</code> so that i get deterministic output (FWIW)</p>
+<p>anyway, i know how line number printing behavior is determined by whether you're in a tty or not, and then you can still turn it on and off explicitly.</p>
+<p>Personally, i find them a bit too annoying when i'm matching against stdin. since stdin is typically a stream, line numbers don't make sense. especially when i then want to copy paste the output to others, things can get confusing. so could we do a mode for <code>line-numbers-only-when-tty-and-stdin</code> or something?</p>
+<p>If i'm the only one asking for this and/or it doesn't seem worth it, I'll learn how to live with it...</p>
+<p>so to be clear what I mean is, if you're in a terminal</p>
+<pre><code>&gt; echo -e 'a\nb\nab' | r a # i wish i had no line numbers here
+1:a
+3:ab
+&gt; echo -e 'a\nb\nab' &gt; file.txt
+&gt; r a file.txt # line numbers ok here
+1:a
+3:ab
+</code></pre>
+<p>Thanks again. cheerios!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-24 15:39</div>
+            <div class="timeline-body"><blockquote>
+<p><code>line-numbers-only-when-tty-and-stdin</code></p>
+</blockquote>
+<p>I think you mean <code>line-numbers-only-when-tty-and-not-stdin</code>, right?</p>
+<p>If so, this has something I've thought about since I made ripgrep. I kind of side with you on this. I think showing line numbers when searching only stdin is a little strange. I'm not quite sure if the right answer is to remove them in that specific case, which I think is why I never bothered to change it. If you do pipe ripgrep into another program, e.g., <code>echo -e 'a\nb\nab' | rg a | cat</code>, then the line numbers disappear. But so do colors, which is a pain.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-02-24 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dieterbe">@Dieterbe</a> on 2017-02-24 16:01</div>
+            <div class="timeline-body"><p>oops yes. But it was a bit tongue-in-cheek, i hope we can come up with something more elegant than such a flag. In fact, it seems we both think it would be sensible to adjust default behavior for this case :) do you see any downsides to introducing this change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-24 16:06</div>
+            <div class="timeline-body"><blockquote>
+<p>In fact, it seems we both think it would be sensible to adjust default behavior for this case :)</p>
+</blockquote>
+<p>Errm, yes, on the same page. :-)</p>
+<blockquote>
+<p>do you see any downsides to introducing this change?</p>
+</blockquote>
+<p>I think the key downside is the case analysis and behavioral changes. For example, <code>rg pattern myfile</code> will show line numbers but <code>echo wat | rg pattern</code> won't. I would guess that <code>rg pattern -</code> wouldn't either. What about <code>rg pattern - myfile</code>? I would guess that we would only special case when &quot;ripgrep is only searching stdin.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dieterbe">@Dieterbe</a> on 2017-02-24 16:46</div>
+            <div class="timeline-body"><blockquote>
+<p><code>echo wat | rg</code> pattern won't. I would guess that <code>rg pattern - </code>wouldn't either</p>
+</blockquote>
+<p>right. agreed.</p>
+<blockquote>
+<p>What about rg <code>pattern - myfile</code>?</p>
+</blockquote>
+<p>We could turn this:</p>
+<pre><code>rg b - file.txt &lt;&lt;&lt; b
+&lt;stdin&gt;
+1:b
+
+file.txt
+2:b
+3:ab
+</code></pre>
+<p>into this:</p>
+<pre><code>rg b - file.txt &lt;&lt;&lt; b
+&lt;stdin&gt;
+b
+
+file.txt
+2:b
+3:ab
+</code></pre>
+<p>for me the same reasoning applies. stdin is a stream so line numbers are meaningless to me. for files they are meaningful. so when you do both in one run, those ideas still apply IMHO</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-24 16:47</div>
+            <div class="timeline-body"><p>I find the idea of having an inconsistent output format in the same set of search results a bit unnerving.</p>
+<p>I think I'm OK with the other stuff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dieterbe">@Dieterbe</a> on 2017-02-24 19:04</div>
+            <div class="timeline-body"><blockquote>
+<p>I find the idea of having an inconsistent output format in the same set of search results a bit unnerving.</p>
+</blockquote>
+<p>actually me too, I think we can keep <code>rg pattern - myfile</code> as is and apply only the special case when &quot;ripgrep is only searching stdin.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-03-13 00:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dieterbe">@Dieterbe</a> on 2017-03-14 09:10</div>
+            <div class="timeline-body"><p>thank you @BurntSushi , i'm enjoying the new output already when piping things into ripgrep :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jzinn">@jzinn</a> on 2017-03-17 03:51</div>
+            <div class="timeline-body"><blockquote>
+<p>especially when i then want to copy paste the output to others</p>
+</blockquote>
+<p>For copy paste, you can do</p>
+<pre><code># mac
+echo -e 'a\nb\nab' | rg a | pbcopy
+</code></pre>
+<p>or</p>
+<pre><code># linux
+echo -e 'a\nb\nab' | rg a | xclip -selection clipboard
+</code></pre>
+<p>In this case, stdout is not a tty so ripgrep (even before 4ef4818) does not print line numbers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dieterbe">@Dieterbe</a> on 2017-03-17 09:37</div>
+            <div class="timeline-body"><p>my workflow is that typically i'll run ripgrep manually, potentially a few times while tweaking the pattern to get an narrow but accurate output, and then i just use my mouse to copy the output that is already visible.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:05 UTC
+    </footer>
+</body>
+</html>

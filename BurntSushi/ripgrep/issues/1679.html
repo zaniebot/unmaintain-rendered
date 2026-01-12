@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text in the `--help` message exceeds 80 columns - BurntSushi/ripgrep #1679</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Text in the <code>--help</code> message exceeds 80 columns</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1679">#1679</a>
+        opened by <a href="https://github.com/Lokathor">@Lokathor</a>
+        on 2020-09-10 21:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lokathor">@Lokathor</a></div>
+            <div class="timeline-body"><p>When using the <code>--help</code> command, the output regularly exceeds 80 columns in width, causing it to awkwardly hard wrap in a standard terminal.</p>
+<p>Please limit the help output width to 80 columns. Alternately, you could dynamically check the terminal width and limit output to that width (though that might be a little more complex).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-09-11 13:12</div>
+            <div class="timeline-body"><p>This is supposed to work. It looks like a bug in clap to me. ripgrep sets <a href="https://github.com/BurntSushi/ripgrep/blob/11c7b2ae17c0c2547eaffc92ac80ff03bd9950d7/crates/core/app.rs#L60"><code>max_term_width</code> here</a>, which is <a href="https://docs.rs/clap/2.33.3/clap/struct.App.html#method.max_term_width">documented to do as you describe</a>, AIUI.</p>
+<p>cc @kbknapp</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2020-09-11 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jacobherrington">@jacobherrington</a> on 2020-09-22 21:22</div>
+            <div class="timeline-body"><p>I tested this locally (Fedora 32) and seems that max_term_width is behaving as expected.</p>
+<p>If I understood correctly @Lokathor would prefer the output to wrap at 80 columns and it is set to 100 columns. I opened #1686 to change that setting. :+1:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-09-22 21:26</div>
+            <div class="timeline-body"><p>No, the output should wrap correctly based on terminal width, even if it's less than 100 columns. As I understand it, clap should be inspecting the terminal size.</p>
+<p>This might actually be ripgrep's fault, since I think it is responsible for printing the help message for reasons I forget right now. I'm on mobile.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbiffle">@cbiffle</a> on 2021-02-18 21:17</div>
+            <div class="timeline-body"><p>Inspecting the terminal size is gated behind the <code>wrap_help</code> feature in Clap, which ripgrep is not requesting.</p>
+<p>One caution: Clap relies on the <code>term_size</code> crate to do this, which has limited platform support. Consider enabling the feature only on certain platforms. (Right now ripgrep works on, for example, Illumos, while <code>term_size</code> does not.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-29 13:30</div>
+            <div class="timeline-body"><p>I am unfortunately going to mark this as <code>wontfix</code> for now.</p>
+<ul>
+<li>Changing the default wrapping size to 79 columns makes the output of <code>rg -h</code> non-ideal. The help text was written with 100 columns in mind so that each option gets placed on its own line.</li>
+<li>Enabling the <code>wrap_help</code> feature of clap brings in the <a href="https://github.com/clap-rs/term_size-rs"><code>term_size</code></a> crate, which is unmaintained and thus a hazard.</li>
+<li>As mentioned above, apparently <code>term_size</code> &quot;doesn't work&quot; on Illumos. (It's not clear what that means. Doesn't compile? Had poor runtime behavior?) Illumos is not a supported ripgrep platform (how do I run it on CI?), and if there is a problem, it sounds like a problem with clap and/or term_size. So this alone isn't enough for me to not enable <code>wrap_help</code>, but contributes to it.</li>
+<li>I did actually try enabling <code>wrap_help</code> and the output doesn't look much better. Apparently, whatever is reflowing text doesn't do a good job of it. It looks like it can't handle the fact that the help text is currently written with line breaks at 79 columns, so the reflowing gets confused.</li>
+</ul>
+<p>I don't see this getting solved on ripgrep's end unless we roll our own arg parser. I think the clap folks need to dig into this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-05-29 13:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2021-05-29 13:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:13 UTC
+    </footer>
+</body>
+</html>

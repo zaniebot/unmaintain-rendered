@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to use ignore crate with custom .ignore file - BurntSushi/ripgrep #1282</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to use ignore crate with custom .ignore file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1282">#1282</a>
+        opened by <a href="https://github.com/ghost">@ghost</a>
+        on 2019-05-16 05:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ghost">@ghost</a></div>
+            <div class="timeline-body"><h4>Version</h4>
+<p>I am using the crate <code>ignore</code> version 0.4.7 in my rust program. It was auto-installed by <code>cargo</code>.</p>
+<h4>System</h4>
+<p>My operating system is Arch Linux 4.19</p>
+<h4>Problem</h4>
+<p>I don't know how to use the ignore crate in my rust program when using a custom .ignore file even after looking at the <code>ignore</code> crate documentation.</p>
+<p>My use case is that I want to generate a list of all filepaths underneath a given root directory (say <code>~/main</code>) but exclude certain filepaths according to patterns given in a custom .ignore file (say <code>main.ignore</code>), which resides in the <code>/src</code>.  Example ignore patterns include <code>code</code> and <code>**/screen_capture</code>, so those directories will be excluded from the walk.</p>
+<p>The partial filesystem structure looks like this:</p>
+<pre><code>home
+---&gt; main 
+        ---&gt; images
+              ---&gt; screen_capture (should be pruned)
+       ---&gt; code (should be pruned)
+</code></pre>
+<p>The problem is that none of the patterns that I provide in my <code>main.ignore</code> file prunes the associated files.</p>
+<p>I wish there was an in-depth example that would show how to iterate through a walk that excludes files given a custom ignore file.</p>
+<p>I am not keen on using any existing .gitignore files as a way of excluding files because not all the directories I want to prune are git projects and even if they were, I don't necessarily want to prune the files based on their .gitignore files.</p>
+<h4>Code</h4>
+<pre><code>let mut builder = WalkBuilder::new(root_path); // root_path is ~/main
+builder.add_custom_ignore_filename(&quot;main.ignore&quot;); // main.ignore is in /src, same directory as main.rs
+for result in walker.build () {
+// this is where I perform an operation across each result
+}
+</code></pre>
+<p>I have also tried using the <code>add_ignore</code> function instead of <code>add_custom_ignore_filename</code> to no effect. No matter what, no files end up being pruned.</p>
+<h4>Additional Questions</h4>
+<p>How do I exclude the contents of a directory but not the directory itself? For example, I might want to exclude the contents of the <code>code</code> directory but still include the filepath for code (/home/main/code) in the results.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-05-16 12:51</div>
+            <div class="timeline-body"><p>Thanks for the bug report. In the future, please provide a complete working example that compiles, runs and shows some output. Please also then include, precisely, what output you expect. Without these things, I have to guess. For example, you mention both <code>/src</code> and <code>code</code> directories, and you've included code that doesn't actually compile.</p>
+<p>As it stands, I cannot reproduce your problem.</p>
+<p>Here's my program:</p>
+<pre><code class="language-rust">use ignore::WalkBuilder;
+
+fn main() {
+    let mut builder = WalkBuilder::new(&quot;main&quot;);
+    builder.add_custom_ignore_filename(&quot;main.ignore&quot;);
+    for result in builder.build() {
+        let dent = result.unwrap();
+        println!(&quot;{}&quot;, dent.path().display());
+    }
+}
+</code></pre>
+<p>And here's my directory tree under <code>main</code>:</p>
+<pre><code>$ tree main
+main
+├── code
+│   └── test.rs
+├── images
+│   └── screen_capture
+└── main.ignore
+
+3 directories, 2 files
+</code></pre>
+<p>And the contents of <code>main/main.ignore</code>:</p>
+<pre><code>$ cat main/main.ignore
+code
+**/screen_capture
+</code></pre>
+<p>Running the program yields:</p>
+<pre><code>$ ./target/release/ignore-1282
+main
+main/main.ignore
+main/images
+</code></pre>
+<p>Which is presumably what you want. Since you <strong>did not provide a complete reproduction</strong>, it's not clear why things aren't working for you. There is likely some other environmental factor at play. In particular, the above is inside my <code>/tmp</code> directory, where there is no other <code>.gitignore</code> or <code>.ignore</code> file that could impact the results of directory traversal. Since you are searching in your <code>$HOME</code> directory, you might have <code>.gitignore</code> or <code>.ignore</code> files that are impacting your results.</p>
+<blockquote>
+<p>How do I exclude the contents of a directory but not the directory itself? For example, I might want to exclude the contents of the code directory but still include the filepath for code (/home/main/code) in the results.</p>
+</blockquote>
+<p>By using globs? With the example above, here's the new <code>main.ignore</code> file:</p>
+<pre><code>$ cat main/main.ignore
+code/*
+**/screen_capture
+</code></pre>
+<p>And now running the program yields:</p>
+<pre><code>$ ./target/release/ignore-1282
+main
+main/main.ignore
+main/code
+main/images
+</code></pre>
+<p>Notice that it includes <code>main/code</code> but not <code>main/code/test.rs</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2019-05-16 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-05-16 12:52</div>
+            <div class="timeline-body"><blockquote>
+<p>I wish there was an in-depth example that would show how to iterate through a walk that excludes files given a custom ignore file.</p>
+</blockquote>
+<p>It is very likely that the <code>ignore</code> crate will at some point go through a major overhaul, since it is sub-optimal in a number of respects. Unfortunately, the implementation is complex, so it takes time to do this. Therefore, my motivation for documenting something that is likely going to evaporate is pretty low.</p>
+<p>You might consider other alternatives to the <code>ignore</code> crate if this is a major impediment for you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-05-29 17:41</div>
+            <div class="timeline-body"><p>Closing due to inactivity from @starun96</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-05-29 17:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:55 UTC
+    </footer>
+</body>
+</html>

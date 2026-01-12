@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>deb package fails to install - BurntSushi/ripgrep #1157</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>deb package fails to install</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1157">#1157</a>
+        opened by <a href="https://github.com/benharri">@benharri</a>
+        on 2019-01-10 15:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/benharri">@benharri</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>none; unable to install</p>
+<h4>How did you install ripgrep?</h4>
+<p>ripgrep_0.10.0_amd64.deb</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>ubuntu bionic 18.04</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<pre><code>$ sudo apt install ./ripgrep_0.10.0_amd64.deb
+Reading package lists... Error!
+E: Sub-process Popen returned an error code (2)
+E: Encountered a section with no Package: header
+E: Problem with MergeList /home/ben/ripgrep_0.10.0_amd64.deb
+E: The package lists or status file could not be parsed or opened.
+</code></pre>
+<p>I tried clearing the apt cache. I previously had 0.8.1 installed, and removed it to try to get the latest version to install.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>Try to install the latest deb package.</p>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<p>Package fails to install. I've tested on two separate hosts.</p>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>Package installs correctly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-01-10 15:56</div>
+            <div class="timeline-body"><p>Could you please explain why you are using <code>apt install</code> here when the instructions in the README say to use <code>dpkg</code>? In particular:</p>
+<pre><code>$ sudo dpkg -i ripgrep_0.10.0_amd64.deb
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/benharri">@benharri</a> on 2019-01-10 15:58</div>
+            <div class="timeline-body"><p><code>apt install</code> pulls in dependencies automatically, skipping the <code>apt -f install</code> step that is often required when using <code>dpkg -i</code>.</p>
+<p>It still fails with <code>dpkg -i</code>:</p>
+<pre><code>dpkg-deb: error: 'ripgrep_0.10.0_amd64.deb' is not a Debian format archive
+</code></pre>
+<p>I was also able to reproduce this on a debian stretch host.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-01-10 16:00</div>
+            <div class="timeline-body"><p>Sorry, but I can't reproduce this problem:</p>
+<pre><code>[ubuntu@ip-172-30-0-12 ~] curl -LO https://github.com/BurntSushi/ripgrep/releases/download/0.10.0/ripgrep_0.10.0_amd64.deb
+[ubuntu@ip-172-30-0-12 ~] sudo dpkg -i ripgrep_0.10.0_amd64.deb
+Selecting previously unselected package ripgrep.
+(Reading database ... 144654 files and directories currently installed.)
+Preparing to unpack ripgrep_0.10.0_amd64.deb ...
+Unpacking ripgrep (0.10.0) ...
+Setting up ripgrep (0.10.0) ...
+Processing triggers for man-db (2.8.3-2ubuntu0.1) ...
+[ubuntu@ip-172-30-0-12 ~] rg --version
+ripgrep 0.10.0 (rev 8a7db1a918)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+[ubuntu@ip-172-30-0-12 ~] cat /etc/lsb-release
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=18.04
+DISTRIB_CODENAME=bionic
+DISTRIB_DESCRIPTION=&quot;Ubuntu 18.04.1 LTS&quot;
+</code></pre>
+<p>So I'm not sure what to do other than to ask whether you believe <code>ripgrep_0.10.0_amd64.deb</code> is actually correct. e.g.,</p>
+<pre><code>[ubuntu@ip-172-30-0-12 ~] md5sum ripgrep_0.10.0_amd64.deb
+a65f1212703dd2cce8dd0bd7542123af  ripgrep_0.10.0_amd64.deb
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/benharri">@benharri</a> on 2019-01-10 16:03</div>
+            <div class="timeline-body"><p>I missed the <code>-L</code> flag on curl.</p>
+<p>I didn't realize that the releases url was redirecting anywhere else. It does work with <code>apt install</code> though.</p>
+<p>Thanks for investigating.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @benharri on 2019-01-10 16:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:47 UTC
+    </footer>
+</body>
+</html>

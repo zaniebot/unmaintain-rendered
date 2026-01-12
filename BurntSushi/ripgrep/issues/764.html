@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Size of output is 5 times bigger with ripgrep than with thesilversearcher for color=always - BurntSushi/ripgrep #764</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Size of output is 5 times bigger with ripgrep than with thesilversearcher for color=always</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/764">#764</a>
+        opened by <a href="https://github.com/edi9999">@edi9999</a>
+        on 2018-01-29 09:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/edi9999">@edi9999</a></div>
+            <div class="timeline-body"><p>This is very similar to this issue : https://github.com/BurntSushi/ripgrep/issues/696.</p>
+<p>But I think I found out what the underlying problem is.</p>
+<p>rg --color always --colors line:fg:yellow --colors line:style:bold --colors path:fg:green --colors path:style:bold --colors match:fg:black --colors match:bg:yellow --colors match:style:nobold '.' --no-heading --line-number &gt;/tmp/foo_rg
+ag '.' --color --nogroup --column  &gt; /tmp/foo_ag</p>
+<p>When I then run :</p>
+<pre><code>cat /tmp/foo_rg | less -R
+# and 
+cat /tmp/foo_ag | less -R
+</code></pre>
+<p>I see that the output colors are &quot;similar&quot;, but the size of the files are very different :</p>
+<pre><code>ls -lah /tmp/foo*
+-rw-r--r-- 1 edgar edgar  22M Jan 29 10:48 /tmp/foo_ag
+-rw-r--r-- 1 edgar edgar 109M Jan 29 10:48 /tmp/foo_rg
+</code></pre>
+<p>And the number of lines in each file is the same.</p>
+<p>I have taken a screenshot of the same lines of each efile for api/check.py:
+On top is the ripgrep output, On the bottom the ag output :</p>
+<p><img src="https://user-images.githubusercontent.com/2071336/35504217-c3a27dd2-04e2-11e8-9a80-98e99f6e0e4d.png" alt="selection_001" /></p>
+<p>As you can see, ripgrep has a huge amount of escape sequences that ag doesn't have.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Size of output is 10 times bigger with ripgrep than with thesilversearcher for color=always" to "Size of output is 5 times bigger with ripgrep than with thesilversearcher for color=always" by @edi9999 on 2018-01-29 09:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-01-29 11:23</div>
+            <div class="timeline-body"><p>That doesn't seem ideal, but it's only relevant in cases where <code>rg</code> has been asked to match individual characters — e.g., patterns like <code>.</code> and <code>\w</code>. <code>.*</code> for example does not have that problem (though <code>rg</code> is still a <em>little</em> more noisy with the format stuff than <code>ag</code> because it doesn't combine sequences).</p>
+<p>I don't use fzf but it doesn't seem likely that the original reporter from #696 would have been searching for a pattern like <code>.</code> (right?). Maybe there could be some interplay between the way <code>rg</code> outputs sequences and whatever fzf does with them, though, idk</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-29 11:53</div>
+            <div class="timeline-body"><p>This is indeed interesting! I agree that we should probably fix this. It might make sense to delay fixing this until the printer is refactored though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edi9999">@edi9999</a> on 2018-01-29 12:59</div>
+            <div class="timeline-body"><p>Yes, the usecase in fzf is really to query with <code>.</code> , this way, we actually have all lines which we then filter throuhg fzf (which is an interactive grep). I find it good to be able to search for <code>.</code> because this makes the search more interactive, if for example I type <code>seacr</code> instead of <code>searc</code>, I will see immediately that there are no more results.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-01-29 13:04</div>
+            <div class="timeline-body"><p>Ohh. That makes sense then</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2018-02-01 22:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-08-20 11:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:25 UTC
+    </footer>
+</body>
+</html>

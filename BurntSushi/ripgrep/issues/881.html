@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>snap rg can not search right in some dir - BurntSushi/ripgrep #881</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>snap rg can not search right in some dir</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/881">#881</a>
+        opened by <a href="https://github.com/fcying">@fcying</a>
+        on 2018-04-11 13:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/fcying">@fcying</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>snap install
+ripgrep 0.8.1 (rev c8e9f25b85)
+-SIMD -AVX</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>ubuntu 16.04</p>
+<p>in some dir, rg install by snap work abnormality
+version ripgrep-0.8.1-x86_64-unknown-linux-musl.tar.gz work fine.</p>
+<pre><code>ll                                                                                                                                             
+total 16
+drwxrwxr-x  2 fcying fcying 4096 Apr 11 14:52 ./
+drwxrwxr-x 11 fcying fcying 4096 Apr 11 20:49 ../
+-rwxrwxr-x  1 fcying fcying 3780 Apr 11 14:52 vim_build.sh*
+-rwxrwxr-x  1 fcying fcying 1003 Dec  5 23:31 ycm_build.sh*
+</code></pre>
+<p><code>snap rg 0.8.1</code>   work abnormality</p>
+<pre><code>ripgrep 0.8.1 (rev c8e9f25b85)
+-SIMD -AVX
+/snap/bin/rg &quot;dirname&quot; --debug
+DEBUG/grep::search/grep/src/search.rs:195: regex ast:
+Literal {
+    chars: [
+        'd',
+        'i',
+        'r',
+        'n',
+        'a',
+        'm',
+        'e'
+    ],
+    casei: false
+}
+DEBUG/grep::literals/grep/src/literals.rs:38: literal prefixes detected: Literals { lits: [Complete(dirname)], limit_size: 250, limit_class: 10 }
+./: Permission denied (os error 13)
+No files were searched, which means ripgrep probably applied a filter you didn't expect. Try running again with --debug
+</code></pre>
+<p><code>ripgrep-0.8.1-x86_64-unknown-linux-musl</code>  work correct</p>
+<pre><code>ripgrep 0.8.1 (rev c8e9f25b85)
++SIMD -AVX
+~/bin/rg &quot;dirname&quot; --debug                                                                                                                       20:59:42
+DEBUG/grep::search/grep/src/search.rs:195: regex ast:
+Literal {
+    chars: [
+        'd',
+        'i',
+        'r',
+        'n',
+        'a',
+        'm',
+        'e'
+    ],
+    casei: false
+}
+DEBUG/grep::literals/grep/src/literals.rs:38: literal prefixes detected: Literals { lits: [Complete(dirname)], limit_size: 250, limit_class: 10 }
+DEBUG/globset/globset/src/lib.rs:396: glob converted to regex: Glob { glob: &quot;vim*&quot;, re: &quot;(?-u)^vim[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true }, tokens: Tokens([Literal('v'), Literal('i'), Literal('m'), ZeroOrMore]) }
+DEBUG/globset/globset/src/lib.rs:401: built glob set; 11 literals, 2 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
+ycm_build.sh
+3:cd `dirname $0`
+
+vim_build.sh
+5:cd `dirname $0`
+</code></pre>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>search  correct</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-04-11 13:07</div>
+            <div class="timeline-body"><p>Please <a href="https://github.com/BurntSushi/ripgrep#installation">read the README</a> more carefully:</p>
+<blockquote>
+<p>If you get permission errors when running ripgrep after installation, try uninstalling and then re-installing with the <code>--classic</code> flag.</p>
+</blockquote>
+<p>Moreover, I don't maintain the ripgrep snap, so there's nothing that can be done about it here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-04-11 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2018-04-11 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-04-11 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dieff">@Dieff</a> on 2019-07-01 21:38</div>
+            <div class="timeline-body"><p>I had a similar problem. It was due to a non-default home directory. If your <code>$HOME</code> isn't <code>/home/&lt;username&gt;</code>, then the default Apparmor policies used by Snap may be causing the issue.</p>
+<p>I fixed by</p>
+<ul>
+<li>Edit the file <code>/etc/apparmor.d/tunables/home</code></li>
+<li>Add the location of the parent of your homedir to the line <code>@{HOMEDIRS}=/home/</code>, seperated by a space</li>
+<li>Example, if your home dir is /home/mydomain.com/bob, you would edit the line to</li>
+</ul>
+<pre><code>@{HOMEDIRS}=/home/ /home/mydomain.com/
+</code></pre>
+<ul>
+<li>Reinstall ripgrep with <code>--classic</code> (may not actually be necessary).</li>
+</ul>
+<p>Probably a bug should be opened with Ubuntu or Snap. I found this issue with Google, so I think that others will too.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:31 UTC
+    </footer>
+</body>
+</html>

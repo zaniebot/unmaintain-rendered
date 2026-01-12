@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commit 4fcb1b2202b97c5a21894672232700225223a138 breaks build from source on Ubuntu 18.04LTS - BurntSushi/ripgrep #2534</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Commit 4fcb1b2202b97c5a21894672232700225223a138 breaks build from source on Ubuntu 18.04LTS</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2534">#2534</a>
+        opened by <a href="https://github.com/toddin8tor">@toddin8tor</a>
+        on 2023-06-14 02:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/toddin8tor">@toddin8tor</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>Attempting to build from source for 32-bit Ubuntu 18.04LTS Docker image. No 32-bit precompiled images available to download. Rustc version is 1.65.</p>
+<h4>How did you install ripgrep?</h4>
+<p>snippet from Dockerfile...</p>
+<pre><code class="language-Dockerfile"> RUN (cd /usr/local; git clone https://github.com/BurntSushi/ripgrep) &amp;&amp; \
+      (cd /usr/local/ripgrep; cargo build --release) &amp;&amp; \
+      (cd /usr/local/bin; ln -s ../ripgrep/target/release/rg)
+</code></pre>
+<p>NOTE: this worked fine prior to this commit. My short term workaround is to checkout the commit prior to this breaking change. (949092fd22689905fce358cdd1b2b676709feefe)</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Ubuntu 18.04LTS (32-bit)</p>
+<h4>Describe your bug.</h4>
+<p>There is no std::io::IsTerminal in rustc 1.65. As commit message says, requires 1.7 or later.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>see Dockerfile snippet above...</p>
+<h4>What is the actual behavior?</h4>
+<p>Build fails with message about std::io:IsTerminal can not be found.</p>
+<h4>What is the expected behavior?</h4>
+<p>What do you think ripgrep should have done?</p>
+<p>Should just build.</p>
+<p>The suggested fix is to see if the newer std::io::IsTerminal stuff is available with a test compile of something small and use the old atty crate if not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-06-14 11:53</div>
+            <div class="timeline-body"><p>No this isn't a breaking change. You're using an old version of <code>rustc</code>. You have two choices. You can either upgrade your version of Rust or you can build an older version of ripgrep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-06-14 11:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2023-06-14 11:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/toddin8tor">@toddin8tor</a> on 2023-06-14 18:20</div>
+            <div class="timeline-body"><p>With respect,</p>
+<p>It actually is a breaking change.</p>
+<p>Yes, I'm using an old distro with its fairly ancient rust. There's a very good reason for that... I'm supporting a very old product where certain ICs are EOL'd In order to add drivers for replacement parts into the kernel for that product, I have to recreate the build env for the ancient Yocto build it's based on.</p>
+<p>Ripgrep is an awesome tool... one of my daily gotos. It's pretty sad that it looks like I'll have to fork the repo to get any future bugfixes or enhancements when the fix for this is pretty simple.</p>
+<p>--
+Todd Weybrew
+Principal, Warp 9 Designs, LLC
+<em><strong>@</strong></em>.***</p>
+<p>On Wed, Jun 14, 2023, at 04:53, Andrew Gallant wrote:</p>
+<blockquote>
+<p>No this isn't a breaking change. You're using an old version of <code>rustc</code>. You have two choices. You can either upgrade your version of Rust or you can build an older version of ripgrep.</p>
+<p>—
+Reply to this email directly, view it on GitHub <a href="https://github.com/BurntSushi/ripgrep/issues/2534#issuecomment-1591046112">https://github.com/BurntSushi/ripgrep/issues/2534#issuecomment-1591046112</a>, or unsubscribe <a href="https://github.com/notifications/unsubscribe-auth/ALG4ALVHYA6EZKNWLMKM56LXLGQ2XANCNFSM6AAAAAAZFV2B4Y">https://github.com/notifications/unsubscribe-auth/ALG4ALVHYA6EZKNWLMKM56LXLGQ2XANCNFSM6AAAAAAZFV2B4Y</a>.
+You are receiving this because you authored the thread.Message ID: <em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-06-14 18:45</div>
+            <div class="timeline-body"><p>It actually isn't. Tools require new versions of toolchains all of the time. The problem here is you want me to maintain support for older toolchains on <em><strong>YOUR</strong></em> schedule. But I've never made that promise. Indeed, ripgrep's README <em>specifically</em> states that it tracks the <strong>latest stable release of Rust</strong>. That sounds like too fast of a pace for you, but that's on you. The README tells you what to expect. You just didn't listen. I'm not here to give you free labor on your schedule.</p>
+<blockquote>
+<p>It's pretty sad that it looks like I'll have to fork the repo to get any future bugfixes or enhancements when the fix for this is pretty simple.</p>
+</blockquote>
+<p>This sounds passive aggressive to me. It's not sad at all. It's working exactly as intended. You have a financial incentive to maintain older toolchains and are getting paid to do it. I'm not. It makes sense that you need to maintain a fork to get what you need to meet the demands of your product.</p>
+<p>Have fun.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Locked by @ghost on 2023-06-14 18:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:41 UTC
+    </footer>
+</body>
+</html>

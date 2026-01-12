@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--fixed-strings does not find matches with double-quotation marks - BurntSushi/ripgrep #205</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--fixed-strings does not find matches with double-quotation marks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/205">#205</a>
+        opened by <a href="https://github.com/alejandro5042">@alejandro5042</a>
+        on 2016-10-31 15:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alejandro5042">@alejandro5042</a></div>
+            <div class="timeline-body"><p>--fixed-strings is having issues matching double-quotes:</p>
+<p><img src="https://cloud.githubusercontent.com/assets/3143819/19860315/43a476f0-9f56-11e6-8f9b-be2fedae6414.png" alt="image" /></p>
+<pre><code>0.01 - C:\Dev\Temp\rg-bug&gt; cat test.txt
+[Trait(&quot;CAR&quot;, &quot;458157&quot;)]
+
+0.00 - C:\Dev\Temp\rg-bug&gt; rg '\[Trait\(\&quot;CAR'
+test.txt
+1:[Trait(&quot;CAR&quot;, &quot;458157&quot;)]
+
+0.03 - C:\Dev\Temp\rg-bug&gt; rg --fixed-strings '[Trait(&quot;CAR'
+
+(nothing)
+</code></pre>
+<p>But with an escaped double-quote <code>\&quot;</code> it works:</p>
+<p><img src="https://cloud.githubusercontent.com/assets/3143819/19860386/80dea0fe-9f56-11e6-97e2-e4584053afd1.png" alt="image" /></p>
+<p>With <code>--debug</code>:</p>
+<pre><code>0.03 - C:\Dev\Temp\rg-bug&gt; rg --fixed-strings '[Trait(\&quot;' --debug
+DEBUG:rg::args: will try to use memory maps
+DEBUG:grep::search: regex ast:
+Literal {
+    chars: [
+        '[',
+        'T',
+        'r',
+        'a',
+        'i',
+        't',
+        '(',
+        '\&quot;'
+    ],
+    casei: false
+}
+DEBUG:grep::literals: literal prefixes detected: Literals { lits: [Complete([Trait(&quot;)], limit_size: 250, limit_class: 10 }
+test.txt
+1:[Trait(&quot;CAR&quot;, &quot;458157&quot;)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "--fixed-strings does not find matches" to "--fixed-strings does not find matches with double-quotation marks" by @alejandro5042 on 2016-10-31 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-31 17:50</div>
+            <div class="timeline-body"><p>I can't reproduce the problem:</p>
+<pre><code>[andrew@Serval tmp] cat foo
+[Trait(&quot;CAR&quot;, &quot;458157&quot;)]
+[andrew@Serval tmp] rg '\[Trait\(&quot;CAR' foo
+1:[Trait(&quot;CAR&quot;, &quot;458157&quot;)]
+[andrew@Serval tmp] rg -F '[Trait(&quot;CAR' foo
+1:[Trait(&quot;CAR&quot;, &quot;458157&quot;)]
+</code></pre>
+<p>What version of ripgrep are you using?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2016-10-31 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alejandro5042">@alejandro5042</a> on 2016-10-31 20:12</div>
+            <div class="timeline-body"><p>I am using v0.2.5. I tested both compiler versions (MSVC and GNU) and both exhibit this behavior. I believe this is an artifact of the Windows command processor, PowerShell, the C/C++ runtime library, Windows, or some combination of these. I'm betting that if you test on Windows--not *nix--you will see the same behavior.</p>
+<p>It seems that on Windows, if you want to include double quotes in the cmd line, you must escape it with a backslash <code>\&quot;</code> or double it <code>&quot;&quot;</code>.</p>
+<p>I have scoured the Internet for help. Here's a <a href="http://edgylogic.com/blog/powershell-and-external-commands-done-right/">great article</a> where various people are trying to figure this out...</p>
+<blockquote>
+<p>What you observe with the argstest.exe program is the escaping done internally within the C/C++/C# startup code. Every C/C++/C# console program has a startup routine that processes the Windows command line, and tries to emulate the Unix environment that C-family programs expect. This startup routine parses the Windows command line, and generates the argc/argv[] array for the main() routine, the way a Unix shell would have done. It is it that uses quotes to identify the beginning and end of &quot;complex&quot; arguments, then enters them as a single entry in argv[] without the enclosing quotes. And it is it that uses the \ character to escape quotes that are to be retained in argv[] entries.</p>
+</blockquote>
+<p>So basically, PowerShell will do some arg-mashing, then pass the string to the OS which passes it into the executable. The runtime library creates an <code>argv[]</code> from a scalar argument string. Whatever that code does is the one that doesn't like the double quotation mark.</p>
+<p>Here's some more proof. Bypassing the PowerShell shell and sending a <code>\&quot;</code> directly into the argument string Windows will call the process with is the only way it works. Without the backslash it doesn't.</p>
+<pre><code>0.05 - C:\Dev\Temp\rg-bug&gt; $p = [System.Diagnostics.Process]::new(); $p.StartInfo.UseShellExecute = $false; $p.StartInfo.FileName = &quot;PATH\TO\rg.exe&quot;; $p.StartInfo.Arguments = '-F &quot;[Trait(\&quot;CAR&quot;'; [void] $p.Start(); $p.WaitForExit();
+test.txt
+1:[Trait(&quot;CAR&quot;, &quot;458157&quot;)]
+</code></pre>
+<p>Luckily <a href="http://www.daviddeley.com/autohotkey/parameters/parameters.htm#WINARGV">this link</a> explains the nuances of this parser and even links to commented disassembly.</p>
+<p>A few options:</p>
+<ol>
+<li>Windows users will assume <code>rg</code> works like other executables and get in the habit of escaping their quotation marks</li>
+<li>You don't use the default argument parsing library and do your own argument parsing</li>
+<li>Some sort of --unix compatibility mode where you do opt-in to option 2</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-31 21:01</div>
+            <div class="timeline-body"><p>I'll take a look at this. One thing I'd like to know is how other command line search tools operate on Windows. For example, how does <code>grep -F</code> work on Windows?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alejandro5042">@alejandro5042</a> on 2016-10-31 21:10</div>
+            <div class="timeline-body"><p>Using GNU grep 2.24 from my Git install, no combination of escaping that I can dream up seems to match that line. After a brief search, I can't find much on the Internet on how to do this. Hopefully we can have some input from others here. Even doing nothing, it seems that <code>rg</code> is an improvement--there is a way to match that line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-31 23:38</div>
+            <div class="timeline-body"><p>In <code>cmd.exe</code>, I can't even get single quoted arguments to work at all. Namely, <code>rg 'Trait'</code> doesn't find anything. I can make <code>rg -F &quot;[Trait(\&quot;CAR&quot;</code> work though.</p>
+<p>I note that cygwin doesn't have this behavior. I only get this in cmd.exe, which I think means your analysis is right: this is just due to shell escaping rules. I don't think there's anything ripgrep can really do.</p>
+<p>I don't even know what options (2) or (3) mean. I'm inclined to leave this be. If there's a better option and someone submits a PR with tests for it, then I think I'd be OK maintaining it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-10-31 23:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:52 UTC
+    </footer>
+</body>
+</html>

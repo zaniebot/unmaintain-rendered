@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encoding issue when piping rg output - BurntSushi/ripgrep #471</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Encoding issue when piping rg output</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/471">#471</a>
+        opened by <a href="https://github.com/elirnm">@elirnm</a>
+        on 2017-05-02 08:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/elirnm">@elirnm</a></div>
+            <div class="timeline-body"><p>There seems to be an encoding issue when piping the output of a ripgrep search. The characters <code>ø æ å ä</code> (and probably others, those are just the ones I've tested with) are converted to <code>??</code> when being piped to anything.</p>
+<p>It seems to only be with piping; passing stdout to a file with <code>&gt;</code> works fine (at least in cmd.exe where files are created with utf8).</p>
+<p><img src="https://cloud.githubusercontent.com/assets/19817004/25610476/32325c72-2ed8-11e7-8c12-443fb138567f.PNG" alt="capture" /></p>
+<p>This is what I used to test this.</p>
+<pre><code>mkdir rgtest
+cd rgtest
+echo &quot;testøæåä&quot; &gt; strtest.txt
+mkdir testø
+echo &quot;blahblah&quot; &gt; testø/testå.txt
+</code></pre>
+<p>Then search for various things as seen in the picture. (The <code>--colors</code> option is unrelated; that's just so you can see the filenames in Powershell).</p>
+<p>This is on Windows 7 with ripgrep 0.5.1. I've recreated this in both powershell and cmd.exe, but I don't have a Linux install to test it there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-05-02 09:44</div>
+            <div class="timeline-body"><p>Can you provide the raw bytes of strtest.txt?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elirnm">@elirnm</a> on 2017-05-02 09:58</div>
+            <div class="timeline-body"><pre><code>116
+101
+115
+116
+195
+184
+195
+166
+195
+165
+195
+164
+13
+10
+</code></pre>
+<p>If that's not what you wanted you'll have to give me more specific instructions.</p>
+<p>The file is currently UTF-8 encoded but this issue occurs with other file encodings as well (and when not reading from a file, as seen in the <code>--files</code> examples.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elirnm">@elirnm</a> on 2017-05-02 10:28</div>
+            <div class="timeline-body"><p>Hmm, this actually doesn't look like ripgrep. Piping these characters is succeeding with every native Powershell command, but failing with every call to an executable or any non-built-in program.</p>
+<p><img src="https://cloud.githubusercontent.com/assets/19817004/25614555/4b3a87bc-2ee7-11e7-882e-965428a56dec.PNG" alt="cap" /></p>
+<p>And while I seem to remember it failing in cmd.exe before, it actually seems to work fine there.</p>
+<p>Sorry not looking into this more before reporting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @elirnm on 2017-05-02 10:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:10 UTC
+    </footer>
+</body>
+</html>

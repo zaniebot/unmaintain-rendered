@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>symlink feature/bug/working as intended? - BurntSushi/ripgrep #2242</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>symlink feature/bug/working as intended?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2242">#2242</a>
+        opened by <a href="https://github.com/bdmorin">@bdmorin</a>
+        on 2022-06-23 23:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bdmorin">@bdmorin</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>$ rg --version
+ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p><code>apt-get install ripgrep</code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<pre><code>$ uname -a
+Linux wafflelung 5.15.0-40-generic #43-Ubuntu SMP Wed Jun 15 12:54:21 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
+
+$ lsb_release -a
+No LSB modules are available.
+Distributor ID:	Ubuntu
+Description:	Ubuntu 22.04 LTS
+Release:	22.04
+Codename:	jammy
+
+$ neofetch --off
+OS: Ubuntu 22.04 LTS x86_64
+Kernel: 5.15.0-40-generic
+Uptime: 1 hour, 5 mins
+Packages: 709 (dpkg), 4 (snap)
+Shell: bash 5.1.16
+Terminal: /dev/pts/0
+CPU: Intel i7-7700HQ (8) @ 3.800GHz
+GPU: Intel HD Graphics 630
+Memory: 361MiB / 32041MiB
+</code></pre>
+<h4>Describe your bug.</h4>
+<p>Fresh install of Ubuntu 22.04, all I've done is install a few tools.</p>
+<pre><code>$ history | rg apt
+    6  sudo apt update
+   18  sudo apt install aptitude -y
+   19  sudo aptitude update
+   21  aptitude search doh
+   33  apt search ripgrep
+   34  sudo apt-get install ripgrep -y
+   65  history | rg apt
+</code></pre>
+<p>I was configuring DNS, and it stuck comcast in the resolve.conf by default. I wanted to see if it was anywhere else.</p>
+<pre><code>$ cat /etc/resolv.conf
+nameserver 127.0.0.53
+options edns0 trust-ad
+search hsd1.in.comcast.net
+
+$ whoami
+bdmorin
+$ sudo rg comcast
+$
+# No output
+
+$ sudo rg -uuu comcast
+# No output
+
+$ sudo rg -uuu comcast /etc/resolv.conf
+23:search hsd1.in.comcast.net
+
+$ sudo rg '10\.0\.0'
+dhcp/dhclient-exit-hooks.d/rfc3442-classless-routes
+6:#   10.0.0.0/8 via 10.10.17.66.41
+# it's properly recursing
+
+$ sudo rg -uuu comcast --no-config
+# No output
+
+$ sudo rg -uuu comcast --no-config -l
+# No output
+
+$ sudo rg -uuu comcast --no-config -L
+resolv.conf
+23:search hsd1.in.comcast.net
+# Finally output, but it required ripgrep to follow symlinks
+
+$ sudo rg -uuu comcast --no-config --debug 2&gt;&amp;1 | rg resolv.conf
+# Hundreds of lines of output, this seemed most relevant
+DEBUG|rg::subject|crates/core/subject.rs:74: ignoring ./resolv.conf: failed to pass subject filter: file type: Some(FileType(FileType { mode: 40960 })), metadata: Ok(Metadata { file_type: FileType(FileType { mode: 41471 }), is_dir: false, is_file: false, permissions: Permissions(FilePermissions { mode: 41471 }), modified: Ok(SystemTime { tv_sec: 1650502850, tv_nsec: 0 }), accessed: Ok(SystemTime { tv_sec: 1656022609, tv_nsec: 600380021 }), created: Ok(SystemTime { tv_sec: 1656022171, tv_nsec: 786376279 }), .. })
+
+# I can see the file as my own user
+$ rg comcast
+gshadow: Permission denied (os error 13)
+sudoers.d/README: Permission denied (os error 13)
+...
+./polkit-1/localauthority: Permission denied (os error 13) 
+# No output without specifying the filename.
+
+$ whoami; rg comcast resolv.conf
+bdmorin
+23:search hsd1.in.comcast.net
+
+$ readlink /etc/resolv.conf
+../run/systemd/resolve/stub-resolv.conf
+
+$ ls -latr ../run/systemd/resolve/stub-resolv.conf
+-rw-r--r-- 1 systemd-resolve systemd-resolve 938 Jun 23 22:16 ../run/systemd/resolve/stub-resolv.conf
+
+$ ls -ltd resolv.conf
+lrwxrwxrwx 1 root root 39 Apr 21 01:00 resolv.conf -&gt; ../run/systemd/resolve/stub-resolv.conf
+
+$ fgrep comcast ./*
+./resolv.conf:search hsd1.in.comcast.net
+
+$ sudo rg comcast *
+resolv.conf
+23:search hsd1.in.comcast.net
+# This one surprised me - I don't normally need to add any file globs to rg, perhaps it's something with the ubuntu build. 
+
+</code></pre>
+<p>I assume this is the problem, I just don't know what it means.</p>
+<p><code>ignoring ./resolv.conf: failed to pass subject filter: file type: Some(FileType(FileType { mode: 40960 }))</code></p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<ul>
+<li>Install fresh 22.04 server edition.</li>
+<li>apt update/upgrade</li>
+<li>rg [something] /etc/resolv.fonc</li>
+</ul>
+<h4>What is the actual behavior?</h4>
+<p>A normal ripgrep search isn't displaying the text found in a standard ascii file. The text is only displayed when directly referencing a file, a symlink will not get picked up in filename glob.</p>
+<h4>What is the expected behavior?</h4>
+<p>ripgrep should search the symlink file as if it were in the directory, if it will find it if I specify the file, it should find it during a normal search.</p>
+<h4>Searching old issues</h4>
+<p>I found issue symlink issues https://github.com/BurntSushi/ripgrep/issues?q=symlink
+So I'm guessing this is working as intended. I'd already wrote most of this issue before I figured out what was going on.</p>
+<p>I guess close this if everything is working like it's supposed to, but it seems odd to me that if you reference a file, it'll search it, but NOT search it if it's a symlink.</p>
+<p>Thanks for writing ripgrep, it's literally changed my sysadmin life.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-06-23 23:59</div>
+            <div class="timeline-body"><p>Yup, this is correct. Here's a much smaller reproduction:</p>
+<pre><code>$ mkdir /tmp/rg2242
+$ cd /tmp/rg2242
+$ echo test &gt; foo
+$ ln -s foo bar
+$ rg test
+foo
+1:test
+$ rg test *
+foo
+1:test
+
+bar
+1:test
+$ rg test -L
+foo
+1:test
+
+bar
+1:test
+$ grep -r test
+foo:test
+$ grep -r test *
+bar:test
+foo:test
+$ grep -R test
+bar:test
+foo:test
+</code></pre>
+<p>Notice the behavior matches <code>grep</code> precisely.</p>
+<p>The reason why <code>*</code> works here is because ripgrep doesn't expand <code>*</code>, the shell does. So to ripgrep, <code>*</code> is like <code>rg test foo bar</code>. And when you give a file explicitly to ripgrep (which happens in this case, because ripgrep doesn't know that you gave it a glob), then ripgrep <em>always</em> searches it, regardless of any of its smart filtering rules. This is to prevent even worse and surprising behavior where ripgrep just willy nilly ignores searching a file you gave it explicitly just because it matches a less specific ignore rule or something somewhere.</p>
+<p>So basically, when you do <code>rg test</code>, that's equivalent to <code>rg test ./</code>. And that means it's doing recursive directory traversal and <em>only</em> follows symlinks when it's instructed to do. Otherwise, symlinks are skipped.</p>
+<p>Somewhat unfortunate, but symlinks are weird. But at least GNU grep settled on the same behavior apparently. (I don't recall checking how GNU grep behaved when I decided on these semantics.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2022-06-23 23:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2022-06-23 23:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:33 UTC
+    </footer>
+</body>
+</html>

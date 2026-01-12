@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>replacement can't capture if with single quote in it when using PowerShell - BurntSushi/ripgrep #2214</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>replacement can't capture if with single quote in it when using PowerShell</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2214">#2214</a>
+        opened by <a href="https://github.com/huangjj27">@huangjj27</a>
+        on 2022-05-18 15:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/huangjj27">@huangjj27</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>&gt; rg --version
+ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p><code>cargo install ripgrep</code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Windows 10</p>
+<h4>Describe your bug.</h4>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>here is the file.txt:</p>
+<pre><code>10a3789
+51b7883
+</code></pre>
+<p>and then I run in PowerShell:</p>
+<pre><code>rg -N &quot;^(\w+)$&quot; file.txt -r &quot;'$1',&quot;
+</code></pre>
+<h4>What is the actual behavior?</h4>
+<p>I get these lines:</p>
+<pre><code>'',
+'',
+</code></pre>
+<p>but without the replacement, it captured:</p>
+<pre><code>&gt; rg -N &quot;^(\w+)$&quot; file.txt                   
+10a3789
+51b7883
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>as I want to add a single quote both before and after each line, and then add a comma to end each line expecting it cat these lines:</p>
+<pre><code>'10a3789',
+'51b7883',
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-05-18 15:24</div>
+            <div class="timeline-body"><p>I can reproduce your problem:</p>
+<pre><code>$ rg -N '^(\w+)$' /tmp/file.txt -r &quot;'$1',&quot;
+'',
+'',
+</code></pre>
+<p>But this looks like a shell problem, not a ripgrep problem. In particular, single quotes have nothing to do with this. If you remove your single quotes, you should get the same behavior. In my shell, I have to use <code>\$</code> to avoid having it interpreted as an environment variable:</p>
+<pre><code>$ rg -N '^(\w+)$' /tmp/file.txt -r &quot;'\$1',&quot;
+'10a3789',
+'51b7883',
+</code></pre>
+<p>Using just single quotes is possible too, although it is a bit unwieldy and I have no idea whether it works on Windows or not:</p>
+<pre><code>$ rg -N '^(\w+)$' /tmp/file.txt -r &quot;'&quot;'$1'&quot;'&quot;','
+'10a3789',
+'51b7883',
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/huangjj27">@huangjj27</a> on 2022-05-18 15:30</div>
+            <div class="timeline-body"><p>It seems neither of the commands works on Powershell:</p>
+<pre><code>&gt; rg -N '^(\w+)$' file.txt -r &quot;'\$1',&quot;          
+'\',
+'\',
+&gt; rg -N '^(\w+)$' file.txt -r &quot;'&quot;'$1'&quot;'&quot;','  
+$1: The system cannot find the file specified. (os error 2)
+': The system cannot find the file specified. (os error 2)
+,: The system cannot find the file specified. (os error 2)
+file.txt
+'
+'
+</code></pre>
+<p>and I tried both of the commands in my WSL, both works:</p>
+<pre><code>$ rg -N '^(\w+)$' file.txt -r &quot;'\$1',&quot;
+'10a3789',
+'51b7883',
+$ rg -N '^(\w+)$' file.txt -r &quot;'&quot;'$1'&quot;'&quot;','
+'10a3789',
+'51b7883',
+</code></pre>
+<p>hope these information will help others</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "replacement can't capture if with single quote in it" to "replacement can't capture if with single quote in it when using PowerShell" by @huangjj27 on 2022-05-18 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Locked by @ghost on 2022-05-18 15:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:32 UTC
+    </footer>
+</body>
+</html>

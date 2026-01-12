@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>error: Unicode not allowed here - BurntSushi/ripgrep #2350</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>error: Unicode not allowed here</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2350">#2350</a>
+        opened by <a href="https://github.com/kenorb">@kenorb</a>
+        on 2022-11-11 19:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kenorb">@kenorb</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 13.0.0
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>Apt.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Ubuntu 22.04.1</p>
+<h4>Describe your bug.</h4>
+<p>I've got bunch of errors when parsing stream of data such as:</p>
+<blockquote>
+<p>/dev/fd/63:545: found invalid UTF-8 in pattern at byte offset</p>
+</blockquote>
+<p>I've tried to use <code>--no-unicode</code> flat and ignoring certain invalid lines, but still got this error:</p>
+<blockquote>
+<p>error: Unicode not allowed here</p>
+</blockquote>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>It's very difficult for me to come up with some working scenario at this point.</p>
+<p>But the list of invalid Unicode characters are like (based on the errors):</p>
+<ul>
+<li><code>\x8D\x1A</code> (disable Unicode ...</li>
+<li><code>\xC0</code> (disable Unicode mode ...</li>
+<li><code>ťa</code> (a5c5?)</li>
+</ul>
+<p>So I've tried to exclude invalid lines with <code>rg -ve line1 -e line2</code>, but ended up with:</p>
+<blockquote>
+<p>error: Unicode not allowed here</p>
+</blockquote>
+<p>before printing very long multi-line string.</p>
+<p>My syntax is like:</p>
+<pre><code>cat somefile | rg --no-unicode -vFf &lt;(rg -NI --no-unicode '^[A-Fa-f0-9]{4,}' files/*.txt | rg --no-unicode -ve brokenline1 -e brokenline2)
+</code></pre>
+<p>The type of data are not binary, just bunch of lines with some unfinished Unicode characters as it seems.</p>
+<p>I think the error happens in the inner instance in <code>rg -f &lt;(rg ...)</code>.</p>
+<p>Because with the <code>--debug</code> it prints:</p>
+<pre><code>regex parse error:
+longline...ťa...钱包
+</code></pre>
+<p>Lots of spaces, but it's because rg trying to point where it's failing, as the line got 3mln characters.
+But I think it's pointing to special <code>ť</code> character.</p>
+<h4>What is the actual behavior?</h4>
+<p>Despite putting <code>--no-unicode</code> in each instance of ripgrep, it still can't parse stream of lines.</p>
+<h4>What is the expected behavior?</h4>
+<p>What do you think ripgrep should have done?</p>
+<p>I expect that <code>--no-unicode</code> (or some other similar flag) will ignore all kind of invalid UTF-16/UTF-8 characters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-11-11 19:57</div>
+            <div class="timeline-body"><p><code>--no-unicode</code> is not about the haystack. It's about the regex. If you pass <code>--no-unicode</code>, then it disables &quot;Unicode mode&quot; in the regex. So things like <code>\pL</code> or even non-ASCII Unicode characters themselves become disallowed.</p>
+<p>Given that <em>not</em> using <code>--no-unicode</code> leads to decoding errors (note that those decoding errors are in the regex patterns themselves, not the haystack), and using <code>--no-unicode</code> leads to &quot;Unicode is not allowed,&quot; then to me that implies you are trying to run regexes that want to <em>both</em> match invalid UTF-8 in places and non-ASCII Unicode codepoints in others. You can do that, but you need to stop using <code>--no-unicode</code> and selectively enable or disable Unicode mode in the regex. For example, <code>(?-u:\xFF)\pL</code> will match <code>\xFF</code> (which is not valid UTF-8) followed by the UTF-8 encoding of any Unicode letter. Note that <code>\xFF\pL</code> matches the UTF-8 encoding of the Unicode codepoint <code>U+00FF</code> (which is not just the <code>\xFF</code> byte) followed by the UTF-8 encoding of any Unicode letter, and <code>(?-u)\xFF\pL</code> won't compile because <code>\pL</code> is not allowed when Unicode mode is disabled.</p>
+<p>With all that said... the initial error you got:</p>
+<blockquote>
+<p>/dev/fd/63:545: found invalid UTF-8 in pattern at byte offset</p>
+</blockquote>
+<p>Is <em>not</em> resolved by <code>--no-unicode</code>. This error is telling you that you're trying to provide a regex pattern that is itself not UTF-8 encoded. Patterns <em>must</em> be UTF-8 encoded, even if they themselves match invalid UTF-8. Notice, for example, that <code>(?-u:\xFF)</code> is UTF-8 encoded, yet, it matches the byte <code>\xFF</code> which is not UTF-8 encoded.</p>
+<p>There is no way to compile patterns that are not UTF-8 encoded. This is an intentional design decision and it will never change. The only way to fix that error is to 1) decide on your intended match semantics and 2) convert non UTF-8 bytes to a regex with the intended match semantics. That might be as simple as hex escaping all bytes and disabling Unicode mode, for example. But it depends on what you're doing.</p>
+<p>If none of this helps you, then I think the only path forward here is for you to provide a concrete reproduction. That is, give me commands and data I can run on my local system to reproduce the output you get, and then you tell me the output you want. If you give me that, I should be able to give you a path to that output (or confirm there is no path I know of). Please also minimize your commands to the extent possible. So, for example, nesting <code>rg</code> commands shouldn't be needed to exhibit your issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2022-11-11 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-22 00:21</div>
+            <div class="timeline-body"><p>Closing due to inactivity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-22 00:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:35 UTC
+    </footer>
+</body>
+</html>

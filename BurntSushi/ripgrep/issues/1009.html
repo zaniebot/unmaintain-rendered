@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>publish high level documentation for libripgrep (cookbook + guide) - BurntSushi/ripgrep #1009</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>publish high level documentation for libripgrep (cookbook + guide)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1009">#1009</a>
+        opened by <a href="https://github.com/jessegrosjean">@jessegrosjean</a>
+        on 2018-08-08 15:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jessegrosjean">@jessegrosjean</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>https://github.com/BurntSushi/ripgrep/tree/ag/libripgrep-freeze-2</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>I'm excited to see the <a href="https://github.com/BurntSushi/ripgrep/tree/ag/libripgrep-freeze-2">libripgrep-freeze-2 work</a>. I'd love to see a best practices example that recreates <code>rg --count</code> with the lib.</p>
+<p>I've created a starting point here:</p>
+<p>https://github.com/jessegrosjean/libripgrep_example</p>
+<p>But I'm new to rust as of yesterday, and don't have a good idea of what I'm doing. I hope someone can take a look at that code and let me know how to improve it. And eventually I hope same/similar code will get included as an example with libripgrep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-08 15:32</div>
+            <div class="timeline-body"><p>I'm excited that you are already trying to jump into libripgrep, but it isn't on master yet and thus still in development. I created those branches for folks to try out some new ripgrep features but don't really intend it to be anything more than that.</p>
+<p>It is indeed the case that a major part of the remaining work is doumentation and examples, among other things, such as additional integration tests to cover new features. There is already a fair bit of docs, but there is basically no high level documentation.</p>
+<p>I will take a look at your code and give feedback when I get a chance, but I don't want to get too caught up with thia before I'm actually ready to publish libripgrep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-08 17:22</div>
+            <div class="timeline-body"><p>OK, this was a fun exercise. This is the first time I got to really play with the aggregate libripgrep (outside of plugging it into ripgrep, which is... a more mechanical process).</p>
+<p>I have three revisions for you. Each one has a different flavor, depending on what you're trying to do.</p>
+<p>The first is a mostly cleaned up version of yours: https://gist.github.com/BurntSushi/0c567907ae83594fe377d0d858133d09</p>
+<p>The high level changes:</p>
+<ul>
+<li>I switched your <code>MsQueue</code> to <code>crossbeam-channel</code>, which has a clean API and should be the default channel implementation that folks reach for. (ripgrep is still using MsQueue. I'd like to move it to crossbeam-channel, but it brings in a number of new dependencies that seem to belong to a part of the ecosystem that doesn't prioritize supporting older Rust compilers.)</li>
+<li>I removed uses of <code>grep-*</code> crates and instead funneled everything through <code>grep</code> re-exports. (My intent here is to push folks toward use of the <code>grep</code> crate for most uses, and I expect that's where a lot of the high level docs will live.)</li>
+<li>I added a bit more error handling. Some were being ignored and others would result in panics. There isn't a ton of flexibility here for error handling during search. Either you print the error message to stderr and move on, or you quit the whole thing. I opted to do what ripgrep does: print the error and move on.</li>
+<li>I also limited searches to only attempt to search files. This excludes directories, which your program attempted to search. This also excludes symlinks though.</li>
+<li>I made two performance tweaks. First, I used <code>RegexMatcher::new_line_matcher</code> instead of <code>RegexMatcher::new</code>. The former should be used whenever you only care about matches spanning at most one line. Secondly, I disabled the use of memory maps. Memory maps (at least on Linux) are a somewhat niche optimization that really only holds its own when searching a small number of very large files. On some platforms, their worse and on others, they're better. In some work loads---like searching a whole bunch of tiny files---memory maps can be dramatically slower. For example, not enabling memory maps makes <strong>your program run literally as fast as ripgrep does on the Linux kernel repo.</strong> (This is a key goal I wanted to accomplish: the ability to write small programs with ripgrep-level speed by default.)</li>
+</ul>
+<p>Here's revision 2: https://gist.github.com/BurntSushi/4486b6f28bc26e1700695437bb542bcd</p>
+<p>This is pretty similar to the first revision, but I removed your custom implementation of <code>Sink</code> (nice work on figuring that out!) and replaced it with a built-in implementation of <code>Sink</code> that happens to give you what you need here. It does force you to enable line counting, which is in theory slower, but is generally not noticeable when searching across lots of small files. And even when it is noticeable, it's typically not that big of a difference.</p>
+<p>The final revision is a bit of a cheat: https://gist.github.com/BurntSushi/fa04b2cc0b194e1be7399721f1711394</p>
+<p>This revision is actually probably the <em>ideal</em> answer to your query of &quot;re-create a simple <code>rg --count</code> implementation.&quot; (I note that the first two revisions, along with your code, actually implement <code>rg --count-matches</code>. The third revision implements <code>rg --count</code> specifically, which can be faster.)</p>
+<p>Basically, the third revision uses the <code>grep-printer</code> crate, which comes with its own <code>Summary</code> printer. This is what powers the output of flags like <code>--count</code>, <code>--count-matches</code>, <code>--files-with-matches</code> and <code>--files-without-match</code>. This revision <em>also</em> includes automatic cross platform color support.</p>
+<p>All revisions perform about the same for me on my system on the Linux kernel repo, and they also match ripgrep's performance. Yay!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-08 17:27</div>
+            <div class="timeline-body"><p>@jessegrosjean Sorry I didn't add this in my previous comment, but I'm super impressed you were able to get a working program while also being simultaneously new to Rust and working without any high level docs or examples. I've toiled quite a bit over the various APIs and worry quite a bit whether something is more complex than it needs to be. Abstraction has steep costs...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jessegrosjean">@jessegrosjean</a> on 2018-08-08 18:04</div>
+            <div class="timeline-body"><p>I'm just headed away from computer, but looking forward to digging through all this in a day or two when I get back. Thanks so much!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-08-09 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jessegrosjean">@jessegrosjean</a> on 2018-08-09 18:15</div>
+            <div class="timeline-body"><blockquote>
+<p>This is pretty similar to the first revision, but I removed your custom implementation of Sink (nice work on figuring that out!) and replaced it with a built-in implementation of Sink that happens to give you what you need here.</p>
+</blockquote>
+<p>Bytes simplifies things a lot.</p>
+<p>I actually started with that approach, but decided I was in the wrong place because I was expecting some solution that would give me a list of matching ranges in a callback. Then I started digging into the other Sink implementations since I knew they generated ranges somehow. And that's where I eventually learned that I would need to run the matcher over the given content to get the ranges... but by that time I'd forgotten that I was already in that position when I started with Bytes.</p>
+<p>Makes sense now, I wouldn't want to have to pay the cost of iterating over those matches if I didn't need them. Helper <code>submatches()</code> function on Sink would have allowed me to figure things out easier?</p>
+<blockquote>
+<p>your program run literally as fast as ripgrep does on the Linux kernel repo.</p>
+</blockquote>
+<p>Yeah, I love this! And actually it runs a bit faster since I can call it through a C API directly and don't need to worry about firing up a subprocess and parsing text results. Also I get to add filename matching logic to the same pass instead of having to perform that logic in a second pass. So for my case I'm getting more then 2x performance boost. :)</p>
+<blockquote>
+<p>@jessegrosjean Sorry I didn't add this in my previous comment, but I'm super impressed you were able to get a working program while also being simultaneously new to Rust and working without any high level docs or examples. I've toiled quite a bit over the various APIs and worry quite a bit whether something is more complex than it needs to be. Abstraction has steep costs...</p>
+</blockquote>
+<p>Ha, thanks. From my copy past and modify marathon I think the basic abstractions are pretty good. I had a whole lot of pain and confusion trying to figure out how rust in general worked, but the particular ripgrep API that I needed (minus the Bytes thing I guess) was pretty strait forward.</p>
+<p>As far as ripgrep related code the part where I got most confused was with how the parallel walker worked. The actually documentation explains it pretty well. But I was just copy/pasting code and was very confused with this basic structure:</p>
+<pre><code>parallel_walker.run(move || {
+        ...
+        Box::new(move |result| {
+            ...
+        }
+}
+</code></pre>
+<p>I didn't realize for a long time that the outer part was called only once per thread, and the inner part was called multiple times on that same thread.</p>
+<p>The reason this wasn't obvious is because I didn't realize the outer part was returning the inner closure until long into the process. Especially hard I think when that closure has more then a few lines of logic.</p>
+<p>It wasn't until I got things running in debugger that I figured out what was happening. And then to really finish things off I decided to read the docs, and that made it clear. I'm not sure you can do anything about it, seems like you are just following rust style, but an explicit <code>return Box::new(move |result| {</code> would have made things obvious and saved me a bunch of time I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-09 18:33</div>
+            <div class="timeline-body"><p>RE parallel walker: yes, I absolutely hate the API. Nested closures are just not good. I believe there's another issue tracking some ideas there, but yeah, that definitely needs rethinking but it probably won't be something I tackle for a while. I think in general the <code>ignore</code> crate needs a rethink, including its implementation. It is not easy code to maintain.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "libripgrep example" to "public high level documentation for libripgrep (cookbook + guide)" by @BurntSushi on 2018-08-19 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "public high level documentation for libripgrep (cookbook + guide)" to "publish high level documentation for libripgrep (cookbook + guide)" by @BurntSushi on 2018-08-19 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "libripgrep" by @BurntSushi on 2019-01-27 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">libripgrep</span> added by @BurntSushi on 2019-01-27 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NightMachinery">@NightMachinery</a> on 2020-05-22 13:44</div>
+            <div class="timeline-body"><p>Should I parse the json output now if I want to use ripgrep in rust? My main goal is customizing the output format so I can parse the cleaned result easily with <code>fzf</code>'s <code>--with-nth</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-05-22 13:53</div>
+            <div class="timeline-body"><p>@NightMachinary I think Discussions would be a better place for questions like that: https://github.com/BurntSushi/ripgrep/discussions/1592</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:38 UTC
+    </footer>
+</body>
+</html>

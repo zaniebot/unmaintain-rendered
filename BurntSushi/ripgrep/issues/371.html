@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High CPU usage in 0.3.2, low in 0.4.0 - BurntSushi/ripgrep #371</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>High CPU usage in 0.3.2, low in 0.4.0</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/371">#371</a>
+        opened by <a href="https://github.com/stej">@stej</a>
+        on 2017-02-20 17:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/stej">@stej</a></div>
+            <div class="timeline-body"><p>I downloaded two versions - ripgrep-0.3.2-x86_64-pc-windows-msvc.zip and ripgrep-0.4.0-x86_64-pc-windows-msvc.zip extracted and ran ripgrep with this command: <code>rg -F 32595217 -g 2017-01*</code>.</p>
+<p>I noticed that when using the 0.3.2 version, CPU usage is quite high (which could be understandable), but very low for 0.4.0 version. I would expect that the very low CPU for 0.4.0 is quite suspicious. Can you explain it please?</p>
+<p><img src="https://cloud.githubusercontent.com/assets/253560/23136129/891d4a16-f79b-11e6-84e6-f2148d650991.png" alt="2017-02-20_17h40_17" /></p>
+<p>(sshot is from ProcessExplorer where top window is OS statistics, bottom window is for ripgrep only)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-20 18:54</div>
+            <div class="timeline-body"><p>This might be a result of fixing #258.</p>
+<blockquote>
+<p>Can you explain it please?</p>
+</blockquote>
+<p>I would if I could. But there's not enough information here. I'd need to get a fully reproducible example, preferably on Linux, because that's where I'm comfortable doing performance analysis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stej">@stej</a> on 2017-02-20 21:31</div>
+            <div class="timeline-body"><p>Sorry, no Linux repro. Windows only.
+I'm curious, because I guess that if I create an app that uses several threads to read from files and looks for some text in it (e.g. some sort of IndexOf), it would certainly take much more CPU than ripgrep 0.4.0. Also when regexes would be used, I would expect CPU to rise even more.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-20 21:37</div>
+            <div class="timeline-body"><p>@stej There are too many assumptions in your expectations unfortunately. That's why I need a repro. For example, if your search is hitting disk, then search will be bottlenecked by IO, which will keep CPU usage quite low. It would be better to compare the results. Is there any difference between <code>0.3.2</code> and <code>0.4</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-21 12:50</div>
+            <div class="timeline-body"><p>I'm going to close this. The fix to #258 happened between <code>0.3.2</code> and <code>0.4.0</code>, and was specifically fixing a case where the CPU could burn. In the issue, I described some of the cases in which it could happen, but those are merely the <em>likely</em> cases. In fact, it could happen in any search where one thread was getting all of the work while the rest were starved. Please see the commit message in 95cea7 for more details: https://github.com/BurntSushi/ripgrep/commit/95cea77625f978a21b1d923e54d13f9217f0ef30</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-02-21 12:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:04 UTC
+    </footer>
+</body>
+</html>

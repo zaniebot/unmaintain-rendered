@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`--null-data` seems to inhibit some optimizations - BurntSushi/ripgrep #2832</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>--null-data</code> seems to inhibit some optimizations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2832">#2832</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-06-05 12:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>To reproduce, first create a large binary file:</p>
+<pre><code>dd status=progress if=/dev/zero count=10240000 bs=1024 &gt; ./binary-test.bin ; echo 'ZQZQZQZQZQ' &gt;&gt; ./binary-test.bin ; dd if=/dev/zero count=10240000 bs=1024 status=progress &gt;&gt; ./binary-test.bin
+</code></pre>
+<p>And then try to search it with <code>--null-data</code>:</p>
+<pre><code>$ time rg --null-data --no-mmap ZQZQZQZQZQ binary-test.bin &gt; out.rg
+
+real    2:00.24
+user    1:57.95
+sys     2.246
+maxmem  19 MB
+faults  0
+</code></pre>
+<p>It should not take that long. A quick peak at <code>perf top</code> while the above process was running reveals it is doing a line-by-line search, probably because of some faulty reasoning about the line terminator in this case. Since most of the file is just line terminators, this spends a lot of time iterating over lines.</p>
+<p>I found this as part of #2831.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2024-06-05 12:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:49 UTC
+    </footer>
+</body>
+</html>

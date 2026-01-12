@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miscellaneous feature suggestions - BurntSushi/ripgrep #1061</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Miscellaneous feature suggestions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1061">#1061</a>
+        opened by <a href="https://github.com/BatmanAoD">@BatmanAoD</a>
+        on 2018-09-21 19:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BatmanAoD">@BatmanAoD</a></div>
+            <div class="timeline-body"><p>These are just some ideas about what features I think would make a recursive-grep tool such as RipGrep more useful.</p>
+<p>I've looked through the issues list (both open and closed) for any duplicates, and I did find one (which I deleted from my list), but otherwise I believe these are unique. If any of them are of interest, let me know if you'd like me to write up a separate tracking issue for them.</p>
+<p>And if you think any of them would be reasonably straightforward to implement, perhaps I could help with that as well!</p>
+<h4>What version of ripgrep are you using?</h4>
+<p>0.10.0</p>
+<h4>How did you install ripgrep?</h4>
+<p><code>cargo</code> with the <code>pcre2</code> feature, using Rust 1.29</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Windows 10, &quot;Fall creators update&quot;</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<ul>
+<li><p><code>--post</code>, comparable to <code>--pre</code>; for each file, launch the specified command with the filename as an argument, and <em>pipe</em> the output <em>from that file</em> as input</p>
+<ul>
+<li>I'm surprised I didn't see this in the issues list already; is it there and I just didn't see it?</li>
+<li>Together with <code>replace</code> and a bit of scripting, this would provide an easy and possibly more performant replacement for <code>rg -l &lt;pattern&gt; | perl -pi -e 's/pattern/repl/g'</code>. It would also <em>guarantee</em> no surprise inconsistencies between RipGrep's and Perl's interpretations of <code>&lt;pattern&gt;</code> (though in practice such inconsistencies are probably vanishingly rare), and could prevent typos from duplicating the pattern on the command line (though this can be avoided by creating a &quot;recursive search-and-replace&quot; shell function).</li>
+</ul>
+</li>
+<li><p>Some way to provide arguments to a <code>--pre</code> (or <code>--post</code>, if implemented) command</p>
+</li>
+<li><p>Some way to provide context about nearby lines, e.g. &quot;do not match lines that have <code>&lt;pattern&gt;</code> in the <em>previous</em> line.&quot; This would probably be especially useful in conjunction with #875.</p>
+</li>
+<li><p>A way to &quot;pre-package&quot; pattern elements. These could then be saved in the config file. For instance (adopting an arbitrary Perl-like syntax for the feature):</p>
+<pre><code>--define-pattern &quot;win-path /(?:[A-Z]:)?\w+(?:\\?\w+)*</code></pre>
+<p>I'm honestly not sure that's an accurate representation of Windows paths yet, and it's already pretty hideous. It could be used as follows (again adopting an arbitrary syntax):</p>
+<pre><code>rg &quot;[[{win-path}]]&quot;       # This would find lines with windows paths</code></pre>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-09-21 19:20</div>
+            <div class="timeline-body"><p>The second one was discussed and rejected in #978.</p>
+<p>The ~~last~~ third one is kind of the same thing as #1008, which was also rejected. Now that searching across lines is supported i guess that could be used in some (probably simpler) cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2018-09-21 19:20</div>
+            <div class="timeline-body"><p>(Update: added <code>--define-pattern</code> suggestion)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2018-09-21 19:30</div>
+            <div class="timeline-body"><p>@okdana Thanks for pointing me to the discussion about <code>--pre</code> arguments. I don't see any example use-cases there; I was thinking about doing something like <code>rg --pre 'rg -v &lt;bad&gt;' &lt;good&gt;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-09-21 19:35</div>
+            <div class="timeline-body"><p>You would make a script like this (call it <code>filter</code> for example):</p>
+<pre><code>#!/bin/sh
+rg -v bad ${1+&quot;$1&quot;}
+</code></pre>
+<p>And then use it like:</p>
+<pre><code>rg --pre /path/to/filter good
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-09-21 21:19</div>
+            <div class="timeline-body"><blockquote>
+<p><code>--post</code>, comparable to <code>--pre</code>; for each file, launch the specified command with the filename as an argument, and pipe the output from that file as input</p>
+</blockquote>
+<p>As described, I don't think I understand how <code>--post</code> differs from <code>--pre</code>. <code>--pre</code> is literally, &quot;called with the file path being searched, along with its contents piped to stdin; stdout of that program is then search as if it were the original file.&quot;</p>
+<blockquote>
+<p>Some way to provide arguments to a <code>--pre</code> (or <code>--post</code>, if implemented) command</p>
+</blockquote>
+<p>This is another example where I was on the fence about a specific feature (<code>--pre</code>), but relented because it enabled some really cool use cases in exchange for fairly little work and implementation complexity, but because I relented, that feature is now in turn generating even more feature requests. I'm just going to say No. It isn't necessary and it's <em>already</em> a niche feature that I suspect most users of ripgrep don't even know about, much less use. It isn't worth making it more complex than the simple implementation that it is now.</p>
+<blockquote>
+<p>Some way to provide context about nearby lines, e.g. &quot;do not match lines that have <pattern> in the previous line.&quot; This would probably be especially useful in conjunction with</p>
+</blockquote>
+<p>My stance on this is outlined <a href="https://github.com/BurntSushi/ripgrep/issues/1008#issuecomment-411175925">here</a> in #1008. It hasn't changed.</p>
+<blockquote>
+<p>A way to &quot;pre-package&quot; pattern elements. These could then be saved in the config file. For instance (adopting an arbitrary Perl-like syntax for the feature):
+--define-pattern &quot;win-path /(?:[A-Z]:)?\w+(?:?\w+)*
+I'm honestly not sure that's an accurate representation of Windows paths yet, and it's already pretty hideous. It could be used as follows (again adopting an arbitrary syntax):
+rg &quot;[[{win-path}]]&quot; # This would find lines with windows paths</p>
+</blockquote>
+<p>I don't think this is a good fit. I'd rather see folks write wrapper scripts or aliases if they want quick shortcuts for common patterns. It is much more flexible. Moreover, the <code>-f/--file</code> flag already exists, which is perfectly capable of loading patterns from files.</p>
+<p>I think the only thing in question here is the <code>--post</code> flag, on account of the fact that I don't understand the request. The rest has either been discussed or are things I currently don't think are a good fit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-09-21 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Snuggle">@Snuggle</a> on 2018-09-30 21:11</div>
+            <div class="timeline-body"><p>Could I please add to this and ask for an equivalent of the <code>-Z</code> flag to be added for compatibility purposes? I believe its purpose is extremely similar to <code>-z</code>, which has already been added.</p>
+<p><img src="https://user-images.githubusercontent.com/26250962/46262757-96c40980-c4fd-11e8-87f5-d2b86a55d2cd.png" alt="image" />
+<img src="https://user-images.githubusercontent.com/26250962/46262766-a80d1600-c4fd-11e8-8db8-c00c949b13b1.png" alt="image" />
+https://linux.die.net/man/1/grep</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-09-30 21:22</div>
+            <div class="timeline-body"><p>Please don't keep adding new feature requests to the same issue. To that end, @BatmanAoD, please do not open one issue for multiple distinct requests.</p>
+<p>@Snuggle The desired functionality already exists using literally the same flag: <code>--null</code> (its short flag is <code>-0</code>, not <code>-Z</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-09-30 21:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Snuggle">@Snuggle</a> on 2018-09-30 21:36</div>
+            <div class="timeline-body"><p>Thank you for the help, @BurntSushi, and apologies for thinking this issue was for multiple general feature requests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2018-10-02 00:10</div>
+            <div class="timeline-body"><p>Sorry for the confusion on <code>--post</code> and, subsequently, for forgetting to answer your question.</p>
+<p><code>--post</code> would take <em>RipGrep's</em> output and pipe it into a new command. Since RipGrep is parallel by default, but Bash's <code>|</code> only forks one consuming process, there's no easy way without something like <code>--post</code> to parallelize processes that consume RipGrep output, or to distinguish which search-output came from which file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2018-10-02 00:21</div>
+            <div class="timeline-body"><p>For my &quot;pre-packaged patterns&quot; idea; <code>--file</code> can't be used to load <em>parts</em> of patterns, can it? What I want is a way to take a pattern &quot;segment&quot; and integrate it into something longer. Here's a dumb example, using the same syntax as above:</p>
+<pre><code>git diff | rg 'a[[{win-path}]]$'           # Find original names of files in a `git diff`</code></pre>
+<p>I suppose this isn't too difficult using <code>sh</code> variables, assuming a non-Windows shell:</p>
+<pre><code>git diff | rg 'a'&quot;${win_path}&quot;'$'</code></pre>
+<p>....the quoting is pretty awkward, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cuongnv-ibl">@cuongnv-ibl</a> on 2018-11-23 07:43</div>
+            <div class="timeline-body"><p>Does <code>rg</code> support clear duplicated text line in a text file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-11-23 12:09</div>
+            <div class="timeline-body"><p>I don't know what you're talking about, sorry. What relevance is your question too this specific issue? If there isn't any, then please open a new issue. Please include examples to help explain what you mean.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cuongnv-ibl">@cuongnv-ibl</a> on 2018-11-24 02:15</div>
+            <div class="timeline-body"><p>sorry, my mistake, it means can I use <code>rg</code> to remove duplicate lines in a .txt file and save the new file as new.txt file.
+alternative to <code>sort myfile |uniq -u|tee newfile.txt</code>
+Because I tried use <code>sort</code> command but seem it doesn't work properly, some duplicate lines still exist</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-11-24 13:14</div>
+            <div class="timeline-body"><p>ripgrep is a search tool. It is not a tool for removing duplicate lines. If
+you don't care about order, then sort | uniq is the usual way to do that.
+If you're having a problem with it, I'd recommend seeking help elsewhere
+(like stackoverflow).</p>
+<p>On Fri, Nov 23, 2018, 21:15 cuongnv-ibl &lt;notifications@github.com wrote:</p>
+<blockquote>
+<p>sorry, my mistake, it means can I use rg to remove duplicate lines in a
+.txt file and save the new file as new.txt file.
+alternative to sort myfile |uniq -u|tee newfile.txt
+Because I tried use sort command but seem it doesn't work properly, some
+duplicate lines still exist</p>
+<p>—
+You are receiving this because you were mentioned.
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/BurntSushi/ripgrep/issues/1061#issuecomment-441337720">https://github.com/BurntSushi/ripgrep/issues/1061#issuecomment-441337720</a>,
+or mute the thread
+<a href="https://github.com/notifications/unsubscribe-auth/AAb34m0MEZi5CE9DvWv8ZCQefPblFb5_ks5uyKvKgaJpZM4W0uLq">https://github.com/notifications/unsubscribe-auth/AAb34m0MEZi5CE9DvWv8ZCQefPblFb5_ks5uyKvKgaJpZM4W0uLq</a>
+.</p>
+</blockquote>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:41 UTC
+    </footer>
+</body>
+</html>

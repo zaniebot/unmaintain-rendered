@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ripgrep may abort unexpectedly when using memory maps - BurntSushi/ripgrep #581</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ripgrep may abort unexpectedly when using memory maps</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/581">#581</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2017-08-23 23:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>The issue is that ripgrep <em>may</em> use memory maps by default while searching, and memory maps come with the intrinsic downside that if the underlying file is truncated, ripgrep might receive a SIGBUS signal and therefore terminate. This has two possible negative consequences:</p>
+<ol>
+<li>ripgrep might abort sporadically if it happens to be searching a file that is being truncated by some other process. This is a bug.</li>
+<li>A malicious user on a multi-user system could truncate a file while ripgrep is running to cause a local denial of service attack. This seems somewhat limited in scope since it would require searching files that another user has write access to, although one good example of where it might happen is if one is running ripgrep from a root account.</li>
+</ol>
+<p>My view is that while this is technically a security concern because it could result in a DoS, it seems to me like it's quite mild and that changing ripgrep's default behavior to never use memory maps in turn seems like a pretty extreme reaction to said vulnerability. (The point of using memory maps is that they can be faster than normal <code>read</code> calls in some circumstances.) In particular, it is trivial for an end user to protect themselves from this bug/DoS by passing the <code>--no-mmap</code> flag. If we don't change the default, then it seems to me like a good alternative solution is to <strong>document this flaw in the man page and the help output.</strong></p>
+<p>There has also been a claim that this could prevent some Linux distros from shipping ripgrep with this particular default. Some Linux distros are already shipping ripgrep with this default, so the concern seems a bit exaggerated here, but if a distro was so inclined I would be willing to accept a small patch that added a Cargo feature to disable memory map searching by default (but kept memory map functionality available via the opt-in <code>--mmap</code> flag). Distros could then enable this feature when building ripgrep and opt out of any undesirable default behavior. However, I personally don't care enough to implement this functionality since I currently perceive it as quite niche. I would rather wait for someone else to convince me that a significant number of people care.</p>
+<p>See #579 for related discussion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-08-23 23:26</div>
+            <div class="timeline-body"><p>As a point of reference, <code>ag</code> uses <code>mmap()</code> by default (on Linux), and neither Debian nor Ubuntu disable that behaviour in their official packages. I don't have much recent experience with other distributions, but it doesn't look like the official Fedora package disables it either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-08-23 23:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shachaf">@shachaf</a> on 2020-12-16 13:26</div>
+            <div class="timeline-body"><p>Instead of terminating unexpectedly, it should be possible to handle SIGBUS, print an error, and keep searching other files. Was that considered?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-12-16 14:24</div>
+            <div class="timeline-body"><p>@shachaf I considered it and dismissed it due to implementation complexity. As I said above (and in the linked issue), this problem rarely occurs in practice, has fairly nominal repercussions and can be avoided entirely with the <code>--no-mmap</code> flag.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:15 UTC
+    </footer>
+</body>
+</html>

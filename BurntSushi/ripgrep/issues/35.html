@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rg exits with 1 when ran from within neovim - BurntSushi/ripgrep #35</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rg exits with 1 when ran from within neovim</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/35">#35</a>
+        opened by <a href="https://github.com/flybayer">@flybayer</a>
+        on 2016-09-23 20:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/flybayer">@flybayer</a></div>
+            <div class="timeline-body"><p>I'm trying to use <code>rg</code> with <a href="https://github.com/vim-scripts/ag.vim">ag.vim</a>. I have the following in my vim config:</p>
+<pre><code>let g:ag_prg=&quot;rg --no-heading --vimgrep&quot;
+</code></pre>
+<p>However, it never returns results.</p>
+<p>It turns out that when trying to run it from the vim command line it exits with <code>1</code> instead of giving results:
+<img src="https://cloud.githubusercontent.com/assets/8813276/18800998/e5ab0398-81a5-11e6-9eca-6f12749ebef6.png" alt="image" /></p>
+<p>The same thing works fine with <code>ag</code>:
+<img src="https://cloud.githubusercontent.com/assets/8813276/18801015/fa88674c-81a5-11e6-8827-e2b818e44dbd.png" alt="image" /></p>
+<p>Running <code>rg --no-heading --vimgrep</code> from the terminal works fine.</p>
+<p>Here's trying to run <code>rg</code> in vim with <code>--debug</code>:
+<img src="https://cloud.githubusercontent.com/assets/8813276/18801058/3ccca6e0-81a6-11e6-8ca4-7244dabd05dd.png" alt="image" /></p>
+<p>Any ideas?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-23 21:08</div>
+            <div class="timeline-body"><p>Are you sure your search is taking place in the right directory and actually returns results? I can run <code>:!rg --vimgrep foo</code> in my vim just fine.</p>
+<p>It might help to try running <code>:!rg --files</code> to see precisely what it's trying to search.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flybayer">@flybayer</a> on 2016-09-23 21:22</div>
+            <div class="timeline-body"><p>@BurntSushi This is weird..</p>
+<p><code>:!rg --files</code> prints out the files properly</p>
+<p>However, <code>:!rg appName</code> returns <code>1</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elasticdog">@elasticdog</a> on 2016-09-23 21:23</div>
+            <div class="timeline-body"><p>Just to confirm the reported issue, I'm also seeing this behavior with the <code>shell returned 1</code> from <code>rg</code> where <code>ag</code> works as expected. This is using NeoVim (NVIM v0.1.6-120-g4a6b4bb) on OS X 10.11.6 for what it's worth. When I add the <code>--files</code> flag, it does output the expected list of files, but always exits with 1, as far as my limited testing has shown.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flybayer">@flybayer</a> on 2016-09-23 21:24</div>
+            <div class="timeline-body"><p>Thanks @elasticdog</p>
+<p>I'm using NeoVim on Ubuntu 14.04 with oh-my-zsh.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-23 21:40</div>
+            <div class="timeline-body"><p>Interesting, I can finally reproduce this in neovim (Linux), but vim works fine (Linux, Mac).</p>
+<p>Only thing I can think of is that <code>rg</code> thinks its getting <code>stdin</code> piped, so it tried to read it, finds nothing, and reports failure. I'll dig into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/little-dude">@little-dude</a> on 2016-09-23 22:07</div>
+            <div class="timeline-body"><p>could it be due to <a href="https://github.com/neovim/neovim/issues/1496#issuecomment-63691483">this</a>? Quoting:</p>
+<blockquote>
+<p>This is not a bug, it is the new behavior of bang commands: We no longer spawn the program with it's stdout connected to Nvim tty, instead we open a pipe, read output and display to the user. This is the only way the bang commands will be consistent across UIs, so programs designed to be used interactively from the terminal will no longer work from inside nvim.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2016-09-24 02:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jonboiser">@jonboiser</a> on 2016-09-24 15:12</div>
+            <div class="timeline-body"><p>I'm running into something similar trying to add <code>rg</code> to <a href="https://github.com/geksilla/atom-fuzzy-grep">atom-fuzzy-grep</a>.</p>
+<p><code>rg --ignore-case  --with-filename --no-heading --column</code> produces output compatible to <code>ag</code>.</p>
+<p>Testing with <code>rg --files</code> works fine, but with any other flags, the process exits with code 1. I'm not a Node expert, but I think the library author sets the <code>stdio</code> options for ChildProcess to ignore <code>stdin</code> <a href="https://github.com/geksilla/atom-fuzzy-grep/blob/master/lib/runner.coffee#L25">link</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "rg exits with 1 when ran from within vim" to "rg exits with 1 when ran from within neovim" by @BurntSushi on 2016-09-24 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-09-25 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 15:16</div>
+            <div class="timeline-body"><p>This should be fixed now. <code>rg</code> was being a bit too aggressive with trying to read from <code>stdin</code>. It will now only try if it's given a file or a FIFO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/remi">@remi</a> on 2016-09-25 18:41</div>
+            <div class="timeline-body"><p>@BurntSushi Awesome! Do you plan to release a new version soon? Thank you! 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 18:45</div>
+            <div class="timeline-body"><p>I'd like to get a release out today. I'm just trying to cram as many fixes in as I can. :-)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:38 UTC
+    </footer>
+</body>
+</html>

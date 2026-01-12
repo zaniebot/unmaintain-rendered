@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The `--pretty` option doesn't override config file - BurntSushi/ripgrep #2381</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>The <code>--pretty</code> option doesn't override config file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2381">#2381</a>
+        opened by <a href="https://github.com/mrjoel">@mrjoel</a>
+        on 2022-12-29 22:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mrjoel">@mrjoel</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>Installed from Debian bookworm</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Debian</p>
+<h4>Describe your bug.</h4>
+<p>I use <code>--no-heading \n --no-line-number</code> in my config file referenced by <code>RIPGREP_CONFIG_PATH</code>. I can explicitly add the <code>--heading</code> etc. options for a one-off commandline execution, but <code>--pretty</code> doesn't work as expected. I'd expect to have it be a true &quot;convenience alias&quot; as documented.</p>
+<p>Instead, the output continues to use the options from the config file, including neither heading nor line numbers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-12-29 23:23</div>
+            <div class="timeline-body"><p>Smaller demonstration without using a config file:</p>
+<pre><code>$ rg 'fn line_buffer' --no-heading --no-line-number
+crates/searcher/src/searcher/mod.rs:    fn line_buffer(&amp;self) -&gt; LineBuffer {
+$ rg 'fn line_buffer' --no-heading --no-line-number -p
+crates/searcher/src/searcher/mod.rs:    fn line_buffer(&amp;self) -&gt; LineBuffer {
+</code></pre>
+<p>This <em>may</em> be difficult to fix, because the arg parser only permits overriding flags <em>of the same name</em> based on position. Technically the arg parser exposes APIs to generalize this to allow arbitrary flags to override others, but it's a significant complication. I'm not sure when or if this will get fixed unfortunately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2022-12-29 23:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-12-29 23:32</div>
+            <div class="timeline-body"><p>Out of curiosity, why do you have <code>--no-heading</code> and <code>--no-line-number</code> in your config file? They seem somewhat odd things to disable by default. Especially since ripgrep will automatically disable those options (and color) when you output to something that isn't a tty. For example, <code>rg foo | cat</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mrjoel">@mrjoel</a> on 2022-12-30 00:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Out of curiosity, why do you have --no-heading and --no-line-number in your config file?</p>
+</blockquote>
+<p>I'm just getting back to using <code>rg</code> on a regular basis. I have <code>--no-heading</code> for vertical space compactness, and <code>--no-line-number</code> mainly for eye muscle memory reading compatibility with regular grep output, but also stand-in compatibility for other scripts I have which parse <code>grep</code> output.</p>
+<p>I have a strong preference for the vertical space compactness, and soft preference for no line number. Somewhat ironically, I like the direct TTY color output distinction for line number, and miss it when piping to <code>less</code>, and was trying to create a shell alias to include the <code>--pretty</code> option when I ran into this issue. It's not horribly inconvenient to use the spelled out version instead, just caught my off guard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-12-30 12:50</div>
+            <div class="timeline-body"><blockquote>
+<p>but also stand-in compatibility for other scripts I have which parse <code>grep</code> output.</p>
+</blockquote>
+<p>For this part at least, when ripgrep is redirected to a non-tty, it should &quot;devolve&quot; to standard grep format. This includes dropping line numbers and even file names when searching stdin (or a single file).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-21 23:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:36 UTC
+    </footer>
+</body>
+</html>

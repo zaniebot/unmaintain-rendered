@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--color always + -v + pipe don't work as expected - BurntSushi/ripgrep #1674</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--color always + -v + pipe don't work as expected</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1674">#1674</a>
+        opened by <a href="https://github.com/c02y">@c02y</a>
+        on 2020-09-02 03:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/c02y">@c02y</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>Replace this text with the output of <code>rg --version</code>.
+ripgrep 12.1.1 (rev 7cb211378a)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>https://github.com/BurntSushi/ripgrep/releases/download/12.1.1/ripgrep-12.1.1-x86_64-unknown-linux-musl.tar.gz</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>5.7.15-1-MANJARO</p>
+<h4>Describe your bug.</h4>
+<p>I got a directory containing files with both <code>SendMessage</code> and <code>SendMessageEx</code> strings.</p>
+<p>I need to search the result of only <code>SendMessge</code>, so the <code>SendMessageEx</code> lines won't be printed. (I can use -w for this special case, but this case is just an example for this issue)</p>
+<p>I use <code>rg SendMessage . | rg -v SendMessageEx</code>, it works OK, but it contains no color for the result, so I use
+<code>rg --color always SendMessage . | rg -v SendMessageEx</code>, but this doesn't work as expected, the <code>SendMessageEx</code> will still be listed.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>Check #### Describe your bug. part</p>
+<h4>What is the actual behavior?</h4>
+<p>Check #### Describe your bug. part</p>
+<p>Output with <code>--debug</code>:</p>
+<pre><code>&gt;&gt; rg --debug --color always SendMessage . | rg -v SendMessageEx
+DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(SendMessage)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 34 literals, 61 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+./protocol.cc:void Protocol::SendMessage(const Message&amp; message)
+./protocol.cc:void Protocol::SendMessageEx(const Message&amp; message)
+./protocol.h:   void SendMessage(const Message&amp; message);
+./protocol.h:   void SendMessageEx(const Message&amp; message);
+</code></pre>
+<p>Image with colors:
+<img src="https://user-images.githubusercontent.com/2135996/91930247-f0996380-ed12-11ea-9f74-927e20d18e6d.png" alt="image" /></p>
+<p>I noticed that <code>grep</code> works the way with the same problem, now I'm not sure I used it correctly:
+<img src="https://user-images.githubusercontent.com/2135996/91930622-eaf04d80-ed13-11ea-9623-e7fe428fac30.png" alt="image" /></p>
+<h4>What is the expected behavior?</h4>
+<p><code>rg --color always SendMessage . | rg -v SendMessageEx</code></p>
+<p>-v should not print SendMessageEx, --color here works correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krobelus">@krobelus</a> on 2020-09-02 05:09</div>
+            <div class="timeline-body"><p>This is expected behavior, both tools print ANSI escape sequences at the match bounds to produce colored output,
+like <code>printf '\e[1m\e[31mSendMessage\e[0mEx'</code></p>
+<p>To work around that you can either match the escape sequences in you regex, or maybe just tweak your regex so you won't need to. Try</p>
+<pre><code class="language-sh">rg --color always 'SendMessage\w*' . | rg -v SendMessageEx
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2020-09-02 05:23</div>
+            <div class="timeline-body"><p>The traditional solution (with <code>grep</code>) would be to run it a third time to re-add the colours at the end:</p>
+<pre><code>rg SendMessage | rg -v SendMessageEx | rg SendMessage
+</code></pre>
+<p>In this example you could also use PCRE's look-around functionality to avoid matching the bad data in the first place:</p>
+<pre><code>rg -P 'SendMessage(?!Ex)'
+</code></pre>
+<p>But look-around (especially look-behind) has some limitations that may make it less useful in other cases</p>
+<p>And then the other option is to adjust either the first or second pattern to work around the escape sequences, like @krobelus said</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/c02y">@c02y</a> on 2020-09-02 06:20</div>
+            <div class="timeline-body"><p>Thanks, as told, it it an expected behavior, I'll just use those workarounds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @c02y on 2020-09-02 06:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:13 UTC
+    </footer>
+</body>
+</html>

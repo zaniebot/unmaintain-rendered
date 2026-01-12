@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>performance bug: ripgrep does poorly when given lots directory arguments - BurntSushi/ripgrep #44</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>performance bug: ripgrep does poorly when given lots directory arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/44">#44</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2016-09-24 03:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>ripgrep is doing some non-trivial work for every file searched in positional parameters, and there's really no reason it should.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2016-09-24 03:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 23:49</div>
+            <div class="timeline-body"><p>In the <code>github.com/rust-lang/rust</code> repo, there is a pretty big time difference:</p>
+<pre><code>$ time rg E0401 | wc -l
+7
+
+real    0m0.072s
+user    0m0.393s
+sys     0m0.087s
+$ time rg E0401 src/lib* | wc -l
+6
+
+real    0m0.202s
+user    0m1.623s
+sys     0m0.007s
+</code></pre>
+<p>If <code>-u</code> is passed to the second command, then the time difference goes away.</p>
+<p>This means <code>ripgrep</code> is spending a lot of time reinitializing ignore state. There are some obvious things we shouldn't be redoing, like the globs and type filters from the command line, but those happen even with the <code>-u</code> flag, so they aren't the problem. The likely problem is re-traversing parent directories for <code>gitignore</code> files. Indeed, if <code>--no-ignore-parent</code> is given, then the performance difference goes away.</p>
+<p>This means we need to keep our gitignores from parent directories around and try to reuse them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "performance bug: ripgrep does poorly when given lots of positional arguments" to "performance bug: ripgrep does poorly when given lots directory arguments" by @BurntSushi on 2016-10-29 00:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-30 01:22</div>
+            <div class="timeline-body"><p>Fixed in #202.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-10-30 01:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:38 UTC
+    </footer>
+</body>
+</html>

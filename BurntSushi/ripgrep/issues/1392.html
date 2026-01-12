@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why is grep significantly faster when everything is already in (disk) cache? in this case - BurntSushi/ripgrep #1392</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Why is grep significantly faster when everything is already in (disk) cache? in this case</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1392">#1392</a>
+        opened by <a href="https://github.com/ghost">@ghost</a>
+        on 2019-09-29 16:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ghost">@ghost</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>$ rg --version
+ripgrep 11.0.2
+-SIMD -AVX (compiled)
+-SIMD -AVX (runtime)
+
+$ grep -vV
+grep (GNU grep) 3.3
+
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p><code>sudo pacman -S ripgrep</code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Arch Linux 64 bit (it's a rolling release, so it's up to date, more or less)</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>I'm running <code>rg</code> and <code>grep</code> as follows, inside the chromium checked-out source dir and while at first <code>rg</code> is way faster than <code>grep</code>, the subsequent runs for each, due to disk caching/buffering (16G RAM), both are faster than before but <code>rg</code> is now slower than <code>grep</code>:</p>
+<p>First time for <code>rg</code>, ran this before <code>grep</code>:</p>
+<pre><code>$ time rg CHROMIUM_ZLIB_NO_CHROMECONF
+third_party/zlib/zconf.h
+17:#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+
+third_party/zlib/patches/0000-build.patch
+158:+#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+
+real	0m46.012s
+user	1m14.654s
+sys	0m27.345s
+</code></pre>
+<p>First time for <code>grep</code>, ran this after the above <code>rg</code> (important due to disk caching):</p>
+<pre><code>$ time grep -nrIF CHROMIUM_ZLIB_NO_CHROMECONF
+third_party/zlib/patches/0000-build.patch:158:+#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+third_party/zlib/zconf.h:17:#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+
+real	1m3.176s
+user	0m5.378s
+sys	0m20.152s
+</code></pre>
+<p>(this is possibly a bit longer by 4 seconds, than seen here)</p>
+<p>Second and subsequent times for <code>rg</code>:</p>
+<pre><code>$ time rg CHROMIUM_ZLIB_NO_CHROMECONF
+third_party/zlib/zconf.h
+17:#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+
+third_party/zlib/patches/0000-build.patch
+158:+#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+
+real	0m32.322s
+user	1m50.825s
+sys	0m7.670s
+</code></pre>
+<p>This is consistently 32-33 seconds!</p>
+<p>Second and subsequent times for <code>grep</code>:</p>
+<pre><code>$ time grep -nrIF CHROMIUM_ZLIB_NO_CHROMECONF
+third_party/zlib/patches/0000-build.patch:158:+#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+third_party/zlib/zconf.h:17:#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+
+real	0m10.007s
+user	0m4.332s
+sys	0m5.604s
+</code></pre>
+<p>This is consistently 10 seconds as long as everything remains (disk)cached.</p>
+<p>Oh i just realized something:</p>
+<pre><code>$ type grep
+grep is aliased to `grep --color=tty -d skip --exclude-dir=.git --exclude-dir=.hg --exclude-dir=.svn'
+</code></pre>
+<p>Not exactly sure how to use this with <code>rg</code>:</p>
+<pre><code>       --iglob GLOB ...
+           Include or exclude files and directories for searching that match the given glob. This always
+           overrides any other ignore logic. Multiple glob flags may be used. Globbing rules match
+           .gitignore globs. Precede a glob with a ! to exclude it. Globs are matched case insensitively.
+</code></pre>
+<pre><code>$ time rg --no-ignore --iglob '!.git','!.hg','!.svn' -- CHROMIUM_ZLIB_NO_CHROMECONF
+</code></pre>
+<p>these don't work:</p>
+<pre><code>$ time rg --no-ignore --iglob '!.git' '!.hg' '!.svn' -- CHROMIUM_ZLIB_NO_CHROMECONF
+!.svn: No such file or directory (os error 2)
+CHROMIUM_ZLIB_NO_CHROMECONF: No such file or directory (os error 2)
+
+$ time rg --no-ignore --iglob '.git' '.hg' '.svn' -- CHROMIUM_ZLIB_NO_CHROMECONF
+.svn: No such file or directory (os error 2)
+CHROMIUM_ZLIB_NO_CHROMECONF: No such file or directory (os error 2)
+
+$ time rg --no-ignore --iglob '.git' -iglob '.hg' -iglob '.svn' -- CHROMIUM_ZLIB_NO_CHROMECONF
+error: The argument '--ignore-case' was provided more than once, but cannot be used multiple times
+
+USAGE:
+    
+    rg [OPTIONS] PATTERN [PATH ...]
+    rg [OPTIONS] [-e PATTERN ...] [-f PATTERNFILE ...] [PATH ...]
+    rg [OPTIONS] --files [PATH ...]
+    rg [OPTIONS] --type-list
+    command | rg [OPTIONS] PATTERN
+
+For more information try --help
+
+
+</code></pre>
+<p>I tried this, no effect?:</p>
+<pre><code>$ time rg --glob '!.git/*' -- CHROMIUM_ZLIB_NO_CHROMECONF
+third_party/zlib/zconf.h
+17:#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+
+third_party/zlib/patches/0000-build.patch
+158:+#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+
+real	0m33.919s
+user	1m56.727s
+sys	0m7.472s
+
+$ time rg --glob '!.git*' -- CHROMIUM_ZLIB_NO_CHROMECONF
+third_party/zlib/zconf.h
+17:#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+
+third_party/zlib/patches/0000-build.patch
+158:+#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+
+real	0m34.017s
+user	1m52.186s
+sys	0m7.522s
+</code></pre>
+<p>I'm not sure if <code>.git</code> is ignored, or maybe it is already ignored by default? (it's not in <code>/.gitignore</code> already though)</p>
+<p>So anyway, why would <code>rg</code> take 22-24 seconds longer than <code>grep</code> for the same stuff?</p>
+<pre><code>$ sudo compsize .
+Processed 527753 files, 238469 regular extents (242009 refs), 372983 inline.
+Type       Perc     Disk Usage   Uncompressed Referenced  
+TOTAL       84%       26G          31G          31G       
+none       100%       23G          23G          23G       
+zstd        37%      2.7G         7.5G         7.9G       
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-09-29 17:11</div>
+            <div class="timeline-body"><p>Chromium is a big repository. It would not be surprising to me if it wasn't actually entirely in disk cache after running one search.</p>
+<p>I don't understand why you are trying to use iglobs. Firstly, it is case insensitive globbing, which isn't necessary. Secondly, you need to specify <code>--iglob</code> for each glob, just like <code>--exclude</code>, which is pretty standard. Thirdly, ripgrep ignores all hidden directories by default.</p>
+<p>Anyway, I am not at a computer right now. I will try your examples when I get to one. In the mean time, could you please say which revision of chromium you have checked out?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-09-29 17:16</div>
+            <div class="timeline-body"><p>You might also consider compiling master and rerunning your benchmark.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2019-09-29 18:19</div>
+            <div class="timeline-body"><blockquote>
+<p>could you please say which revision of chromium you have checked out?</p>
+</blockquote>
+<p>commit f0627799ff032631e41e805fc967a48575d84312 (HEAD, tag: 77.0.3865.106)
+Date:   Thu Sep 26 17:14:05 2019 -0700</p>
+<p>Here's my reflog too(it shows that I've a relatively new <code>master</code> before having switched to <code>tag: 77.0.3865.106</code>):</p>
+<pre><code>f0627799ff03 (HEAD, tag: 77.0.3865.106) HEAD@{0}: checkout: moving from 629502a860f49e305187e05b45e92683f04320e0 to 77.0.3865.106
+629502a860f4 (tag: 77.0.3865.98) HEAD@{1}: checkout: moving from f44afce39e922d6a43ec25fd7b1eba7c5c51ae8a to 77.0.3865.98
+f44afce39e92 (tag: 77.0.3865.90) HEAD@{2}: checkout: moving from 58c425ba843df2918d9d4b409331972646c393dd to 77.0.3865.90
+58c425ba843d HEAD@{3}: checkout: moving from master to 77.0.3865.90~1
+2cbb9cb86577 (master) HEAD@{4}: clone: from https://chromium.googlesource.com/chromium/src.git
+</code></pre>
+<blockquote>
+<p>Secondly, you need to specify --iglob for each glob, just like --exclude, which is pretty standard.</p>
+</blockquote>
+<p>I see I typoed <code>--iglob</code> after the first occurence:
+<code>$ time rg --no-ignore --iglob '.git' -iglob '.hg' -iglob '.svn'</code></p>
+<p>which is why I avoided trying to use it multiple times, I thought some bug was disallowing me to use it.</p>
+<blockquote>
+<p>I don't understand why you are trying to use iglobs.</p>
+</blockquote>
+<p>I was looking though the help/man page and I thought iglob means ignore glob :) later I found it's like --glob but with ignore case.</p>
+<p>First time trying ripgrep, I believe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2019-09-29 18:37</div>
+            <div class="timeline-body"><p>I forgot to mention, the checked out chromium source is a bit modified with some ungoogled-chromium-archlinux stuff. (I don't think this should matter, you'd just get one result instead of two - I think, or maybe not in this case, that patch exists anyway - , repo size is basically the same)</p>
+<p>With master <code>rg</code> and without specifying any features(notably, not specifying <a href="https://git.archlinux.org/svntogit/community.git/tree/trunk/PKGBUILD?h=packages/ripgrep&amp;id=a36df81d0007d0e5d002227d6d08690d10072407#n18"><code>--features 'pcre2'</code></a>) it's very fast, 3 seconds:</p>
+<pre><code>$ time /home/user/build/2nonpkgs/rust.stuff/ripgrep/target/release/rg --glob '!.git/*' -- CHROMIUM_ZLIB_NO_CHROMECONF
+third_party/zlib/zconf.h
+17:#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+
+third_party/zlib/patches/0000-build.patch
+158:+#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+
+real	0m3.446s
+user	0m7.816s
+sys	0m4.372s
+</code></pre>
+<p>I just added <code>pcre2</code> feature too and see no difference, what teh ? :)</p>
+<pre><code>$ cargo build --release --features 'pcre2'
+...
+$ time /home/user/build/2nonpkgs/rust.stuff/ripgrep/target/release/rg --glob '!.git/*' -- CHROMIUM_ZLIB_NO_CHROMECONF
+third_party/zlib/zconf.h
+17:#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+
+third_party/zlib/patches/0000-build.patch
+158:+#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+
+real	0m3.429s
+user	0m7.626s
+sys	0m4.322s
+</code></pre>
+<p>(I even <code>cargo clean</code> -ed afterwards and retried the above)
+The only thing that could've &quot;fixed&quot; it is: <code>-C target-cpu=native</code>, the fact that I'm using <code>master</code> <code>rg</code>, and, compiled with my rust version <code>rustc 1.40.0-dev (f3c8eba64 2019-09-28)</code>
+Actually, I'm determined to find out what teh... :)  'cause curious.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-09-29 18:48</div>
+            <div class="timeline-body"><blockquote>
+<p>I forgot to mention, the checked out chromium source is a bit modified with some ungoogled-chromium-archlinux stuff. (I don't think this should matter, you'd just get one result instead of two - I think, or maybe not in this case, that patch exists anyway - , repo size is basically the same)</p>
+</blockquote>
+<p>It should be easy to try and reproduce this issue on a standard checkout. Could you please do that so that it makes reproduction easier?</p>
+<blockquote>
+<p>With master rg and without specifying any features(notably, not specifying --features 'pcre2') it's very fast, 3 seconds:</p>
+</blockquote>
+<p>If master does indeed fix this issue, then you might be impacted by #1335, which was fixed in https://github.com/BurntSushi/ripgrep/commit/813c676ecac053559a3b1b72034e0c34c8ed7e06</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2019-09-29 18:56</div>
+            <div class="timeline-body"><blockquote>
+<p>If master does indeed fix this issue, then you might be impacted by #1335, which was fixed in 813c676</p>
+</blockquote>
+<p>Wow! Reverting that brings back the slowness:</p>
+<pre><code>$ time /home/user/build/2nonpkgs/rust.stuff/ripgrep/target/release/rg --glob '!.git/*' -- CHROMIUM_ZLIB_NO_CHROMECONF
+third_party/zlib/zconf.h
+17:#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+
+third_party/zlib/patches/0000-build.patch
+158:+#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+
+real	0m27.794s
+user	1m24.397s
+sys	0m6.577s
+</code></pre>
+<details>
+
+<p>So on master <code>rg</code> (not reverted):</p>
+<pre><code>$ echo 3 | sudo tee /proc/sys/vm/drop_caches
+3
+$ time /home/user/build/2nonpkgs/rust.stuff/ripgrep/target/release/rg --glob '!.git/*' -- CHROMIUM_ZLIB_NO_CHROMECONF
+third_party/zlib/zconf.h
+17:#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+
+third_party/zlib/patches/0000-build.patch
+158:+#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+
+real	0m26.790s
+user	0m9.532s
+sys	0m21.181s
+
+$ echo 3 | sudo tee /proc/sys/vm/drop_caches
+3
+$ time grep -nrIF CHROMIUM_ZLIB_NO_CHROMECONF
+third_party/zlib/patches/0000-build.patch:158:+#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+third_party/zlib/zconf.h:17:#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+
+real	2m3.342s
+user	0m6.663s
+sys	0m37.492s
+</code></pre>
+<p>So <code>rg</code> is like 4.5 times faster than <code>grep</code> when not cached?</p>
+<p>and cached:</p>
+<pre><code>$ time grep -nrIF CHROMIUM_ZLIB_NO_CHROMECONF
+third_party/zlib/patches/0000-build.patch:158:+#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+third_party/zlib/zconf.h:17:#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+
+real	0m9.470s
+user	0m3.770s
+sys	0m5.427s
+
+$ time /home/user/build/2nonpkgs/rust.stuff/ripgrep/target/release/rg --glob '!.git/*' -- CHROMIUM_ZLIB_NO_CHROMECONF
+third_party/zlib/zconf.h
+17:#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+
+third_party/zlib/patches/0000-build.patch
+158:+#if !defined(CHROMIUM_ZLIB_NO_CHROMECONF)
+
+real	0m3.297s
+user	0m7.250s
+sys	0m4.197s
+</code></pre>
+<p>2.8 times faster.</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ghost on 2019-09-29 18:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:01 UTC
+    </footer>
+</body>
+</html>

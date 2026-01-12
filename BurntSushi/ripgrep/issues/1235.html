@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[WORKAROUND] Markdown same level extraction - BurntSushi/ripgrep #1235</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[WORKAROUND] Markdown same level extraction</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1235">#1235</a>
+        opened by <a href="https://github.com/sergeevabc">@sergeevabc</a>
+        on 2019-04-04 08:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sergeevabc">@sergeevabc</a></div>
+            <div class="timeline-body"><p>ripgrep 0.10.0 (rev d6feeb7ff2) on Windows 7 x64.</p>
+<p>Today we often use Markdown-formatted files, but data extraction is still a hassle. Imagine:</p>
+<pre><code>## Foreword
+Lorem ipsum dolor sit amet.
+
+### Summary
+Lorem ipsum dolor sit amet.
+
+### Images
+- https://resource1.com/
+- https://resource2.com/
+
+#### Obsolete
+- ~~https://resource3.com/~~
+
+### Story1
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod...
+
+### Story2
+Tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim...
+</code></pre>
+<p>With <code>grep -Poz &quot;### Images\n(?:(?!### ).*\n?)*&quot; input.md</code> I can extract from <code>### Images</code> till the next heading of the same level (<code>### Story1</code> in this case), i.e.</p>
+<pre><code>### Images
+- https://resource1.com/
+- https://resource2.com/
+
+#### Obsolete
+- ~~https://resource3.com/~~
+</code></pre>
+<p>However I’m confused how to accomplish the same trick with Ripgrep. Tried the following approaches:</p>
+<pre><code>$ rg --pcre2 &quot;### Images\n(?:(?!### ).*\n?)*&quot; input.md 
+$ rg --pcre2 -o &quot;### Images\n(?:(?!### ).*\n?)*&quot; input.md 
+$ rg --pcre2 -o -U &quot;### Images\n(?:(?!### ).*\n?)*&quot; input.md 
+$ rg --pcre2 -o -U --multiline-dotall &quot;### Images\n(?:(?!### ).*\n?)*&quot; input.md 
+
+(blank screen)
+</code></pre>
+<p>Perhaps you could tell what I’m missing here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-04-04 11:14</div>
+            <div class="timeline-body"><p>This works for me:</p>
+<pre><code>$ rg -PU '### Images\n(?:(?!### ).*\n?)*' input.md
+</code></pre>
+<p>The above is the most natural way to do it, given ripgrep's feature set. But the same trick with grep works with ripgrep too. You just need to use <code>--null-data</code> instead of <code>-z</code>.</p>
+<pre><code>$ rg -Po --null-data '### Images\n(?:(?!### ).*\n?)*' test.md
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sergeevabc">@sergeevabc</a> on 2019-04-04 11:42</div>
+            <div class="timeline-body"><p>@BurntSushi, thank you for a quick reply, but so far I see no output as follows:</p>
+<pre><code>$ rg -PU '### Images\n(?:(?!### ).*\n?)*' input.md
+Images\n(?:(?!###: The filename, directory name, or volume label syntax is incorrect. (os error 123)
+).*\n?)*': The filename, directory name, or volume label syntax is incorrect. (os error 123)
+
+$ rg -PU &quot;### Images\n(?:(?!### ).*\n?)*&quot; input.md
+(blank screen)
+
+$ rg -Po --null-data &quot;### Images\n(?:(?!### ).*\n?)*&quot; input.md
+(blank screen)
+
+$ rg --trace -PU &quot;### Images\n(?:(?!### ).*\n?)*&quot; input.md
+DEBUG|globset|globset\src\lib.rs:434: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+TRACE|grep_searcher::searcher|grep-searcher\src\searcher\mod.rs:623: Some(&quot;input.md&quot;): searching via memory map
+TRACE|grep_searcher::searcher|grep-searcher\src\searcher\mod.rs:706: slice reader: needs transcoding, using generic reader
+TRACE|grep_searcher::searcher|grep-searcher\src\searcher\mod.rs:674: generic reader: reading everything to heap for multiline
+TRACE|grep_searcher::searcher|grep-searcher\src\searcher\mod.rs:676: generic reader: searching via multiline strategy
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sergeevabc">@sergeevabc</a> on 2019-04-04 12:00</div>
+            <div class="timeline-body"><p>It seems to be somehow related to <code>\n</code>, because when I change it to <code>\s</code> rigrep acts as expected. But why?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-04-04 12:08</div>
+            <div class="timeline-body"><p>I don't know, but this doesn't look like a ripgrep issue. It's likely something to do with Windows or your console.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-04-04 12:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2019-04-04 12:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:52 UTC
+    </footer>
+</body>
+</html>

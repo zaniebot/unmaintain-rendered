@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;--null&quot; or &quot;--print0&quot; option? - BurntSushi/ripgrep #89</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;--null&quot; or &quot;--print0&quot; option?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/89">#89</a>
+        opened by <a href="https://github.com/gwerbin">@gwerbin</a>
+        on 2016-09-25 20:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gwerbin">@gwerbin</a></div>
+            <div class="timeline-body"><p>Is there any chance you'd be interested in implementing a feature like Ag's <code>--null</code> option, and Ack's (not to mention find's) <code>--print0</code> option? If you did, it'd be really easy to make <a href="http://github.com/aykamko/tag/">tag</a> work with Ripgrep, not to mention more supportive of machine-parsing in general.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 20:14</div>
+            <div class="timeline-body"><p><code>grep</code> has this too. Can we write the specification first? Here's my first attempt:</p>
+<pre><code>--null
+    Whenever a file name is printed, follow it with a NUL byte.
+    This includes printing filenames before matches, and when printing
+    a list of matching files such as with --count, --files-with-matches
+    and --files.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-09-25 20:48</div>
+            <div class="timeline-body"><p>I would like to have this option too..</p>
+<p>For now, my woraround is to do..</p>
+<pre><code>rg foo | tr '\n' '\0'
+</code></pre>
+<p>But hopefully internal support of null-separated output makes this faster.</p>
+<p>My actual use case is</p>
+<pre><code>rg -g '' --files | tr '\n' '\0' &gt;! proj_file_list.txt
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 20:52</div>
+            <div class="timeline-body"><p>@kaushalmodi Unrelated: your <code>-g ''</code> is I think completely superfluous.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gwerbin">@gwerbin</a> on 2016-09-25 21:44</div>
+            <div class="timeline-body"><p>@BurntSushi LGreatTM, that's a more detailed spec than any of the other tools mentioned here. But maybe it should be both <code>--print0</code> and <code>--null</code>. Ag has them aliased to each other, Ack only supports <code>--print0</code>, and Pt and Git Grep <em>only</em> support <code>--null</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-09-25 21:58</div>
+            <div class="timeline-body"><p>@BurntSushi</p>
+<blockquote>
+<p>Unrelated: your -g '' is I think completely superfluous.</p>
+</blockquote>
+<p>Thanks for letting me know.. I'll switch to <code>rg --files</code> then.</p>
+<p>@gwerbin</p>
+<p>There's <code>-0</code> too. So <code>-0</code> or <code>--null</code> or <code>--print0</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 22:06</div>
+            <div class="timeline-body"><p>In general, when there's been variation in flag options, I've tried to go with what grep does. I'm not a big fan of lots of aliases for doing the same thing, although I have done it in a few places. For a more niche option like this, I'd rather not increase the number of flags.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gwerbin">@gwerbin</a> on 2016-09-25 22:08</div>
+            <div class="timeline-body"><p>@BurntSushi good to be consistent. Unfortunately I have absolutely no experience programming in Rust, otherwise I'd just make a PR for proof-of-concept.</p>
+<p>@kaushalmodi I avoided <code>-0</code> because I always thought of that as an <em>input</em> parsing option as per, e.g. xargs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2016-09-25 22:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emlyn">@emlyn</a> on 2016-09-26 08:59</div>
+            <div class="timeline-body"><p>Just a nit about the wording of the spec (<code>Whenever a file name is printed, proceed it with a NUL byte</code>). I've not heard &quot;proceed&quot; used in this way before, is it a misspelling of &quot;precede&quot;, or does it mean &quot;follow&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-26 11:29</div>
+            <div class="timeline-body"><p>@emlyn &quot;to proceed&quot; is &quot;to come after,&quot; so yes, &quot;follow&quot; is right. :-)</p>
+<p>Looking at the dictionary, it does feel a little non-standard to me. The flavor isn't quite there. &quot;follow&quot; is probably a better word. I fixed the wording. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gwerbin">@gwerbin</a> on 2016-09-26 13:11</div>
+            <div class="timeline-body"><p>@emlyn Good catch.  I definitely thought he meant &quot;precede&quot;, which in hindsight wouldn't make sense.</p>
+<p>@BurntSushi &quot;proceed&quot; is a motion/action verb, meaning either &quot;to continue&quot; or to physically &quot;go forward.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-09-26 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-26 23:21</div>
+            <div class="timeline-body"><p>All set! Will be in the next release, hopefully tonight.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:42 UTC
+    </footer>
+</body>
+</html>

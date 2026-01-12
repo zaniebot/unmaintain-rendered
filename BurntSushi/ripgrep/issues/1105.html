@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weird behavior with --replace - BurntSushi/ripgrep #1105</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Weird behavior with --replace</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1105">#1105</a>
+        opened by <a href="https://github.com/Boddlnagg">@Boddlnagg</a>
+        on 2018-11-13 07:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Boddlnagg">@Boddlnagg</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 0.10.0 (rev 31adff6f3c)
++SIMD +AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>Cloned and compiled current master.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Windows 10 1803</p>
+<h4>Problem description</h4>
+<p>Given the following input file <code>test.txt</code>:</p>
+<pre><code>1 x A
+2 x B
+3 x C
+</code></pre>
+<p>Compare the following commands with their outputs:
+(1)</p>
+<pre><code>&gt; rg -e &quot;(\d+) x (.)&quot; test.txt
+1:1 x A
+2:2 x B
+3:3 x C
+</code></pre>
+<p>(2)</p>
+<pre><code>&gt; rg -e &quot;(\d+) x (.*)&quot; --replace '$1 y $2' test.txt
+1:1 y A
+2:2 y B
+3:3 y C
+</code></pre>
+<p>(3)</p>
+<pre><code>&gt; rg -e &quot;(\d+) x (.)&quot; --replace '$2 y $1' test.txt
+1:A y 1
+2:B y 2
+3:C y 3
+</code></pre>
+<p>(4)</p>
+<pre><code>&gt; rg -e &quot;(\d+) x (.*)&quot; --replace '$2 y $1' test.txt
+ y 1
+ y 2
+3:C y 3
+</code></pre>
+<p>Everything except (4) is as expected, but in (4) suddenly the capture groups seem to behave differently compared to (2) although the only difference is that they are used in a different order in <code>--replace</code> ... is this a bug? It also seems to be related to the <code>*</code> in the regex, because in (3) it works as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-11-13 13:11</div>
+            <div class="timeline-body"><p>I can reproduce this, but only when <code>test.txt</code> uses CRLF for line endings, which is common on Windows. The issue here is that your second capture group, with <code>.*</code>, matches the <code>\r</code> in the <code>\r\n</code> line ending. When you do a replacement, that <code>\r</code> is captured as part of the <code>$2</code> value. When you move it to the beginning of the line, <code>\r</code> (I believe) has the effect of deleting everything that came before it on the current line, which explains the weird output. If I remove CRLF line endings (and just use LF), then this problem goes away.</p>
+<p>I'm not sure whether it's practical to fix this or not as-is, but I'll call this a bug for now and look into it.</p>
+<p>For now, it's possible to fix this bug by passing the <code>--crlf</code> flag, which explicitly uses CRLF line endings. It would be OK for you to put <code>--crlf</code> in your ripgrep config file and then forget about it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2018-11-13 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Boddlnagg">@Boddlnagg</a> on 2018-11-14 07:21</div>
+            <div class="timeline-body"><p>I see, thanks for the explanation!
+Maybe there could be a way to detect CRLF line endings in the input and warn about it (mentioning the existence of <code>--crlf</code>)? But I'm not sure where/when that warning should be emitted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-01-26 17:39</div>
+            <div class="timeline-body"><p>I've given this some thought, and I don't see any real way to fix this other than perhaps enabling <code>--crlf</code> automatically on Windows, which I'd prefer not to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-01-26 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sergeevabc">@sergeevabc</a> on 2019-03-09 01:58</div>
+            <div class="timeline-body"><p>Being a Windows user, I face mentioned annoying behavior every now and then. <code>sed</code> (ported from Unix) works as expected when <code>sed -r &quot;s/(.*)= (.*)/\2 \1/&quot;</code> is used to swap values, so <a href="https://regex101.com/r/wAi09b/1">does</a> Regex101, but <code>rg</code> produces the output even battle-hardened fellas from irc.freenode.net/#regex called weird.</p>
+<p>Example:
+<code>(AUTHORS)= 870ee40c43041a5e0e0d6d55a077b776d2d7a091a3b25e48f27a92cebc2b8152</code></p>
+<p>Expected after <code>rg &quot;(.*)= (.*)&quot; -r &quot;$2 $1&quot;</code>:
+<code>870ee40c43041a5e0e0d6d55a077b776d2d7a091a3b25e48f27a92cebc2b8152 (AUTHORS)</code></p>
+<p>Actually (omg, wtf, aaggrrhh):
+<code> (AUTHORS)041a5e0e0d6d55a077b776d2d7a091a3b25e48f27a92cebc2b8152</code></p>
+<p>Another workaround apart from using <code>--crlf</code> seems to be adding <code>\b</code>: <code>rg &quot;(.*)= (.*)\b&quot; -r &quot;$2 $1&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-03-09 04:47</div>
+            <div class="timeline-body"><p>@sergeevabc Yes, the problem is known, and it is as I described above. There is no debate that it is &quot;weird,&quot; so your battle hardened friends can rest easy. Add <code>--crlf</code> to your ripgrep config until this is fixed in the regex engine.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:44 UTC
+    </footer>
+</body>
+</html>

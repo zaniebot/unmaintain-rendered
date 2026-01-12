@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ability to mention line numbers after filenames - BurntSushi/ripgrep #1718</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ability to mention line numbers after filenames</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1718">#1718</a>
+        opened by <a href="https://github.com/ssbarnea">@ssbarnea</a>
+        on 2020-10-29 09:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ssbarnea">@ssbarnea</a></div>
+            <div class="timeline-body"><h4>Describe your feature request</h4>
+<p>Most terminals are able to convert filepaths into clickable links that open the files in your desired editor and they also support <code>filepath:line:column</code> format.</p>
+<p>Sadly ripgrep default output format does not allow use to benefit from line-number clicking on matches as line numbers are separated from the filename.</p>
+<p>Example:</p>
+<pre><code>$ rg &quot;pytest.helpers.run_command&quot;
+lib/molecule/test/functional/conftest.py
+223:    pytest.helpers.run_command(cmd)
+229:    pytest.helpers.run_command(cmd)
+232:    pytest.helpers.run_command(cmd)
+235:    pytest.helpers.run_command(cmd)
+</code></pre>
+<h1>Desired behavior</h1>
+<pre><code>$ rg &quot;pytest.helpers.run_command&quot;
+lib/molecule/test/functional/conftest.py:223
+223:    pytest.helpers.run_command(cmd)
+lib/molecule/test/functional/conftest.py:229
+229:    pytest.helpers.run_command(cmd)
+lib/molecule/test/functional/conftest.py:232
+232:    pytest.helpers.run_command(cmd)
+lib/molecule/test/functional/conftest.py:235
+235:    pytest.helpers.run_command(cmd)
+</code></pre>
+<p>I should mention that I would fine useful enough even if only the first match line number would be included after the filename (ignoring the other ones).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-10-29 10:28</div>
+            <div class="timeline-body"><p>While the output doesn't quite match what you desire, <code>--no-heading</code> should solve your problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-10-29 10:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2020-10-29 10:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2020-10-29 10:41</div>
+            <div class="timeline-body"><p>@BurntSushi Thanks! Yeah, it breaks the ability to see context but in 99% of the cases I used one liner anyway, so not a real issue. Time to update the alias.</p>
+<p>PS. Sorry for not using discussions, apparently github did not make it very visible yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-10-29 10:46</div>
+            <div class="timeline-body"><p>What do you mean about it breaking the ability to see context? Not sure I understand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2020-10-29 11:26</div>
+            <div class="timeline-body"><p>Never mind, context still seems to be working fin.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2020-10-30 10:34</div>
+            <div class="timeline-body"><p>@BurntSushi There is an issue that breaks this integration: if the match happens to on a line that does not start with space the link would not be clickable because editor will receive some text as column parameter.</p>
+<pre><code>rg --no-heading colorama 
+Dockerfile:27:py3-colorama
+# ^ this does not work because a space is needed after the second &quot;:&quot;
+</code></pre>
+<p>The specification requires &quot;filepath:line:column&quot; -- the match becomes the column in that case.</p>
+<p>Lines that do start with a whitespace character are not effected by this because terminal linkification works ok.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-10-30 12:13</div>
+            <div class="timeline-body"><p>Use the <code>--column</code> flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2020-11-19 11:11</div>
+            <div class="timeline-body"><p>I recently found a <a href="https://github.com/microsoft/vscode/issues/110938">bug in vscode</a> which prevents the column from working fine when the line does not start with a space.</p>
+<p>While that seems to be a regex issue with vscode, I wonder if there is a trick I can use to make ripgrep add an extra space after the column, so I avoid the bug. In the end, the line after is only informative, so an extra space would not hurt anyone.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-19 13:01</div>
+            <div class="timeline-body"><p>I doubt that's a bug in VS Code. It's probably a bug in your terminal.</p>
+<blockquote>
+<p>I wonder if there is a trick I can use to make ripgrep add an extra space after the column</p>
+</blockquote>
+<p>Not that I can think of. Sorry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2020-11-19 15:42</div>
+            <div class="timeline-body"><p>Maybe I was not clear: that behavior is from vscode-embedded-terminal, that terminal is part of vscode!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-19 15:48</div>
+            <div class="timeline-body"><p>Ah, gotya.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2021-07-02 09:16</div>
+            <div class="timeline-body"><p>I am not sure why I missed to file a bug on vscode, but here it is https://github.com/microsoft/vscode/issues/127762 --  now the question is how to get someone's attention with that bug.</p>
+<p>The second question is: can we configure ripgrep to add the space that we need before the matched line?</p>
+<p>I seen that it is possible to change the separator but that has no value as I want to obtain something like below, exatra space being essential for avoiding that bug:</p>
+<pre><code>{path}:{line}:{column}: {match}
+</code></pre>
+<p>Many other tools are not affected by this because they decided to not use colon after the column and use a space and a message. Most linters do something like <code>{path}:{line}:{column} {message}</code>. Now we can guess why our minor deviance from standard linting output triggered this bug in vscode.</p>
+<p>From the aesthetic point of view, I do like avoiding a colon after column number as it makes it easier to read the output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-07-02 10:30</div>
+            <div class="timeline-body"><p>No, there is no way. This is the standard grep format, which predates any kind of standard &quot;linting format.&quot;</p>
+<p>The only way to make this happen on ripgrep's end, as far as I can tell, is to add a new flag. (Because the default is not changing.) And I don't see myself adding a flag for this, especially when it's to work around a bug in done other tool.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provide the encoding used by ripgrep in the `--json` output - BurntSushi/ripgrep #1629</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Provide the encoding used by ripgrep in the <code>--json</code> output</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1629">#1629</a>
+        opened by <a href="https://github.com/acheronfail">@acheronfail</a>
+        on 2020-06-25 21:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/acheronfail">@acheronfail</a></div>
+            <div class="timeline-body"><h4>Background context</h4>
+<p>I'm writing an <a href="https://github.com/acheronfail/repgrep">interactive replacer for ripgrep</a>. In a nutshell, my use case is somewhat similar to VSCode's:</p>
+<ul>
+<li>spawn <code>rg</code> with the <code>--json</code> flag</li>
+<li>parse the JSON output and build a UI from that</li>
+<li>allow the user to replace matched portions of files with some provided text</li>
+</ul>
+<p>For <code>ascii</code> and <code>UTF-8</code> encoded files this works fine, since the <code>absolute_offset</code> included in the JSON output from ripgrep lines up with the bytes expected in the file (adjusting for the UTF-8 BOM header if it's present).</p>
+<p>The tricky part is when ripgrep uses a different encoding - which as I understand it can happen in two ways:</p>
+<ol>
+<li>the <code>-E</code> or <code>--encoding</code> flag is passed to ripgrep and that encoding is forced</li>
+<li>ripgrep detects a BOM header and then uses that encoding</li>
+</ol>
+<h4>Describe your feature request</h4>
+<p>What I'd like to request is that the JSON output that ripgrep provides include an <code>encoding</code> field so that consumers of the JSON API can align with ripgrep. For the two cases above:</p>
+<blockquote>
+<p>the <code>-E</code> or <code>--encoding</code> flag is passed to ripgrep and that encoding is forced</p>
+</blockquote>
+<p>As the caller of ripgrep, I can inspect its arguments and sniff the <code>-E</code> or <code>--encoding</code> flag myself, so while this isn't the nicest approach, it works well.</p>
+<blockquote>
+<p>ripgrep detects a BOM header and then uses that encoding</p>
+</blockquote>
+<p><em>I don't know that there's a reliable workaround for this</em>. I <em>could</em> duplicate the logic that ripgrep itself uses internally, but that's subject to change and (in my opinion) is an internal implementation detail of ripgrep.</p>
+<p>I think if the <code>begin</code> JSON object <a href="https://docs.rs/grep-printer/0.1.5/grep_printer/struct.JSON.html#message-end">documented here</a> were to include an <code>encoding</code> field as a whatwg label (from what I can tell from the manpage ripgrep uses this internally) then my tool would not need to guess the encoding, but could rather uses the same encoding that ripgrep used.
+I also think that the whatwg label is probably the best thing we have standard-wise for this kind of thing.</p>
+<p>This would provide the following benefits:</p>
+<ul>
+<li>consumers of the <code>--json</code> API would be able to use the same encoding as ripgrep</li>
+<li>searching for the <em>correct</em> match offset in a non UTF-8 encoded file would be easier, since we'd be using the same encoding</li>
+<li>consumers don't have to sniff the arguments sent to ripgrep as a part of guessing the encoding</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/acheronfail">@acheronfail</a> on 2020-06-25 22:19</div>
+            <div class="timeline-body"><p>After a quick look at how VSCode handles this, I've noticed:</p>
+<ul>
+<li>Seems VSCode supports only <code>encoding=auto</code> or <code>encoding=utf8</code> <a href="https://github.com/microsoft/vscode/blob/b385fa7ceb2b537e0ba2b58edaa162f4e299a947/src/vs/workbench/services/search/node/ripgrepTextSearchEngine.ts#L409-L411">link</a></li>
+</ul>
+<p>I haven't found exactly where VSCode performs the replacement of text (quite a large codebase). I'd be interested to know how they translate the matches provided by ripgrep in non UTF-8 encoded text to the actual replacements. When I have more time I'll try to investigate further.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:12 UTC
+    </footer>
+</body>
+</html>

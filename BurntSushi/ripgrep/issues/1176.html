@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rg does not respect -F when used with -f - BurntSushi/ripgrep #1176</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rg does not respect -F when used with -f</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1176">#1176</a>
+        opened by <a href="https://github.com/draggo">@draggo</a>
+        on 2019-01-26 20:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/draggo">@draggo</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>$ rg --version
+ripgrep 0.10.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<p>$ ripgrep/target/release/rg --version
+ripgrep 0.10.0 (rev bf842dbc7f)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>2 ways:</p>
+<ol>
+<li>brew install ripgrep</li>
+<li>local build of source per &quot;To build ripgrep&quot; instructions, with Rust installed via 'brew install rust'</li>
+</ol>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>macOS High Sierra, version 10.13.6 (17G3025)</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>Even with -F option, rg attempts to interpret meta characters for patterns supplied in a file.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>Create a simple test file containing meta characters
+% echo 'not a (cloud) in the sky' &gt; test.txt</p>
+<p>Searching the file using the file itself as a fixed pattern doesn't find a match.
+% rg -F -f test.txt test.txt
+[no output]</p>
+<p>But, searching the file with the fixed pattern specified on the command line does find a match (as desired).
+% rg -F 'not a (cloud) in the sky' test.txt</p>
+<pre><code>1:not a (cloud) in the sky
+</code></pre>
+<p>I believe that the first search should produce the same result as the second one.</p>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<p>$ rg --debug -F -f test.txt test.txt</p>
+<pre><code>DEBUG|grep_regex::literal|grep-regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(not a cloud in the sky)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+</code></pre>
+<p>$ rg --debug -F 'not a (cloud) in the sky' test.txt</p>
+<pre><code>DEBUG|grep_regex::literal|grep-regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(not a (cloud) in the sky)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+1:not a (cloud) in the sky
+</code></pre>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>When both -F (or --fixed-strings) and -f (or --file) are given, rg should not attempt to interpret any meta characters in the PATTERNFILE.</p>
+<p>For reference, the macOS default grep and GNU grep (installed via homebrew) give the expected result.  (But are not nearly as fast as ripgrep for many of my tasks; <strong>thank you for a fantastic tool!</strong>)</p>
+<p>$ grep -F -f test.txt test.txt</p>
+<pre><code>not a (cloud) in the sky
+</code></pre>
+<p>$ grep -V</p>
+<pre><code>grep (BSD grep) 2.5.1-FreeBSD
+</code></pre>
+<p>$ ggrep -F -f test.txt test.txt</p>
+<pre><code>not a (cloud) in the sky
+</code></pre>
+<p>$ ggrep -V</p>
+<pre><code>ggrep (GNU grep) 3.3
+Packaged by Homebrew
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later &lt;https://gnu.org/licenses/gpl.html&gt;.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Written by Mike Haertel and others; see
+&lt;https://git.sv.gnu.org/cgit/grep.git/tree/AUTHORS&gt;.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-01-26 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-01-26 21:02</div>
+            <div class="timeline-body"><p>Wow, what a terrible regression! I'm surprised we've gone this long without hearing about it. This is fixed on master.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/draggo">@draggo</a> on 2019-01-26 21:05</div>
+            <div class="timeline-body"><p>Fix confirmed ... thank you!  And thanks again for the great tool.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:48 UTC
+    </footer>
+</body>
+</html>

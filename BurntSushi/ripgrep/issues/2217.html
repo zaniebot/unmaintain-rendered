@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failed 'cargo test' - BurntSushi/ripgrep #2217</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Failed 'cargo test'</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2217">#2217</a>
+        opened by <a href="https://github.com/gvanem">@gvanem</a>
+        on 2022-05-19 10:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gvanem">@gvanem</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>I built it myself. A <code>cargo build --release</code> works fine.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Win-10. 21H1. Build 19043.1706.</p>
+<h4>Describe your bug.</h4>
+<p>Running a <code>cargo test --release</code>, causes this link failure:</p>
+<pre><code>....
+Compiling ignore v0.4.18 (F:\MingW32\src\misc\ripgrep\crates\ignore)
+Compiling grep-pcre2 v0.1.5 (F:\MingW32\src\misc\ripgrep\crates\pcre2)
+error: linking with `link.exe` failed: exit code: 1120
+  |
+  = note: &quot;F:\\gv\\vc_2022\\VC\\Tools\\MSVC\\14.31.31103\\bin\\HostX64\\x64\\link.exe&quot; &quot;/NOLOGO&quot; &quot;F:\\MingW32\\src\\misc\\ripgrep\\target\\release\\deps\\grep_pcre2-54cec357a768ae6a.grep_pcre2.53b17d51-cgu.0.rcgu.o&quot; 
+....
+
+symbol pcre2_code_free_8 referenced in function _ZN4core3ptr37drop_in_place$LT$pcre2..ffi..Code$GT$17h2f9a7bb884d39615E
+          libpcre2-1f713fde52e9d89a.rlib(pcre2-1f713fde52e9d89a.pcre2.b312f923-cgu.2.rcgu.o) : error LNK2001: 
+unresolved externalsymbol pcre2_code_free_8
+...
+</code></pre>
+<p>All in all, these 19 symbols are missing:</p>
+<pre><code>pcre2_code_free_8
+pcre2_compile_context_free_8
+pcre2_jit_stack_free_8
+pcre2_match_data_free_8
+pcre2_match_context_free_8
+pcre2_compile_context_create_8
+pcre2_set_newline_8
+pcre2_compile_8
+pcre2_jit_compile_8
+pcre2_match_8
+pcre2_pattern_info_8
+pcre2_get_error_message_8
+pcre2_config_8 referenced
+pcre2_match_context_create_8
+pcre2_match_data_create_from_pattern_8
+pcre2_jit_stack_create_8
+pcre2_jit_stack_assign_8
+pcre2_get_ovector_pointer_8
+pcre2_get_ovector_count_8
+</code></pre>
+<p>I even did a <code>rustup update</code> w/o any help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-05-19 10:41</div>
+            <div class="timeline-body"><p>This looks like an environment issue on Windows. Sadly, I'm not equipped to debug it as I don't use Windows.</p>
+<p>I will say that I find it a little suspicious that it is trying to build with PCRE2 even though you didn't enable it. So if you truly are just running <code>cargo test --release</code> and aren't enabling the <code>pcre2</code> feature, then that's the first thing to figure out.</p>
+<p>I'm moving this to a Discussion question.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Locked by @ghost on 2022-05-19 10:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:33 UTC
+    </footer>
+</body>
+</html>

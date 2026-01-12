@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>consider adding an `rg:` prefix all error messages - BurntSushi/ripgrep #2694</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>consider adding an <code>rg:</code> prefix all error messages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2694">#2694</a>
+        opened by <a href="https://github.com/shoffmeister">@shoffmeister</a>
+        on 2023-12-27 17:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/shoffmeister">@shoffmeister</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<pre><code>ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h3>How did you install ripgrep?</h3>
+<p>dnf install ripgrep</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Fedora Rawhide (40)</p>
+<h3>Describe your bug.</h3>
+<p>When running any ripgrep command on a clone of https://invent.kde.org/frameworks/syntax-highlighting, stderr will emit output</p>
+<pre><code>./autotests/input/.gitignore: line 7: error parsing glob '/**/a?[a-z12!][]][!][:upper:]][^[=a=]]\?[\\incomplete?*': unclosed character class; missing ']'
+./autotests/input/.gitignore: line 8: error parsing glob '!/**/a?[a-z][]][!][:upper:]][^[=a=]]\?[\\incomplete?*': unclosed character class; missing ']'
+</code></pre>
+<h3>What are the steps to reproduce the behavior?</h3>
+<ul>
+<li><code>git clone https://invent.kde.org/frameworks/syntax-highlighting.git</code></li>
+<li><code>cd syntax-highlighting</code></li>
+<li><code>rg anything 2&gt;stderr.txt</code></li>
+<li><code>cat stderr.txt</code></li>
+</ul>
+<h3>What is the actual behavior?</h3>
+<pre><code>./autotests/input/.gitignore: line 7: error parsing glob '/**/a?[a-z12!][]][!][:upper:]][^[=a=]]\?[\\incomplete?*': unclosed character class; missing ']'
+./autotests/input/.gitignore: line 8: error parsing glob '!/**/a?[a-z][]][!][:upper:]][^[=a=]]\?[\\incomplete?*': unclosed character class; missing ']'
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>&quot;Something else&quot; would be better, but to me it is not clear what the most appropriate behaviour is:</p>
+<p>From what I can tell, ripgrep prints to stderr internal diagnostics about what it found in the specific <code>.gitignore</code> file. I can see these options to improve the user experience in this corner case:</p>
+<p>a) don't print those diagnostics by default; it's not within the responsibilities of ripgrep to diagnose the content of .gitignore files. Possibly add an option to turn diagnostics on, to allow for trouble-shooting</p>
+<p>b) expand the text of the emitted diagnostic which clarifies that the origin is ripgrep itself - when running without redirection, that is not immediately obvious. Example: &quot;rg: configuring search with ./autotests/input/.gitignore: line 7: ...&quot;</p>
+<p>FWIW, I believe the above .gitignore patterns are exactly as intended, as they seem to act as input into a test, not as &quot;meaningful&quot; .gitignore files. To that extent, here, that is a very fringe corner case. There may be other instances where ripgrep may print.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Surprising stderr "error parsing glob"" to "consider adding an `rg:` prefix all error messages" by @BurntSushi on 2023-12-27 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2023-12-27 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-27 18:23</div>
+            <div class="timeline-body"><p>You can use <code>--no-ignore-messages</code> to suppress that specific output without suppressing anything else. I don't think they should be suppressed by default because it could otherwise result in a silent failure to filter a search as one might expect.</p>
+<p>I am fond of the idea of adding an <code>rg:</code> prefix to the error message, though, I suspect it should probably be added to all error messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @BurntSushi on 2023-12-27 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-01-06 19:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:45 UTC
+    </footer>
+</body>
+</html>

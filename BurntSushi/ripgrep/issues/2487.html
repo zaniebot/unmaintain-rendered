@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>folders starting with dots are always excluded from searches? - BurntSushi/ripgrep #2487</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>folders starting with dots are always excluded from searches?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2487">#2487</a>
+        opened by <a href="https://github.com/donhcd">@donhcd</a>
+        on 2023-04-12 20:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/donhcd">@donhcd</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>sh-3.2$ rg --version
+ripgrep 13.0.0
+-SIMD -AVX (compiled)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p><code>cargo install ripgrep</code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>OSX 13.2.1</p>
+<h4>Describe your bug.</h4>
+<p>I cannot get any search results for any files in directories starting with a dot. Searching within the dotdirectory does work.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>see below</p>
+<h4>What is the actual behavior?</h4>
+<pre><code>sh-3.2$ find .
+.
+./.dont-ignore-please
+./.dont-ignore-please/f.txt
+sh-3.2$ cat .dont-ignore-please/f.txt
+hereismystring
+sh-3.2$ rg --no-hidden --debug string
+DEBUG|grep_regex::literal|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/grep-regex-0.1.11/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(string)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;**/.*.sw*&quot;, re: &quot;(?-u)^(?:/?|.*/)\\.[^/]*\\.sw[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('.'), ZeroOrMore, Literal('.'), Literal('s'), Literal('w'), ZeroOrMore]) }
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;**/.DS_Store?&quot;, re: &quot;(?-u)^(?:/?|.*/)\\.DS_Store[^/]$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('.'), Literal('D'), Literal('S'), Literal('_'), Literal('S'), Literal('t'), Literal('o'), Literal('r'), Literal('e'), Any]) }
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;**/._*&quot;, re: &quot;(?-u)^(?:/?|.*/)\\._[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('.'), Literal('_'), ZeroOrMore]) }
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 6 basenames, 17 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 3 regexes
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;**/*.sw*&quot;, re: &quot;(?-u)^(?:/?|.*/)[^/]*\\.sw[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, ZeroOrMore, Literal('.'), Literal('s'), Literal('w'), ZeroOrMore]) }
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;**/*.sw*&quot;, re: &quot;(?-u)^(?:/?|.*/)[^/]*\\.sw[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, ZeroOrMore, Literal('.'), Literal('s'), Literal('w'), ZeroOrMore]) }
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 3 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 2 regexes
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|ignore::walk|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/ignore-0.4.20/src/walk.rs:1740: ignoring ./.dont-ignore-please: Ignore(IgnoreMatch(Hidden))
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+No files were searched, which means ripgrep probably applied a filter you didn't expect.
+Running with --debug will show why files are being skipped.
+sh-3.2$ rg --no-ignore --debug string
+DEBUG|grep_regex::literal|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/grep-regex-0.1.11/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(string)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|ignore::walk|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/ignore-0.4.20/src/walk.rs:1740: ignoring ./.dont-ignore-please: Ignore(IgnoreMatch(Hidden))
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/Users/don/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.10/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+No files were searched, which means ripgrep probably applied a filter you didn't expect.
+Running with --debug will show why files are being skipped.
+sh-3.2$ cd .dont-ignore-please/
+sh-3.2$ rg string
+f.txt
+1:hereismystring
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>What do you think ripgrep should have done?
+<code>rg --no-hidden string</code> should have returned a result in f.txt</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-04-12 20:54</div>
+            <div class="timeline-body"><p>Why are you using <code>--no-hidden</code>? <code>--hidden</code> is what causes ripgrep to search hidden files and directories, as documented:</p>
+<pre><code>       -., --hidden
+           Search hidden files and directories. By default,
+           hidden files and directories are skipped. Note that
+           if a hidden file or a directory is whitelisted in an
+           ignore file, then it will be searched even if this
+           flag isn’t provided.
+
+           A file or directory is considered hidden if its base
+           name starts with a dot character (.). On operating
+           systems which support a hidden file attribute, like
+           Windows, files with this attribute are also
+           considered hidden.
+
+           This flag can be disabled with --no-hidden.
+</code></pre>
+<p><code>--no-hidden</code> is used to override <code>--hidden</code>, or in other words, restore default behavior.</p>
+<p>And <code>--no-ignore</code> disables gitignore handling. It doesn't have anything to do with hidden files or directories.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-04-12 20:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2023-04-12 20:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:39 UTC
+    </footer>
+</body>
+</html>

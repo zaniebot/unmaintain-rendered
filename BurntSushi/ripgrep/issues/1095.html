@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inconsistency in whether trailing \r\n is included in the results json - BurntSushi/ripgrep #1095</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Inconsistency in whether trailing \r\n is included in the results json</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1095">#1095</a>
+        opened by <a href="https://github.com/roblourens">@roblourens</a>
+        on 2018-10-28 19:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/roblourens">@roblourens</a></div>
+            <div class="timeline-body"><p>0.10.0, Mac and Win</p>
+<p>The <code>--crlf</code> flag has an unexpected side effect, that it changes whether the trailing <code>\r\n</code> is included in the json output. Very minor issue. I'm not sure which way is right.</p>
+<p>Searching a <code>\r\n</code> document. When <code>--crlf</code> is not given, the trailing <code>\r\n</code> in &quot;text&quot; is included:</p>
+<pre><code>echo 'test\u0d\u0a' | rg --json test
+
+[...]
+{&quot;type&quot;:&quot;match&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;&lt;stdin&gt;&quot;},&quot;lines&quot;:{&quot;text&quot;:&quot;test\r\n&quot;},&quot;line_number&quot;:1,&quot;absolute_offset&quot;:0,&quot;submatches&quot;:[{&quot;match&quot;:{&quot;text&quot;:&quot;test&quot;},&quot;start&quot;:0,&quot;end&quot;:4}]}}
+</code></pre>
+<p>When <code>--crlf</code> is included, the trailing <code>\r\n</code> in &quot;text&quot; is not included:</p>
+<pre><code>echo 'test\u0d\u0a' | rg --json test --crlf
+
+[...]
+{&quot;type&quot;:&quot;match&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;&lt;stdin&gt;&quot;},&quot;lines&quot;:{&quot;text&quot;:&quot;test&quot;},&quot;line_number&quot;:1,&quot;absolute_offset&quot;:0,&quot;submatches&quot;:[{&quot;match&quot;:{&quot;text&quot;:&quot;test&quot;},&quot;start&quot;:0,&quot;end&quot;:4}]}}
+</code></pre>
+<p>But when searching a <code>\n</code> document, the trailing <code>\n</code> is always included:</p>
+<pre><code>echo 'test\u0a' | rg --json test   
+
+[...]
+{&quot;type&quot;:&quot;match&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;&lt;stdin&gt;&quot;},&quot;lines&quot;:{&quot;text&quot;:&quot;test\n&quot;},&quot;line_number&quot;:1,&quot;absolute_offset&quot;:0,&quot;submatches&quot;:[{&quot;match&quot;:{&quot;text&quot;:&quot;test&quot;},&quot;start&quot;:0,&quot;end&quot;:4}]}}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-10-29 11:08</div>
+            <div class="timeline-body"><p>Yeah, I suspect this is a bug. I can definitely reproduce it. Interestingly, if you don't use <code>--json</code>, then you do get the <code>CRLF</code> line ending. This is probably due to the hack imposed by the <code>--crlf</code> flag. I'm not quite sure yet what the best way to fix it is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2018-10-29 11:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/roblourens">@roblourens</a> on 2018-10-31 18:09</div>
+            <div class="timeline-body"><p>We actually found a worse instance of this bug. I assume it's the same issue, I can open a new one if you prefer.</p>
+<p>Search for \n in a CRLF document</p>
+<pre><code>echo 'a\u0d\u0a' | rg --json '\n' --multiline --crlf  
+</code></pre>
+<p>We get two <code>match</code> messages, one with an empty &quot;submatches&quot; array which should be invalid:</p>
+<pre><code>{&quot;type&quot;:&quot;begin&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;&lt;stdin&gt;&quot;}}}
+{&quot;type&quot;:&quot;match&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;&lt;stdin&gt;&quot;},&quot;lines&quot;:{&quot;text&quot;:&quot;a&quot;},&quot;line_number&quot;:1,&quot;absolute_offset&quot;:0,&quot;submatches&quot;:[]}}
+{&quot;type&quot;:&quot;match&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;&lt;stdin&gt;&quot;},&quot;lines&quot;:{&quot;text&quot;:&quot;\n&quot;},&quot;line_number&quot;:2,&quot;absolute_offset&quot;:3,&quot;submatches&quot;:[{&quot;match&quot;:{&quot;text&quot;:&quot;\n&quot;},&quot;start&quot;:0,&quot;end&quot;:1}]}}
+{&quot;type&quot;:&quot;end&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;&lt;stdin&gt;&quot;},&quot;binary_offset&quot;:null,&quot;stats&quot;:{&quot;elapsed&quot;:{&quot;secs&quot;:0,&quot;nanos&quot;:89223,&quot;human&quot;:&quot;0.000089s&quot;},&quot;searches&quot;:1,&quot;searches_with_match&quot;:1,&quot;bytes_searched&quot;:4,&quot;bytes_printed&quot;:344,&quot;matched_lines&quot;:2,&quot;matches&quot;:1}}}
+{&quot;data&quot;:{&quot;elapsed_total&quot;:{&quot;human&quot;:&quot;0.002074s&quot;,&quot;nanos&quot;:2074308,&quot;secs&quot;:0},&quot;stats&quot;:{&quot;bytes_printed&quot;:344,&quot;bytes_searched&quot;:4,&quot;elapsed&quot;:{&quot;human&quot;:&quot;0.000089s&quot;,&quot;nanos&quot;:89223,&quot;secs&quot;:0},&quot;matched_lines&quot;:2,&quot;matches&quot;:1,&quot;searches&quot;:1,&quot;searches_with_match&quot;:1}},&quot;type&quot;:&quot;summary&quot;}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-01-26 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-01-26 17:37</div>
+            <div class="timeline-body"><p>Thanks for this report. This was a pretty gnarly bug, and it turned out that I tried to hack around it pretty poorly. I think the fix for this should make ripgrep's CRLF hack a bit more robust in general though, so I hope things work better now!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:43 UTC
+    </footer>
+</body>
+</html>

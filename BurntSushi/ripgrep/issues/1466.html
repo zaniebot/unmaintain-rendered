@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--no-ignore does not negate --ignore-file - BurntSushi/ripgrep #1466</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--no-ignore does not negate --ignore-file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1466">#1466</a>
+        opened by <a href="https://github.com/zachriggle">@zachriggle</a>
+        on 2020-01-22 02:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zachriggle">@zachriggle</a></div>
+            <div class="timeline-body"><p>When using <code>ripgrep</code>, the <code>--no-ignore</code> flag does not negate a previous <code>--ignore-file</code> argument.  There does not seem to be a way to &quot;ignore&quot; a manually-added <code>--ignore-file</code>.</p>
+<pre><code>$ cat .gitignore
+*
+
+$ cat rg-ignore-file
+*Test*
+
+$ rg --no-ignore Foo
+FileA.c
+1:Foo
+
+FileTestA.c
+1:Foo
+
+$ rg --ignore-file=rg-ignore-file --no-ignore Foo
+FileA.c
+1:Foo
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-01-22 02:40</div>
+            <div class="timeline-body"><p><code>--no-ignore</code> isn't documented to ignore <code>--ignore-file</code> flags. I'm not sure that's desirable behavior, since ignore files are explicitly provided.</p>
+<p>Could you please elaborate on your use case for why you want this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zachriggle">@zachriggle</a> on 2020-01-22 09:12</div>
+            <div class="timeline-body"><p>The general use case is the same as having <code>--ignore-case</code> override a preceding <code>--case-sensitive</code>.  I do a lot of source code spelunking in my work, and have an ever-expanding ignore file for my ripgrep wrapper -- which generally ignores test cases and other undesirable files.</p>
+<p>Occasionally, I want to search everything again, and have all ignore-files be... ignored.  I can't share my wrappers for IP / employer reasons (and can probably work around this in shell wrappers) but it seems that <code>--no-ignore</code> should take precedence over preceding operators and general VCS ignores files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2020-01-22 10:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2020-03-06 20:32</div>
+            <div class="timeline-body"><p>I ran into this again today as well.</p>
+<p>I use <code>--ignore-file</code> in my <code>rg</code> alias to ensure that whenever i run <code>rg</code> it respects my global ignore patterns, per #45. Occasionally i need to override that, and i've just been either running as <code>\rg</code> to bypass the alias (obv losing all of my other settings in the process) or adding <code>-g\*</code> to white-list everything. The latter is easy enough and doesn't seem to have any side-effects in the general case, but there's an intuition/reflex issue i suppose; it's never the first thing that comes to mind.</p>
+<p>I'm not sure about the UX implications of making <code>--no-ignore</code> itself override <code>--ignore-file</code> though. It does seem conceivable that users would want an easy way to bypass only implicit ignore files (as the option does now), or even the other way around. Also, intuitively, if you made <code>--no-ignore</code> work that way, you'd probably also want to make <code>-u</code> work that way, which is another thing that could have serious implications for existing aliases and config files.</p>
+<p>I'm not sure what the best thing would be. Maybe, to start with, a <code>--no-ignore-file</code> (or whatever) that cancels the effect of any previous <code>--ignore-file</code>s on the command line? That shouldn't impact anything else. (I'm not too upset if i just have to keep using <code>-g\*</code> tho)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zachriggle">@zachriggle</a> on 2020-03-09 00:24</div>
+            <div class="timeline-body"><p>Yes, my original intent is that it should override preceding flags, not all
+flags.</p>
+<p>On Fri, Mar 6, 2020 at 2:32 PM dana <a href="mailto:notifications@github.com">notifications@github.com</a> wrote:</p>
+<blockquote>
+<p>I ran into this again today as well.</p>
+<p>I use --ignore-file in my rg alias to ensure that whenever i run rg it
+respects my global ignore patterns, per #45
+<a href="https://github.com/BurntSushi/ripgrep/issues/45">https://github.com/BurntSushi/ripgrep/issues/45</a>. Occasionally i need to
+override that, and i've just been either running as \rg to bypass the
+alias (obv losing all of my other settings in the process) or adding -g*
+to white-list everything. The latter is easy enough and doesn't seem to
+have any side-effects in the general case, but there's an intuition/reflex
+issue i suppose; it's never the first thing that comes to mind.</p>
+<p>I'm not sure about the UX implications of making --no-ignore itself
+override --ignore-file though. It does seem conceivable that users would
+want an easy way to bypass only implicit ignore files (as the option does
+now), or even the other way around. Also, intuitively, if you made
+--no-ignore work that way, you'd probably also want to make -u work that
+way, which is another thing that could have serious implications for
+existing aliases and config files.</p>
+<p>I'm not sure what the best thing would be. Maybe, to start with, a
+--no-ignore-file (or whatever) that cancels the effect of any previous
+--ignore-files on the command line? That shouldn't impact anything else.
+(I'm not too upset if i just have to keep using -g* tho)</p>
+<p>—
+You are receiving this because you authored the thread.
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/BurntSushi/ripgrep/issues/1466?email_source=notifications&amp;email_token=AAA3IGFQTM47O4VSDJQRMFLRGFMXRA5CNFSM4KJ6XMUKYY3PNVWWK3TUL52HS4DFVREXG43VMVBW63LNMVXHJKTDN5WW2ZLOORPWSZGOEOCYPRI#issuecomment-595953605">https://github.com/BurntSushi/ripgrep/issues/1466?email_source=notifications&amp;email_token=AAA3IGFQTM47O4VSDJQRMFLRGFMXRA5CNFSM4KJ6XMUKYY3PNVWWK3TUL52HS4DFVREXG43VMVBW63LNMVXHJKTDN5WW2ZLOORPWSZGOEOCYPRI#issuecomment-595953605</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AAA3IGH6DEV6E4GJU557T3TRGFMXRANCNFSM4KJ6XMUA">https://github.com/notifications/unsubscribe-auth/AAA3IGH6DEV6E4GJU557T3TRGFMXRANCNFSM4KJ6XMUA</a>
+.</p>
+</blockquote>
+<p>--</p>
+<p><em>Zach Riggle</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-03-15 15:14</div>
+            <div class="timeline-body"><p>OK, so this is pretty tricky.</p>
+<p>I initially started by adding a new <code>--no-ignore-files</code> flag that basically does what you want here: it causes ripgrep to ignore all <code>--ignore-file</code> flags (before or after <code>--no-ignore-files</code>). I <em>also</em> made it so the <code>-u/--no-ignore</code> flag implied <code>--no-ignore-files</code>. To me that &quot;makes sense&quot; in that it's consistent with <code>-u</code> implying every other <code>--no-ignore-*</code> flag.</p>
+<p>The main problem I have with doing that is that it's a breaking change, and it's kind of a severe one. If I were starting over, then yeah, I'd probably make <code>-u</code> imply <code>--no-ignore-files</code>.</p>
+<p>I'm generally okay with making breaking changes, but there really needs to be an easy way to capture the old workflow. i.e., It should be possible to do, say, <code>rg -u --ignore-files &lt;blah blah&gt;</code> in order to cause ripgrep to stop respecting all ignore rules <em>except</em> for <code>--ignore-file</code> flags, which is the status quo today. But the problem with doing that is that <code>rg -u --ignore-files -u &lt;blah blah&gt;</code> doesn't work like you'd expect it to: the second <code>-u</code> will <em>not</em> override <code>--ignore-files</code>. This is partially because ripgrep's argv parser doesn't support doing this in a simple way, partially because the other <code>--ignore-*</code> flags don't work like this and partially because it just makes ripgrep's flags overall more complicated.</p>
+<p>So... it's not a great solution, but it's something. I might suggest <code>alias rgu=&quot;rg -u --no-ignore-files&quot;</code> to suppress all ignore related logic.</p>
+<p>I am open to doing a breaking change in the future, but I'd like to see a simpler way of re-capturing existing behavior. Perhaps that needs to wait until our argv handling can become more robust with respect to flag overrides. (This particular issue about overrides comes up quite a bit. See #809 for example, which actually motivated <a href="https://docs.rs/clap/2.33.0/clap/struct.ArgMatches.html#method.indices_of">clap to add new APIs for that purpose</a>. But I just haven't gotten around to building an abstraction that's easy to understand that uses them yet.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2020-03-15 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-03-15 17:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:04 UTC
+    </footer>
+</body>
+</html>

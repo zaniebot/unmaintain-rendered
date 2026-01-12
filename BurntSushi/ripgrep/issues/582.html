@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>_rg zsh completion refuses to work on Arch Linux - BurntSushi/ripgrep #582</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>_rg zsh completion refuses to work on Arch Linux</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/582">#582</a>
+        opened by <a href="https://github.com/ishitatsuyuki">@ishitatsuyuki</a>
+        on 2017-08-24 09:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ishitatsuyuki">@ishitatsuyuki</a></div>
+            <div class="timeline-body"><pre><code>zsh 5.4.1 (x86_64-unknown-linux-gnu)
+</code></pre>
+<pre><code>$ rg &lt;tab&gt;
+_rg: parse error near `)'
+_rg: parse error near `)'
+</code></pre>
+<p>Side note: I have <a href="https://github.com/Eriner/zim">zim</a> installed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-08-24 10:06</div>
+            <div class="timeline-body"><p>I don't have Arch, but i can't seem to replicate with zsh 5.4.1 on macOS. Never used ZIM before, but i tried sourcing its template files as mentioned in the <code>README</code> and i don't seem to have any troubles there either.</p>
+<p>Do you know if you're using the completion function included with <code>rg</code> 0.6.0 (released last night), or is it the older one?</p>
+<p>Can you do the following please?</p>
+<ol>
+<li><code>autoload -Uz +X _rg</code></li>
+<li><code>typeset -f _rg</code> -&gt; paste the output into a Gist and link here</li>
+<li><code>typeset -ft _rg</code></li>
+<li><code>rg &lt;tab&gt;</code> -&gt; paste the output into another Gist and link here</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ishitatsuyuki">@ishitatsuyuki</a> on 2017-08-24 10:09</div>
+            <div class="timeline-body"><pre><code> ishitatsuyuki@X1Yoga  ~  autoload -Uz +X _rg
+zsh: parse error near `)'
+ ✘ ishitatsuyuki@X1Yoga  ~  typeset -f _rg
+_rg () {
+	# undefined
+	builtin autoload -XUz
+}
+ ishitatsuyuki@X1Yoga  ~  typeset -ft _rg
+ ishitatsuyuki@X1Yoga  ~  rg
+(no error, silence)
+</code></pre>
+<p>I have just updated to the latest Arch package and did a full reload of zsh with <code>exec zsh</code>.
+The full list of files:</p>
+<pre><code>ripgrep /usr/
+ripgrep /usr/bin/
+ripgrep /usr/bin/rg
+ripgrep /usr/share/
+ripgrep /usr/share/bash-completion/
+ripgrep /usr/share/bash-completion/completions/
+ripgrep /usr/share/bash-completion/completions/rg
+ripgrep /usr/share/doc/
+ripgrep /usr/share/doc/ripgrep/
+ripgrep /usr/share/doc/ripgrep/README.md
+ripgrep /usr/share/fish/
+ripgrep /usr/share/fish/completions/
+ripgrep /usr/share/fish/completions/rg.fish
+ripgrep /usr/share/licenses/
+ripgrep /usr/share/licenses/ripgrep/
+ripgrep /usr/share/licenses/ripgrep/COPYING
+ripgrep /usr/share/licenses/ripgrep/LICENSE-MIT
+ripgrep /usr/share/licenses/ripgrep/UNLICENSE
+ripgrep /usr/share/man/
+ripgrep /usr/share/man/man1/
+ripgrep /usr/share/man/man1/rg.1.gz
+ripgrep /usr/share/zsh/
+ripgrep /usr/share/zsh/site-functions/
+ripgrep /usr/share/zsh/site-functions/_rg
+</code></pre>
+<p>Also worth to mention that zim enables <code>bashcompinit</code> as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-08-24 10:19</div>
+            <div class="timeline-body"><p>Hm, i guess that makes sense if the file itself is broken.</p>
+<p><code>print -l ${^fpath}/**/_rg(#qN)</code> should tell you where the file is; can you paste the command's output as well as the contents of the file(s) it lists?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ishitatsuyuki">@ishitatsuyuki</a> on 2017-08-24 10:22</div>
+            <div class="timeline-body"><p>Yeah, you were correct. The packager missed something:</p>
+<pre><code>install -Dm644 &quot;target/release/build/ripgrep-&quot;*/out/_rg.ps1 &quot;$pkgdir/usr/share/zsh/site-functions/_rg&quot;
+</code></pre>
+<p>Uh, so I will overwrite with the version in the repository for the meanwhile. ~I cannot find the ps1 file inside repo either, is that removed or where is that generated from?~ Figured out, it's clap's autogenerate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ishitatsuyuki">@ishitatsuyuki</a> on 2017-08-24 10:24</div>
+            <div class="timeline-body"><p>Anyway, closing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ishitatsuyuki on 2017-08-24 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-08-24 10:27</div>
+            <div class="timeline-body"><p>Oh, i don't know what the deal with that is. The <code>.ps1</code> file is a completion function for PowerShell, it has nothing to do with zsh. It's auto-generated during the build by <code>clap</code>. 🤷‍♀️</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:15 UTC
+    </footer>
+</body>
+</html>

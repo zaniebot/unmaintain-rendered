@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slash-rooted glob pattern matches directories, not just files - BurntSushi/ripgrep #1806</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Slash-rooted glob pattern matches directories, not just files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1806">#1806</a>
+        opened by <a href="https://github.com/bryceschober">@bryceschober</a>
+        on 2021-02-25 04:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bryceschober">@bryceschober</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 12.1.0 (rev 1980630f17)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p><code>sudo snap install --classic</code>, no permissions issues</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Ubuntu 20.04 x86-64</p>
+<h4>Describe your bug.</h4>
+<p>My context is <a href="https://github.com/microsoft/vscode/issues/117619">https://github.com/microsoft/vscode/issues/117619</a>, but I'm reproducing with <code>rg</code> independently.</p>
+<p>I can't find a glob pattern to exclude matches from <code>*.d</code> files without excluding <code>*.d</code> directories. I thought that <code>/**/*.d</code> should work, but it doesn't.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>The <a href="https://git-scm.com/docs/gitignore#_pattern_format">github glob pattern docs</a> say:</p>
+<blockquote>
+<p>A slash followed by two consecutive asterisks then a slash matches zero or more directories.</p>
+</blockquote>
+<p>Which leads me to believe that maybe my pattern needs to be rooted by a <code>/</code> so that the <code>*.d</code> part doesn't match directories, only files, but no such luck. So here's a minimal experiment that I've done to reproduce my situation. I can't find a pattern that will exclude only <code>*.d</code> files as opposed to also including <code>*.d</code> directories. What am I missing?</p>
+<h4>What is the actual behavior?</h4>
+<pre><code class="language-shell">$ rg --version
+ripgrep 12.1.0 (rev 1980630f17)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+$ mkdir -p /tmp/example/foo/bar.d
+$ echo &quot;hello, cruel world&quot; &gt; /tmp/example/foo/bar.d/baz
+$ cd /tmp/example
+$ rg 'cruel'
+foo/bar.d/baz
+1:hello, cruel world
+$ rg 'cruel' -g '**/*.d'
+$ rg 'cruel' -g '!**/*.d'
+$ rg 'cruel' -g '/**/*.d'
+$ rg 'cruel' -g '!/**/*.d'
+$
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>I should be able to search files under <code>*.d</code> directory, while still excluding <code>*.d</code> files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-02-25 08:09</div>
+            <div class="timeline-body"><p>Could you please provide the expected output for each of your 4 rg commands?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bryceschober">@bryceschober</a> on 2021-02-25 21:51</div>
+            <div class="timeline-body"><p>Well,  I don't know what to think anymore. If I set up a test environment to try actual git and its globs:</p>
+<pre><code class="language-shell"># In my test git dir:
+$ mkdir -p foo/bar.d foo/baz
+$ touch foo/bar.d/foo.d
+$ touch foo/bar.d/baz
+$ touch foo/baz/bar.d
+$ touch foo/baz.d
+</code></pre>
+<p>The goal being to ignore/exclude all but <code>foo/bar.d/baz</code>.</p>
+<p>Then I tried all kinds of globs as first posted, but only when I used the following glob combination in my <code>.gitignore</code> do I get the desired behavior:</p>
+<pre><code class="language-gitignore">*.d # Ignore all things ending with `.d`
+!*.d/ # But stop ignoring directories ending with `.d`
+</code></pre>
+<p>Is there any other single glob that can have the desired effect? The above will work for <code>rg</code>, but requires more options, and won't end up working in the VS Code usage, but that's a different issue...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-01 16:00</div>
+            <div class="timeline-body"><p>@bryceschober Sorry, I'm still having a bit of trouble following. In your initial comment, you included 4 rg commands. Could you say what your expected/desired output is for each?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bryceschober">@bryceschober</a> on 2021-03-01 18:45</div>
+            <div class="timeline-body"><p>@BurntSushi Sorry, here is what I was thinking with those tests. I'll expand with more comments. Also, what I'm really looking for is a file path match, so I took out the text search, which isn't core to my use case:</p>
+<pre><code class="language-shell">$ mkdir /tmp/glob_test
+$ cd /tmp/glob_test
+$ git init
+$ mkdir -p foo/bar.d foo/baz
+$ touch &gt; foo/bar.d/foo.d
+$ touch &gt; foo/bar.d/baz
+$ touch &gt; foo/baz/bar.d
+$ touch &gt; foo/baz.d
+# List all of the *.d files in any directory
+$ rg --files -g '**/*.d'
+foo/baz/bar.d
+foo/baz.d
+foo/bar.d/foo.d
+# Does this list non-*.d files?
+$ rg --files -g '!**/*.d'
+# Nope. I was hoping for:
+foo/bar.d/baz
+# What if I add a leading slash? Does the positive match work the same?
+$ rg --files -g '/**/*.d'
+foo/baz/bar.d
+foo/bar.d/foo.d
+foo/baz.d
+# What about for a negative match?
+$ rg --files -g '!/**/*.d'
+# Nope. I was hoping the leading slash might keep the *.d from excluding a dir and yield:
+foo/bar.d/baz
+</code></pre>
+<p>How do I get a search to exclude all <code>*.d</code> files, but not exclude non-<code>*.d</code> files beneath <code>*.d</code> directories? It seems pretty much not possible. In <code>.gitignore</code>'s sequential application of globs in the negative sense, a later glob can be used to re-include only <code>*.d</code> directories:</p>
+<pre><code class="language-shell">$ echo -e '*.d\n!*.d/' &gt; .gitignore
+$ git ls-files --exclude-standard --other
+.gitignore
+foo/bar.d/baz
+</code></pre>
+<p>But I can't find a way to make the same idea work with <code>rg</code>'s file-inclusion/exclusion globs.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:18 UTC
+    </footer>
+</body>
+</html>

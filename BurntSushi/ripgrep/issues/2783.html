@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `Select-String`/`sls` to the benchsuite - BurntSushi/ripgrep #2783</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>Select-String</code>/<code>sls</code> to the benchsuite</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2783">#2783</a>
+        opened by <a href="https://github.com/brian6932">@brian6932</a>
+        on 2024-04-18 04:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/brian6932">@brian6932</a></div>
+            <div class="timeline-body"><h4>Describe your feature request</h4>
+<p>Well <code>Select-String</code>/<code>sls</code> doesn't have to pipe binary data to a forked process, and it's much faster than <code>grep</code>, so I was always curious how it compared. Please just don't respawn the <code>pwsh</code> process, as that's very heavy and won't give you accurate results, benches would have to be done in the same shell.
+https://learn.microsoft.com/powershell/module/microsoft.powershell.utility/select-string</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-04-18 09:08</div>
+            <div class="timeline-body"><p>Could you rephrase your request for a target audience that doesn't know PowerShell? (For example, me.)</p>
+<p>Maybe you could provide real examples of what to do and what not to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brian6932">@brian6932</a> on 2024-04-18 09:44</div>
+            <div class="timeline-body"><ol>
+<li><p>PowerShell's (7+) crossplatform, so it's not much more than just launching it as the shell and running the benchmarks through it, just make sure to use <code>-NoProfile</code> and <code>-NonInteractive</code> as startup <code>pwsh</code> flags to not import or enable anything by accident. And as mentioned before, launching with something like <code>-Command</code> is heavy and shouldn't be used within the benchmark, the shell kinda JIT compiles itself at startup (I think). Basically don't do:</p>
+<pre><code class="language-pwsh">pwsh -c 'sls regex'
+</code></pre>
+</li>
+<li><p><code>Select-String</code> uses case insensitive .net regex, so whatever that supports, you can use in <code>Select-String</code>. Could be cool to also test <code>-SimpleMatch</code> &amp; <code>-CaseSensitive</code> too I guess. It's pretty straight forward, works similarly to egrep/ripgrep.</p>
+</li>
+<li><p>From stdin:</p>
+<pre><code class="language-pwsh">cat -Raw whatever | sls regex
+</code></pre>
+<pre><code class="language-pwsh">Get-Content -Raw whatever | Select-String regex
+</code></pre>
+</li>
+<li><p>From all recursive files within the working dir:</p>
+<pre><code class="language-pwsh">sls regex
+</code></pre>
+<pre><code class="language-pwsh">Select-String regex
+</code></pre>
+</li>
+</ol>
+<p>Top's using default aliases, bottom's using full commands just for clarity's sake. If you want to run a bin with the same name as the alias on unix OS' (on Windows you'd just append <code>.exe</code>, coreutils' <code>cat</code> would be a good relevant example here), you'd want to use the full path, or delete the alias. You can make sure what you're sending is an alias, function, or bin, with the <code>gcm</code>/<code>Get-Command</code> function, and you can remove the alias with <code>Remove-Alias</code> (-Force), use absolute paths, or use the <code>-CommandType Application</code> flag <code>Get-Command</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-04-18 12:27</div>
+            <div class="timeline-body"><p>Thanks! I'll take a look when I get chance to use my Windows laptop. I'll at least do some ad hoc benchmarking, and depending on the result of that, I may or may not add it to the <code>benchsuite</code> script.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2024-04-18 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brian6932">@brian6932</a> on 2024-04-18 12:40</div>
+            <div class="timeline-body"><p>Sure, just know that PowerShell shipped with Windows' version 5, so there could be some pretty large differences.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-04-18 13:05</div>
+            <div class="timeline-body"><p>Differences between what? Are you suggesting using PowerShell on Unix instead?</p>
+<p>(I'd appreciate if you could spell out more of what you mean here.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brian6932">@brian6932</a> on 2024-04-18 13:10</div>
+            <div class="timeline-body"><p>The OS doesn't matter, It's just a matter of PowerShell's version, PowerShell 7+ can be used anywhere. PowerShell shipped on Windows' version 5, years out of date. You can benchmark on anything you like.
+https://github.com/PowerShell/PowerShell</p>
+<pre><code class="language-pwsh">❯ powershell -NoProfile -NonInteractive -Command '$PSVersionTable'
+
+Name                           Value
+----                           -----
+PSVersion                      5.1.19041.4291
+PSEdition                      Desktop
+PSCompatibleVersions           {1.0, 2.0, 3.0, 4.0...}
+BuildVersion                   10.0.19041.4291
+CLRVersion                     4.0.30319.42000
+WSManStackVersion              3.0
+PSRemotingProtocolVersion      2.3
+SerializationVersion           1.1.0.1
+
+❯ pwsh -NoProfile -NonInteractive -Command '$PSVersionTable'
+
+Name                           Value
+----                           -----
+PSVersion                      7.5.0-preview.2
+PSEdition                      Core
+GitCommitId                    7.5.0-preview.2
+OS                             Microsoft Windows 10.0.19044
+Platform                       Win32NT
+PSCompatibleVersions           {1.0, 2.0, 3.0, 4.0…}
+PSRemotingProtocolVersion      2.3
+SerializationVersion           1.1.0.1
+WSManStackVersion              3.0
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:48 UTC
+    </footer>
+</body>
+</html>

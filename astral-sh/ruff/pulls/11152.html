@@ -22,7 +22,7 @@
 
     <div class="timeline">
         <div class="timeline-entry">
-            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2024-04-25 20:43</div>
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a></div>
             <div class="timeline-body"><p>I got this all working and solved the API lifetime issues without Arc, by means of a new set of <code>XTypeRef</code> structs.</p>
 <p>The remaining potential performance issue is that anytime you hold on to any of the new <code>XTypeRef</code> structs, you lock a shard of the <code>TypeStore::modules</code> dashmap to writes (because you are holding a reference into it). So it will be important to minimize the use and scope of these type-refs. I think we can do this to some degree by caching type judgments using just type IDs. I also think for CLI use when we want to be highly parallel, we can be smart about ordering (check all module bodies first, then check function bodies when module level types are all populated) to minimize write contention. Also, if needed we can break up <code>ModuleTypeStore</code>, or use inner mutability and internal locking to have finer-grained locking within it.</p>
 <p>I went with this version instead of rewriting to have the type arenas hold Arc to the types, because I am not totally convinced the Arc version will be better. With Arc every &quot;read&quot; turns into a write to the atomic reference count, which introduces overhead (which is really useless overhead for us, since ultimately we rely on the arenas for garbage collection). And so we will introduce contention on the atomic reference count even for reads of highly-used types. So for both versions we will have to be careful with our use of references. I think the Arc-free version is lower overhead and sets us up better for future optimization of the locking strategy, once we have more working code to optimize against.</p>
@@ -197,7 +197,7 @@ for parameter in parameters.iter(db) {
     </div>
 
     <footer>
-        Synced at 2026-01-10 22:37:41 UTC
+        Synced at 2026-01-12 17:04:00 UTC
     </footer>
 </body>
 </html>

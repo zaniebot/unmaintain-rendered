@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cmd will skip .gitignore when it using glob but bash/zsh - BurntSushi/ripgrep #865</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>cmd will skip .gitignore when it using glob but bash/zsh</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/865">#865</a>
+        opened by <a href="https://github.com/ar1xwe">@ar1xwe</a>
+        on 2018-03-20 10:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ar1xwe">@ar1xwe</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.8.1 (rev c8e9f25b85)</p>
+<hr />
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Windows 10x64
+Version 1607 (OS Build 14393.2068)</p>
+<hr />
+<h4>Describe your question, feature request, or bug.</h4>
+<p>When I proceed to search a string with glob, rg will skip my .gitignore for some reason.</p>
+<hr />
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>Files:
+.gitignore &quot;bar*&quot;
+foo.txt &quot;Lorem Ipsum&quot;
+bar.txt &quot;Lorem Ipsum&quot;</p>
+<p>Command: rg -g *.txt -e &quot;Lorem Ipsum&quot;</p>
+<p>Output</p>
+<pre><code>cmd -&gt;
+bar.txt
+1:Lorem Ipsum
+foo.txt
+1:Lorem Ipsum
+
+bash/zsh -&gt;
+1:Lorem Ipsum
+</code></pre>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>I did updated the ripgrep to latest version, and it fix the issue that glob ignoring .gitignore file.
+but the update only fix the problem with bash/zsh.</p>
+<p>Help me please. it's a really useful tool, but it's kind of sad that I need to keep watch those result from any unneeded files.</p>
+<p>Thanks for taking time to read my question.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-03-20 10:54</div>
+            <div class="timeline-body"><p>This is intended behavior. Globs specified on the command line override <code>.gitignore</code> (and anything else). When you filed this issue, the instructions explicitly asked you to run ripgrep with the <code>--debug</code> flag:</p>
+<blockquote>
+<p>Show the command you ran and the actual output. Include the <code>--debug</code> flag in
+your invocation of ripgrep.</p>
+</blockquote>
+<p>If you did this, then the output would show you that your files have been whitelisted:</p>
+<pre><code>DEBUG/ignore::walk/ignore/src/walk.rs:1431: whitelisting ./bar.txt: Whitelist(IgnoreMatch(Override(Glob(Matched(Glob { from: None, original: &quot;*.txt&quot;, actual: &quot;**/*.txt&quot;, is_whitelist: false, is_only_dir: false })))))
+DEBUG/ignore::walk/ignore/src/walk.rs:1431: whitelisting ./foo.txt: Whitelist(IgnoreMatch(Override(Glob(Matched(Glob { from: None, original: &quot;*.txt&quot;, actual: &quot;**/*.txt&quot;, is_whitelist: false, is_only_dir: false })))))
+</code></pre>
+<p>Your results with &quot;bash/zsh&quot; are a red herring because you did not properly quote your glob. <code>rg -g '*.txt' -e 'Lorem Ipsum'</code> gives the expected result. <code>rg -g *.txt -e 'Lorem Ipsum'</code> actually expands to <code>rg -g bar.txt foo.txt -e 'Lorem Ipsum'</code>, which is a totally different comand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-03-20 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2018-03-20 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-03-20 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2018-03-20 10:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:30 UTC
+    </footer>
+</body>
+</html>

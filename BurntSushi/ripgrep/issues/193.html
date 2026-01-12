@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Question] how to search by filenames only? - BurntSushi/ripgrep #193</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Question] how to search by filenames only?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/193">#193</a>
+        opened by <a href="https://github.com/hh9527">@hh9527</a>
+        on 2016-10-24 09:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hh9527">@hh9527</a></div>
+            <div class="timeline-body"><p><code>--files</code> will list all files which respect ignore files. Is there a flag to list filenames which match the given filename pattern?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-24 11:00</div>
+            <div class="timeline-body"><p>From <code>rg --help</code>:</p>
+<pre><code>    -g, --glob GLOB ...        Include or exclude files for searching that
+                               match the given glob. This always overrides any
+                               other ignore logic. Multiple glob flags may be
+                               used. Globbing rules match .gitignore globs.
+                               Precede a glob with a '!' to exclude it.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-10-24 11:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YPCrumble">@YPCrumble</a> on 2016-12-21 15:39</div>
+            <div class="timeline-body"><p>@BurntSushi this is related to the issue I just raised, #284. The I believe the question here is &quot;How can I search for a pattern in the filename, and return the filenames that include that pattern in the path/filename?&quot;</p>
+<p>It appears that the -g flag limits my search <em>for text within the file</em> to the filenames matching the -g pattern. Does that explain the nuance?</p>
+<p>Example:</p>
+<p>If there is a file relative to my directory, <code>./stories/story.txt</code> that contains the text &quot;Once upon a time&quot;, I want to be able to run <code>rg -g story</code> and return <code>./stories/story.txt</code>. It appears that the -g flag would return nothing in this query, but it would return &quot;Once upon a time&quot; if I try <code>rg Once -g story.*</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hraban">@hraban</a> on 2019-07-19 11:55</div>
+            <div class="timeline-body"><p>I have the following alias to shim this in my ~/.bashrc:</p>
+<pre><code class="language-sh">alias rgf='rg --files | rg'
+</code></pre>
+<p>This allows you to do:</p>
+<pre><code class="language-sh">$ rgf 2018
+lib/lib.es2018.full.d.ts
+lib/lib.es2018.promise.d.ts
+lib/lib.es2018.intl.d.ts
+lib/lib.es2018.regexp.d.ts
+lib/lib.es2018.asynciterable.d.ts
+lib/lib.es2018.d.ts
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnyradio">@johnyradio</a> on 2019-08-26 01:58</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-shell">--files
+</code></pre>
+</blockquote>
+<p>how would you do that without the alias?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hraban">@hraban</a> on 2019-08-26 13:16</div>
+            <div class="timeline-body"><p>@johnyradio just type the command directly:</p>
+<pre><code>rg --files | rg 2018</code></pre>
+<p>A Bash alias just substitutes the command for whatever the contents of the alias is, then continues evaluating as usual. That's all an alias is:</p>
+<pre><code>alias rgf=&quot;rg --files | rg&quot;
+rgf 2018</code></pre>
+<p>=</p>
+<pre><code>rg --files | rg 2018</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnyradio">@johnyradio</a> on 2019-08-26 16:48</div>
+            <div class="timeline-body"><p>Many thanks! Super helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dzhang-b">@dzhang-b</a> on 2020-04-03 01:24</div>
+            <div class="timeline-body"><p><code>rg --files | rg &lt;pattern&gt; &lt;directory&gt;</code>  or <code>rgf &lt;pattern&gt; &lt;directory&gt;</code>won't work. It will search all contents in the directory, not the filename in that directory.</p>
+<p>It is best if we can add an actual flag to do this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hraban">@hraban</a> on 2020-06-10 17:44</div>
+            <div class="timeline-body"><blockquote>
+<p><code>rg --files | rg &lt;pattern&gt; &lt;directory&gt;</code> or <code>rgf &lt;pattern&gt; &lt;directory&gt;</code>won't work. It will search all contents in the directory, not the filename in that directory.</p>
+<p>It is best if we can add an actual flag to do this.</p>
+</blockquote>
+<pre><code>$ rg --files [directory] | rg &lt;pattern&gt;</code></pre>
+<p>if you want to do this as a &quot;rgf&quot; style alias, use a function instead:</p>
+<pre><code class="language-sh">function rgf {
+    rg --files $2 | rg $1
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Piping">@Piping</a> on 2020-06-12 15:35</div>
+            <div class="timeline-body"><p>@hraban Thanks for the tip, I updated the logic a bit for future newcomer.</p>
+<pre><code class="language-sh">rf() {
+  if [ -z &quot;$2&quot; ]
+  then
+      rg --files | rg &quot;$1&quot;
+  else
+      rg --files &quot;$2&quot; | rg &quot;$1&quot;
+  fi
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lamyergeier">@lamyergeier</a> on 2020-06-29 00:29</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p><code>rg --files | rg &lt;pattern&gt; &lt;directory&gt;</code> or <code>rgf &lt;pattern&gt; &lt;directory&gt;</code>won't work. It will search all contents in the directory, not the filename in that directory.
+It is best if we can add an actual flag to do this.</p>
+</blockquote>
+<pre><code>$ rg --files [directory] | rg &lt;pattern&gt;
+</code></pre>
+<p>if you want to do this as a &quot;rgf&quot; style alias, use a function instead:</p>
+<pre><code class="language-shell">function rgf {
+    rg --files $2 | rg $1
+}
+</code></pre>
+</blockquote>
+<p>What you suggested searches in the entire path and not just in the filename (what the OP had asked)!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lamyergeier">@lamyergeier</a> on 2020-06-29 01:01</div>
+            <div class="timeline-body"><p>To search Python in filenames:</p>
+<pre><code>Search=Python
+rg --files &quot;${PWD}&quot; | rg --regexp &quot;${Search}[^/]*$&quot; | sort | nl
+</code></pre>
+<p>Note: Use above in Linux and Mac (for windows replace [^/] with [^]):</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2020-09-16 11:47</div>
+            <div class="timeline-body"><p>I still hope to see native support for it. There is a huge UX benefit on having it as a default feature and the number of user upthumbs explains it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-09-16 11:57</div>
+            <div class="timeline-body"><p>Use <code>fd</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AtomicNess123">@AtomicNess123</a> on 2021-02-07 08:25</div>
+            <div class="timeline-body"><blockquote>
+<pre><code>rg --files | rg 2018
+</code></pre>
+</blockquote>
+<p>Thanks, very useful. What does the | mean? Also, this finds filenames that do not match the query because the files contents contain the query. I am only interested in the filename.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-02-07 16:45</div>
+            <div class="timeline-body"><p>@AtomicNess123 <code>rg --files | rg 2018</code> will only print file names that contain <code>2018</code>.</p>
+<p>The <code>|</code> is a shell pipeline. It redirects the output of <code>rg --files</code> into the input of <code>rg 2018</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AtomicNess123">@AtomicNess123</a> on 2021-02-07 20:54</div>
+            <div class="timeline-body"><p>Mmm... I have to digest that. Could you give a more illustrative example? No rush, though...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-02-07 21:04</div>
+            <div class="timeline-body"><pre><code>$ touch foo2018 foo bar2018 bar
+$ rg --files
+foo
+foo2018
+bar2018
+bar
+$ rg --files | rg 2018
+foo2018
+bar2018
+</code></pre>
+<p>At no point are the contents of any files searched in the above example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AtomicNess123">@AtomicNess123</a> on 2021-02-07 21:44</div>
+            <div class="timeline-body"><p>Thanks. What is the difference then between <code>rg --files | rg 2018</code> and <code>rg --files -g '*2018*' </code> ?
+Thanks for your time!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-02-07 22:02</div>
+            <div class="timeline-body"><p>The former will print all paths in the current tree that contain 2018. The latter will only print paths containing 2018 where all of its parent directories also contain 2018. The <code>-g</code> flag influences which directories ripgrep descends into.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AtomicNess123">@AtomicNess123</a> on 2021-02-08 08:10</div>
+            <div class="timeline-body"><p>Thanks, very insightful!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AtomicNess123">@AtomicNess123</a> on 2021-02-08 10:58</div>
+            <div class="timeline-body"><p>Actually, it won't work like that in my case:</p>
+<pre><code class="language-bash">rg --files -g '*helm*'                                                                                                       
+xxx-helm-xxx.el
+helm/xxx-helm-xxx.el
+helm/sub2/xxx-helm-xxx.el
+helm/sub2/xxxhelmxxx.el
+helm/xxxhelmxxx.el
+a/xxx-helm-xxx.el
+a/sub2/xxx-helm-xxx.el
+a/sub2/xxxhelmxxx.el
+a/xxxhelmxxx.el
+xxxhelmxxx.el
+
+rg --files | rg helm               
+xxx-helm-xxx.el
+helm/xxx-helm-xxx.el
+helm/sub2/xxx-helm-xxx.el
+helm/sub2/xxxhelmxxx.el
+helm/xxxhelmxxx.el
+a/xxx-helm-xxx.el
+a/sub2/xxx-helm-xxx.el
+a/sub2/xxxhelmxxx.el
+a/xxxhelmxxx.el
+xxxhelmxxx.el
+</code></pre>
+<p>As you can see, the -g flag makes no difference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chaselambda">@chaselambda</a> on 2022-01-07 21:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Use <code>fd</code> instead.</p>
+</blockquote>
+<p>Probably referencing https://github.com/sharkdp/fd. TIL.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JosephTLyons">@JosephTLyons</a> on 2023-12-20 03:00</div>
+            <div class="timeline-body"><p>Any way to search for all file nams with a given pattern without having to specify a search pattern?</p>
+<pre><code class="language-bash">〉rg -g *.json                                                                                                             
+ripgrep requires at least one pattern to execute a search
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-20 03:19</div>
+            <div class="timeline-body"><p>Yes. Use the <code>--files</code> flag.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:50 UTC
+    </footer>
+</body>
+</html>

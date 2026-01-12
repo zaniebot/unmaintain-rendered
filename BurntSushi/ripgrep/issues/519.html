@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>option for ignoring terminal escape sequences (eg color codes)? - BurntSushi/ripgrep #519</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>option for ignoring terminal escape sequences (eg color codes)?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/519">#519</a>
+        opened by <a href="https://github.com/timotheecour">@timotheecour</a>
+        on 2017-06-17 04:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/timotheecour">@timotheecour</a></div>
+            <div class="timeline-body"><p>Feature request: option for ignoring terminal escape sequences (eg color codes); useful for cases where logs contain color codes (http://misc.flogisoft.com/bash/tip_colors_and_formatting) which makes it hard to search for text, eg:</p>
+<pre><code>BEFORE\e[1mCOLOR\e[21mAFTER
+</code></pre>
+<p>desired behavior:</p>
+<pre><code>rg 'FORECOLO' #return nothing because of \e[1m
+rg -ignore_color_codes 'FORECOLO' #return match
+</code></pre>
+<p>each line would be piped through a filter to remove such codes before attempting to match anything</p>
+<p>More generally, we could have an option to filter lines by a regex replace expression before matching:</p>
+<p>rg -replace_by_regex='\e[[\d;]+m' 'FORECOLO' #return match</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-17 12:31</div>
+            <div class="timeline-body"><p>TL;DR - No can do, sorry.</p>
+<p>First and foremost, it seems like it would be better to just strip the ANSI escape sequences using some other tool before searching. Baking this into ripgrep seems simultaneously niche and a conflation of concerns.</p>
+<p>Secondly, <a href="http://blog.burntsushi.net/ripgrep/#mechanics">ripgrep does not search line by line</a>, so the simple implementation you're imagining probably doesn't work. At the very least, it trivially doesn't work when searching using memory maps. When using the buffered approach, the entire buffer could be transformed to drop ANSI escapes. But there's some subtle complexity there like &quot;what if the buffer ends in the middle of an ANSI escape.&quot;</p>
+<p>Thirdly, removing the ANSI escapes would throw off some offsets---such as column numbers---as reported by ripgrep.</p>
+<p>In sum, I can appreciate why you might want this, but I think it's better solved by preprocessing the file with some other tool. At the end of the day, this feature carries too much implementation complexity for it to be worth it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-06-17 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2017-06-17 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-06-17 12:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:12 UTC
+    </footer>
+</body>
+</html>

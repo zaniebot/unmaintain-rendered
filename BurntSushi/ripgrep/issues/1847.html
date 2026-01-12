@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help text for --hidden should clarify what &quot;hidden&quot; means - BurntSushi/ripgrep #1847</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Help text for --hidden should clarify what &quot;hidden&quot; means</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1847">#1847</a>
+        opened by <a href="https://github.com/dbjorge">@dbjorge</a>
+        on 2021-04-15 19:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dbjorge">@dbjorge</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 12.1.1 (rev 7cb211378a)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>Issue repros with both <code>scoop install ripgrep</code> and <code>cargo install ripgrep</code> versions</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Windows 10 Version 20H2 (OS Build 19042.867)</p>
+<h4>Describe your bug.</h4>
+<p>On Windows, ripgrep (via <code>ignore</code>) considers files which have the &quot;hidden&quot; attribute OR whose basename starts with a <code>.</code> to be &quot;hidden&quot; for the purposes of the <code>--hidden</code> flag</p>
+<p>https://github.com/BurntSushi/ripgrep/blob/64ac2ebe0f2fe1c8967e7ec550bc32466bf40a07/crates/ignore/src/pathutil.rs#L22-L46</p>
+<p>I can understand why ripgrep might want to ignore <code>.dotfiles</code> on Windows for consistency (and that changing it now would be breaking), but as a Windows user, I was surprised by this behavior because it uses a meaning of the term &quot;hidden&quot; which is different from the OS's without documenting that it's going to do so. It would be nice if <code>rg --help</code>'s <code>--hidden</code> section could clarify what ripgrep considers to be a &quot;hidden&quot; file, similar to the comment in <code>pathutil.rs</code>.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<pre><code>&gt; rg --help | rg -A 7 -e --hidden
+</code></pre>
+<h4>What is the actual behavior?</h4>
+<pre><code>        --hidden
+            Search hidden files and directories. By default, hidden files and directories
+            are skipped. Note that if a hidden file or a directory is whitelisted in an
+            ignore file, then it will be searched even if this flag isn't provided.
+
+            This flag can be disabled with --no-hidden.
+
+        --iglob &lt;GLOB&gt;...
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>Something along the lines of</p>
+<pre><code>        --hidden
+            Search hidden files and directories. By default, hidden files and directories
+            are skipped. Note that if a hidden file or a directory is whitelisted in an
+            ignore file, then it will be searched even if this flag isn't provided.
+
+            A file or directory is considered hidden if its base name starts with a dot
+            character ('.'). On operating systems which support a `hidden` file attribute,
+            like Windows, files with this attribute are also considered hidden.
+
+            This flag can be disabled with --no-hidden.
+</code></pre>
+<p>My initial attempts at searching through the ripgrep documentation to understand why it was skipping <code>.directories</code> by default involved <code>rg --help | rg -e dot</code>, which pointed me to the <code>--no-ignore-dot</code> flag (which sounds promising but isn't actually relevant to ignoring dotfiles generally). If that feels like a mistake that other users might reasonably be expected to make, it might be worth additionally updating the <code>--no-ignore-dot</code> help section with a pointer along the lines of <code>This does **not** affect whether ripgrep will ignore files and directories whose name begins with a dot. For that, see --hidden and --no-hidden.</code></p>
+<p>I also noticed that the <code>--no-hidden</code> flag the <code>--hidden</code> section mentions doesn't have a top-level help entry; not sure if that's intentional.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-04-15 22:38</div>
+            <div class="timeline-body"><blockquote>
+<p>but as a Windows user, I was surprised by this behavior because it uses a meaning of the term &quot;hidden&quot; which is different from the OS's without documenting that it's going to do so</p>
+</blockquote>
+<p>I agree it should be better documented. The reason why ripgrep does this wasn't an accident though. The prefix-dot convention is also used on Windows. It just isn't recognized (AFAIK) by Windows itself.</p>
+<p>Your doc update LGTM.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dbjorge">@dbjorge</a> on 2021-04-15 22:52</div>
+            <div class="timeline-body"><p>Thanks! I can definitely imagine going either way on an initial decision about how to treat dotfiles on Windows; now that it's a backcompat concern to change it, I think it would be hard to argue for changing the behavior and agree that sticking to just a doc update makes the most sense.</p>
+<p>I'll send a PR with the doc update. Do you have a preference on whether to include the pointer in the <code>--no-ignore-dot</code> section?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-04-15 22:59</div>
+            <div class="timeline-body"><blockquote>
+<p>I'll send a PR with the doc update. Do you have a preference on whether to include the pointer in the <code>--no-ignore-dot</code> section?</p>
+</blockquote>
+<p>Ah yup, that SGTM too! We can hash out the wording if necessary in the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-04-15 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">doc</span> added by @BurntSushi on 2021-04-15 23:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:21 UTC
+    </footer>
+</body>
+</html>

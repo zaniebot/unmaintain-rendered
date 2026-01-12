@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rg -c omits files when a NUL byte is encountered after an earlier match - BurntSushi/ripgrep #3131</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rg -c omits files when a NUL byte is encountered after an earlier match</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3131">#3131</a>
+        opened by <a href="https://github.com/ejh3">@ejh3</a>
+        on 2025-08-21 22:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ejh3">@ejh3</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[x] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<pre><code>ripgrep 14.1.1
+
+features:+pcre2
+simd(compile):+SSE2,+SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2
+
+PCRE2 10.43 is available (JIT is available)
+</code></pre>
+<h3>How did you install ripgrep?</h3>
+<pre><code>&gt; rpm -qf $(which rg) 2&gt;/dev/null
+ripgrep-14.1.1-1.el9.x86_64
+</code></pre>
+<h3>What operating system are you using ripgrep on?</h3>
+<pre><code>&gt; uname -a
+Linux PLACEHOLDER 5.10.228-41577284.AroraKernel510.el7.x86_64 #1 SMP Tue Apr 15 16:42:53 PDT 2025 x86_64 x86_64 x86_64 GNU/Linux
+</code></pre>
+<h3>Describe your bug.</h3>
+<p>When a file contains a match before a NUL byte but also contains a NUL later, <code>rg -l</code> correctly lists the file, but <code>rg -c</code> omits it entirely. This is inconsistent: <code>-c</code> should report the same set of files as <code>-l</code> or ripgrep with no options, even if binary-file detection stops the scan early. Using <code>-ca</code> (treat as text) gives the expected results.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<pre><code>ejhunter /tmp/rgBug &gt; { echo &quot;cat here&quot;; yes &quot;padding line&quot; | head -n 150000; printf '\0'; } &gt; file1.txt
+ejhunter /tmp/rgBug &gt; echo &quot;cat here&quot; &gt; file2.txt
+
+ejhunter /tmp/rgBug &gt; rg 'cat' -l --no-config
+file2.txt
+file1.txt
+
+ejhunter /tmp/rgBug &gt; rg 'cat' -c --no-config
+file2.txt:1
+
+ejhunter /tmp/rgBug &gt; rg 'cat' --no-config
+file2.txt
+1:cat here
+
+file1.txt
+1:cat here
+file1.txt: WARNING: stopped searching binary file after match (found &quot;\0&quot; byte around offset 1950009)
+
+ejhunter /tmp/rgBug &gt; rg 'cat' -ca --no-config
+file2.txt:1
+file1.txt:1
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<pre><code>ejhunter /tmp/rgBug &gt; rg 'cat' -c --no-config --debug
+rg: DEBUG|rg::flags::parse|crates/core/flags/parse.rs:89: not reading config files because --no-config is present
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1083: number of paths given to search: 0
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1108: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=false, stdin_consumed=false, mode=Search(Count))
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1118: heuristic chose to search ./
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1269: found hostname for hyperlink configuration: REDACTED
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1279: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 12 thread(s)
+rg: DEBUG|grep_regex::config|/usr/share/cargo/registry/grep-regex-0.1.13/src/config.rs:175: assembling HIR from 1 fixed string literals
+rg: DEBUG|globset|/usr/share/cargo/registry/globset-0.4.15/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+file2.txt:1
+rg: DEBUG|grep_printer::summary|/usr/share/cargo/registry/grep-printer-0.2.2/src/summary.rs:698: ignoring file1.txt: found binary data at offset 1950009
+ejhunter /tmp/rgBug &gt; rg 'cat' -l --no-config --debug
+rg: DEBUG|rg::flags::parse|crates/core/flags/parse.rs:89: not reading config files because --no-config is present
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1083: number of paths given to search: 0
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1108: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=false, stdin_consumed=false, mode=Search(FilesWithMatches))
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1118: heuristic chose to search ./
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1269: found hostname for hyperlink configuration: REDACTED
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1279: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 12 thread(s)
+rg: DEBUG|grep_regex::config|/usr/share/cargo/registry/grep-regex-0.1.13/src/config.rs:175: assembling HIR from 1 fixed string literals
+rg: DEBUG|globset|/usr/share/cargo/registry/globset-0.4.15/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+file2.txt
+file1.txt
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>The <code>--count</code> option should behave the same as having no options wrt how many matches it finds. If there's only 1 match found before early termination, <code>rg -c</code> should return that. Whether it spit out a warning or not, I don't have a strong opinion on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shubhamDP-arch">@shubhamDP-arch</a> on 2025-09-22 19:45</div>
+            <div class="timeline-body"><p>additionally, there's a related inconsistency where rg 'cat' -c and rg 'cat' -c file1.txt file2.txt produce different results</p>
+<p>the procedure of reproducing the behavior is same as mentioned above by the issue writer , with these additional commands</p>
+<p><strong>Command:</strong></p>
+<pre><code class="language-bash">rg 'cat' -c .
+</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>file2.txt:1
+</code></pre>
+<p><strong>Command:</strong></p>
+<pre><code class="language-bash">rg 'cat' -c file1.txt file2.txt
+</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>file2.txt:1
+file1.txt:1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-22 21:05</div>
+            <div class="timeline-body"><p>This is unfortunately a wontfix bug. Specifically:</p>
+<p>https://github.com/BurntSushi/ripgrep/blob/f05549d7be238c622c516bc574dd7aa174a87f3a/crates/printer/src/summary.rs#L756-L774</p>
+<p>Basically what's happening is that ripgrep is trying to preserve the intended semantics of binary filtering. When you use <code>-l/--files-with-matches</code>, ripgrep can <em>immediately</em> stop searching once a match is found. Thus, ripgrep never even reads the binary data. But with <code>-c/--count</code>, ripgrep has to search the entire thing, which means it will see the binary data.</p>
+<blockquote>
+<p>additionally, there's a related inconsistency where rg 'cat' -c and rg 'cat' -c file1.txt file2.txt produce different results</p>
+<p>the procedure of reproducing the behavior is same as mentioned above by the issue writer , with these additional commands</p>
+<p><strong>Command:</strong></p>
+<p>rg 'cat' -c .</p>
+<p><strong>Output:</strong></p>
+<pre><code>file2.txt:1
+</code></pre>
+<p><strong>Command:</strong></p>
+<p>rg 'cat' -c file1.txt file2.txt</p>
+<p><strong>Output:</strong></p>
+<pre><code>file2.txt:1
+file1.txt:1
+</code></pre>
+</blockquote>
+<p>This is also expected since whenever you pass files explicitly to ripgrep, all filtering, including binary filtering, is disabled. So in this case, ripgrep behaves <em>as if</em> you had passed <code>--binary</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2025-09-22 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">doc</span> added by @BurntSushi on 2025-09-22 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-22 21:06</div>
+            <div class="timeline-body"><p>#3157 documents this potentially surprising behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ejh3">@ejh3</a> on 2025-09-22 23:09</div>
+            <div class="timeline-body"><p>I can understand marking this as wontfix. From a UX POV, perhaps showing no matches at all for a file is more of a &quot;fail fast&quot; approach than showing an incorrect number of matches, so users might realize they need <code>-a</code> sooner.</p>
+<p>That said, I want try framing this another way and see if it sticks. The inconsistency is not only between <code>-l</code> and <code>-c</code>, it's also between <code>-c</code> and no options: when searching normally rg will output all the matches it found up until it detects binary but with <code>-c</code> the previously displayed match(es) not show up in the count. Seems then that <code>-c</code> is the odd one out with both <code>-l</code> and normal search acting as if the file were truncated past the first binary detection where <code>-c</code> acts as if the file doesn't exist at all. In my mind, <code>-c</code> is roughly like piping the output of a normal search through <code>wc -l</code> on a per-file basis, and preserving the current behavior breaks that model (maybe this warrants some tweaks to #3157 at least).</p>
+<p>Whatever you decide, thanks for taking a look at this issue and for your work on this tool generally</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-22 23:49</div>
+            <div class="timeline-body"><p>I appreciate that, but the inconsistency there isn't really avoidable either. Namely, the binary data occurs late enough in the file that a match has already been printed. ripgrep can't just back up and avoid it. The <code>-c</code> flag is a &quot;summary&quot; output, which means nothing gets printed until the entire file has been searched. And yes indeed, this is a fail fast approach. That is, I think it's better to not emit anything than to emit what could be an incorrect count.</p>
+<p>Notably, grep behaves the same as ripgrep here (ripgrep's behavior is like GNU grep's <code>-I</code> flag):</p>
+<pre><code>$ grep -r -c -I 'cat' ./
+./file1.txt:0
+./file2.txt:1
+$ grep -r -l -I 'cat' ./
+./file1.txt
+./file2.txt
+$ grep -r -I 'cat' ./
+./file1.txt:cat here
+./file2.txt:cat here
+</code></pre>
+<p>And grep's <em>default</em> behavior is identical to <code>rg --binary</code>:</p>
+<pre><code>$ grep -r -c 'cat' ./
+./file1.txt:1
+./file2.txt:1
+$ grep -r -l 'cat' ./
+./file1.txt
+./file2.txt
+$ grep -r 'cat' ./
+./file1.txt:cat here
+./file2.txt:cat here
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-09-23 00:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:58 UTC
+    </footer>
+</body>
+</html>

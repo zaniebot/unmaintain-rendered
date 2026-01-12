@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter out files by last modified age.  - BurntSushi/ripgrep #2475</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Filter out files by last modified age.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2475">#2475</a>
+        opened by <a href="https://github.com/nickolay-kondratyev">@nickolay-kondratyev</a>
+        on 2023-03-23 05:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nickolay-kondratyev">@nickolay-kondratyev</a></div>
+            <div class="timeline-body"><h4>Describe your feature request</h4>
+<p>Provide an option along the lines of <code>find -mtime</code> to only look at files that were modified in the last X minutes.</p>
+<pre><code>    -mtime n[smhdw]
+             If no units are specified, this primary evaluates to true if the difference between the file last modification time and the time find was started, rounded up to the next full
+             24-hour period, is n 24-hour periods.
+
+             If units are specified, this primary evaluates to true if the difference between the file last modification time and the time find was started is exactly n units.  Please
+             refer to the -atime primary description for information on supported time units.
+</code></pre>
+<p>Doesn't have to have units, can be simplified to just accept <code>--modified-in-last-minutes X</code></p>
+<p>The idea is to be able to look within code files that were modified in the last hour, in the last day etc...</p>
+<p>The main use case is to be able to do something along the lines of <code>rg --modified-in-last-minutes X --glob '*.your-extension' | fzf</code> which doesnt seem to work if we try to use <code>find</code> before using <code>rg</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-23 10:54</div>
+            <div class="timeline-body"><p>I think this is too much scope creep. And it is a feature that will beget more features. If we allow filtering by mtime, then what about creation time? And various other attributes?</p>
+<p>I think it would be better to just use <code>find</code> and build a pipeline with ripgrep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-03-23 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2023-03-23 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-23 10:55</div>
+            <div class="timeline-body"><blockquote>
+<p>The main use case is to be able to do something along the lines of rg --modified-in-last-minutes X --glob '*.your-extension' | fzf which doesnt seem to work if we try to use find before using rg</p>
+</blockquote>
+<p>I don't see any reason why using <code>find</code> wouldn't work here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nickolay-kondratyev">@nickolay-kondratyev</a> on 2023-03-23 15:53</div>
+            <div class="timeline-body"><p>@BurntSushi if you try to use <code>find</code> piped to <code>rg</code> then <code>.gitignore</code> functionality doesn't appear to work with rg</p>
+<p>Example:</p>
+<pre><code>find . -mmin -60 -type f -print0 | xargs -0 rg . --hidden --with-filename --line-number --follow | fzf
+</code></pre>
+<p>goes into <code>.git</code> directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-23 15:57</div>
+            <div class="timeline-body"><p>Well, no, it wouldn't. Because there you're passing those files explicitly to ripgrep, and if you give a file to ripgrep explicitly, then it will always search it.</p>
+<p>You can use something like <code>fd</code> instead if you want gitignore. I don't know if it has a last modified filter, but that's probably where it would be.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:39 UTC
+    </footer>
+</body>
+</html>

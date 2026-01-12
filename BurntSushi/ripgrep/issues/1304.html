@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why does ripgrep traverse into directories that don't match the provided glob? - BurntSushi/ripgrep #1304</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Why does ripgrep traverse into directories that don't match the provided glob?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1304">#1304</a>
+        opened by <a href="https://github.com/oliversalzburg">@oliversalzburg</a>
+        on 2019-06-17 20:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oliversalzburg">@oliversalzburg</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code class="language-shell">ripgrep 11.0.1 (rev 973de50c9e)
+-SIMD -AVX (compiled)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>Downloaded the binary from the GitHub Releases page.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Windows 10 x64</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>Through <a href="https://github.com/microsoft/vscode/issues/75314">an issue</a> I was experiencing with an <a href="https://github.com/hbenl/vscode-mocha-test-adapter/issues/56">extension for VS Code</a>, I looked at the behavior of ripgrep, given the underlying command that was causing the excessive load.</p>
+<p>The relevant parts of the command are:</p>
+<pre><code class="language-shell">rg --files --follow --no-ignore -g /test/**/*.js
+</code></pre>
+<p>This will quickly produce the desired file names from the <code>test</code> subfolder in the current working directory and then it will print out huge chains of folder names (resulting from symlinks) in a folder named <code>node_modules</code> in the current working directory.</p>
+<p>Now my question is, why does <code>ripgrep</code> even traverse down into the <code>node_modules</code> folder, when it doesn't match the requested glob anyway? Is that by-design or is that unintended behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-06-17 21:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Now my question is, why does ripgrep even traverse down into the node_modules folder, when it doesn't match the requested glob anyway? Is that by-design or is that unintended behavior?</p>
+</blockquote>
+<p>Neither. It's simply a missed performance optimization. While it's obvious to us humans that looking in <code>node_modules</code> is a waste of time, ripgrep doesn't know that because it doesn't do the sophisticated analysis on globs required to implement the optimization you want here. In particular, ripgrep <em>must</em> descend into directories when given a glob like this unless the glob specifically excludes that directory, otherwise ripgrep might miss files. For example, the path <code>/test</code> does <em>not</em> match the glob<code> /test/**/*.js</code>. So in order to implement this optimization, ripgrep would need to reason about glob prefixes and the like.</p>
+<p>Moreover, the command you've presented is fairly idiosyncratic. I don't understand why you're using in a glob for this instead of just using your shell's glob expansion to search the <code>test</code> directory directly. e.g., <code>rg --files --follow --no-ignore /test/**/*.js</code>. If your shell isn't capable of that, then try <code>rg --files --follow --no-ignore /test -g '*.js'</code>.</p>
+<p>Invariably, this is a duplicate of #546, so I'm going to close this one as well for the same reason.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-06-17 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2019-06-17 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2019-06-17 21:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oliversalzburg">@oliversalzburg</a> on 2019-06-17 22:00</div>
+            <div class="timeline-body"><p>Awesome. Thanks a lot for the detailed explanation.</p>
+<p>The presented command is not issued in a shell and I have no direct control
+over it either, as it is third-party code invoking ripgrep. I was merely
+trying to understand why things are happening as they are.</p>
+<p>You explained it well. Thanks again.</p>
+<p>On Mon, Jun 17, 2019, 23:23 Andrew Gallant <a href="mailto:notifications@github.com">notifications@github.com</a> wrote:</p>
+<blockquote>
+<p>Now my question is, why does ripgrep even traverse down into the
+node_modules folder, when it doesn't match the requested glob anyway? Is
+that by-design or is that unintended behavior?</p>
+<p>Neither. It's simply a missed performance optimization. While it's obvious
+to us humans that looking in node_modules is a waste of time, ripgrep
+doesn't know that because it doesn't do the sophisticated analysis on globs
+required to implement the optimization you want here. In particular,
+ripgrep <em>must</em> descend into directories when given a glob like this
+unless the glob specifically excludes that directory, otherwise ripgrep
+might miss files. For example, the path /test does <em>not</em> match the glob
+/test/**/*.js. So in order to implement this optimization, ripgrep would
+need to reason about glob prefixes and the like.</p>
+<p>Moreover, the command you've presented is fairly idiosyncratic. I don't
+understand why you're using in a glob for this instead of just using your
+shell's glob expansion to search the test directory directly. e.g., rg
+--files --follow --no-ignore /test/**/<em>.js. If your shell isn't capable
+of that, then try rg --files --follow --no-ignore /test -g '</em>.js'.</p>
+<p>Invariably, this is a duplicate of #546
+<a href="https://github.com/BurntSushi/ripgrep/issues/546">https://github.com/BurntSushi/ripgrep/issues/546</a>, so I'm going to close
+this one as well for the same reason.</p>
+<p>—
+You are receiving this because you authored the thread.
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/BurntSushi/ripgrep/issues/1304?email_source=notifications&amp;email_token=AAMVARKRP5D4ZZMNGBJVKM3P276GHA5CNFSM4HY2CLO2YY3PNVWWK3TUL52HS4DFVREXG43VMVBW63LNMVXHJKTDN5WW2ZLOORPWSZGODX4PVFI#issuecomment-502856341">https://github.com/BurntSushi/ripgrep/issues/1304?email_source=notifications&amp;email_token=AAMVARKRP5D4ZZMNGBJVKM3P276GHA5CNFSM4HY2CLO2YY3PNVWWK3TUL52HS4DFVREXG43VMVBW63LNMVXHJKTDN5WW2ZLOORPWSZGODX4PVFI#issuecomment-502856341</a>,
+or mute the thread
+<a href="https://github.com/notifications/unsubscribe-auth/AAMVARL5K4AE4OOFSV42EVDP276GHANCNFSM4HY2CLOQ">https://github.com/notifications/unsubscribe-auth/AAMVARL5K4AE4OOFSV42EVDP276GHANCNFSM4HY2CLOQ</a>
+.</p>
+</blockquote>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:56 UTC
+    </footer>
+</body>
+</html>

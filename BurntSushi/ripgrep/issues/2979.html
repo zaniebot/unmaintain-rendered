@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ripgrep fails to match inside a specific binary - BurntSushi/ripgrep #2979</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ripgrep fails to match inside a specific binary</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2979">#2979</a>
+        opened by <a href="https://github.com/benjarobin">@benjarobin</a>
+        on 2025-01-25 19:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/benjarobin">@benjarobin</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[x] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<pre><code>ripgrep 14.1.1
+
+features:+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2
+
+PCRE2 10.43 is available (JIT is available)
+</code></pre>
+<h3>How did you install ripgrep?</h3>
+<p>Arch Linux package:</p>
+<pre><code>pacman -Q ripgrep
+ripgrep 14.1.1-1
+</code></pre>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Arch Linux up to date</p>
+<h3>Describe your bug.</h3>
+<p>ripgrep fail to find a match inside attached binary.
+ripgrep find the same fix string pattern inside others various binary. But not inside this specific one...</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<ul>
+<li>Decompress attached <a href="https://github.com/user-attachments/files/18547550/test.bin.gz">test.bin.gz</a> in order to obtain <code>test.bin</code> file</li>
+</ul>
+<pre><code>gzip -d test.bin.gz
+</code></pre>
+<ul>
+<li>Search for fixed string <code>Hello custom0 board</code> inside the attached binary.</li>
+</ul>
+<h3>What is the actual behavior?</h3>
+<ul>
+<li><code>strings test.bin | grep &quot;Hello custom0 board&quot;</code></li>
+</ul>
+<pre><code>&amp;Hello custom0 board (U-boot)
+</code></pre>
+<ul>
+<li><code>grep -a --files-with-matches -F &quot;Hello custom0 board&quot; test.bin</code></li>
+</ul>
+<pre><code>test.bin
+</code></pre>
+<ul>
+<li><code>rg --trace --debug --binary --files-with-matches -F &quot;Hello custom0 board&quot; test.bin</code></li>
+</ul>
+<pre><code>rg: DEBUG|rg::flags::parse|crates/core/flags/parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1083: number of paths given to search: 1
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1094: is_one_file? true
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1269: found hostname for hyperlink configuration: benjarobin-fixe
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1279: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 1 thread(s)
+rg: DEBUG|grep_regex::config|/usr/src/debug/ripgrep/ripgrep-14.1.1/crates/regex/src/config.rs:175: assembling HIR from 1 fixed string literals
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>rg finds a match, and prints the filename, which is <code>test.bin</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-01-25 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-25 19:29</div>
+            <div class="timeline-body"><p>This was a tricky one. It looks like a bug, but your binary file is not actually binary. ripgrep interprets it as UTF-16BE because it has a BOM indicating as such. This causes ripgrep to transcode the file as UTF-16BE. That in turn means standard ASCII patterns won't behave as expected. And thus you don't get a match.</p>
+<p>For cases like this, you actually need to disable transcoding entirely:</p>
+<pre><code>$ rg --trace &quot;Hello&quot; test.bin
+rg: DEBUG|rg::flags::parse|crates/core/flags/parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1083: number of paths given to search: 1
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1094: is_one_file? true
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1269: found hostname for hyperlink configuration: duff
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1279: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 1 thread(s)
+rg: DEBUG|grep_regex::config|/home/andrew/code/rust/ripgrep/crates/regex/src/config.rs:175: assembling HIR from 1 fixed string literals
+rg: TRACE|grep_regex::matcher|/home/andrew/code/rust/ripgrep/crates/regex/src/matcher.rs:66: final regex: &quot;(?:Hello)&quot;
+rg: TRACE|grep_regex::literal|crates/regex/src/literal.rs:75: skipping inner literal extraction, existing regex is believed to already be accelerated
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: TRACE|rg::search|crates/core/search.rs:254: test.bin: binary detection: BinaryDetection(Convert(0))
+rg: TRACE|grep_searcher::searcher|/home/andrew/code/rust/ripgrep/crates/searcher/src/searcher/mod.rs:670: Some(&quot;test.bin&quot;): searching via memory map
+rg: TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:1007: found byte-order mark (BOM) for encoding Encoding { UTF-16BE }
+rg: TRACE|grep_searcher::searcher|/home/andrew/code/rust/ripgrep/crates/searcher/src/searcher/mod.rs:763: slice reader: needs transcoding, using generic reader
+rg: TRACE|grep_searcher::searcher|/home/andrew/code/rust/ripgrep/crates/searcher/src/searcher/mod.rs:742: generic reader: searching via roll buffer strategy
+rg: TRACE|grep_searcher::searcher::core|/home/andrew/code/rust/ripgrep/crates/searcher/src/searcher/core.rs:65: searcher core: will use fast line searcher
+
+$ rg -E none &quot;Hello&quot; test.bin
+binary file matches (found &quot;\0&quot; byte around offset 40)
+
+$ rg -E none -a -M100 &quot;Hello&quot; test.bin
+13701:[Omitted long line with 1 matches]
+
+$ rg -E none -a -o &quot;.{0,50}Hello.{0,50}&quot; test.bin
+13701:lnx,zynq-7000&amp;Hello custom0 board (U-boot)optionsu-boot
+</code></pre>
+<p>I've added an extra TRACE-level log message that might help diagnose this in the future (as shown above as well):</p>
+<pre><code>rg: TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:1007: found byte-order mark (BOM) for encoding Encoding { UTF-16BE }
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:53 UTC
+    </footer>
+</body>
+</html>

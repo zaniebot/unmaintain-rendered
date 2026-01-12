@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ripgrep should ignore all the `--glob !{paths}` defined in the `$RIPGREP_CONFIG_PATH`. - BurntSushi/ripgrep #2005</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ripgrep should ignore all the <code>--glob !{paths}</code> defined in the <code>$RIPGREP_CONFIG_PATH</code>.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2005">#2005</a>
+        opened by <a href="https://github.com/ericbn">@ericbn</a>
+        on 2021-09-24 16:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ericbn">@ericbn</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<pre><code>brew install --formula ripgrep
+</code></pre>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>macOS 11.6</p>
+<h4>Describe your bug.</h4>
+<p>Ripgrep is not ignoring the <code>--glob !{paths}</code> defined in the <code>$RIPGREP_CONFIG_PATH</code>.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>In a clean temporary directory:</p>
+<pre><code>❯ cat &lt;&lt; EOF &gt; /Users/me/.ripgreprc
+--smart-case
+--no-ignore
+--hidden
+--glob
+!{.direnv,.git,.idea,.svn,cdk.out,/System/Volumes,/Volumes}
+--max-columns
+512
+EOF
+❯ export RIPGREP_CONFIG_PATH=/Users/me/.ripgreprc
+❯ git clone https://github.com/zimfw/utility.git
+❯ rg --debug --files
+</code></pre>
+<h4>What is the actual behavior?</h4>
+<p>Ripgrep is not ignoring the <code>.git</code> path as expected. This is the output with debug enabled:</p>
+<pre><code>DEBUG|rg::config|crates/core/config.rs:40: /Users/me/.ripgreprc: arguments loaded from config file: [&quot;--smart-case&quot;, &quot;--no-ignore&quot;, &quot;--hidden&quot;, &quot;--glob&quot;, &quot;!{.direnv,.git,.idea,.svn,cdk.out,/System/Volumes,/Volumes}&quot;, &quot;--max-columns&quot;, &quot;512&quot;]
+DEBUG|rg::args|crates/core/args.rs:543: final argv: [&quot;rg&quot;, &quot;--smart-case&quot;, &quot;--no-ignore&quot;, &quot;--hidden&quot;, &quot;--glob&quot;, &quot;!{.direnv,.git,.idea,.svn,cdk.out,/System/Volumes,/Volumes}&quot;, &quot;--max-columns&quot;, &quot;512&quot;, &quot;--debug&quot;, &quot;--files&quot;]
+DEBUG|globset|crates/globset/src/lib.rs:416: glob converted to regex: Glob { glob: &quot;{.direnv,.git,.idea,.svn,cdk.out,/System/Volumes,/Volumes}&quot;, re: &quot;(?-u)^(/Volumes|/System/Volumes|cdk\\.out|\\.svn|\\.idea|\\.git|\\.direnv)$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([Alternates([Tokens([Literal('/'), Literal('V'), Literal('o'), Literal('l'), Literal('u'), Literal('m'), Literal('e'), Literal('s')]), Tokens([Literal('/'), Literal('S'), Literal('y'), Literal('s'), Literal('t'), Literal('e'), Literal('m'), Literal('/'), Literal('V'), Literal('o'), Literal('l'), Literal('u'), Literal('m'), Literal('e'), Literal('s')]), Tokens([Literal('c'), Literal('d'), Literal('k'), Literal('.'), Literal('o'), Literal('u'), Literal('t')]), Tokens([Literal('.'), Literal('s'), Literal('v'), Literal('n')]), Tokens([Literal('.'), Literal('i'), Literal('d'), Literal('e'), Literal('a')]), Tokens([Literal('.'), Literal('g'), Literal('i'), Literal('t')]), Tokens([Literal('.'), Literal('d'), Literal('i'), Literal('r'), Literal('e'), Literal('n'), Literal('v')])])]) }
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
+utility/.git/packed-refs
+utility/.git/index
+utility/.git/refs/remotes/origin/HEAD
+utility/.git/refs/heads/master
+utility/.git/hooks/push-to-checkout.sample
+utility/.git/hooks/update.sample
+utility/.git/hooks/pre-push.sample
+utility/.git/hooks/pre-applypatch.sample
+utility/.git/hooks/pre-merge-commit.sample
+utility/.git/hooks/post-update.sample
+utility/.git/hooks/prepare-commit-msg.sample
+utility/.git/hooks/pre-receive.sample
+utility/.git/hooks/fsmonitor-watchman.sample
+utility/.git/hooks/applypatch-msg.sample
+utility/.git/hooks/pre-commit.sample
+utility/.git/hooks/pre-rebase.sample
+utility/.git/hooks/commit-msg.sample
+utility/.git/description
+utility/.git/logs/refs/remotes/origin/HEAD
+utility/.git/logs/refs/heads/master
+utility/.git/logs/HEAD
+utility/.git/info/exclude
+utility/.git/HEAD
+utility/.git/objects/pack/pack-d8be03228476b6d44a25ce74da3c45ca2bd200b2.idx
+utility/.git/objects/pack/pack-d8be03228476b6d44a25ce74da3c45ca2bd200b2.pack
+utility/.git/config
+utility/functions/mkpw
+utility/functions/mkcd
+utility/init.zsh
+utility/.gitignore
+utility/README.md
+utility/LICENSE
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>Ripgrep should have ignored all the <code>--glob !{paths}</code> defined in the <code>$RIPGREP_CONFIG_PATH</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Ripgrep should ignored all the `--glob !{paths}` defined in the `$RIPGREP_CONFIG_PATH`." to "Ripgrep should ignore all the `--glob !{paths}` defined in the `$RIPGREP_CONFIG_PATH`." by @ericbn on 2021-09-24 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-09-24 17:03</div>
+            <div class="timeline-body"><p>I can't reproduce your problem. Please provide an actual reproduction. I should be able to run precisely your commands on some precise input and get an output that matches yours. Otherwise, from what I can see, <code>--glob !{paths}</code> is working just fine:</p>
+<pre><code>$ tree -a
+.
+├── .git
+│   └── foo
+├── test1
+├── .test2
+└── .test3
+    └── foo
+
+2 directories, 4 files
+
+$ RIPGREP_CONFIG_PATH=/tmp/ripgreprc-i2005 rg --files
+.test2
+.test3/foo
+test1
+
+$ RIPGREP_CONFIG_PATH=/tmp/ripgreprc-i2005 rg --files -g '!.test2'
+.test3/foo
+test1
+
+$ RIPGREP_CONFIG_PATH=/tmp/ripgreprc-i2005 rg --files -g '!{.test2,.test3}'
+test1
+
+$ RIPGREP_CONFIG_PATH=/tmp/ripgreprc-i2005 rg --files
+.test2
+.test3/foo
+test1
+
+$ cat /tmp/ripgreprc-i2005
+--smart-case
+--no-ignore
+--hidden
+--glob
+!{.direnv,.git,.idea,.svn,cdk.out,/System/Volumes,/Volumes}
+--max-columns
+512
+
+$ vim /tmp/ripgreprc-i2005
+
+$ cat /tmp/ripgreprc-i2005
+--smart-case
+--no-ignore
+--hidden
+--glob
+!{.direnv,.git,.idea,.svn,cdk.out,/System/Volumes,/Volumes}
+--max-columns
+512
+--glob
+!{.test2,.test3}
+
+$ RIPGREP_CONFIG_PATH=/tmp/ripgreprc-i2005 rg --files
+test1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ericbn">@ericbn</a> on 2021-09-24 17:21</div>
+            <div class="timeline-body"><p>Hi @BurntSushi. I've updated the steps to reproduce. I can reproduce it with the files from <code>git clone https://github.com/zimfw/utility.git</code> for example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ericbn">@ericbn</a> on 2021-09-24 17:28</div>
+            <div class="timeline-body"><p>Looks like the issue happens when the matched globs are more than one level deep on the tree:</p>
+<pre><code>$ exa -Ta
+.
+├── .git
+│  └── foo
+├── .test2
+├── .test3
+│  └── foo
+├── test1
+└── test4
+   └── .git
+      └── foo
+$ rg --files
+test4/.git/foo
+test1
+.test2
+.test3/foo
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-09-24 17:33</div>
+            <div class="timeline-body"><p>It's not that. It's actually a semantic of gitignore here that I myself forgot about. Basically, if you have a glob that contains a <code>/</code>, then the glob has to match from the beginning of the path:</p>
+<pre><code class="language-rust">// If there is a literal slash, then this is a glob that must match the
+// entire path name. Otherwise, we should let it match anywhere, so use
+// a **/ prefix.
+if !is_absolute &amp;&amp; !line.chars().any(|c| c == '/') {
+    // ... but only if we don't already have a **/ prefix.
+    if !glob.has_doublestar_prefix() {
+        glob.actual = format!(&quot;**/{}&quot;, glob.actual);
+    }
+}
+</code></pre>
+<p>You can see this in action when you split the <code>{...}</code> part into separate globs:</p>
+<pre><code>$ rg --files --hidden -g '!{.git,/quux}'
+.test2
+utility/LICENSE
+utility/.gitignore
+utility/.git/objects/pack/pack-d8be03228476b6d44a25ce74da3c45ca2bd200b2.idx
+utility/.git/objects/pack/pack-d8be03228476b6d44a25ce74da3c45ca2bd200b2.pack
+utility/.git/description
+utility/.git/refs/remotes/origin/HEAD
+utility/.git/refs/heads/master
+utility/.git/packed-refs
+utility/.git/logs/refs/remotes/origin/HEAD
+utility/.git/logs/HEAD
+utility/.git/logs/refs/heads/master
+utility/.git/config
+utility/.git/HEAD
+utility/.git/hooks/pre-commit.sample
+utility/.git/hooks/fsmonitor-watchman.sample
+utility/.git/info/exclude
+utility/.git/hooks/post-update.sample
+utility/.git/hooks/pre-rebase.sample
+utility/.git/hooks/pre-merge-commit.sample
+utility/.git/hooks/update.sample
+utility/.git/hooks/pre-push.sample
+utility/.git/hooks/prepare-commit-msg.sample
+utility/.git/hooks/pre-receive.sample
+utility/.git/hooks/applypatch-msg.sample
+utility/.git/hooks/commit-msg.sample
+utility/.git/hooks/push-to-checkout.sample
+utility/.git/hooks/pre-applypatch.sample
+utility/.git/index
+utility/README.md
+utility/init.zsh
+test1
+.test3/foo
+.test3/.git/foo
+utility/functions/mkpw
+utility/functions/mkcd
+
+$ rg --files --hidden -g '!.git' -g '!/quux'
+.test2
+utility/LICENSE
+utility/.gitignore
+utility/functions/mkcd
+utility/functions/mkpw
+utility/README.md
+utility/init.zsh
+.test3/foo
+test1
+</code></pre>
+<p>So you just need to split your glob into things that contain a <code>/</code> and things that don't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-09-24 17:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2021-09-24 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ericbn">@ericbn</a> on 2021-09-24 18:11</div>
+            <div class="timeline-body"><p>Oh, got it! Thanks for the details! Gitignore globs are tricky... 😄</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:27 UTC
+    </footer>
+</body>
+</html>

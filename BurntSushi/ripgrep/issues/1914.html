@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot add --path-separator // to the configuration file - BurntSushi/ripgrep #1914</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot add --path-separator // to the configuration file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1914">#1914</a>
+        opened by <a href="https://github.com/aoloe">@aoloe</a>
+        on 2021-06-28 09:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/aoloe">@aoloe</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>$ rg --version
+ripgrep 12.1.1 (rev 7cb211378a)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>Release file from Github</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Windows 10</p>
+<h4>Describe your bug.</h4>
+<p>I cannot set the path separator to / from the configuration file.</p>
+<p>Using <code>--path-separator //</code> directly in the command line does work as expected.</p>
+<p>If I add other arguments from the Configuration section in the README (and comment out the <code>--path-separator</code>) the configuration file does not produce any error.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>My <code>~/.ripgrep</code> files contains the only line:</p>
+<pre><code>--path-separator //
+</code></pre>
+<p>If I run ripgrep, i get the error:</p>
+<pre><code>error: Found argument '--path-separator //' which wasn't expected, or isn't valid in this context
+        Did you mean --path-separator?
+
+USAGE:
+
+    rg [OPTIONS] PATTERN [PATH ...]
+    rg [OPTIONS] [-e PATTERN ...] [-f PATTERNFILE ...] [PATH ...]
+    rg [OPTIONS] --files [PATH ...]
+    rg [OPTIONS] --type-list
+    command | rg [OPTIONS] PATTERN
+
+For more information try --help
+</code></pre>
+<h4>What is the actual behavior?</h4>
+<pre><code>$ rg --debug test app
+DEBUG|rg::config|crates/core\config.rs:40: P:/.ripgrep: arguments loaded from config file: [&quot;--path-separator //&quot;]
+DEBUG|rg::args|crates/core\args.rs:543: final argv: [&quot;P:\\bin\\rg&quot;, &quot;--path-separator //&quot;, &quot;--debug&quot;, &quot;test&quot;, &quot;app&quot;]
+error: Found argument '--path-separator //' which wasn't expected, or isn't valid in this context
+        Did you mean --path-separator?
+
+USAGE:
+
+    rg [OPTIONS] PATTERN [PATH ...]
+    rg [OPTIONS] [-e PATTERN ...] [-f PATTERNFILE ...] [PATH ...]
+    rg [OPTIONS] --files [PATH ...]
+    rg [OPTIONS] --type-list
+    command | rg [OPTIONS] PATTERN
+
+For more information try --help
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>ripgrep should have shown me the occurrences of test in the app directory, and use <code>/</code> for the paths.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-06-28 11:25</div>
+            <div class="timeline-body"><p>As documented in the man page, <em>every line is a distinct argument</em>:</p>
+<p>https://github.com/BurntSushi/ripgrep/blob/abf115228e886494e6198a64c519db7285ff29af/doc/rg.1.txt.tpl#L189</p>
+<p>As the examples further below in the docs show, you need to do either</p>
+<pre><code>--path-separator=/
+</code></pre>
+<p>or</p>
+<pre><code>--path-separator
+/
+</code></pre>
+<p>Also, given that this is in a config file and not in a shell, I suspect you want <code>/</code> and not <code>//</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-06-28 11:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2021-06-28 11:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aoloe">@aoloe</a> on 2021-06-29 05:48</div>
+            <div class="timeline-body"><p>Thanks for having a look into it.</p>
+<p>Indeed, I missed the detail about the equal sign.
+After so many years using the shell, I'm still confused by all the combinations that exist for defining the command line arguments!
+I was so focused on getting the <code>/</code> to be correctly recognized in a Windows environment (which is the most unusual part for me) that I forgot to check that part.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:24 UTC
+    </footer>
+</body>
+</html>

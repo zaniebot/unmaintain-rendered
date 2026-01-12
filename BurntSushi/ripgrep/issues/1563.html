@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The `--ignore-file` flag requires a space instead of equals with `~` - BurntSushi/ripgrep #1563</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>The <code>--ignore-file</code> flag requires a space instead of equals with <code>~</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1563">#1563</a>
+        opened by <a href="https://github.com/texastoland">@texastoland</a>
+        on 2020-04-28 08:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/texastoland">@texastoland</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>12.0.1</p>
+<h4>How did you install ripgrep?</h4>
+<p>Homebrew</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>macOS 10.15.4</p>
+<h4>Describe your bug.</h4>
+<p><code>--ignore-file ~/.config/rg/ignore</code> works but <code>--ignore-file=~/.config/rg/ignore</code> produces the error:</p>
+<p><code>file: No such file or directory (os error 2)</code></p>
+<p><code>fd</code> which is a dependent produces an identical error CC @sharkdp.</p>
+<!--
+#### What are the steps to reproduce the behavior?
+
+If possible, please include both your search patterns and the corpus on which
+you are searching. Unless the bug is very obvious, then it is unlikely that it
+will be fixed if the ripgrep maintainers cannot reproduce it.
+
+If the corpus is too big and you cannot decrease its size, file the bug anyway
+and the ripgrep maintainers will help figure out next steps.
+
+#### What is the actual behavior?
+
+Show the command you ran and the actual output. Include the `--debug` flag in
+your invocation of ripgrep.
+
+If the output is large, put it in a gist: https://gist.github.com/
+
+If the output is small, put it in code fences:
+
+```
+your
+output
+goes
+here
+```
+
+#### What is the expected behavior?
+
+What do you think ripgrep should have done?
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2020-04-28 08:34</div>
+            <div class="timeline-body"><p>I can not reproduce this, neither with <code>rg</code>, nor with <code>fd</code>.</p>
+<p>What are the exact commands that you are running? Have you aliased <code>rg</code>/<code>fd</code> to something else?</p>
+<pre><code>❯ echo foo &gt; a
+❯ echo foo &gt; b
+❯ rg foo
+b
+1:foo
+
+a
+1:foo
+❯ echo b &gt; file
+❯ rg foo --ignore-file=file
+a
+1:foo
+❯ rg foo --ignore-file file
+a
+1:foo
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/texastoland">@texastoland</a> on 2020-04-28 08:52</div>
+            <div class="timeline-body"><p>Oh you're right! I'm using <code>--ignore-file=~/.config/rg/ignore</code>. I just tried it with <code>set -x</code>. The shell is doing the expansion with space but not for equals. Works as intended?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "The --ignore-file flag requires a space instead of equals (--ignore-file=file)" to "The --ignore-file flag requires a space instead of equals with `~`" by @texastoland on 2020-04-28 08:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "The --ignore-file flag requires a space instead of equals with `~`" to "The `--ignore-file` flag requires a space instead of equals with `~`" by @texastoland on 2020-04-28 08:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2020-04-28 09:19</div>
+            <div class="timeline-body"><p>That is the expected shell behavior:</p>
+<pre><code>$ echo --ignore-file ~/.something
+--ignore-file /home/shark/.something
+$ echo --ignore-file=~/.something
+--ignore-file=~/.something
+</code></pre>
+<p>You would get a similar error if you (single- or double-) quote the <code>~</code>.</p>
+<p>To my knowledge, it is uncommon for programs to do an additional expansion of <code>~</code>. It's a shell feature, not some fundamental Unix path.</p>
+<p>I tend to avoid <code>~</code>, especially in scripts. I use <code>$HOME</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/texastoland">@texastoland</a> on 2020-04-28 09:23</div>
+            <div class="timeline-body"><p>Thanks for the help! Makes sense to me. I'll close unless @BurntSushi reopens it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @texastoland on 2020-04-28 09:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2020-04-28 11:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2020-04-28 15:56</div>
+            <div class="timeline-body"><p>If you're using zsh (the default on macOS now), you can enable the <code>MAGIC_EQUAL_SUBST</code> option to make it work the way you expected:</p>
+<pre><code>% echo --ignore-file=~/.config/rg/ignore
+--ignore-file=~/.config/rg/ignore
+% setopt magic_equal_subst
+% echo --ignore-file=~/.config/rg/ignore
+--ignore-file=/Users/dana/.config/rg/ignore
+</code></pre>
+<p>Obviously you'll need to quote/escape when you don't want it to expand, same as with parameter assignments. The effect is explained in the <a href="http://zsh.sourceforge.net/Doc/Release/Options.html">manual</a></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:10 UTC
+    </footer>
+</body>
+</html>

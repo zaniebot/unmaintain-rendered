@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>multiline search regex wildcard not expanding - BurntSushi/ripgrep #2721</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>multiline search regex wildcard not expanding</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2721">#2721</a>
+        opened by <a href="https://github.com/Gooberpatrol66">@Gooberpatrol66</a>
+        on 2024-01-25 12:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gooberpatrol66">@Gooberpatrol66</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>13.0.0</p>
+<h3>How did you install ripgrep?</h3>
+<p>guix</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>guix</p>
+<h3>Describe your bug.</h3>
+<p>ripgrep is searching for the regex literally</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<pre><code>$ rg --multiline '&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD.*&gt;&gt;&gt;&gt;&gt;&gt;&gt;'
+
+$ cat test
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+A
+=======
+B
+&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<pre><code>scripts/git-hooks/dont-commit-with-merge-conflicts.sh
+3:#when https://issues.guix.gnu.org/67450 fix is upstreamed, replace below with git diff | grep -P '&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD(.|\n)*&gt;&gt;&gt;&gt;&gt;&gt;&gt;'
+13:#git diff $against | tr '\n' '\a' | grep --color=always '&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD.*=======.*&gt;&gt;&gt;&gt;&gt;&gt;&gt;' | tr '\a' '\n'
+14:grep -r --color=always '&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD.*=======.*&gt;&gt;&gt;&gt;&gt;&gt;&gt;' | tr '\a' '\n'
+- 
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>it finds file test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-01-25 13:26</div>
+            <div class="timeline-body"><p>As in virtually every regex engine, the <code>.</code> in ripgrep's regex engine matches any character <em>except</em> a newline. Notice how one of your grep commands uses <code>(.|\n)</code>.</p>
+<p>There are many ways to achieve your goal:</p>
+<pre><code>$ rg --multiline '&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD.*&gt;&gt;&gt;&gt;&gt;&gt;&gt;'
+$ rg --multiline --multiline-dotall '&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD.*&gt;&gt;&gt;&gt;&gt;&gt;&gt;'
+test
+1:&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+2:A
+3:=======
+4:B
+5:&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+$ rg --multiline '&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD(?s:.)*&gt;&gt;&gt;&gt;&gt;&gt;&gt;'
+test
+1:&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+2:A
+3:=======
+4:B
+5:&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+$ rg --multiline '&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD\p{any}*&gt;&gt;&gt;&gt;&gt;&gt;&gt;'
+test
+1:&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+2:A
+3:=======
+4:B
+5:&gt;&gt;&gt;&gt;&gt;&gt;&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-01-25 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2024-01-25 13:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:45 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>globset: allow building globs from OS strings - BurntSushi/ripgrep #1250</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>globset: allow building globs from OS strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1250">#1250</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2019-04-16 16:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>Initially reported here: https://github.com/rust-lang-nursery/glob/issues/78</p>
+<p>While globset can <em>match</em> on arbitrary OS strings, it cannot accept an arbitrary OS string as a glob. The link above gives an example. Here it is in code form (which currently prints <code>false</code>):</p>
+<pre><code class="language-rust">use std::error::Error;
+use std::ffi::OsStr;
+use std::os::unix::ffi::OsStrExt;
+
+use globset::Glob;
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; {
+    let glob = Glob::new(r&quot;d\xE9cembre 2018 - *.jpg&quot;)?;
+    let matcher = glob.compile_matcher();
+    let filename = OsStr::from_bytes(b&quot;d\xE9cembre 2018 - foo.jpg&quot;);
+    println!(&quot;{:?}&quot;, matcher.is_match(filename));
+    Ok(())
+}
+</code></pre>
+<p>To be clear, this <em>particular</em> program shouldn't succeed because a UTF-8 string is given to <code>Glob::new</code>. But there should be a way to, for example, call <code>Glob::new(some_os_str)</code>. On Unix, that OS string can be arbitrary bytes.</p>
+<p>(The globset crate is due for an API refresh and likely a rewrite of its internal parser anyway. This should be fairly easy to support.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2019-04-16 23:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:53 UTC
+    </footer>
+</body>
+</html>

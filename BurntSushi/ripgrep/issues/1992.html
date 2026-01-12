@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parse errors in .gitignore do not sanitize some terminal escape sequences before printing to stderr - BurntSushi/ripgrep #1992</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Parse errors in .gitignore do not sanitize some terminal escape sequences before printing to stderr</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1992">#1992</a>
+        opened by <a href="https://github.com/Kimundi">@Kimundi</a>
+        on 2021-09-16 16:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Kimundi">@Kimundi</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 11.0.2
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p><code>apt install ripgrep</code> in a Ubuntu 20.04 WSL2 install.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Ubuntu 20.04 in a WSL2</p>
+<h4>Describe your bug.</h4>
+<p>The line printed from a .gitignore in case of an parse errors might contain terminal escape sequences that mess up the terminal state.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>I'm not sure which kind of terminal escape sequences these are, so in case this is terminal emulator specific:</p>
+<ul>
+<li>Be on windows</li>
+<li>Use the new &quot;Windows Terminal&quot;</li>
+<li>Be logged into a WSL2 instance with it (bash or fish)</li>
+<li>Have a <code>.gitignore</code> containing the following bytes: <code>\x5b\x5d\xc2\x96\xc2\x97\xc2\x98\xc2\x99\xc2\x9a\x0a</code></li>
+<li>run <code>rg foo</code> or any other command that causes it to parse <code>.gitignore</code> files.</li>
+<li>You should now be able to observe that some terminal control sequences got send to the terminal</li>
+</ul>
+<h4>What is the actual behavior?</h4>
+<pre><code>&gt; hexdump -C .gitignore
+00000000  5b 5d c2 96 c2 97 c2 98  c2 99 c2 9a 0a           |[]...........|
+0000000d
+&gt; rg foo
+./.gitignore: line 1: error parsing glob '[]': unclosed character class; missing ']'
+^[[?1;0c
+&gt; [?1;0c
+</code></pre>
+<p><img src="https://user-images.githubusercontent.com/2903206/133650874-39677ecb-4a7f-43cc-81e8-9910e3e90aca.png" alt="grafik" /></p>
+<h4>What is the expected behavior?</h4>
+<p>Any terminal escape sequences should get sanitized out from the line, at least if printed to an interactive terminal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-09-20 16:51</div>
+            <div class="timeline-body"><p>I can't seem to reproduce this:</p>
+<p><img src="https://user-images.githubusercontent.com/456674/134041804-0a6ef063-a8d5-44b6-8722-79120668ba4c.png" alt="no-color-mangling" /></p>
+<p>Either way, I appreciate the bug report, but I think I'm going to mark this as <code>wontfix</code>. ripgrep passes through content it reads, as-is, pretty much everywhere. The same would happen if you were searching a file and ripgrep printed a match with ANSI escape codes, for example. Similarly for file names and probably other stuff. I'm not really sure it's ripgrep's place to get super paranoid about this and start cleansing everything it prints. It certainly doesn't seem like other tools do it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-09-20 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2021-09-20 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PennRobotics">@PennRobotics</a> on 2021-10-19 16:54</div>
+            <div class="timeline-body"><p>I'm having a similar issue but not when printing to stderr. An extra color code is being inserted at the next prompt after rg exits. This is on WSL 2 using zsh (zsh-autosuggestions and zsh-syntax-highlighting) and Ubuntu 20.04 via Windows Terminal Preview 1.11.2731.0:</p>
+<pre><code> dave@davepc &gt; ~ &gt;  rg -j 1 ok
+...
+install-from-source/vim/README_VIM9.md
+51:That looks very promising!  It's just one example, but it shows how much
+156:form of classes.  If you look at JavaScript for example, it has gone
+219:This looks like JavaScript/TypeScript, thus many users will understand the
+
+install-from-source/vim/CONTRIBUTING.md
+18:pass after the fix.  Look through recent patches for examples and find help
+58:Look in the header of the file for the name and email address.
+ dave@davepc &gt; ~ &gt;  1;0c[CURSOR HERE]
+</code></pre>
+<p>I'm not sure where this extra escape code originates. This could be completely unrelated, but I needed to change vim settings because of ambiguous UTF-8 characters that made vim start in replace mode. In other words, I think the way characters are printed to the screen are somehow mishandled in wt.exe</p>
+<p><strong>This does not happen for me in the normal Ubuntu console, only Ubuntu in Windows Terminal Preview!</strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PennRobotics">@PennRobotics</a> on 2021-10-22 17:29</div>
+            <div class="timeline-body"><p>To extend the previous idea that this is UTF-8-related:
+Using <code>--color=always</code> and <code>head</code>/<code>tail</code>, the exact line that causes an escape code is output as shown:</p>
+<p><code>install-from-source/vim/src/testdir/test_regexp_utf8.vim:153:    let identchars_ok = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz</code></p>
+<p>In vim, this is the line that causes trouble:</p>
+<p><code>   let identchars_ok = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz&lt;80&gt;&lt;81&gt;&lt;82&gt;&lt;83&gt;&lt;84&gt;&lt;85&gt;&lt;86&gt;&lt;87&gt;&lt;88&gt;    &lt;89&gt;&lt;8a&gt;&lt;8b&gt;&lt;8c&gt;&lt;8d&gt;&lt;8e&gt;&lt;8f&gt;&lt;90&gt;&lt;91&gt;&lt;92&gt;&lt;93&gt;&lt;94&gt;&lt;95&gt;&lt;96&gt;&lt;97&gt;&lt;98&gt;&lt;99&gt;&lt;9a&gt;&lt;9b&gt;&lt;9c&gt;&lt;9d&gt;&lt;9e&gt;&lt;9f&gt; ¡¢£¤¥¦§µÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ    ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ' </code></p>
+<p>The <code>cat</code> output of <em>this</em> file also causes the escape code fragment, and the kicker is ... <code>cat</code> doesn't output color---at least not on my machine!</p>
+<p>This behavior is NOT related to the font selection (e.g. Powerline or ligatures), since the problem occurs even with Courier as a font. Another detail that doesn't work? Someone has a blog post, <em>Using UTF-8 in the Windows Terminal</em>, that recommends enabling a checkbox in the administrative language settings.</p>
+<p>This behavior is also <strong>not related to ripgrep</strong>, so this issue should stay closed. I'm adding information in case others find this issue first (as I did).</p>
+<p><code>iconv -f UTF-8 -t ASCII -c</code> to convert encoding as part of a pipe will strip away offending characters, but I don't know if that counts as a fix. The other option is to use the old terminal (conhost), but I think MS wants to get rid of this in the future.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:26 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>implement `--sort-files` option - BurntSushi/ripgrep #263</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>implement <code>--sort-files</code> option</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/263">#263</a>
+        opened by <a href="https://github.com/daxim">@daxim</a>
+        on 2016-12-01 11:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/daxim">@daxim</a></div>
+            <div class="timeline-body"><p>Ack has it. I always want to receive sorted output because I then can easily cross-check by eye-balling and compare the list of search results with the output of <code>ls</code> or <a href="http://mama.indstate.edu/users/ice/tree/"><code>tree</code></a>, which are also sorted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-01 12:03</div>
+            <div class="timeline-body"><p>This is related to #152 but it subtly different. #152 is asking for <em>deterministic</em> output and you're asking for <em>sorted</em> output. What do you want to sort by? Should it be customizable? What do you hope for this to achieve that, say, <code>rg foo | sort</code> does not? Is it acceptable to lose parallelism? (I hope so, because doing this while retaining parallelism seems hard.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2016-12-01 12:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nerdrew">@nerdrew</a> on 2016-12-02 00:05</div>
+            <div class="timeline-body"><p>@BurntSushi Hmmm. My bad. I don't care about sorting as much as I care about grouping by directory. So #152 seems more like what I'm looking for.</p>
+<p>E.g.</p>
+<pre><code>dir1/file1.rs:blah
+dir2/file4.rs:blah
+dir1/file2.rs:blah
+</code></pre>
+<p>vs</p>
+<pre><code>dir1/file1.rs:blah
+dir1/file2.rs:blah
+dir2/file4.rs:blah
+</code></pre>
+<p>Totally understand the performance penalty for grouping results. Is it feasible to use the parallel runners to do the searching and aggregate the results afterward?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-02 00:14</div>
+            <div class="timeline-body"><p>@nerdrew Well, I mean, yes, that's what a hypothetical solution would have to do. But now you've introduced a cost: extra memory use. There might be extra time cost too, for having to do the aggregate, but it could be immeasurable.</p>
+<p>Of course, that might have been feasible in 0.2.x, but 0.3.x introduced a parallel directory iterator so that actually crawling through the directories themselves is parallelized. Making that do aggregation (and importantly, knowing when an aggregation is complete) seems hard.</p>
+<p>I would say that there's basically two options here:</p>
+<ol>
+<li>Deal with <code>-j1</code> if you want determinism.</li>
+<li>Implement a new parallel searcher that's similar to the one in 0.2.x, but add aggregation. (This wouldn't be <em>that</em> hard.)</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/daxim">@daxim</a> on 2016-12-02 03:06</div>
+            <div class="timeline-body"><blockquote>
+<p>What do you want to sort by?</p>
+</blockquote>
+<p>By the relative path name of the matching files; treat it as a string. Directory depth does not matter.</p>
+<blockquote>
+<p>Should it be customizable?</p>
+</blockquote>
+<p>No, it should simply follow LC_COLLATE.</p>
+<blockquote>
+<p>What do you hope for this to achieve that, say, rg foo | sort does not?</p>
+</blockquote>
+<p>The output of normal <code>ack --sort-files</code> on an interactive tty is human-readable with its path name headings above the matching lines, each group visually separated from each other, line numbers and colours. But when <code>rg</code> is piped into something, it's not human-readable any more. The path names are smushed together with the matching lines, there are no double line feeds to create paragraphs, line numbers are lost and results are not highlighted any more.</p>
+<blockquote>
+<p>Is it acceptable to lose parallelism?</p>
+</blockquote>
+<p>Yes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-02 11:45</div>
+            <div class="timeline-body"><p>If <code>--sort-files</code> can imply <code>-j1</code>, then I think this is a relatively straight-forward thing to implement. It involves calling <a href="https://docs.rs/walkdir/1.0.2/walkdir/struct.WalkDir.html#method.sort_by"><code>WalkDir::sort_by</code></a> from the the single threaded <a href="https://docs.rs/ignore/0.1.5/ignore/struct.Walk.html"><code>ignore::Walk</code></a> iterator, which in turn requires exposing a <a href="https://docs.rs/ignore/0.1.5/ignore/struct.WalkBuilder.html"><code>sort_by</code> method on `ignore::WalkBuilder</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-01-07 03:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:56 UTC
+    </footer>
+</body>
+</html>

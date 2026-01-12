@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add json output format - BurntSushi/ripgrep #930</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add json output format</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/930">#930</a>
+        opened by <a href="https://github.com/garygreen">@garygreen</a>
+        on 2018-05-28 15:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/garygreen">@garygreen</a></div>
+            <div class="timeline-body"><p>It would be awesome if ripgrep could output the search results in JSON format, something like:</p>
+<pre><code class="language-json">{
+    &quot;search_query&quot;: &quot;ipaddress&quot;,
+    &quot;results&quot;: [
+        {
+            &quot;file&quot;: &quot;E:\\Sites\\cc-new\\app\\Member\\BannedMember.php&quot;,
+            &quot;line&quot;: 34,
+            &quot;content&quot;: &quot;'ipaddress' =&gt; Request::getClientIp(),&quot;,
+            &quot;ranges&quot;: [
+                [1, 9]
+            ]
+        },
+        {
+            &quot;file&quot;: &quot;E:\\Sites\\cc-new\\app\\Http\\Controllers\\Admin\\MemberController.php&quot;,
+            &quot;line&quot;: 177,
+            &quot;content&quot;: &quot;$create_data['ipaddress'] = $request-&gt;get('ipaddress');&quot;,
+            &quot;ranges&quot;: [
+                [14, 24],
+                [44, 53]
+            ]
+        },
+    ],
+    &quot;stats&quot;: {
+        &quot;total_matches&quot;: 2,
+        &quot;files_searched&quot;: 102
+    }
+}
+</code></pre>
+<p>This would mean you can create custom looking interfaces by consuming the search results much easier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/garygreen">@garygreen</a> on 2018-05-28 15:42</div>
+            <div class="timeline-body"><p>Another use case for this - currently vscode uses ripgrep and <a href="https://github.com/Microsoft/vscode/blob/4eaf58348b51e601877c360f59c3ca82f45691ad/extensions/search-rg/src/ripgrepTextSearch.ts#L141">manually parses</a> the output in order to make sense of the output format which is a major undertaking in itself, but to display it in in vscode. If there was a consistent output format, then it would be MUCH easier to consume.</p>
+<p>I realise this relates to other issues like: #244, #359, #848 but those haven't provided an example format. I honestly believe this can be relatively easily achieved if a bit of thought went into the output format as in the example provided. It may not cater to everyone's needs - but the main thing is to provide the raw data / context for each of the matches and then people can consume that data however they like.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-05-28 15:43</div>
+            <div class="timeline-body"><p>Dupe of #244</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-05-28 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2018-05-28 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-05-28 15:45</div>
+            <div class="timeline-body"><p>@garygreen I'm not going to have multiple issues tracking structured output format. It's something I'd like to have for ripgrep some day. A hard blocker on doing this is getting <a href="https://github.com/BurntSushi/ripgrep/milestone/1">libripgrep done</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/garygreen">@garygreen</a> on 2018-05-28 15:46</div>
+            <div class="timeline-body"><p>@BurntSushi Understood. Do you have any preference on if it should be JSON output or something? That issue you linked to is something way back in 2016 and seems focussed on the file / range matches whereas if you had a JSON output you could also print all kinds of meta information related to the matches (like stats, how many matches in total, how many files searched, how many files ignored, etc). It maybe tricky having that information in a basic CSV/ackmate string fashion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-05-28 15:48</div>
+            <div class="timeline-body"><p>@garygreen #244 documents the &quot;ackmate&quot; format, which is a format specifically supported by other tools AIUI.</p>
+<p>It's not clear to me whether we should do more than this. Supporting additional output formats is a maintenance hazard, and it might be better if folks just wrote their own programs with libripgrep (when it exists) that outputs the data they want. But this is a weakly held opinion at this point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/garygreen">@garygreen</a> on 2018-05-28 15:59</div>
+            <div class="timeline-body"><blockquote>
+<p>and it might be better if folks just wrote their own programs with libripgrep</p>
+</blockquote>
+<p>But that's the catch 22 problem - to do that, you need to regex the search results and output then into JSON, or whatever format you like then it becomes pointless - at that point you don't need an intermediary format you might as well just used the parsed regex parts. Look at what vscode is doing.</p>
+<p>In it's core, ripgrep knows that what the file matches are, the lines, the ranges, the stats, can't it just output to something that can be easily parsed by tools? That doesn't seem particularity challenging problem to solve, IMO. Maybe I'm taking a simplistic view on this as you have a better understanding of the internals though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-05-28 16:05</div>
+            <div class="timeline-body"><blockquote>
+<p>But that's the catch 22 problem - to do that, you need to regex the search results and output then into JSON, or whatever format you like then it becomes pointless - at that point you don't need an intermediary format you might as well just used the parsed regex parts.</p>
+</blockquote>
+<p>Yes, exactly.</p>
+<blockquote>
+<p>Look at what vscode is doing.</p>
+</blockquote>
+<p>I know what VS Code is doing. It is not the only tool doing it.</p>
+<blockquote>
+<p>In it's core, ripgrep knows that what the file matches are, the lines, the ranges, the stats, can't it just output to something that can be easily parsed by tools? That doesn't seem particularity challenging problem to solve, IMO. Maybe I'm taking a simplistic view on this as you have a better understanding of the internals though</p>
+</blockquote>
+<p>&quot;just&quot; and &quot;challenging&quot; are very relative terms. They are hand wavy. In principle, I agree with you. Please be content with the fact that my mind is not made up on this point. I'm trying to give you an honest assessment of where I'm sitting. I am skeptical because I don't perceive a huge demand for this. I am skeptical because I perceive this to add a maintenance burden. I am skeptical because it adds more dependencies. I am skeptical because it could increase code complexity. I am skeptical because, as the maintainer of ripgrep, I fear touching the printer.</p>
+<p>My hope is that libripgrep will help reframe my skepticism and make this a more manageable task. Please do not try to force the issue. Please be patient.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:33 UTC
+    </footer>
+</body>
+</html>

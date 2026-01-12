@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Line buffering appears broken in 15.0.0 - BurntSushi/ripgrep #3194</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Line buffering appears broken in 15.0.0</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3194">#3194</a>
+        opened by <a href="https://github.com/lespea">@lespea</a>
+        on 2025-10-18 23:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lespea">@lespea</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[x] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<pre><code>ripgrep 15.0.0
+
+features:+pcre2
+simd(compile):+SSE2,+SSSE3,+AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2
+
+PCRE2 10.45 is available (JIT is available)
+</code></pre>
+<h3>How did you install ripgrep?</h3>
+<p>Bug appears when built locally with Cargo as well as the binaries provided on the release page</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Arch Linux -- kernel <code>6.17.3</code></p>
+<h3>Describe your bug.</h3>
+<p>I've been using ripgrep to filter <code>journalctl</code> output in follow mode for years and thus need the <code>--line-buffered</code> option otherwise nothing is output since <code>stdin</code> doesn't close.  With the latest release that switch doesn't appear to be having any affect.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>No output:</p>
+<pre><code>journalctl -n5 -f | ./rg --no-config --line-buffered  'Oct'</code></pre>
+<p>Does produce some output -- I assume this is because the &quot;block buffer&quot; is getting full?</p>
+<pre><code>journalctl -n5000 -f | ./rg --no-config --line-buffered  'Oct'</code></pre>
+<p>When run with &lt; <code>15.0.0</code> each line that is matched is output as soon as it's printed by <code>journalctl</code>.  Obviously you'll have to adjust the search to match whatever's in your logs.</p>
+<h3>What is the actual behavior?</h3>
+<p>Same as &quot;steps to reproduce&quot;</p>
+<h3>What is the expected behavior?</h3>
+<p>Match lines (or inverse matches with <code>-v</code>) should be output as soon as they're output by the pipe</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-19 13:38</div>
+            <div class="timeline-body"><p>Ugh, yeah, this apparently broke in 8c6595c215d1e24bed5b7b86e2b18f3c871439ef (found via <code>git bisect</code>). No clue why yet though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2025-10-19 13:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-10-19 15:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:59 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ripgrep seems to be interpreting .gitignore differently from git - BurntSushi/ripgrep #1482</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ripgrep seems to be interpreting .gitignore differently from git</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1482">#1482</a>
+        opened by <a href="https://github.com/kbarrette">@kbarrette</a>
+        on 2020-02-11 15:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kbarrette">@kbarrette</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code class="language-bash">ripgrep 11.0.2
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>Hombrew: <code>brew install ripgrep</code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>macOS Catalina 10.15.3</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>ripgrep is not finding files that git does find, seemingly related to .gitignore</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<pre><code class="language-bash">$ cat .gitignore
+bar
+$ ls foo/bar
+baz
+$ rg --files
+$ git status -s
+ M foo/bar/baz
+$
+</code></pre>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<pre><code class="language-bash">$ rg --files --debug
+DEBUG|globset|globset/src/lib.rs:430: glob converted to regex: Glob { glob: &quot;**/fishd*&quot;, re: &quot;(?-u)^(?:/?|.*/)fishd[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('f'), Literal('i'), Literal('s'), Literal('h'), Literal('d'), ZeroOrMore]) }
+DEBUG|globset|globset/src/lib.rs:435: built glob set; 2 literals, 5 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
+DEBUG|globset|globset/src/lib.rs:430: glob converted to regex: Glob { glob: &quot;**/fishd*&quot;, re: &quot;(?-u)^(?:/?|.*/)fishd[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('f'), Literal('i'), Literal('s'), Literal('h'), Literal('d'), ZeroOrMore]) }
+DEBUG|globset|globset/src/lib.rs:435: built glob set; 2 literals, 5 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
+DEBUG|globset|globset/src/lib.rs:435: built glob set; 0 literals, 1 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|ignore::walk|ignore/src/walk.rs:1639: ignoring ./.gitignore: Ignore(IgnoreMatch(Hidden))
+DEBUG|ignore::walk|ignore/src/walk.rs:1639: ignoring ./.git: Ignore(IgnoreMatch(Hidden))
+DEBUG|ignore::walk|ignore/src/walk.rs:1639: ignoring ./foo/bar: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;bar&quot;, actual: &quot;**/bar&quot;, is_whitelist: false, is_only_dir: false })))
+$
+</code></pre>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p><code>rg --files</code> finds no files, while <code>git status</code> finds one (modified) file. ripgrep seems to be ignoring <code>foo/bar/baz</code> while git finds it - expected behavior is for <code>rg</code> and <code>git</code> to find the same files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbarrette">@kbarrette</a> on 2020-02-11 15:23</div>
+            <div class="timeline-body"><p>Upon further examination, it seems that rg and git are probably interpreting <code>.gitignore</code> the same way, but since the file is already tracked in git, it's showing it as modified.</p>
+<p>ripgrep is probably behaving as designed, it was just unexpected for me in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-02-11 15:50</div>
+            <div class="timeline-body"><p>Right. ripgrep doesn't know anything about which files are or aren't tracked. The best thing to do here is to make sure your <code>.gitignore</code> files are in sync with what's actually tracked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-02-11 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2020-02-11 15:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:05 UTC
+    </footer>
+</body>
+</html>

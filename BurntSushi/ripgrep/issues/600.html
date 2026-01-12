@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rg --files triggers MsMpEng.exe on Windows - BurntSushi/ripgrep #600</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rg --files triggers MsMpEng.exe on Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/600">#600</a>
+        opened by <a href="https://github.com/chrmarti">@chrmarti</a>
+        on 2017-09-07 04:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chrmarti">@chrmarti</a></div>
+            <div class="timeline-body"><p>Version 0.6.0.</p>
+<p>Not sure what might cause that, but MsMpEng.exe hogs the CPU and rg.exe makes only very slow progress.</p>
+<p>When I use an alternate implementation to list the files in node.js, MsMpEng.exe remains silent or at least doesn't jam the CPU.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-09-07 07:12</div>
+            <div class="timeline-body"><p>I don't understand this ticket. Please consider that I am not a Windows
+user. I don't understand the significance of MsMpEng.exe.</p>
+<p>On Sep 7, 2017 12:51 AM, &quot;Christof Marti&quot; <a href="mailto:notifications@github.com">notifications@github.com</a> wrote:</p>
+<p>Version 0.6.0.</p>
+<p>Not sure what might cause that, but MsMpEng.exe hogs the CPU and rg.exe
+makes only very slow progress.</p>
+<p>When I use an alternate implementation to list the files in node.js,
+MsMpEng.exe remains silent or at least doesn't jam the CPU.</p>
+<p>—
+You are receiving this because you are subscribed to this thread.
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/BurntSushi/ripgrep/issues/600">https://github.com/BurntSushi/ripgrep/issues/600</a>, or mute the thread
+<a href="https://github.com/notifications/unsubscribe-auth/AAb34jsA03YkjNKW713v9ciU3S6JF5NPks5sf3ZigaJpZM4PPSPa">https://github.com/notifications/unsubscribe-auth/AAb34jsA03YkjNKW713v9ciU3S6JF5NPks5sf3ZigaJpZM4PPSPa</a>
+.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrmarti">@chrmarti</a> on 2017-09-07 14:03</div>
+            <div class="timeline-body"><p>MsMpEng.exe is part of an antispyware. It looks like ripgrep triggers its activity. I would kind of expect this to happen if ripgrep scanned the contents of the files, but with <code>--files</code> that should not be the case.</p>
+<p>Since using node.js to list all files does not show this behavior, I guess ripgrep must be using some API that triggers it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-09-07 14:13</div>
+            <div class="timeline-body"><p>But <code>--files</code> does need to read some files. It has to read, for example, <code>.gitignore</code>/<code>.ignore</code> files to determine which files to filter.</p>
+<p>I don't really know what you expect me to do about this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrmarti">@chrmarti</a> on 2017-09-07 14:52</div>
+            <div class="timeline-body"><p>I'm using <code>--no-ignore</code>, that should skip reading of these files I assume. Interestingly the problem stopped appearing on one machine, but still does on a VM.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrmarti">@chrmarti</a> on 2017-09-07 15:20</div>
+            <div class="timeline-body"><p>I have captured traces of ripgrep and the node implementation using ProcMon. One difference is how they open files, ripgrep uses 'Generic Read' while node uses 'Read Attributes'.</p>
+<p>ripgrep:
+<img src="https://user-images.githubusercontent.com/9205389/30170818-fae05508-93a4-11e7-8e14-5e31d04a66a2.png" alt="image" /></p>
+<p>node:
+<img src="https://user-images.githubusercontent.com/9205389/30170533-33db5c32-93a4-11e7-94bb-a052d091c0a1.png" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrmarti">@chrmarti</a> on 2017-09-07 15:51</div>
+            <div class="timeline-body"><p>@BurntSushi I would like to modify it to use 'Read Attributes' to see if maybe 'Generic Read' triggers MsMpEng.exe's scanning, but can't figure out where that is set. (I'm new to Rust.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-09-18 13:00</div>
+            <div class="timeline-body"><p>@chrmarti If you aren't searching with memory maps (force it with <code>--no-mmap</code>), then the <code>File::open</code> call is here: https://github.com/BurntSushi/ripgrep/blob/beb010d004a79eedb8baa6f4eab21532e83a0ef0/src/worker.rs#L221 You can presumably change the open attributes using <a href="https://doc.rust-lang.org/std/fs/struct.OpenOptions.html"><code>std::fs::OpenOptions</code></a>. You may need to use a platform specific <code>OpenOptionsExt</code> trait for Windows to set Windows-specific attributes though.</p>
+<p>You could also try forcing the issue with <code>--mmap</code> to open files with memory maps.</p>
+<p>It occurs to me that this is all for opening files to search. For opening <code>.gitignore</code> files, I believe the <code>File::open</code> call is here: https://github.com/BurntSushi/ripgrep/blob/0668c74ed49320c4224c4ea526aca07692bf590a/ignore/src/gitignore.rs#L351</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-09-18 15:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attempts to search binary files with multiline mode enabled - BurntSushi/ripgrep #1781</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Attempts to search binary files with multiline mode enabled</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1781">#1781</a>
+        opened by <a href="https://github.com/roblourens">@roblourens</a>
+        on 2021-01-12 00:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/roblourens">@roblourens</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 12.1.1
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>brew</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>macOS and windows</p>
+<h4>Describe your bug.</h4>
+<ul>
+<li>cd to my <code>OneDrive/Pictures</code> folder which only contains thousands of jpgs and some mp4s</li>
+<li>Search <code>rg hello</code>, it finishes in less than a second</li>
+<li>Search <code>rg --multiline &quot;hello\r\nworld&quot;</code>, it takes a long time, using large amounts of cpu and memory</li>
+</ul>
+<p>Guessing it tries to read the full file before searching and discovering that it is a binary file, this can have a pretty large impact. I wonder if it could read the first X bytes to check for a null byte before reading the full thing. Adding <code>--trace</code>, here are some representative log lines</p>
+<pre><code>TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:671: Some(&quot;Home pics/2006/2006 Sep-Dec/DSC00608.JPG&quot;): searching via multiline strategy
+TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:671: Some(&quot;Home pics/2006/2006 Sep-Dec/DSC00422.JPG&quot;): searching via multiline strategy
+TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:669: Some(&quot;Home pics/2006/2006 Sep-Dec/DSC00225.JPG&quot;): reading entire file on to heap for mulitline
+TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:669: Some(&quot;Home pics/2006/2006 Sep-Dec/DSC00542.JPG&quot;): reading entire file on to heap for mulitline
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-01-12 00:20</div>
+            <div class="timeline-body"><p>Yes, multiline search requires reading the entire file on to the heap. It seems feasible to me to read a limited amount and check for binary data. It won't fix the issue rigorously, but it's probably good enough in most cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2021-01-12 00:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:18 UTC
+    </footer>
+</body>
+</html>

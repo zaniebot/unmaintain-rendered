@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix ignores when searching subdirectories - BurntSushi/ripgrep #2295</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix ignores when searching subdirectories</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/2295">#2295</a>
+        opened by <a href="https://github.com/sengaya">@sengaya</a>
+        on 2022-08-29 20:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sengaya">@sengaya</a></div>
+            <div class="timeline-body"><p>When searching subdirectories the path was not correctly build and
+included duplicate parts. This fix will remove the duplicate part if
+possible. It also contains a small optimization that will skip the
+second for loop if there is already a match.</p>
+<p>Fixes #1757</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-09-18 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-09-18 15:50</div>
+            <div class="timeline-body"><p>Nice, thank you! This fixes quite a gnarly bug that I've seen a lot of folks run into for a while. Thank you.</p>
+<p>I ended up fixing two problems with this patch though:</p>
+<ol>
+<li>First, the optimization does not look correct to me. The issue is that, for some ignore files, the existence of any rule regardless of where it is in the directory tree will override any other rule from a different type of ignore file. For example, <code>.rgignore</code> has higher precedent than <code>.ignore</code>. So you need to let all of the rules be visited. In practice, I doubt this optimization matters too much anyway.</li>
+<li>This used <code>Path::strip_prefix</code> instead of ripgrep's own <code>strip_prefix</code> routine which does things a little differently. This meant that giving ripgrep a path like <code>.////path</code> would still trigger the bug. But using ripgrep's <code>strip_prefix</code> routine avoids this issue.</li>
+</ol>
+<p>Overall this still feels Not Right to me, but it fixes a bug and doesn't seem to cause any other regressions. Hopefully we can straighten out this logic in a better way in the future when I overhaul the <code>ignore</code> crate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-09-20 15:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:05 UTC
+    </footer>
+</body>
+</html>

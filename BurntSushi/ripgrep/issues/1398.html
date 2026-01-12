@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matches are omitted: Binary file matches (found &quot;\u{0}&quot; byte around offset ...) - BurntSushi/ripgrep #1398</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Matches are omitted: Binary file matches (found &quot;\u{0}&quot; byte around offset ...)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1398">#1398</a>
+        opened by <a href="https://github.com/jeschkies">@jeschkies</a>
+        on 2019-10-02 11:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jeschkies">@jeschkies</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>❯ rg --version
+ripgrep 11.0.2
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<pre><code>brew install ripgrep
+</code></pre>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>macOS 10.14.6</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p><code>rg</code> does not scan the complete log file.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<ol>
+<li>Extract <a href="https://github.com/BurntSushi/ripgrep/files/3680823/marathon-loop-master-43355.log.tar.gz">marathon-loop-master-43355.log.tar.gz</a>.</li>
+<li>Run <code>rg &quot;SharedMemoryIntegrationTest-MesosAgent&quot; ~/Downloads/marathon-loop-master-43355.log</code></li>
+</ol>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<p>The last line of the output is</p>
+<pre><code>Binary file matches (found &quot;\u{0}&quot; byte around offset 2869884)
+</code></pre>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>The last line with <code>grep</code> is</p>
+<pre><code>WARN [06:48:21 SharedMemoryIntegrationTest-MesosAgent-32793] E1002 06:48:21.171119  7978 main.cpp:511] EXIT with status 1: Failed to create a containerizer: Could not create DockerContainerizer: Failed to create docker: Timed out getting docker version
+</code></pre>
+<p>It does not show up via <code>rg</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Matches are omitted." to "Matches are omitted: Binary file matches (found "\u{0}" byte around offset ...)" by @jeschkies on 2019-10-02 11:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-10-02 11:34</div>
+            <div class="timeline-body"><p>Thanks for the issue and the easy reproduction. I really appreciate that.</p>
+<p>However, this is very much working as intended. Have you read the guide yet? In particular, the <a href="https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#binary-data">section on binary data</a>?</p>
+<p>I note that grep behaves exactly the same way:</p>
+<pre><code>$ grep &quot;SharedMemoryIntegrationTest-MesosAgent&quot; marathon-loop-master-43355.log
+WARN [06:48:16 SharedMemoryIntegrationTest-MesosAgent-32793] I1002 06:48:16.166388  7978 logging.cpp:206] Logging to STDERR
+WARN [06:48:16 SharedMemoryIntegrationTest-MesosAgent-32793] I1002 06:48:16.166604  7978 main.cpp:350] Build: 2019-09-05 03:25:52 by admin
+WARN [06:48:16 SharedMemoryIntegrationTest-MesosAgent-32793] I1002 06:48:16.166620  7978 main.cpp:351] Version: 1.9.0
+WARN [06:48:16 SharedMemoryIntegrationTest-MesosAgent-32793] I1002 06:48:16.166627  7978 main.cpp:354] Git tag: 1.9.0
+WARN [06:48:16 SharedMemoryIntegrationTest-MesosAgent-32793] I1002 06:48:16.166632  7978 main.cpp:358] Git SHA: 5e79a584e6ec3e9e2f96e8bf418411df9dafac2e
+WARN [06:48:16 SharedMemoryIntegrationTest-MesosAgent-32793] I1002 06:48:16.167569  7978 process.cpp:1247] libprocess is initialized on 172.16.10.150:32793 with 8 worker threads
+WARN [06:48:16 SharedMemoryIntegrationTest-MesosAgent-32793] I1002 06:48:16.167773  7978 resolver.cpp:69] Creating default secret resolver
+Binary file marathon-loop-master-43355.log matches
+</code></pre>
+<p>Just as with grep, pass the <code>-a</code> option to forcefully search all binary data (by always treating it as text):</p>
+<pre><code>$ rg &quot;SharedMemoryIntegrationTest-MesosAgent&quot; marathon-loop-master-43355.log -a
+22133:WARN [06:48:16 SharedMemoryIntegrationTest-MesosAgent-32793] I1002 06:48:16.166388  7978 logging.cpp:206] Logging to STDERR
+22134:WARN [06:48:16 SharedMemoryIntegrationTest-MesosAgent-32793] I1002 06:48:16.166604  7978 main.cpp:350] Build: 2019-09-05 03:25:52 by admin
+22135:WARN [06:48:16 SharedMemoryIntegrationTest-MesosAgent-32793] I1002 06:48:16.166620  7978 main.cpp:351] Version: 1.9.0
+22136:WARN [06:48:16 SharedMemoryIntegrationTest-MesosAgent-32793] I1002 06:48:16.166627  7978 main.cpp:354] Git tag: 1.9.0
+22137:WARN [06:48:16 SharedMemoryIntegrationTest-MesosAgent-32793] I1002 06:48:16.166632  7978 main.cpp:358] Git SHA: 5e79a584e6ec3e9e2f96e8bf418411df9dafac2e
+22138:WARN [06:48:16 SharedMemoryIntegrationTest-MesosAgent-32793] I1002 06:48:16.167569  7978 process.cpp:1247] libprocess is initialized on 172.16.10.150:32793 with 8 worker threads
+22139:WARN [06:48:16 SharedMemoryIntegrationTest-MesosAgent-32793] I1002 06:48:16.167773  7978 resolver.cpp:69] Creating default secret resolver
+24775:WARN [06:48:21 SharedMemoryIntegrationTest-MesosAgent-32793] E1002 06:48:21.171119  7978 main.cpp:511] EXIT with status 1: Failed to create a containerizer: Could not create DockerContainerizer: Failed to create docker: Timed out getting docker version
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-10-02 11:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2019-10-02 11:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-10-02 11:36</div>
+            <div class="timeline-body"><p>Note that I used GNU grep in my above example. Since you're on macOS, you're probably using BSD grep, which might have different heuristics (if any) for detecting binary data.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jeschkies">@jeschkies</a> on 2019-10-02 11:54</div>
+            <div class="timeline-body"><p>Thanks a ton. <code>rg -a</code> works like a charm. BSD grep behaves differently indeed.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:01 UTC
+    </footer>
+</body>
+</html>

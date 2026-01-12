@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>libripgrep - BurntSushi/ripgrep #162</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>libripgrep</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/162">#162</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2016-10-11 00:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>This is a tracking issue for the concept known as &quot;libripgrep.&quot;</p>
+<p>In fact, &quot;libripgrep&quot; probably won't ever be a thing unto itself. Instead, there will be several independent crates that together make up the thing one might think of as &quot;libripgrep.&quot; Most of this work is already done. Here's a list:</p>
+<ul>
+<li><a href="https://crates.io/crates/memchr">memchr</a> - Fast single byte search.</li>
+<li><a href="https://crates.io/crates/walkdir">walkdir</a> - Recursive directory iterator.</li>
+<li><a href="https://crates.io/crates/utf8-ranges">utf8-ranges</a> - Generate utf8 automata.</li>
+<li><a href="https://crates.io/crates/regex-syntax">regex-syntax</a> - A regex parser (including literal extraction helpers).</li>
+<li><a href="https://crates.io/crates/regex">regex</a> - The regex engine itself.</li>
+<li><a href="https://crates.io/crates/globset">globset</a> - Regex based glob matching, including glob-set matching.</li>
+<li><a href="https://crates.io/crates/grep">grep</a> - Blazing fast line-by-line search. This is where all of the inner literal optimizations happen. (INCOMPLETE.)</li>
+<li><a href="https://crates.io/crates/ignore">ignore</a> - Recursively traverse a directory while respecting ignore files and file types.</li>
+<li>parallel directory iterator - Iterate over files in parallel, applying ignore rules. (<strong>This is now done and part of the <code>ignore</code> crate.</strong>)</li>
+</ul>
+<p><code>grep</code> is incomplete because it exposes only the most basic line-by-line
+search. For example, it doesn't handle inverted matching, context handling,
+line counts or anything other than &quot;which line matches this regex.&quot; Still,
+there is considerable regex-specific work in here around literal matching and
+other optimizations. The rest of the aforementioned work is done in <code>ripgrep</code>
+proper. Ideally, all of that should get moved out into the <code>grep</code> crate. This
+is predominantly a <em>design</em> task, because searching is inextricably tied to
+printing, which means the API for all of these features is quite complex.</p>
+<p><code>gitignore</code> is a reasonably light wrapper around the <code>globset</code> crate. The hope
+is that a future <code>hgignore</code> crate would be too. Nevertheless, the semantics are
+tricky enough that it's worth it to put it into its own crate.</p>
+<p>A parallel directory iterator is something I want because so much time is spent
+in handling all of the ignore rules. If we can apply parallelism to that, I
+kind of expect that we'll get a nice win. Whether a parallel directory iterator
+can be design out-of-tree or not still isn't clear. In particular, it's not
+clear how coupled this needs to be with respecting ignore rules.</p>
+<hr />
+<p>In any case, I don't really have the bandwidth to do the design work required to manage contributions from others toward this goal quite yet. I kind of think they're big enough that I would like to at least do the initial work on them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2016-10-11 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2016-10-11 00:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 00:47</div>
+            <div class="timeline-body"><p>With that said, if someone wanted to get started on a <code>sed</code> replacement, it'd be faster to fork <code>ripgrep</code> and try to start from there by ripping out pieces you no longer need and adding what you do need. I'd still recommend waiting for more progress on &quot;libripgrep&quot; though. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-12 00:30</div>
+            <div class="timeline-body"><p>I'm currently working on moving ignore pattern handling out into a separate crate, with an eye toward designing an abstraction that is amenable to parallel directory iteration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-30 02:38</div>
+            <div class="timeline-body"><p>Update on this: The <a href="https://github.com/BurntSushi/ripgrep/tree/master/ignore"><code>ignore</code></a> crate is now a thing. We don't have a parallel iterator yet, but I designed a persistent data structure that should be amenable to it. Other than that, the only other big thing left in ripgrep core is the search code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-04 00:44</div>
+            <div class="timeline-body"><p>I finally have an implementation of a parallel recursive directory iterator and it is a beautiful sight to see. On the Chromium repository, it can actually scan the entire repo while respecting ignores faster than GNU find can print every path(!).</p>
+<p>No data races. No unsafe. Rust is awesome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-05 01:46</div>
+            <div class="timeline-body"><p>Utterly massive improvements. On 20GB of various git checkouts:</p>
+<pre><code>[andrew@Cheetah clones] du -csh
+20G     .
+20G     total
+[andrew@Cheetah clones] time ag Openbox | wc -l
+5
+
+real    0m4.931s
+user    0m5.863s
+sys     0m12.790s
+[andrew@Cheetah clones] time rg-master -n Openbox | wc -l
+5
+
+real    0m2.791s
+user    0m19.297s
+sys     0m2.760s
+[andrew@Cheetah clones] time rg -n Openbox | wc -l
+5
+
+real    0m0.903s
+user    0m8.203s
+sys     0m4.880s
+</code></pre>
+<p>We even benefit from the parallel iterator when we don't respect <code>.gitignore</code>:</p>
+<pre><code>[andrew@Cheetah clones] time rg-master -nu Openbox | wc -l
+5
+
+real    0m0.865s
+user    0m3.480s
+sys     0m3.093s
+[andrew@Cheetah clones] time rg -nu Openbox | wc -l
+5
+
+real    0m0.631s
+user    0m4.123s
+sys     0m5.057s
+</code></pre>
+<p>And this is why:</p>
+<pre><code>[andrew@Cheetah clones] time rg-master --files | wc -l
+631778
+
+real    0m2.522s
+user    0m2.043s
+sys     0m0.563s
+[andrew@Cheetah clones] time rg --files | wc -l
+631778
+
+real    0m0.552s
+user    0m5.157s
+sys     0m1.083s
+[andrew@Cheetah clones] time rg-master -u --files | wc -l
+611552
+
+real    0m0.797s
+user    0m0.397s
+sys     0m0.460s
+[andrew@Cheetah clones] time rg -u --files | wc -l
+611552
+
+real    0m0.377s
+user    0m1.447s
+sys     0m0.903s
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "libripgrep" by @BurntSushi on 2017-01-10 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "libripgrep" by @BurntSushi on 2017-01-10 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">libripgrep</span> added by @BurntSushi on 2017-01-11 03:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/acornejo">@acornejo</a> on 2017-01-20 17:00</div>
+            <div class="timeline-body"><p>As a potential use of the hypothetical grep crate, wondering if I should wait or fork-and-ripout as you had suggested.</p>
+<p>I do need to keep track of line numbers and inverted matching, I am hoping the naive way of doing this is good enough (or perhaps ripgrep employs a sophisticated datastructure for these?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-20 18:12</div>
+            <div class="timeline-body"><p>Note that there is already a <a href="https://docs.rs/grep/0.1.5/grep/"><code>grep</code></a> crate, but I intend to do a near complete overhaul of it when I move the (rest of the) search code out of ripgrep into that crate.</p>
+<blockquote>
+<p>I do need to keep track of line numbers and inverted matching, I am hoping the naive way of doing this is good enough (or perhaps ripgrep employs a sophisticated datastructure for these?)</p>
+</blockquote>
+<p>Not really. These things aren't really stored anywhere, they're just computed as they are needed to be printed for performance reasons.</p>
+<p>There is a lot of complexity in ripgrep's <code>search_stream</code> module for handling inverted matches, line numbers, contexts and a menagerie of other features. My plan to expose this in the <code>grep</code> crate is to define a trait with a visitor like pattern that the searcher calls. There can then be implementations of that trait that, say, print the results directly to an output or there could be &quot;sink&quot; implementations that collect the results as structured data in memory.</p>
+<p>@acornejo What problem are you trying to solve? Without telling me that, I don't really know how to give you any advice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/acornejo">@acornejo</a> on 2017-01-20 18:20</div>
+            <div class="timeline-body"><p>Let me try to describe the problem I want solved (and btw, if you know of a utility that already does this, please let me know since if I can avoid writing it it will be a big plus ;)</p>
+<p>At work I often have to examine log files which are millions of lines long, and usually my workflow looks like this:</p>
+<pre><code>cat somelog | grep module
+# read and examine output
+cat somelog | grep module2
+# read and examine output
+cat somelog | grep module2 | grep -v feature1
+# read and examine output
+cat somelog | grep module2 | grep -v feature1 | grep -v feature2
+# readn and examine output
+cat somelog | grep module2 | grep -v feature1 | grep -v feature2 | grep keyword
+# etc...
+</code></pre>
+<p>This is a lot more tedious/slower than it could be. Hence, I now want to write an interactive ncurses program, lets call it <code>loggrep</code></p>
+<p>Then I would do:</p>
+<p><code>loggrep somelog</code></p>
+<p>There I am envisioning to be able to interactively add more greps to the pipeline, remove them from the pipeline, and see how the results are being updated interactively as I type. I also want to support a few features which are not grep related (something like, cut, sort, and uniq, which are often in my command pipeline too).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-20 18:27</div>
+            <div class="timeline-body"><p>@acornejo I see. That definitely seems like something that could be built on top of what I think the <code>grep</code> crate will look like.</p>
+<p>My feeling though is that you might get better mileage out of reusing existing command line tools. It sounds like your key problem is that you're rerunning your entire pipeline for each invocation. But if you saved your results to an intermediate file (which I imagine you'd have to do anyway in your <code>loggrep</code> tool) and continued your pipeline on that, then that seems like it could work well. Maybe there's a simple wrapper shell script you could write instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/acornejo">@acornejo</a> on 2017-01-20 18:40</div>
+            <div class="timeline-body"><p>yea, i have a nasty bash script that speeds up the aforementioned workflow, but this is something that I use frequently enough that I feel that having something more ergonomic would pay off.</p>
+<p>I guess I'll take a look at the current grep crate when I start this and take it from there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/theduke">@theduke</a> on 2017-09-18 09:58</div>
+            <div class="timeline-body"><p>@BurntSushi so there is no plan to provide an easy to use <code>ripgrep</code> library?</p>
+<p>I think that could be quite useful!</p>
+<pre><code class="language-rust">extern crate ripgrep;
+
+use ripgrep::{run, Options};
+...
+
+run(&quot;some/path&quot;, Options{...}, |result| {
+  // Do something with a match...
+})?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-09-18 10:19</div>
+            <div class="timeline-body"><p>@theduke Could you explain why you think <a href="https://github.com/BurntSushi/ripgrep/milestone/1">this</a> doesn't qualify as a plan?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/theduke">@theduke</a> on 2017-09-18 10:33</div>
+            <div class="timeline-body"><p>Maybe I understood the second sentence in your root comment on this issue:</p>
+<blockquote>
+<p>In fact, &quot;libripgrep&quot; probably won't ever be a thing unto itself.</p>
+</blockquote>
+<p>I interpreted that as &quot;there won't be an actual library, just all the functionality provided by different crates that you have to tie together yourself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-09-18 10:44</div>
+            <div class="timeline-body"><p>@theduke Yes, that's right. You'll have to tie it together. There's currently no plan to move <em>all</em> of ripgrep into a library. I'm not saying it won't happen or that it's not useful, it's just not my goal right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-08-20 11:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:48 UTC
+    </footer>
+</body>
+</html>

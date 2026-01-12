@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unable to compile static binary on Alpine Linux - BurntSushi/ripgrep #2254</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unable to compile static binary on Alpine Linux</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2254">#2254</a>
+        opened by <a href="https://github.com/MrDrMcCoy">@MrDrMcCoy</a>
+        on 2022-07-07 00:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MrDrMcCoy">@MrDrMcCoy</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>Git master (2022/06/06), unsuccessful build.</p>
+<h4>How did you install ripgrep?</h4>
+<p>In an <code>alpine:edge</code> Docker container, I run:</p>
+<pre><code>apk --no-cache add build-base git rustup
+rustup-init -vy --target x86_64-unknown-linux-musl
+git clone --depth=1 https://github.com/BurntSushi/ripgrep.git /build/ripgrep
+cd /build/ripgrep
+export CFLAGS=&quot;-static -fPIC -Os&quot;
+export CXXFLAGS=&quot;${CFLAGS} -static-libstdc++&quot;
+export LDFLAGS='-static -pthread'
+export PATH=&quot;${PATH}:${HOME}/.cargo/bin&quot;
+export RUSTFLAGS='-C target-feature=+crt-static'
+export RUST_BACKTRACE=&quot;full&quot;
+cargo build --release --target 'x86_64-unknown-linux-musl' --features 'pcre2'
+</code></pre>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Alpine Linux edge, x86_64.</p>
+<h4>Describe your bug.</h4>
+<p>When attempting to compile ripgrep statically using the above commands, the build fails with the following message in the stack trace:</p>
+<pre><code>  /usr/lib/gcc/x86_64-alpine-linux-musl/11.2.1/../../../../x86_64-alpine-linux-musl/bin/ld: /usr/lib/gcc/x86_64-alpine-linux-musl/11.2.1/crtbeginT.o: relocation R_X86_64_32 against hidden symbol `__TMC_END__' can not be used when making a shared object
+  /usr/lib/gcc/x86_64-alpine-linux-musl/11.2.1/../../../../x86_64-alpine-linux-musl/bin/ld: failed to set dynamic section sizes: bad value
+  collect2: error: ld returned 1 exit status
+  make: *** [Makefile:387: lib/libjemalloc.so.2] Error 1
+  make: *** Waiting for unfinished jobs....
+  thread 'main' panicked at 'command did not execute successfully: &quot;make&quot; &quot;srcroot=../jemalloc/&quot; &quot;-j&quot; &quot;12&quot;
+  expected success, got: exit status: 2', /root/.cargo/registry/src/github.com-1ecc6299db9ec823/jemalloc-sys-0.3.2/build.rs:392:9
+</code></pre>
+<p>If the above steps are taken without the <code>RUSTFLAGS='-C target-feature=+crt-static'</code> variable, cargo builds a dynamic binary linked against musl.</p>
+<h4>What is the expected behavior?</h4>
+<p>Build should render static binary. Are there any tricks I can use to get this to compile statically on Alpine?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-07-07 00:19</div>
+            <div class="timeline-body"><p>I don't know anything about Alpine, sorry. Have you tried building a static binary in the same way that CI does it?</p>
+<p>Also, your error is in jemalloc, so this doesn't look like a ripgrep issue. You might consider patching out jemalloc from ripgrep and try building that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KEINOS">@KEINOS</a> on 2023-10-26 04:40</div>
+            <div class="timeline-body"><p>@MrDrMcCoy</p>
+<p>How about specifying larger page size as &quot;16&quot; (2**16 = 64k) and set <code>PCRE2_SYS_STATIC</code> as &quot;0&quot; to use system <code>libpcre2</code>?</p>
+<pre><code class="language-diff">  apk --no-cache add build-base git rustup
+  rustup-init -vy --target x86_64-unknown-linux-musl
+  git clone --depth=1 https://github.com/BurntSushi/ripgrep.git /build/ripgrep
+  cd /build/ripgrep
++ export JEMALLOC_SYS_WITH_LG_PAGE=16
++ export PCRE2_SYS_STATIC=0
+  export CFLAGS=&quot;-static -fPIC -Os&quot;
+  export CXXFLAGS=&quot;${CFLAGS} -static-libstdc++&quot;
+  export LDFLAGS='-static -pthread'
+  export PATH=&quot;${PATH}:${HOME}/.cargo/bin&quot;
+  export RUSTFLAGS='-C target-feature=+crt-static'
+  export RUST_BACKTRACE=&quot;full&quot;
+  cargo build --release --target 'x86_64-unknown-linux-musl' --features 'pcre2'
+</code></pre>
+<p>Here is my Dockerfile that successfully runs <code>ripgrep</code> using multistage build. Which the built binary must be static.</p>
+<pre><code class="language-Dockerfile"># -----------------------------------------------------------------------------
+#  First stage (build)
+# -----------------------------------------------------------------------------
+FROM rust:alpine AS rg-build
+
+WORKDIR /root
+
+# Install dependencies
+RUN apk add --no-cache \
+    alpine-sdk \
+    build-base \
+    asciidoc \
+    cargo \
+    cargo-audit \
+    pcre2-dev \
+    xz
+
+# Export environment variables
+ENV \
+    # use system libpcre2
+    PCRE2_SYS_STATIC=0 \
+    # 2**16 = 64k
+    JEMALLOC_SYS_WITH_LG_PAGE=16 \
+    # Static flags
+    CFLAGS=&quot;-static -fPIC -Os&quot; \
+    CXXFLAGS=&quot;${CFLAGS} -static-libstdc++&quot; \
+    LDFLAGS='-static -pthread' \
+    PATH=&quot;${PATH}:${HOME}/.cargo/bin&quot; \
+    RUSTFLAGS='-C target-feature=+crt-static' \
+    RUST_BACKTRACE=&quot;full&quot;
+
+# Build
+RUN \
+    git clone --depth=1 https://github.com/BurntSushi/ripgrep.git &amp;&amp; \
+    cd ripgrep &amp;&amp; \
+    cargo build --release \
+        --target 'x86_64-unknown-linux-musl' --features 'pcre2' &amp;&amp; \
+    # Smoke test
+    /root/ripgrep/target/x86_64-unknown-linux-musl/release/rg --version
+
+# -----------------------------------------------------------------------------
+#  Second stage (copy)
+# -----------------------------------------------------------------------------
+FROM alpine AS ripgrep
+
+# Copy the ripgrep binary under /usr/local/bin
+COPY --from=rg-build \
+    /root/ripgrep/target/x86_64-unknown-linux-musl/release/rg \
+    /usr/local/bin
+
+# Smoke test
+RUN rg --version
+</code></pre>
+<ul>
+<li>Reference:<ul>
+<li><a href="https://git.alpinelinux.org/aports/tree/community/ripgrep/APKBUILD">APKBUILD</a> | ripgrep | aports @ git.alpinelinux.org</li>
+</ul>
+</li>
+<li>Tested env:<ul>
+<li>Docker version 24.0.6, build ed223bc<ul>
+<li>Guest OS: Alpine Linux 3.18.4</li>
+</ul>
+</li>
+<li>Host OS: macOS 12.7, build 21G816</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-24 19:20</div>
+            <div class="timeline-body"><p>I'm going to close this because I don't think there is anything actionable here on my end.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-24 19:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2023-11-24 19:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:34 UTC
+    </footer>
+</body>
+</html>

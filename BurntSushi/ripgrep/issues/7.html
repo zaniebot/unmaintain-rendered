@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add support for reading patterns from a file - BurntSushi/ripgrep #7</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>add support for reading patterns from a file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/7">#7</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2016-09-17 20:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>It would be cool to support <code>grep</code>'s <code>-f/--file</code> option, and it should be relatively easy for us to do so. The implementation strategy I have in mind is to just join all of the patterns/literals using a <code>|</code> and hand it off to the regex engine.</p>
+<p>It <em>might</em> be faster to hand build an Aho-Corasick automaton (using the <code>aho-corasick</code> crate) if you know we have a bunch of literals. In fact, this is almost assuredly more memory efficient if the number of literals being searched is very large. Unfortunately, this is a harder thing to add, since it would require plumbing an Aho-Corasick automaton through all of the searching code so that either a <code>Regex</code> or an <code>AcAutomaton</code> could be used. Doable, but not straight-forward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2016-09-17 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-22 11:39</div>
+            <div class="timeline-body"><blockquote>
+<p>Unfortunately, this is a harder thing to add, since it would require plumbing an Aho-Corasick automaton through all of the searching code so that either a Regex or an AcAutomaton could be used. Doable, but not straight-forward.</p>
+</blockquote>
+<p>Thinking about this just a touch more, I think it might actually be easier than I let on. The search code doesn't actually know anything about regexes---all it cares about is using the relatively simple interface of <code>grep::Grep</code>. If we put that interface behind a trait and then impl it with Aho-Corasick, we should be pretty much good to go.</p>
+<p>It might be nice if the trait and Aho-Corasick implementation were in the <code>grep</code> sub-crate. And maybe the <code>Grep</code> type should be renamed to <code>Regex</code>, that way, the trait could be called <code>Grep</code>. Hmm, yes, I quite like that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/seamusabshere">@seamusabshere</a> on 2016-09-23 16:27</div>
+            <div class="timeline-body"><p>for context, here's the man page entry from grep:</p>
+<pre><code> -f file, --file=file
+    Read one or more newline separated patterns from file.  Empty pattern
+    lines match every input line.  Newlines are not considered part of a
+    pattern.  If file is empty, nothing is matched.
+</code></pre>
+<p>🌞 note that neither <code>ag</code> or <code>ack</code> have this, so it would be another differentiator!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emk">@emk</a> on 2016-10-11 21:29</div>
+            <div class="timeline-body"><p>I might have some time next week to take a look at this. Would you be interested in a PR following your outline above?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 21:34</div>
+            <div class="timeline-body"><p>@emk That'd be great! Although re-reading it, I think I'd like to keep the trait private inside of <code>ripgrep</code> for now. I'd eventually like to move more of the searching code to the <code>grep</code> crate, so its API is going to need to be re-worked and thought out anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emk">@emk</a> on 2016-10-28 22:02</div>
+            <div class="timeline-body"><p>Happy news! My top card in Trello at work says we need support for fast <code>-f</code>-style searching, so I have time to start on this on Monday. I'd love to prepare you a pull request to look at. Beyond what you wrote above, do you have any further advice on how I should tackle this to make the integration process as easy as possible?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-28 22:14</div>
+            <div class="timeline-body"><blockquote>
+<p>My top card in Trello at work says we need support for fast -f-style searching</p>
+</blockquote>
+<p>Do you have any requirements more specific than this? Specifically, the number of strings you need to search for?</p>
+<blockquote>
+<p>I'd love to prepare you a pull request to look at. Beyond what you wrote above, do you have any further advice on how I should tackle this to make the integration process as easy as possible?</p>
+</blockquote>
+<p>I think it's probably pretty important to support use of Aho-Corasick when the <code>-F</code> flag is given, which should bypass the regex engine entirely. Specifically, Aho-Corasick should scale quite a bit better to thousands/millions of literal strings than the regex engine will. A key problem you might face with this is the fact that Aho-Corasick doesn't actually preserve leftmost-first match semantics, and I'm not quite sure how to deal with that.</p>
+<p>In any case, I suspect that the easiest first thing you can do here is to forget about the Aho-Corasick optimization and just join all the strings together with <code>|</code> and feed it to the regex engine. This may not meet your performance requirements however.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emk">@emk</a> on 2016-10-28 22:27</div>
+            <div class="timeline-body"><p>Thank for the encouragement! (And for the great tool, which I already use dozens of times a day.)</p>
+<p>As for the implementation, let's start with the simple case as a warm-up exercise and go from there. :-)</p>
+<p>For our purposes, I could easily imagine a couple hundred strings. As far as I know, we're unlikely need to search for thousands of strings, but @seamusabshere might know otherwise. I'm still happy to try to implement the general case, because I agree that the PR just wouldn't be up to ripgrep's high standards otherwise.</p>
+<p>In the longer run, our use case might benefit from a <code>ripgrep</code> API which allowed us to call the searching engine from another binary. But for our first in-house experiments, we'll have a shell script that uses <code>curl</code> to download a list of strings from a URL, and which then passes them to <code>rg</code> for a filesystem-wide search. We might also benefit from a basic implementation of #1 that can at least detect UTF-16 files automatically, even if it can't detect more exotic encodings, so that we don't miss data in files created on Windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-28 22:56</div>
+            <div class="timeline-body"><blockquote>
+<p>As for the implementation, let's start with the simple case as a warm-up exercise and go from there. :-)</p>
+</blockquote>
+<p>To be clear, I'd be happy with a PR that did the simplest thing first! I imagine it should work fine with hundreds of strings. I don't know what it will look like at thousands or hundreds of thousands though. (I do know that my Aho-Corasick implementation can handle a million pretty easily.)</p>
+<blockquote>
+<p>In the longer run, our use case might benefit from a ripgrep API which allowed us to call the searching engine from another binary. But for our first in-house experiments, we'll have a shell script that uses curl to download a list of strings from a URL, and which then passes them to rg for a filesystem-wide search.</p>
+</blockquote>
+<p>Yup. #162 is the tracking issue for this. I'm almost ready to submit a PR that takes another step in that direction.</p>
+<blockquote>
+<p>We might also benefit from a basic implementation of #1 that can at least detect UTF-16 files automatically, even if it can't detect more exotic encodings, so that we don't miss data in files created on Windows.</p>
+</blockquote>
+<p>I honestly expect #1 to be quite hard to implement. At a high level, you just need something that takes a <code>Read</code> and transcodes the raw input to UTF-8, which in turn also implements <code>Read</code>. I think that alone is enough to work with the current implementation. The problem then comes with the output though. Do you output in the same encoding as the input? If so, that sounds pretty hairy. (Possibly even intractable.)</p>
+<p>I am kind of hoping to delay #1 until the search code gets pushed into its own library. That way we'll have an API to look at and design from, instead of what we have today, which is a bit convoluted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/seamusabshere">@seamusabshere</a> on 2016-10-29 23:14</div>
+            <div class="timeline-body"><p>examples of what i want to search for:</p>
+<ul>
+<li>specific uuids</li>
+<li>strings that look like addresses <code>/\d+ [a-z]+ (?:st|dr)/i</code></li>
+<li><code>/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i</code></li>
+</ul>
+<p>in case that's helpful :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-29 23:16</div>
+            <div class="timeline-body"><p>@seamusabshere I think that's all part of the plan. Most of the discussion at this point is just implementation details. :-)</p>
+<p>Note that ripgrep probably won't ever support &quot;I want to match hundreds of thousands of regexes all at once.&quot; If you're at that point, you'll probably need something more specialized. (Hundreds of thousands of <em>literals</em> should be fine though, even if it's not practical in the first rev.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-06 17:27</div>
+            <div class="timeline-body"><p>Note that if this supports <code>-f-</code> for reading from stdin, then it should satisfy #180 (which I'm now closing as a dupe).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emk">@emk</a> on 2016-11-06 17:33</div>
+            <div class="timeline-body"><p>Ah, nice! OK, I have some work in progress on this issue, and I'll be sure to support that case as well. That's a great feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emk">@emk</a> on 2016-11-07 23:42</div>
+            <div class="timeline-body"><p>The trickiest part of this so far is testing <code>-f-</code>, which can't be done using the existing <code>WorkDir::stdout</code> and <code>WorkDir::output</code> APIs, because we need to pipe some standard input to the process. This requires using something like <code>spawn</code>, as in <a href="http://rustbyexample.com/std_misc/process/pipe.html">this example</a>. Do you have any preferences about how I should implement this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-07 23:50</div>
+            <div class="timeline-body"><p>@emk If there's a way to add a convenience method or two to <code>WorkDir</code> to test it, then I think that would be fine. That way, we could add other tests that depend on stdin.</p>
+<p>However, since there aren't actually any existing tests for stdin, I wouldn't be offended if you opted to skip testing <code>-f-</code>. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emk">@emk</a> on 2016-11-09 11:23</div>
+            <div class="timeline-body"><p>The first piece of this is available in #227. Thank you for getting me started in the right direction, and please feel free to suggest improvements!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-15 23:15</div>
+            <div class="timeline-body"><p>Closed by #227</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-11-15 23:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:35 UTC
+    </footer>
+</body>
+</html>

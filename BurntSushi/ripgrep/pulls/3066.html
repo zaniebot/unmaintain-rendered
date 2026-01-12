@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix(globset): make GlobSet::new public - BurntSushi/ripgrep #3066</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix(globset): make GlobSet::new public</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/3066">#3066</a>
+        opened by <a href="https://github.com/bcheidemann">@bcheidemann</a>
+        on 2025-06-12 15:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bcheidemann">@bcheidemann</a></div>
+            <div class="timeline-body"><p>Currently, <code>GlobSet::new</code> is private and can only be accessed via the <code>GlobSetBuilder</code>.</p>
+<p>However, <code>GlobSetBuilder</code> simply creates a <code>Vec&lt;Glob&gt;</code> and then invokes <code>GlobSet::new</code>. For users of <code>globset</code> who already have a <code>Vec&lt;Glob&gt;</code> (or similar), this design requires them to iterate over their <code>Vec&lt;Glob&gt;</code>, calling <code>GlobSetBuilder::add</code> for each <code>Glob</code>, thus constructing a new <code>Vec&lt;Glob&gt;</code> internal to the <code>GlobSetBuilder</code>.</p>
+<p>This makes the consuming code unnecessarily verbose to and may result in some performance impact (not tested).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bcheidemann">@bcheidemann</a> reviewed on 2025-06-12 15:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/bcheidemann">@bcheidemann</a> on <code>crates/globset/src/lib.rs</code>:415 on 2025-06-12 15:12</div>
+            <div class="timeline-body"><p>Note: I've changed the pats type here to make it more flexible for consumers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reneleonhardt">@reneleonhardt</a> on 2025-06-21 09:33</div>
+            <div class="timeline-body"><p>Good idea!</p>
+<p>Would also be nice if GlobSetBuilder would also support <code>extend(other: &amp;GlobSet)</code> to chain multiple globsets together 😄
+A combined GlobSet could match quickly, then the &quot;inner&quot; GlobSets could be matched sequentially to determine which logical set actually matched.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-08-20 00:13</div>
+            <div class="timeline-body"><p>Thanks! I've incorporated this into my rollup branch.</p>
+<p>I've also made the API a bit more robust. In particular, to mimic the <a href="https://docs.rs/regex/latest/regex/struct.RegexSet.html#method.new"><code>regex::RegexSet::new</code></a> constructor, it takes an iterator of <code>AsRef&lt;Glob&gt;</code>. This in turn requires an <code>impl AsRef&lt;Glob&gt; for Glob</code> to work ergonomically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2025-08-20 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-20 00:14</div>
+            <div class="timeline-body"><blockquote>
+<p>Good idea!</p>
+<p>Would also be nice if GlobSetBuilder would also support <code>extend(other: &amp;GlobSet)</code> to chain multiple globsets together 😄 A combined GlobSet could match quickly, then the &quot;inner&quot; GlobSets could be matched sequentially to determine which logical set actually matched.</p>
+</blockquote>
+<p>This is an API footgun and changes the worst case time complexity of the matching routine. So... not going to happen.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-09-20 01:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:21 UTC
+    </footer>
+</body>
+</html>

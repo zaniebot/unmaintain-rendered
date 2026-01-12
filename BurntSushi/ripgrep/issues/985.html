@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regex::new() panicks when given output of Glob::regex() - BurntSushi/ripgrep #985</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Regex::new() panicks when given output of Glob::regex()</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/985">#985</a>
+        opened by <a href="https://github.com/vadimcn">@vadimcn</a>
+        on 2018-07-19 07:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/vadimcn">@vadimcn</a></div>
+            <div class="timeline-body"><p>This code</p>
+<pre><code>    let glob = globset::Glob::new(&quot;/foo/bar/*&quot;).unwrap();
+    regex::Regex::new(glob.regex()).unwrap();
+</code></pre>
+<p>panicks with the following message:</p>
+<pre><code>thread 'test::test' panicked at 'called `Result::unwrap()` on an `Err` value: Syntax(
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+regex parse error:
+    (?-u)^/foo/bar/.*$
+                   ^
+error: pattern can match invalid UTF-8
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+)', libcore/result.rs:945:5
+</code></pre>
+<p>I am not entirely sure what is it trying to tell me...</p>
+<p>Versions: globset = 0.4.0;  regex = 1.0.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-19 10:31</div>
+            <div class="timeline-body"><p>Regex::new isn't panicking. It is returning an error, and you are calling unwrap, which turns the error into a panic.</p>
+<p>Globs match on arbitrary bytes, and therefore may match invalid utf-8. This is intentional. Therefore, you can't use the str based API. You need to use bytes::Regex instead. The documentation for this crate should explain this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-07-19 10:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vadimcn">@vadimcn</a> on 2018-07-19 17:02</div>
+            <div class="timeline-body"><p>Makes sense, sorry for the noise.</p>
+<p>Though, you might consider the fact that I honestly RTFM'ed and googled that error, for like an hour, before submitting this bug report.  Maybe worth considering adding a note to the description of <a href="https://docs.rs/globset/0.4.0/globset/struct.Glob.html#method.regex"><code>Glob::regex()</code></a> method?<br />
+In fact, I did find the <a href="https://docs.rs/regex/1.0.2/regex/index.html#unicode">paragraph</a> related to <code>(?-u)</code> option, but still failed to make connection to the error, because it reads as if <code>(?-u)</code> merely modifies matching behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @BurntSushi on 2018-07-21 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">doc</span> added by @BurntSushi on 2018-07-21 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-21 17:25</div>
+            <div class="timeline-body"><p>@vadimcn Does the <a href="https://docs.rs/regex/1.0.2/regex/index.html#opt-out-of-unicode-support">next section on opting out of Unicode support</a> resolve the confusion here?</p>
+<p>(Also, consider what would happen if the <code>str</code> API allowed you to write a regex that matched invalid or incomplete UTF-8. The match offsets you'd get back from the API would in turn not be guaranteed to be valid slice offsets, and there would be no clear answer on how to extract matches as <code>&amp;str</code>.)</p>
+<p>I will update the docs in <code>globset</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-07-21 17:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:36 UTC
+    </footer>
+</body>
+</html>

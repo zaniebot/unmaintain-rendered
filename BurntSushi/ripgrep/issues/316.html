@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>-v switch sometimes gives wrong results - BurntSushi/ripgrep #316</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>-v switch sometimes gives wrong results</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/316">#316</a>
+        opened by <a href="https://github.com/stej">@stej</a>
+        on 2017-01-12 15:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/stej">@stej</a></div>
+            <div class="timeline-body"><p>I still don't have some reliable repro, but I'll try at least..</p>
+<p>I have this search:
+<code>rg 30193293 -g 2017-01-09* | rg -v &quot;Logging inputStream from mail service|notifications received&quot;</code>
+When I run it only on several (about 10) files, it returns correct results. But when I run it on a lot of files (log files for one month), then it gives weird results.  <code>rg 30193293 -g 2017-01-09* -c</code> returns results from 6 files, but when I add the pipe and <code>-v</code>, it returns results from files where string &quot;30193293&quot; is not contained. Any idea, how to make a reliable repro, if this is a bug?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stej">@stej</a> on 2017-01-12 15:15</div>
+            <div class="timeline-body"><p>Btw. I'm on windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-12 15:35</div>
+            <div class="timeline-body"><p>From your description, it sounds like you're not saying that <code>-v</code> is wrong, but that the initial search is wrong. Namely, if you're seeing results without the string <code>30193293</code>, then doesn't that mean the <em>first</em> <code>rg</code> command reported a line as a match that wasn't a match? If so, that's where I'd start with a repro.</p>
+<p>For example, compare the output of your command:</p>
+<pre><code>$ rg 30193293 -g 2017-01-09* | rg -v &quot;Logging inputStream from mail service|notifications received&quot;
+</code></pre>
+<p>with this</p>
+<pre><code>$ rg 30193293 -g 2017-01-09* | grep -v &quot;Logging inputStream from mail service|notifications received&quot;
+</code></pre>
+<p>and this</p>
+<pre><code>$ grep 30193293 --include 2017-01-09* | grep -v &quot;Logging inputStream from mail service|notifications received&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-01-13 01:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stej">@stej</a> on 2017-01-13 08:17</div>
+            <div class="timeline-body"><p>I didn't write it clearly. I think there is no problem with the first run of <code>rg 30193293 </code> that returns correct results. It seems that combination of pipe and <code>-v</code> option doesn't work in some cases.</p>
+<p>I tried</p>
+<pre><code>grep.exe 30193293 2017-01-09* | grep.exe -v &quot;Logging inputStream from mail service|notifications received&quot; &gt; %~dp0grep-grep.out.txt
+
+rg 30193293 -g 2017-01-09* | grep.exe -v &quot;Logging inputStream from mail service|notifications received&quot; &gt; %~dp0rg-grep.out.txt
+
+rg 30193293 -g 2017-01-09* | rg -v &quot;Logging inputStream from mail service|notifications received&quot; &gt; %~dp0rg-rg.out.txt
+</code></pre>
+<p>and the first 2 commands give me the same results (after some sorting).</p>
+<p>I killed the the last command when rg-rg.out.txt had 10GB size. And indeed I inspected the output file rg-rg.out.txt and it looks like the <code>-v</code> ignores the input from pipe and runs the search in the current directory for all the files. There was no line that would match pattern <code>&quot;Logging inputStream from mail service|notifications received&quot;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/garoto">@garoto</a> on 2017-01-13 10:00</div>
+            <div class="timeline-body"><p>What version are you running? Not so long ago, piping any output to <code>rg</code> was broken and it would behave exactly like that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stej">@stej</a> on 2017-01-13 11:02</div>
+            <div class="timeline-body"><p>Yes, you are right. I had 2 versions on my machine. One on the path, the other one diretly in the directory hidden behind a lot of files..
+Versions 0.3.2 vs. 0.2.6.</p>
+<p>Problem solved. Thank you for your time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @stej on 2017-01-13 11:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:00 UTC
+    </footer>
+</body>
+</html>

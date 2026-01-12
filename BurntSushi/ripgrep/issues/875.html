@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>support more sophisticated boolean matching operations - BurntSushi/ripgrep #875</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>support more sophisticated boolean matching operations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/875">#875</a>
+        opened by <a href="https://github.com/mqudsi">@mqudsi</a>
+        on 2018-04-03 00:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mqudsi">@mqudsi</a></div>
+            <div class="timeline-body"><p>With the new convention to use the capitalized version of a short flag to indicate the opposite it's too bad that <code>-E</code> is already used to mean <code>--encoding</code>, as I would like to suggest an &quot;inverse pattern&quot; mode where only lines/words (depending on other parameters as normal) matching pattern <code>e</code> but not matching pattern <code>E</code> are included in the result set.</p>
+<p>Andrew, I know you are loathe to add more <code>!</code> support but given the pre-existing <code>-E</code>, perhaps a <code>-e !PATTERN</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-04-03 00:29</div>
+            <div class="timeline-body"><p>The name of the flag is really not the interesting part of this feature request. The interesting part is the request to support more sophisticated boolean tests.</p>
+<p>I think if we were to decide to do this, then it needs to be part of a larger story that encompasses more sophisticated expressions. We also need to address the fact that, today, we can actually express quite a bit, but it requires piping. Namely, piping permits expressing &quot;and&quot;. Piping plus the <code>-v</code> flag permits any arbitrary boolean expression you might want. For example, <code>rg foo | rg -v bar</code> says &quot;show lines matching <code>foo</code> but do not contain <code>bar</code>,&quot; which is <em>exactly</em> your feature request.</p>
+<p><code>git grep</code> has support for this via <code>-not</code>, <code>-and</code> and <code>-or</code>. I don't know if I'm willing to add this to ripgrep. There <em>must</em> be a point at which we say, &quot;piping is good enough.&quot;</p>
+<p>An alternative way to implement this feature is in the regex engine itself (since intersection and complement are available as operations on regular languages), but this is extremely non-trivial to do.</p>
+<p>I try not to speak in absolutes, but, &quot;I don't want to add anything else that uses <code>!</code> in a shell&quot; is as close to an absolute that I can get. Let's drop that idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-04-03 00:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">icebox</span> added by @BurntSushi on 2018-04-03 00:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2018-04-03 00:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Support inverse -e flag" to "support more sophisticated boolean matching operations" by @BurntSushi on 2018-04-03 00:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mqudsi">@mqudsi</a> on 2018-04-03 00:31</div>
+            <div class="timeline-body"><p>I understand completely. I currently pipe (to <code>grep</code>, I didn't realize I could pipe to <code>rg</code> itself!) but was wondering from a performance perspective basically about using the regex engine itself to optimize the search with the additional boolean constraints.</p>
+<p>Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-04-03 00:40</div>
+            <div class="timeline-body"><blockquote>
+<p>but was wondering from a performance perspective basically about using the regex engine itself to optimize the search with the additional boolean constraints.</p>
+</blockquote>
+<p>Well, the &quot;best&quot; way is to, as I hinted at, build complement and intersection into the regex engine. But as I said, this is extremely non-trivial to do efficiently. If we were to implement this, then we'd need an algorithm that selects the (attempted) optimal matching path given all of the boolean conditions. e.g., if you said &quot;x and not y and not z,&quot; then ripgrep would search for <code>x</code> and only apply the <code>y</code> and <code>z</code> blacklist on matches to filter them out. If you had <code>x or y or z</code>, then ripgrep would, as it does today, combine them into one regex joined by <code>|</code>. If you had <code>not x and not y and not z</code>, then ripgrep behave as it would today if you ran <code>rg -v x</code> and then use the <code>y</code> and <code>z</code> blacklists to filter our matches. If you had <code>not x or not y or not z</code>, then ripgrep could behave as it does today if you ran <code>rg -v 'x|y|z'</code>. And so on...</p>
+<p>It is plausible that this would result in a performance improvement. But you can't just throw that out there as a benefit and expect it to stick. :-) Performance does not exist in a vacuum. Pipelines tend to be constructed in a way that iteratively reduces the search space, which in turn makes performance less and less of an issue. The interesting bits are probably pipelines that start with an inverted match on a rarely occurring pattern, which would not reduce the search space much. Regardless, I personally find this to be a somewhat flimsy motivation for a feature like this unless someone can convince me otherwise. IMO, if we add a feature like this, it should be primarily for the UX.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kenorb">@kenorb</a> on 2018-04-11 00:59</div>
+            <div class="timeline-body"><p>Example of using <code>git grep</code> with AND patterns:</p>
+<pre><code>git grep -e pattern1 --and -e pattern2 --and -e pattern3</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kenorb">@kenorb</a> on 2018-04-11 01:17</div>
+            <div class="timeline-body"><p>Example of AND operation using <a href="https://github.com/rust-lang-nursery/regex">Rust's regex engine</a>:</p>
+<pre><code>rg -N '(?P&lt;p1&gt;.*pattern1.*)(?P&lt;p2&gt;.*pattern2.*)(?P&lt;p3&gt;.*pattern3.*)' file.txt</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-04-11 01:28</div>
+            <div class="timeline-body"><p>@kenorb That's presumably not the same as what <code>git grep</code> does. <code>git grep -e pattern1 --and -e pattern2</code> will match <code>pattern2pattern1</code> but <code>(.*pattern1.*)(.*pattern2.*)</code> will not. The standard way to perform &quot;and&quot; queries in ripgrep is with piping, as I mentioned above in my comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/peterbe">@peterbe</a> on 2018-06-06 12:05</div>
+            <div class="timeline-body"><p>I quite like the simplicity and &quot;natural feel&quot; of using <code>rg foo | rg bar</code> to do the equivalent of <code>git grep -e foo --and -e bar</code>. The only significant difference is the color.</p>
+<p><strong><code>git grep -e foo --and -e bar</code></strong>
+<img width="757" alt="screen shot 2018-06-06 at 8 03 13 am" src="https://user-images.githubusercontent.com/26739/41037089-32d8aed8-6960-11e8-8fa1-72828c827aef.png"></p>
+<p><strong><code>rg string | rg query</code></strong>
+<img width="725" alt="screen shot 2018-06-06 at 8 04 42 am" src="https://user-images.githubusercontent.com/26739/41037120-4c81bdf2-6960-11e8-9dfc-95e4165dca55.png"></p>
+<p>See, no highlight of the word <code>string</code> in the <code>rg</code> pipe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-06 12:10</div>
+            <div class="timeline-body"><p>@peterbe You should be able to fix that by adding <code>--color always</code> to your first invocation of ripgrep. Not ideal of course.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/peterbe">@peterbe</a> on 2018-06-06 12:38</div>
+            <div class="timeline-body"><p>I don't even know if it's possible with pipes but if you could know that that the next pipe is another <code>rg</code> the <code>--color always</code> could be on by default. One can dream.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elbaro">@elbaro</a> on 2018-06-29 07:51</div>
+            <div class="timeline-body"><p>Piping loses the file headers.</p>
+<pre><code>rg abc
+
+a.txt
+4: ...abc...xyz...
+7: ...abc...
+
+b.txt
+3: ...abc...xyz...
+</code></pre>
+<pre><code>rg abc | rg xyz
+
+4: ...abc...xyz...
+3: ...abc...xyz...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-29 09:04</div>
+            <div class="timeline-body"><p>That example doesn't look right. It should retain file names not as headers but in each line in standard grep format.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elbaro">@elbaro</a> on 2018-06-29 15:00</div>
+            <div class="timeline-body"><p>Sorry my bad. It looks like this:</p>
+<pre><code>rg abc | rg xyz
+a.txt: ...abc...xyz...
+a.txt: ...abc...xyz...
+b.txt: ...abc...xyz...
+b.txt: ...abc...xyz...
+</code></pre>
+<p>Still hard to parse when there are many files.
+I think it's an example where the built-in op can provide better UX than piping.</p>
+<p>Another example is piping with -A or -B.</p>
+<pre><code>// want to print a line including &quot;abc&quot; and &quot;xyz&quot; with +- 3 lines
+rg abc -A 3 -B -3 | rg xyz -A 3 -B 3  // not what we want
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-29 15:08</div>
+            <div class="timeline-body"><p>That's certainly part of an argument in favor of this, but I will not allow that argument to be used as a hammer. Taken to its logical conclusion, ripgrep should bundle every conceivable transform on its data. At some point, people need to become OK with piping ripgrep's output and dealing with the different format. Different people will have different opinions on where that line is drawn.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2018-09-21 19:21</div>
+            <div class="timeline-body"><p>I have definitely wished for an easy way to preserve headers when piping <code>rg</code> to <code>rg</code>. Maybe a flag for &quot;header passthrough&quot; would be useful on its own.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aldanor">@aldanor</a> on 2019-01-07 11:09</div>
+            <div class="timeline-body"><blockquote>
+<p>I have definitely wished for an easy way to preserve headers when piping rg to rg. Maybe a flag for &quot;header passthrough&quot; would be useful on its own.</p>
+</blockquote>
+<p>That would be nice but won't work in all cases. E.g., consider</p>
+<pre><code class="language-sh">rg -C5 foo | rg -v bar
+</code></pre>
+<p>Now the context lines around the matched lines in the first rg call are being matched by the second rg call and your output may end up being a bit of a mess and not what you might expect.</p>
+<hr />
+<blockquote>
+<p>IMO, if we add a feature like this, it should be primarily for the UX.</p>
+</blockquote>
+<p>Looking at a few now-closed duplicate issues, what most people want is just &quot;a and not b&quot; with all of headers/context preserved which might make sense to special-case if that's much simpler that the general case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amitbha">@amitbha</a> on 2019-02-23 00:35</div>
+            <div class="timeline-body"><p>Files looks like this:</p>
+<p>a.txt
+4: ...abc...
+30: ...xyz...</p>
+<p>b.txt
+4: ...abc...
+.....
+(no 'xyz' in content)</p>
+<p>How to find files like a.txt with 'abc' and 'xyz' in different lines?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-02-23 04:13</div>
+            <div class="timeline-body"><p>Use multiline search.</p>
+<p>On Fri, Feb 22, 2019, 19:35 amitbha <a href="mailto:notifications@github.com">notifications@github.com</a> wrote:</p>
+<blockquote>
+<p>Files looks like this:</p>
+<p>a.txt
+4: ...abc...
+30: ...xyz...</p>
+<p>b.txt
+4: ...abc...
+.....
+(no 'xyz' in content)</p>
+<p>How to find files like a.txt with 'abc' and 'xyz' in different lines?</p>
+<p>—
+You are receiving this because you commented.
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/BurntSushi/ripgrep/issues/875#issuecomment-466595243">https://github.com/BurntSushi/ripgrep/issues/875#issuecomment-466595243</a>,
+or mute the thread
+<a href="https://github.com/notifications/unsubscribe-auth/AAb34iFvSILtyapoZbiWQTX9675DE3n0ks5vQIzHgaJpZM4TEQ9s">https://github.com/notifications/unsubscribe-auth/AAb34iFvSILtyapoZbiWQTX9675DE3n0ks5vQIzHgaJpZM4TEQ9s</a>
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amitbha">@amitbha</a> on 2019-02-23 08:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Use multiline search.
+<a href="#">…</a>
+On Fri, Feb 22, 2019, 19:35 amitbha <em><strong>@</strong></em>.***&gt; wrote: Files looks like this: a.txt 4: ...abc... 30: ...xyz... b.txt 4: ...abc... ..... (no 'xyz' in content) How to find files like a.txt with 'abc' and 'xyz' in different lines? — You are receiving this because you commented. Reply to this email directly, view it on GitHub &lt;<a href="https://github.com/BurntSushi/ripgrep/issues/875#issuecomment-466595243">#875 (comment)</a>&gt;, or mute the thread <a href="https://github.com/notifications/unsubscribe-auth/AAb34iFvSILtyapoZbiWQTX9675DE3n0ks5vQIzHgaJpZM4TEQ9s">https://github.com/notifications/unsubscribe-auth/AAb34iFvSILtyapoZbiWQTX9675DE3n0ks5vQIzHgaJpZM4TEQ9s</a> .</p>
+</blockquote>
+<p>Thanks for reply.
+I tried <code>rg -U --multiline-dotall -e 'abc.*xyz</code>, the right files were found. But there were too many outputs like:</p>
+<blockquote>
+<p>4: ...abc...
+5: xxxxx
+6: xxxxx
+...
+29: xxxxx
+30: ...xyz...</p>
+</blockquote>
+<p><code>rg -U --multiline-dotall -e 'abc.*xyz | rg abc</code>
+No filename and line-numbers.</p>
+<p><code>rg -U --multiline-dotall -l -e 'abc.*xyz' | rg 'abc' -</code>
+No result. How to read path from pipe?</p>
+<p><code>rg -U --multiline-dotall -l -e 'abc.*xyz' | while read line; do rg 'xyz' &quot;$line&quot;; done</code>
+Almost done! But filenames are missing. 😔</p>
+<p><code>rg -U --multiline-dotall -l -e 'abc.*xyz' | while read line; do echo &quot;$line&quot;; rg 'xyz' &quot;$line&quot;; echo; done</code>
+Done! 😌</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-02-23 13:40</div>
+            <div class="timeline-body"><p>Please skim the options in the man page. Use the -n and --with-filename
+flags.</p>
+<p>On Sat, Feb 23, 2019, 03:25 amitbha <a href="mailto:notifications@github.com">notifications@github.com</a> wrote:</p>
+<blockquote>
+<p>Use multiline search.
+… &lt;#m_6621645017383223918_&gt;
+On Fri, Feb 22, 2019, 19:35 amitbha <em><strong>@</strong></em>.***&gt; wrote: Files looks like
+this: a.txt 4: ...abc... 30: ...xyz... b.txt 4: ...abc... ..... (no 'xyz'
+in content) How to find files like a.txt with 'abc' and 'xyz' in different
+lines? — You are receiving this because you commented. Reply to this email
+directly, view it on GitHub &lt;#875 (comment)
+<a href="https://github.com/BurntSushi/ripgrep/issues/875#issuecomment-466595243">https://github.com/BurntSushi/ripgrep/issues/875#issuecomment-466595243</a>&gt;,
+or mute the thread
+https://github.com/notifications/unsubscribe-auth/AAb34iFvSILtyapoZbiWQTX9675DE3n0ks5vQIzHgaJpZM4TEQ9s
+.</p>
+<p>Thanks for reply.
+I tried rg -U --multiline-dotall -e 'abc.*xyz, the right files were
+found. But there were too many outputs like:</p>
+<p>4: ...abc...
+5: xxxxx
+6: xxxxx
+...
+29: xxxxx
+30: ...xyz...</p>
+<p>rg -U --multiline-dotall -e 'abc.*xyz | rg abc
+No filename and line-numbers.</p>
+<p>rg -U --multiline-dotall -l -e 'abc.*xyz' | rg -e 'abc' -
+No result. How to read path from pipe?</p>
+<p>rg -U --multiline-dotall -l -e 'abc.*xyz' | while read line; do rg -e
+'xyz' &quot;$line&quot;; done
+Almost done! But filenames are missing.</p>
+<p>😔</p>
+<p>—
+You are receiving this because you commented.
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/BurntSushi/ripgrep/issues/875#issuecomment-466628741">https://github.com/BurntSushi/ripgrep/issues/875#issuecomment-466628741</a>,
+or mute the thread
+<a href="https://github.com/notifications/unsubscribe-auth/AAb34jwonl0CGHe9DS2PCPvcqLH8d2rFks5vQPr0gaJpZM4TEQ9s">https://github.com/notifications/unsubscribe-auth/AAb34jwonl0CGHe9DS2PCPvcqLH8d2rFks5vQPr0gaJpZM4TEQ9s</a>
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amitbha">@amitbha</a> on 2019-02-24 09:32</div>
+            <div class="timeline-body"><p><code>rg -U --multiline-dotall -l -e 'abc.*xyz' | while read line; do rg --with-filename 'xyz' &quot;$line&quot;; echo; done</code>
+Got it!
+😌</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-02-24 13:18</div>
+            <div class="timeline-body"><p>Friendly note: the utility of this feature is not in question. More comments explaining how useful this is or the kinds of problems it solves that aren't solved well by the status quo aren't necessary. The key thing blocking this feature is the potentially immense complexity that it adds not only to the implementation, but to the UX. It requires serious design work first, and it's still not clear to me that this is a feature I want to add.</p>
+<p>It is well known that <code>git grep</code> supports this stuff. If it does what you want, then just use that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elazarl">@elazarl</a> on 2019-12-04 14:23</div>
+            <div class="timeline-body"><p>Please consider a utility <code>rg --compile-expr a -and b -and c</code> generates relevant DFA.</p>
+<p>Usage something like <code>rg --dfa $(rg --compile-expr a -and -not b)</code>. This will seal complexity only in the <code>compile-expr</code> option. Rest UX will remain identical.</p>
+<p>Also piping is problematic for huge files as data is being copied again for every pipe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zachriggle">@zachriggle</a> on 2020-04-01 03:13</div>
+            <div class="timeline-body"><p>Piping is also an issue when using e.g. <code>--heading</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-04-01 12:21</div>
+            <div class="timeline-body"><p>@zachriggle That's already been mentioned.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hraban">@hraban</a> on 2020-05-20 11:39</div>
+            <div class="timeline-body"><p>re --and, I'm not sure if this is blasphemy or even correct at all and I'm probably missing edge cases but we could demorgan it...</p>
+<pre><code>$ echo -e 'Hello, foo\nBye, baz\nHello, james\nHello, baz\nbaz likes yellow' | \
+    rg --pcre2 '^(?!((?!.*baz.*$)|(?!.*ello.*$)))'
+Hello, baz
+baz likes yellow
+</code></pre>
+<p>for matching any line containing <code>baz</code> <em>and</em> <code>ello</code>. perhaps a useful stop-gap for anyone desperate for a work-around?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-05-20 12:30</div>
+            <div class="timeline-body"><p>@hraban If you just want a simple and query, then I'd probably recommend just doing</p>
+<pre><code>$ echo -e 'Hello, foo\nBye, baz\nHello, james\nHello, baz\nbaz likes yellow' | rg baz | rg ello
+</code></pre>
+<p>With the downsides of course being that you lose the nice formatting and highlighting of <code>baz</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sparrc">@sparrc</a> on 2020-10-28 22:40</div>
+            <div class="timeline-body"><p>I'm going to suggest that maybe this issue and https://github.com/BurntSushi/ripgrep/issues/473 should be two separate issues.</p>
+<p>Personally I'm not that interested in using complex boolean or regex patterns with ripgrep. I just want to be able to specify multiple patterns. Perhaps this could just be specified with a new flag like</p>
+<pre><code>rg --patterns &quot;level=error&quot; --patterns &quot;requestID&quot;
+</code></pre>
+<p>Maybe that's too simplistic, but I've been using rg nearly since it was started and I've never had any desire for anything besides a simple 'and' match on multiple patterns.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-10-28 22:57</div>
+            <div class="timeline-body"><p>@sparrc Conceptually, you might be right. But in terms of implementation, I don't think there is much of a difference, so I'm treating them the same. Also, ripgrep <em>does</em> have the ability to search multiple patterns (using the same exact flags as <code>grep</code>). It's just that it's a &quot;or&quot; match.</p>
+<p>On top of that, the reason why just wanting &quot;and&quot; match is a little weird is because you can do it with pipelines: <code>rg level=error | rg requestID</code>. It's just that the UX isn't quite as good...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elazarl">@elazarl</a> on 2020-10-29 07:15</div>
+            <div class="timeline-body"><p>@BurntSushi it's not just the UX (which is a major, unfixable problem IMHO. UX issues are much more important than &quot;real&quot; bugs, say, 100% slowdown of some cases).</p>
+<p>One of the main reasons for me to use <code>ripgrep</code>, and one of its advantages is speed, so I'm picking it when I'm searching large files. Using multiple pipes slows things down in some cases, as it copies the data, adds syscalls, etc.</p>
+<p>This is not 100% the same search, and of course I picked a 3GB file with search terms appearing in most lines, but</p>
+<pre><code>$ time ./ripgrep-12.1.1-x86_64-unknown-linux-musl/rg DMOD.\*LOW dr_agg  &gt;/dev/null
+
+real    0m5.772s
+user    0m5.017s
+sys     0m0.754s
+$ time ./ripgrep-12.1.1-x86_64-unknown-linux-musl/rg DMOD.\*LOW dr_agg  &gt;/dev/null
+
+real    0m5.749s
+user    0m4.987s
+sys     0m0.760s
+$ time ./ripgrep-12.1.1-x86_64-unknown-linux-musl/rg DMOD dr_agg |./ripgrep-12.1.1-x86_64-unknown-linux-musl/rg LOW &gt;/dev/null
+
+real    0m6.330s
+user    0m7.147s
+sys     0m2.781s
+$ time ./ripgrep-12.1.1-x86_64-unknown-linux-musl/rg DMOD dr_agg |./ripgrep-12.1.1-x86_64-unknown-linux-musl/rg LOW &gt;/dev/null
+
+real    0m6.168s
+user    0m7.245s
+sys     0m2.777s
+</code></pre>
+<p>1 second hardly matter, but it is not uncommon for me to search 300GB of file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gd4c">@gd4c</a> on 2020-11-04 20:07</div>
+            <div class="timeline-body"><p>+1 from me for multiple &quot;AND&quot; searches</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-04 20:13</div>
+            <div class="timeline-body"><p>@gd4c Please don't post +1 comments. They are noise that makes it into my inbox. If you feel obligated to +1 something, then use GitHub's emoji reactions. See also: https://github.com/BurntSushi/ripgrep/issues/875#issuecomment-466774329</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gd4c">@gd4c</a> on 2020-11-05 06:42</div>
+            <div class="timeline-body"><p>Sorry. I initially upvoted the initial post, but it wasn't what I was after (which kind of evolved into the thread). I just wanted to make it clear what I was thumbing up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gd4c">@gd4c</a> on 2020-11-05 06:51</div>
+            <div class="timeline-body"><p>Continuing from #1149</p>
+<blockquote>
+<p>The implementation complexity of more sophisticated boolean matching is precisely my main argument against it. And it requires a very thorough specification of behavior.</p>
+<p>And the upsides are limited. Yes, you can't get the &quot;nice&quot; output when using pipelines, but you can still use pipelines and the output is still serviceable.</p>
+</blockquote>
+<p>Is it much trouble to ask you to give us an idea of what you have in mind?
+I would imagine it like this:</p>
+<ul>
+<li>Run rg with first expression as usual.</li>
+<li>Instead of formatting file matches as headings, pass them as a list of input files for the second expression.</li>
+<li>repeat n times.</li>
+<li>Show the results of the last run as usual with color for the last match only (as if you only ran rg with just the last expression).</li>
+</ul>
+<p>That would be enough for me, and I suspect many of the people above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-05 11:56</div>
+            <div class="timeline-body"><p>@gd4c <code>rg foo | rg bar</code> will only print lines that contain both <code>foo</code> and <code>bar</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gd4c">@gd4c</a> on 2020-11-05 17:13</div>
+            <div class="timeline-body"><p>True, but without the easily readable formatting. 🙂
+Regular <code>grep</code> can do that for the matter. It is just that <code>ripgrep</code> is nicer to use which drives this request – to increase the nice UX rather than include an otherwise impossible feature!</p>
+<p>In any case, if you can find an easy way to do it, that'd be great. If you consider it too much trouble, there are (less nice) workaround we can use!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gd4c">@gd4c</a> on 2020-11-05 22:18</div>
+            <div class="timeline-body"><p>What's confusing?</p>
+<p>Also, forgot to say that piping to rg searches lines in previous stdout, not the matching <em>files</em>!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-05 22:32</div>
+            <div class="timeline-body"><p>The upsides and downsides here are well known. I've stated repeatedly what the problems are with <code>rg foo | rg bar</code>. They don't need to keep being repeated. So I'm confused at why you're rehashing things.</p>
+<p>Adding this feature reflects <em>significant</em> work. The first step is to come up with a comprehensive UX specification of behavior. <em>That</em> would be useful. Further argumentation about <em>why</em> ripgrep should have this feature is <em>not</em> useful. It's just noise and it's just filling up my inbox.</p>
+<p>I said about as much almost <a href="https://github.com/BurntSushi/ripgrep/issues/875#issuecomment-466774329">a year and a half ago</a>, so now I'm just repeating myself. And I'm confused at why I need to do it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gd4c">@gd4c</a> on 2020-11-05 23:02</div>
+            <div class="timeline-body"><p>Sorry for the misunderstanding. I recognize that you understand its usefulness and that the issue is the complexity. I was just responding to your solution <a href="#issuecomment-722332162">above</a>.</p>
+<p>You made a great tool and I am grateful!</p>
+<p>Cheers!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zachriggle">@zachriggle</a> on 2020-11-06 01:54</div>
+            <div class="timeline-body"><p>My current work-around for this is effectively use <code>rg -l</code> to find all OR'ed matches, and then pass off to git grep.</p>
+<p>A statement that looks roughly like this:</p>
+<pre><code>$ my-grep -e foo --and -e bar --and --not '(' -e fizz -e buzz ')'
+</code></pre>
+<p>Gets translated roughly to:</p>
+<pre><code>rg -e foo -e bar -l -0 | xargs -0 git grep --threads 12 --no-index -e foo --and -e bar --and --not '(' -e fizz -e buzz ')'
+</code></pre>
+<p>There's a LOT of extra plumbing in my shell script to achieve better performance (e.g. don't have ripgrep search for expressions in an <code>--and --not ( -e fizz -e buzz )</code> block, but ultimately <code>rg -l -0 | xargs -0 git grep --no-index</code> works pretty effectively, and is much faster than <code>git grep</code> by itself if you make use of e.g. <code>rg</code> type filters (e.g. <code>rg -t c -t py</code>).</p>
+<p>This also allows you to specify some <code>git grep</code> specific formatting, like <code>--show-function</code>, in addition to those that <code>rg</code> also supports like <code>--break --heading --line-number</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bionicles">@bionicles</a> on 2021-03-19 15:27</div>
+            <div class="timeline-body"><blockquote>
+<p>The first step is to come up with a comprehensive UX specification of behavior. That would be useful.</p>
+</blockquote>
+<p>for UX on multiple patterns with boolean logic,</p>
+<p>what if users wrote a double quoted string with 'AND' , 'OR', 'NOT' in it , but only within quotes and in all caps after a certain flag. if necessary could specifically surround query patterns with single quotes or curly brackets to make it easier to pluck them out.</p>
+<p>if each query result is a set of matches, the logic can be a tree of set operations like intersection (&quot;AND&quot;), set union (&quot;OR&quot;), complement (&quot;NOT&quot;) to get the results which meet the criteria</p>
+<pre><code class="language-py"># rg --logic &quot;practitioner AND surgery&quot;
+r1, r2 = find([&quot;practitioner&quot;, &quot;surgery&quot;], data)
+result = intersection(r1, r2)
+
+# rg --logic &quot;patient AND (diabetes OR cancer) AND statin NOT lung cancer&quot;
+r1, r2, r3, r4, r5 = find([&quot;patient&quot;, &quot;diabetes&quot;, &quot;cancer&quot;, &quot;statin&quot;, &quot;lung cancer&quot;], data)
+result = intersection(r1, union(r2, r3), r4).difference(r5)
+</code></pre>
+<p>could follow a specific order of operations such as listed here: <a href="http://www.cwladis.com/math100/Lecture4Sets.htm#:~:text=Order%20of%20operations%20on%20sets%3A&amp;text=Just%20like%20with%20numbers%2C%20we%20always%20do%20anything%20in%20parentheses,all%20equal%20in%20the%20order.">order of operations on sets</a></p>
+<p>as for performance, that could still be single pass over the data (presumably) but would require a check for multiple queries at each point O(N), plus each set operation is (i believe) linear in the number of matches, and thus fairly fast, but this can add a whole new dimension to the capabilities of ripgrep, AND / OR / NOT / Parenthesis is easily interpretable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-19 16:02</div>
+            <div class="timeline-body"><p>@bionicles It's a nice idea, but it's only a start. You're basically saying, &quot;use a DSL.&quot; A DSL comes with its own complications. Your examples are simple because none of your queries are regexes. A DSL that embeds regexes means you'll need to handle escaping, and that could become quite annoying. A DSL also implies, to me, that it needs facilities for bulk-including regexes, like via the <code>-f</code> flag.</p>
+<p>If I had time to implement this, my first step would be to look at <code>git grep</code> and write a specification based on its man pages and behavior. Then evaluate whether that specification could be improved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bionicles">@bionicles</a> on 2021-03-19 20:42</div>
+            <div class="timeline-body"><p>eh, git grep syntax looks pretty bad. weird nested flags <code>--and --e thing1 --e thing2</code> ... it doesn't read like english</p>
+<p>i just believe ripgrep could be a super fast offline-first alternative to algolia ...but perhaps regex could be surrounded by curlies?</p>
+<p><code>rg --logic &quot;{^[A-Z]+_SUSPEND$} OR rustacean&quot;</code></p>
+<p>if somebody needs to regex for curly brackets, or regex for regex patterns, they could use double curly brackets, or suck it up and use something else. and even if the logic matching didnt support regex at all, i'd use it, and it would be extremely useful in the vast majority of use cases where one doesn't need regex</p>
+<p>the plan i described is unclear about the order of operations tho, I'd suggest</p>
+<p>parenthesis &gt; OR &gt; AND &gt; NOT
+because &quot;or&quot; is more inclusive</p>
+<p>and just error if there's ambiguity about order of operations</p>
+<p>another alternative would be a lispy syntax like</p>
+<p><code>rg --logic &quot;((simple english NOT dsl) AND regex)&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bionicles">@bionicles</a> on 2021-03-19 20:52</div>
+            <div class="timeline-body"><p>to de-spec and simplify, just some way to do AND queries alone would be 80/20
+aka, find files which match 3 different queries:
+<code>rg --multi &quot;patient&quot; --multi &quot;pacemaker&quot; --multi &quot;expired&quot;</code>
+no DSL required</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zachriggle">@zachriggle</a> on 2021-03-19 21:23</div>
+            <div class="timeline-body"><p>git grep's advanced Boolean expression should be the model for this. It allows nesting and grouped expressions.</p>
+<p>git grep -e foo —and —not ( -e fizz -e buzz ) —and -e bar</p>
+<p>Will match anything with “foo” and “bar” but exclude anything that contains “fizz” or “buzz”.  You can recursively nest things and make very complex queries this way.</p>
+<p>Defining a new DSL for ripgrep seems unwise, when there is a battle-proven
+interface with git-grep.</p>
+<p>IMHO ripgrep should emulate git-grep’s CLI interface.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-19 21:27</div>
+            <div class="timeline-body"><p>Right. It being an existing and very popular implementation of the idea gives it credibility. It should be our starting point. Note also though, that I said we may evaluate its specification.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zachriggle">@zachriggle</a> on 2021-03-20 00:31</div>
+            <div class="timeline-body"><p>If I can make one VERY small suggestion that differs from the git-grep API, would be to replace (or permit both of) <code>'('</code> with <code>[</code> for expression grouping since the <code>(</code> requires quoting like <code>'('</code> or else the shell tries to do weird things with it.  The <code>[</code> and <code>]</code> are not treated specially and don't need quotes.</p>
+<p>I use a wrapper script (company internal only, can't share sorry) around RipGrep and Git Grep to get the best of both worlds, and it does substitution of <code>[</code> with <code>'('</code> to make things easier to read.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/HK47196">@HK47196</a> on 2022-03-22 08:19</div>
+            <div class="timeline-body"><blockquote>
+<p>@gd4c <code>rg foo | rg bar</code> will only print lines that contain both <code>foo</code> and <code>bar</code>.</p>
+</blockquote>
+<p>It will also match lines that merely contain foo but have bar in the filename.</p>
+<pre><code>~ echo 'foo' &gt; bar
+~ rg foo | rg bar
+bar:foo
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kenorb">@kenorb</a> on 2022-05-02 12:13</div>
+            <div class="timeline-body"><p>I've got the following simple use case to share (useful when preprocessing Markdown text or Wikipedia articles).</p>
+<p>So I'm trying to match using OR operator words which have special characters around it and print both combinations. I've tried the following:</p>
+<pre><code>$ echo &quot;{{Foo}} [[Bar]]&quot; | rg -o '\w+|\S+'
+{{Foo}}
+[[Bar]]
+</code></pre>
+<p>With the OR operation, I would expect something like this:</p>
+<pre><code>$ echo &quot;{{Foo}} [[Bar]]&quot; | tee &gt;(rg -o '\w+') &gt;(rg -o '\S+') &gt;/dev/null | cat
+{{Foo}}
+[[Bar]]
+Foo
+Bar
+</code></pre>
+<p>I've tried with the following pattern file (to use with <code>-f</code>):</p>
+<pre><code>\w+|\S+
+\S+
+\w+
+</code></pre>
+<p>but it's the same result - it stops processing after the first match (I've tried adding <code>-e</code>, but it doesn't make any matches). I've also tried to specify multiply pattern files, or <code>--passthru '^|(\w+)|(\S+)' -o -r '$0'</code>, no luck.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-05-02 12:21</div>
+            <div class="timeline-body"><p>@kenorb &quot;or&quot; already exists with <code>|</code>. It looks like what you want is an overlapping query, which we <a href="https://github.com/BurntSushi/ripgrep/discussions/2189">already talked about</a>. That's completely unrelated to boolean queries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aboueleyes">@aboueleyes</a> on 2022-05-26 13:50</div>
+            <div class="timeline-body"><p>Is there a way to have nice formatting while querying</p>
+<pre><code class="language-bash">$ rg foo | rg -v bar 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-05-26 14:39</div>
+            <div class="timeline-body"><p>@aboueleyes No.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timotheecour">@timotheecour</a> on 2024-04-07 21:34</div>
+            <div class="timeline-body"><p>I don't think this was mentioned earlier:
+<code>rg foo | rg bar</code> isn't the same as <code>rg foo --and bar</code>, because <code>rg bar</code> will match also filenames with <code>bar</code>, so will have false positives</p>
+<p>and the workaround <code>rg 'foo.*bar|bar.*foo'</code> doesn't scale well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hraban">@hraban</a> on 2024-04-10 16:00</div>
+            <div class="timeline-body"><p>For context the primary reason I was looking for this functionality is because I use rg mostly in Emacs through projectile. From what I understand it parses the highlighted output from rg (highlighting matches) and displays them similarly highlighted in the emacs projectile ripgrep search results window. Doing any kind of piping defeats this, and I'm not sure there's a clean way around it without first-class support from the tool.</p>
+<p>Does this sound like a familiar problem to anyone? Did you find a work around?</p>
+<p>Basically I have grown to love fzf's &quot;regex-like&quot; style of matching, where individual words are regexes, but everything that is separated by a <code>space</code> character is actually considered a separate match which are all allowed to match <em>anywhere</em> on the line, not just in that order (so it's not like replacing <code>space</code> with <code>.*</code>). It's great UX. Not necessarily <code>ripgrep</code>s responsibility to fill this niche of course, just thought I'd give some context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fabian-thomas">@fabian-thomas</a> on 2024-04-10 16:44</div>
+            <div class="timeline-body"><p>I can recommend using ugrep (https://github.com/Genivia/ugrep), which supports boolean matching, for what you @hraban describe.</p>
+<p>Together with this simple script:</p>
+<pre><code class="language-bash">args=()
+query=()
+while [[ $# -gt 0 ]]; do
+    case &quot;$1&quot; in
+        --)
+            # for files
+            break
+            ;;
+        -*)
+            args+=(&quot;$1&quot;)
+            shift
+            ;;
+        *)
+            query+=(--and &quot;$1&quot;)
+            shift
+    esac
+done
+ug --column-number &quot;${args[@]}&quot; &quot;${query[@]}&quot; &quot;$@&quot;
+</code></pre>
+<p>You can then find lines that match <code>one</code> and <code>two</code> in any order by calling <code>the-script one two -- /path/to/fle /other/file</code> or for recursive search <code>the-script one two</code>. This, together with ugrep's support for terminal hyperlinks results in a really nice experience I make use of daily.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-04-10 17:08</div>
+            <div class="timeline-body"><blockquote>
+<p>This, together with ugrep's support for terminal hyperlinks results in a really nice experience I make use of daily.</p>
+</blockquote>
+<p>ripgrep also supports terminal hyperlinks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bionicles">@bionicles</a> on 2024-06-29 16:02</div>
+            <div class="timeline-body"><p>Here's a NAND regex. I can confirm correct boolean regex is possible in the simple case of non-nested expressions foreach of AND/OR/NOT/XOR/NAND via TDD</p>
+<p>one issue is, as @hraban mentioned, a natural way to input these is to pass multiple patterns, and the ripgrep cli expects a single pattern and paths as far as i understand right now. these boolean expression regexes get pretty long and arcane, decent user experience needs a builder pattern / DSL sort of thing. No doubt there are many ways to achieve this aim and cramming everything into one regex might not be the move, but since you have some of the best regex code around, compiling boolean expressions to regex is likely faster than doing logic queries outside of the regex machinery</p>
+<p><img src="https://github.com/BurntSushi/ripgrep/assets/24532336/093052dc-48e6-4526-ad61-5488bb767a8b" alt="image" /></p>
+<p>currently hella swamped on unpaid work ugh, maybe it's a fun thing to tinker with next month or this fall, wrote this in january, dont want to keep it bottled up, just want to post here in support of this valuable opportunity to further upgrade the already excellent ripgrep cli !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-06-29 16:06</div>
+            <div class="timeline-body"><p>@bionicles Thanks! The problem there is that it relies on look-around, and thus will only work with the <code>-P/--pcre2</code> switch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davideuler">@davideuler</a> on 2025-05-26 13:21</div>
+            <div class="timeline-body"><p>In case you need the multiple keyword match to implement an AND logic. I've implemented a version to support the feature.</p>
+<p>https://github.com/davideuler/ripgrep</p>
+<p>Sometimes you need to find lines that contain several specific words, but the order or exact positioning of these words doesn't matter. The <code>--and</code> flag is designed for this purpose. It allows you to specify a set of space-separated keywords, and only lines containing <em>all</em> of those keywords will be matched.</p>
+<p><strong>Syntax:</strong></p>
+<pre><code>rg --and &quot;keyword1 keyword2 keyword3&quot; [path...]
+</code></pre>
+<p>or with a primary pattern:</p>
+<pre><code>rg --and keyword1 --and keyword2 --and keyword3 [path...]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leviyevalex">@leviyevalex</a> on 2025-08-18 20:45</div>
+            <div class="timeline-body"><p>@davideuler</p>
+<p>I've been looking for this exact feature. I'm curious if there are plans to incorporate these features into main?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/insilications">@insilications</a> on 2025-09-29 15:05</div>
+            <div class="timeline-body"><blockquote>
+<p>In case you need the multiple keyword match to implement an AND logic. I've implemented a version to support the feature.</p>
+<p><a href="https://github.com/davideuler/ripgrep?rgh-link-date=2025-05-26T13%3A21%3A43.000Z">davideuler/ripgrep</a></p>
+<p>Sometimes you need to find lines that contain several specific words, but the order or exact positioning of these words doesn't matter. The <code>--and</code> flag is designed for this purpose. It allows you to specify a set of space-separated keywords, and only lines containing <em>all</em> of those keywords will be matched.</p>
+<p><strong>Syntax:</strong></p>
+<pre><code>rg --and &quot;keyword1 keyword2 keyword3&quot; [path...]
+</code></pre>
+<p>or with a primary pattern:</p>
+<pre><code>rg --and keyword1 --and keyword2 --and keyword3 [path...]
+</code></pre>
+</blockquote>
+<p>This is a feature that would be very nice if upstreamed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sojusnik">@sojusnik</a> on 2025-10-30 09:17</div>
+            <div class="timeline-body"><p>@BurntSushi do you plan to upstream <a href="https://github.com/BurntSushi/ripgrep/issues/875#issuecomment-2909738421">this awesome contribution</a>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-30 09:39</div>
+            <div class="timeline-body"><p>I haven't reviewed it yet, so I can't say.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:31 UTC
+    </footer>
+</body>
+</html>

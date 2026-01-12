@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sort output by file last modified time - BurntSushi/ripgrep #404</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>sort output by file last modified time</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/404">#404</a>
+        opened by <a href="https://github.com/wavexx">@wavexx</a>
+        on 2017-03-12 12:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/wavexx">@wavexx</a></div>
+            <div class="timeline-body"><p>I'm throwing this here for consideration. When I'm searching through my source files, I often not only want to find all occurrences, but when multiple hits are involved, I also want to find the most recent modification (by mtime). It would be nice to be able to sort output files (<em>with context</em>), sorted by time and reverse time.</p>
+<p>Afaik, none of the various searching tools allow to do this. Not easily at least.</p>
+<p>To do it currently, I actually do two passes:</p>
+<ul>
+<li>find file candidates fist</li>
+<li>sort files by mtime</li>
+<li>search within files</li>
+</ul>
+<p>This is necessary as I obviously like to see the match context as well (otherwise I could stop at step 2). But having to find candidates first introduces extra overhead that cannot be avoided.</p>
+<p>This requires buffering matches before showing the output, of course, but the search can be ran in parallel still.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2017-03-12 13:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-12 13:29</div>
+            <div class="timeline-body"><p>@wavexx This does seem mildly useful, but I don't know when I'll have the time to work on it.</p>
+<blockquote>
+<p>This requires buffering matches before showing the output, of course, but the search can be ran in parallel still.</p>
+</blockquote>
+<p>While strictly true, this is an oversimplification. Namely, running a search in parallel requires buffering to avoid interleaving results. Sorting with parallelism requires something more than just a simple buffering scheme however, and it is rather difficult to do in the current setup (which parallelizes things at level of directory traversal). This is why the <code>--sort-files</code> flag forces ripgrep to operate in single threaded mode.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">icebox</span> added by @BurntSushi on 2017-04-09 13:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-31 02:59</div>
+            <div class="timeline-body"><p>It should be possible to implement this in the <code>ignore</code> crate without too much trouble now that <a href="https://docs.rs/walkdir/2.1.0/walkdir/struct.WalkDir.html#method.sort_by"><code>walkdir</code>'s <code>sort_by</code> method</a> exposes the necessary information. Namely, you can get the <code>Path</code> from the <code>DirEntry</code> and stat it to determine various attributes. This will have performance implications and should force single threaded mode. We'll also need to think carefully about flags.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Optionally sort output files" to "sort output by file last modified time" by @BurntSushi on 2018-04-25 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-24 14:14</div>
+            <div class="timeline-body"><p>Here is what I propose:</p>
+<ul>
+<li>Add new <code>--sort</code> and <code>--sortr</code> flags to ripgrep. Both accept the same set of pre-determined choices. The former sorts in ascending order where as the latter sorts in descending order (or &quot;reverse&quot; order).</li>
+<li>Implementation detail: Whenever <code>--sort</code> or <code>--sortr</code> are given, ripgrep enters single threaded mode.</li>
+<li>Initially, the set of available parameters to the flag will be <code>path</code>, <code>modified</code>, <code>accessed</code>, <code>created</code>. <code>path</code> will sort by the file path (and therefore, <code>--sort path</code> will behave exactly the same as <code>--sort-files</code> does today). <code>modified</code>/<code>accessed</code>/<code>created</code> will sort by a file's last-modified/last-accessed/created timestamps, when available. When not available, ripgrep will stop execution before searching and print an error if possible. Otherwise, sort order will be unspecified.</li>
+</ul>
+<p>We'll likely therefore deprecate <code>--sort-files</code>, but leave it as a hidden alias for <code>--sort path</code>.</p>
+<p>Thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wavexx">@wavexx</a> on 2018-08-24 14:19</div>
+            <div class="timeline-body"><p>I like it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-08-26 22:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:06 UTC
+    </footer>
+</body>
+</html>

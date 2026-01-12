@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--show-function - BurntSushi/ripgrep #502</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--show-function</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/502">#502</a>
+        opened by <a href="https://github.com/anntzer">@anntzer</a>
+        on 2017-06-04 02:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/anntzer">@anntzer</a></div>
+            <div class="timeline-body"><p>It would be nice if rg gained the ability to show the function containing the current match, similarly to <code>git grep --show-function</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-04 02:48</div>
+            <div class="timeline-body"><p>How many languages does git grep support? How many should ripgrep support? Can you sketch out what an implementation would look like and what kind of maintenance would be required? Should it stop at functions? What about classes? Methods? Modules? Namespaces? Comments?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anntzer">@anntzer</a> on 2017-06-04 03:04</div>
+            <div class="timeline-body"><p>Default hunk headers supported by git are defined at the top of https://github.com/git/git/blob/3bc53220cb2dcf709f7a027a3f526befd021d858/userdiff.c; I count 17 entries and it seems fair to support the same (by copy-pasting the regexes).  It is obviously not perfect (this is difficult to do in absence of fully-fledged parsing, plus who knows what (e.g.) the C preprocessor could be doing), but still good enough (&quot;as good as git formats its hunk headers&quot;) to be helpful.</p>
+<p>The idea is simply to provide an additional regex (&quot;xfuncname&quot;) that defines entry into a new (toplevel) function.  Whenever a match to the user-provided correct regex is made, move backwards to find the closest line that matches &quot;xfuncname&quot; and output it first as the context (in fact it is probably more efficient to check whether each line matches xfuncname while looking for the user-provided regex and just remember the current toplevel function).</p>
+<p>You could of course make xfuncname user-configurable via a command-line switch (... per filetype) but that doesn't look like a priority.</p>
+<p>(The maintenance would simply be to copy-paste the regexes from the git source whenever they update theirs.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-05 16:45</div>
+            <div class="timeline-body"><blockquote>
+<p>Whenever a match to the user-provided correct regex is made, move backwards</p>
+</blockquote>
+<p>How far backwards? How does that even work? ripgrep doesn't necessarily contain the entire contents of a file in memory, so it can't just arbitrarily move backwards. I suppose you could put a hard cap on it, but what should that cap be? (There is already logic for the context handling to keep the previous N lines in memory.)</p>
+<blockquote>
+<p>in fact it is probably more efficient to check whether each line matches xfuncname while looking for the user-provided regex and just remember the current toplevel function</p>
+</blockquote>
+<p>I suspect not, and I think you're assuming that ripgrep searches each line individually, but it doesn't: http://blog.burntsushi.net/ripgrep/#mechanics</p>
+<blockquote>
+<p>but still good enough</p>
+</blockquote>
+<p>The problem is that this is really easy for a single end user to justify, but as a maintainer, I <em>must</em> be incredibly skeptical of these arguments. What's &quot;good enough&quot; for you might be &quot;useless&quot; to many others. Therefore, if we add a &quot;good enough&quot; feature, it's dooming the project to gather bug reports about how the feature doesn't actually do what's advertised in some cases.</p>
+<p>I'm not saying that we shouldn't add this feature because of this, but there needs to be a much stronger representation of the maintenance cost here. &quot;simply copy-paste the regexes&quot; is a gross misrepresentation IMO. Not only for the reason mentioned above, but also because <em>as soon</em> as we copy the support from <code>git grep</code>, there will be feature requests for languages X, Y and Z that <code>git grep</code> does not support. Do you think telling those users &quot;too bad, we only support what <code>git grep</code> provides because we can't write the regexes ourselves&quot; would be appropriate? I don't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anntzer">@anntzer</a> on 2017-06-05 17:36</div>
+            <div class="timeline-body"><blockquote>
+<p>How far backwards? How does that even work? ripgrep doesn't necessarily contain the entire contents of a file in memory, so it can't just arbitrarily move backwards. I suppose you could put a hard cap on it, but what should that cap be? (There is already logic for the context handling to keep the previous N lines in memory.)
+in fact it is probably more efficient to check whether each line matches xfuncname while looking for the user-provided regex and just remember the current toplevel function
+I suspect not, and I think you're assuming that ripgrep searches each line individually, but it doesn't: http://blog.burntsushi.net/ripgrep/#mechanics</p>
+</blockquote>
+<p>My previosu description was just to give the idea of the algorithm; I assume that the actual implementation would be ($user is the user-specified regex, $xfuncname is the xfuncname for the current function type (as determined from the file extension, as rg currently does))</p>
+<pre><code>currentfunc = null
+for each match of &quot;$user|$xfuncname&quot; # note that we don't search for $user itself
+    if it matches $xfuncname
+        currentfunc = currentmatch
+    if it matches $user
+        write currentfunc AND currentmatch to the output buffer
+</code></pre>
+<p>(obviously this is more expensive than just searching for $user but that seems fair, the user <em>did</em> ask for more info)</p>
+<blockquote>
+<p>The problem is that this is really easy for a single end user to justify, but as a maintainer, I must be incredibly skeptical of these arguments. What's &quot;good enough&quot; for you might be &quot;useless&quot; to many others. Therefore, if we add a &quot;good enough&quot; feature, it's dooming the project to gather bug reports about how the feature doesn't actually do what's advertised in some cases.
+I'm not saying that we shouldn't add this feature because of this, but there needs to be a much stronger representation of the maintenance cost here. &quot;simply copy-paste the regexes&quot; is a gross misrepresentation IMO. Not only for the reason mentioned above, but also because as soon as we copy the support from git grep, there will be feature requests for languages X, Y and Z that git grep does not support. Do you think telling those users &quot;too bad, we only support what git grep provides because we can't write the regexes ourselves&quot; would be appropriate? I don't.</p>
+</blockquote>
+<p>A tool as venerable as GNU diff has chosen to provide the <code>--show-c-function</code> and <code>--show-function-line=RE</code> flags, i.e provide a &quot;good enough&quot; regex for C and just let the user specify any other xfuncname they may want to use.  If you don't want to take any risks, you could even choose to not provide any xfuncname by default, only the tooling, and simply suggest that the user defines an alias similarly to how one would use --type-add, e.g.</p>
+<pre><code>alias rg='rg --add-xfuncname c &quot;$c_regex&quot; --add-xfuncname rust &quot;$rust_xfuncname&quot;'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zachriggle">@zachriggle</a> on 2017-11-09 21:25</div>
+            <div class="timeline-body"><p>Filed a dupe of this request in #669 with performance metrics of <code>git grep</code> vs <code>git grep -p</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">icebox</span> added by @BurntSushi on 2017-11-09 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-11-09 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zachriggle">@zachriggle</a> on 2017-11-09 21:49</div>
+            <div class="timeline-body"><p>Per #502, I've got a <a href="https://github.com/zachriggle/config/blob/master/bin/git-rg">simple wrapper script</a> that allows you to <code>git rg</code> which is faster than either <code>git-grep</code> or <code>rg</code> by itself, <em>and</em> allows <code>ack</code>-like styling.</p>
+<p>Performance, using the Linux kernel as a test bed (fastest of 10 runs taken).</p>
+<pre><code>git grep kasan_unpoison_remaining_stack  0.52s user 1.74s system 192% cpu 1.170 total
+rg kasan_unpoison_remaining_stack  0.76s user 1.32s system 594% cpu 0.351 total
+git rg kasan_unpoison_remaining_stack  0.66s user 1.31s system 612% cpu 0.322 total
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ngo-The-Trung">@Ngo-The-Trung</a> on 2018-04-06 20:27</div>
+            <div class="timeline-body"><p>Is this still needed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anntzer">@anntzer</a> on 2018-04-06 22:42</div>
+            <div class="timeline-body"><p>Yes, although there's only a point in leaving this open if @BurntSushi considers that there's a chance of this ever making it to rg itself.  If he doesn't want it, well, he should close this :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-04-03 13:26</div>
+            <div class="timeline-body"><p>Reflecting back on this, I think it's unlikely this will get into ripgrep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-04-03 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/saumyajyoti">@saumyajyoti</a> on 2021-04-18 14:13</div>
+            <div class="timeline-body"><p>Maybe a wrapper script with ctags /treesitter search for given line whould solve this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zachriggle">@zachriggle</a> on 2021-04-19 19:19</div>
+            <div class="timeline-body"><p>@saumyajyoti Could you elaborate on how that might look?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:12 UTC
+    </footer>
+</body>
+</html>

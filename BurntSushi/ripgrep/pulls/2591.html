@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ignore: Use a crossbeam deque instead of an Arc&lt;Mutex&lt;Vec&lt;_&gt;&gt;&gt; - BurntSushi/ripgrep #2591</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ignore: Use a crossbeam deque instead of an Arc&lt;Mutex&lt;Vec&lt;_&gt;&gt;&gt;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/2591">#2591</a>
+        opened by <a href="https://github.com/tavianator">@tavianator</a>
+        on 2023-08-21 18:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tavianator">@tavianator</a></div>
+            <div class="timeline-body"><p>This gives a significant scalability improvement for <code>fd</code>:</p>
+<p>| Command | Mean [ms] | Min [ms] | Max [ms] | Relative |
+|:---|---:|---:|---:|---:|
+| <code>./fd-before -uj1 '^$' ~/code/bfs/bench/corpus/chromium</code> | 577.6 ± 9.1 | 558.1 | 586.9 | 5.46 ± 1.29 |
+| <code>./fd-before -uj6 '^$' ~/code/bfs/bench/corpus/chromium</code> | 553.7 ± 17.4 | 522.1 | 574.7 | 5.24 ± 1.25 |
+| <code>./fd-before -uj12 '^$' ~/code/bfs/bench/corpus/chromium</code> | 581.7 ± 14.2 | 556.0 | 600.0 | 5.50 ± 1.30 |
+| <code>./fd-before -uj24 '^$' ~/code/bfs/bench/corpus/chromium</code> | 587.7 ± 25.6 | 547.9 | 614.3 | 5.56 ± 1.33 |
+| <code>./fd-after -uj1 '^$' ~/code/bfs/bench/corpus/chromium</code> | 586.8 ± 11.3 | 569.5 | 597.5 | 5.55 ± 1.31 |
+| <code>./fd-after -uj6 '^$' ~/code/bfs/bench/corpus/chromium</code> | 171.9 ± 7.2 | 157.4 | 187.8 | 1.63 ± 0.39 |
+| <code>./fd-after -uj12 '^$' ~/code/bfs/bench/corpus/chromium</code> | 128.7 ± 10.7 | 111.0 | 143.4 | 1.22 ± 0.30 |
+| <code>./fd-after -uj24 '^$' ~/code/bfs/bench/corpus/chromium</code> | 105.7 ± 24.9 | 84.5 | 159.7 | 1.00 |</p>
+<p>There is a minor (~1.5%) single-threaded performance regression in this benchmark.  If you want, I can try to mitigate that, but it seems okay to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tavianator">@tavianator</a> on 2023-08-22 19:58</div>
+            <div class="timeline-body"><p>Ripgrep-specific benchmarks:</p>
+<p>| Command | Mean [ms] | Min [ms] | Max [ms] | Relative |
+|:---|---:|---:|---:|---:|
+| <code>./rg-before -uuuj1 --files ~/code/bfs/bench/corpus/chromium</code> | 579.4 ± 12.8 | 561.5 | 599.9 | 3.54 ± 0.14 |
+| <code>./rg-before -uuuj6 --files ~/code/bfs/bench/corpus/chromium</code> | 507.0 ± 13.0 | 475.2 | 516.5 | 3.10 ± 0.13 |
+| <code>./rg-before -uuuj12 --files ~/code/bfs/bench/corpus/chromium</code> | 565.6 ± 4.4 | 557.1 | 571.1 | 3.46 ± 0.12 |
+| <code>./rg-before -uuuj24 --files ~/code/bfs/bench/corpus/chromium</code> | 548.5 ± 3.2 | 543.1 | 553.3 | 3.36 ± 0.11 |
+| <code>./rg-after -uuuj1 --files ~/code/bfs/bench/corpus/chromium</code> | 575.2 ± 16.3 | 557.9 | 605.6 | 3.52 ± 0.15 |
+| <code>./rg-after -uuuj6 --files ~/code/bfs/bench/corpus/chromium</code> | 229.7 ± 9.2 | 216.1 | 249.1 | 1.41 ± 0.07 |
+| <code>./rg-after -uuuj12 --files ~/code/bfs/bench/corpus/chromium</code> | 192.7 ± 7.0 | 179.8 | 205.9 | 1.18 ± 0.06 |
+| <code>./rg-after -uuuj24 --files ~/code/bfs/bench/corpus/chromium</code> | 163.5 ± 5.4 | 155.8 | 178.2 | 1.00 |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-08-29 02:50</div>
+            <div class="timeline-body"><p>Thank you for this! I just wanted to acknowledge it and thank you for the work. I'll plan to dig into this before the ripgrep 14 release. (But I'm taking a detour to do some improvements to the <code>aho-corasick</code> crate first.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-18 20:24</div>
+            <div class="timeline-body"><p>OK, so I've read through this patch and it looks good to me! It's very well written, thank you. I've also run a number of ad hoc benchmarks (shown below) and I'd describe the overall result as follows:</p>
+<ol>
+<li>Never meaningfully slower. Sometimes meaningfully faster.</li>
+<li>Sometimes uses more memory, but not an obscene amount.</li>
+<li>It passes my &quot;insane&quot; test of searching an extremely wide directory of all crates from crates.io (from some time ago). Basically, it completes in roughly the same time as <code>master</code> and uses roughly the same amount of memory.</li>
+</ol>
+<p>Some ad hoc benchmarks are below. Unless otherwise noted, file caches are warm.</p>
+<p>On a checkout of the Linux kernel:</p>
+<pre><code>$ git remote -v
+origin  git@github.com:torvalds/linux (fetch)
+origin  git@github.com:torvalds/linux (push)
+
+$ git rev-parse HEAD
+f1fcbaa18b28dec10281551dfe6ed3a3ed80e3d6
+
+$ time rg-before-deque -c BURNTSUSHI
+
+real    0.084
+user    0.309
+sys     0.608
+maxmem  14 MB
+faults  0
+
+$ time rg-after-deque -c BURNTSUSHI
+
+real    0.079
+user    0.258
+sys     0.583
+maxmem  13 MB
+faults  0
+
+$ hyperfine -i -w3 &quot;rg-before-deque -c BURNTSUSHI&quot; &quot;rg-after-deque -c BURNTSUSHI&quot;
+Benchmark 1: rg-before-deque -c BURNTSUSHI
+  Time (mean ± σ):      85.3 ms ±   1.0 ms    [User: 304.5 ms, System: 603.8 ms]
+  Range (min … max):    83.3 ms …  87.3 ms    34 runs
+
+Benchmark 2: rg-after-deque -c BURNTSUSHI
+  Time (mean ± σ):      79.4 ms ±   1.2 ms    [User: 251.1 ms, System: 566.4 ms]
+  Range (min … max):    76.7 ms …  81.7 ms    36 runs
+
+Summary
+  'rg-after-deque -c BURNTSUSHI' ran
+    1.07 ± 0.02 times faster than 'rg-before-deque -c BURNTSUSHI'
+</code></pre>
+<p>On a checkout of chromium (nice result):</p>
+<pre><code>$ git remote -v
+origin  git@github.com:nwjs/chromium.src (fetch)
+origin  git@github.com:nwjs/chromium.src (push)
+
+$ git rev-parse HEAD
+e25f26f9aef0fd5958b980c3da4fdc2703ea4ccc
+
+$ time rg-before-deque -c BURNTSUSHI
+
+real    0.327
+user    1.384
+sys     2.279
+maxmem  101 MB
+faults  0
+
+$ time rg-after-deque -c BURNTSUSHI
+
+real    0.285
+user    1.091
+sys     1.977
+maxmem  75 MB
+faults  0
+
+$ hyperfine -i -w3 &quot;rg-before-deque -c BURNTSUSHI&quot; &quot;rg-after-deque -c BURNTSUSHI&quot;
+Benchmark 1: rg-before-deque -c BURNTSUSHI
+  Time (mean ± σ):     331.8 ms ±   2.7 ms    [User: 1528.5 ms, System: 2190.0 ms]
+  Range (min … max):   327.5 ms … 335.2 ms    10 runs
+
+Benchmark 2: rg-after-deque -c BURNTSUSHI
+  Time (mean ± σ):     286.5 ms ±   4.3 ms    [User: 1175.8 ms, System: 1973.8 ms]
+  Range (min … max):   281.1 ms … 293.5 ms    10 runs
+
+Summary
+  'rg-after-deque -c BURNTSUSHI' ran
+    1.16 ± 0.02 times faster than 'rg-before-deque -c BURNTSUSHI'
+</code></pre>
+<p>On a checkout of some Harry Potter fan-fiction (an amazing result):</p>
+<pre><code>$ git remote -v
+origin  git@github.com:NightMachinary/r_HPfanfiction (fetch)
+origin  git@github.com:NightMachinary/r_HPfanfiction (push)
+
+$ git rev-parse HEAD
+b373f0c3c03cdeed261646038170a2286fdcb4b8
+
+$ time rg-before-deque -c BURNTSUSHI
+
+real    0.803
+user    4.006
+sys     4.561
+maxmem  157 MB
+faults  0
+
+$ time rg-after-deque -c BURNTSUSHI
+
+real    0.524
+user    2.242
+sys     3.686
+maxmem  34 MB
+faults  0
+
+$ hyperfine -i -w3 &quot;rg-before-deque -c BURNTSUSHI&quot; &quot;rg-after-deque -c BURNTSUSHI&quot;
+Benchmark 1: rg-before-deque -c BURNTSUSHI
+  Time (mean ± σ):     797.3 ms ±  18.2 ms    [User: 3810.4 ms, System: 4735.8 ms]
+  Range (min … max):   747.8 ms … 809.7 ms    10 runs
+
+Benchmark 2: rg-after-deque -c BURNTSUSHI
+  Time (mean ± σ):     525.2 ms ±   2.7 ms    [User: 2267.6 ms, System: 3692.9 ms]
+  Range (min … max):   521.6 ms … 529.5 ms    10 runs
+
+Summary
+  'rg-after-deque -c BURNTSUSHI' ran
+    1.52 ± 0.04 times faster than 'rg-before-deque -c BURNTSUSHI'
+</code></pre>
+<p>And now my &quot;torture&quot; test. In this case, I clear the file cache before each search because the entire corpus doesn't fit into memory on the machine I have it on. So this seemed like the most fair test.</p>
+<pre><code>$ sudo clear-file-cache
+
+$ time rg-before-deque BURNTSUSHI
+
+real    1:40.15
+user    31.787
+sys     1:05.12
+maxmem  476 MB
+faults  67
+
+$ sudo clear-file-cache
+
+$ time rg-after-deque BURNTSUSHI
+
+real    1:51.20
+user    34.253
+sys     1:11.48
+maxmem  364 MB
+faults  69
+</code></pre>
+<p>While there is a big difference here, I ran this test multiple times and there is a ton of noise. However, each test run is all within roughly the same ballpark. If I run with ripgrep 11, it didn't complete after 15 minutes and &gt;1.5GB of memory used, so I killed it. Definitely a different ballpark. Bottom line is that as far as I can tell, this PR does not appear to regress on my torture test.</p>
+<p>I'll merge this PR in my rollup branch with a few minor style changes. Thank you! :-)</p>
+<p>I think the only downside of this change is that it brings in more dependencies. But they look to be good quality libraries and I feel like they are carrying some significant weight with the work-stealing queue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-09-18 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-09-20 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-20 21:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:10 UTC
+    </footer>
+</body>
+</html>

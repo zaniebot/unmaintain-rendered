@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ignore`] `Walk` always yields initial directory - BurntSushi/ripgrep #2986</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ignore</code>] <code>Walk</code> always yields initial directory</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2986">#2986</a>
+        opened by <a href="https://github.com/wmmc88">@wmmc88</a>
+        on 2025-02-05 02:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/wmmc88">@wmmc88</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[x] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>ignore 0.4.23</p>
+<h3>How did you install ripgrep?</h3>
+<p>Dependency on <code>ignore</code> via <code>cargo</code></p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Windows 11 24H2</p>
+<h3>Describe your bug.</h3>
+<p>When creating a <code>Walk</code>, the iterator always returns the initial folder, even if it should fail <code>filter_entry</code>. It looks like its bypassing <code>filter_entry</code> altogether for the intial folder.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>The following minimal example code manifests the bug:</p>
+<pre><code class="language-rust">use std::path::Path;
+
+use ignore::WalkBuilder;
+
+fn main(){
+    let initial_folder = dbg!(Path::new(file!()).ancestors().nth(2).expect(&quot;2nd ancestor should exist&quot;).join(&quot;example-folder&quot;).canonicalize().expect(&quot;example-folder path should exist&quot;));
+
+    WalkBuilder::new(&amp;initial_folder)
+        .filter_entry(|dir_entry| {
+            let is_file = dir_entry
+                .file_type().is_some_and(|file_type| file_type.is_file());
+            dbg!(&amp;dir_entry, is_file);
+
+            is_file
+        })
+        .build().for_each(|filtered_entry| {
+            dbg!(&amp;filtered_entry);
+        });
+}
+</code></pre>
+<p>It is also available as a minimal cargo workspace at https://github.com/wmmc88/minimal-repros/tree/ignore-walkbuilder</p>
+<h3>What is the actual behavior?</h3>
+<p>As seen in the output, the initial folder is unconditionally yield by the iterator (in <code>filtered_entry</code>), without ever executing the <code>filter_entry</code> closure (which prints <code>&amp;dir_entry</code>). The iterator still calls the closure properly on the <code>nested</code> and then <code>nested</code> correctly isn't yielded by <code>Walk</code>.</p>
+<pre><code>cargo run
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.28s
+     Running `target\debug\ignore-bug.exe`
+[src\main.rs:6:26] Path::new(file!()).ancestors().nth(2).expect(&quot;2nd ancestor should exist&quot;).join(&quot;example-folder&quot;).canonicalize().expect(&quot;example-folder path should exist&quot;) = &quot;\\\\?\\D:\\git-repos\\github\\minimal-repros\\example-folder&quot;
+[src\main.rs:17:13] &amp;filtered_entry = Ok(
+    DirEntry {
+        dent: Walkdir(
+            DirEntry(&quot;\\\\?\\D:\\git-repos\\github\\minimal-repros\\example-folder&quot;),
+        ),
+        err: None,
+    },
+)
+[src\main.rs:12:13] &amp;dir_entry = DirEntry {
+    dent: Walkdir(
+        DirEntry(&quot;\\\\?\\D:\\git-repos\\github\\minimal-repros\\example-folder\\a.txt&quot;),
+    ),
+    err: None,
+}
+[src\main.rs:12:13] is_file = true
+[src\main.rs:17:13] &amp;filtered_entry = Ok(
+    DirEntry {
+        dent: Walkdir(
+            DirEntry(&quot;\\\\?\\D:\\git-repos\\github\\minimal-repros\\example-folder\\a.txt&quot;),
+        ),
+        err: None,
+    },
+)
+[src\main.rs:12:13] &amp;dir_entry = DirEntry {
+    dent: Walkdir(
+        DirEntry(&quot;\\\\?\\D:\\git-repos\\github\\minimal-repros\\example-folder\\b.txt&quot;),
+    ),
+    err: None,
+}
+[src\main.rs:12:13] is_file = true
+[src\main.rs:17:13] &amp;filtered_entry = Ok(
+    DirEntry {
+        dent: Walkdir(
+            DirEntry(&quot;\\\\?\\D:\\git-repos\\github\\minimal-repros\\example-folder\\b.txt&quot;),
+        ),
+        err: None,
+    },
+)
+[src\main.rs:12:13] &amp;dir_entry = DirEntry {
+    dent: Walkdir(
+        DirEntry(&quot;\\\\?\\D:\\git-repos\\github\\minimal-repros\\example-folder\\c.txt&quot;),
+    ),
+    err: None,
+}
+[src\main.rs:12:13] is_file = true
+[src\main.rs:17:13] &amp;filtered_entry = Ok(
+    DirEntry {
+        dent: Walkdir(
+            DirEntry(&quot;\\\\?\\D:\\git-repos\\github\\minimal-repros\\example-folder\\c.txt&quot;),
+        ),
+        err: None,
+    },
+)
+[src\main.rs:12:13] &amp;dir_entry = DirEntry {
+    dent: Walkdir(
+        DirEntry(&quot;\\\\?\\D:\\git-repos\\github\\minimal-repros\\example-folder\\nested&quot;),
+    ),
+    err: None,
+}
+[src\main.rs:12:13] is_file = false
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>The <code>Walk</code> iterator should have executed <code>filter_entry</code>'s closure on <code>initial_folder</code>, and not yielded it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-02-05 02:37</div>
+            <div class="timeline-body"><p>Thanks for the detailed reproduction, but this is very much intended. <code>ignore</code> is how ripgrep does directory traversal, and if you explicitly provide a path on the CLI, then ripgrep always searches it, regardless of what filtering rules are present. That is, explicitly providing a path <em>overrides</em> the filtering rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-02-05 02:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2025-02-05 02:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wmmc88">@wmmc88</a> on 2025-02-05 03:22</div>
+            <div class="timeline-body"><p>Ah okay. I think it'd be beneficial if that override behavior was documented somewhere (I couldnt find it anywhere but maybe I missed it?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gospodima">@gospodima</a> on 2025-11-05 20:56</div>
+            <div class="timeline-body"><p>@BurntSushi could you give any suggestions on how to overcome this behaviour in a clean manner? I am trying to use <code>ignore</code> in the tool that is also supposed to be usable via <a href="https://pre-commit.com/">pre-commit</a>. pre-commit would pass all staged files as input paths and I still want to apply exclusion rules on them</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-11-05 21:04</div>
+            <div class="timeline-body"><p>@gospodima You'd probably need to apply the filtering yourself directly with <code>ignore::gitignore::Gitignore</code> or <code>ignore::overrides::Override</code>. It may not be straight-forward or easy.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:53 UTC
+    </footer>
+</body>
+</html>

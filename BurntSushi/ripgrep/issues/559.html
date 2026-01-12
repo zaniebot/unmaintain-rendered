@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regression test #210 fails on macOS High Sierra - BurntSushi/ripgrep #559</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Regression test #210 fails on macOS High Sierra</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/559">#559</a>
+        opened by <a href="https://github.com/jhenahan">@jhenahan</a>
+        on 2017-07-17 05:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jhenahan">@jhenahan</a></div>
+            <div class="timeline-body"><p>I'm not positive as to why, but I have a feeling it may be related to <a href="https://developer.apple.com/library/content/documentation/FileManagement/Conceptual/APFS_Guide/FAQ/FAQ.html#//apple_ref/doc/uid/TP40016999-CH6-DontLinkElementID_3">normalization-insensitivity in APFS</a>. If I understand the APFS docs and the test case correctly, this may actually be an issue in <code>std::ffi</code>, and if that's the case then I'll report this up the chain.</p>
+<pre><code>Stack trace:
+
+failures:
+
+---- regression_210 stdout ----
+	thread 'regression_210' panicked at '~/src/ripgrep/target/debug/deps/ripgrep-tests/regression_210/93/foo�bar: Error { repr: Os { code: 92, message: &quot;Illegal byte sequence&quot; } }', tests/workdir.rs:285
+stack backtrace:
+   0: std::sys::imp::backtrace::tracing::imp::unwind_backtrace
+   1: std::panicking::default_hook::{{closure}}
+   2: std::panicking::default_hook
+   3: std::panicking::rust_panic_with_hook
+   4: std::panicking::begin_panic
+   5: std::panicking::begin_panic_fmt
+   6: integration::workdir::nice_err
+   7: integration::workdir::WorkDir::create_bytes
+   8: integration::workdir::WorkDir::create
+   9: integration::regression_210
+  10: &lt;F as test::FnBox&lt;T&gt;&gt;::call_box
+  11: __rust_maybe_catch_panic
+  12: std::panicking::try::do_call
+  13: __rust_maybe_catch_panic
+  14: &lt;F as alloc::boxed::FnBox&lt;A&gt;&gt;::call_box
+  15: std::sys::imp::thread::Thread::new::thread_start
+  16: _pthread_body
+  17: _pthread_start
+
+
+failures:
+    regression_210
+
+test result: FAILED. 136 passed; 1 failed; 0 ignored; 0 measured
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-17 11:19</div>
+            <div class="timeline-body"><p>This is the test in question:</p>
+<pre><code class="language-rust">// See: https://github.com/BurntSushi/ripgrep/issues/210
+#[cfg(unix)]
+#[test]
+fn regression_210() {
+    use std::ffi::OsStr;
+    use std::os::unix::ffi::OsStrExt;
+
+    let badutf8 = OsStr::from_bytes(&amp;b&quot;foo\xffbar&quot;[..]);
+
+    let wd = WorkDir::new(&quot;regression_210&quot;);
+    let mut cmd = wd.command();
+    wd.create(badutf8, &quot;test&quot;);
+    cmd.arg(&quot;-H&quot;).arg(&quot;test&quot;).arg(badutf8);
+
+    let out = wd.output(&amp;mut cmd);
+    assert_eq!(out.stdout, b&quot;foo\xffbar:test\n&quot;.to_vec());
+}
+</code></pre>
+<p>This test is specifically testing a case where there is an invalid UTF-8 byte in a file path (which is a valid thing to do) and that ripgrep still happily searches said file.</p>
+<p>The APFS docs link says this:</p>
+<blockquote>
+<p>APFS accepts only valid UTF-8 encoded filenames for creation</p>
+</blockquote>
+<p>Which means this test probably doesn't make sense on a file system that specifically rejects invalid UTF-8. This also means that I don't think there is any bug in <code>std::ffi</code>, and that according to the APFS docs, this test is failing in exactly the way I'd expect.</p>
+<p>I think the proper work-around here is to modify the test to pass if it is unable to create a file with an invalid UTF-8 name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2017-07-17 11:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanielJoyce">@DanielJoyce</a> on 2017-09-11 22:16</div>
+            <div class="timeline-body"><p>Or you can add a #cfg[] param to exclude macosx so the test isn't run at all on that platform</p>
+<p>Something like</p>
+<p>#[cfg(all(unix,not(target_os=&quot;macos&quot;)))]</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-10-21 00:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:14 UTC
+    </footer>
+</body>
+</html>

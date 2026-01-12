@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WalkParallel does not show unaccessible directories. - BurntSushi/ripgrep #1346</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>WalkParallel does not show unaccessible directories.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1346">#1346</a>
+        opened by <a href="https://github.com/treere">@treere</a>
+        on 2019-08-09 16:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/treere">@treere</a></div>
+            <div class="timeline-body"><p>If a directory is not accessible the dta produced by WalkParallel is different from the one created by WalkDir: the unaccessible directory is not listed.</p>
+<p>How to reproduce:
+Prepare the env  (I use Linux)</p>
+<pre><code class="language-bash"># create dir 
+mkdir imnotlisted
+# make it unaccessible
+sudo chmod 700 imnotlisted
+sudo chown root:root imnotlisted 
+</code></pre>
+<p>Using the small programm below the parallel version</p>
+<pre><code class="language-bash">./small_program parallel imnotlisted
+</code></pre>
+<p>outputs:</p>
+<pre><code>Err(WithDepth { depth: 0, err: WithPath { path: &quot;iminvisible&quot;, err: Io(Os { code: 13, kind: PermissionDenied, message: &quot;Permission denied&quot; }) } })
+</code></pre>
+<p>but the sequential version</p>
+<pre><code class="language-bash">./small_program walkdir imnotlisted
+</code></pre>
+<p>outputs</p>
+<pre><code>Ok(DirEntry { dent: Walkdir(DirEntry(&quot;iminvisible&quot;)), err: None })
+Err(WithPath { path: &quot;iminvisible&quot;, err: Io(Custom { kind: PermissionDenied, error: Error { depth: 0, inner: Io { path: Some(&quot;iminvisible&quot;), err: Os { code: 13, kind: PermissionDenied, message: &quot;Permission denied&quot; } } } }) })
+</code></pre>
+<p>Which is the desired behaviour? In ripgrep this is not a problem.</p>
+<hr />
+<p>the &quot;small program below&quot;</p>
+<pre><code class="language-rust">extern crate crossbeam_channel as channel; 
+extern crate ignore; 
+ 
+use std::env; 
+use std::thread; 
+ 
+use ignore::WalkBuilder; 
+ 
+fn main() { 
+    let mut path = env::args().nth(1).unwrap(); 
+    let mut parallel = false; 
+    let (tx, rx) = channel::bounded::&lt;Result&lt;ignore::DirEntry,ignore::Error&gt;&gt;(100); 
+    if path == &quot;parallel&quot; { 
+        path = env::args().nth(2).unwrap(); 
+        parallel = true; 
+    } else if path == &quot;walkdir&quot; { 
+        path = env::args().nth(2).unwrap(); 
+    } 
+ 
+    let stdout_thread = thread::spawn(move || { 
+        for dent in rx { 
+            println!(&quot;{:?}&quot;,dent); 
+        } 
+    }); 
+ 
+    if parallel { 
+        let walker = WalkBuilder::new(path).threads(6).build_parallel(); 
+        walker.run(|| { 
+            let tx = tx.clone(); 
+            Box::new(move |result| { 
+                use ignore::WalkState::*; 
+ 
+                tx.send(result).unwrap();
+                Continue
+            }) 
+        }); 
+    } else { 
+        let walker = WalkBuilder::new(path).build(); 
+        for result in walker { 
+            tx.send(result).unwrap(); 
+        } 
+    } 
+    drop(tx); 
+    stdout_thread.join().unwrap(); 
+} 
+</code></pre>
+<p>(edit: fixed small program...was all lowercase)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-08-09 19:52</div>
+            <div class="timeline-body"><p>I think the sequential version is the expected behavior, since there's no problem reading the directory entry from its parent, right? It's only descending into it that results in an error.</p>
+<p>I'm not sure when I'll look into this, but a PR is welcome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2019-08-09 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-02-17 22:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:59 UTC
+    </footer>
+</body>
+</html>

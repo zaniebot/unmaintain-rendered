@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>max-depth doesn't seem to have an effect - BurntSushi/ripgrep #2237</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>max-depth doesn't seem to have an effect</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2237">#2237</a>
+        opened by <a href="https://github.com/torqu3e">@torqu3e</a>
+        on 2022-06-15 15:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/torqu3e">@torqu3e</a></div>
+            <div class="timeline-body"><p>Per the man page, max-depth is the count of directories deeper than the search path. I have come across a situation where that does not seem to be the case</p>
+<p>No results</p>
+<pre><code>08:12:31 ✖1 $ rg -i &quot;Offline maintenance of the DB instance is taking place&quot; ~/dev_wip/repo-name/
+08:12:43 ✖1 $ rg -i &quot;Offline maintenance of the DB instance is taking place&quot; ~/dev_wip/repo-name/aws/terraform/modules/
+08:12:59 $ rg --max-depth 99 -i &quot;Offline maintenance of the DB instance is taking place&quot; ~/dev_wip/repo-name/aws/terraform/modules/
+</code></pre>
+<p>Going one level deeper on the search path parameter returns results</p>
+<pre><code>08:12:57 ✖1 $ rg -i &quot;Offline maintenance of the DB instance is taking place&quot; ~/dev_wip/repo-name/aws/terraform/modules/aws/
+/Users/username/dev_wip/repo-name/aws/terraform/modules/aws/rds/instance/monitoring.tf
+10:  query = &quot;events('priority:all sources:rds Offline maintenance of the DB instance is taking place. The DB instance is currently unavailable').rollup('count').last('5m') &gt; 0&quot;
+
+08:13:08 ✖1 $ rg --max-depth 99 -i &quot;Offline maintenance of the DB instance is taking place&quot; ~/dev_wip/repo-name/aws/terraform/modules/aws/
+/Users/username/dev_wip/repo-name/aws/terraform/modules/aws/rds/instance/monitoring.tf
+10:  query = &quot;events('priority:all sources:rds Offline maintenance of the DB instance is taking place. The DB instance is currently unavailable').rollup('count').last('5m') &gt; 0&quot;
+</code></pre>
+<p>My first thought was that ripgrep only searches 9 levels deeper than root but based on above it seems to go 3 (default??) deeper than the path given and the <code>--max-depth</code> parameter does not change that.</p>
+<pre><code>$ rg --version
+ripgrep 13.0.0
+-SIMD -AVX (compiled)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-06-15 15:34</div>
+            <div class="timeline-body"><p>Can you please provide a reproduction on a corpus we both can access?</p>
+<p>Also, why did you delete the template? My suspicion is that this is somehow a <code>.gitignore</code> related bug, but since you haven't included the <code>--debug</code> output from ripgrep, it's impossible to know. I suppose an easy way to check it would be to run ripgrep with <code>--no-ignore</code>. Or even more permissively, <code>-uuu</code> (disables ignore filtering, hidden filtering and binary filtering).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/torqu3e">@torqu3e</a> on 2022-06-15 17:14</div>
+            <div class="timeline-body"><p>Apologies re the template, one did not popup when I tried creating an issue (which did seem odd to me).</p>
+<p>It most certainly was a <code>.gitignore</code> entry of <code>aws/</code>. Completely user error/lack of coffee etc. Thank you for pointing that out, where do I send you a beverage for the troubles?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-06-15 17:20</div>
+            <div class="timeline-body"><p>No problem. I just see a lot of gitignore related errors, so it's easier for me to sniff'em out.</p>
+<p>As for sending beverages, I'm happy to see donations done instead. :-) See: https://github.com/BurntSushi/ripgrep/blob/master/FAQ.md#donations</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2022-06-15 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2022-06-15 17:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:33 UTC
+    </footer>
+</body>
+</html>

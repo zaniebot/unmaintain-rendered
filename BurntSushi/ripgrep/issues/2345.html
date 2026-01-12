@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ripgrep --files with -uuu not showed ignored files - BurntSushi/ripgrep #2345</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ripgrep --files with -uuu not showed ignored files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2345">#2345</a>
+        opened by <a href="https://github.com/JMarkin">@JMarkin</a>
+        on 2022-11-06 19:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JMarkin">@JMarkin</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>cargo install ripgrep</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>archlinux, kernel 6.0.6</p>
+<h4>Describe your bug.</h4>
+<p>Started ripgrep with --files and -uuu I didn't visible ignored files.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<pre><code class="language-bash">[kron@kron-pc front]$ ls
+build  dist  node_modules  package.json  package-lock.json  src 
+[kron@kron-pc front]$ cat .gitignore | grep dist
+dist/
+[kron@kron-pc front]$ rg --files -uuu | grep dist
+[kron@kron-pc front]$ fd -I | grep dist/
+dist/
+
+</code></pre>
+<h4>What is the actual behavior?</h4>
+<p>https://gist.github.com/JMarkin/58a135e49b6bfded041e67172d3a5dac</p>
+<h4>What is the expected behavior?</h4>
+<p>I see 'dist' in search</p>
+<p>What do you think ripgrep should have done?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-11-06 19:29</div>
+            <div class="timeline-body"><p>Your debug output doesn't say it's ignoring the <code>dist</code> directory, which makes me suspicious.</p>
+<p>Can you reproduce this on a corpus we both can access please?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JMarkin">@JMarkin</a> on 2022-11-06 21:08</div>
+            <div class="timeline-body"><p>I tried create archive for reproduce. Found, dist folder is empty :D Understand why dist not working.</p>
+<p>But node_modules not empty and <code>rg --files -uuu | grep node_modules</code> also nothing...
+In previous gist have logs about node_modules. Can it help you?
+I created small tar archive https://disk.yandex.ru/d/tBCG8eUbk6ER5Q . I can to reproduce on other machine</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-11-06 21:22</div>
+            <div class="timeline-body"><p>My best guess is that everything is symlinked and ripgrep doesn't traverse symlinks by default. You'll want <code>-L</code> for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @JMarkin on 2022-11-06 21:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Locked by @ghost on 2022-11-06 22:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:35 UTC
+    </footer>
+</body>
+</html>

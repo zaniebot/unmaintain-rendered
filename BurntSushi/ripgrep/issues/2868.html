@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>better block device &amp; huge file handling: seek &amp; parallel - BurntSushi/ripgrep #2868</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>better block device &amp; huge file handling: seek &amp; parallel</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2868">#2868</a>
+        opened by <a href="https://github.com/robbat2">@robbat2</a>
+        on 2024-08-10 21:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/robbat2">@robbat2</a></div>
+            <div class="timeline-body"><h4>Describe your feature request</h4>
+<p>I'm using ripgrep to scan large block devices for various string patterns, and I want the byte offset of the pattern in my results. I don't need a line number, because it's meaningless.</p>
+<p>I want to be able to start/resume the search</p>
+<p>This also lends itself very well to parallel searching, if the block device is fast enough (e.g. NVME has enough sequential IO to saturate CPUs).</p>
+<p>I can do a hacky implementation today with <code>dd</code> first, and manual chunking, but that means the byte offsets must be adjusted relative to the start of the chunk.</p>
+<p>At a minimum, there should be a &quot;--skip $OFFSET&quot; and &quot;--max-read $BYTES&quot; options, that when given a block device, seeks to that position in the device before starting to read. This option will implicitly disable line counting, and enable byte offset output.
+It would read at most <code>max-read</code> bytes before exiting. Any results output should use the absolute position in the block device in their byte offset output.</p>
+<p>Lastly, in the output of such a mode, output an occasional no-matches entry, that describes the completed region of the block device that was scanned WITHOUT finding any results.</p>
+<p>Manual parallel scan can be implemented on top of that functionality initially, as well as potential automated resume.</p>
+<pre><code># quick resume
+rg -f input-strings --skip-bytes $offset /dev/sdX --line-buffered --byte-offset --json --no-line-number &gt;results.json
+
+# quick parallel search
+seq 0 20 | xargs -I^ -P4 sh -c 'rg -f input-strings --skip-bytes ^TiB --max-bytes 1TiB /dev/sdX --line-buffered --byte-offset --json --no-line-number &gt;results.^TiB.json'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-08-10 22:11</div>
+            <div class="timeline-body"><p>I think this would be better served in a new distinct tool. There are a lot of UX corners you aren't really addressing with this request. For example, what happens when a directory is given or more than one path or block device?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robbat2">@robbat2</a> on 2024-08-10 22:28</div>
+            <div class="timeline-body"><p>I agree that those cases have some ambiguous corners; but nothing insurmountable.</p>
+<ul>
+<li>multiple block devices: short of integrated option vs arg parsing, the most meaningful thing to do in the fact of ambiguous input is to quit with a clear message.</li>
+</ul>
+<pre><code># this COULD be implemented depending on the argparser, but it's a trivial conversion for the user to run it as separate commands.
+rg --skip-bytes 0TiB --max-bytes 1TB /dev/sda  --skip-bytes 1TiB --max-bytes 1TB /dev/sdb
+</code></pre>
+<ul>
+<li><code>ripgrep</code>, when given a directory, already does not scan block devices in that directory - it silently skips them (knowing it skipped devices so may be valuable to some users and should probably be raised as a separate feature request).</li>
+</ul>
+<pre><code># recursive in directory
+$ sudo rg -m1 -e . /dev/block/  --json
+{&quot;data&quot;:{&quot;elapsed_total&quot;:{&quot;human&quot;:&quot;0.002828s&quot;,&quot;nanos&quot;:2828076,&quot;secs&quot;:0},&quot;stats&quot;:{&quot;bytes_printed&quot;:0,&quot;bytes_searched&quot;:0,&quot;elapsed&quot;:{&quot;human&quot;:&quot;0.000000s&quot;,&quot;nanos&quot;:0,&quot;secs&quot;:0},&quot;matched_lines&quot;:0,&quot;matches&quot;:0,&quot;searches&quot;:0,&quot;searches_with_match&quot;:0}},&quot;type&quot;:&quot;summary&quot;}
+
+# explicitly passing some devices
+$ sudo rg -m1 -e . /dev/block/253:{0,1}  --json
+{&quot;type&quot;:&quot;begin&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;/dev/block/253:0&quot;}}}
+{&quot;type&quot;:&quot;match&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;/dev/block/253:0&quot;},&quot;lines&quot;:{&quot;text&quot;:&quot;2\n&quot;},&quot;line_number&quot;:1027,&quot;absolute_offset&quot;:1026,&quot;submatches&quot;:[{&quot;match&quot;:{&quot;text&quot;:&quot;2&quot;},&quot;start&quot;:0,&quot;end&quot;:1}]}}
+{&quot;type&quot;:&quot;end&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;/dev/block/253:0&quot;},&quot;binary_offset&quot;:0,&quot;stats&quot;:{&quot;elapsed&quot;:{&quot;secs&quot;:0,&quot;nanos&quot;:76594,&quot;human&quot;:&quot;0.000077s&quot;},&quot;searches&quot;:1,&quot;searches_with_match&quot;:1,&quot;bytes_searched&quot;:3,&quot;bytes_printed&quot;:243,&quot;matched_lines&quot;:1,&quot;matches&quot;:1}}}
+{&quot;type&quot;:&quot;begin&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;/dev/block/253:1&quot;}}}
+{&quot;type&quot;:&quot;match&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;/dev/block/253:1&quot;},&quot;lines&quot;:{&quot;text&quot;:&quot;d\n&quot;},&quot;line_number&quot;:1027,&quot;absolute_offset&quot;:1026,&quot;submatches&quot;:[{&quot;match&quot;:{&quot;text&quot;:&quot;d&quot;},&quot;start&quot;:0,&quot;end&quot;:1}]}}
+{&quot;type&quot;:&quot;end&quot;,&quot;data&quot;:{&quot;path&quot;:{&quot;text&quot;:&quot;/dev/block/253:1&quot;},&quot;binary_offset&quot;:0,&quot;stats&quot;:{&quot;elapsed&quot;:{&quot;secs&quot;:0,&quot;nanos&quot;:278543,&quot;human&quot;:&quot;0.000279s&quot;},&quot;searches&quot;:1,&quot;searches_with_match&quot;:1,&quot;bytes_searched&quot;:3,&quot;bytes_printed&quot;:243,&quot;matched_lines&quot;:1,&quot;matches&quot;:1}}}
+{&quot;data&quot;:{&quot;elapsed_total&quot;:{&quot;human&quot;:&quot;0.002995s&quot;,&quot;nanos&quot;:2995030,&quot;secs&quot;:0},&quot;stats&quot;:{&quot;bytes_printed&quot;:486,&quot;bytes_searched&quot;:6,&quot;elapsed&quot;:{&quot;human&quot;:&quot;0.000355s&quot;,&quot;nanos&quot;:355137,&quot;secs&quot;:0},&quot;matched_lines&quot;:2,&quot;matches&quot;:2,&quot;searches&quot;:2,&quot;searches_with_match&quot;:2}},&quot;type&quot;:&quot;summary&quot;}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robbat2">@robbat2</a> on 2024-08-10 22:30</div>
+            <div class="timeline-body"><p>I'd go as far as to say: when using <code>--skip-bytes</code>, <code>ripgrep</code> must be given exactly one input file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-08-11 11:17</div>
+            <div class="timeline-body"><p>I think there are too many odd UX corners to this use case for it to be supported by ripgrep. And it seems very likely that this falls into the bucket of &quot;a feature that begets features.&quot; I think this could be much more effectively built as a separate tool. Remember that riprep's core infrastructure is exposed as a series of Rust libraries (although their docs aren't great).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-08-11 11:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2024-08-11 11:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:50 UTC
+    </footer>
+</body>
+</html>

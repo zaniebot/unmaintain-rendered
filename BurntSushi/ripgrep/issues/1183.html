@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gitignore `{}` patterns are inconsistent with official git - BurntSushi/ripgrep #1183</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Gitignore <code>{}</code> patterns are inconsistent with official git</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1183">#1183</a>
+        opened by <a href="https://github.com/quark-zju">@quark-zju</a>
+        on 2019-01-31 22:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/quark-zju">@quark-zju</a></div>
+            <div class="timeline-body"><h4>Versions</h4>
+<p>ignore crate: 0.4.6
+git: 2.19.0</p>
+<h4>Problem</h4>
+<p>The <code>gitignore</code> man page does not mention that <code>{}</code> should be treated specially. The official git binary does not treat it specially. For example, <code>{a}</code> matches the literal <code>{a}</code>, not <code>a</code>.</p>
+<p>The gitignore matcher in the <code>ignore</code> crate currently behaves differently.</p>
+<p>Possible solution: Add an option in <code>globset</code> to disable <code>{}</code> handling. Make <code>gitignore</code> use it.</p>
+<h4>Reproduce code</h4>
+<pre><code class="language-bash">git init foo; cd foo; echo '{a,b}' &gt; .gitignore; touch a; touch '{a,b}'; git status
+# prints &quot;a&quot; in &quot;untracked files&quot;; does not print &quot;{a,b}&quot;
+</code></pre>
+<pre><code class="language-rust">use ignore::gitignore::GitignoreBuilder;
+fn main() {
+    let mut b = GitignoreBuilder::new(&quot;.&quot;);
+    b.add_line(None, &quot;{a,b}&quot;).unwrap();
+    let m = b.build().unwrap();
+    println!(&quot;'a' matched: {:?}&quot;, m.matched(&quot;a&quot;, false)); // Actual: Ignore; Expect: None
+    println!(&quot;'{{a,b}}' matched: {:?}&quot;, m.matched(&quot;{a,b}&quot;, false)); // Actual: None; Expect: Ignored
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Official git does not support csh-style `{}` in `.gitignore`" to "Gitignore `{}` patterns are inconsistent with official git" by @quark-zju on 2019-02-01 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-04-03 13:10</div>
+            <div class="timeline-body"><p>This ticket is a duplicate of #1221, but since that one has more activity, I'm going to close this one. Thanks for filing the bug!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-04-03 13:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2019-04-03 13:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:49 UTC
+    </footer>
+</body>
+</html>

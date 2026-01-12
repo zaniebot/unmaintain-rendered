@@ -22,7 +22,7 @@
 
     <div class="timeline">
         <div class="timeline-entry">
-            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-28 19:55</div>
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a></div>
             <div class="timeline-body"><h2>Summary</h2>
 <p>This PR adds support for caching workspace diagnostics.</p>
 <p>For each file, ty now sends a <code>resultId</code> that is the hash of all diagnostics for that file. The client sends the <code>resultId</code>s from the previous workspace diagnostic requests as part of the next request payload. This allows ty to determine if the diagnostics of a file changed and only send a full diagnostic report for those files (and send unchanged for all other files).</p>
@@ -141,6 +141,58 @@ No memory usage changes detected ✅</p>
 </div>
         </div>
         <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/workspace_diagnostic.rs</code>:38 on 2025-07-30 03:16</div>
+            <div class="timeline-body"><p>nit: we could probably remove this comment now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/api/requests/workspace_diagnostic.rs</code>:117 on 2025-07-30 03:24</div>
+            <div class="timeline-body"><p>nit: we could probably consume <code>previous_results</code> (via <code>.into_iter()</code>) to avoid the clone on <code>previous_url</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/tests/e2e/pull_diagnostics.rs</code>:39 on 2025-07-30 03:26</div>
+            <div class="timeline-body"><p>Should this be applied globally in <code>TextContext::new</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/tests/e2e/pull_diagnostics.rs</code>:222 on 2025-07-30 03:35</div>
+            <div class="timeline-body"><p>I wonder if this should actually be fixed in the test server instead to mimic what a client would do. This is because, I think, it's VS Code that does this part or more specifically the ty VS Code extension that creates the workspace and global settings and sends it via the initialization options.</p>
+<p>The extension would construct workspace settings by asking VS Code the values for each setting which would automatically fallback to the global value. This means the server doesn't need to do any resolution between workspace and global values. This is what Ruff (and ty) does currently.</p>
+<p>https://github.com/astral-sh/ty-vscode/blob/641781c780fad4d575c3ee715e2a6f70e5e29a8c/src/common/settings.ts</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/tests/e2e/pull_diagnostics.rs</code>:233 on 2025-07-30 03:36</div>
+            <div class="timeline-body"><p>Is this required for workspace diagnostics to work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/tests/e2e/pull_diagnostics.rs</code>:237 on 2025-07-30 03:36</div>
+            <div class="timeline-body"><p>A follow-up (good help wanted task) would be to render these diagnostics similar to the ones in server unit tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/tests/e2e/pull_diagnostics.rs</code>:120 on 2025-07-30 03:37</div>
+            <div class="timeline-body"><p>Should we <code>panic!</code> here similar to <code>WorkspaceDiagnosticReportResult::Partial</code> branch?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/tests/e2e/pull_diagnostics.rs</code>:134 on 2025-07-30 03:39</div>
+            <div class="timeline-body"><p>Should we close these files after making these changes? We could have a helper method on <code>TestServer</code> that does this for us but it also isn't too verbose here either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/tests/e2e/pull_diagnostics.rs</code>:317 on 2025-07-30 03:40</div>
+            <div class="timeline-body"><p>Should we add a test case where the diagnostic content didn't change but the range did? Like, new content got added to the file but the new content doesn't produce the diagnostics so the existing diagnostic just got moved further down.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/tests/e2e/main.rs</code>:767 on 2025-07-30 03:41</div>
+            <div class="timeline-body"><p>I think we should use <code>initialization_options</code> instead of <code>global_options</code> which is what this is from a client's perspective.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-07-30 03:43</div>
             <div class="timeline-body"><p>Thank you!</p>
 <p>This looks relatively straightforward. Do you know how much of a performance improvement does this make?</p>
@@ -164,32 +216,76 @@ No memory usage changes detected ✅</p>
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
-            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-30 06:43</div>
-            <div class="timeline-body"></div>
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/tests/e2e/pull_diagnostics.rs</code>:39 on 2025-07-30 06:39</div>
+            <div class="timeline-body"><p>I don't think we should because the filter isn't very specific. It replaces all 16 digit numbers with <code>RESULT_ID</code>. I'd be worried that it replaces some other random numbers.</p>
+</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-30 06:43</div>
             <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/tests/e2e/pull_diagnostics.rs</code>:222 on 2025-07-30 06:43</div>
+            <div class="timeline-body"><p>Ideally, we'd fix this in the server itself, but it feels out of scope for this PR. I'm not entirely sure how I would model this but the server should prefer the option specified in the global option over a value provided in the workspace configuration. In fact, it should only use the workspace level option if it wasn't provided globally. But I'd prefer not to make changes to settings while you're also doing a refactor. That's why I'd prefer to leave this as is for now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-30 06:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/tests/e2e/pull_diagnostics.rs</code>:233 on 2025-07-30 06:43</div>
+            <div class="timeline-body"><p>It's not. It just feels more realistic to have at least one file open :)</p>
+</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-30 06:45</div>
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/tests/e2e/pull_diagnostics.rs</code>:237 on 2025-07-30 06:45</div>
+            <div class="timeline-body"><p>I'm not sure if this is worth it here, given that we don't really care about the diagnostic content. The only part we're interested in is if they're full results or unchanged. I think I rather redact the diagnostic content in snapshots than render them in a fancy way to make the test less prone to changes in ty's core.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-30 06:47</div>
             <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/tests/e2e/pull_diagnostics.rs</code>:134 on 2025-07-30 06:47</div>
+            <div class="timeline-body"><p>I think that makes sense for a test, testing the workspace diagnostic mode. I don't think it's necessary here and it only complicates the test (it's also sort of tested already by the fact that the initial run only opens 1 file)</p>
+</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-30 06:49</div>
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/tests/e2e/main.rs</code>:767 on 2025-07-30 06:49</div>
+            <div class="timeline-body"><p>Would that require that the test specify the entire <code>initialization_options</code>? Like, with <code>{ &quot;settings&quot;: global_options }</code>?</p>
+<p>I'd prefer if we can avoid this. It took me longer than it should have to figure out the right structure of our <code>initialization_options</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-30 08:01</div>
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/tests/e2e/pull_diagnostics.rs</code>:237 on 2025-07-30 08:01</div>
+            <div class="timeline-body"><p>Ah yeah, I think that makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-07-30 08:04</div>
             <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/tests/e2e/main.rs</code>:767 on 2025-07-30 08:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Would that require that the test specify the entire <code>initialization_options</code>? Like, with <code>{ &quot;settings&quot;: global_options }</code>?</p>
+</blockquote>
+<p>No, I just want to indicate that these are the initialization options because I'd find global options a bit confusing from a client perspective.</p>
+</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-07-30 08:04</div>
@@ -204,16 +300,36 @@ No memory usage changes detected ✅</p>
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/tests/e2e/pull_diagnostics.rs</code>:222 on 2025-07-30 08:06</div>
+            <div class="timeline-body"><p>That sounds reasonable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-30 08:50</div>
             <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/tests/e2e/main.rs</code>:767 on 2025-07-30 08:50</div>
+            <div class="timeline-body"><p>I can rename it and I just saw that this will take <code>InitializationOptions</code> in your settings pr</p>
+</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-30 08:51</div>
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/requests/workspace_diagnostic.rs</code>:38 on 2025-07-30 08:51</div>
+            <div class="timeline-body"><p>Yes, while it is still true, we shouldn't hit this log as frequently anymore</p>
+</div>
+        </div>
+        <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-07-30 08:56</div>
             <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/api/requests/workspace_diagnostic.rs</code>:117 on 2025-07-30 08:56</div>
+            <div class="timeline-body"><p>It already uses <code>into_iter</code> implicitly. The reason we need to clone the <code>url</code> is because <code>key</code> requires an owned <code>Url</code> and we also need the URL for the <code>FullDiagnosticReportItem</code>. It might be possible to avoid the URL clone by getting the <code>url</code> from the <code>DocumentRef</code> (adding an <code>into_url</code> method or similar) but it complicates the code a fair amount which I don't think is justified</p>
+</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-30 09:00</div>
@@ -246,7 +362,7 @@ No memory usage changes detected ✅</p>
     </div>
 
     <footer>
-        Synced at 2026-01-10 17:52:43 UTC
+        Synced at 2026-01-12 17:14:38 UTC
     </footer>
 </body>
 </html>

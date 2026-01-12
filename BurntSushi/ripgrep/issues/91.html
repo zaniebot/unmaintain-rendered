@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Searching filenames (`-g` option in `ag`) - BurntSushi/ripgrep #91</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Searching filenames (<code>-g</code> option in <code>ag</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/91">#91</a>
+        opened by <a href="https://github.com/Valloric">@Valloric</a>
+        on 2016-09-25 22:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Valloric">@Valloric</a></div>
+            <div class="timeline-body"><p>Ag supports using <code>-g</code> to recursively search filenames matching the provided pattern. Ripgrep doesn't have this feature (to the best of my knowledge; I've read the <code>--help</code> output three times looking for it); it's the only ag feature holding me back from fully switching to ripgrep. :)</p>
+<p>Since ripgrep already has something unrelated mapped to <code>-g</code>, the option name should be something else. The incompatibility with ag will be unfortunate, but survivable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 22:30</div>
+            <div class="timeline-body"><p>I'm pretty sure this has been reported at least several times now. :-) <code>rg</code> has <code>--files</code> for listing files and <code>-g</code> for glob matching.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-09-25 22:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Valloric">@Valloric</a> on 2016-09-25 22:36</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm pretty sure this has been reported at least several times now. :-)</p>
+</blockquote>
+<p>Sorry about that! It might be indicative of a documentation &quot;bug&quot;; it seems people are having trouble locating this feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Valloric">@Valloric</a> on 2016-09-25 22:40</div>
+            <div class="timeline-body"><p>Ah, I get it now. It's a combination of two flags: <code>--files</code> lists all the files that would have been searched and <code>-g</code> can be used to only search files matching a pattern.</p>
+<p>This is very non-obvious. It requires users to fully understand <em>two</em> separate, unrelated options and to realize that when combined, they can be used to solve their problem.</p>
+<p>Since ripgrep will have lots of users coming from ag who will expect a simple single-flag solution, it might be a good idea to have a single flag (much like ag) for this use-case, if for any reason, than to save you the headache of closing all these issue reports. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 22:51</div>
+            <div class="timeline-body"><p>I'd like to solve this with better documentation. It's clear this is an important feature to many, but it's decidedly subservient to ripgrep's primary focus, so I'd like to avoid adding extra flags for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gabrielmagno">@gabrielmagno</a> on 2016-09-29 16:16</div>
+            <div class="timeline-body"><p>That would be a great feature. But it is important to notice the differences.</p>
+<p>Let's say I have this directory tree:</p>
+<pre><code>.
+└── path
+    └── to
+        ├── file
+        │   ├── pattern (file)
+        │   └── pattern.txt (file)
+        ├── pattern
+        │   └── fileA.txt (file)
+        └── patterns
+            └── fileB.txt (file)
+</code></pre>
+<ul>
+<li><code>ag</code> returns all the files that have &quot;pattern&quot; in <strong>any part</strong> of its <strong>path</strong></li>
+</ul>
+<pre><code>$ ag -g &quot;pattern&quot;
+path/to/pattern/fileA.txt
+path/to/patterns/fileB.txt
+path/to/file/pattern
+path/to/file/pattern.txt
+</code></pre>
+<ul>
+<li><code>rg</code> returns all the files that have &quot;pattern&quot; as its <strong>name</strong></li>
+</ul>
+<pre><code>$ rg --files -g &quot;pattern&quot;
+path/to/file/pattern
+</code></pre>
+<p>So, ideally, if such a feature is implemented in ripgrep to reproduce what The Silver Search does, it should check the path (not only the name) and also match any part of the string (not an exact match, not a glob).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-29 16:46</div>
+            <div class="timeline-body"><p>Remember that <code>-g</code> gives you the ability to use a <em>glob</em>, so if you want to match any component of the path, then <code>**/pattern/**</code> will work. (Well, to match <code>pattern.txt</code> and <code>path/to/patterns</code>, you will actually need <code>**/pattern*/**</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nateozem">@nateozem</a> on 2016-12-27 04:56</div>
+            <div class="timeline-body"><p>In case somebody wouldn't know the syntax for doing a search with the condition of excluding files with a certain name using the command line, here is an example to do so:</p>
+<pre><code>$ rg &quot;from_str&quot; -g &quot;\!tags&quot; -g &quot;repos/*&quot;
+                    ^^^</code></pre>
+<p>As shown, you may need to escape <code>!</code> with <code>\</code>,  if wish to exclude files from search.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-27 07:59</div>
+            <div class="timeline-body"><p>Or just use single quotes.</p>
+<p>On Dec 26, 2016 11:56 PM, &quot;nateozem&quot; <a href="mailto:notifications@github.com">notifications@github.com</a> wrote:</p>
+<blockquote>
+<p>In case somebody wouldn't know the syntax for doing a search with the
+condition of excluding files with a certain name using the command line,
+here is an example to do so:</p>
+<p>$ rg &quot;from_str&quot; -g &quot;!tags&quot; -g &quot;repos/*&quot;
+^^^</p>
+<p>As shown, you may need to escape ! with , if wish to exclude files from
+search.</p>
+<p>—
+You are receiving this because you modified the open/close state.
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/BurntSushi/ripgrep/issues/91#issuecomment-269269896">https://github.com/BurntSushi/ripgrep/issues/91#issuecomment-269269896</a>,
+or mute the thread
+<a href="https://github.com/notifications/unsubscribe-auth/AAb34sr7aMsWRt2-EZ0DUTcu_0dCcxmwks5rMJqIgaJpZM4KGBgW">https://github.com/notifications/unsubscribe-auth/AAb34sr7aMsWRt2-EZ0DUTcu_0dCcxmwks5rMJqIgaJpZM4KGBgW</a>
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/h5rdly">@h5rdly</a> on 2016-12-30 16:52</div>
+            <div class="timeline-body"><p>Are there search parameters for rg that would list any files that match <code>pattern</code>, but any folder that matches <code>pattern</code> will only appear by itself, aka not relisted with everything inside it?</p>
+<p>Say, for 'python' I'd like to get -
+c:/python27/
+c:/python27/python.exe
+c:/python27/pythonw.exe
+c:/pdfs/pythonconf.pdf
+.[more such stuff]
+.</p>
+<p>Is that possible directly, without parsing the output?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-30 16:55</div>
+            <div class="timeline-body"><p>No. ripgrep will never print directories, only file paths. ripgrep isn't a <code>find</code> replacement.</p>
+<p>Note that there's enough of <code>libripgrep</code> done that you could write your own CLI tool in Rust fairly easily to do this. I would be happy to mentor that project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueyed">@blueyed</a> on 2017-01-21 17:49</div>
+            <div class="timeline-body"><p>Note that <code>--files</code> also includes binary files (is this a bug?)
+The help says:</p>
+<blockquote>
+<p>Print each file that would be searched without actually performing the search.</p>
+</blockquote>
+<p>So to replicate <code>ag -g .</code> I am using <code>rg --files-with-matches .</code> now.
+A difference here is that <code>rg</code> does not include empty files like <code>ag</code> does, even when using <code>''</code> or <code>'.?'</code> for the pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-21 18:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Note that --files also includes binary files (is this a bug?)</p>
+</blockquote>
+<p>No. &quot;binary&quot; files isn't a fact one can know without actually searching the file contents.</p>
+<blockquote>
+<p>So to replicate ag -g . I am using rg --files-with-matches .</p>
+</blockquote>
+<p>Those aren't the same. <code>ag -g .</code> is like <code>rg --files</code>. <code>rg --files-with-matches</code> is like <code>ag --files-with-matches</code>.</p>
+<blockquote>
+<p>A difference here is that rg does not include empty files like ag does, even when using '' or '.?' for the pattern.</p>
+</blockquote>
+<p>Whether a file is empty or not has no impact on the output of <code>--files</code>. In an empty directory:</p>
+<pre><code>$ touch hi
+$ rg --files
+hi
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueyed">@blueyed</a> on 2017-01-21 19:24</div>
+            <div class="timeline-body"><p>@BurntSushi
+Thanks for your reply.
+I got confused because I had a global <code>.agignore</code> file that excluded <code>*.png</code>, and thought that <code>ag -g .</code> would exclude binary files therefore already.</p>
+<blockquote>
+<p>Whether a file is empty or not has no impact on the output of <code>--files</code></p>
+</blockquote>
+<p>I was referring to <code>--files-with-matches</code> here, which I think is better to exclude binary files (I am using <code>rg</code> here to list files for <code>ctags</code>).
+I think it's good to not include empty files here, but still wonder if you could have a pattern that is always true, also for empty files (e.g. <code>^</code> or <code>.?</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-21 22:01</div>
+            <div class="timeline-body"><blockquote>
+<p>I was referring to --files-with-matches here, which I think is better to exclude binary files (I am using rg here to list files for ctags).</p>
+</blockquote>
+<p>It does:</p>
+<pre><code>$ echo -e 'z\x00' &gt; test
+$ rg --files-with-matches z
+$ rg --files-with-matches -a z
+test
+</code></pre>
+<p>Please note that &quot;binary&quot; detection cannot possibly be perfect. It uses a simple heuristic: if there's a <code>NUL</code> byte, then the file is considered binary. This is what GNU grep does. (ripgrep does have a bug here, see #52.)</p>
+<blockquote>
+<p>I think it's good to not include empty files here, but still wonder if you could have a pattern that is always true, also for empty files (e.g. ^ or .?)?</p>
+</blockquote>
+<p>ripgrep is a line oriented searcher. If a file doesn't contain any lines, then there's nothing to match. What is your use case?</p>
+<p>In the future, could you please open new issues for new bug reports/feature requests?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueyed">@blueyed</a> on 2017-01-21 22:19</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I was referring to --files-with-matches here, which I think is better to exclude binary files (I am using rg here to list files for ctags).</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>It does:</p>
+</blockquote>
+<p>And that is good.</p>
+<blockquote>
+<p>ripgrep is a line oriented searcher. If a file doesn't contain any lines, then there's nothing to match.</p>
+</blockquote>
+<p>I see, but somehow thought that <code>^</code> should be always true.</p>
+<p>But <code>grep -l '^' *</code> behaves the same, it makes sense, and it is a good way to skip empty files (using <code>.</code>, which would work even when <code>^</code> would stand for &quot;anything&quot;).</p>
+<blockquote>
+<p>In the future, could you please open new issues for new bug reports/feature requests?</p>
+</blockquote>
+<p>I get you, but it is still about mimicking <code>ag -g</code> (and <code>ag -g .</code> in particular), isn't it?</p>
+<blockquote>
+<p>What is your use case?</p>
+<blockquote>
+<p>(I am using <code>rg</code> here to list files for <code>ctags</code>).</p>
+</blockquote>
+</blockquote>
+<p>I was using <code>ag -g . | ctags --links=no -L-</code> to generate <code>tags</code> for my dotfiles (a globally included tags file).</p>
+<p>I've replaced it now with <code>rg --files-with-matches --no-ignore-vcs . | ctags --links=no -L-</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-21 22:28</div>
+            <div class="timeline-body"><blockquote>
+<p>I get you, but it is still about mimicking ag -g (and ag -g . in particular), isn't it?</p>
+</blockquote>
+<p>Definitely not. I think there is a lot of value in having a similar interface as other tools, but I've never added something to ripgrep just for the sake of mimicking another tool. :-)</p>
+<p>In the future, please open new issues to discuss new features or bugs. This particular issue is closed and done with. If there's a problem, we should start a new discussion.</p>
+<blockquote>
+<p>I've replaced it now with rg --files-with-matches --no-ignore-vcs . | ctags --links=no -L-.</p>
+</blockquote>
+<p>Why does this require printing empty files? Surely you won't be able to jump to any symbol defined in an empty file. ;-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueyed">@blueyed</a> on 2017-01-21 22:40</div>
+            <div class="timeline-body"><p>@BurntSushi
+I do not want the empty files - it's a nice side effect of the mimicking / workaround though.</p>
+<blockquote>
+<blockquote>
+<p>about mimicking ag -g (and ag -g . in particular), isn't it?</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>Definitely not. I think there is a lot of value in having a similar interface as other tools, but I've never added something to ripgrep just for the sake of mimicking another tool. :-)</p>
+</blockquote>
+<p>Sure, but then this issue is still the place to come to when you want to simulate it - that's what I've meant.</p>
+<p>All is fine from my side.. :)
+Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-21 22:49</div>
+            <div class="timeline-body"><p>@blueyed I see, OK. I had a really hard time understanding what you were trying to say! Glad all is well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueyed">@blueyed</a> on 2017-01-21 23:31</div>
+            <div class="timeline-body"><p>@BurntSushi
+Thanks for a faster and bug-free (with regard to the .gitignore handling) replacement for <code>ag</code>!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Valloric">@Valloric</a> on 2017-03-02 21:36</div>
+            <div class="timeline-body"><p>Seems like I misunderstood what <code>-g</code> did originally; it's for a <em>glob</em> match, not a regex match.</p>
+<p>Given that, I can't say that <code>rg --files -g 'pattern'</code> is adequate. What I'd like to see as a user is a <em>regex</em> match on the <em>filenames</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mcandre">@mcandre</a> on 2017-08-16 19:59</div>
+            <div class="timeline-body"><p>Is there no combination of flags for ripgrep allowing users to constrain both the filename and the content simultaneously? I'd like to search for Makefile's with &quot;$$&quot; in them, for example. Currently working around this with <code>find . -name Makefile -exec grep &quot;\\$\\$&quot; {} \;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-08-16 20:13</div>
+            <div class="timeline-body"><p>@mcandre What have you tried? If <code>rg -F '$$'</code> searches too much, then restrict it using exactly the techniques outlined above: <code>rg -F '$$' -g Makefile</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mcandre">@mcandre</a> on 2017-08-16 20:15</div>
+            <div class="timeline-body"><p>@BurntSushi Thanks for the tip, works like a charm!</p>
+<p>I wonder why the ripgrep CLI parsing doesn't treat</p>
+<p><code>rg -g Makefile '$$'</code></p>
+<p>as</p>
+<p><code>rg -g Makefile -F '$$'</code></p>
+<p>Oh well, at least the latter works on my machine^TM.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-08-16 20:20</div>
+            <div class="timeline-body"><p>Because <code>$</code> is a regex meta-character used to match the end of the line; <code>-F</code> escapes all meta-characters so that they're treated literally, which is what you wanted in this case</p>
+<p>Might be worth reviewing something like http://www.regular-expressions.info/quickstart.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mcandre">@mcandre</a> on 2017-08-23 16:31</div>
+            <div class="timeline-body"><p>@okdana Lol I totally forgot about that! Yeah, <code>-F '$$'</code> works on my machine, and I suppose <code>'\$\$'</code> would work as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rosshadden">@rosshadden</a> on 2017-09-19 14:59</div>
+            <div class="timeline-body"><p>@BurntSushi I apologize if you find these kinds of issues annoying, but clearly based on your comments in some of them you understand that a lot of us want this behavior.  Your focus up to this point has been on showing that ripgrep already has the behavior, but I think you should heavily consider focusing on making it as easy as it is in <code>ag</code>, <code>pt</code>, and <code>ack</code>.</p>
+<p>Using <code>-g</code> in all of those tools is not just a gimmick, it's incredibly useful.  In fact I use it just about as much as I do the main functionality.  A lot of projects like <a href="https://github.com/junegunn/fzf">fzf</a>, <a href="https://github.com/Shougo/unite.vim/blob/master/doc/unite.txt">unite.vim</a>, and <a href="https://github.com/Shougo/denite.nvim/blob/master/doc/denite.txt">denite.vim</a> even officially recommend using this feature for getting lists of files, as <code>-g ''</code> is a really convenient and fast git-agnostic way to do <code>git ls-files</code>.  In fact doing a search for &quot; -g&quot; on fzf's readme shows five occurrences of using <code>ag -g</code> in different ways.</p>
+<p>To be clear I'm not proposing you make it <code>-g</code>.  But please consider adding a flag that does the equivalent.  It will shut all of us up and make us feel much better about jumping into using and loving ripgrep.  Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-09-19 15:10</div>
+            <div class="timeline-body"><p>@rosshadden What are you actually asking for? The <code>-g</code> flag's behavior is already set and it isn't changing. Are you asking for a new flag that combines <code>-g</code> and <code>--files</code>? If so, just define an alias?</p>
+<pre><code>alias rgg=&quot;rg --files&quot;</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rosshadden">@rosshadden</a> on 2017-09-19 15:49</div>
+            <div class="timeline-body"><p>Yes I was asking for a flag that combines them.  I do have an alias for this (called <code>rgg</code> even, haha), but feel like it should be an official flag shortcut.  It just felt like an elephant in the room sort of thing so I brought it up.  A lot of us end up here or in the other duplicate issues for this exact reason, and while yes having it documented helps, I still think you should consider making it easier and more comfortable for people.</p>
+<p>Anyway that's all I'll say about it, and I'll leave you alone now.  Thanks again for the project. I never thought I'd move off <code>ack</code> until I found <code>ag</code>.  Never thought I'd move off that until I found <code>pt</code>, and I never thought I'd move off that until I found <code>rg</code>.  Heh.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tupton">@tupton</a> on 2017-12-06 18:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Well, to match <code>pattern.txt</code> and <code>path/to/patterns</code>, you will actually need <code>**/pattern*/**</code>.</p>
+</blockquote>
+<p>I had to add an extra <code>-g &quot;pattern.*&quot;</code> to match file names that end in <code>pattern.txt</code> or <code>pattern.js</code> or whatever – that is, &quot;pattern&quot; + an extension. <code>**/pattern*/**</code> matches file names like &quot;patternfoo.txt&quot; but not &quot;pattern.txt&quot;.</p>
+<p>I too would like to see an option to match a regex on filenames (including path.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sadid">@sadid</a> on 2018-05-25 06:34</div>
+            <div class="timeline-body"><p>Based on my experience <code>ag -g 'pattern'</code> isn't equivalent to <code>rg --files -g 'pattern'</code> when I call ag to find files with specific pattern in the filename/path. As I tinker, <code>find . -type f | rg 'pattern'</code> is somehow equivalent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-05-25 06:42</div>
+            <div class="timeline-body"><p>They should be basically equivalent, but you might see different output depending on the exact pattern (<code>rg</code>'s glob syntax is more robust — and more similar to git's — than <code>ag</code>'s) as well as any ignore patterns you might have. You can try adding <code>-u</code> or <code>--no-ignore-vcs</code>, for example, if <code>ag</code> shows files that <code>rg</code> doesn't</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sadid">@sadid</a> on 2018-05-25 08:28</div>
+            <div class="timeline-body"><p>@okdana, Here is my test case:
+a directory structure (without any git) called test:</p>
+<pre><code>test
+  \_a
+      \_aa
+          \_ target.md
+      \_test.md
+   \_b
+       \_target.md
+   \_c
+</code></pre>
+<p>then these two commands are not equal <code>ag -g 'target'</code> and <code>rg --files -g 'target'</code> with or without <code>-u</code> or <code>--no-ignore-vcs</code>.  The <code>ag</code> finds the <code>target.md</code> and put it in the output but <code>rg</code> doesn't.</p>
+<p><em>At the moment I still use <code>rg</code> in other use cases but for this use cases I can use <code>fd</code>, a new <code>find</code> replacement.</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-05-25 08:41</div>
+            <div class="timeline-body"><p>Ah, that's because <code>ag</code> actually uses PCRE to match file paths — and it matches them against the <em>entire</em> path, too. For some reason i'd thought it was using its git-ish glob matching for that.</p>
+<p>The <code>rg</code> equivalent to <code>ag -g target</code>, then, is more or less <code>rg --files -g '*target*'</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mahiki">@mahiki</a> on 2018-08-27 22:09</div>
+            <div class="timeline-body"><p>I also was attempting to move from <code>ag</code> to <code>rg</code>.</p>
+<p>The first thing I tried was a PCRE regex match of file paths, which I now have learned is insufficient. Yes <code>find</code> is the great way to do that, but <code>ag</code> and <code>rg</code> respect ignore files, binaries, etc.</p>
+<p>I <strong>truly</strong> enjoy finding files by name using regex patterns and not globs, in <code>ag</code> its simple:</p>
+<pre><code>ag -g 'pattern1|foo\d{4}' ~/Documents</code></pre>
+<p>Is there no was such a feature could be implemented?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-27 22:41</div>
+            <div class="timeline-body"><p>@mahiki It already exists. <code>rg --files ~/Documents | rg 'pattern1|foo\d{4}'</code>. Otherwise, no, the glob flags will remain glob flags. If you want a tool that specializes in listing files and can match them with regexes, then you might consider <a href="https://github.com/sharkdp/fd"><code>fd</code></a>. Also, your regex is not specific to PCRE.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/borekb">@borekb</a> on 2019-08-20 18:09</div>
+            <div class="timeline-body"><p>Thanks for the mention of <code>fd</code>! I cloned a repository somewhere on my disk and wanted to abuse ripgrep to find it; <code>fd</code> is the right tool for that as I need to list only directories.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WhyNotHugo">@WhyNotHugo</a> on 2020-05-10 14:30</div>
+            <div class="timeline-body"><p>I'm trying to achieve what's been discussed on this thread, but it's not working for me, I'm not sure if I've misunderstood something, or if something's broken. Say I want to find files named <code>vendor</code>:</p>
+<pre><code>$ rg --files . -g vendor
+$ rg --files vendor
+vendor: No such file or directory (os error 2)
+$ find . -iname vendor
+./idf/core/static/www/js/vendor
+./idf/core/static/www/css/vendor
+./enviatufoto/static/www/js/vendor
+</code></pre>
+<p>What am I doing wrong? With <code>ag</code>, this is basically <code>ag -g vendor</code>, but I can't figure out how it works with <code>rg</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-05-10 18:41</div>
+            <div class="timeline-body"><p>@WhyNotHugo The glob is applied to every path ripgrep traverses. Is <code>vendor</code> a directory? If so, <code>vendor</code> on its own won't match anything inside of <code>vendor</code>. Use <code>rg --files -g '**/vendor/**'</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lamyergeier">@lamyergeier</a> on 2020-06-29 00:42</div>
+            <div class="timeline-body"><p>@BurntSushi  <code>--files</code> <code>-g</code> doesn't respect the contents of <code>.gitignore</code></p>
+<pre><code>rg --files --type md -g &quot;*Python*&quot; &quot;${PWD}&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-06-29 00:45</div>
+            <div class="timeline-body"><p>Please file a new and <em>complete</em> big report. Your comment isn't actionable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lamyergeier">@lamyergeier</a> on 2020-06-29 01:02</div>
+            <div class="timeline-body"><p>I solved this as follows:</p>
+<p>To search Python in filenames:</p>
+<pre><code>Search=Python
+rg --files &quot;${PWD}&quot; | rg --regexp &quot;${Search}[^/]*$&quot; | sort | nl
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jjjchens235">@jjjchens235</a> on 2020-10-06 22:07</div>
+            <div class="timeline-body"><p>piggybacking off of @anishmittal2020
+This function returns any file name AND directory matches, <strong>though directories themselves cannot be returned</strong>, as the --file flag returns a list of files only, directory paths are excluded.</p>
+<pre><code>function f() {
+	#find any files or directories that match arg
+	rg --files &quot;${PWD}&quot; | rg --regexp &quot;.*/.*$1.*&quot; #| sort | nl
+}
+</code></pre>
+<p>Put in .bashrc, and then call it on the command line.
+If searching for filename or directory names that contain the word 'vendor':
+<code>f vendor</code></p>
+<p>Taking @WhyNotHugo example:</p>
+<pre><code>./idf/core/static/www/js/vendor/bar.py
+./idf/vendor.py
+./idf/core/static/www/js/vendor/
+</code></pre>
+<p>The first two files will be returned, the first because the path contains a dir called vendor, and the second because it contains a filename with vendor. The last file is a dir, it will not be returned.</p>
+<p><strong>Edit:</strong> I hate to admit it, but I should have just used fd from the get-go. It allows for regex arguments, and user can specify if they want to search for files, directories, or both.</p>
+<pre><code>function f() {
+	#list of flags: https://github.com/sharkdp/fd#command-line-options
+	#optional flags should be passed in first, then PATTERN and PATH
+	fd -H -a -p  &quot;$@&quot;
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AtomicNess123">@AtomicNess123</a> on 2021-02-07 09:07</div>
+            <div class="timeline-body"><p>I have read the whole thread. I have not successfully managed to just find all filenames containing &quot;helm&quot;.
+When I do:</p>
+<p><code>rga ~/.emacs.d --files -g &quot;*helm*&quot;    </code></p>
+<p>I just finds filenames with detached &quot;helm&quot; (i.e., &quot;xxx-helm-xxx.el&quot;), but not &quot;xxxhelmxxx.el&quot;.
+How to specify this? Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-02-07 16:44</div>
+            <div class="timeline-body"><p>@AtomicNess123 Works just fine for me:</p>
+<pre><code>$ touch xxx-helm-xxx.el xxxhelmxxx.el
+$ l
+total 0
+-rw-rw-r-- 1 andrew users 0 Feb  7 11:40 xxx-helm-xxx.el
+-rw-rw-r-- 1 andrew users 0 Feb  7 11:40 xxxhelmxxx.el
+$ rg --files -g '*helm*'
+xxx-helm-xxx.el
+xxxhelmxxx.el
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AtomicNess123">@AtomicNess123</a> on 2021-02-07 20:52</div>
+            <div class="timeline-body"><p>Thanks. Actually, it does work in your example.
+But not when I do:</p>
+<p><code>§ rg --files -g '*helm*' ~/.emacs.d  </code></p>
+<p>In this case, when I specify the folder to search within, it only finds the &quot;xxx-helm-xxx.el&quot; instances, and not the &quot;xxxhelmxxx.el&quot; ones.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-02-07 21:03</div>
+            <div class="timeline-body"><p>Also works just fine:</p>
+<pre><code>$ mkdir .emacs.d
+$ touch .emacs.d/xxx-helm-xxx.el .emacs.d/xxxhelmxxx.el
+$ rg --files -g '*helm*' .emacs.d/
+.emacs.d/xxx-helm-xxx.el
+.emacs.d/xxxhelmxxx.el
+</code></pre>
+<p>I can't think of a reason why it isn't working for you. Sorry. To be honest, it doesn't make sense to me why <code>*helm*</code> would match <code>xxxhelmxxx</code> but not <code>xxx-helm-xxx</code>. I suspect there is something else going awry. Please consider making a smaller reproduction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AtomicNess123">@AtomicNess123</a> on 2021-02-07 21:28</div>
+            <div class="timeline-body"><p>I won't work like this in my system.</p>
+<pre><code>rg --version  
+ripgrep 12.1.1
+</code></pre>
+<p>What is your version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-02-07 21:31</div>
+            <div class="timeline-body"><p>Same, but there aren't any recent changes that would impact this AFAIK. Please consider trying my exact set of commands in a fresh directory. Try running with the <code>--debug</code> flag. Paste its output and all the exact commands you're running.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AtomicNess123">@AtomicNess123</a> on 2021-02-07 21:31</div>
+            <div class="timeline-body"><p>Other question: how many levels (subdirectories) will the command search?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-02-07 21:31</div>
+            <div class="timeline-body"><p>All...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AtomicNess123">@AtomicNess123</a> on 2021-02-07 21:37</div>
+            <div class="timeline-body"><p>Then, it makes no sense. It works in your example. But I want to find any filename with &quot;helm&quot; in the name. If I search from root or any other folder, it only finds the files at the .emacs.d/modules and .emacs.d/other, but not in .emacs.d/elpa. It is very strange. But when I enter the elpa directory and run the command from there, it finds all the files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AtomicNess123">@AtomicNess123</a> on 2021-02-07 21:41</div>
+            <div class="timeline-body"><p>Ok... does .gitignore affect results? It seems elpa is in .gitignore!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-02-07 21:58</div>
+            <div class="timeline-body"><p>Of course. The first two sentences of the readme:</p>
+<blockquote>
+<p>ripgrep is a line-oriented search tool that recursively searches your current directory for a regex pattern. By default, ripgrep will respect your .gitignore and automatically skip hidden files/directories and binary files.</p>
+</blockquote>
+<p>This is why I suggested the <code>--debug</code> flag. It will tell you which things ripgrep skips and why.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AtomicNess123">@AtomicNess123</a> on 2021-02-08 08:09</div>
+            <div class="timeline-body"><p>Yes, you were right. I'm just newbie in command line functions. I wonder if it's possible to override .gitignore setting?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-02-08 11:49</div>
+            <div class="timeline-body"><p>Sure. See the guide. If you have a specific question then open a new discussion post.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sergeevabc">@sergeevabc</a> on 2021-05-02 12:02</div>
+            <div class="timeline-body"><p>Sorry to dig up this issue once again, but as a Windows user I believe workarounds provided earlier are not sterling, because <code>alias rgg</code> that combines <code>--files -g part-of-filename</code> is a Linux thing and <code>fd</code> utility to use instead of <code>rg</code> to search for filenames is <a href="https://github.com/sharkdp/fd/issues/752">still buggy</a> to be relied upon. Yet this task arises daily (at least on my end), so I would vote with both hands for a short switch (to remember it easily and not to type long now imaginary --search-for-filenames). For example, <code>-ff</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-02 12:23</div>
+            <div class="timeline-body"><p>Other software being buggy is not something I'm receptive towards as a motivation for adding more features to ripgrep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AtomicNess123">@AtomicNess123</a> on 2021-07-27 09:17</div>
+            <div class="timeline-body"><blockquote>
+<p>piggybacking off of @anishmittal2020
+This function returns any file name AND directory matches, <strong>though directories themselves cannot be returned</strong>, as the --file flag returns a list of files only, directory paths are excluded.</p>
+<pre><code>function f() {
+  #find any files or directories that match arg
+  rg --files &quot;${PWD}&quot; | rg --regexp &quot;.*/.*$1.*&quot; #| sort | nl
+}
+</code></pre>
+</blockquote>
+<p>Thanks for this. What is the meaning of  &quot;${PWD}&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chris-w-jarvis">@chris-w-jarvis</a> on 2021-08-12 19:59</div>
+            <div class="timeline-body"><p>Whats wrong with doing <code>rg --files | rg foo</code> ?</p>
+<p>This seems to work fine for me :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/foucist">@foucist</a> on 2022-03-23 20:26</div>
+            <div class="timeline-body"><p>Inspired by the earlier alias, I'm trying something like this.   Function is named ag because old habits die hard 😅</p>
+<pre><code>function ag() { rg --files | rg &quot;.*/.*$1.*&quot; | sort | rg $1 }</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mcandre">@mcandre</a> on 2022-03-24 23:31</div>
+            <div class="timeline-body"><p>Appreciate the snippet! Good to know.</p>
+<p>One reason to bake this functionality into rg itself, is that sort may have
+different syntax on Windows.</p>
+<p>And any sorting is most efficiently done with appropriate data structures
+as early as possible (e.g., &quot;online&quot; algorithm), rather than after the fact.</p>
+<p>On Wed, Mar 23, 2022, 3:26 PM James Robey <em><strong>@</strong></em>.***&gt; wrote:</p>
+<blockquote>
+<p>Inspired by the earlier alias, I'm trying something like this. Function is
+named ag because old habits die hard 😅</p>
+<p>function ag() { rg --files | rg &quot;.<em>/.</em>$1.*&quot; | sort | rg $1 }</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/BurntSushi/ripgrep/issues/91#issuecomment-1076787036">https://github.com/BurntSushi/ripgrep/issues/91#issuecomment-1076787036</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AAABJRGFSUSKJF77H426E3LVBN5AJANCNFSM4CQYDALA">https://github.com/notifications/unsubscribe-auth/AAABJRGFSUSKJF77H426E3LVBN5AJANCNFSM4CQYDALA</a>
+.
+You are receiving this because you were mentioned.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PyKoch">@PyKoch</a> on 2024-05-23 10:58</div>
+            <div class="timeline-body"><blockquote>
+<p>In case somebody wouldn't know the syntax for doing a search with the condition of excluding files with a certain name using the command line, here is an example to do so:</p>
+<pre><code>$ rg &quot;from_str&quot; -g &quot;\!tags&quot; -g &quot;repos/*&quot;
+                    ^^^
+</code></pre>
+<p>As shown, you may need to escape <code>!</code> with <code>\</code>, if wish to exclude files from search.</p>
+</blockquote>
+<p>Please excuse the newbie question here:
+I am trying to search all pdf files and want to exclude those that contain 'ms' in the file name.
+This is what I entered:
+<code>rg --type pdf -i &quot;velocity&quot; --sort-files -g '\!ms' -g '*paper_3*' &gt;&gt; test_p3_no_ms.txt</code>
+Sadly, there are still files with 'ms' in the title included. Any help would be greatly appreciated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-23 11:52</div>
+            <div class="timeline-body"><p>@PyKoch Please don't ask questions in old unrelated issues. This issue is a feature request for some other feature.</p>
+<p>And when you do ask questions, please include a reproduction. Here's how you do it: you include <em>all</em> relevant details so that others can see what you're seeing. This means providing inputs, showing the outputs <em>you</em> see and the outputs you <em>want</em> to see. Basically, it comes down to &quot;show, don't tell.&quot; Here, I'll show you.</p>
+<p>First create an empty directory with some files:</p>
+<pre><code>$ mkdir rg-search-issue
+$ cd rg-search-issue
+$ touch msfoo fooms ms quux
+</code></pre>
+<p>And now run <code>rg --files</code> to show that it correctly finds all of the files I created above:</p>
+<pre><code>$ rg --files
+quux
+ms
+fooms
+msfoo
+</code></pre>
+<p>And now my attempt at filtering:</p>
+<pre><code>$ rg --files -g '\!ms'
+$
+</code></pre>
+<p>If you did that, then folks helping you wouldn't have to guess at your problem.</p>
+<p>The first thing to realize here is that ripgrep isn't printing <em>any</em> files. This seems different from what you report where there are files being printed. Since you didn't share any details about your environment, <em>and</em> you provided a command more complex than necessary to demonstrate your specific issue with filtering out things that contain <code>ms</code>, I'm not sure what's going on.</p>
+<p>In any case, there are two issues here. Assuming you're on Unix, the first issue is that you're escaping <code>!</code> in a single quoted value. A comment above said that <code>!</code> needed to be escaped, but that was in a double quoted string. The second issue is that the glob <code>ms</code> doesn't match <code>AAmsAA</code>. The glob <code>ms</code> only matches <code>ms</code>. You need a wildcard to match around it. You seemingly did this for <code>*paper_3*</code>... So just do it for <code>ms</code>:</p>
+<pre><code>$ rg --files -g '!ms'
+quux
+fooms
+msfoo
+$ rg --files -g '!*ms*'
+quux
+</code></pre>
+<p>In the future, please don't ask questions in old issues. There's an entire <a href="https://github.com/BurntSushi/ripgrep/discussions">discussion forum</a> open for that purpose.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:42 UTC
+    </footer>
+</body>
+</html>

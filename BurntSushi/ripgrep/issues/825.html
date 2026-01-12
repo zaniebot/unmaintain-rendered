@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--type-add in RIPGREP_CONFIG_PATH config causes error - BurntSushi/ripgrep #825</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--type-add in RIPGREP_CONFIG_PATH config causes error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/825">#825</a>
+        opened by <a href="https://github.com/patbl">@patbl</a>
+        on 2018-02-20 07:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/patbl">@patbl</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.8.0 (rev )
+-SIMD -AVX</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>macOS 10.13.3</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p><code>--type-add</code> seems not to work when specified using <code>RIPGREP_CONFIG_PATH</code>.</p>
+<pre><code>rg --type-add 'rails:include:ruby' foo
+</code></pre>
+<p>works fine. But this doesn't:</p>
+<pre><code>➜ cat ~/.rgrc
+--type-add 'rails:include:ruby'
+➜ RIPGREP_CONFIG_PATH=$HOME/.rgrc rg --debug foo
+DEBUG/rg::config/src/config.rs:42: /Users/pat/.rgrc: arguments loaded from config file: [&quot;--type-add \'rails:include:ruby\'&quot;]
+DEBUG/rg::args/src/args.rs:143: final argv: [&quot;rg&quot;, &quot;--type-add \'rails:include:ruby\'&quot;, &quot;--debug&quot;, &quot;foo&quot;]
+error: Found argument '--type-add 'rails:include:ruby'' which wasn't expected, or isn't valid in this context
+        Did you mean --type-add?
+
+USAGE:
+
+    rg [OPTIONS] PATTERN [PATH ...]
+    rg [OPTIONS] [-e PATTERN ...] [-f FILE ...] [PATH ...]
+    rg [OPTIONS] --files [PATH ...]
+    rg [OPTIONS] --type-list
+
+For more information try --help
+</code></pre>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>I'd have expected <code>--type-add</code> in the config file to behave the same as it does when it's specified inline. Also, the error is not helpful (&quot;Did you mean --type-add?&quot;).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-02-20 10:04</div>
+            <div class="timeline-body"><p>The config-file format has two limitations (i guess you could call them):</p>
+<ol>
+<li><p>Each line represents one element of <code>argv</code> — it is not possible to put multiple white-space-separated elements on a single line</p>
+</li>
+<li><p>There is no handling of quotes or escapes like you might expect from the shell or from some other config-file formats</p>
+</li>
+</ol>
+<p>So there are two ways you can write this:</p>
+<pre><code class="language-sh"># Single argv element with =
+--type-add=rails:include:ruby
+
+# Multiple argv elements separated by new-line
+--type-add
+rails:include:ruby
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-20 11:56</div>
+            <div class="timeline-body"><p>Thanks @okdana!</p>
+<p>@patbl This exact issue is discussed explicitly in the documentation: https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#configuration-file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-02-20 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2018-02-20 11:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:27 UTC
+    </footer>
+</body>
+</html>

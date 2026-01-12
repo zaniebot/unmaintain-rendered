@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rg 11.0.0 major performance regression - BurntSushi/ripgrep #1268</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rg 11.0.0 major performance regression</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1268">#1268</a>
+        opened by <a href="https://github.com/ulchie">@ulchie</a>
+        on 2019-04-24 17:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ulchie">@ulchie</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>$ /local/rulch/rg10/ripgrep-0.10.0-x86_64-unknown-linux-musl/rg --version
+ripgrep 0.10.0 (rev 8a7db1a918)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<p>vs</p>
+<p>$ /local/rulch/rg1100/ripgrep-11.0.0-x86_64-unknown-linux-musl/rg --version
+ripgrep 11.0.0 (rev d7f57d9aab)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>Downloaded from the prebuilt archives.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Ubuntu 16:
+$ uname -a
+Linux #hostname_elided# 4.4.0-141-generic #167-Ubuntu SMP Wed Dec 5 10:40:15 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux</p>
+<p>This also appears to reproduce on ubuntu 12 as well. I found this problem while introducing ripgrep to a coworker and noticed how it was operating slowly (relative to what I'm used to) on his machine. Then I downloaded it to mine and noticed the same performance difference.</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>I'm seeing a ~5x slowdown for identical searches on identical files (results repeatable).</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>I cannot include the corpus of my own work repository so I tried with the Open Office repo where I see a slowdown of 3-4x:
+$ time /local/rulch/rg1100/ripgrep-11.0.0-x86_64-unknown-linux-musl/rg --debug okay &gt; out-new 2&gt;&amp;1</p>
+<p>real	0m0.808s
+user	0m4.724s
+sys	0m3.192s</p>
+<p>$ time /local/rulch/rg10/ripgrep-0.10.0-x86_64-unknown-linux-musl/rg --debug okay &gt; out-old 2&gt;&amp;1</p>
+<p>real	0m0.252s
+user	0m1.304s
+sys	0m1.328s</p>
+<p>Open Office Repo: https://github.com/apache/openoffice @ commit 633ece0517</p>
+<p>Please see the attachments for the new and old output with --debug provided.
+<a href="https://github.com/BurntSushi/ripgrep/files/3113392/out-new.txt">out-new.txt</a>
+<a href="https://github.com/BurntSushi/ripgrep/files/3113393/out-old.txt">out-old.txt</a></p>
+<p>In the Open Office repository it's not all that significant in terms of absolute time, but in my repository at work it causes searches to take a few seconds as opposed to half a second (at least for a small'ish number of results) on a 24 core machine. With less powerful CPUs I can see this being pretty impactful. It's annoying but still faster than grep. Is there some default behavior that changed from 0.10 to 11.0.0 that could explain this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2019-04-24 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-04-24 18:16</div>
+            <div class="timeline-body"><p>Oof. Great bug and thanks for the report. I can indeed reproduce this:</p>
+<pre><code>[andrew@blackfoot openoffice]$ time /tmp/ripgrep-release/ripgrep-0.10.0-x86_64-unknown-linux-musl/rg --no-config okay -q --stats
+
+99 matches
+99 matched lines
+81 files contained matches
+62261 files searched
+0 bytes printed
+1517548317 bytes searched
+1.194573 seconds spent searching
+0.185614 seconds
+
+real    0.190
+user    1.147
+sys     0.946
+maxmem  20 MB
+faults  0
+[andrew@blackfoot openoffice]$ time /tmp/ripgrep-release/ripgrep-11.0.1-x86_64-unknown-linux-musl/rg --no-config okay -q --stats
+
+99 matches
+99 matched lines
+81 files contained matches
+62261 files searched
+0 bytes printed
+1517548260 bytes searched
+0.791702 seconds spent searching
+0.729965 seconds
+
+real    0.733
+user    7.369
+sys     1.069
+maxmem  14 MB
+faults  0
+</code></pre>
+<p>To make things weirder, if I use my compiled version of ripgrep, then I <em>don't</em> get the regression:</p>
+<pre><code>[andrew@blackfoot openoffice]$ time rg --no-config okay -q --stats
+
+99 matches
+99 matched lines
+81 files contained matches
+62261 files searched
+0 bytes printed
+1517548260 bytes searched
+0.980003 seconds spent searching
+0.187177 seconds
+
+real    0.193
+user    0.914
+sys     1.080
+maxmem  18 MB
+faults  0
+</code></pre>
+<p>If it's not too much trouble, could you try building ripgrep from master and seeing if you still get the performance regression?</p>
+<p>The only real difference between master and the 11.0.1 binary releases on Linux is that the binary releases link against musl for libc instead of glibc (which is what will happen by default when compiling master).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ulchie">@ulchie</a> on 2019-04-24 20:31</div>
+            <div class="timeline-body"><p>With the build from master, there is no performance regression:</p>
+<p>$ time ../rg11/ripgrep-11.0.1-x86_64-unknown-linux-musl/rg okay &gt; /dev/null</p>
+<p>real	0m0.835s
+user	0m4.840s
+sys	0m3.264s</p>
+<p>$ time ../rg10/ripgrep-0.10.0-x86_64-unknown-linux-musl/rg okay &gt; /dev/null</p>
+<p>real	0m0.217s
+user	0m1.224s
+sys	0m1.220s</p>
+<p>(Built rg from master and threw on PATH)
+$ time rg okay &gt; /dev/null</p>
+<p>real	0m0.185s
+user	0m0.984s
+sys	0m1.032s</p>
+<p>$ rg --version
+ripgrep 11.0.1 (rev e7829c05d3)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-04-24 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-04-24 21:24</div>
+            <div class="timeline-body"><p>Thanks again for the bug report! It turns out that musl's allocator was slowing ripgrep down quite a bit. i.e., Building ripgrep 0.10.0 with a newer version of Rust with musl exhibits the same performance regression, and profiling shows a lot of time being spent in musl's allocator. This popped up as a regression in ripgrep 11 because Rust recently stopped bundling jemalloc by default, and is instead now using the system allocator by default.</p>
+<p>I've pushed a fix which goes back to using jemalloc when building ripgrep with musl. I'll consider putting out a patch release at some point soon, since this is a pretty bad performance regression.</p>
+<p>Thanks so much for noticing and for providing a reproducible bug report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ulchie">@ulchie</a> on 2019-04-24 21:29</div>
+            <div class="timeline-body"><p>No problem! Thanks for being so quick to respond, and for the awesome tool. I use rg many times every day.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-04-24 21:51</div>
+            <div class="timeline-body"><p>Looks like something is broken with musl + jemalloc + Ubuntu 16.04. I've filed a bug upstream here: https://github.com/gnzlbg/jemallocator/issues/124</p>
+<p>That will block a release with this fix unfortunately.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:54 UTC
+    </footer>
+</body>
+</html>

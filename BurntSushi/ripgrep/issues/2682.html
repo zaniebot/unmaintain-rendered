@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiline fixed string search failing when a newline character is followed by the ^ character - BurntSushi/ripgrep #2682</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Multiline fixed string search failing when a newline character is followed by the ^ character</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2682">#2682</a>
+        opened by <a href="https://github.com/learnbyexample">@learnbyexample</a>
+        on 2023-12-11 08:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/learnbyexample">@learnbyexample</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>ripgrep 14.0.3</p>
+<h3>How did you install ripgrep?</h3>
+<p>Using ripgrep_14.0.3-1_amd64.deb</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Ubuntu 20.04</p>
+<h3>Describe your bug.</h3>
+<p>Multiline fixed string search doesn't work when a newline character is followed by the <code>^</code> character.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>Any multiline fixed string search for a literal newline character followed by a <code>^</code> character.</p>
+<h3>What is the actual behavior?</h3>
+<pre><code class="language-bash">$ s='apple fig\n^mango banana\n123 456\ndragon$\nunicorn\n'
+
+# works as expected
+$ printf '%b' &quot;$s&quot; | rg -UF 'banana
+123'
+^mango banana
+123 456
+
+# failing case, no output when newline is followed by ^
+$ printf '%b' &quot;$s&quot; | rg -UF 'fig
+^mango'
+# works if regex is used instead of fixed string
+$ printf '%b' &quot;$s&quot; | rg -U 'fig\n\^mango'
+apple fig
+^mango banana
+# interestingly, this also works - not sure what's the difference compared to the failing case
+$ printf '%b' &quot;$s&quot; | rg -UF $'fig\n^mango'
+apple fig
+^mango banana
+# no issue if the first line starts with ^
+$ printf '%b' &quot;$s&quot; | rg -UF '^mango banana
+123'
+^mango banana
+123 456
+
+# no issue if there's a $ at the end of a line
+$ printf '%b' &quot;$s&quot; | rg -UF '456
+dragon$'
+123 456
+dragon$
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>Fixed string search should work irrespective of the character being searched.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-11 13:41</div>
+            <div class="timeline-body"><p>Interestingly, I cannot reproduce this:</p>
+<pre><code>$ s='apple fig\n^mango banana\n123 456\ndragon$\nunicorn\n'
+$ printf '%b' &quot;$s&quot; | rg -UF 'banana
+123'
+^mango banana
+123 456
+$ printf '%b' &quot;$s&quot; | rg -UF 'fig
+^mango'
+apple fig
+^mango banana
+</code></pre>
+<p>Can you re-run with <code>--trace</code>? That might show some information.</p>
+<p>I can't make heads or tails of this. The search shouldn't care about <code>^</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/learnbyexample">@learnbyexample</a> on 2023-12-11 14:17</div>
+            <div class="timeline-body"><p>Oh. I did wonder if there's something wrong/different on my machine. Here's the <code>--trace</code> output:</p>
+<pre><code class="language-bash">$ printf '%b' &quot;$s&quot; | rg -UF --trace 'fig
+^mango'
+DEBUG|rg::flags::parse|crates/core/flags/parse.rs:97: no extra arguments found from configuration file
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1099: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=true, stdin_consumed=false, mode=Search(Standard))
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1112: heuristic chose to search stdin
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1260: found hostname for hyperlink configuration: abcd
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1270: hyperlink format: &quot;&quot;
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 1 thread(s)
+DEBUG|grep_regex::config|crates/regex/src/config.rs:175: assembling HIR from 1 fixed string literals
+TRACE|grep_regex::matcher|crates/regex/src/matcher.rs:66: final regex: &quot;(?:fig\n!!:s\\^mango)&quot;
+TRACE|grep_regex::literal|crates/regex/src/literal.rs:59: skipping inner literal extraction, no line terminator is set
+DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+TRACE|rg::search|crates/core/search.rs:254: &lt;stdin&gt;: binary detection: BinaryDetection(Convert(0))
+TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:728: generic reader: reading everything to heap for multiline
+TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:732: generic reader: searching via multiline strategy
+</code></pre>
+<p>Final regex <code>(?:fig\n!!:s\\^mango)</code> seems very odd, compared to <code>(?:banana\n123)</code> and <code>(?:fig\n\\^mango)</code> (when I use <code>$'fig\n^mango'</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-11 14:31</div>
+            <div class="timeline-body"><p>Yeah, odd indeed. Here's mine:</p>
+<pre><code>$ printf '%b' &quot;$s&quot; | rg --trace -UF 'fig
+^mango'
+DEBUG|rg::flags::config|crates/core/flags/config.rs:41: /home/andrew/.ripgreprc: arguments loaded from config file: [&quot;--max-columns-preview&quot;, &quot;--colors=match:bg:0xff,0x7f,0x00&quot;, &quot;--colors=match:fg:white&quot;, &quot;--colors=line:none&quot;, &quot;--colors=line:fg:magenta&quot;, &quot;--colors=path:fg:green&quot;, &quot;--type-add=got:*_test.go&quot;]
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1099: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=true, stdin_consumed=false, mode=Search(Standard))
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1112: heuristic chose to search stdin
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1260: found hostname for hyperlink configuration: duff
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1270: hyperlink format: &quot;&quot;
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 1 thread(s)
+DEBUG|grep_regex::config|crates/regex/src/config.rs:175: assembling HIR from 1 fixed string literals
+TRACE|grep_regex::matcher|crates/regex/src/matcher.rs:66: final regex: &quot;(?:fig\n\\^mango)&quot;
+TRACE|grep_regex::literal|crates/regex/src/literal.rs:59: skipping inner literal extraction, no line terminator is set
+DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+TRACE|rg::search|crates/core/search.rs:254: &lt;stdin&gt;: binary detection: BinaryDetection(Convert(0))
+TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:728: generic reader: reading everything to heap for multiline
+TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:732: generic reader: searching via multiline strategy
+apple fig
+^mango banana
+</code></pre>
+<p>Where the regex is <code>&quot;(?:fig\n\\^mango)&quot;</code> is what I'd expect.</p>
+<p>You seem to be having some kind of extra <code>!!:s</code> being inserted between the <code>\n</code> and the <code>\^</code>. I dunno where that is coming from. Can you try a different shell?</p>
+<p>Okay, that made <em>me</em> try a different shell. I use zsh by default. So I dropped into bash:</p>
+<pre><code>[andrew@duff ripgrep] printf '%b' &quot;$s&quot; | rg --trace -UF 'fig
+^mango'
+DEBUG|rg::flags::config|crates/core/flags/config.rs:41: /home/andrew/.ripgreprc: arguments loaded from config file: [&quot;--max-columns-preview&quot;, &quot;--colors=match:bg:0xff,0x7f,0x00&quot;, &quot;--colors=match:fg:white&quot;, &quot;--colors=line:none&quot;, &quot;--colors=line:fg:magenta&quot;, &quot;--colors=path:fg:green&quot;, &quot;--type-add=got:*_test.go&quot;]
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1099: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=true, stdin_consumed=false, mode=Search(Standard))
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1112: heuristic chose to search stdin
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1260: found hostname for hyperlink configuration: duff
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1270: hyperlink format: &quot;&quot;
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 1 thread(s)
+DEBUG|grep_regex::config|crates/regex/src/config.rs:175: assembling HIR from 1 fixed string literals
+TRACE|grep_regex::matcher|crates/regex/src/matcher.rs:66: final regex: &quot;(?:fig\n!!:s\\^mango)&quot;
+TRACE|grep_regex::literal|crates/regex/src/literal.rs:59: skipping inner literal extraction, no line terminator is set
+DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+TRACE|rg::search|crates/core/search.rs:254: &lt;stdin&gt;: binary detection: BinaryDetection(Convert(0))
+TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:728: generic reader: reading everything to heap for multiline
+TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:732: generic reader: searching via multiline strategy
+</code></pre>
+<p>This sadly therefore looks like something bash is doing. I haven't the faintest clue what it is. And I'm surprised by it, given that single quotes are being used here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-11 14:32</div>
+            <div class="timeline-body"><pre><code>$ echo 'fig
+^mango'
+fig
+!!:s^mango
+</code></pre>
+<p>lolwut</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/learnbyexample">@learnbyexample</a> on 2023-12-11 14:45</div>
+            <div class="timeline-body"><p>Oh! Didn't expect that! I'll try to check the <code>bash</code> bug list tomorrow. It feels like a regression, since this was working for me 3 years ago.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-11 15:21</div>
+            <div class="timeline-body"><p>I posted <a href="https://twitter.com/burntsushi5/status/1734223796914028647">about this on twitter</a>, and it looks like some kind interaction substitution based on history. But the fact that it's happening inside a single quoted string suggests this might be a bash bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/learnbyexample">@learnbyexample</a> on 2023-12-15 03:48</div>
+            <div class="timeline-body"><p>Discussion in the bug-bash group: https://lists.gnu.org/archive/html/bug-bash/2023-12/msg00064.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @learnbyexample on 2023-12-15 03:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-15 09:04</div>
+            <div class="timeline-body"><p>Thanks for the follow-up! I read through that thread and I can't even tell whether they consider the behavior a bug or not. It sounds like they are just going to fix the docs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/learnbyexample">@learnbyexample</a> on 2023-12-15 09:46</div>
+            <div class="timeline-body"><p>I think they are going to fix it for single quotes (along with documentation update):</p>
+<blockquote>
+<p>The quick substitution feature didn't pay attention to the quoting state,
+however, and just translated the line into a standard history expansion,
+which was then skipped. The fix is to have it inhibit quick substitution
+the same way as other history expansions.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-15 13:09</div>
+            <div class="timeline-body"><p>Yeah I saw that. But the other part of their message was &quot;This is a standard form of history expansion, described in the man page.&quot; That confused me hah. Either way, quite interesting!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:44 UTC
+    </footer>
+</body>
+</html>

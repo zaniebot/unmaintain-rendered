@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ignore: parallel walker occasionally hangs if visitor panics - BurntSushi/ripgrep #3009</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ignore: parallel walker occasionally hangs if visitor panics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3009">#3009</a>
+        opened by <a href="https://github.com/cosmicexplorer">@cosmicexplorer</a>
+        on 2025-03-06 00:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cosmicexplorer">@cosmicexplorer</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[x] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>master (de4baa10024f2cb62d438596274b9b710e01c59b)</p>
+<h3>How did you install ripgrep?</h3>
+<p>I am able to reproduce this on <code>master</code>.</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Arch Linux (64-bit, x86):</p>
+<pre><code class="language-shell">&gt; uname -a
+Linux terrestrial-gamma-ray-flash 6.13.5-zen1-1-zen #1 ZEN SMP PREEMPT_DYNAMIC Thu, 27 Feb 2025 18:09:27 +0000 x86_64 GNU/Linux
+</code></pre>
+<h3>Describe your bug.</h3>
+<p><code>WalkParallel::visit()</code> will nondeterministically hang if the <code>ParallelVisitor::visit()</code> implementation panics. This also occurs when providing a closure to <code>WalkParallel::run()</code>.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>I am working on a minimal fix to this right now (see https://github.com/BurntSushi/ripgrep/compare/master...cosmicexplorer:ripgrep:parallel-panic-quit?expand=1), but I think it will require a change to the parallelization methods we use from crossbeam, so I wanted to create this issue beforehand. I am currently able to reproduce this with the following:</p>
+<pre><code class="language-diff">diff --git a/crates/ignore/src/walk.rs b/crates/ignore/src/walk.rs
+index d6ea9c2..4387fca 100644
+--- a/crates/ignore/src/walk.rs
++++ b/crates/ignore/src/walk.rs
+@@ -2221,6 +2221,18 @@ mod tests {
+         assert!(!dents[0].path_is_symlink());
+     }
+ 
++    #[test]
++    #[should_panic(expected = &quot;oops!&quot;)]
++    fn panic_in_parallel() {
++        let td = tmpdir();
++        wfile(td.path().join(&quot;foo.txt&quot;), &quot;&quot;);
++
++        WalkBuilder::new(td.path())
++            .threads(40)
++            .build_parallel()
++            .run(|| Box::new(|_| panic!(&quot;oops!&quot;)));
++    }
++
+     #[cfg(unix)] // because symlinks on windows are weird
+     #[test]
+     fn symlink_loop() {
+
+</code></pre>
+<p>Apply the above diff, then run the following command:</p>
+<pre><code class="language-shell">&gt; cd crates/ignore
+&gt; timeout -k 2 1 cargo test --lib -- parallel
+</code></pre>
+<p>I typically have to run this many many times on my very fast laptop to get it to trigger. More reliably, you can run:</p>
+<pre><code class="language-shell">&gt; cd crates/ignore
+&gt; cargo test
+</code></pre>
+<p>And running all the tests at once makes this trigger much more reliably.</p>
+<h3>What is the actual behavior?</h3>
+<p>The process hangs, typically somewhere in the <code>Worker::get_work()</code> method. If I add a print statement within this sub-<code>loop</code>: https://github.com/BurntSushi/ripgrep/blob/de4baa10024f2cb62d438596274b9b710e01c59b/crates/ignore/src/walk.rs#L1695-L1707 it will print this out endlessly.</p>
+<p>This especially seems to occur more often if the panic handler is non-trivial: I first noticed this when using <code>color-eyre</code>, which prints the panic to the console after composing a backtrace.</p>
+<h3>What is the expected behavior?</h3>
+<p>The <code>WalkParallel::visit()</code> method should not hang, and should instead propagate the panic.</p>
+<p>My first attempt to solve this (see https://github.com/cosmicexplorer/ripgrep/commit/246c1621760b41f631606c7b3061a25efe86e0fc) set the <code>quit_now</code> flag if any worker panics, and checked <code>self.is_quit_now()</code> within the sub-<code>loop</code>. This seems to have made it repro less often, but I am still able to get it to repro regardless, even without modifying the panic handler.</p>
+<p>There are some other changes I want to propose to the <code>ParallelVisitor{,Builder}</code> traits as well which may make this easier (such as propagating unwind safety), but I'm currently hoping to solve this without making any changes to the external interface. This may require changing the parallelism primitives we use, but maybe not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2025-08-17 21:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:54 UTC
+    </footer>
+</body>
+</html>

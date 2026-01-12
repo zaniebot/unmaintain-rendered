@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`$F` is treated as a capture group despite using `--fixed-strings` - BurntSushi/ripgrep #3262</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>$F</code> is treated as a capture group despite using <code>--fixed-strings</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3262">#3262</a>
+        opened by <a href="https://github.com/tgharib">@tgharib</a>
+        on 2026-01-09 14:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tgharib">@tgharib</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[x] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>ripgrep 15.1.0</p>
+<h3>How did you install ripgrep?</h3>
+<p>Using the Arch (btw) package manager <code>pacman</code></p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>CachyOS Linux</p>
+<h3>Describe your bug.</h3>
+<p><code>$F</code> is treated as a capture group but I am using <code>--fixed-strings</code> so it should be treated as a literal.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<pre><code class="language-bash">cat &lt;&lt;EOF &gt; test.md
+Recall that we defined the sum of two elements of 𝐅𝑛 to be the element of 𝐅𝑛 obtained by adding corresponding coordinates; see 1.13. As we will now see, addition has a simple geometric interpretation in the special case of 𝐑2.
+EOF
+rg --fixed-strings &quot;𝐅𝑛&quot; --replace='$F^n$' test.md
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<p>Actual output is:</p>
+<pre><code>rg: DEBUG|rg::flags::parse|crates/core/flags/parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:954: read CWD from environment: /home/owner
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1092: number of paths given to search: 1
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1103: is_one_file? true
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1278: found hostname for hyperlink configuration: Taha-Desktop-Linux
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1288: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:175: using 1 thread(s)
+rg: DEBUG|grep_regex::config|/usr/src/debug/ripgrep/ripgrep-15.1.0/crates/regex/src/config.rs:175: assembling HIR from 1 fixed string literals
+1:Recall that we defined the sum of two elements of ^n$ to be the element of ^n$ obtained by adding corresponding coordinates; see 1.13. As we will now see, addition has a simple geometric interpretation in the special case of 𝐑2.
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>Output expected is:</p>
+<pre><code>1:Recall that we defined the sum of two elements of $F^n$ to be the element of $F^n$ obtained by adding corresponding coordinates; see 1.13. As we will now see, addition has a simple geometric interpretation in the special case of 𝐑2.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2026-01-09 14:50</div>
+            <div class="timeline-body"><p>This is intended and correct behavior. Even with <code>-F/--fixed-strings</code>, the capture group <code>$0</code> is still available. Moreover, there is no documentation suggesting or implying that the <em>interpretation</em> of the <code>-r/--replace</code> string is dependent on whether <code>-F/--fixed-strings</code> is enabled. I don't think it would be a good idea to do so. It's quite subtle. The rule, &quot;you always need to escape <code>$</code> to write a literal <code>$</code>&quot; is simpler and not conditional.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2026-01-09 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2026-01-09 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tgharib">@tgharib</a> on 2026-01-09 16:43</div>
+            <div class="timeline-body"><p>Is there any way to treat the <code>--replace</code> string as literal? Sometimes I just want to do a straightforward search and replace without having to worry about escapes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2026-01-09 16:55</div>
+            <div class="timeline-body"><p>You could write a function that escapes <code>$</code>. But no, nothing in ripgrep that will do it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tgharib">@tgharib</a> on 2026-01-10 15:28</div>
+            <div class="timeline-body"><p>Thanks by the way for this software! I've been using it for years.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:01 UTC
+    </footer>
+</body>
+</html>

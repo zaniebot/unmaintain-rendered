@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>-M is ignored when using --json format - BurntSushi/ripgrep #1451</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>-M is ignored when using --json format</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1451">#1451</a>
+        opened by <a href="https://github.com/svenefftinge">@svenefftinge</a>
+        on 2019-12-28 10:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/svenefftinge">@svenefftinge</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 11.0.1 (rev 973de50c9e)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>Through vscode-ripgrep node module.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Linux (ubuntu)</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>For Theia, I'd like to limit the line length of matches when using the json outputformat.
+But it seems as the -M option doesn't have any effct when used together with --json.</p>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>It would be great if ripgrep would not include the full text of the matched line, but a trimmed version when using <code>-M [n] --max-columns-preview</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/svenefftinge">@svenefftinge</a> on 2019-12-28 13:06</div>
+            <div class="timeline-body"><p>I noticed this seem to be documented</p>
+<pre><code>Other flags that control aspects of the standard output such as
+            --only-matching, --heading, --replace, --max-columns, etc., have no effect
+            when --json is set.
+</code></pre>
+<p>Still it would be great to have an option to skip sending megabytes of line contents when using --json.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-12-28 13:42</div>
+            <div class="timeline-body"><p>The thinking here is that -M and other options like it are for the benefit of the human reading the output. JSON is meant to be consumed by machines, not humans, so options like this don't apply. Machines that want to reformat the display into a truncated version can do that themselves.</p>
+<p>Could you say more about why specifically you want this other than &quot;it would be nice&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/svenefftinge">@svenefftinge</a> on 2019-12-28 14:55</div>
+            <div class="timeline-body"><p>We use ripgrep in Theia for the full text search which works similarly to the one in VS Code. We don't need to see the full line contents, but only the offset information and a little bit of context around a match for the UI. When searching in large single-line files such as generated webpack output parsing the big lines are quite expensive. Unlike VS Code, Theia supports the web IDE use case as well, in which case overly large messages need to be avoided.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-12-29 12:49</div>
+            <div class="timeline-body"><p>I don't see myself supporting <code>-M</code> in the JSON output, mostly due to implementation complexity. It falls outside the goals of the JSON printer, which really isn't supposed to take &quot;display&quot; stuff into account. I'm quite hesitant to start adding options which were <em>intended for better display for humans</em> as a performance hack. For example, the JSON output also includes a <code>submatches</code> array, which are byte offsets into the <code>lines</code> text. If  <code>-M</code> is used to cut off part of the <code>lines</code> text, then the invariant that all byte offsets listed in <code>submatches</code> are valid offsets into <code>lines</code> is broken. Which means we either need to abide this broken invariant or remove sub-match offsets that aren't actually displayed in <code>lines</code>.</p>
+<p>This complicates the JSON printer in a way that I'm not particularly happy with.</p>
+<blockquote>
+<p>When searching in large single-line files such as generated webpack output parsing the big lines are quite expensive. Unlike VS Code, Theia supports the web IDE use case as well, in which case overly large messages need to be avoided.</p>
+</blockquote>
+<p>ripgrep has to read these lines anyway. It seems like reading them again in a JSON parser <em>shouldn't</em> meaningfully change the performance profile.</p>
+<p>I'd also suggest that if end users are having performance problems searching files that aren't human readable, then they might consider adding them to their <code>.ignore</code> or <code>.rgignore</code>. Then you side-step the problem entirely.</p>
+<p>Since ripgrep emits JSON objects one per line, another approach you could take is to simply skip parsing a JSON object that is very long (and perhaps report this skipped match to the end user).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2019-12-29 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/svenefftinge">@svenefftinge</a> on 2019-12-30 19:51</div>
+            <div class="timeline-body"><p>Ok, I understand and agree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @svenefftinge on 2019-12-30 19:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:04 UTC
+    </footer>
+</body>
+</html>

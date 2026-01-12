@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$HOME/.config/git/ignore is read although not being used - BurntSushi/ripgrep #1114</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>$HOME/.config/git/ignore is read although not being used</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1114">#1114</a>
+        opened by <a href="https://github.com/blueyed">@blueyed</a>
+        on 2018-11-19 17:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueyed">@blueyed</a></div>
+            <div class="timeline-body"><p>I've just noticed that ripgrep reads global ignore configuration from <code>~/.config/git/ignore</code>, but then does not use it?!</p>
+<p>Given t2.pyc (which is not a binary file) in /tmp/t:</p>
+<pre><code>% strace -f -e file rg --debug -l .
+getcwd(&quot;/tmp/t&quot;, 512)                   = 7
+openat(AT_FDCWD, &quot;/home/user/.gitconfig&quot;, O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/home/user/.config/git/config&quot;, O_RDONLY|O_CLOEXEC) = 3
+stat(&quot;/home/user/.config/git/ignore&quot;, {st_mode=S_IFREG|0644, st_size=6, ...}) = 0
+openat(AT_FDCWD, &quot;/home/user/.config/git/ignore&quot;, O_RDONLY|O_CLOEXEC) = 3
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+stat(&quot;./&quot;, {st_mode=S_IFDIR|0755, st_size=100, ...}) = 0
+stat(&quot;./&quot;, {st_mode=S_IFDIR|0755, st_size=100, ...}) = 0
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+getcwd(&quot;/tmp/t&quot;, 512)                   = 7
+…
+t2.pyc
+</code></pre>
+<p><code>~/.config/git/ignore</code> contains just &quot;*.pyc&quot;.</p>
+<p>I wonder where the &quot;8 extensions&quot; afterwards is coming from?  Are those defaults?</p>
+<p>It looks like <code>~/.config/git/ignore</code> only gets applied for paths in <code>~</code>?!</p>
+<p>If this is intended loading the config could be skipped in this case then?</p>
+<p>For what it's worth, I've added <code>--ignore-file=…</code> to my wrapper script to use <code>~/.ignore</code> always.</p>
+<p>(I was confused about &quot;permission denied&quot; errors for <code>*.pyc</code> file when searching in <code>/usr/lib/python3.7</code> - those appear to happen when ripgrep tests them for being binary files)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-11-19 18:58</div>
+            <div class="timeline-body"><p>gitignores are only respected inside git repositories:</p>
+<pre><code>$ cat ~/.config/git/ignore
+*.pyc
+
+$ touch foo.pyc foo.py
+
+$ rg --files
+foo.py
+foo.pyc
+
+$ git init
+Initialized empty Git repository in /tmp/ripgrep-1114/.git/
+
+$ rg --files
+foo.py
+</code></pre>
+<blockquote>
+<p>I wonder where the &quot;8 extensions&quot; afterwards is coming from? Are those defaults?</p>
+</blockquote>
+<p>Possibly? I don't know. They don't appear in my debug output:</p>
+<pre><code>$ rg --files --debug
+DEBUG|rg::config|src/config.rs:37: /home/andrew/.ripgreprc: arguments loaded from config file: [&quot;--max-columns=500&quot;, &quot;--colors=match:bg:0xff,0x7f,0x00&quot;, &quot;--colors=match:fg:white&quot;, &quot;--colors=line:none&quot;, &quot;--colors=line:fg:magenta&quot;, &quot;--colors=path:fg:green&quot;, &quot;--type-add=got:*_test.go&quot;]
+DEBUG|rg::args|src/args.rs:508: final argv: [&quot;rg&quot;, &quot;--max-columns=500&quot;, &quot;--colors=match:bg:0xff,0x7f,0x00&quot;, &quot;--colors=match:fg:white&quot;, &quot;--colors=line:none&quot;, &quot;--colors=line:fg:magenta&quot;, &quot;--colors=path:fg:green&quot;, &quot;--type-add=got:*_test.go&quot;, &quot;--files&quot;, &quot;--debug&quot;]
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./.git: Ignore(IgnoreMatch(Hidden))
+DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./foo.pyc: Ignore(IgnoreMatch(Gitignore(Globfoo.py
+ { from: Some(&quot;/home/andrew/.config/git/ignore&quot;), original: &quot;*.pyc&quot;, actual: &quot;**/*.pyc&quot;, is_whitelist: false, is_only_dir: false })))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-11-19 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueyed">@blueyed</a> on 2018-12-21 00:56</div>
+            <div class="timeline-body"><p>Thanks for the answer, closing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @blueyed on 2018-12-21 00:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:44 UTC
+    </footer>
+</body>
+</html>

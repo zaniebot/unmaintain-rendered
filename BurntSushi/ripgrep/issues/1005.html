@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RFC: Implicit --files for rg -g, --glob GLOB without a pattern - BurntSushi/ripgrep #1005</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>RFC: Implicit --files for rg -g, --glob GLOB without a pattern</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1005">#1005</a>
+        opened by <a href="https://github.com/kiryph">@kiryph</a>
+        on 2018-08-07 06:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kiryph">@kiryph</a></div>
+            <div class="timeline-body"><p>Tools such as ack and ag allow you to search conveniently only for matching filenames with</p>
+<pre><code>$ ag -g PATTERN
+$ ack -g PATTERN
+</code></pre>
+<p>Ripgrep provides the flag <code>-g</code> for globs. However, you have to add <code>--files</code> if you do not want to search inside the files for a pattern</p>
+<pre><code>$ rg --files -g GLOB
+</code></pre>
+<p>Ripgrep complains anyway about a missing pattern and could therefore assume if a user does not specify a pattern, he wants to use <code>--files</code>.</p>
+<p>What do you think about this change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-08-07 07:24</div>
+            <div class="timeline-body"><p>That seems like it would introduce some UX weirdness, mainly because (since <code>rg</code> can't reliably tell the difference between <code>rg -g &lt;glob&gt; &lt;path&gt;</code> and <code>rg -g &lt;glob&gt; &lt;pattern&gt;</code>) it would only work when implicitly searching the current directory. If i were a random end-user i feel like i'd be really confused by that.</p>
+<p>I do sometimes wish <code>rg</code> had a dedicated easy-mode option for this, like <code>ag</code>'s <code>-G</code>, but i guess a simple enough work-around is just to do like <code>alias rgf='rg --files'</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kiryph">@kiryph</a> on 2018-08-07 07:32</div>
+            <div class="timeline-body"><p>I have overlooked that ripgrep allows for several globs. Adding <code>--</code> to terminate the list of globs could help. However, this means you are not far away of typing <code>--files</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kiryph">@kiryph</a> on 2018-08-07 07:43</div>
+            <div class="timeline-body"><p>The implicit <code>--files</code> could be applied if there is a single glob and no path. I agree that these kind of special cases make the UX more complicated. However, cli tools are used by people who are willing to read a manpage and are accustomed to UX weirdness. And in this case I do not feel that this is completely unpredictable. Of course this should be documented at several places in the manpage:</p>
+<ol>
+<li>Synopsis
+<code>rg [OPTIONS] -g GLOB</code></li>
+<li>option -g --glob:
+<code>If only a single GLOB and no PATH is given, the option --files is automatically set.</code></li>
+<li>option --files
+<code>This option is automatically set, if no PATH and the option -g with a single GLOB is given.</code></li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-07 11:52</div>
+            <div class="timeline-body"><p>It's a cute idea, but I'd rather not complicate the UX here even more than it already is. If this sort of thing is really that important to you, then I think my advice is the same as @okdana's: define an alias.</p>
+<p>Interestingly, I personally rarely use <code>rg --files -g GLOB</code> but rather <code>rg --files | rg PATTERN</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-08-07 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-08-07 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kiryph">@kiryph</a> on 2018-08-07 18:11</div>
+            <div class="timeline-body"><p>I like the short input of ack and ag for searching for filenames and that they ignore by default <code>.git</code> directory.
+No need to craft a <code>find . -name 'pattern'</code> with ignore options.</p>
+<p>I'd also hoped that most feature differences between ack, ag, and rg, e.g. listed on https://beyondgrep.com/feature-comparison/, would vanish with time.</p>
+<p>Anyhow, thanks for your consideration and thoughts. Keep up the good work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-07 18:15</div>
+            <div class="timeline-body"><p>That chart is pretty dated at this point, and is missing several entries for features that ripgrep does indeed have.</p>
+<p>I didn't set out to build a tool that had everything under the sun, but as far as I'm concerned, ag/ack/ripgrep all provide the feature you're requesting here. The only difference is in how it's invoked. If you really do not like the additional letters, then I see no good reason why an alias isn't sufficient for you.</p>
+<p>If you want something that's more focused on finding files rather than searching them, you might consider using <a href="https://github.com/sharkdp/fd"><code>fd</code></a>, which uses the same ignore logic that ripgrep does by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kiryph">@kiryph</a> on 2018-08-07 19:38</div>
+            <div class="timeline-body"><p>I didn't know fd. Thanks for pointing it out. I will give it a try.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:38 UTC
+    </footer>
+</body>
+</html>

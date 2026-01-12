@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color doesn't work in windows mintty (git bash) - BurntSushi/ripgrep #117</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Color doesn't work in windows mintty (git bash)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/117">#117</a>
+        opened by <a href="https://github.com/auxym">@auxym</a>
+        on 2016-09-27 12:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/auxym">@auxym</a></div>
+            <div class="timeline-body"><p>I can't get rg to output color in mintty, ie the default term that comes with git for windows and MSYS2. Tried <code>--color always</code> and <code>-p</code>, to no avail. Color works fine (by default) in standard cmd.exe.</p>
+<p>Color (<code>--color=auto</code>) works with standard grep in mintty, or at least the grep build that comes with git for windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-27 13:05</div>
+            <div class="timeline-body"><p>Do you know if mintty uses the Windows console for coloring? Or does it use something else? I wonder if <code>ripgrep</code> is supposed to be using ANSI escape sequences here and is instead trying to use the Windows console.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/auxym">@auxym</a> on 2016-09-27 15:40</div>
+            <div class="timeline-body"><p>Here is the raw output from <code>echo &quot;AAAaaa&quot; | grep --color=always aa &gt; grepcolor.txt</code> in mintty:</p>
+<pre><code>b'AAA\x1b[01;31m\x1b[Kaa\x1b[m\x1b[Ka\n'
+</code></pre>
+<p>I tried the same exercise with rg, but couldn't get it to output the escape codes, both in mintty and cmd.exe. It looks like  rg doesn't detect terminal output and ignores the color=always options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-27 15:50</div>
+            <div class="timeline-body"><p>It does detect terminal output, just apparently not on Windows. :-) I think the issue is that I baked an assumption into <code>ripgrep</code> that if it's on Windows, then it should do coloring with the Windows console. It looks like in the case of <code>mintty</code>, it should use ANSI escape codes? Is that right?</p>
+<p>For <code>cmd.exe</code>, I don't think it should be printing escape codes.</p>
+<p>cc @retep998 Would you be able to add any insight here? Thanks so much. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/retep998">@retep998</a> on 2016-09-27 16:36</div>
+            <div class="timeline-body"><p>@BurntSushi Basically with mintty you have a pipe instead of a console. Because of this there is no API you can call to determine whether a pipe is actually a terminal that accepts ansi escape codes. The best you can do is that if you're not talking to a console, then check whether <code>TERM</code> is set, if it is then you're <em>probably</em> in a terminal emulator (or being redirected to a file while inside a terminal emulator).</p>
+<p>Conhost (which is what <code>cmd.exe</code> uses) doesn't support escape codes in older Windows, and in Windows 10 it only supports them if a certain mode is enabled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leafgarland">@leafgarland</a> on 2016-09-28 12:31</div>
+            <div class="timeline-body"><p>Perhaps the <code>--color</code> flag could support extra options such as <code>ansi</code> and <code>wincon</code>, which would behave the same as <code>always</code> but also force one or the other color output method. There are enough command line options in Windows that it seems unlikely a cmdline tool can guess the exact requirements (e.g. Windows 10 can support ansi, or when using something like <a href="https://github.com/Maximus5/ConEmu">Maximus5/ConEmu</a>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-28 12:35</div>
+            <div class="timeline-body"><p>@leafgarland That's plausible. Good idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/retep998">@retep998</a> on 2016-09-28 17:38</div>
+            <div class="timeline-body"><p>I don't think you really need the user's help deciding which to use. If you're in a Windows console, then the Windows console API will work all the time. If you're not in a Windows console, then the Windows console API will work none of time and the only other option is ansi escape codes. So I'd probably enable color by default in the Windows console, and elsewhere support color using ansi escape codes only if enabled via <code>--color=always</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2016-09-29 01:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thierryvolpiatto">@thierryvolpiatto</a> on 2016-10-15 08:06</div>
+            <div class="timeline-body"><p>We have the same problem in emacs where ripgrep is apparently not recognizing pseudo emacs terminal (pty) as a terminal, see https://github.com/emacs-helm/helm/issues/1624.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-15 13:18</div>
+            <div class="timeline-body"><p>@thierryvolpiatto Is that on Windows? If not, it sounds like an entirely distinct issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thierryvolpiatto">@thierryvolpiatto</a> on 2016-10-15 14:22</div>
+            <div class="timeline-body"><p>Andrew Gallant notifications@github.com writes:</p>
+<blockquote>
+<p>@thierryvolpiatto Is that on Windows?</p>
+</blockquote>
+<p>No, on GNU/Linux.</p>
+<blockquote>
+<p>If not, it sounds like an entire distinct issue.</p>
+</blockquote>
+<p>Ok, should I open an other issue ?</p>
+<h2></h2>
+<p>Thierry</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-15 14:24</div>
+            <div class="timeline-body"><p>@thierryvolpiatto I think #182 might be relevant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thierryvolpiatto">@thierryvolpiatto</a> on 2016-10-15 14:31</div>
+            <div class="timeline-body"><p>Ok, yes I just see @chunyang have opened another issue, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-19 18:55</div>
+            <div class="timeline-body"><p>@retep998 I'm in the process of fixing this issue, and it actually looks like I can successfully get a handle to the Windows console when using <code>mintty</code>. Namely, no error occurs. Actually using the console has no effect, so it appears that we do indeed need a way to force ANSI escape sequences.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/retep998">@retep998</a> on 2016-11-19 21:41</div>
+            <div class="timeline-body"><p>@BurntSushi <code>GetStdHandle</code> succeeding does not necessarily mean it is a Windows console. You have to call <code>GetConsoleMode</code> on that handle to determine whether it is actually a Windows console. If <code>GetConsoleMode</code> succeeds, then always use the console API. If <code>GetConsoleMode</code> fails, then you <em>might</em> be able to use ANSI escape codes, or you might be redirected to a file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-19 22:09</div>
+            <div class="timeline-body"><p>@retep998 This is the code I'm using to get a console, and it doesn't appear to return an error in <code>mintty</code>:</p>
+<pre><code class="language-rust">    pub fn new() -&gt; io::Result&lt;Console&gt; {
+        let name = b&quot;CONOUT$\0&quot;;
+        let handle = unsafe {
+            kernel32::CreateFileA(
+                name.as_ptr() as *const i8,
+                winapi::GENERIC_READ | winapi::GENERIC_WRITE,
+                winapi::FILE_SHARE_WRITE,
+                ptr::null_mut(),
+                winapi::OPEN_EXISTING,
+                0,
+                ptr::null_mut(),
+            )
+        };
+        if handle == winapi::INVALID_HANDLE_VALUE {
+            return Err(io::Error::last_os_error());
+        }
+        let mut info = unsafe { mem::zeroed() };
+        let res = unsafe {
+            kernel32::GetConsoleScreenBufferInfo(handle, &amp;mut info)
+        };
+        if res == 0 {
+            return Err(io::Error::last_os_error());
+        }
+        let attr = TextAttributes::from_word(info.wAttributes);
+        Ok(Console {
+            handle: handle,
+            start_attr: attr,
+            cur_attr: attr,
+        })
+    }
+</code></pre>
+<p>So I'm not using <code>GetConsoleMode</code> but I am using <code>GetConsoleScreenBufferInfo</code>. Should that call fail if there's no console available? <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms683171%28v=vs.85%29.aspx">The docs don't seem to say, but do seem to imply that it at least <em>can</em> fail.</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-19 22:11</div>
+            <div class="timeline-body"><p>Hmm, I guess the difference here is that in that code above, I am opening <code>CONOUT$</code>, where as I do believe it fails if I do it on, say, <code>stdout</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/retep998">@retep998</a> on 2016-11-19 22:16</div>
+            <div class="timeline-body"><p>@BurntSushi Getting <code>CONOUT$</code> is usually the wrong thing to do, because it ignores what stdout is set to, completely bypassing any redirection, and just gets whatever the active framebuffer is. Stick with <code>GetStdHandle</code> as the way to obtain the handle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-19 22:31</div>
+            <div class="timeline-body"><p>@retep998 Ah I see now, OK that works! Thanks! My only problem now is figuring out how to detect whether stdout is tty or not inside of mintty. From searching, it seems like the problem is basically unsolveable, although I will note that <code>grep</code> from <code>cygwin</code> seems to get it right. <a href="http://git.661346.n2.nabble.com/PATCH-mingw-make-isatty-recognize-MSYS2-s-pseudo-terminals-dev-pty-td7654456.html"><code>git</code> itself seems to have hacked around it</a> and the mintty project <a href="https://github.com/mintty/mintty/issues/482">doesn't have</a> a good answer <a href="https://github.com/mintty/mintty/issues/56">either</a>.</p>
+<p><em>sigh</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-11-20 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-20 20:34</div>
+            <div class="timeline-body"><p>For those following this issue but not #94, this will be fixed in the next ripgrep release!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lilianmoraru">@lilianmoraru</a> on 2016-11-22 15:36</div>
+            <div class="timeline-body"><p>Colors stopped working in one of the releases, on an ARM target I tested <code>ripgrep</code> on.
+I'll test again and see if this fixed the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lilianmoraru">@lilianmoraru</a> on 2016-11-23 08:38</div>
+            <div class="timeline-body"><p>Yey, colors work again on that ARM target.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:44 UTC
+    </footer>
+</body>
+</html>

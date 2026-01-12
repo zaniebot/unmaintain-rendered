@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No output when --after-context is added - BurntSushi/ripgrep #731</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>No output when --after-context is added</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/731">#731</a>
+        opened by <a href="https://github.com/wezm">@wezm</a>
+        on 2018-01-05 01:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/wezm">@wezm</a></div>
+            <div class="timeline-body"><p>I'm grepping a log file as follows, which produces 313 matching lines:</p>
+<pre><code>rg 'WARN.*59082' log/server.log
+</code></pre>
+<p>When <code>--after-context</code> (or <code>-A</code>) is added no results are shown and <code>rg</code> exits with a status code of 1. It doesn't seem to matter what number is supplied to <code>--after context</code>.</p>
+<pre><code>rg --after-context=2 'WARN.*59082' log/server.log
+</code></pre>
+<p>A smaller log file I created to try to supply a test case works properly. The original log file is 742Mb. Performing the same operation (with <code>--after</code>) in <code>ag</code> yield results as expected.</p>
+<p>Fresh debug and release builds from master (<code>14779ed</code>) yields the same result.</p>
+<p><strong>OS:</strong> Arch Linux (<code>4.14.10-1-ARCH #1 SMP PREEMPT Fri Dec 29 20:17:35 UTC 2017 x86_64 GNU/Linux</code>)
+<strong>ripgrep:</strong> Installed via Arch package, version 0.7.1-1</p>
+<pre><code>$ rg --version
+ripgrep 0.7.1
+-AVX -SIMD
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-05 01:12</div>
+            <div class="timeline-body"><p>Thanks for reporting this! Unfortunately it is going to be hard to debug without a reproducible test case. Any chance you can try to wittle down your log file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wezm">@wezm</a> on 2018-01-05 01:17</div>
+            <div class="timeline-body"><p>I'm working on it. I have it down to 256Mb 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wezm">@wezm</a> on 2018-01-05 01:41</div>
+            <div class="timeline-body"><p>Ok I've found the source. There was a bunch of NUL bytes buried in the file. Not sure if this a case ripgrep should handle but reduced test case is attached.</p>
+<p><a href="https://github.com/BurntSushi/ripgrep/files/1605278/nul-bytes.log">nul-bytes.log</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-01-05 02:32</div>
+            <div class="timeline-body"><p>It doesn't print your test case because it thinks the file is a binary. If you add <code>-a</code> it should work.</p>
+<p>It is a bit hard to troubleshoot what it's doing when it just silently ignores it though. Maybe there should be a debug message?</p>
+<p>Could be noisy if you have a lot of binaries in your repo or whatever, but that's what <code>ag</code> does:</p>
+<pre><code>DEBUG: File nul-bytes.log is binary. Skipping...
+</code></pre>
+<p>(At least, it does that with files on the file system — i don't think it can detect binary data on <code>stdin</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wezm">@wezm</a> on 2018-01-05 02:42</div>
+            <div class="timeline-body"><p>Using <code>-a</code> does in fact fix it. I think some kind of message would have been super helpful. I figured there was a reason but there was nothing to go on to work out what it was. Extra confusion was caused by getting results without <code>-A</code> then adding it and getting none.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-05 04:22</div>
+            <div class="timeline-body"><p>I suspect that #306 might be a duplicate then.</p>
+<p>However, the presence or absence of <code>-A</code> shouldn't impact binary file detection... So that's worth looking into.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-01 00:24</div>
+            <div class="timeline-body"><p>I can confirm that this is a dupe of #306. I couldn't see any problem with using <code>-A</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-02-01 00:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:24 UTC
+    </footer>
+</body>
+</html>

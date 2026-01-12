@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting output to file on windows causes arguments to fail. - BurntSushi/ripgrep #1309</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Redirecting output to file on windows causes arguments to fail.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1309">#1309</a>
+        opened by <a href="https://github.com/WillyKelleher">@WillyKelleher</a>
+        on 2019-06-22 13:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/WillyKelleher">@WillyKelleher</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 11.0.1 (rev 973de50c9e)
+-SIMD -AVX (compiled)
++SIMD -AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>choco install</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Windows 2008 R2</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>I am trying to redirect rg to a file for later processing. When I add the &gt; or &gt;&gt; and file path\name it works but fails to skip files and directories passed as arguments or included in the config.</p>
+<p>I tried several combinations of quote(s) and other things but none of them have worked, I am sure I am missing something.</p>
+<p>It might be nice to have an option to write the results to file as well as include the drive in the output. This would make it easier to process the file with anther process.</p>
+<p>I have attached a batch file that I have been working on, removing the redirect works fine and rg does not try to search all files. With the redirect it searches all files and takes quite a long time.
+<a href="https://github.com/BurntSushi/ripgrep/files/3316862/rg_search.bat.txt">rg_search.bat.txt</a></p>
+<p>Any help would be appreciated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WillyKelleher">@WillyKelleher</a> on 2019-06-22 13:42</div>
+            <div class="timeline-body"><p>Wrong file uploaded earlier here is correct one
+<a href="https://github.com/BurntSushi/ripgrep/files/3316886/rg_search.bat.txt">rg_search.bat.txt</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-06-24 11:11</div>
+            <div class="timeline-body"><p>@WillyKelleher Sorry, but I'm having trouble understanding your problem. Could you please go back to the issue template and fill it out correctly? I see that you've provided a batch script, but the commands in that batch script are not something I can run on my machine, <em>and</em> the commands are overly complicated. Can you please narrow them down? Could you also please say what your expected output it? And could you also say what the actual output is?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2019-06-24 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WillyKelleher">@WillyKelleher</a> on 2019-06-24 12:42</div>
+            <div class="timeline-body"><p>RG seems to work fine running on windows and does what is expected. The problem lies when trying to pipe stdout to a file to save the results.
+in a command window this works fine and skips the file types I want skipped, it shows all files with the string sqltest.acme.com in them.
+rg -i -l sqltest.acme.com -g!<em>.bak -g!</em>.mdf -g!<em>.ldf -g!</em>.log</p>
+<p>When I try to write the output to file using the standard windows redirect rg must read that and the options stop working but the file gets written to properly. The following is where I try to write the output to a file named c:\temp\rglog.txt This works and the proper results are written to the file but rg does not skip the file types I want skipped, I can see this because it shows errors trying to read <em>.mdf and *.ldf files which are MSSQL DB files.
+rg -i -l sqltest.acme.com -g!</em>.bak -g!<em>.mdf -g!</em>.ldf &gt;c:\temp\rgoutput.txt</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-06-24 12:50</div>
+            <div class="timeline-body"><p>I'll ask again: please provide input, <em>expected</em> output and <em>actual</em> output. It is not good enough to say &quot;this works correctly&quot; because I don't know what <em>correct</em> means for you. Please remove the costly guess work on my part and include a complete reproducible bug report.</p>
+<p>As the issue template says, please also include ripgrep's output with the <code>--debug</code> flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Simran-B">@Simran-B</a> on 2019-10-22 13:00</div>
+            <div class="timeline-body"><p>I'm not sure if I experience the same or a different problem, but this is what I struggled with:</p>
+<p><strong>What version of ripgrep are you using?</strong>
+ripgrep 11.0.2 (rev 3de31f7527)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<p><strong>How did you install ripgrep?</strong>
+<code>choco install ripgrep</code></p>
+<p><strong>What operating system are you using ripgrep on?</strong>
+Windows 10 Pro</p>
+<p><strong>Describe your question, feature request, or bug.</strong></p>
+<p>Using <strong>cmd.exe</strong> I wanted to search for certain URLs in files and write them to a file. My naive initial command was:</p>
+<pre><code>rg --no-line-number --no-filename --only-matching https://www.example.org/[^&quot;]* &gt; urls.txt</code></pre>
+<p>This fails with</p>
+<pre><code>regex parse error:
+    https://www.example.org/[]*
+                            ^^
+error: unclosed character class
+</code></pre>
+<p>The caret <code>^</code> is a special character (for escaping e.g. line ends) and has to be doubled to work:</p>
+<pre><code>… https://www.example.org/[^^&quot;]* &gt; urls.txt</code></pre>
+<p>This still fails:</p>
+<pre><code>regex parse error:
+    https://www.example.org/[^]* &gt; urls.txt
+                            ^^^
+error: unclosed character class
+</code></pre>
+<p>The double quote mark <code>&quot;</code> seems to get removed by the Windows command line processor as described here: https://github.com/BurntSushi/ripgrep/issues/205</p>
+<p>However, doubling it does not work in this instance and still fails with above error. What does work is <strong>tripling it, or escaping it with a backslash</strong>:</p>
+<pre><code>… https://www.example.org/[^^&quot;&quot;&quot;]*
+… https://www.example.org/[^^\&quot;]*</code></pre>
+<p>Note that there is no redirection to file in above example commands. The results are printed to the console and look correct. As soon as I add the <strong>redirect to file</strong> I get a strange error:</p>
+<pre><code>… https://www.example.org/[^^\&quot;]* &gt; urls.txt
+
+&gt;: The filename, directory name, or volume label syntax is incorrect. (os error 123)</code></pre>
+<p>If the target file does not exist yet, then it also prints a second error:</p>
+<pre><code>urls.txt: The system cannot find the file specified. (os error 2)</code></pre>
+<p>The regex does make a difference here, because the following writes the results to file as expected:</p>
+<pre><code>… https://www.example.org/[\w/.#_-]* &gt; urls.txt</code></pre>
+<p>I tried several other regexes and everything points to the double quote mark as culprit. I had to <strong>double the quote marks, but also escape them</strong> to make this work:</p>
+<pre><code>… https://www.example.org/[^^\&quot;\&quot;]* &gt; urls.txt</code></pre>
+<p>Should there be a greater than <code>&gt;</code> character in the regex expression, then it needs to be escaped using a caret <code>^</code>, e.g.<code>[^&gt;]*</code> as <code>[^^^&gt;]*</code>. This escaping behavior can be tested with the <code>echo</code> command, while the quote mark issues can not: <code>echo [&quot;]</code> prints <code>[&quot;]</code>, which misled me.</p>
+<p>Using <strong>powershell</strong> instead of cmd, the following commands work (some of them being rather bizarre):</p>
+<pre><code>… 'https://www.example.org/[^\&quot;]*' &gt; urls.txt
+… &quot;https://www.example.org/[^\&quot;&quot;]*&quot; &gt; urls.txt
+… https://www.example.org/[^`&quot;`&quot;`&quot;]* &gt; urls.txt
+… https://www.example.org/[^\`&quot;]* &gt; urls.txt
+… 'https://www.example.org/[^`\&quot;]*' &gt; urls.txt
+… &quot;https://www.example.org/[^\`&quot;]*&quot; &gt; urls.txt
+… &quot;https://www.example.org/[^`&quot;`&quot;`&quot;]*&quot; &gt; urls.txt</code></pre>
+<p>I worry that there's nothing on ripgrep's side to fix, but it would be tremendously helpful to have documentation about special characters in different shells because they are so common in regular expressions and it would had saved me two hours of fiddling around. Should it be a separate section in the <a href="https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md">Guide</a>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-10-22 13:09</div>
+            <div class="timeline-body"><p>@Simran-B I can't tell whether it's related or not because the initial report in this issue isn't really comprehensible to me. Either way, it looks to me like the simple answer to your troubles is to simply quote your regex pattern instead of having to worry about special characters in your shell. Documenting every special character in every shell is really beyond the scope of ripgrep's docs. Just quote your pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-10-22 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Simran-B">@Simran-B</a> on 2019-10-22 13:30</div>
+            <div class="timeline-body"><p>@BurntSushi Quoting the regex does unfortunately not solve the issue under Windows.</p>
+<p>PowerShell does not preserve the double quote mark <code>&quot;</code> in the character class:</p>
+<pre><code>'https://www.arangodb.com/docs/[^&quot;]*'
+&quot;https://www.arangodb.com/docs/[^&quot;&quot;]*&quot;</code></pre>
+<p>It is required to use either backslash or backtick escapes. The type of quote marks (or the absence thereof) affects how you need to escape.</p>
+<p>Cmd is weird when it comes to quoting:</p>
+<ul>
+<li>Using double quote marks, it matches URLs and prints them to console, but redirecting the output to file does not working (empty file)<pre><code>&quot;https://www.arangodb.com/docs/[^^&quot;&quot;]*&quot; 
+</code></pre>
+</li>
+<li>Using single quote marks does not produce any results (I also tried various variants):<pre><code>'https://www.arangodb.com/docs/[^^\&quot;]*'
+</code></pre>
+</li>
+<li><code>|</code>, <code>&gt;</code> and probably other characters do not require escaping with <code>^</code> if wrapped within double quote marks e.g. <code>echo ^| ^&gt;</code> vs. <code>echo &quot;| &gt;&quot;</code> (which does however print the double quote marks). Single quote marks don't actually seem to have a special meaning, e.g. <code>echo '| &gt;'</code> is a syntax error, <code>echo '^| ^&gt;'</code> prints <code>'| &gt;'</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Simran-B">@Simran-B</a> on 2020-05-26 09:52</div>
+            <div class="timeline-body"><p>... ran into the issue again. Took me pretty long to find a pattern that allows me to correctly match the content and redirect the results to a file using cmd.exe:</p>
+<pre><code>rg --no-line-number -o &quot;class=&quot;&quot;&quot;([^^^&quot;&quot;&quot;]+)&quot;&quot;&quot;&quot; some.html &gt; classes.txt</code></pre>
+<p>The actual pattern: <code>class=&quot;([^&quot;]+)&quot;</code></p>
+<p>I have no clue why backslash-escaped double-quotes didn't work this time, and why the hell I had to triple the circumflex accent. It would be easier if there was a built-in option to write the results to file, because without redirection all of the following patterns work:</p>
+<ul>
+<li><code>class=\&quot;([^\&quot;]+)\&quot;</code></li>
+<li><code>class=\&quot;([^^\&quot;]+)\&quot;</code></li>
+<li><code>class=\&quot;([^^^\&quot;]+)\&quot;</code></li>
+<li><code>&quot;class=\&quot;([^^\&quot;]+)\&quot;&quot;</code></li>
+<li><code>&quot;class=\&quot;([^^^\&quot;]+)\&quot;&quot;</code> (but not with a single <code>^</code>)</li>
+<li><code>class=&quot;&quot;&quot;([^&quot;&quot;&quot;]+)&quot;&quot;&quot;</code></li>
+<li><code>class=&quot;&quot;&quot;([^^&quot;&quot;&quot;]+)&quot;&quot;&quot;</code></li>
+<li><code>class=&quot;&quot;&quot;([^^^&quot;&quot;&quot;]+)&quot;&quot;&quot;</code></li>
+<li><code>&quot;class=&quot;&quot;&quot;([^&quot;&quot;&quot;]+)&quot;&quot;&quot;&quot;</code></li>
+<li><code>&quot;class=&quot;&quot;&quot;([^^&quot;&quot;&quot;]+)&quot;&quot;&quot;&quot;</code></li>
+<li><code>&quot;class=&quot;&quot;&quot;([^^^&quot;&quot;&quot;]+)&quot;&quot;&quot;&quot;</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbergens">@jbergens</a> on 2022-09-02 15:08</div>
+            <div class="timeline-body"><p>I think I just ran into this and agree that some kind of option for sending the output to a file would help a lot. Something like
+<code>rg foo infile.txt --outfile outfile.txt</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-09-02 15:11</div>
+            <div class="timeline-body"><p>Why do you need <code>--outfile</code> and what is its relevance to this issue? Just use <code>rg foo infile.txt &gt; outfile.txt</code>. That should work even on Windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jbergens">@jbergens</a> on 2022-09-02 15:22</div>
+            <div class="timeline-body"><p>You're correct. It was another options that failed parsing and made everything stop. It still searched one file and a lot of output was shown which made me miss the error message in the beginning of the output. I thought the redirect did not work which was strange.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:56 UTC
+    </footer>
+</body>
+</html>

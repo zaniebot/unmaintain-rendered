@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>On Unix, ripgrep ignores stdin input provided via .NET 5.0 APIs  - BurntSushi/ripgrep #1758</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>On Unix, ripgrep ignores stdin input provided via .NET 5.0 APIs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1758">#1758</a>
+        opened by <a href="https://github.com/mklement0">@mklement0</a>
+        on 2020-12-10 18:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mklement0">@mklement0</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p><code>ripgrep 12.1.1</code></p>
+<h4>How did you install ripgrep?</h4>
+<p>Homebrew on macOS, <code>snap</code> on Ubuntu (latest version there is <code>12.1.0</code>).</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>macOS 10.15.7
+Ubuntu 18.04</p>
+<h4>Describe your bug.</h4>
+<p><code>rg</code> ignores stdin input provided via .NET 5.0 APIs (no other programs I'm aware of have this problem; e.g., <code>grep</code> works fine). Windows is <em>not</em> affected.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>PowerShell 7.1:</p>
+<pre><code class="language-powershell">$psi = [System.Diagnostics.ProcessStartInfo] @{
+  FileName = 'rg'
+  RedirectStandardInput = $true
+  Arguments = 'hi'
+}
+
+$ps = [System.Diagnostics.Process]::Start($psi)
+
+$ps.StandardInput.WriteLine('hi there');
+$ps.StandardInput.Close()
+
+$ps.WaitForExit()
+</code></pre>
+<p>C# with .NET 5.0.101 SDK:</p>
+<pre><code class="language-csharp">using System;
+using System.Diagnostics;
+
+namespace demo
+{
+  static class ConsoleApp
+  {
+    static void Main(string[] args)
+    {
+      var psi = new ProcessStartInfo { FileName = &quot;rg&quot;, RedirectStandardInput = true, Arguments = &quot;hi&quot; };
+      var ps = Process.Start(psi);
+
+      ps.StandardInput.WriteLine(&quot;hi there&quot;);
+      ps.StandardInput.Close();
+
+      ps.WaitForExit();
+
+    }
+
+  }
+}
+
+</code></pre>
+<h4>What is the actual behavior?</h4>
+<p><code>rg</code> behaves as if no stdin input had been specified and searches through the files in the current directory subtree.</p>
+<h4>What is the expected behavior?</h4>
+<p>The output should be <code>hi there</code>, just like when you run <code>echo 'hi there' | rg hi</code> from any <strong>POSIX-like shell</strong>.</p>
+<p>However, since PowerShell [Core] is built on .NET, <strong>this command does <em>not</em> work in PowerShell v7.1</strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-12-10 19:02</div>
+            <div class="timeline-body"><p>This looks like a duplicate of #1741, which was fixed by #1742.</p>
+<p>Also note that I do not recommend using Snap to install ripgrep. It has resulted in all sorts of weird problems. (Searching the issue tracker should turn up prior discussions.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-12-10 19:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2020-12-10 19:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:17 UTC
+    </footer>
+</body>
+</html>

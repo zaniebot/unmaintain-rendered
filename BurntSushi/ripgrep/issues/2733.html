@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File named `.config` is ignored for no reason - BurntSushi/ripgrep #2733</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>File named <code>.config</code> is ignored for no reason</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2733">#2733</a>
+        opened by <a href="https://github.com/Mouradif">@Mouradif</a>
+        on 2024-02-11 10:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Mouradif">@Mouradif</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>ripgrep 14.1.0</p>
+<h3>How did you install ripgrep?</h3>
+<p>APT, Homebrew</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Ubuntu 22, Mac OS</p>
+<h3>Describe your bug.</h3>
+<p>Ripgrep ignores files named <code>.config</code> and I can't seem to be able to change that. I tried <code>--no-ignore</code>, <code>--no-ignore-files</code>, <code>--no-ignore-global</code></p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<ul>
+<li>create a file <code>.config</code></li>
+<li>put some text in it (like &quot;some text&quot;)</li>
+<li>run <code>rg some</code> or <code>rg text</code></li>
+<li>find nothing</li>
+</ul>
+<p>Also</p>
+<ul>
+<li><code>rg --debug anything</code></li>
+</ul>
+<pre><code>...
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1799: ignoring ./.config: Ignore(IgnoreMatch(Hidden))
+...
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<pre><code>$ mkdir folder
+$ cd folder
+$ echo 'some text' &gt; .config
+$ rg some
+rg: No files were searched, which means ripgrep probably applied a filter you didn't expect.
+Running with --debug will show why files are being skipped.
+$ rg --debug some
+rg: DEBUG|rg::flags::parse|crates/core/flags/parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1099: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=false, stdin_consumed=false, mode=Search(Standard))
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1109: heuristic chose to search ./
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1260: found hostname for hyperlink configuration: Mourads-MacBook-Air.local
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1270: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 8 thread(s)
+rg: DEBUG|grep_regex::config|crates/regex/src/config.rs:175: assembling HIR from 1 fixed string literals
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|globset|crates/globset/src/lib.rs:448: glob converted to regex: Glob { glob: &quot;.gitignored/*&quot;, re: &quot;(?-u)^\\.gitignored/[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true, empty_alternates: false }, tokens: Tokens([Literal('.'), Literal('g'), Literal('i'), Literal('t'), Literal('i'), Literal('g'), Literal('n'), Literal('o'), Literal('r'), Literal('e'), Literal('d'), Literal('/'), ZeroOrMore]) }
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 9 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
+rg: DEBUG|globset|crates/globset/src/lib.rs:448: glob converted to regex: Glob { glob: &quot;.gitignored/*&quot;, re: &quot;(?-u)^\\.gitignored/[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true, empty_alternates: false }, tokens: Tokens([Literal('.'), Literal('g'), Literal('i'), Literal('t'), Literal('i'), Literal('g'), Literal('n'), Literal('o'), Literal('r'), Literal('e'), Literal('d'), Literal('/'), ZeroOrMore]) }
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 9 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1799: ignoring ./.config: Ignore(IgnoreMatch(Hidden))
+rg: No files were searched, which means ripgrep probably applied a filter you didn't expect.
+Running with --debug will show why files are being skipped.
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>Find a match in file <code>.config</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-11 12:44</div>
+            <div class="timeline-body"><p>The second sentence of the README says (emphasis mine):</p>
+<blockquote>
+<p>By default, ripgrep will respect gitignore rules and automatically <strong>skip hidden files/directories</strong> and binary files.</p>
+</blockquote>
+<p>The GUIDE <a href="https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#automatic-filtering">explicitly discusses what types of automatic filtering are employed</a> and also how to disable or configure each one.</p>
+<p>Finally, the debug logs you've included explicitly tell you the file is being ignored because it is hidden.</p>
+<p>Use the <code>-./--hidden</code> flag to search hidden files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-02-11 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2024-02-11 12:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:46 UTC
+    </footer>
+</body>
+</html>

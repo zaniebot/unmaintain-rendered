@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ripgrep does not properly apply ignore rules from .gitignore in parent directory - BurntSushi/ripgrep #2770</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ripgrep does not properly apply ignore rules from .gitignore in parent directory</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2770">#2770</a>
+        opened by <a href="https://github.com/gstokkink">@gstokkink</a>
+        on 2024-03-28 13:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gstokkink">@gstokkink</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<pre><code>ripgrep 14.1.0
+
+features:-simd-accel,+pcre2
+simd(compile):+NEON
+simd(runtime):+NEON
+
+PCRE2 10.42 is available (JIT is available)
+</code></pre>
+<h3>How did you install ripgrep?</h3>
+<p>Homebrew</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>macOS 14.3.1</p>
+<h3>Describe your bug.</h3>
+<p>ripgrep does not properly apply a glob pattern from a .gitignore in the parent directory</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<pre><code>mkdir test
+cd test
+git init
+mkdir -p foo/bar
+echo quux &gt; foo/bar/baz
+
+rg -l quux # =&gt; foo/bar/baz, as expected
+
+cd foo
+
+rg -l quux # =&gt; bar/baz, as expected
+
+cd ..
+
+echo &quot;**/bar&quot; &gt; .gitignore
+
+rg -l quux # =&gt; no results, as expected
+
+cd foo
+
+rg -l quux # =&gt; no results, as expected
+
+cd ..
+
+echo &quot;**/bar/*&quot; &gt; .gitignore
+
+rg -l quux # =&gt; no results, as expected
+
+cd foo
+
+rg -l quux # =&gt; bar/baz ??
+</code></pre>
+<p>As you can see, ripgrep does not apply the ignore glob correctly in the last case.</p>
+<h3>What is the actual behavior?</h3>
+<pre><code>rg: DEBUG|rg::flags::parse|crates/core/flags/parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1099: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=false, stdin_consumed=false, mode=Search(FilesWithMatches))
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1109: heuristic chose to search ./
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1260: found hostname for hyperlink configuration: gerjan-macbook-pro.local
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1270: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 11 thread(s)
+rg: DEBUG|grep_regex::config|crates/regex/src/config.rs:175: assembling HIR from 1 fixed string literals
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 1 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 2 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|globset|crates/globset/src/lib.rs:448: glob converted to regex: Glob { glob: &quot;**/bar/*&quot;, re: &quot;(?-u)^(?:/?|.*/)bar/[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true, empty_alternates: false }, tokens: Tokens([RecursivePrefix, Literal('b'), Literal('a'), Literal('r'), Literal('/'), ZeroOrMore]) }
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
+bar/baz
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>ripgrep should not have returned any matches</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MrGreenTea">@MrGreenTea</a> on 2025-10-09 08:46</div>
+            <div class="timeline-body"><p>This seems related: #3067</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2025-10-11 01:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-10-11 02:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:47 UTC
+    </footer>
+</body>
+</html>

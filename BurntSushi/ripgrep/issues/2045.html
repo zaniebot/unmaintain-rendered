@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rg on Windows keeps hanging - BurntSushi/ripgrep #2045</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rg on Windows keeps hanging</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2045">#2045</a>
+        opened by <a href="https://github.com/annazolkieve">@annazolkieve</a>
+        on 2021-10-27 14:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/annazolkieve">@annazolkieve</a></div>
+            <div class="timeline-body"><p>Jul 21 2020:</p>
+<pre><code>grep -r xxx .
+xxx.c:extern void      xxx ( void )
+
+ext code 0 / time elapsed 397ms
+
+$ rg xxx
+xxx.c
+492: extern void      xxx ( void )
+
+# rg hangs: have to interrupt rg via CTRL+C
+exit code 127 / time elapsed 46m21s
+
+rg version: ??
+</code></pre>
+<p>Oct 27 2021:</p>
+<pre><code>$ grep -r xxx .
+./file1.cpp:     	xxx
+./file2.cpp:     	xxx
+...
+./fileN.cpp:     	xxx
+ext code 0 / time elapsed: 1.427s
+
+$ rg xxx
+./file1.cpp:     	xxx
+./file2.cpp:     	xxx
+...
+# rg hangs: have to interrupt rg via CTRL+C
+exit code 127 / time elapsed: 29m28s
+
+$ rg --version
+ripgrep 13.0.0 (rev af6b6c543b)
+-SIMD -AVX (compiled)
++SIMD -AVX (runtime)
+</code></pre>
+<p>Cannot share the directory, sorry.
+OS: Win10 64-bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-10-27 14:14</div>
+            <div class="timeline-body"><p>Sorry, but I cannot reproduce this. Without a reproduction, it's basically impossible for me to debug. The only other approach here is for you to debug it. You'll probably need to run with the <code>--trace</code> flag, or wittle your corpus down, until you find the exact file that ripgrep is hanging on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chuanqisun">@chuanqisun</a> on 2021-11-11 01:24</div>
+            <div class="timeline-body"><p>Not sure if it's related. I'm maintaining an app that calls the <code>rg</code> command from node.js, using <a href="https://nodejs.org/api/child_process.html#child_processexeccommand-options-callback">child_process.exec</a> api. <a href="https://github.com/osmoscraft/osmosnote/blob/master/packages/server/src/routes/search-note.ts#L126">Here</a> is how the rg command is being generated, and <a href="https://github.com/osmoscraft/osmosnote/blob/master/packages/server/src/lib/run-shell.ts">here</a> is how the <code>exec</code> is being called. After I upgrade from rg 12.1.1 to 13.0.0, the <code>exec</code> no longer invokes the callback, as if the child process never finished. Some more observations:</p>
+<ol>
+<li>I was able to manually execute the same command in terminal without any problems.</li>
+<li>The <code>exec</code> can execute other shell command like <code>ls</code> or <code>git</code> without any problems.</li>
+</ol>
+<p>So, for what it's worth, I wonder if there were some changes in 13.0.0 that affected how the process exits, and because of that, node.js stop receiving the exit signal.</p>
+<p>For reference, this happened in WSL2. <code>5.10.60.1-microsoft-standard-WSL2 #1 SMP Wed Aug 25 23:20:18 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux</code></p>
+<p>UPDATE</p>
+<p>just tried on my linux machine, found the same hanging issue.
+<code>5.13.0-7620-generic #20~1634827117~21.04~874b071-Ubuntu SMP Fri Oct 29 15:06:55 UTC  x86_64 x86_64 x86_64 GNU/Linux</code></p>
+<p>UPDATE 2</p>
+<p>I've created a minimum repro and captured trace in https://github.com/BurntSushi/ripgrep/issues/2056. Didn't want to steal the thread from this bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2021-11-11 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-11-11 13:35</div>
+            <div class="timeline-body"><p>Closing this due to lack of reproduction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matkoniecz">@matkoniecz</a> on 2021-11-22 14:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Closing this due to lack of reproduction.</p>
+</blockquote>
+<p>It is still open</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-11-22 14:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:27 UTC
+    </footer>
+</body>
+</html>

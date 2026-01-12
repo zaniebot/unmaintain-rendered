@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unexpected result when using PCRE2 - BurntSushi/ripgrep #1624</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unexpected result when using PCRE2</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1624">#1624</a>
+        opened by <a href="https://github.com/Bios-Marcel">@Bios-Marcel</a>
+        on 2020-06-22 10:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Bios-Marcel">@Bios-Marcel</a></div>
+            <div class="timeline-body"><p>I wrote a regex that uses repitition in order to match opening and closing braces including chained function calls.</p>
+<p>It looks as follows:</p>
+<pre><code class="language-regex">Services.*?lookup\s*\(\s*(.+?)\s*\)\s*\.\s*((?:.*?\((?:\s*\)\s*|(?:(?:.*?\(.*?\))(?1))\s*\)))+)
+</code></pre>
+<p>Here you can see it in action working correctly:
+https://regex101.com/r/VwXAWq/1</p>
+<p>I get exactly the same matches when running this through <code>grep</code> with the <code>-P</code> flag to enable PCRE.
+However, using the <code>--pcre2</code> flag in ripgrep, it doesn't match the last brace in case it is an inlined function call.</p>
+<p>E.g. the last matching brace, which is the one before the last brace, will be missing here:</p>
+<p>.map( bean -&gt; <strong>Services.lookup( BereichRepository.class ).getAll().findById( bean.getBereichIds().iterator().next()</strong> ) );</p>
+<p>Am i missunderstanding something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-06-22 11:54</div>
+            <div class="timeline-body"><p>Why did you remove the template when writing this issue? Please don't do that. Please fill out the template. Please include the <em>exact</em> and <em>complete</em> commands that you're running, along with expected output, actual output and the input.</p>
+<p>If possible, please also simplify the regex.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2020-06-22 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Bios-Marcel">@Bios-Marcel</a> on 2020-06-22 14:14</div>
+            <div class="timeline-body"><p>Oh sorry, that wasn't on purpose. I must've clicked the wrong button.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-06-22 14:34</div>
+            <div class="timeline-body"><p>As far as I can tell, this isn't a problem with ripgrep, but rather seems to be rooted in the fact that you're comparing apples and oranges. Namely, GNU grep uses PCRE while ripgrep uses PCRE2. Your regex101 link claims to be using PCRE through PHP, but doesn't list the version of either. Apparently, newer versions (as of 7.3?) of PHP have upgraded to PCRE2: https://www.php.net/manual/en/pcre.installation.php (Note that PCRE 8.x is PCRE and PCRE 10.x is PCRE2.)</p>
+<p>One way to validate this hypothesis is to use tools whose use of PCRE is known. GNU grep is PCRE, ripgrep is PCRE2 and <code>git grep</code> is also PCRE2:</p>
+<p><img src="https://user-images.githubusercontent.com/456674/85299809-c1918680-b473-11ea-96b9-adf86916cd92.png" alt="pcre-weirdness" /></p>
+<p>This screenshot shows that <code>git grep</code> and ripgrep behave the same, while GNU grep differs. I am not an expert on PCRE, so I cannot tell you why this difference occurs, but it does at least appear to be specific to the PCRE version. So I don't believe this is an issue with ripgrep specifically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-06-22 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @BurntSushi on 2020-06-22 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2020-06-22 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Bios-Marcel">@Bios-Marcel</a> on 2020-06-22 14:37</div>
+            <div class="timeline-body"><p>Oh i see. Thanks a lot :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zherczeg">@zherczeg</a> on 2020-06-23 06:15</div>
+            <div class="timeline-body"><p>This is a behavourial change between pcre and pcre2. Recursions are non atomic (can be backtracked into) to follow perl. You can get the same results if you put the recursion part into an atomic block:</p>
+<p>Replace <code>(?1)</code> with <code>(?&gt;(?1))</code></p>
+<p>With this change the pattern is compatible with both engines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-06-23 07:01</div>
+            <div class="timeline-body"><p>@zherczeg Thanks for chiming in! Appreciate it. :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:11 UTC
+    </footer>
+</body>
+</html>

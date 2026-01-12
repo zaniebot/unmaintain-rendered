@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post-processing similar to &quot;git grep --show-function&quot; - BurntSushi/ripgrep #669</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Post-processing similar to &quot;git grep --show-function&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/669">#669</a>
+        opened by <a href="https://github.com/zachriggle">@zachriggle</a>
+        on 2017-11-09 21:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zachriggle">@zachriggle</a></div>
+            <div class="timeline-body"><p>(Context: I have read #282 and #236 and understand the reason for closing them.  This is not a request for scope-limited searches.)</p>
+<p>The <code>git-grep</code> command supports the <code>--show-function</code> argument, which precedes any matches with the function (or struct, or other language-dependent block) they are contained within.</p>
+<p>For example:</p>
+<pre><code>$ git grep -p files_with_matches
+src/args.rs=34=pub struct Args {
+src/args.rs:44:    files_with_matches: bool,
+src/args.rs=81=impl Args {
+src/args.rs:159:            &amp;&amp; !self.files_with_matches
+src/args.rs:218:            .files_with_matches(self.files_with_matches)
+src/args.rs=305=impl&lt;'a&gt; ArgMatches&lt;'a&gt; {
+src/args.rs:325:            files_with_matches: self.is_present(&quot;files-with-matches&quot;
+...
+</code></pre>
+<p>The closest mechanism is a wrapper script that uses <code>rg</code> to find matching files, and uses <code>git-grep</code> to re-search the matching files so that functions are printed.</p>
+<pre><code>#!/bin/sh
+rg -l &quot;$@&quot; | xargs git grep -p &quot;$@&quot;
+</code></pre>
+<p>When searching the Linux Kernel, we can see that <code>rg</code> is way faster (as expected) and used as an <code>xargs</code> filter even speeds up <code>git-grep</code> significantly.  However, this is slower than <code>rg</code> (as expected) and loses the styling of <code>rg</code>.</p>
+<p>We can also see that the overhead of printing out the function context is near-negligible (it was occasionally faster than not printing function context, which is odd).</p>
+<pre><code># ripgrep alone
+$ time rg execve &gt;/dev/null
+rg execve &gt; /dev/null  1.02s user 0.85s system 1075% cpu 0.174 total
+
+# git-grep alone
+$ time git grep execve &gt;/dev/null
+git grep execve &gt; /dev/null  1.16s user 2.00s system 476% cpu 0.664 total
+
+# ripgrep as a prefilter
+$ time (rg -l execve | xargs git grep execve) &gt;/dev/null
+( rg -l execve | xargs git grep execve; ) &gt; /dev/null  1.15s user 0.92s system 742% cpu 0.280 total
+
+# ripgrep as a prefilter, with --show-function
+$ time (rg -l execve | xargs git grep --show-function execve) &gt;/dev/null
+( rg -l execve | xargs git grep --show-function execve; ) &gt; /dev/null  1.14s user 0.91s system 748% cpu 0.275 total
+</code></pre>
+<p>From my perspective, it is a very useful feature which has a demonstrably low overhead in existing implementations.  It's a bit at odds with &quot;general purpose line grep&quot; (as you've stated before in #236 and #282 for similar requests), but I think it has utility.</p>
+<p>Is this something <code>ripgrep</code> would entertain as a feature?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zachriggle">@zachriggle</a> on 2017-11-09 21:24</div>
+            <div class="timeline-body"><p>This appears to be a dupe of #502 which I didn't see before writing this, so I'll leave it here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-11-09 21:29</div>
+            <div class="timeline-body"><p>@zachriggle Thanks for the detailed write up! And Yeah, this is definitely a dupe of #502, so I'm going to close this one. I also added labels to #502 to indicate how I currently view it, which is basically, &quot;I still have a lot of questions about the maintenance burden this imposes, and even if I'd be OK with maintaining such a feature, it isn't something I personally plan to do for a while.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-11-09 21:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2017-11-09 21:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zachriggle">@zachriggle</a> on 2017-11-09 21:44</div>
+            <div class="timeline-body"><p>Actually, on follow-up I realized that I had forgotten that modern <code>git grep</code> <em>DOES</em> support <code>--break --heading --line-number</code> and so on, replicating the output that I want.</p>
+<p>Ultimately, my work-around for support for this is to have the following script named <code>git-rg</code> in my <code>$PATH</code>: https://github.com/zachriggle/config/blob/master/bin/git-rg</p>
+<p>As you can see, this produces the output I desire with MUCH better performance than <code>git grep</code> and also has better performance than <code>rg</code> by itself.</p>
+<pre><code>git grep kasan_unpoison_remaining_stack  0.52s user 1.74s system 192% cpu 1.170 total
+rg kasan_unpoison_remaining_stack  0.76s user 1.32s system 594% cpu 0.351 total
+git rg kasan_unpoison_remaining_stack  0.66s user 1.31s system 612% cpu 0.322 total
+</code></pre>
+<p>The output looks like:</p>
+<pre><code>$ git rg kasan_unpoison_remaining_stack
+arch/arm64/kernel/sleep.S
+119=cpu_resume_after_mmu:
+122:    bl      kasan_unpoison_remaining_stack
+144=ENTRY(_cpu_resume)
+168:    bl      kasan_unpoison_remaining_stack
+
+mm/kasan/kasan.c
+74=void kasan_unpoison_task_stack(struct task_struct *task)
+80:asmlinkage void kasan_unpoison_remaining_stack(void *sp)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/YeungOnion">@YeungOnion</a> on 2022-07-25 23:09</div>
+            <div class="timeline-body"><p>@zachriggle I can't access the repo or file you linked. Do you still have that script?</p>
+<blockquote>
+<p>Ultimately, my work-around for support for this is to have the following script named <code>git-rg</code> in my <code>$PATH</code>: https://github.com/zachriggle/config/blob/master/bin/git-rg</p>
+</blockquote>
+<p>I'm wanting to know if you went with something like this</p>
+<pre><code>rg -l execve | xargs git grep --show-function --heading --line-number --break execve
+</code></pre>
+<p>or was it something quite distinct?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:20 UTC
+    </footer>
+</body>
+</html>

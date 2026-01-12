@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ripgrep is slow when detecting whitespace literals, e.g., `'[ \t]$'` - BurntSushi/ripgrep #1087</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ripgrep is slow when detecting whitespace literals, e.g., <code>'[ \t]$'</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1087">#1087</a>
+        opened by <a href="https://github.com/shlomif">@shlomif</a>
+        on 2018-10-19 09:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/shlomif">@shlomif</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.10.0
+-SIMD -AVX (compiled)
++SIMD -AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>cargo install ripgrep</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>My system is Mageia Linux v7 x86-64 on a Core i3 Sandy Bridge machine.</p>
+<p>rg is much slower than ag when searching for the <code>'[ \t]$'</code> regex on a
+sample repo. With this benchmark case:</p>
+<pre><code class="language-bash">#! /bin/bash
+#
+# ag-rg-bench.bash
+# Copyright (C) 2018 Shlomi Fish &lt;shlomif@cpan.org&gt;
+#
+# Distributed under terms of the MIT license.
+#
+
+set -e -x
+d=freecell-pro-0fc-deals
+
+if ! test -d &quot;$d&quot;
+then
+    git clone https://github.com/shlomif/freecell-pro-0fc-deals
+fi
+
+rg --version
+ag --version
+locale
+(
+    cd &quot;$d&quot;
+    set +e
+    time ag '[ \t]$'
+    time rg '[ \t]$'
+    time ag '[ \t]$'
+    time rg '[ \t]$'
+    time rg '[ \t]$'
+)
+</code></pre>
+<p>I am getting the following:</p>
+<pre><code>+ d=freecell-pro-0fc-deals
++ test -d freecell-pro-0fc-deals
++ rg --version
+ripgrep 0.10.0
+-SIMD -AVX (compiled)
++SIMD -AVX (runtime)
++ ag --version
+ag version 2.1.0
+
+Features:
+  +jit +lzma +zlib
++ locale
+LANG=en_GB.UTF-8
+LC_CTYPE=en_US.UTF-8
+LC_NUMERIC=en_GB.UTF-8
+LC_TIME=en_GB.UTF-8
+LC_COLLATE=en_US.UTF-8
+LC_MONETARY=en_US.UTF-8
+LC_MESSAGES=en_US.UTF-8
+LC_PAPER=en_US.UTF-8
+LC_NAME=en_GB.UTF-8
+LC_ADDRESS=en_US.UTF-8
+LC_TELEPHONE=en_US.UTF-8
+LC_MEASUREMENT=en_GB.UTF-8
+LC_IDENTIFICATION=en_GB.UTF-8
+LC_ALL=
++ cd freecell-pro-0fc-deals
++ set +e
++ ag '[ \t]$'
+
+real	0m0.101s
+user	0m0.303s
+sys	0m0.025s
++ rg '[ \t]$'
+
+real	0m1.249s
+user	0m4.799s
+sys	0m0.086s
++ ag '[ \t]$'
+
+real	0m0.094s
+user	0m0.305s
+sys	0m0.016s
++ rg '[ \t]$'
+
+real	0m1.272s
+user	0m4.910s
+sys	0m0.078s
++ rg '[ \t]$'
+
+real	0m1.246s
+user	0m4.828s
+sys	0m0.074s
+</code></pre>
+<p>My system is Mageia Linux v7 x86-64 on a Core i3 Sandy Bridge machine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-10-19 10:58</div>
+            <div class="timeline-body"><p>Thanks for the easy reproduction! Much appreciated.</p>
+<p>This is unfortunately a case where ripgrep's literal optimizations end up making it slower rather than faster. The presence of literal optimizations virtually guarantees that cases like this exist, although we might consider some common sense heuristics to improve it. e.g., If all detected literals are just whitespace, then it's probably better not to use them. That would be a fairly easy change in <code>grep-regex/src/literal.rs</code>.</p>
+<p>You can test this by trying ripgrep with PCRE2. For example,  <code>rg '[ \t]$' -P -U --no-pcre2-unicode --mmap</code> runs faster on my machine than <code>ag '[ \t]$'</code>. In particular, the flags given to ripgrep here enable the same performance profile as ag, albeit with PCRE2 instead of PCRE1. Similarly, <code>rg '\s$'</code> runs quite a bit faster than <code>ag '\s$'</code> (although, <code>rg -U '\s$'</code> is the more accurate comparison, but still runs quite a bit faster) precisely because <code>\s</code> prevents literal detection from happening since there are too many of them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "rg is much slower than ag when searching for the `'[ \t]$'` regex." to "ripgrep is slow when detecting whitespace literals, e.g., `'[ \t]$'`" by @BurntSushi on 2018-10-19 10:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2018-10-19 11:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shlomif">@shlomif</a> on 2018-10-19 21:45</div>
+            <div class="timeline-body"><p>On Fri, 19 Oct 2018 03:58:27 -0700
+Andrew Gallant <a href="mailto:notifications@github.com">notifications@github.com</a> wrote:</p>
+<blockquote>
+<p>This is unfortunately a case where ripgrep's literal optimizations end up
+making it slower rather than faster. The presence of literal optimizations
+virtually guarantees that cases like this exist, although we might consider
+some common sense heuristics to improve it. e.g., If all detected literals
+are just whitespace, then it's probably better not to use them. That would be
+a fairly easy change in <code>grep-regex/src/literal.rs</code>.</p>
+<p>You can test this by trying ripgrep with PCRE2. For example,  <code>rg '[ \t]$' -P -U --no-pcre2-unicode --mmap</code> runs faster on my machine than <code>ag '[ \t]$'</code>.
+In particular, the flags given to ripgrep here enable the same performance
+profile as ag, albeit with PCRE2 instead of PCRE1. Similarly, <code>rg '\s$'</code> runs
+quite a bit faster than <code>ag '\s$'</code> (although, <code>rg -U '\s$'</code> is the more
+accurate comparison, but still runs quite a bit faster).</p>
+</blockquote>
+<p>thanks for the reply.</p>
+<h2>--</h2>
+<p>Shlomi Fish       http://www.shlomifish.org/
+List of Networking Clients - http://shlom.in/net-clients</p>
+<p>I achieved my fast times by multitudes of 1% reductions.
+— Bill Raymond in
+https://groups.yahoo.com/neo/groups/fc-solve-discuss/conversations/messages/222</p>
+<p>Please reply to list if it's a mailing list post - http://shlom.in/reply .</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2020-03-15 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-03-15 17:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shlomif">@shlomif</a> on 2020-03-15 17:31</div>
+            <div class="timeline-body"><p>Thanks for fixing it, @BurntSushi ! :+1:</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:43 UTC
+    </footer>
+</body>
+</html>

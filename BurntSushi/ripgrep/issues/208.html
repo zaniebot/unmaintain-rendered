@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom highlighting - BurntSushi/ripgrep #208</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Custom highlighting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/208">#208</a>
+        opened by <a href="https://github.com/stej">@stej</a>
+        on 2016-11-01 10:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/stej">@stej</a></div>
+            <div class="timeline-body"><p>I use ripgrep for searching log files which works great. I like regexes a lot, so searching that supports them and is fast is always very helpful.</p>
+<p>My question is - did you consider adding some more highlighting features so that I can highlight some parts of the text but not to include them in search pattern?
+Example:
+I search log files for batches with id 255</p>
+<pre><code>rg -F 255
+7715:2016-10-01 05:22:00.683 DEBUG 41 PublishEvent CreateBatch{&quot;BatchId&quot;:&quot;b768eaf88faa4b....&quot;,&quot;Id&quot;:255 ...}
+7824:2016-10-01 05:22:07.853 DEBUG 257 PublishEvent ProcessBatch{&quot;UserId&quot;:98345,&quot;Id&quot;:255 ...}
+7888:2016-10-01 05:22:12.731 DEBUG 108 PublishEvent DeleteBatch{&quot;Reason&quot;:&quot;external&quot;,&quot;Id&quot;:255 ...}
+</code></pre>
+<p>It's ok to highlight the <strong>255</strong> value, but I'd like to get the event names (CreateBatch, ProcessBatch, ..) highlighted. This would help for quick eye scanning through the results.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-01 11:04</div>
+            <div class="timeline-body"><p>I'm not particularly inclined to add another feature for this. It seems too complex to support more regexes that don't actually impact search results.</p>
+<p>Is there any particular reason why you can't use pipes? For example, this works:</p>
+<pre><code>$ rg -F 255 issues-208 | rg '(Create|Process|Delete)Batch'
+1:7715:2016-10-01 05:22:00.683 DEBUG 41 PublishEvent CreateBatch{&quot;BatchId&quot;:&quot;b768eaf88faa4b....&quot;,&quot;Id&quot;:255 ...}
+2:7824:2016-10-01 05:22:07.853 DEBUG 257 PublishEvent ProcessBatch{&quot;UserId&quot;:98345,&quot;Id&quot;:255 ...}
+3:7888:2016-10-01 05:22:12.731 DEBUG 108 PublishEvent DeleteBatch{&quot;Reason&quot;:&quot;external&quot;,&quot;Id&quot;:255 ...}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2016-11-01 11:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stej">@stej</a> on 2016-11-01 20:42</div>
+            <div class="timeline-body"><p>Honestly I didn't know about the pipeing functionality. I use ripgrep on windows where the command line tools have been quite useless. But this might help for sure in the future.</p>
+<p>Back to the question - your proposed solution might work for some cases. But when I consider that the possible event types are hudreds, then it's not usable.
+If I use regex <code>&quot;PublishEvent\s\w+&quot;</code>, then both words will be highlighed.
+I was considering also lookbehind (regex like <code>&quot;(?&lt;=PublishEvent\s)\w+&quot;</code>), but according to https://doc.rust-lang.org/regex/regex/index.html#syntax it's not supported.</p>
+<p>This is not critical feature, but might be interesting for some people. Anyway, I understand that implementing this feature is not very idiomatic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-01 20:50</div>
+            <div class="timeline-body"><p>Yeah, I'm going to close this. I can kind of understand why you'd want this, but it seems like too much trouble.</p>
+<p>I will say that one possibly simpler approach would be to support an option to indicate a specific capture group to highlight instead of the full regex. So for example, you could do <code>rg 'PublishEvent\s(\w+)' --highlight 1</code> and it would only color the text that matched <code>(\w+)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-11-01 20:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/texastoland">@texastoland</a> on 2020-04-23 08:08</div>
+            <div class="timeline-body"><p>I was just searching if there's a way to integrate with <a href="https://github.com/sharkdp/bat"><code>bat</code></a> for the same  reason.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dufferzafar">@dufferzafar</a> on 2021-01-22 17:09</div>
+            <div class="timeline-body"><p>@BurntSushi Re-iterating what @texastoland has suggested above. Has an integration with <code>bat</code> been suggested before?</p>
+<p>Since rg &amp; bat are both rust and available as a library this is doable from a strictly technical stand point. The default behaviour of ripgrep is to cluster matches per file. Having the source also highlighted would be great.</p>
+<p><a href="https://github.com/dandavison/delta"><code>delta</code></a> is an great example of using <code>bat</code>'s functionality.</p>
+<p>I currently use <code>fzf</code> + <code>bat</code> + <code>ripgrep</code> like so:</p>
+<pre><code class="language-bash">rgf()
+{
+    RG_PREFIX=&quot;rg --column --line-number --no-heading --color=always --smart-case &quot;
+    FZF_DEFAULT_COMMAND=&quot;$RG_PREFIX ''&quot; \
+    fzf --ansi --phony \
+        --bind &quot;change:reload:$RG_PREFIX {q} || true&quot; \
+        --preview-window=top:30% --preview &quot;preview.sh -v {} | rg --pretty --colors 'match:bg:red' --colors 'match:fg:white' --no-line-number --ignore-case --context 3 {q}&quot;
+}
+</code></pre>
+<p>Where <code>preview.sh</code> is: https://github.com/mitsuhiko/dotfiles/blob/master/helpers/preview.sh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-01-22 17:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Has an integration with <code>bat</code> been suggested before?</p>
+</blockquote>
+<p>No, and I don't see it happening. At least not within ripgrep.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:52 UTC
+    </footer>
+</body>
+</html>

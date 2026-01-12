@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add -z/--null-data flag for reading large binary files - BurntSushi/ripgrep #993</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>add -z/--null-data flag for reading large binary files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/993">#993</a>
+        opened by <a href="https://github.com/Ekleog">@Ekleog</a>
+        on 2018-07-25 17:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Ekleog">@Ekleog</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>Version 0.8.1 <a href="https://nixos.org/nixos/packages.html#ripgrep">as built by NixOS</a></p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>Hmm, so I think I just hit an issue similar (but not identical) to https://github.com/BurntSushi/ripgrep/issues/458, when running <code>rg [a string not on the disk] /dev/nvme0n1p3</code>. (this being a ~100G partition, on an 8G-RAM machine). The difference being that, here, rg gets oom-killed in a matter around 1min.</p>
+<p>Dmesg output of the OOM killer http://xelpaste.net/1P14FN.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>Run <code>rg [some search pattern] [some big partition]</code>. That said I can't reproduce on the computer on which I'm typing this, which has <code>sda*</code> partitions, and for which search finishes in a matter of seconds, so there may be something special about <code>nvme0n1p*</code>?</p>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<p>Ripgrep gets OOM-killed</p>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>Either ripgrep could have managed to actually perform the search (the pattern was something very simple, no regex or anything, so afaiu theoretically the search could be done with very limited memory use in 3 passes for the output, forwards until the pattern, then backwards until a newline, then forwards again while outputting until the next newline), which would likely be best, but quite potentially require large changes to the codebase.</p>
+<p>Or ripgrep could display an error message saying “Sorry we couldn't allocate enough memory because {your file is too big, your pattern is too complex, …}”, so that the reason why ripgrep is OOM'ing is clear. And if not possible, even a “OOM” message would still be better than the SIGKILL rg currently receives through the OOM.</p>
+<p>Anyway, these are just nitpicks, thank you for ripgrep!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-25 17:50</div>
+            <div class="timeline-body"><blockquote>
+<p>so afaiu theoretically the search could be done with very limited memory use in 3 passes for the output, forwards until the pattern, then backwards until a newline, then forwards again while outputting until the next newline</p>
+</blockquote>
+<p>This is wrong, because lines are variable length. This is one reason why ripgrep (and GNU grep) do binary data detection. If a NUL byte is found, then by default, ripgrep gives up, because binary data printed to terminals is bad but also because binary data doesn't have a newline distribution similar to plain text files, which can result in allocating a lot of memory.</p>
+<p>When crawling a large directory, ripgrep should be using a fixed size buffer with standard <code>read</code> calls. There are only two ways that this buffer can increase beyond its default 8KB capacity: 1) it needs to make room for contextual lines, which only happens when the <code>-A/-B/-C</code> flags are used or 2) there is a line longer than 8KB.</p>
+<p>With that said, ripgrep has other ways of using memory. For example, its parallel searcher may be too eager and fill up heap space with the file tree. Typically this is small enough that it doesn't matter, but you might consider using the <code>-j1</code> flag (to force single threaded mode) to see if that helps memory usage.</p>
+<p>Another way ripgrep uses memory is for output. Namely, when using multithreading, ripgrep buffers the entire output of searching a file in memory before dumping it to stdout in order to prevent the interleaving of matches. So for example, if you're searching a file bigger than 8GB with a pattern that matches everything, then you're going to exhaust available memory.</p>
+<blockquote>
+<p>Or ripgrep could display an error message saying “Sorry we couldn't allocate enough memory because {your file is too big, your pattern is too complex, …}”, so that the reason why ripgrep is OOM'ing is clear.</p>
+</blockquote>
+<p>That's not how OOM conditions happen on Linux, and at the very minimum, depends on your system settings for overcommit. Moreover, your suggested error messages are a bit weird. Firstly, &quot;file too big&quot; isn't really related at all; what matters is its distribution of bytes, which can't be known until its read. So the only thing to do is to attempt to search it. Secondly, &quot;your pattern is too complex&quot; is already accounted for. You'll get an error if you try to search with a pattern that is too big (try <code>rg '\pL{100}{100}{100}'</code>).</p>
+<p>I don't foresee ripgrep doing anything to make the OOM killer failure mode any better. By the time the OOM killer has ripgrep in its sights, it's too late. It is the user's responsibility to become familiar with the failure modes of OOM killers on systems with OOM killers enabled. Moreover, that ripgrep is the target of an OOM killer does not necessarily imply that ripgrep is the agitator. I note that no part of your issue mentions the observed peak memory usage of ripgrep, which is a critical piece of information when reporting a bug about an OOM condition.</p>
+<p>If you don't have an OOM killer and your system allocators don't lie, then ripgrep should indeed exit with a more descriptive error.</p>
+<p>Here are some things to try:</p>
+<ol>
+<li>Use <code>-j1</code> to force single threaded mode.</li>
+<li>Compare <code>--mmap</code> with <code>--no-mmap</code>.</li>
+<li>Investigate the memory usage of GNU grep on the same directory.</li>
+<li>Investigate the memory usage of ripgrep and GNU grep with the <code>-a</code> flag set.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-07-25 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ekleog">@Ekleog</a> on 2018-07-26 09:41</div>
+            <div class="timeline-body"><p>On 07/26/2018 02:51 AM, Andrew Gallant wrote:</p>
+<blockquote>
+<blockquote>
+<p>so afaiu theoretically the search could be done with very limited memory use in 3 passes for the output, forwards until the pattern, then backwards until a newline, then forwards again while outputting until the next newline</p>
+</blockquote>
+<p>This is wrong, because lines are variable length. This is one reason why ripgrep (and GNU grep) do binary data detection. If a NUL byte is found, then by default, ripgrep gives up, because binary data printed to terminals is bad but also because binary data doesn't have a newline distribution similar to plain text files, which can result in allocating a lot of memory.</p>
+</blockquote>
+<p>Well, even with lines of variable lengths, I'm pretty sure it's possible
+to do the job in O(1) memory regardless of the file or contents of the
+file. For instance, an algorithm (pseudo-code, obviously not optimized,
+nor checked for its likely multiple bugs, just for the idea):</p>
+<pre><code>fn handle_file(f: File, r: Regex) {
+    loop {
+        // Find the next occurence of the pattern
+        loop {
+            if let Some(c) = read_1_char_from_file(f) {
+                match r.feed_1_char_to_FSA(c) {
+                    FoundPattern =&gt; break,
+                    NotFoundYet =&gt; (),
+                }
+            } else {
+                return;
+            }
+        }
+        // Figure out the beginning of the line
+        loop {
+            if let Some(c) = read_1_char_backwards_from_file(f) {
+                if c == '\n' {
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+        // Output until the end of the line
+        loop {
+            if let Some(c) = read_1_char_from_file(f) {
+                putchar(c);
+                if c == '\n' {
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+    }
+}
+</code></pre>
+<p>This requires the ability to seek a file backwards, but for files on
+disk this shouldn't be an issue? (apart from the added code complexity,
+of course)</p>
+<blockquote>
+<p>When crawling a large directory, ripgrep should be using a fixed size buffer with standard <code>read</code> calls. There are only two ways that this buffer can increase beyond its default 8KB capacity: 1) it needs to make room for contextual lines, which only happens when the <code>-A/-B/-C</code> flags are used or 2) there is a line longer than 8KB.</p>
+<p>With that said, ripgrep has other ways of using memory. For example, its parallel searcher may be too eager and fill up heap space with the file tree. Typically this is small enough that it doesn't matter, but you might consider using the <code>-j1</code> flag (to force single threaded mode) to see if that helps memory usage.</p>
+</blockquote>
+<p>Here I'm grepping through a single 100G-long partition pseudo-file,
+<code>/dev/nvme0n1p3</code>, so I guess that's not the issue</p>
+<blockquote>
+<blockquote>
+<p>Or ripgrep could display an error message saying “Sorry we couldn't allocate enough memory because {your file is too big, your pattern is too complex, …}”, so that the reason why ripgrep is OOM'ing is clear.</p>
+</blockquote>
+<p>That's not how OOM conditions happen on Linux, and at the very minimum, depends on your system settings for overcommit.</p>
+<p>I don't foresee ripgrep doing anything to make the OOM killer failure mode any better. By the time the OOM killer has ripgrep in its sights, it's too late. It is the user's responsibility to become familiar with the failure modes of OOM killers on systems with OOM killers enabled. Moreover, that ripgrep is the target of an OOM killer does not necessarily imply that ripgrep is the agitator. I note that no part of your issue mentions the observed peak memory usage of ripgrep, which is a critical piece of information when reporting a bug about an OOM condition.</p>
+</blockquote>
+<p>Indeed, it was behind the paste to the dmesg output of the OOM killer,
+sorry for not having thought of making it easier to see!</p>
+<p>The line relevant to ripgrep there is:</p>
+<pre><code>uid  tgid total_vm      rss nr_ptes nr_pmds swapents oom_score_adj name
+  0 30187  4206947  1573363    5151      14        0             0 rg
+</code></pre>
+<blockquote>
+<p>If you don't have an OOM killer and your system allocators don't lie, then ripgrep should indeed exit with a more descriptive error.</p>
+<p>Here are some things to try:</p>
+<ol>
+<li>Use <code>-j1</code> to force single threaded mode.</li>
+<li>Compare <code>--mmap</code> with <code>--no-mmap</code>.</li>
+<li>Investigate the memory usage of GNU grep on the same directory.</li>
+<li>Investigate the memory usage of ripgrep and GNU grep with the <code>-a</code> flag set.</li>
+</ol>
+</blockquote>
+<p>Oh sorry it looks like I forgot the <code>-a</code> in my previous message's command!</p>
+<h1>Detailed analysis</h1>
+<p>The command run is searching for <code>qwertyuiop</code> on <code>/dev/nvme0n1p3</code> (ie. a
+single 100G-long file). Each section below will be named
+<code>exec-and-options</code>, which will correspond to a run of <code>exec-and-options qwertyuipo /dev/nvme0n1p3</code>. Measurements made with the <code>psrecord</code> python
+package.</p>
+<h2><code>grep</code></h2>
+<p>Returns with no output. Memory and CPU usage: http://xelpaste.net/1uV0rQ</p>
+<h2><code>rg</code></h2>
+<p>Returns with no output in less than 1 second, so no graph.</p>
+<h2><code>rg -a</code></h2>
+<p>OOM-killed, displayed on console: “Killed”. http://xelpaste.net/u3nMpg</p>
+<h2><code>rg -j1 -a</code></h2>
+<p>OOM-killed, displayed on console: “Killed”. http://xelpaste.net/69UhjH</p>
+<p>BTW, I don't really get why it's still at ~200% CPU, but anyway.</p>
+<h2><code>rg --mmap -a</code></h2>
+<p>OOM-killed, same message. http://xelpaste.net/Udv1jV</p>
+<h2><code>rg --no-mmap -a</code></h2>
+<p>OOM-killed, same message. http://xelpaste.net/7dqK8w</p>
+<h2><code>grep -a</code></h2>
+<p>OOM-killed, displayed on console “grep: memory exhausted”. Note I think
+this is already a much better error message than “Killed” :)</p>
+<p>http://xelpaste.net/NqHnr1</p>
+<h2><code>grep --only-matching --byte-offset --binary --text</code></h2>
+<p>OOM-killed, same message. http://xelpaste.net/9L87gY</p>
+<h2><code>grep --only-matching --byte-offset --binary -z --text</code></h2>
+<p>Works! But not reproducible with <code>rg</code> due to no <code>--byte-offset</code> or <code>-z</code>
+parameter I could easily find.</p>
+<p>http://xelpaste.net/uVToz4</p>
+<h2><code>grep --byte-offset --binary -z --text</code></h2>
+<p>Works too, gives a bit of context. http://xelpaste.net/3Xqfiz</p>
+<hr />
+<p>Given the fact that the memory allocation seems to be done by blocks of
+4G (I guess the size of the line, for a line buffer), I guess the above
+(slower due to being 3-pass) algorithm for using only a fixed amount of
+memory could be triggered when trying to allocate more than eg. 1G of
+memory? Either that, or just refusing to allocate a 1G line buffer
+without a special flag, given it's quite sure that's not what the user
+actually wants.</p>
+<p>What do you think about that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ekleog">@Ekleog</a> on 2018-07-26 09:42</div>
+            <div class="timeline-body"><p>Ugh. Looks like GitHub doesn't like Markdown by email. So some text is hidden under the “signature” marker, I'll paste it here for ease of reading:</p>
+<p>Given the fact that the memory allocation seems to be done by blocks of 4G (I guess the size of the line, for a line buffer), I guess the above (slower due to being 3-pass) algorithm for using only a fixed amount of memory could be triggered when trying to allocate more than eg. 1G of memory? Either that, or just refusing to allocate a 1G line buffer without a special flag, given it's quite sure that's not what the user actually wants. What do you think about that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-26 11:41</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm pretty sure it's possible</p>
+</blockquote>
+<p>Let me stop you right there and finish that thought:</p>
+<p>&quot;I'm pretty sure it's possible... after years of work and research to rewrite ripgrep and its regex engine from the ground up.&quot; By &quot;research&quot; I mean, &quot;figure out how to efficiently use a finite state machine in streaming mode.&quot; Your example code doesn't cut it unfortunately. I don't know of any extant production grade regex engine that uses finite state machines and satisfies the criterion of being able to handle arbitrarily sized inputs in constant space while still meeting the requirements of ripgrep.</p>
+<p>I have an extensive write up here: https://github.com/rust-lang/regex/issues/425#issuecomment-348768742</p>
+<p>Can we drop the elementary lessons on finite state machines? Thanks. Let's please focus on the problem.</p>
+<blockquote>
+<p>Oh sorry it looks like I forgot the <code>-a</code> in my previous message's command!</p>
+</blockquote>
+<p>Yes, that's critical. When the <code>-a</code> flag is enabled, no binary detection is performed, which means ripgrep's in-memory buffer will grow at least as big as the longest streak of bytes that do not contain a <code>\n</code>.</p>
+<blockquote>
+<p>BTW, I don't really get why it's still at ~200% CPU, but anyway.</p>
+</blockquote>
+<p>Weird. <code>-j1</code> on my machine shows it is using 100%. This actually sounds like a bug, but probably unrelated to this issue.</p>
+<blockquote>
+<p>OOM-killed, displayed on console “grep: memory exhausted”. Note I think
+this is already a much better error message than “Killed” :)</p>
+</blockquote>
+<p>I would agree, and I find the behavior difference here interesting. If GNU grep can detect a failed <code>malloc</code>, then I'd expect ripgrep to be able to do the same, and subsequently abort on its own. One possible difference is that GNU grep is using the system allocator while ripgrep uses jemalloc. I'm not sure off hand if that would make a difference.</p>
+<p>With that said, the fact that GNU grep is exhausting memory here to me means that ripgrep is working as intended.</p>
+<blockquote>
+<p><code>grep --only-matching --byte-offset --binary -z --text</code></p>
+<p>Works! But not reproducible with <code>rg</code> due to no <code>--byte-offset</code> or <code>-z</code>
+parameter I could easily find.</p>
+<p>http://xelpaste.net/uVToz4</p>
+<p><code>grep --byte-offset --binary -z --text</code></p>
+<p>Works too, gives a bit of context. http://xelpaste.net/3Xqfiz</p>
+</blockquote>
+<p>OK, now we're getting somewhere. This basically confirms my diagnosis. Namely, the <code>-z</code> flag is the key ingredient, because it effectively change's GNU grep's line terminator from <code>\n</code> to <code>\x00</code>. Given a raw data dump, the distribution of <code>\x00</code> is probably quite common, which means GNU grep <em>just happens</em> to work well here. If you had a data dump where both <code>\n</code> and <code>\x00</code> were rare, then you'd be witnessing the same sort of memory exhaustion.</p>
+<p>This is good news, because my work on libripgrep should make it much easier to support the same <code>-z/--null-data</code> flag that you're using in GNU grep, so I'll accept this as a bug that should hopefully get fixed when I pull in libripgrep.</p>
+<p>I can't think of any simple work around until then unfortunately. (Other than, of course, just using grep, which is probably going to perform similarly as ripgrep for this sort of task given that it's assuredly I/O bound.)</p>
+<p>Note that I suspect the <code>--byte-offset</code> and <code>--binary</code> flags are superfluous here. You should be able to just use <code>-z -a</code> to get a working grep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ripgrep OOM killed" to "add -z/--null-data flag for reading large binary files" by @BurntSushi on 2018-07-26 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2018-07-26 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">libripgrep</span> added by @BurntSushi on 2018-07-26 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @BurntSushi on 2018-07-26 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "libripgrep" by @BurntSushi on 2018-07-26 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ekleog">@Ekleog</a> on 2018-07-26 17:39</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I'm pretty sure it's possible</p>
+</blockquote>
+<p>Let me stop you right there and finish that thought:</p>
+<p>&quot;I'm pretty sure it's possible... after years of work and research to rewrite ripgrep and its regex engine from the ground up.&quot; By &quot;research&quot; I mean, &quot;figure out how to efficiently using a finite state machine in streaming mode.&quot; Your example code doesn't cut it unfortunately. I don't know of any extant production grade regex engine that uses finite state machines and satisfies the criterion of being able to handle arbitrarily sized inputs in constant space while still meeting the requirements of ripgrep.</p>
+<p>I have an extensive write up here: https://github.com/rust-lang/regex/issues/425#issuecomment-348768742</p>
+</blockquote>
+<p>I don't want to argue with that in the general case. However, for search
+parameters as simple as the <code>qwertyuiop</code> given in this example, I'm
+positive it can be done in 3-pass with a constant buffer, with the
+stupid algorithm I gave above. Not saying the code I'd write would be as
+fast as ripgrep's, but at least it would eventually give an output.</p>
+<p>Actually, I'm almost sure that what I'm saying is also what you wrote in
+your write-up.</p>
+<p>Also, I'd like to mention that in my first post I already had the “which
+would likely be best, but quite potentially require large changes to the
+codebase”.</p>
+<blockquote>
+<p>Can we drop the elementary lessons on finite state machines? Thanks. Let's please focus on the problem.</p>
+</blockquote>
+<p>Can we drop aggressiveness too? I must say I've felt like the first
+three words of your first answer being “This is wrong” didn't set the
+right tone, but I hoped it was due to my mis-using English in the top
+post, given you also appeared to think I was searching in a big
+directory while I thought I had written that it was on a partition file.
+Now… well, let's say I'd hope we could talk in a friendly manner.</p>
+<p>Anyway, I must say I likely won't answer again if I feel once more like
+we're just misunderstanding each other and I'm just bothering you :)</p>
+<blockquote>
+<blockquote>
+<p>BTW, I don't really get why it's still at ~200% CPU, but anyway.</p>
+</blockquote>
+<p>Weird. <code>-j1</code> on my machine shows it is using 100%. This actually sounds like a bug, but probably unrelated to this issue.</p>
+</blockquote>
+<p>I thought of reporting it as a bug, but given it was reported by
+<code>psrecord</code>, a software which I don't know at all, I thought it may just
+as well be a bug of the tool. I'll try to have a look at htop next time
+I get to that computer :)</p>
+<blockquote>
+<blockquote>
+<p>OOM-killed, displayed on console “grep: memory exhausted”. Note I think
+this is already a much better error message than “Killed” :)</p>
+</blockquote>
+<p>I would agree, and I find the behavior difference here interesting. If GNU grep can detect a failed <code>malloc</code>, then I'd expect ripgrep to be able to do the same, and subsequently abort on its own. One possible difference is that GNU grep is using the system allocator while ripgrep uses jemalloc. I'm not sure off hand if that would make a difference.</p>
+<p>With that said, the fact that GNU grep is exhausting memory here to me means that ripgrep is working as intended.</p>
+</blockquote>
+<p>Well, it depends on the goal of ripgrep. If it's to be “grep, but
+faster”, then indeed. However, the readme also mentions “fewer bugs”,
+and I'd argue handling OOM failures better than grep would be something
+going in this direction.</p>
+<p>By “handling OOM failures better than grep”, I'm thinking mostly of
+dropping back to the slower regex engine when it could be detected that
+the faster regex engine would likely trigger an OOM (eg. when it tries
+to allocate &gt;= 1GB RAM), if I understood correctly and your extensive
+write-up mentioned that the slower regex engine was less memory-consuming.</p>
+<blockquote>
+<blockquote>
+<p><code>grep --only-matching --byte-offset --binary -z --text</code></p>
+<p>Works! But not reproducible with <code>rg</code> due to no <code>--byte-offset</code> or <code>-z</code>
+parameter I could easily find.</p>
+<p>http://xelpaste.net/uVToz4</p>
+<p><code>grep --byte-offset --binary -z --text</code></p>
+<p>Works too, gives a bit of context. http://xelpaste.net/3Xqfiz</p>
+</blockquote>
+<p>OK, now we're getting somewhere. This basically confirms my diagnosis. Namely, the <code>-z</code> flag is the key ingredient, because it effectively change's GNU grep's line terminator from <code>\n</code> to <code>\x00</code>. Given a raw data dump, the distribution of <code>\x00</code> is probably quite common, which means GNU grep <em>just happens</em> to work well here. If you had a data dump where both <code>\n</code> and <code>\x00</code> were rare, then you'd be witnessing the same sort of memory exhaustion.</p>
+<p>This is good news, because my work on libripgrep should make it much easier to support the same <code>-z/--null-data</code> flag that you're using in GNU grep, so I'll accept this as a bug that should hopefully get fixed when I pull in libripgrep.</p>
+<p>I can't think of any simple work around until then unfortunately. (Other than, of course, just using grep, which is probably going to perform similarly as ripgrep for this sort of task given that it's assuredly I/O bound.)</p>
+<p>Note that I suspect the <code>--byte-offset</code> and <code>--binary</code> flags are superfluous here. You should be able to just use <code>-z -a</code> to get a working grep.</p>
+</blockquote>
+<p>That's most likely indeed, the <code>--byte-offset</code> was useful for me to then
+use <code>dd</code> and try to figure out what was around the pattern in the
+partition image.</p>
+<p>Anyway, supporting the <code>-z</code> flag sounds like a good work-around, even
+though it isn't solving the underlying issue of memory consumption
+(that, granted, would be really hard to solve) :)</p>
+<p>Again, thank you for your work on ripgrep!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-26 19:41</div>
+            <div class="timeline-body"><p>Apologies for the aggression, my frustration got the better of me. Your comments have not be easy to read or respond to. As such, I will try to be brief and to the point.</p>
+<p>The <code>-z/--null-data</code> flag sounds like a good addition to ripgrep. This issue can track that feature.</p>
+<p>I will not be spending my time improving the failure mode of OOM conditions. I agree that GNU grep's failure mode is better. I will not be beholden to nitpicks about particular wordings of project goals. (The word &quot;goal&quot; doesn't appear once in the project README, largely to avoid that style of argumentation, which I find <em>incredibly</em> frustrating as a maintainer.) I would be happy if someone else wanted to improve this failure mode, so long as it didn't impose any significant complications on the code. I don't see any reason to track this particular issue.</p>
+<p>It is technically true that some special cases could be implemented in constant space. We don't need to go over how this could be done in a simplistic scenario, because that's not what's interesting. What is interesting are the practical ramifications of implementing those special cases along with maintaining the general case implementation. This is why I jumped to the general case; if it can be solved then all searches can benefit regardless of whether they are special or not. As such, I will not be investing any of my time in the near future to fixing special cases. My long term goal is to <em>attempt</em> to address this in the regex engine, if it's possible. If that effort succeeds, then it may bear fruit that ripgrep can benefit from. I don't see any reason to track this particular issue, as the next immediate work here comes in the regex engine, which is already being tracked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-26 22:22</div>
+            <div class="timeline-body"><p>I compiled a version of ripgrep that uses the system allocator, and my guess seems to be right: it yields a better error message.</p>
+<p>With jemalloc (default):</p>
+<pre><code>[andrew@Leopard ripgrep] time ./target/release/rg-master Openbox /dev/sda -c -a -j1
+Killed
+real    1m15.251s
+user    0m5.834s
+sys     0m21.550s
+</code></pre>
+<p>With system allocator:</p>
+<pre><code>[andrew@Leopard ripgrep] time ./target/release/rg Openbox /dev/sda -c -a -j1
+memory allocation of 8589934592 bytes failedAborted (core dumped)
+real    1m26.059s
+user    0m4.824s
+sys     0m22.670s
+</code></pre>
+<p>It will be a while before ripgrep can move to the system allocator by default, but when that's possible, we might pursue that option. Playing around with it a little bit does actually seem to cause some small performance regressions in cases, but we can cross that bridge when we get there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-26 23:10</div>
+            <div class="timeline-body"><p>OK, I decided to do an experiment and actually look at what's going on in terms of allocation, since I wanted to know whether moving to the system allocator would actually be a plausible solution to this problem. The short answer is, no, it wouldn't be.</p>
+<p>Here is the strace with the system allocator:</p>
+<pre><code>mremap(0x7f8c54b98000, 4294971392, 8589938688, MREMAP_MAYMOVE) = -1 ENOMEM (Cannot allocate memory)
+mmap(NULL, 8589938688, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = -1 ENOMEM (Cannot allocate memory)
+brk(0x564218e10000)                     = 0x564018e28000
+mmap(NULL, 8590069760, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = -1 ENOMEM (Cannot allocate memory)
+write(2, &quot;memory allocation of &quot;, 21memory allocation of )   = 21
+write(2, &quot;8589934592&quot;, 108589934592)              = 10
+write(2, &quot; bytes failed&quot;, 13 bytes failed)           = 13
+rt_sigprocmask(SIG_UNBLOCK, [ABRT], NULL, 8) = 0
+rt_sigprocmask(SIG_BLOCK, ~[RTMIN RT_1], [], 8) = 0
+getpid()                                = 5867
+gettid()                                = 5867
+tgkill(5867, 5867, SIGABRT)             = 0
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+--- SIGABRT {si_signo=SIGABRT, si_code=SI_TKILL, si_pid=5867, si_uid=1000} ---
++++ killed by SIGABRT (core dumped) +++
+</code></pre>
+<p>Notice that we get an <code>ENOMEM</code>. Rust's standard library emits a nice error message and then exits.</p>
+<p>Now here's the strace for jemalloc:</p>
+<pre><code>mmap(0x7f42b4e00000, 4294967296, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_NORESERVE, -1, 0) = 0x7f40b4e00000
+munmap(0x7f40b4e00000, 4294967296)      = 0
+mmap(NULL, 8589934592, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_NORESERVE, -1, 0) = 0x7f3fb4e00000
++++ killed by SIGKILL +++
+</code></pre>
+<p>This is where get OOM killed. In order to make sense of what's happening here, we actually need to inspect our system's <a href="https://www.kernel.org/doc/Documentation/sysctl/vm.txt"><code>overcommit_memory</code></a> setting (<code>CTRL-F</code> for <code>overcommit_memory:</code>). In particular, from <code>man 5 proc</code>, it says:</p>
+<blockquote>
+<p>In  mode  0,  calls of mmap(2) with MAP_NORESERVE are not checked, and the default check is very weak, leading to the risk of getting a process &quot;OOM-killed&quot;.</p>
+</blockquote>
+<p>In my case, my system is using the default, which is indeed <code>0</code>. We can see that jemalloc is actually using <code>MAP_NORESERVE</code>, which means it falls into the realm of the OOM killer. The system allocator does not use <code>MAP_NORESERVE</code>, and based on <code>man 5 proc</code>, this seems to mean that calls to <code>malloc</code> can actually indeed fail. Which gives us the nice error message.</p>
+<p>So, does this mean switching to the system allocator gives us a nice error message? The answer here is, &quot;probably, if overcommit is set to the default, but otherwise, no, it does not.&quot; For example, if we set <code>overcommit = 1</code> (via <code>sudo sh -c 'echo 1 &gt; /proc/sys/vm/overcommit_memory'</code>), then we can actually cause the system allocator to give us OOM:</p>
+<pre><code>mremap(0x7f80f4c4e000, 4294971392, 8589938688, MREMAP_MAYMOVE) = 0x7f7ef4c4d000
++++ killed by SIGKILL +++
+</code></pre>
+<p>Which means we're back to bad error messages, even with the system allocator. Moreover, GNU grep exhibits exactly the same behavior as ripgrep with <code>overcommit = 1</code>. It exits with a cryptic <code>Killed</code> message.</p>
+<p>Interestingly, it is possible to get a good error message even with jemalloc, and this can be done by setting <code>overcommit = 2</code>, which effectively disables the illusion that the system have gobs of memory to lend out, even when it doesn't. Here's the strace for this case:</p>
+<pre><code>mmap(0x7faabda00000, 2147483648, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = -1 ENOMEM (Cannot allocate memory)
+mmap(NULL, 4294967296, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = -1 ENOMEM (Cannot allocate memory)
+brk(0x562899a00000)                     = 0x562799861000
+write(2, &quot;memory allocation of &quot;, 21memory allocation of )   = 21
+write(2, &quot;4294967296&quot;, 104294967296)              = 10
+write(2, &quot; bytes failed&quot;, 13 bytes failed)           = 13
+rt_sigprocmask(SIG_UNBLOCK, [ABRT], NULL, 8) = 0
+rt_sigprocmask(SIG_BLOCK, ~[RTMIN RT_1], [], 8) = 0
+getpid()                                = 6747
+gettid()                                = 6747
+tgkill(6747, 6747, SIGABRT)             = 0
+rt_sigprocmask(SIG_SETMASK, [], NULL, 8) = 0
+--- SIGABRT {si_signo=SIGABRT, si_code=SI_TKILL, si_pid=6747, si_uid=1000} ---
++++ killed by SIGABRT (core dumped) +++
+</code></pre>
+<p>Interestingly, jemalloc actually seems to react to the change in the <code>overcommit_memory</code> setting, and no longer uses <code>MAP_NORESERVE</code>, presumably because there is no way to make use of overcommit since it has been disabled.</p>
+<p>So... I don't think there is much to be done for the OOM condition specifically. If you want better out-of-memory errors, that it seems like you just need to disable overcommit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ekleog">@Ekleog</a> on 2018-07-27 02:47</div>
+            <div class="timeline-body"><h4>Meta-talk</h4>
+<blockquote>
+<p>Apologies for the aggression, my frustration got the better of me. Your comments have not be easy to read or respond to. As such, I will try to be brief and to the point.</p>
+</blockquote>
+<p>Sorry about that! I re-read my first post and indeed I at the same time left parts of the issue template unfilled and forgot to mention the <code>-a</code> flag… that must not have been easy to read indeed. I will try to plead guilty to having posted the issue in a rush after coming back from work (where I encountered the issue without access to GitHub), but that's clearly my mistake and i should have waited to have enough time to first sleep and then file a proper bug report written in a non-telegraphic way. :)</p>
+<blockquote>
+<p>I will not be spending my time improving the failure mode of OOM conditions. I agree that GNU grep's failure mode is better. I will not be beholden to nitpicks about particular wordings of project goals. (The word &quot;goal&quot; doesn't appear once in the project README, largely to avoid that style of argumentation, which I find incredibly frustrating as a maintainer.) I would be happy if someone else wanted to improve this failure mode, so long as it didn't impose any significant complications on the code. I don't see any reason to track this particular issue.</p>
+</blockquote>
+<p>Sorry also if I appeared to be arguing on the wording of the README too, I only wanted to point out that <em>if</em> the goal of ripgrep was also to have fewer failing conditions, <em>then</em> such a change would be a step in the right direction -- to the cost of much more complex code indeed. Most “improvements” are trade-offs between code complexity and the usefulness of the improvement, and I can understand that this one doesn't pass your threshold, I was just surprised to read that an OOM was “working as intended” :)</p>
+<h4>Long-term goal</h4>
+<blockquote>
+<p>My long term goal is to attempt to address this in the regex engine, if it's possible. If that effort succeeds, then it may bear fruit that ripgrep can benefit from. I don't see any reason to track this particular issue, as the next immediate work here comes in the regex engine, which is already being tracked.</p>
+</blockquote>
+<p>Oh I didn't know that! this sounds great indeed :)</p>
+<h4>Medium-term work-around</h4>
+<p>(short-term work-around being setting the system to no overcommit)</p>
+<blockquote>
+<p>OK, I decided to do an experiment and actually look at what's going on in terms of allocation, since I wanted to know whether moving to the system allocator would actually be a plausible solution to this problem. The short answer is, no, it wouldn't be.</p>
+</blockquote>
+<p>Hmm… my reading of your post sounds like it would be a solution for the default case, which should be the most frequent one? <a href="https://www.kernel.org/doc/Documentation/vm/overcommit-accounting.rst">Documentation about overcommit</a> seems (to me) to imply that it should not be set to 1 by default in any non-specialist distribution, and people manually changing their overcommit settings should expect the effects of these settings (ie. the kernel lying to applications requiring memory) to potentially change the behaviour of applications.</p>
+<blockquote>
+<p>So... I don't think there is much to be done for the OOM condition specifically. If you want better out-of-memory errors, that it seems like you just need to disable overcommit.</p>
+</blockquote>
+<p>Apart from using the system allocator (great finding!), I can think of two potential other options:</p>
+<ol>
+<li>Refuse allocating more than X RAM (or X% of the RAM?) at a time for the line buffer (if I understood correctly where the memory usage comes from) without an explicit flag</li>
+<li>Use <code>MAP_POPULATE</code>, which seems to <a href="https://stackoverflow.com/questions/28267364/malloc-in-linux-there-is-no-guarantee-that-the-memory-really-is-available/28267661#28267661">force actual non-overcommit'd allocation</a></li>
+</ol>
+<p>In both cases, I must say I have no idea of how hard it would be to integrate in jemalloc or the system allocator (even though idea 1 could likely be done with a wrapper around <code>Vec::new</code> or the equivalent function ripgrep currently uses for buffer allocation)</p>
+<h4><code>-j1</code> weirdness</h4>
+<p>Now, just to come back to the <code>-j1</code> weirdness, I can now confirm it's only a buq of <code>psrecord</code>: I get the following with <code>-j1</code> (lines truncated)</p>
+<pre><code>99.5  0.2  0:53.07 python3.4m psrecord rg -j1 -a qwertyuiop /dev/nvme0n1p3 --plot rg
+43.1 53.2  0:25.78 rg -j1 -a qwertyuiop /dev/nvme0n1p3
+</code></pre>
+<p>And the following without it</p>
+<pre><code>101.  0.2  0:16.86 python3.4m psrecord rg -a qwertyuiop /dev/nvme0n1p3 --plot rg-j1.
+47.0  0.5  0:07.83 rg -a qwertyuiop /dev/nvme0n1p3
+45.0  0.5  0:07.37 rg -a qwertyuiop /dev/nvme0n1p3
+ 0.7  0.5  0:00.06 rg -a qwertyuiop /dev/nvme0n1p3
+ 0.7  0.5  0:00.06 rg -a qwertyuiop /dev/nvme0n1p3
+ 0.7  0.5  0:00.06 rg -a qwertyuiop /dev/nvme0n1p3
+ 0.7  0.5  0:00.06 rg -a qwertyuiop /dev/nvme0n1p3
+ 0.7  0.5  0:00.06 rg -a qwertyuiop /dev/nvme0n1p3
+ 0.0  0.5  0:00.05 rg -a qwertyuiop /dev/nvme0n1p3
+ 0.0  0.5  0:00.05 rg -a qwertyuiop /dev/nvme0n1p3
+</code></pre>
+<h4><code>-z</code> / <code>--null-data</code></h4>
+<blockquote>
+<p>The -z/--null-data flag sounds like a good addition to ripgrep. This issue can track that feature.</p>
+</blockquote>
+<p>Sounds great, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-27 15:00</div>
+            <div class="timeline-body"><p>Thanks for the follow up. I don't have the energy to debate the various details or your proposed solutions (none of which I'd be comfortable with), but I think ripgrep's current behavior on OOM is consistent with your <code>overcommit_memory = 0</code> setting. If you want better failure messages on OOM, then disable overcommit. I don't know why you brought up <code>overcommit_memory = 1</code> since that totally prevents a good failure modes regardless, even when using GNU grep. To disable overcommit, you need to set <code>overcommit_memory = 2</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Ekleog">@Ekleog</a> on 2018-07-27 18:23</div>
+            <div class="timeline-body"><p>… wait, <em>you</em> brought up <code>overcommit_memory = 1</code>, and from my understanding of your post it was the reason why you think it isn't possible to handle OOM better:</p>
+<blockquote>
+<p>So, does this mean switching to the system allocator gives us a nice error message? The answer here is, &quot;probably, if overcommit is set to the default, but otherwise, no, it does not.&quot; For example, if we set overcommit = 1 (via sudo sh -c 'echo 1 &gt; /proc/sys/vm/overcommit_memory'), then we can actually cause the system allocator to give us OOM: […]</p>
+</blockquote>
+<p>Did I completely misunderstand your post on this matter?</p>
+<hr />
+<p>Anyway, this changes nothing to the fact that you feel uncomfortable with the two proposed solutions, and this ends the debate, so let's have this issue track only <code>-z</code> / <code>--null-data</code> and not potential OOM-handling improvements :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-27 19:24</div>
+            <div class="timeline-body"><p><code>overcommit_memory = 1</code> enables overcommit. <code>overcommit_memory = 0</code> <em>heuristically</em> enables overcommit in a way that will vary from allocator to allocator (the system allocator does not seem to take advantage of it, but jemalloc does). <code>overcommit_memory = 2</code> completely disables overcommit. If you want better OOM error messages, then completely disable overcommit via <code>overcommit_memory = 2</code>. My comment above demonstrates that, with <code>overcommit_memory = 1</code>, <strong>both</strong> the system allocator and jemalloc get OOM killed and present bad failure modes. Given that you've specifically expressed distaste with the <code>Killed</code> error message, this is decidedly <strong>not</strong> what you want. At no point did I ever suggest that you or anyone else should set <code>overcommit_memory = 1</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-08-20 11:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sergeevabc">@sergeevabc</a> on 2020-03-07 00:20</div>
+            <div class="timeline-body"><p>@BurntSushi, thank you for adding <code>--null-data</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:37 UTC
+    </footer>
+</body>
+</html>

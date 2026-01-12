@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>panic within termcolor in multithreaded windows application - BurntSushi/ripgrep #968</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>panic within termcolor in multithreaded windows application</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/968">#968</a>
+        opened by <a href="https://github.com/lazyuser">@lazyuser</a>
+        on 2018-06-26 11:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lazyuser">@lazyuser</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>I do not use ripgrep directly. I use env_logger version 0.5.10 which depends on termcolor 0.3.6.</p>
+<p><code>rustc --version --verbose</code>:
+rustc 1.26.2 (594fb253c 2018-06-01)
+binary: rustc
+commit-hash: 594fb253c2b02b320c728391a425d028e6dc7a09
+commit-date: 2018-06-01
+host: x86_64-pc-windows-msvc
+release: 1.26.2
+LLVM version: 6.0</p>
+<p>Rust is installed via rustup. I build for <strong>i686-pc-windows-msvc</strong> target.</p>
+<h4>How did you install ripgrep?</h4>
+<p>N/A</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>I build under Windows 10 v. 1709 and run under Windows 10  v. 1803.</p>
+<p>Not necessarily relevant: my multithreaded code runs under msys bash with stdout and stderr redirected to <code>tee</code>. The application itself is not built against msys/mingw/etc though.</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>The system is under relatively high load: 50%-100% CPU load for each of four cores. The code receives network traffic in a loop and writes a log message for each packet using env_logger. Sometimes (non-deterministically) logging leads to the panic (see below). My uneducated guess from the backtrace is that some buffer access is not properly syncronized. Since termcolor <a href="https://docs.rs/termcolor/0.3.6/termcolor/struct.BufferWriter.html#method.print">promises proper syncronization</a> I'm filling the bugreport against termcolor and not env_logger.</p>
+<p>Sample code:</p>
+<pre><code class="language-rust">const HEADER_SIZE: usize = 10;
+
+loop {
+    let mut buf = [0; 1500];
+    // self.socket is net::UdpSocket
+    let (size, src_addr) = self.socket.recv_from(&amp;mut buf)?;
+    // sometimes the next statement causes panic
+    info!(
+        &quot;recv from {} size={} header={}&quot;,
+        src_addr,
+        size,
+        hex::encode(&amp;buf[..std::cmp::min(size, HEADER_SIZE)])
+    );
+    // ... omitted ...
+    // sometimes the next statement causes panic
+    info!(
+        &quot;seq {} offset {} + {} = {}&quot;,
+        sequence,
+        offset,
+        payload.len(),
+        offset_next
+    );
+}
+</code></pre>
+<h5>Backtrace:</h5>
+<pre><code>thread '&lt;unnamed&gt;' panicked at 'slice index starts at 104 but ends at 29', libcore\slice\mod.rs:791:5
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
+stack backtrace:
+   0: std::sys_common::backtrace::_print
+             at C:\projects\rust\src\libstd\sys_common\backtrace.rs:71
+   1: std::sys_common::backtrace::print
+             at C:\projects\rust\src\libstd\sys_common\backtrace.rs:59
+   2: std::panicking::default_hook::{{closure}}
+             at C:\projects\rust\src\libstd\panicking.rs:207
+   3: std::panicking::default_hook
+             at C:\projects\rust\src\libstd\panicking.rs:223
+   4: std::panicking::rust_panic_with_hook
+             at C:\projects\rust\src\libstd\panicking.rs:402
+   5: std::panicking::begin_panic_fmt
+             at C:\projects\rust\src\libstd\panicking.rs:349
+   6: std::panicking::rust_begin_panic
+             at C:\projects\rust\src\libstd\panicking.rs:325
+   7: core::panicking::panic_fmt
+             at C:\projects\rust\src\libcore\panicking.rs:72
+   8: core::slice::slice_index_order_fail
+             at C:\projects\rust\src\libcore\slice\mod.rs:791
+   9: core::slice::{{impl}}::index&lt;u8&gt;
+             at C:\projects\rust\src\libcore\slice\mod.rs:914
+  10: core::slice::{{impl}}::index&lt;u8&gt;
+             at C:\projects\rust\src\libcore\slice\mod.rs:997
+  11: core::slice::{{impl}}::index&lt;u8,core::ops::range::RangeFrom&lt;usize&gt;&gt;
+             at C:\projects\rust\src\libcore\slice\mod.rs:767
+  12: std::io::Write::write_all&lt;termcolor::LossyStandardStream&lt;termcolor::IoStandardStreamLock&gt;&gt;
+             at C:\projects\rust\src\libstd\io\mod.rs:1101
+  13: termcolor::BufferWriter::print
+             at C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\termcolor-0.3.6\src\lib.rs:708
+  14: env_logger::fmt::Formatter::print
+             at C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\env_logger-0.5.10\src\fmt.rs:472
+  15: env_logger::{{impl}}::log::{{closure}}::{{closure}}
+             at C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\env_logger-0.5.10\src\lib.rs:823
+  16: core::result::Result&lt;(), std::io::error::Error&gt;::and_then&lt;(),std::io::error::Error,(),closure&gt;
+             at C:\projects\rust\src\libcore\result.rs:621
+  17: env_logger::{{impl}}::log::{{closure}}
+             at C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\env_logger-0.5.10\src\lib.rs:823
+  18: std::thread::local::LocalKey&lt;core::cell::RefCell&lt;core::option::Option&lt;env_logger::fmt::Formatter&gt;&gt;&gt;::try_with&lt;core::cell::RefCell&lt;core::option::Option&lt;env_logger::fmt::Formatter&gt;&gt;,closure,()&gt;
+             at C:\projects\rust\src\libstd\thread\local.rs:290
+  19: std::thread::local::LocalKey&lt;core::cell::RefCell&lt;core::option::Option&lt;env_logger::fmt::Formatter&gt;&gt;&gt;::with&lt;core::cell::RefCell&lt;core::option::Option&lt;env_logger::fmt::Formatter&gt;&gt;,closure,()&gt;
+             at C:\projects\rust\src\libstd\thread\local.rs:244
+  20: env_logger::{{impl}}::log
+             at C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\env_logger-0.5.10\src\lib.rs:794
+  21: log::__private_api_log
+             at C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\log-0.4.2\src\lib.rs:1149
+  22: [a reference to info!() statement from the code example above]
+  [omitted]
+</code></pre>
+<h5>Another Backtrace:</h5>
+<pre><code>Athread '&lt;unnamed&gt;' panicked at 'slice index starts at 104 but ends at 75', libcore\slice\mod.rs:791:5
+stack backtrace:
+   0:  0x16f7627 - std::sys_common::backtrace::_print
+                       at C:\projects\rust\src\libstd\sys_common\backtrace.rs:71
+   1:  0x16f7627 - std::sys_common::backtrace::print
+                       at C:\projects\rust\src\libstd\sys_common\backtrace.rs:59
+   2:  0x16e7138 - std::panicking::default_hook::{{closure}}
+                       at C:\projects\rust\src\libstd\panicking.rs:207
+   3:  0x16e6deb - std::panicking::default_hook
+                       at C:\projects\rust\src\libstd\panicking.rs:223
+   4:  0x16e75e8 - std::panicking::rust_panic_with_hook
+                       at C:\projects\rust\src\libstd\panicking.rs:402
+   5:  0x16e73fa - std::panicking::begin_panic_fmt
+                       at C:\projects\rust\src\libstd\panicking.rs:349
+   6:  0x16e730b - std::panicking::rust_begin_panic
+                       at C:\projects\rust\src\libstd\panicking.rs:325
+   7:  0x1700813 - core::panicking::panic_fmt
+                       at C:\projects\rust\src\libcore\panicking.rs:72
+   8:  0x17025b6 - core::slice::slice_index_order_fail
+                       at C:\projects\rust\src\libcore\slice\mod.rs:791
+   9:  0x1500b18 - core::slice::{{impl}}::index&lt;u8&gt;
+                       at C:\projects\rust\src\libcore\slice\mod.rs:914
+  10:  0x1500951 - core::slice::{{impl}}::index&lt;u8&gt;
+                       at C:\projects\rust\src\libcore\slice\mod.rs:997
+  11:  0x14f88e1 - core::slice::{{impl}}::index&lt;u8,core::ops::range::RangeFrom&lt;usize&gt;&gt;
+                       at C:\projects\rust\src\libcore\slice\mod.rs:767
+  12:  0x14ed7f7 - std::io::Write::write_all&lt;termcolor::LossyStandardStream&lt;termcolor::IoStandardStreamLock&gt;&gt;
+                       at C:\projects\rust\src\libstd\io\mod.rs:1101
+  13:  0x14ee974 - termcolor::BufferWriter::print
+                       at C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\termcolor-0.3.6\src\lib.rs:708
+  14:  0x135ea96 - env_logger::fmt::Formatter::print
+                       at C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\env_logger-0.5.10\src\fmt.rs:472
+  15:  0x135538b - env_logger::{{impl}}::log::{{closure}}::{{closure}}
+                       at C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\env_logger-0.5.10\src\lib.rs:823
+  16:  0x1362dfd - core::result::Result&lt;(), std::io::error::Error&gt;::and_then&lt;(),std::io::error::Error,(),closure&gt;
+                       at C:\projects\rust\src\libcore\result.rs:621
+  17:  0x135568d - env_logger::{{impl}}::log::{{closure}}
+                       at C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\env_logger-0.5.10\src\lib.rs:823
+  18:  0x13691be - std::thread::local::LocalKey&lt;core::cell::RefCell&lt;core::option::Option&lt;env_logger::fmt::Formatter&gt;&gt;&gt;::try_with&lt;core::cell::RefCell&lt;core::option::Option&lt;env_logger::fmt::Formatter&gt;&gt;,closure,()&gt;
+                       at C:\projects\rust\src\libstd\thread\local.rs:290
+  19:  0x1369011 - std::thread::local::LocalKey&lt;core::cell::RefCell&lt;core::option::Option&lt;env_logger::fmt::Formatter&gt;&gt;&gt;::with&lt;core::cell::RefCell&lt;core::option::Option&lt;env_logger::fmt::Formatter&gt;&gt;,closure,()&gt;
+                       at C:\projects\rust\src\libstd\thread\local.rs:244
+  20:  0x1355338 - env_logger::{{impl}}::log
+                       at C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\env_logger-0.5.10\src\lib.rs:794
+  21:  0x1515c32 - log::__private_api_log
+                       at C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\log-0.4.2\src\lib.rs:1149
+  22: [a reference to info!() statement from the code example above]
+  [omitted]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-26 12:08</div>
+            <div class="timeline-body"><p>Here is the <code>termcolor</code> code:</p>
+<pre><code class="language-rust">    pub fn print(&amp;self, buf: &amp;Buffer) -&gt; io::Result&lt;()&gt; {
+        if buf.is_empty() {
+            return Ok(());
+        }
+        let mut stream = self.stream.wrap(self.stream.get_ref().lock());
+        if let Some(ref sep) = self.separator {
+            if self.printed.load(Ordering::SeqCst) {
+                stream.write_all(sep)?;
+                stream.write_all(b&quot;\n&quot;)?;
+            }
+        }
+        match buf.0 {
+            BufferInner::NoColor(ref b) =&gt; stream.write_all(&amp;b.0)?,
+            BufferInner::Ansi(ref b) =&gt; stream.write_all(&amp;b.0)?,
+            #[cfg(windows)]
+            BufferInner::Windows(ref b) =&gt; {
+                // We guarantee by construction that we have a console here.
+                // Namely, a BufferWriter is the only way to produce a Buffer.
+                let console_mutex = self.console.as_ref()
+                    .expect(&quot;got Windows buffer but have no Console&quot;);
+                let mut console = console_mutex.lock().unwrap();
+                b.print(&amp;mut *console, &amp;mut stream)?;
+            }
+        }
+        self.printed.store(true, Ordering::SeqCst);
+        Ok(())
+    }
+</code></pre>
+<p>From your traceback, line 708 is the last line executed, which is <code>BufferInner::NoColor(ref b) =&gt; stream.write_all(&amp;b.0)?</code>. All that's doing is taking the bytes in <code>Buffer</code> and passing them through to <code>write_all</code>.</p>
+<p>The standard library implementation of <code>write_all</code> is:</p>
+<pre><code class="language-rust">    #[stable(feature = &quot;rust1&quot;, since = &quot;1.0.0&quot;)]
+    fn write_all(&amp;mut self, mut buf: &amp;[u8]) -&gt; Result&lt;()&gt; {
+        while !buf.is_empty() {
+            match self.write(buf) {
+                Ok(0) =&gt; return Err(Error::new(ErrorKind::WriteZero,
+                                               &quot;failed to write whole buffer&quot;)),
+                Ok(n) =&gt; buf = &amp;buf[n..],
+                Err(ref e) if e.kind() == ErrorKind::Interrupted =&gt; {}
+                Err(e) =&gt; return Err(e),
+            }
+        }
+        Ok(())
+    }
+</code></pre>
+<p>In this case, line 1101, <code>Ok(n) =&gt; buf = &amp;buf[n..]</code>, is the last line executed before the panic machinery kicks in. The panic message itself, <code>slice index starts at 104 but ends at 75</code>, suggests that <code>buf.len() == 75</code> but that <code>n == 104</code>. This is a seemingly impossible result.</p>
+<p>Your hunch about synchronization is interesting (although &quot;buffer access&quot; seems like a red herring), but I don't see any evidence to support it. Certainly, the <code>print</code> function, as shown above, is acquiring an exclusive lock to the underlying stream:</p>
+<pre><code class="language-rust">let mut stream = self.stream.wrap(self.stream.get_ref().lock());
+</code></pre>
+<p>I'm not seeing the root cause here. Are you? The fact that <code>write</code> is returning more bytes written than what is actually in the buffer is incredibly interesting, but I actually don't know the circumstances under which that kind of behavior is possible. Do you have something else writing to the same stream that isn't synchronized? (And even so, I don't understand why that would impact the number of bytes written returned by <code>write</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-26 12:10</div>
+            <div class="timeline-body"><p>cc @retep998 Have you ever seen cases where a <code>write</code> call on Windows reports a number of bytes written that is greater than the number of bytes given to it to write?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-26 12:22</div>
+            <div class="timeline-body"><p><code>env_logger</code> definitely has some interesting use of <code>termcolor</code>, but I don't see any <code>unsafe</code> anywhere. <code>termcolor</code> isn't using any <code>unsafe</code> either. So in theory, mutation of the buffer being printed shouldn't happen. Moreover, <code>env_logger</code> is explicitly using TLS to manage its buffers, so I don't think it's even trying to use one <code>BufferWriter</code> across multiple threads at once.</p>
+<p>So, I'm still not seeing the root cause. Unless someone else sees it, I'm not sure I'll be able to make forward progress on this without a real reproducible test case (which I understand may be difficult to provide).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/retep998">@retep998</a> on 2018-06-26 17:57</div>
+            <div class="timeline-body"><p>@BurntSushi The only time I've ever seen funky shenanigans occur is when you use <code>WriteConsoleA</code>/<code>ReadConsoleA</code> or <code>WriteFile</code>/<code>ReadFile</code> to write to/read from a windows console that is set to a multibyte codepage such as UTF-8. If it's going through <code>WriteConsoleW</code> and <code>WriteConsoleA</code> to a console then it should be fine, similarly <code>WriteFile</code>/<code>ReadFile</code> to a file or pipe should be fine.</p>
+<p>Is it possible that <code>NoColor</code> is trying to write to a windows console as if it was a file or pipe?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-07-06 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-06 15:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it possible that NoColor is trying to write to a windows console as if it was a file or pipe?</p>
+</blockquote>
+<p>@retep998 As I understand it, the write that is happening here is just going through <code>io::Stdout</code> (or <code>io::Stderr</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-22 13:11</div>
+            <div class="timeline-body"><p>I don't think there's anything actionable to do on my end here. I've never been able to see this error myself, and I've been unable to form a hypothesis for why it is occurring from reading the code.</p>
+<p>I'm happy to see this re-opened if more information comes to light or if there are better reproduction steps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-07-22 13:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:35 UTC
+    </footer>
+</body>
+</html>

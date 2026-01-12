@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>riggrep only prints output at close - BurntSushi/ripgrep #3199</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>riggrep only prints output at close</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3199">#3199</a>
+        opened by <a href="https://github.com/shadowpsi">@shadowpsi</a>
+        on 2025-10-22 02:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/shadowpsi">@shadowpsi</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[x] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>ripgrep 15.0.0</p>
+<p>features:+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2</p>
+<p>PCRE2 10.45 is available (JIT is available)</p>
+<h3>How did you install ripgrep?</h3>
+<p>nixpkg</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>NixOS unstable</p>
+<h3>Describe your bug.</h3>
+<p>rg version 15 only appears to output once the pipe closes. Note that 1 and 2 are printed after done rather than before.  I initially noticed this when trying to filter an applications stdout. &quot;Exiting&quot; is printed to stderr when the application closes.</p>
+<pre><code>❯ Composer | rg Style ; echo versus ; Composer | grep Style
+Exiting:  0
+14:59:42.776	DEBUG	[Style.qml L: 48]	&quot;Font details Noto Sans 11 14&quot;
+14:59:42.776	DEBUG	[Style.qml L: 49]	&quot;Screen density: 106.19dpi&quot;
+versus
+14:59:46.925	DEBUG	[Style.qml L: 48]	&quot;Font details Noto Sans 11 14&quot;
+14:59:46.925	DEBUG	[Style.qml L: 49]	&quot;Screen density: 106.19dpi&quot;
+Exiting:  0
+</code></pre>
+<p>For reference version 14 matches what I would expect using grep.</p>
+<pre><code>❯ bash -c '( echo start &gt;&amp;2 ; echo 1; sleep 2 ; echo 2 ; sleep 2 ; echo done &gt;&amp;2 ) | grep \'[0-9]\''
+start
+1
+2
+done
+</code></pre>
+<h3>What are the steps to reproduce the behavior?</h3>
+<pre><code>❯ rg --version ; bash -c '( echo start &gt;&amp;2 ; echo 1; sleep 2 ; echo 2 ; sleep 2 ; echo done &gt;&amp;2 ) | rg \'[0-9]\''
+ripgrep 15.0.0
+
+features:+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2
+
+PCRE2 10.45 is available (JIT is available)
+start
+done
+1
+2
+</code></pre>
+<p>versus 14:</p>
+<pre><code>❯ rg --version ; bash -c '( echo start &gt;&amp;2 ; echo 1; sleep 2 ; echo 2 ; sleep 2 ; echo done &gt;&amp;2 ) | rg \'[0-9]\''
+ripgrep 14.1.1
+
+features:+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2
+
+PCRE2 10.43 is available (JIT is available)
+start
+1
+2
+done
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<pre><code>❯ rg --version ; bash -c '( echo start &gt;&amp;2 ; echo 1; sleep 2 ; echo 2 ; sleep 2 ; echo done &gt;&amp;2 ) | rg --debug \'[0-9]\''
+ripgrep 15.0.0
+
+features:+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2
+
+PCRE2 10.45 is available (JIT is available)
+start
+rg: DEBUG|rg::flags::parse|crates/core/flags/parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:954: read CWD from environment: /tmp
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1092: number of paths given to search: 0
+rg: DEBUG|grep_cli|crates/cli/src/lib.rs:209: for heuristic stdin detection on Unix, found that is_file=false, is_fifo=true and is_socket=false, and thus concluded that is_stdin_readable=true
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1117: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=true, stdin_consumed=false, mode=Search(Standard))
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1130: heuristic chose to search stdin
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1278: found hostname for hyperlink configuration: nyx
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1288: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:175: using 1 thread(s)
+rg: DEBUG|ignore::gitignore|crates/ignore/src/gitignore.rs:398: opened gitignore file: *******
+rg: DEBUG|globset|crates/globset/src/lib.rs:511: built glob set; 1 literals, 0 basenames, 0 extensions, 0 prefixes, 2 suffixes, 0 required extensions, 0 regexes
+done
+1
+2
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>ripgrep should output as matches are found. Tried with --line-buffered and that made no difference</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-22 12:16</div>
+            <div class="timeline-body"><p>This is a subtle duplicate of #3194. I'll get a release out soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-10-22 12:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:00 UTC
+    </footer>
+</body>
+</html>

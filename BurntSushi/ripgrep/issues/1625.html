@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--threads on multiple files gives non repeteable results - BurntSushi/ripgrep #1625</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--threads on multiple files gives non repeteable results</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1625">#1625</a>
+        opened by <a href="https://github.com/marcin-github">@marcin-github</a>
+        on 2020-06-22 17:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/marcin-github">@marcin-github</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 12.0.1 (rev 1d5b1011e5)
+-SIMD -AVX (compiled)
++SIMD -AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>apt install ripgrep</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Ubuntu 18.04.4 LTS</p>
+<h4>Describe your bug.</h4>
+<p>When I run rg with multiple threads n many files I get unreliable, almost random values.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>Create a couple files with text and run
+rg -j 5 -e &quot;foo&quot; textfiles*
+change number of threads and try again.</p>
+<h4>What is the actual behavior?</h4>
+<p>When I run ripgrep with <code>-j 1</code> it's ok:</p>
+<pre><code>$ rg -z -I -j 1  -v -e &quot;foo&quot;  log-{,xx-}2020-06-1*  | wc -l
+65273773
+</code></pre>
+<p>with two threads:</p>
+<pre><code>$ rg -z -I -j 2  -v -e &quot;foo&quot;  log-{,xx-}2020-06-1*  | wc -l
+65273773
+</code></pre>
+<p>three:</p>
+<pre><code>$ rg -z -I -j 3  -v -e &quot;foo&quot;  log-{,xx-}2020-06-1*  | wc -l
+38149072
+</code></pre>
+<p>eight:</p>
+<pre><code>$ rg -z -I -j 8  -v -e &quot;foo&quot;  log-{,xx-}2020-06-1*  | wc -l
+0
+</code></pre>
+<p>with --debug:</p>
+<pre><code>$ rg --debug -z -I -j 2  -v -e &quot;foo&quot;  log-{,xx-}2020-06-1*  | wc -l
+DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(foo)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+65273773
+</code></pre>
+<pre><code>$ rg --debug -z -I -j 8  -v -e &quot;foo&quot;  log-{,xx-}2020-06-1*  | wc -l
+DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(foo)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+0
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>I expect to have the same number of lines even with one hundread threads:)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/marcin-github">@marcin-github</a> on 2020-06-22 17:20</div>
+            <div class="timeline-body"><p>Invalid bug. OOM  kills rg.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @marcin-github on 2020-06-22 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2020-06-22 17:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:11 UTC
+    </footer>
+</body>
+</html>

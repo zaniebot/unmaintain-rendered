@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>preserve order of input files in output without sacrificing parallelism - BurntSushi/ripgrep #152</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>preserve order of input files in output without sacrificing parallelism</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/152">#152</a>
+        opened by <a href="https://github.com/jikamens">@jikamens</a>
+        on 2016-10-05 23:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jikamens">@jikamens</a></div>
+            <div class="timeline-body"><p>There should be a way to tell rg to preserve the order of input files specified on the command line in the output.</p>
+<p>E.g., if I'm searching a bunch of files which are in chronological order, I want the output to be in chronological order.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-05 23:25</div>
+            <div class="timeline-body"><p>You can do this today, but you have to give up parallelism. If you run <code>rg -j1 PATTERN FILE FILE ...</code> then the output should be deterministic and in the order specified. In general, when recursively searching a directory, the order is whatever the file system serves up, but with <code>-j1</code> it should at least be deterministic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jikamens">@jikamens</a> on 2016-10-06 00:06</div>
+            <div class="timeline-body"><p>Yeah, so I don't <em>want</em> to give up parallelism, obviously.</p>
+<p><a href="https://www.gnu.org/software/parallel/">GNU parallel</a> let's me be parallel and preserve the order of output with <code>--keep</code>. I'm proposing that rg should provide similar functionality. Otherwise <code>rg -j#</code> isn't a drop-in replacement for grepping a bunch of files with GNU parallel, which I would really like it to be. ;-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-06 00:15</div>
+            <div class="timeline-body"><p>I get what you're saying. Here are my thoughts on the matter:</p>
+<ol>
+<li>If deterministic ordering + parallelism were possible to do without incurring additional costs, <code>rg</code> would do that by default. (Because I'd really like deterministic ordering too.) Perhaps I am wrong and this <em>is</em> possible (or perhaps, possible with immeasurable costs), and if so, we should do that.</li>
+<li>If not (1), then hiding this behind another flag seems like bad UX, but maybe that's the best we can do.</li>
+<li>Requiring single threaded searches for when you absolutely need deterministic output doesn't seem unreasonable to me. For example, <code>rg</code> can sometimes beat or be competitive with <code>ag</code> using a single thread even when <code>ag</code> runs with multiple threads.</li>
+</ol>
+<p>All of these things combined together means I'm not particularly motivated to work on this, but I grant it's something I'd be willing to explore given unbounded resources.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2016-10-06 00:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jikamens">@jikamens</a> on 2016-10-06 00:27</div>
+            <div class="timeline-body"><p>You can implement ordering + parallelism with no additional cost; all rg has to do is read output from the threads in the order that they are launched. This means, of course, that some of the threads will block waiting to be read because their output buffers will fill up, but the performance of such an implementation would be no <em>worse</em> than <code>-j1</code>, and in most cases it would be significantly better.</p>
+<p>You can improve the performance simply by making the output buffers larger so that they block less.</p>
+<p>&quot;You just have to put up with your search running eight times slower on your eight-core machine,&quot; is not really a reasonable answer, especially since I <em>don't</em> have to put up with it, since as I pointed out, there are other tools that <em>will</em> allow me to search and preserve ordering in the output.</p>
+<p>I frankly get the impression that you are rationalizing this idea being not worthwhile because the internal implementation of rg is not conducive to it. That's putting the cart before the horse. If it's too hard to do this right now in rg, fine, that's a reasonable answer. But to then try to hand-wave away the value of the idea because it's hard to do is a step too far.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-06 00:49</div>
+            <div class="timeline-body"><blockquote>
+<p>You can implement ordering + parallelism with no additional cost; all rg has to do is read output from the threads in the order that they are launched. This means, of course, that some of the threads will block waiting to be read because their output buffers will fill up</p>
+</blockquote>
+<p>Unless I'm missing something, it sounds like the additional cost there is both memory and time.</p>
+<blockquote>
+<p>but the performance of such an implementation would be no worse than -j1, and in most cases it would be significantly better.</p>
+</blockquote>
+<p>But it sounds like it will be slower than <code>-j8</code> on an eight core system, which doesn't quite satisfy &quot;no additional cost.&quot; With that said, it's plausible that there is no measurable cost, but it's hard to know that without trying an experiment.</p>
+<p>Comparing your suggestion to <code>-j1</code> is interesting, but that's not the standard we need to live up to make this the default behavior. Simply being better than <code>-j1</code> is good enough to put it behind a flag, but it's not good enough to make it default. I know you requested putting it behind a flag, but I'd <em>like</em> to see it be default behavior, and this is the frame of mind I have when inquiring about costs.</p>
+<blockquote>
+<p>&quot;You just have to put up with your search running eight times slower on your eight-core machine,&quot; is not really a reasonable answer, especially since I don't have to put up with it, since as I pointed out, there are other tools that will allow me to search and preserve ordering in the output.</p>
+</blockquote>
+<p>Of course it's a reasonable answer. This is about time preferences and priorities. Two reasonable people can disagree on how important this particular issue is. I happen to think it's not that important. You clearly do. That's OK.</p>
+<p>If GNU parallel lets you achieve this already, then it sounds like you can use <code>ripgrep</code> with GNU parallel to get everything you want except for the convenience of using one tool instead of two.</p>
+<blockquote>
+<p>I frankly get the impression that you are rationalizing this idea being not worthwhile because the internal implementation of rg is not conducive to it.</p>
+</blockquote>
+<p>I'm sorry I gave you that impression because that wasn't my intent. I think we should try to avoid reading into others' motivations and give the benefit of the doubt that I'm saying what I mean. Without an assumption of good faith here, it's hard to have a productive conversation. (To be frank, this comment by you is putting me on the defensive and making it hard for me to respond.)</p>
+<p>To respond though, I don't think <code>rg</code>'s current implementation really has anything to do with this. The multithreaded component of <code>rg</code> is pretty small (look at <code>src/main.rs</code>), and it wouldn't take much effort to rewrite it. In fact, I plan on rewriting at least a portion of it soon, because I'd like to make directory iteration itself parallelized. I suspect this may make deterministic output even harder. The best I can do is say that I'll give this issue more thought when I parallelize the directory iterator.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jikamens">@jikamens</a> on 2016-10-06 00:57</div>
+            <div class="timeline-body"><p>Point taken. Thanks for the thoughtful response.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jikamens">@jikamens</a> on 2016-10-06 00:57</div>
+            <div class="timeline-body"><blockquote>
+<p>If GNU parallel lets you achieve this already, then it sounds like you can use <code>ripgrep</code> with GNU parallel to get everything you want except for the convenience of using one tool instead of two.</p>
+</blockquote>
+<p>Unfortunately, I frequently get &quot;Out of memory (os error 12)&quot; from ripgrep when I try to use &quot;rg -j1&quot; with GNU parallel.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-06 01:00</div>
+            <div class="timeline-body"><p>@jikamens Well... that's bad. :P If you'd be willing to file a bug, I'd be happy to look into it. I'm not a user of GNU parallel, so I think I'd need at least the full command you're running. If you can reproduce the issue on data we can both access, that's even better, but I understand if that's not possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jikamens">@jikamens</a> on 2016-10-06 01:06</div>
+            <div class="timeline-body"><p>I've just told you all that I'm able to tell you, so you can file the bug yourself if you want. ;-)</p>
+<p>Seriously, the reason I haven't filed a bug is because the data I'm searching is very large and proprietary and so are the search strings I'm using, so all I'd be able to say in the bug is, &quot;Yeah, I'm getting <code>Out of memory (os error 12)</code> but I can't tell you want I'm doing to provoke it.&quot; If I have time and am able to construct a test case that I can share, I'll open an issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Should be a way to preserve order of input files in output" to "preserve order of input files in output without sacrificing parallelism" by @BurntSushi on 2016-10-11 00:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ryanberckmans">@ryanberckmans</a> on 2017-02-08 21:34</div>
+            <div class="timeline-body"><p>@BurntSushi on ripgrep 0.4.0,</p>
+<pre><code>       --sort-files
+              Sort results by file path.  Note that this currently disables 
+              all parallelism and runs search in a single thread.
+</code></pre>
+<p>It would be great if <code>--sort-files</code> <strong>with</strong> parallelism was the default. Sorting results by file path is a big benefit for me. Let me know if there's a better place for this feedback :).</p>
+<p>Thanks for all your hard work! ripgrep is a joy to use. We have type coupling between microservices so I am often searching for <code>FooRequestType</code> and rely on file path order to parse results by service.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-08 21:38</div>
+            <div class="timeline-body"><p>@ryanberckmans There's no debate that <code>--sort-files</code> with parallelism would be better than <code>--sort-files</code> without parallelism <strong>from an end user's perspective</strong>. I mean, it's not like I just arbitrarily chose to disable parallelism for the hell of it.</p>
+<p>Glad you're enjoying ripgrep. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2017-03-30 18:25</div>
+            <div class="timeline-body"><p>Since the documentation states that search time is guaranteed to be linear, perhaps we'd get <em>more</em> consistency (without guaranteeing full determinism of output) by ordering the files to search from largest to smallest by default? This of course would require completing the directory traversal before even starting a search, but I'm not sure how big a burden that is, either in terms of programming effort to make the modification or runtime memory usage to store and traverse the file list. (I'm guessing that <code>--sort-files</code> does <em>not</em> have this limitation, since you don't need to inspect child directories before starting to search through files in a parent directory.)</p>
+<p>Obviously, to <em>guarantee</em> consistency, there's no way to escape the fact that sometimes the output will &quot;hang&quot; while waiting for the next thread to complete its search.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-30 18:46</div>
+            <div class="timeline-body"><p>Storing the entire tree in memory isn't a path I'm excited about pursuing. It's not only a huge code change, but it will introduce additional latency and a memory requirement that is proportional to the size of the tree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2017-03-30 19:03</div>
+            <div class="timeline-body"><p>That makes sense.</p>
+<p>Does ripgrep currently search all files in a directory before going into subdirectories? If so, simply sorting the files in <em>each</em> directory by size (largest first) after getting the listing from the file system seems like it would probably be an improvement. (I'm guessing that getting the total size of each child directory is probably not worthwhile if exploring the entire file tree isn't an option.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-30 19:07</div>
+            <div class="timeline-body"><p>@BatmanAoD The directory traversal <em>itself</em> is parallelized. It's a key reason why ripgrep is so fast even when it needs to process gitignore files. Regardless, standard directory traversal is depth first, not breadth first, precisely for memory constraints. (Large but flat directories are more common than exceedingly deep directories.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2017-03-30 21:24</div>
+            <div class="timeline-body"><p>Right, but there's still an ordering of tasks available for execution (in parallel), based on which files haven't been searched yet and which folders haven't been explored yet. And even in a depth-first search, the full list of entries in a single directory is still retrieved from the file system before the children are actually searched (or added to the work queue). So I'm suggesting that in between the call to <code>fs::read_dir</code> (or, probably, after applying ignore rules) and the actual insertion of directory entries into the work queue, the contents of the directory are sorted against each other in descending size (possibly treating all directory entries as &quot;larger&quot; than file entries). (I'm not suggesting any kind of sorting between files or directories with different parent directories.)</p>
+<p>......but now that I've written that out, I think the obvious question I should have asked earlier is, what kind of work queue does ripgrep actually use? If it's simply FIFO, perhaps switching to a priority queue based on size would be the best way to ensure that larger files are searched first if possible?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-31 01:23</div>
+            <div class="timeline-body"><blockquote>
+<p>And even in a depth-first search, the full list of entries in a single directory is still retrieved from the file system before the children are actually searched (or added to the work queue).</p>
+</blockquote>
+<p>Nope. :-) In depth first search, the only things you need to store in memory are:</p>
+<ol>
+<li>The current entry (which is roughly equivalent to the <code>dirent</code> structure specified in <code>man 3 readdir</code> on Linux).</li>
+<li>A stack of the directories one has descended into (which is usually on the heap in a non-toy implementation). Each entry in the stack is an open file descriptor that reads the contents of a directory as a stream. (e.g., The return value of <code>man 3 opendir</code>.)</li>
+</ol>
+<p>With that said, for a directory tree of depth <code>N</code>, this requires one to have <code>N</code> open file descriptors. On Linux, the default file descriptor limit is low enough that it's feasible to hit this, so most non-toy implementations <a href="https://docs.rs/walkdir/1.0.7/walkdir/struct.WalkDir.html#method.max_open">will cap the maximum number of open file descriptors</a>. Once the maximum is reached, the file descriptor at the top of the stack is exhausted (by reading the rest of its stream and storing it into memory) and then closed, which frees up a file descriptor.</p>
+<p>At least, this is roughly how <code>walkdir</code> works, which is what ripgrep uses for its single threaded search. In prior versions, ripgrep also used <code>walkdir</code> for the parallel search, and it worked quite simply. Here's some pseudo code:</p>
+<pre><code>workq := Queue::new();
+main thread:
+    let mut workers = vec![];
+    for i in number_of_cpus() {
+        workers.push(Worker::new(workq.clone()));
+    }
+    for entry in WalkDir::new(&quot;./&quot;) {
+        if should_search(&amp;entry) {
+            workq &lt;- entry
+        }
+    }
+    workq.close()
+    for worker in workers {
+        worker.join().unwrap();
+    }
+
+worker thread:
+    for entry in workq {
+        let results = do_search(entry);
+        let stdout = io::stdout().lock();
+        print(stdout, results)
+    }
+</code></pre>
+<p>And that was pretty much it. The <code>walkdir</code> crate itself can be made to <a href="https://docs.rs/walkdir/1.0.7/walkdir/struct.WalkDir.html#method.sort_by">sort the contents of a directory</a>, which would give us a deterministic order <em>in the main thread</em>. In this scheme, I believe it's possible to impose a total ordering in the main thread by assigning a sequence number to each <code>entry</code>. So if <code>walkdir</code> itself yields entries in a deterministic order, then we can tag each entry so that each entry knows the order in which it should be printed.</p>
+<p>The worker thread could then be made to &quot;block&quot; until it was the entry's turn to be written, which could be done by checking the sequence id of the most recently printed entry. (There's probably a bit more to this, and perhaps latency could be reduced by introducing a ring queue and another worker that is only responsible for printing. This last worker would need to do a bit of windowing not unlike how TCP works.)</p>
+<p>I'd also like to take this time to note that &quot;sorting by file size&quot; is itself a non-starter because it would slow ripgrep down a bit. Namely, ripgrep would need to issue a stat call for each file.</p>
+<p>With that said, ripgrep no longer uses this simplistic approach. The core problem with it is that it forces the processing of all filter logic to be single threaded. Given the <a href="https://github.com/mysql/mysql-server/blob/5.7/.gitignore">size of some gitignore files</a>, this can end up being a substantial portion of ripgrep's runtime. Thus, a while ago, I set out to parallelize directory traversal itself. It still uses a work queue, but the fundamental difference is that there are no longer separate producers or consumers. Instead, every producer is, itself, a consumer. The reason for this is that if you're parallelizing directory traversal, then you end up reading the contents of multiple directories simultaneously, so there's no single point of truth about when it terminates. Indeed, <a href="https://github.com/BurntSushi/ripgrep/blob/71585f6d476265338e9ee4e924b4f43b02f2d233/ignore/src/walk.rs#L1159-L1220">termination is complicated</a>.</p>
+<p>The big picture problem is that this form of parallelism makes determinism much harder than the simpler work queue formulation that ripgrep used to have. In particular, each item in a directory is <a href="https://github.com/BurntSushi/ripgrep/blob/71585f6d476265338e9ee4e924b4f43b02f2d233/ignore/src/walk.rs#L1083">sent along a queue</a>, which means there is no point at which you could sort the files you're searching and realistically expect that to result in more deterministic output. Namely, even if you collected all of the entries of a directory and sorted them before sending them to the queue, you would in fact be racing with the N other threads that are doing the same.</p>
+<p>To solve the deterministic output problem while simultaneously using parallelism, I think you need to do one of these things:</p>
+<ol>
+<li>In addition to the single threaded and multithreaded search ripgrep has today, add a third mechanism that looks like the more traditional work queue style and implement deterministic output using that. You'll give up parallel processing of ripgrep's filters, but you'll still get parallel search. (I think this is inevitably what we'll do.)</li>
+<li>Learn how ripgrep does parallel search right now and figure out how to make its output deterministic without imposing significant costs. (I don't think this is possible. I think you could assign sequence ids to each entry in a way that imposes a total ordering across all entries, but the traversal fans out so quickly that I fear this would essentially be equivalent to &quot;buffering all output.&quot; Incidentally, this will work in a lot of cases, but it will also mean that ripgrep's memory usage will spike. I am proud of ripgrep's current memory usage.)</li>
+<li>Come up with a completely different approach to parallelizing search. I've talked with a few folks about this, and they suggested a work stealing approach might also work, but I don't know if that makes sorting the output any easier. (This is also much more complex. They cited the &quot;goroutine scheduler in the Go runtime&quot; as the place to look.)</li>
+<li>Change the requirements. e.g., Convince me the buffering all of ripgrep's output would be OK.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-31 01:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Come up with a completely different approach to parallelizing search.</p>
+</blockquote>
+<p>If you look at my pseudo code above, you might wonder why one couldn't just move the <code>should_search</code> filter into the worker. Indeed, this could solve a lot of the problems. The problem there is that you wind up with a lot of synchronization overhead associated with maintaining the filters. (The filters are expensive to construct, so you need to cache them.) In particular, checking a filter may actually involve ascending the directory stack to check filters associated with parent directories. (For example, to correctly match <code>.gitignore</code> files.)</p>
+<p>So if you go down this route, you basically need to move construction of the filters themselves into the workers as well. But if you do this, you either need to be willing to pay for constructing each filter N times (for each of the N threads), or you need to do some type of synchronization so that each filter is built once. If you pick the former, then you're right back to where you started: you're not actually parallelizing a good chunk of the filter process, although you are parallelizing the filter <em>match</em> process, which is a small win. If you pick the latter, then at some point, you're going to ask <code>&lt;=N</code> workers to work on <code>M</code> files from the same directory, which means all <code>M</code> workers will need to sit and wait until the filter for that directory is built. Which, of course, also destroys parallelism.</p>
+<p>If you really tumble down the rabbit hole, then maybe there is a smarter way to prioritize which entries get searched based on which filters are available, but then you've probably given up determinism again.</p>
+<p>If you get this far, then you're back to door number 3 in my previous comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2017-03-31 05:30</div>
+            <div class="timeline-body"><p>Okay, I think I understand much better now what you meant by &quot;the directory traversal itself is parallelized&quot; and why that presents an essentially intractable problem for obtaining determinism via the sort of minor tweaks I was trying to propose. And at the risk of making my complete ignorance of the issues at play even more obvious (! :laughing:), I didn't even realize that directories could be read as streams in Linux, let alone in any sort of cross-platform application (at least without circumventing the OS filesystem API and reading/interpreting the raw bits).</p>
+<p>...and, looking back, I'm not even sure why I suggested that largest-file-first would be valuable, even heuristically; I think my idea was that this would prioritize actual regex-matching over output printing, but I'm pretty sure that's exactly the reverse of what you'd want.</p>
+<p>Based on the very high-level explanation of Go-routine scheduling and stealing <a href="http://morsmachine.dk/go-scheduler">here</a>, I do not immediately see any reason why that form of scheduling would make output-sorting any easier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2017-03-31 05:30</div>
+            <div class="timeline-body"><p>Anyway, thanks for the detailed explanation! That's quite helpful in understanding what's going on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bmalehorn">@bmalehorn</a> on 2017-04-16 08:21</div>
+            <div class="timeline-body"><p>Hi all.</p>
+<p>I also want this feature for ripgrep, as it's one of my most missed features from <code>ag</code>. I've read over this whole thread and I think I have a good idea of the problem, and I have an idea on how we can fix it.</p>
+<h2>Priority Queue Solution</h2>
+<p>Suppose you're searching this directory:</p>
+<pre><code> 1.txt
+ 2/2.txt
+ 3.txt</code></pre>
+<p>Let's say we sort the output of readdir.
+Currently, that would make it search like this:</p>
+<pre><code>queue                         searched
+-----                         --------
+[&quot;1.txt&quot;, &quot;2/&quot;, &quot;3.txt&quot;]
+[&quot;2/&quot;, &quot;3.txt&quot;]               1.txt
+[&quot;3.txt&quot;, &quot;2/2.txt&quot;]          1.txt
+[&quot;2/2.txt&quot;]                   1.txt, 3.txt
+[]                            1.txt, 3.txt, 2/2.txt</code></pre>
+<p>I propose we use a priority queue, ordered by path name:</p>
+<pre><code>priority queue                searched
+--------------                --------
+[&quot;1.txt&quot;, &quot;2/&quot;, &quot;3.txt&quot;]
+[&quot;2/&quot;, &quot;3.txt&quot;]               1.txt
+[&quot;2/2.txt&quot;, &quot;3.txt&quot;]          1.txt
+[&quot;3.txt&quot;]                     1.txt, 2/2.txt
+[]                            1.txt, 2/2.txt, 3.txt</code></pre>
+<p>Notes about this approach:</p>
+<ul>
+<li>Relatively small change. Swap queue for priority queue.</li>
+<li>Won't guarantee ordering with &gt;1 thread.</li>
+<li>This approach is only a heuristic that gets us much closer to sorted output.</li>
+<li>Hopefully this heurstic will be good enough.</li>
+<li>Might degrade performance - trading lockless queue for locked priority queue.</li>
+</ul>
+<p>Questions for @BurntSushi:</p>
+<p>Does this make sense? Do you agree that this will mostly sort the output? Or do you see some critical flaw I didn't consider?</p>
+<p>Is this something you'd be willing to merge? Assuming everything pans out - files are usually sorted and there's no major performance change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-16 11:31</div>
+            <div class="timeline-body"><p>@bmalehorn did you happen to read my most recent comments on this? Namely, i don't see how this helps the matter. Remember, in the current implementation, the consumer of the queue is also its producer.</p>
+<p>Also, I'm pretty sure ag doesn't have this feature. Perhaps you could elaborate on that point?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-16 11:37</div>
+            <div class="timeline-body"><p>The other issue I see is that your queue example seems to indicate a breadth first search. But most recursive directory iterators use depth first search (including ripgrep). Which kind of makes the priority queue idea moot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bmalehorn">@bmalehorn</a> on 2017-04-16 18:03</div>
+            <div class="timeline-body"><blockquote>
+<p>Also, I'm pretty sure ag doesn't have this feature. Perhaps you could elaborate on that point?</p>
+</blockquote>
+<p><code>ag</code> will search in whatever order readdir(2) emits. On OS X this is sorted order. On Linux, you can sort the output of readdir with a <a href="https://github.com/ggreer/the_silver_searcher/pull/942/files">small patch</a>.</p>
+<blockquote>
+<p>But most recursive directory iterators use depth first search (including ripgrep).</p>
+</blockquote>
+<p>Actually, I don't think ripgrep uses depth first search.</p>
+<p><code>walk.rs</code> uses a <code>crossbeam::sync::MsQueue</code>, which is a queue. I tried adding some print statements, and it indeed seems to be doing breadth first search.</p>
+<p>I tried swapping it out for a stack, and sorting readdir:</p>
+<pre><code>$ rg -l PM_RESUME
+Documentation/dev-tools/sparse.rst
+Documentation/translations/zh_CN/sparse.txt
+arch/x86/kernel/apm_32.c
+drivers/ide/ide-pm.c
+drivers/input/mouse/cyapa.h
+drivers/mtd/maps/pcmciamtd.c
+drivers/net/wireless/intersil/hostap/hostap_cs.c
+drivers/usb/mtu3/mtu3_hw_regs.h
+include/uapi/linux/apm_bios.h
+include/linux/ide.h</code></pre>
+<p>The result is that output is often sorted. However, it can get out of order if, for example:</p>
+<ol>
+<li><code>Documentation</code> is popped by thread 1</li>
+<li><code>arch</code> is popped by thread 2</li>
+<li>children of <code>Documentation</code> pushed by thread 1</li>
+<li>children of <code>arch</code> are pushed by thread 2</li>
+</ol>
+<p>Now you will interleave <code>Documentation</code> and <code>arch</code>. I got such an out-of-order case by running <code>cd ripgrep &amp;&amp; rg -l ack</code>.</p>
+<p>You can view the commit <a href="https://github.com/bmalehorn/ripgrep/commit/7088299fee0c1c6959f28be1a56d424485c5b5a8">here</a>.</p>
+<p>Even if you don't want to use my half-assed sorting approach, I'd still argue that ripgrep should use a stack instead of a queue. The stack won't grow nearly as large as the queue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-16 18:17</div>
+            <div class="timeline-body"><blockquote>
+<p>ag will search in whatever order readdir(2) emits. On OS X this is sorted order. On Linux, you can sort the output of readdir with a small patch.</p>
+</blockquote>
+<p>Uh... Maybe in single threaded mode, but certainly not when search is parallelized. <code>ag</code> has non-deterministic output order, just like ripgrep.</p>
+<blockquote>
+<p>walk.rs uses a crossbeam::sync::MsQueue, which is a queue. I tried adding some print statements, and it indeed seems to be doing breadth first search.</p>
+</blockquote>
+<p>I see. I was thinking about <code>walkdir</code>, sorry, which is depth first.</p>
+<blockquote>
+<p>You can view the commit here.</p>
+</blockquote>
+<blockquote>
+<p>Even if you don't want to use my half-assed sorting approach, I'd still argue that ripgrep should use a stack instead of a queue. The stack won't grow nearly as large as the queue.</p>
+</blockquote>
+<p>The sorting approach is probably something that would need good benchmarking before getting merged. Particularly on very large directories. If ripgrep were used on a directory with many files, then it won't even start searching until the entire list is in memory.</p>
+<p>If using a stack ends up with a more consistent order in practice, then I'd be fine with that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bmalehorn">@bmalehorn</a> on 2017-04-16 20:02</div>
+            <div class="timeline-body"><blockquote>
+<p><code>ag</code> has non-deterministic output order, just like ripgrep.</p>
+</blockquote>
+<p>To be clear, they're <em>both</em> non-deterministic. But there are a few &quot;levels&quot; of how non-deterministic their outputs are:</p>
+<ol>
+<li>&quot;completely ordered&quot;: No matter what the files will be in sorted order. Example: <code>git grep</code></li>
+<li>&quot;start searching in order&quot;: Files will <em>commence</em> being searched in order. So &quot;1.txt&quot; will get passed to a worker thread before &quot;2.txt&quot;. But if the match in &quot;1.txt&quot; is 1 GB into the file but the match in &quot;2.txt&quot; is 1 KB into the file, &quot;2.txt&quot; will probably print first. Example: <code>ag</code></li>
+<li>&quot;unordered&quot;: No attempt to order outputs. Example: <code>ripgrep</code></li>
+</ol>
+<p>In practice, 2 is good enough. I've used this patched version of <code>ag</code> for months and have never observed files out of order.</p>
+<p>&quot;Priority queue&quot; and &quot;stack + sort readdir&quot; are somewhere between 2 and 3.</p>
+<hr />
+<p>I've made a PR for switching queue -&gt; stack because it has some performance gains. It doesn't attempt to put the files in order.</p>
+<hr />
+<blockquote>
+<p>The sorting approach is probably something that would need good benchmarking before getting merged.</p>
+</blockquote>
+<p>Yeah I agree. I'm going to play around with sorting and priority queues and see what I find. Hopefully, we can either get sorting as the default, or make <code>--sort-files</code> compatible with (some) multithreading.</p>
+<p>PS. Thanks for being such a responsive maintainer!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bmalehorn">@bmalehorn</a> on 2017-04-25 22:35</div>
+            <div class="timeline-body"><p>I've created two builds: <code>priority queue</code> (my creation), and <code>single producer</code> (earlier suggestion). In practice, both sort results. Benchmark:</p>
+<pre><code>linux_literal (pattern: PM_RESUME)
+----------------------------------
+rg (master)*           0.423 +/- 0.037 (lines: 16)*
+rg (priority queue)    0.431 +/- 0.039 (lines: 16)
+rg (single producer)   0.590 +/- 0.018 (lines: 16)
+rg (--sort-files)      0.954 +/- 0.034 (lines: 16)</code></pre>
+<p>In my opinion, the minor performance loss of <code>priority queue</code> is worth it to get sorted files. But you might disagree. Thoughts? Something else you want me to measure?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-22 12:56</div>
+            <div class="timeline-body"><p>Realistically speaking, I don't think this feature request is going to get satisfied any time soon. If deterministic ordering is important to you, then for now you'll need to use <code>--sort-files</code> and live with single threaded search.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-08-22 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MightyCreak">@MightyCreak</a> on 2018-11-06 16:58</div>
+            <div class="timeline-body"><p>I would also be interested by this feature. As a programmer myself I would see a way to solve that. It would indeed have a cost, but it would be way better than <code>--sort</code> does right now (i.e. disabling parallelism entirely).</p>
+<p>But you seem to have had a lot of discussion about that, could you help me with a TL;DR of this discussion about why it's impossible to do?</p>
+<p>Thank you very much</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-11-06 17:19</div>
+            <div class="timeline-body"><blockquote>
+<p>could you help me with a TL;DR of this discussion about why it's impossible to do?</p>
+</blockquote>
+<p>I never said it was impossible, so I'm confused as to why you're asking this question. This feature is precisely about trade offs, in terms of runtime performance and also in terms of implementation complexity.</p>
+<p>Honestly, I haven't thought about this specific problem in a long time, so I would need to re-read this thread myself to give you a convincing TL;DR. But given that it wouldn't be answering the question you asked, I think it would be better if you just went ahead and read the thread. If you have specific questions after that, then I'd be happy to try and answer those.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MightyCreak">@MightyCreak</a> on 2018-11-06 21:35</div>
+            <div class="timeline-body"><p>Right, wrong wording, I considered that if the issue's been closed it meant that after the discussion you arrived to the conclusion that the trade offs were not good enough to spend more time on it.</p>
+<p>No worries if you don't remember the thread, I'll read it then ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jessegrosjean">@jessegrosjean</a> on 2018-11-07 14:46</div>
+            <div class="timeline-body"><p>I've implemented an ordered tree walk, originally based off the ignore create. I'm just using internally, it would require quite a bit of work to get back to ignore api state and feature set, but it might serve as a good reference point for evaluating how much performance and complexity overhead an ordered walk would take.</p>
+<p>These times are all for walking over <a href="https://github.com/BurntSushi/linux.git">linux checkout</a> with the configuration <code>.standard_filters(false).hidden(true).threads(8).build_parallel()</code>. My ordered walk implementation doesn't support pattern based filtering at the moment.</p>
+<pre><code>baseline_ignore_crate_walk_parallel: [67.141 ms 67.903 ms 68.274 ms]                              
+</code></pre>
+<p>In my ordered walk there are two kinds of order. The initial processing happens in &quot;mostly&quot; order. Each worker maintains a priority queue of work (ordered by index_path or each entry) . Workers exchange work items occasionally to keep queues balanced.</p>
+<pre><code>ordered_walk_visit_all_entries_in_mostly_order: [77.634 ms 78.541 ms 80.383 ms]
+</code></pre>
+<p>On top of that &quot;mostly&quot; order you can apply a complete ordering. This works by gathering the results from each worker into another priority queue, and pulling the final results off the top when the top equals struct NextEntry.</p>
+<pre><code>ordered_walk::first_entry: [1.3928 ms 1.5433 ms 1.8609 ms]                             
+ordered_walk::first_100_entries: [7.9247 ms 8.1353 ms 8.4698 ms]                                  
+ordered_walk::first_1000_entries: [13.923 ms 14.904 ms 16.400 ms]                                                                          
+ordered_walk::all_entries:  [131.08 ms 131.69 ms 132.38 ms]                       
+</code></pre>
+<p>Generally this all seems to be working to my liking. The mostly ordered processing doesn't add much overhead. The complete ordering does certainly add some overhead, but it also saves a lot of time if you are only interested in first_n entires as would be the case in my UI's.</p>
+<p>Probably lots of room for improvement. This is my first big chunk of rust code, and also my first code that does more than just split up and process parallel processing. I'm sharing this code for anyone to do what they like with it. I would love to see the ignore crate get this type of complete ordering, but with parallel processing.</p>
+<p>https://gist.github.com/jessegrosjean/6b3ca3a52249b65f58294dfafca12c91</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-11-07 14:47</div>
+            <div class="timeline-body"><p>@jessegrosjean Lovely! Thanks for sharing!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jessegrosjean">@jessegrosjean</a> on 2018-11-07 19:31</div>
+            <div class="timeline-body"><p>I just posted an update to that gist that improves performance and simplifies things.</p>
+<p>Previously work was shared between workers through a single channel. Also workers would occasionally &quot;balance&quot; their local work queue by pulling values out of this channel (if they needed work), or pushing into it (if they had too much).</p>
+<p>The updated gist instead creates a separate channel for each worker. And each worker now gets a Vec of the sender half of all these channels. Now for each new work item the worker scheduling the item just sends it randomly to one of the other workers.</p>
+<p>This is simpler and faster since there's no longer any need for &quot;balance&quot; work queue logic.</p>
+<p>Now I see only 3-4ms difference between ignore's implementation and the ordered_walk_visit_all_entries_in_mostly_order test case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jessegrosjean">@jessegrosjean</a> on 2018-11-08 00:38</div>
+            <div class="timeline-body"><p>Ok, I said I was learning... I keep noticing places where my ordered walk needs fixing. After last update I realized that my version wasn't really doing work stealing. A work item that took a long time to process could block other work items (in that workers queue) even when other workers needed work.</p>
+<p>To solve this I now share all work queues with all workers. And when a workers queue is empty it will now try to steal work from another workers queue. This means all queues now need to be accessed through a mutex, but performance still seems really good. Stealing doesn't happen very often, so not much contention.</p>
+<p>I also realized that in doing my benchmarks I was doing some extra work specific to my use. The end result is that the current version of the gist is performing a little better (by a few ms)  than the default ignore crate.</p>
+<p>Summary is that (unless I'm missing something, possible!) performance shouldn't be an issue. This ordered walk is just as fast or faster. Here I'm talking about the underlying mostly ordered performance. Applying a total order (using <code>entries</code> method) does cost more (about double).</p>
+<p>I'm going to leave this be for now, but let me know if you've got any questions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-11-08 00:43</div>
+            <div class="timeline-body"><p>Thanks for the writeup! What does memory usage look like? I think the
+current parallel implementation is actually using more memory than it
+should be, so I would be interested in both theoretical and actual answers,
+if that makes sense. :)</p>
+<p>On Wed, Nov 7, 2018, 19:38 Jesse Grosjean &lt;notifications@github.com wrote:</p>
+<blockquote>
+<p>Ok, I said I was learning... I keep noticing places where my ordered walk
+needs fixing. After last update I realized that my version wasn't really
+doing work stealing. A work item that took a long time to process could
+block other work items (in that workers queue) even when other workers
+needed work.</p>
+<p>To solve this I now share all work queues with all workers. And when a
+workers queue is empty it will now try to steal work from another workers
+queue. This means all queues now need to be accessed through a mutex, but
+performance still seems really good. Stealing doesn't happen very often, so
+not much contention.</p>
+<p>I also realized that in doing my benchmarks I was doing some extra work
+specific to my use. The end result is that the current version of the gist
+is performing a little better (by a few ms) than the default ignore crate.</p>
+<p>Summary is that (unless I'm missing something, possible!) performance
+shouldn't be an issue. This ordered walk is just as fast or faster. Here
+I'm talking about the underlying mostly ordered performance. Applying a
+total order (using entries method) does cost more (about double).</p>
+<p>I'm going to leave this be for now, but let me know if you've got any
+questions.</p>
+<p>—
+You are receiving this because you modified the open/close state.
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/BurntSushi/ripgrep/issues/152#issuecomment-436830483">https://github.com/BurntSushi/ripgrep/issues/152#issuecomment-436830483</a>,
+or mute the thread
+<a href="https://github.com/notifications/unsubscribe-auth/AAb34mdEzBcEs5uZL0URjJ9hIfNHjMypks5us30OgaJpZM4KPYye">https://github.com/notifications/unsubscribe-auth/AAb34mdEzBcEs5uZL0URjJ9hIfNHjMypks5us30OgaJpZM4KPYye</a>
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jessegrosjean">@jessegrosjean</a> on 2018-11-08 01:58</div>
+            <div class="timeline-body"><p>Is there a good way to measure memory usage from within rust? Or should I use external tool?</p>
+<p>For theoretical usage, let me see. I'm mostly making this up... mostly I just build my app and if it doesn't explode I call it NP good.</p>
+<p>My understanding is that the way the current ignore works is for each WalkEntry encountered it pushes it into a channel. When a worker needs work it pulls off that channel.</p>
+<p>I &quot;think&quot; ordered walk is doing pretty much the same thing in terms of overall memory use.</p>
+<p>When ordered walk encounters a new WalkEntry it is also pushed into a channel. The difference is that instead of a single channel each worker has it's own channel. Each WalkEntry gets pushed into a randomly selected worker's channel. So instead of a single big channel, there are N smaller channels. And then each worker transfers the contents of their channel to a priority queue. Besides the overhead of extra channels, priority queues, etc... I don't think the actually number of entries alive in memory at once changes between the two implementations. When a worker needs work and it's local queue is empty it will just steal from another worker. So I think the total number of in flight entries is the same.</p>
+<blockquote>
+<p>I think the current parallel implementation is actually using more memory than it should be</p>
+</blockquote>
+<p>I'm not sure... I guess memory grows when you process a folder, since it generates more entries. So if you wanted to use less memory in the current implementation you could prioritize processing of files over processing of folders. That would keep the number of entries buffered in the channel smaller I think.</p>
+<p>If that's actually true, then I guess the ordered walk code might help to actually lower memory usage. Instead of sorting alphabetically as the current code does you could sort files ahead of folders. And I think that might theoretically use less memory. Though it also might slow things down as you would be more likely to run into empty queue cases and be forced to try work stealing.</p>
+<p>Maybe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bmalehorn">@bmalehorn</a> on 2018-11-08 03:15</div>
+            <div class="timeline-body"><p>Figured I should comment here since I've messed around with file order and memory usage.</p>
+<p>@BurntSushi you're right that there are memory problems in the current implementation. Since ripgrep uses a queue for searching files, it does something close to a BFS search. BFS uses memory proportional to the widest part of the tree. How wide is the widest part of your average source tree? E.g. how many files are 3 directories deep? Quite a few; I think Linux can get up to 10k elements in ripgrep's search queue.</p>
+<p>In #450 I changed the work queue into a work stack, changing from BFS-ish to DFS-ish. It reduced memory usage from 8.8 MB to about 16 MB, since memory usage was now proportional to the max depth. It didn't get merged because of other reasons (mucking with the the sort order).</p>
+<p>When you use a priority queue for the work, it will do something close to DFS. &quot;Sorted order of files&quot; is just a DFS walk over the files. So @jessegrosjean's patches will probably use less memory. Jesse if you want to test peak memory usage and you're on Linux, you can run <code>/usr/bin/time -f '%M' rg</code> which will output peak memory in kilobytes.</p>
+<hr />
+<p>tl;dr: ripgrep does BFS, priority queues do DFS, BFS uses more memory than DFS</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jessegrosjean">@jessegrosjean</a> on 2018-11-08 16:12</div>
+            <div class="timeline-body"><p>My implementation could be made much simpler if there was a fast priority queue that the workers could all share, just as they share a single channel in the current implementation. Is there such a thing in rust? A priority channel?</p>
+<p>Right now the only reason that each worker has own work queue is because if I use a single shared queue wrapped in a mutex there's to much contention and it's slow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-11-08 16:14</div>
+            <div class="timeline-body"><p>FWIW, I would try to find a way to use <a href="https://docs.rs/rayon">rayon</a>. It's possibly a research task though. I don't know how well it fits.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2018-11-08 20:07</div>
+            <div class="timeline-body"><p>@BurntSushi I have recently read through the source code in the <code>ignore</code> crate and found your comment regarding a possible parallel-walk implementation using <code>rayon</code>.</p>
+<p>I used this as a motivation to try and implement my own simple parallel-walk implementation for a disk-usage-counting tool (which does not need the <code>gitignore</code>-features of <code>ignore</code>). The code for the rayon-based parallel walk can be found here:</p>
+<p>https://github.com/sharkdp/diskus/blob/v0.4.0/src/walk.rs
+(the interesting part is the <code>for_each_with</code> call that passes the <code>Sender</code> side of a channel as a first argument)</p>
+<p>I am rather sure that this is <em>NOT</em> an ideal solution, since this was the first time that I have worked with rayon.</p>
+<p>Still, the rayon-based implementation is a bit faster than the <code>ignore</code>-based version* (10% on a cold disk cache, 40% on a warm disk cache - see https://github.com/sharkdp/diskus/pull/15).</p>
+<p>One thing that I don't like about my current implementation is that I need to copy all Paths into a <code>Vec</code> first before making the recursive call. As I understand it, this is due to the fact that the <a href="https://doc.rust-lang.org/std/fs/struct.ReadDir.html"><code>ReadDir</code></a> iterator is inherently sequential (due to the the usage of <code>readdir_r</code>).</p>
+<p>(obviously my rayon-based implementation does not fulfill any ordering requirements, so I'm sorry if this is not really of any use here).</p>
+<p>* This might have other reasons too. I have noticed that the <code>ignore</code> crate still tries to find <code>gitignore</code> files like <code>.git/info/exclude</code> even though all ignore-related functionality is switched off.</p>
+<p>Edit: Peak memory usage is a factor of four smaller for the <code>rayon</code> based version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-03-27 12:13</div>
+            <div class="timeline-body"><p>@sharkdp Somehow I missed your comment! Just seeing it now. Just wanted to chime in and thank you. Hopefully some day I'll be able to find time to dig back into this and look more closely and your work and @jessegrosjean's work, and see about rolling it back into <code>ignore</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dgutov">@dgutov</a> on 2020-12-10 21:06</div>
+            <div class="timeline-body"><p>For anybody who stumbles on this discussion by accident, piping the result through <code>sort</code> works very well, and much more performant than <code>--sort path</code> in all the cases I've tried. Though perhaps, of course, it will change if the output becomes long enough (like, megabytes of text). But then, I'm not sure such searches are actually useful.</p>
+<p>Example:</p>
+<pre><code class="language-sh">rg -e foo -nH file1 file2 file3 | sort -t: -k1,1 -k2n,2
+</code></pre>
+<p>The main downside is you don't see the results until the search completes, of course.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/theimpostor">@theimpostor</a> on 2021-06-23 14:44</div>
+            <div class="timeline-body"><p>@dgutov that's a great example of sorting the output and very fast indeed. I found that <code>sort</code> on my macbook does not implement the numeric sort of line numbers properly (the <code>-k2n,2</code> arg), but it does support stable sort (<code>-s</code>/<code>--stable</code>) which preserves the order of input when keys are identical, which seems to work just as well. Thus I have defined the following in my .bashrc:</p>
+<pre><code>function rgs {
+    rg --line-number --with-filename --color always &quot;$@&quot; | sort --stable --field-separator=: --key=1,1
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dgutov">@dgutov</a> on 2021-06-23 16:36</div>
+            <div class="timeline-body"><p>@theimpostor The state of command line tools on Apple systems is really bad (another instance of that I've heard of recently is broken behavior of the ancient version of <code>find</code> they suppy).</p>
+<p>Is there a possibility to install newer <code>sort</code> through Homebrew, for example?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:47 UTC
+    </footer>
+</body>
+</html>

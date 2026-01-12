@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Please consider a &quot;do not recurse&quot; flag - BurntSushi/ripgrep #1056</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Please consider a &quot;do not recurse&quot; flag</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1056">#1056</a>
+        opened by <a href="https://github.com/strindberg">@strindberg</a>
+        on 2018-09-16 18:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/strindberg">@strindberg</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.10.0</p>
+<p>Consider the following pipeline: <code>find . -iname '*properties' -type f | xargs rg java</code>. It's intended to search for the string 'java' in all property files. However, if there are no files matching find's filter, no file name is passed to rg, which then proceeds to look for the string 'java' in <em>all</em> files in the current directory. This is confusing and hardly what the user intended.</p>
+<p>If one is using GNU xargs, this can be helped with the '-r' option to xargs, which stops xargs from executing rg if no arguments are passed to it. This fixes the problem, but since it is a GNU extension to xargs, it cannot be used everywhere.</p>
+<p>It would be great if ripgrep could have a &quot;do not recurse&quot; flag, or at least a &quot;do nothing on no input&quot; flag, so that this type of pipe could be used safely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-09-16 19:20</div>
+            <div class="timeline-body"><p>If you're using GNU <code>xargs</code>, the <code>-r</code> option will prevent it from trying to execute the command when there's no input. (BSD <code>xargs</code> seem to behave that way by default.)</p>
+<p>But, more generally, i think <code>rg --max-depth=0</code> should work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/strindberg">@strindberg</a> on 2018-09-17 06:49</div>
+            <div class="timeline-body"><p>Ah, yes. <code>rg --max-depth=0</code> does the trick.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @strindberg on 2018-09-17 06:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-09-17 11:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/juhp">@juhp</a> on 2022-12-13 13:43</div>
+            <div class="timeline-body"><p>I think a <code>--no-recurse</code> kind of option would still be useful (and compatible with grep):
+there are times when one knows one only wants to search the files in the given directory.</p>
+<p>Is there some path workaround?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-12-13 13:57</div>
+            <div class="timeline-body"><p>@juhp</p>
+<blockquote>
+<p>Is there some path workaround?</p>
+</blockquote>
+<p>As mentioned above, <code>--max-depth=0</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @BurntSushi on 2022-12-13 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2022-12-13 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/juhp">@juhp</a> on 2022-12-13 14:02</div>
+            <div class="timeline-body"><p>Okay right, thank you - though it is a little long and not so memorable...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-12-13 14:09</div>
+            <div class="timeline-body"><p>I think ripgrep has almost 100+ flags. If I added a new one for every little case like this, it would have <em>a lot</em> more. Sorry.</p>
+<p>I consider this use case rather niche. I have never wanted it personally, for example. So having to use an existing mechanism a little more creatively is perfectly fine IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/juhp">@juhp</a> on 2022-12-14 04:10</div>
+            <div class="timeline-body"><p>Okay, thanks Andrew, that's fair and your call of course. :-)
+(But it is the default behavior of grep (though it errors on directories :man_facepalming:), so calling it niche seems a little far-fetched;)</p>
+<p>Maybe I will try an alias like <code>lrg</code> for this anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-12-14 12:42</div>
+            <div class="timeline-body"><p>I stand by what I said. I have never seen anyone rely on that behavior of grep and I have never done so myself. Remember what niche means: something that is specialized. I use the word as a proxy for &quot;this is a somewhat uncommon use case, and adding better support for it would end up making the entire enterprise more complicated.&quot; Niche is not a value judgment on the importance or utility of what you're trying to do. It's an acknowledgment that it is uncommon.</p>
+<p>We do not have data about what is common or not, so all we have to go on is perception and shared experience.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/useranon350">@useranon350</a> on 2024-07-05 18:53</div>
+            <div class="timeline-body"><p>I use the default behavior of grep all the time. It's probably about 40/60 on whether I want &quot;process this finite list of files/stream&quot; vs. &quot;process this directory tree&quot;. It's also an obstacle to being able to make an <code>alias grep=&quot;rg --no-recurse&quot;</code> entry in my .zshrc for compatibility with my muscle memory. (Assuming rg --no-recurse -r would lead to a recursive search).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:41 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--count --multiline doesn't behave as documented - BurntSushi/ripgrep #2852</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--count --multiline doesn't behave as documented</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2852">#2852</a>
+        opened by <a href="https://github.com/jeanas">@jeanas</a>
+        on 2024-07-14 14:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jeanas">@jeanas</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>14.1.0</p>
+<h3>How did you install ripgrep?</h3>
+<p>Reproduces with distro package and <code>cargo install</code>ed version.</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Fedora 40</p>
+<h3>Describe your bug.</h3>
+<p>From the <code>--help</code> output:</p>
+<pre><code>    -c, --count
+        This flag suppresses normal output and shows the number of lines that
+        match the given patterns for each file searched. Each file containing a
+        match has its path and count printed on each line. Note that unless
+        -U/--multiline is enabled, this reports the number of lines that match
+        and not the total number of matches. In multiline mode, -c/--count is
+        equivalent to --count-matches.
+</code></pre>
+<p>However, the behavior I'm seeing is that <code>--count</code> still behaves as &quot;count the number matching lines&quot; and not as &quot;count the number of matches&quot; even under multiline mode.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<pre><code>$ cat file.txt 
+match match match match
+match match match match
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<pre><code>$ rg --count match file.txt
+2
+
+$ rg --count-matches match file.txt
+8
+
+$ rg --count --multiline match file.txt
+2
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>The last command should print 8 (or the documentation should be changed).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JOSBEAK">@JOSBEAK</a> on 2024-07-14 17:34</div>
+            <div class="timeline-body"><p>I would like to work on this issue.. Can anyone help me how should I get started ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jeanas">@jeanas</a> on 2024-07-14 22:32</div>
+            <div class="timeline-body"><p>I haven't looked much at the code, but I think I get what's happening.</p>
+<p>The help says</p>
+<pre><code>           WARNING: Because of how the underlying regex  engine  works,  multiline
+           searches may be slower than normal line-oriented searches, and they may
+           also  use  more  memory. In particular, when multiline mode is enabled,
+           ripgrep requires that each file it searches is laid out contiguously in
+           memory (either by reading it onto the heap or  by  memory-mapping  it).
+           Things  that  cannot  be memory-mapped (such as stdin) will be consumed
+           until EOF before searching can begin. In general, ripgrep will only  do
+           these  things when necessary.  Specifically, if the -U/--multiline flag
+           is provided but the regex does not contain patterns that would match \n
+           characters, then ripgrep will automatically  avoid  reading  each  file
+           into  memory before searching it.  Nevertheless, if you only care about
+           matches spanning at most one line, then it is always better to  disable
+           multiline mode.
+</code></pre>
+<p>And sure enough:</p>
+<pre><code>$ cat file.txt 
+start end
+start end
+
+$ rg --count-matches &quot;start|end&quot; file.txt 
+4
+
+$ rg --count &quot;start|end&quot; file.txt 
+2
+
+$ rg --count --multiline &quot;start|end&quot; file.txt 
+2
+
+$ rg --count --multiline &quot;^start|end$&quot; file.txt 
+4
+</code></pre>
+<p>In words: when the regex doesn't contain <code>^</code> or <code>$</code>, ripgrep notices that multiline mode is useless and runs the normal, non-multiline mode, but then this changes the semantics of <code>--count</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/meedstrom">@meedstrom</a> on 2024-08-21 19:26</div>
+            <div class="timeline-body"><p>Could it be related to #2779?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2025-09-23 01:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">doc</span> added by @BurntSushi on 2025-09-23 01:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-09-23 02:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:50 UTC
+    </footer>
+</body>
+</html>

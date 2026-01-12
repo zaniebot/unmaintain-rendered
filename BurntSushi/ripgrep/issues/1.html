@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add support for other text encodings - BurntSushi/ripgrep #1</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>add support for other text encodings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1">#1</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2016-09-09 16:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>Right now, ripgrep only supports reading UTF-8 encoded text (even if some of it is invalid). In my estimation, this is probably good enough for the vast majority of use cases.</p>
+<p>However, it may be useful to search other encodings. I don't think I'd be willing to, say, modify the regex engine itself to support other encodings, but if it were easy to do transcoding on the fly, then I think it wouldn't add too much complexity. The <a href="https://github.com/hsivonen/encoding_rs"><code>encoding_rs</code></a> project in particular appears to support this type of text decoding.</p>
+<p>Some thoughts/concerns:</p>
+<ul>
+<li>Transcoding would require using the incremental searcher as opposed to the memory map searcher. (Which is fine.)</li>
+<li>Transcoding requires picking a source encoding, and doing this seems non-trivial. You might imagine the CLI growing a new flag that specifies a text encoding, but what happens if you want to search directories containing files with many different types of text encodings? Do we need a more elaborate system? I'm inclined towards not, since I think the juice probably isn't worth the squeeze.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2016-09-09 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2016-09-09 16:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nabijaczleweli">@nabijaczleweli</a> on 2016-09-22 00:28</div>
+            <div class="timeline-body"><p>TBH I'd just ignore (and/or die violently on) anything that doesn't map to UTF-8, which is the <em>de facto standard</em> in the Rust world.
+Trying to support non-utf8 encodings seems more trouble than it's worth, IMO</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-22 00:43</div>
+            <div class="timeline-body"><p>@nabijaczleweli <code>ripgrep</code> isn't just for Rust people though. There are plenty of non-English speaking countries where UTF-8 isn't quite <em>everywhere</em>. There's enough folks that care about it that there are at least a couple search tools that do implement searching on files that aren't UTF-8. <a href="https://github.com/monochromegane/the_platinum_searcher">The Platinum Searcher</a> and <a href="https://github.com/tkengo/highway">highway</a> come to mind. Of course, both <code>grep</code> and <code>git grep</code> support other encodings as well. I'm also told that Windows has lots of UTF-16 data too.</p>
+<p>Anyway, it's totally possible that this may never happen. But it's also a somewhat feasible thing to support without sacrificing performance for the UTF-8 case (at the cost of some code complexity). It is honestly somewhat low on my list of things I'd like to do with <code>ripgrep</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-22 00:46</div>
+            <div class="timeline-body"><p>(To be clear, the limit to what I'd be willing to support are text encodings that can be feasibly <em>transcoded</em> to UTF-8.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexandernst">@alexandernst</a> on 2016-09-23 15:52</div>
+            <div class="timeline-body"><p>How do you plan to detect the encoding of the text that is being ripgrep-ed in order to correctly decode it (or transcode it to utf8)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-23 16:59</div>
+            <div class="timeline-body"><p>@alexandernst That is precisely one of the problems described in this issue. ;-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lambda">@lambda</a> on 2016-09-24 04:32</div>
+            <div class="timeline-body"><p>Just yesterday, I was given a dump of log files from a Windows server, and took a while to figure out why I couldn't find the string that someone else reported as being in one of the files, when I was using <code>grep -r</code> to look for it. Took me a bit to figure out that while most of the files were in some ASCII compatible encoding, a few of them were in UTF-16.</p>
+<p>For a tool that does recursive grepping, a lot of times what you have is some big directory tree, and you don't really know what's in it, and so you're looking for some needle in that big haystack. Not knowing what's in it can include not knowing the encoding.</p>
+<p>Right now, what <code>rg</code> does is skip UTF-16 files as binary, and not report anything about them, so you wouldn't notice if you missed files due to this issue.</p>
+<p>I think you do want something that applies a heuristic to determine the encoding, though I'm not sure you want that by default.</p>
+<p>I think the way I would go about supporting this is by reporting files that could be text but are not valid UTF-8; so, those files which it's searching as invalid UTF-8, and those which it's detecting as binary but which could be UTF-16, UTF-16BE, or UTF-16LE, or possibly other encodings. If you don't at least report something, you won't know that you're missing something due to the encoding issue, but I'm not sure you'd want to do any kind of automatic encoding detection by default.</p>
+<p>Then you could add a flag that will do heuristic encoding detection, based on BOM for UTF-16, or <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=631751">even/odd nulls hack</a> for UTF-16 BE or LE, or maybe even <a href="http://www-archive.mozilla.org/projects/intl/UniversalCharsetDetection.html">character frequency based detection</a> for other encodings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 04:56</div>
+            <div class="timeline-body"><p>@lambda I agree we need to do something, but we are definitely limited. Things like, &quot;report if a file isn't valid UTF-8&quot; are probably off the table, because that would be way too expensive. We're probably limited to scanning the first few hundred/thousand bytes or so. Right now, it's a simple <code>memchr</code> for the NUL byte to determine if it's a &quot;binary&quot; file or not, to give you an idea of the scale. Reporting the existence of every binary file seems a bit... extreme. Hmm. I'll noodle on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rr-">@rr-</a> on 2016-09-24 05:37</div>
+            <div class="timeline-body"><p>To me the inability to <code>rg --binary &quot;\xDE\xAD\xBE\xEF&quot;</code> is an absolute deal breaker. I work with huge binary files a lot and I often want to search for raw byte strings. I don't want to use two tools at once (<code>rg</code> for text, <code>ag</code> for binary).</p>
+<p>Also grepping for anything in Japanese companies, be it source code or text documents, almost always means you deal with Shift-JIS.</p>
+<p>TBH I wouldn't expect <code>rg</code> to be able to detect encoding on its own, I'd be plenty happy with being able to manually guide it with <code>--binary</code>, <code>--encoding=sjis</code> etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 05:40</div>
+            <div class="timeline-body"><p>@rr- You can do that, it's just not documented on <code>ripgrep</code> (it's buried inside the <a href="https://doc.rust-lang.org/regex/regex/bytes/index.html#syntax">regex engine documentation</a>, which obviously is not going to be discoverable to end users, I need to work on that). Try this instead:</p>
+<pre><code>rg '(?-u)\xDE\xAD\xBE\xEF'
+</code></pre>
+<p>If you did try this:</p>
+<pre><code>rg '\xDE\xAD\xBE\xEF'
+</code></pre>
+<p>Then each hex escape is treated as a Unicode codepoint with its corresponding UTF-8 encoding. But in the former case, we disable Unicode support and get raw byte support. Unicode can actually be selectively re-enabled, so if you wanted a Unicode aware <code>\w</code> in the middle of some bytes somewhere, this would work:</p>
+<pre><code>rg '(?-u)\xDE\xAD(?u:\w+)\xBE\xEF'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 05:43</div>
+            <div class="timeline-body"><p>But yes, I think everyone understands that only supporting UTF-8 (errm, ASCII compatible text encodings, technically) might be good enough for the vast majority of users, but is definitely going to be a deal breaker for many as well. This issue really doesn't need more motivation, it needs feasible ideas that can be implemented, and those need to take into account UX, performance and actual correctness. (Thanks @lambda for getting that started.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rr-">@rr-</a> on 2016-09-24 05:52</div>
+            <div class="timeline-body"><p>OK how about this:</p>
+<ol>
+<li>Expose <code>--encoding</code> which defaults to utf-8</li>
+<li>Using <code>--encoding=utf16le test</code> internally encodes <code>test</code> as <code>t\0e\0s\0t\0</code></li>
+<li><code>rg</code> treats the file as binary and searches for this literal pattern as a sequence of bytes</li>
+</ol>
+<p>There are obviously going to be problems around UTF-8 ability to display ö as <code>LATIN SMALL LETTER O WITH DIAERESIS</code> and <code>COMBINING DIAERESIS</code> + <code>LATIN SMALL LETTER O</code> as well as <a href="http://svn.python.org/projects/python/tags/r24a1/Modules/cjkcodecs/README">inconsistencies in Shift-JIS encoding of characters such as <code>REVERSE SOLIDUS</code></a> but maybe it's good enough?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 05:58</div>
+            <div class="timeline-body"><p>Well the huge problem with that is things like <code>\w</code> won't work. This is why I made the stipulation of a transcoding from <code>X</code> to <code>UTF-8</code> and <em>then</em> matching. I mean, an explicit <code>--encoding</code> flag is basically an answer to this problem: it's exactly what I suggested way above. But it has downsides, like, what if your directory tree has some UTF-16 and some UTF-8?</p>
+<p>Certainly, we can throw our hands in the air, require specific instruction of encoding by the end user and call it a day. But it doesn't really help getting at the unknown-unknowns that @lambda mentioned. Making unknown-unknowns discoverable is an important feature IMO. But perhaps it is orthogonal to text encoding support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nephyrin">@Nephyrin</a> on 2016-09-24 21:15</div>
+            <div class="timeline-body"><p>There's some similar discussion of UTF-16 for Ag @ ggreer/the_silver_searcher#914</p>
+<p>Using byte-order-marks to detect UTF-other encodings may work.  At some point, if there's no meta-data to indicate encoding, a tool can only be so-magical.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/puetzk">@puetzk</a> on 2016-09-26 14:34</div>
+            <div class="timeline-body"><p>As far as specifying encoding: .gitattributes supports</p>
+<blockquote>
+<p><em>pattern</em> encoding=<em>name</em></p>
+</blockquote>
+<p>to control its supporting tools, and you're already parsing git-style patterns for ignore. So that seems like a good way of supplying the encoding in complex cases...</p>
+<p>That would make --encoding=<em>name</em>  cmdline switch equivalent to appending a &quot;* encoding=<em>name</em>&quot; line (though you might also want a --default-encoding that &quot;prepends&quot; instead).</p>
+<p>I'm not sure how best to combine this with recognizing BYTE ORDER MARK, though, and I agree that would also be very nice to have.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emk">@emk</a> on 2016-10-08 02:14</div>
+            <div class="timeline-body"><p>I'm not sure whether it would be useful or not, but I do maintain a <a href="https://crates.io/crates/uchardet">Rust wrapper</a> around <a href="https://github.com/BYVoid/uchardet/tree/master">uchardet</a>, which detects the most common character encodings. It was extracted from Mozilla. In my experience it works quite well for identifying UTF-8 versus UTF-16 (either endianness) and some other common character encodings, but it gets a little dodgier as you go further afield.</p>
+<p>Any such character detection library is obviously statistical in nature, and it will fail on some files.</p>
+<p>My Rust wrapper includes a copy of the uchardet source code that hasn't been synced with upstream in a while, but I'd be happy to do so (it's just a git submodule resolved at build time), and to make any necessary feature improvements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-18 15:48</div>
+            <div class="timeline-body"><p>@emk Sorry for the late response. That's a neat idea! But I'd like to discourage using C dependencies beyond what we get with <code>libc</code>. In any case, it will be some time before I get to this, and I'd probably like to at least start without automatic detection. <em>After that</em>, depending on how much complexity it adds, I might be willing to expose it under an optional cargo feature.</p>
+<p>(My hope is to move most of the search code out into a separate crate maintained in this repo. Once that's done, we can start talking about APIs.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alejandro5042">@alejandro5042</a> on 2016-10-28 19:28</div>
+            <div class="timeline-body"><p>Another vote for this: PowerShell on Windows unfortunately writes UTF-16 when piping to a file (<a href="https://technet.microsoft.com/en-us/library/hh849882.aspx?f=255&amp;MSPPError=-2147217396"><code>Out-File</code></a>) [1]. That means a common case like this fails:</p>
+<pre><code class="language-ps">&quot;hi&quot; &gt; test.txt
+rg hi
+</code></pre>
+<p>Matches nothing.</p>
+<p>[1] In a classic case of inconsistency, it writes ASCII using <a href="https://technet.microsoft.com/en-us/library/hh849828.aspx"><code>Set-Content</code></a> 😢</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emk">@emk</a> on 2016-10-28 22:43</div>
+            <div class="timeline-body"><p>The UTF-16LE encoding used on Windows (or rather, UCS-2LE, if that's still a thing) is an especially important use-case, and one of the easiest to detect. The typical steps <a href="https://cgit.freedesktop.org/uchardet/uchardet/tree/src/nsUniversalDetector.cpp">can be seen in this uchardet source file</a>:</p>
+<ol>
+<li>Check for Unicode Byte Order Marks, which will normally work well for Windows files.</li>
+<li>Check for alternating (mostly-)ASCII and 0 bytes, which will detect a large fraction of the remaining files.</li>
+<li>Fall back to more sophisticated character set probers and heuristics to deal with harder cases and other encodings.</li>
+</ol>
+<p>@Bobo1239 is <a href="https://github.com/emk/rust-uchardet/pull/5">currently working to update</a> my Rust <code>uchardet</code> bindings to build against the latest <code>uchardet</code> and to support Windows. But it wouldn't take much to implement a pure-Rust solution that could detect UTF-8 and UTF-16.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emk">@emk</a> on 2016-10-29 00:10</div>
+            <div class="timeline-body"><p>@BurntSushi mentioned this issue elsewhere (#7) and wrote:</p>
+<blockquote>
+<p>The problem then comes with the output though. Do you output in the same encoding as the input? If so, that sounds pretty hairy. (Possibly even intractable.)</p>
+</blockquote>
+<p>Is there any reason you couldn't just use Rust's standard output facilities? For a first version, detect at least UTF-16LE/BE, transcode to UTF-8 for searching, and allow Rust to output it the same way as existing strings? You pretty much need to choose a single output encoding in any case, and it might as well be whatever Rust generates for you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-29 00:15</div>
+            <div class="timeline-body"><p>@emk Rust's standard output facilities are encoding agnostic, but that's orthogonal. Here's my concern more explicitly stated:</p>
+<ol>
+<li>With respect to <strong>UX</strong>: should the match output of ripgrep correspond to the original encoding or to the transcoded UTF-8?</li>
+<li>If the answer to (1) is &quot;the original encoding&quot;, how do you do it?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emk">@emk</a> on 2016-10-29 00:45</div>
+            <div class="timeline-body"><p>@BurntSushi Good questions, and tricky ones. :-)</p>
+<p>As far as I can see, the fundamental problem with output in the original encoding is figuring out what to do if you find matches in files that use several different encodings. In that case, you pretty much need to choose a single encoding for output. This seems like a major force pushing towards keeping all output in UTF-8. I suppose the counter argument is that if the input from <code>stdin</code> is in UTF-16LE, then it's arguably nicer to use UTF-16LE for stdout as well. If you want to do that, the <a href="https://crates.io/crates/encoding">encoding</a> crate can potentially do a fair bit of heavy lifting here, especially if you want to support a wide range of encodings.</p>
+<p>I originally made Rust bindings for uchardet for use with <a href="https://github.com/emk/substudy">substudy</a>, which has to deal with quite a few encodings. In my experience, it's possible to detect and transcode the most common encodings automatically, and it works fairly well.</p>
+<p>Now that I'm thinking about substudy, that provides an intesting data point: I have foreign-language subtitle files in multiple legacy encodings. In a perfectly ideal world, I would love ripgrep to correctly identify ISO Latin-1 or Windows-1252, but transcode everything to UTF-8 for matching and output, because my terminal is configured to display UTF-8, not Windows-1252. Similarly, if I write <code>“</code>, then I would want that to match smart quotes in both Windows-1252 and UTF-8 files. But this would be fairly ambitious.</p>
+<p>Overall, it seems like UTF-16LE is the most important case to handle (for Windows support), and it's one of the easiest to implement (at least the basics).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-29 00:53</div>
+            <div class="timeline-body"><blockquote>
+<p>As far as I can see, the fundamental problem with output in the original encoding is figuring out what to do if you find matches in files that use several different encodings. In that case, you pretty much need to choose a single encoding for output. This seems like a major force pushing towards keeping all output in UTF-8. I suppose the counter argument is that if the input from stdin is in UTF-16LE, then it's arguably nicer to use UTF-16LE for stdout as well. If you want to do that, the encoding crate can potentially do a fair bit of heavy lifting here, especially if you want to support a wide range of encodings.</p>
+</blockquote>
+<p>I'd also like to evaluate <a href="https://github.com/hsivonen/encoding_rs"><code>encoding_rs</code></a>.</p>
+<p>I don't disagree with anything you've said. Although I'd like to continue to emphasize that we should attack this problem without any C dependencies first. For example, one could imagine a solution to this problem that has no automatic detection at all. That seems like a decent place to start.</p>
+<blockquote>
+<p>Similarly, if I write <code>“</code>, then I would want that to match smart quotes in both Windows-1252 and UTF-8 files. But this would be fairly ambitious.</p>
+</blockquote>
+<p>So long as <code>“</code> is input as UTF-8 in the regex (which <em>must</em> be UTF-8) and transcoding is correct, then this should actually happen for free.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emk">@emk</a> on 2016-10-29 01:19</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd also like to evaluate encoding_rs.</p>
+</blockquote>
+<p>Ah, I hadn't seen that yet! Thank you.</p>
+<blockquote>
+<p>I don't disagree with anything you've said. Although I'd like to continue to emphasize that we should attack this problem without any C dependencies first.</p>
+</blockquote>
+<p>If it helps, I'm happy to provide a small Rust crate which provides a translation of the <a href="https://cgit.freedesktop.org/uchardet/uchardet/tree/src/nsUniversalDetector.cpp">essential bits of the main UTF-8 / UTF-16LE / UTF-16BE detector here</a>. This will at least handle most modern text files on Linux/Windows/Mac, which is probably 98% of what people actually want. The lack of UTF-16LE searching, in particular, is a big limitation on Windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-29 01:28</div>
+            <div class="timeline-body"><p>@emk That sounds like a great next step after we have the ability to search transcoded data. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/emk">@emk</a> on 2016-10-29 01:56</div>
+            <div class="timeline-body"><p>Fair enough. :-)</p>
+<p>Yes, I agree it would be good to implement the transliteration machinery before the detection code! If there's no auto-detection, what should the UI for selecting an input encoding look like?</p>
+<p>As for automatic detection, looking at the source to the encoding detectors for the first time in a couple of years, the logic to detect the major encodings is surprisingly straightforward:</p>
+<ol>
+<li>If it has a BOM, use the BOM to identify it as UTF-8, UTF-16 or UTF-32. This is the only code path that will ever identify a file as UTF-16 or UTF-32, interestingly enough.</li>
+<li>If it contains only ASCII characters, identify it as ASCII.</li>
+<li>If it contains ASCII plus 0xA0 (nbsp), supposedly a semi-common case, identify it as ISO Latin 1.</li>
+<li>If none of the above match, run a <a href="https://cgit.freedesktop.org/uchardet/uchardet/tree/src/nsUTF8Prober.cpp">UTF-8 prober</a>. When working on substudy, I found this this was usually overkill, because UTF-8 has a very distinctive and strict structure, and you can usually identify it simply by asking: &quot;Does this contain at least one UTF-8 character and does it parse as valid UTF-8?&quot; If true, it's generally reasonable to assume UTF-8.</li>
+</ol>
+<p>This will generally produce decent results for ASCII and the various UTF encodings. Given your &quot;pure Rust&quot; requirement, it's probably wisest not to try for anything more right away. All the necessary language models, etc., are available in uchardet, but there's a fair amount of fiddly code to handle all the weird encodings out there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-29 02:01</div>
+            <div class="timeline-body"><p>I don't know what the UI should look like, but we need one. I would
+probably start by looking at iconv.</p>
+<p>On Oct 28, 2016 9:56 PM, &quot;Eric Kidd&quot; notifications@github.com wrote:</p>
+<blockquote>
+<p>Fair enough. :-)</p>
+<p>Yes, I agree it would be good to implement the transliteration machinery
+before the detection code! If there's no auto-detection, what should the UI
+for selecting an input encoding look like?</p>
+<p>As for automatic detection, looking at the source to the encoding
+detectors for the first time in a couple of years, the logic to detect the
+major encodings is surprisingly straightforward:</p>
+<ol>
+<li>If it has a BOM, use the BOM to identify it as UTF-8, UTF-16 or
+UTF-32. This is the only code path that will ever identify a file as UTF-16
+or UTF-32, interestingly enough.</li>
+<li>If it contains only ASCII characters, identify it as ASCII.</li>
+<li>If it contains ASCII plus 0xA0 (nbsp), supposedly a semi-common
+case, identify it as ISO Latin 1.</li>
+<li>If none of the above match, run a UTF-8 prober
+https://cgit.freedesktop.org/uchardet/uchardet/tree/src/nsUTF8Prober.cpp.
+When working on substudy, I found this this was usually overkill, because
+UTF-8 has a very distinctive and strict structure, and you can usually
+validate it simply by asking: &quot;Does this contain at least one UTF-8
+character and does it parse as valid UTF-8?&quot; If true, it's generally
+reasonable to assume UTF-8.</li>
+</ol>
+<p>This will generally produce decent results for ASCII and the various UTF
+encodings. Given your &quot;pure Rust&quot; requirement, it's probably wisest not to
+try for anything more right away. All the necessary language models, etc.,
+are available in uchardet, but there's a fair amount of fiddly code to
+handle all the weird encodings out there.</p>
+<p>—
+You are receiving this because you were mentioned.
+Reply to this email directly, view it on GitHub
+https://github.com/BurntSushi/ripgrep/issues/1#issuecomment-257064221,
+or mute the thread
+https://github.com/notifications/unsubscribe-auth/AAb34n7FpwVKii93xQLcD-Me9EfNTg-Nks5q4qeygaJpZM4J5OAx
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-03-12 23:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssokolow">@ssokolow</a> on 2017-03-14 03:52</div>
+            <div class="timeline-body"><p>The <a href="https://github.com/BurntSushi/ripgrep#whirlwind-tour">Whirlwind tour section of the README</a> still needs to be updated:</p>
+<blockquote>
+<p>One last thing before we get started: <code>ripgrep</code> assumes UTF-8 everywhere. It can still search files that are invalid UTF-8 (like, say, latin-1), but it will simply not work on UTF-16 encoded files or other more exotic encodings. <a href="https://github.com/BurntSushi/ripgrep/issues/1">Support for other encodings may happen</a>.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-14 12:31</div>
+            <div class="timeline-body"><p>@ssokolow Fixed! Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blfpd">@blfpd</a> on 2017-03-24 11:48</div>
+            <div class="timeline-body"><p>@BurntSushi You might want to edit your anti-pitch on your <a href="http://blog.burntsushi.net/ripgrep/#anti-pitch">blog post</a>.</p>
+<blockquote>
+<p>If you need to search files with text encodings other than UTF-8 (like UTF-16), then ripgrep won’t work.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-24 11:48</div>
+            <div class="timeline-body"><p>@batisteo Hmm right thanks, I always forget to update the blog.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:34 UTC
+    </footer>
+</body>
+</html>

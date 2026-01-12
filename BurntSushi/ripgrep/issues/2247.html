@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>use aho-corasick when -F and -x are set - BurntSushi/ripgrep #2247</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>use aho-corasick when -F and -x are set</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2247">#2247</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2022-06-24 16:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>Currently, when <code>-x/--line-regexp</code> and <code>-F</code> are given to ripgrep, Aho-Corasick won't be used because the <code>-x</code> flag turns each pattern into a regex via <code>(?m)^(?:pattern)$</code>. This in turn causes the Aho-Corasick optimization to get defeated. In cases where the number of patterns is very large, using the regex engine for this much much slower than Aho-Corasick.</p>
+<p>See a discussion on this that motivated this ticket:</p>
+<h3>Discussed in https://github.com/BurntSushi/ripgrep/discussions/2244</h3>
+<div type='discussions-op-text'>
+
+<p><sup>Originally posted by <strong>T145</strong> June 24, 2022</sup>
+I'm aware that ripgrep has set memory limits that <a href="https://github.com/BurntSushi/ripgrep/issues/362#issuecomment-355848324">can cause problems</a>, and that has been encountered while trying to perform the following operation:</p>
+<pre><code>rg -NFxvf source.txt target.txt
+</code></pre>
+<p>Where the source is <code>~8MB</code> and the target is <code>~168MB</code>. What should be the memory allocations I use in order to handle this workload?</div></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-06-24 17:05</div>
+            <div class="timeline-body"><p>I looked into this briefly, but the existing Aho-Corasick optimization is a giant hack. Ideally this would be automatically handled by the regex engine. But if I can't make that work, then we should try to make the optimization in ripgrep a bit more robust.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-24 19:34</div>
+            <div class="timeline-body"><p>I took another quick peek at this and I think the right way to go about this would be to add an optimization in the meta regex engine in <code>regex-automata</code> that specifically looks for patterns like <code>&lt;look-around-assertion&gt;(alternation|of|literals)&lt;look-around-assertion&gt;</code>. And then create a prefilter for the alternation of literals. This has the benefit of working for both the <code>-x</code> and <code>-w</code> flags.</p>
+<p>This wasn't possible before because the old regex engine didn't know how to resolve look-around assertions after a prefilter match.</p>
+<p>One alternative that would be worth exploring is to see whether the existing literal extraction can be augmented for this case. It somewhat intentionally does not handle this case because it tries to keep its literal sets small, since large literal sets tend to be counter-productive.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:33 UTC
+    </footer>
+</body>
+</html>

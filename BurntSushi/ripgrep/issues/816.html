@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>When using --hidden and PATH, ignored subdirs of .hidden shown if hidden path part of ignored-string - BurntSushi/ripgrep #816</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>When using --hidden and PATH, ignored subdirs of .hidden shown if hidden path part of ignored-string</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/816">#816</a>
+        opened by <a href="https://github.com/unhammer">@unhammer</a>
+        on 2018-02-18 09:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/unhammer">@unhammer</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>$ rg --version
+ripgrep 0.8.0 (rev 23d1b91ead)
++SIMD -AVX
+</code></pre>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Xubuntu 17.10</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>The behaviour of --hidden when using fully specified ignore-paths is
+confusing, possibly a bug since it's inconsistent with
+partially-specified ignore-paths (or I'm not sure what the intended
+behaviour is).</p>
+<p>In short, it seems that ignored subdirectories of hidden directories
+are shown if they are specified in <code>.gitignore</code> prefixed with the
+hidden directory <em>and</em> a PATH argument is given to rg.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>Download and unzip
+<a href="https://github.com/BurntSushi/ripgrep/files/1734559/repro.zip">repro.zip</a>
+where <code>.gitignore</code> contains</p>
+<pre><code>/.hidden/ignored
+relativelyignored</code></pre>
+<p>and the reproduction script <code>repro.sh</code> contains</p>
+<pre><code>rg -l          -- '[k]ake'   # as expected
+rg -l          -- '[k]ake' . # as expected
+rg -l --hidden -- '[k]ake'   # as expected
+rg -l --hidden -- '[k]ake' . # wat</code></pre>
+<p>where the last command has the unexpected output.</p>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<pre><code>$ rg --debug -l --hidden -- '[k]ake' .
+DEBUG/grep::search/grep/src/search.rs:195: regex ast:
+Concat(
+    [
+        Class(
+            CharClass {
+                ranges: [
+                    ClassRange {
+                        start: 'k',
+                        end: 'k'
+                    }
+                ]
+            }
+        ),
+        Literal {
+            chars: [
+                'a',
+                'k',
+                'e'
+            ],
+            casei: false
+        }
+    ]
+)
+DEBUG/grep::literals/grep/src/literals.rs:38: literal prefixes detected: Literals { lits: [Complete(kake)], limit_size: 250, limit_class: 10 }
+DEBUG/globset/globset/src/lib.rs:401: built glob set; 1 literals, 1 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+file
+.hiddenfile
+DEBUG/ignore::walk/ignore/src/walk.rs:1392: ignoring ./.hidden/relativelyignored: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;relativelyignored&quot;, actual: &quot;**/relativelyignored&quot;, is_whitelist: false, is_only_dir: false })))
+shown/file
+.hidden/file
+.hidden/ignored/file</code></pre>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>I would've expected ignored directories to have stayed ignored even
+though they're inside hidden directories even if I specified --hidden
+(I rarely if ever want to make any distinction between hidden and
+non-hidden directories as regards <code>rg</code>, I use <code>.gitignore</code> or
+<code>.ignore</code> for when I want <code>rg</code> to not show things).</p>
+<p>Note that, confusingly, the file inside <code>relativelyignored</code> inside
+<code>.hidden</code> is <em>not</em> shown even when using both <code>--hidden</code> and a PATH.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "When using --hidden and PATH, ignored subdirs of .hidden shown iff full path ignored" to "When using --hidden and PATH, ignored subdirs of .hidden shown if hidden path part of ignored-string" by @unhammer on 2018-02-18 09:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-02-18 09:50</div>
+            <div class="timeline-body"><p>I think this is the same as #807, which was fixed just the other day. <code>rg</code> built from current <code>master</code> produces this output:</p>
+<pre><code>% \rg -j1 -l '[k]ake'
+file
+shown/file
+% \rg -j1 -l '[k]ake' .
+file
+shown/file
+
+% \rg -j1 -l --hidden '[k]ake'
+.hidden/file
+.hiddenfile
+file
+shown/file
+% \rg -j1 -l --hidden '[k]ake' .
+.hidden/file
+.hiddenfile
+file
+shown/file
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/unhammer">@unhammer</a> on 2018-02-18 10:03</div>
+            <div class="timeline-body"><p>Oh, somehow I missed that issue when looking :-S It seems from your testing that this can be closed (I haven't got a rust env here so I'll take your word for it). Sorry for the noise!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @unhammer on 2018-02-18 10:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2018-02-20 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2018-02-20 12:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:27 UTC
+    </footer>
+</body>
+</html>

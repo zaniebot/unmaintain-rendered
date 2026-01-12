@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--files flag tries to interpret some arguments as regexes - BurntSushi/ripgrep #326</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--files flag tries to interpret some arguments as regexes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/326">#326</a>
+        opened by <a href="https://github.com/n00bmind">@n00bmind</a>
+        on 2017-01-16 09:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/n00bmind">@n00bmind</a></div>
+            <div class="timeline-body"><p>Hi.
+When trying to integrate your wonderful tool inside vim using 'let g:ctrlp_user_command = ...' I always got an error back because it seems that CtrlP always sends the path in windows format, which rg doesn't like, because apparently it tries to interpret the path as a regex (I checked this on the command line).</p>
+<p>Strangely enough, even when setting 'shellslash' to on, the behaviour doesn't change (I'm gonna open an issue with CtrlP about this), so I had to resort to a custom batch script that substitutes the backslashes with forward slashes. Hacky to say the least.. :P</p>
+<p>I think backslash support in Windows should be improved. I'm surprised nobody had problems with this before.. I don't know what the best approach would be, though. Maybe a specific switch or marker char that would mean &quot;use this verbatim&quot; or something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-16 10:31</div>
+            <div class="timeline-body"><p>Thanks for reporting this!</p>
+<p>I'll be honest, I have no idea what you're talking about or how to reproduce the problem. ripgrep should have no problems with Windows paths on Windows.</p>
+<p>Could you please try to reproduce the issue outside of ctrlp/vim? Also, could you please include other basic information like your ripgrep version and environment? E.g., cygwin or native Windows?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/n00bmind">@n00bmind</a> on 2017-01-16 18:26</div>
+            <div class="timeline-body"><p>Of course I tried in the command line. In fact that's how I found out / worked around the problem.
+If I enter this in my terminal:
+<code>&gt;rg --files .\repo\newrepo</code>
+all I get is &quot;Literal '\n' not allowed&quot;.
+If I do forward slashes instead I get the expected result.
+I'm using ripgrep 0.3.2.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-17 15:46</div>
+            <div class="timeline-body"><p>It sounds like you're trying to type a file path for your regex?</p>
+<p>Could you please provide more details about your environment? Are you in cygwin? A native console?</p>
+<p>I've certainly used paths like <code>foo\bar\baz</code> on Windows before with ripgrep and it works just fine. (I don't have a Windows machine currently available to test. It will have to wait until I get home.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/n00bmind">@n00bmind</a> on 2017-01-17 16:47</div>
+            <div class="timeline-body"><p>This is a normal windows console, yes.
+I'm merely providing a path as specified in this example from the 'usage' message:
+<code>rg [OPTIONS] --files [&lt;path&gt; ...]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-18 00:42</div>
+            <div class="timeline-body"><p>I can't reproduce this problem on ripgrep 0.4.0. I can run <code>rg --files .\some\path</code> and get the expected output. Note that <code>rg .\repo\newrepo</code> shows the error you've reported which is <strong>correct</strong>.</p>
+<p>Can you please provide additional information?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-01-18 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ErrEoE">@ErrEoE</a> on 2017-01-18 07:20</div>
+            <div class="timeline-body"><p>This is my test result,
+<img src="https://cloud.githubusercontent.com/assets/14369333/22054636/886d94fa-dd91-11e6-96e3-20fa66c05275.png" alt="test" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/n00bmind">@n00bmind</a> on 2017-01-18 09:03</div>
+            <div class="timeline-body"><p>Please note that I also used the '--files' flag, so ripgrep should interpret the rest as a path, isn't that right?
+What do yo mean the error is &quot;correct&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-18 11:58</div>
+            <div class="timeline-body"><p>@chopsueysensei I'm trying to figure out the cause of the bug you're reporting. Sometimes the cause of bugs is that the report is either flawed in some way or I've misunderstood it (i.e., &quot;user error&quot; bugs). I'm trying to rule out that possibility.</p>
+<p>I will be very clear. This is expected and correct output, because <code>.\repo\newrepo</code> is interpreted as a regex and not a file path:</p>
+<pre><code>$ rg '.\repo\newrepo'
+Literal '\n' not allowed.
+</code></pre>
+<p>But this is unexpected and <em>incorrect</em> output because <code>.\repo\newrepo</code> is seemingly interpreted as a regex when it should be interpreted as a file path:</p>
+<pre><code>$ rg --files '.\repo\newrepo'
+Literal '\n' not allowed.
+</code></pre>
+<p>However, I <em>cannot</em> reproduce this problem. Given the relative simplicity of the invocation, this led me to try to rule out user error.</p>
+<p>I don't have any idea as to what's actually wrong yet. This bug doesn't make any sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-18 12:08</div>
+            <div class="timeline-body"><p>Interesting. While I couldn't reproduce this on Windows, I can seem to reproduce it on Linux:</p>
+<pre><code>$ rg --files '.\repo\newrepo'
+Literal '\n' not allowed.
+</code></pre>
+<p>Weird. I should be able to track down the cause of the problem now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/n00bmind">@n00bmind</a> on 2017-01-18 13:00</div>
+            <div class="timeline-body"><p>I understand your motivations, of course. But, as I noted, I was using the '--files' switch so indeed it seems as if it still wanted to interpret what should be a path as a regex instead.
+I'm glad you have something to work on, now. Please let me know if there's anything I can try to help you track this down..</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/speedyleion">@speedyleion</a> on 2017-01-26 15:07</div>
+            <div class="timeline-body"><p>A slight workaround if you do want it to work in ctrl-p</p>
+<pre><code>    let g:ctrlp_user_command = 'rg --files --color never &quot;&quot; %s'
+</code></pre>
+<p>This will have a stray <code>: The system cannot find the path specified. (os error 3)</code> for the extra quotes but it will still build the list with the correct path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dfbrown">@dfbrown</a> on 2017-02-03 21:33</div>
+            <div class="timeline-body"><p>Another workaround is to add the -F flag so it treats patterns as literal strings instead of as regex. So for ctrl-p on windows I use</p>
+<pre><code>let g:ctrlp_user_command ='rg -F --files %s'</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "RG inside Ctrlp/vim fails due to backslashes in Windows" to "--files flag tries to interpret some arguments as regexes" by @BurntSushi on 2017-02-18 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-02-18 20:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-18 20:35</div>
+            <div class="timeline-body"><p>@dfbrown Clever hack! This bug should be fixed in the next release. :-)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:01 UTC
+    </footer>
+</body>
+</html>

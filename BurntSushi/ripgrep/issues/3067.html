@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>.gitignore logic is not followed - BurntSushi/ripgrep #3067</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>.gitignore logic is not followed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3067">#3067</a>
+        opened by <a href="https://github.com/savchenko">@savchenko</a>
+        on 2025-06-13 00:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/savchenko">@savchenko</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[x] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<pre><code>ripgrep 14.1.1
+
+features:+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2
+
+PCRE2 10.43 is available (JIT is available)
+</code></pre>
+<h2>Setup</h2>
+<ul>
+<li>Git repository at <code>$HOME/mygitrepo</code></li>
+<li><code>.gitignore</code> file at <code>$HOME/mygitrepo/.gitignore</code>, contains <code>foobar/debug</code></li>
+<li><code>$HOME/mygitrepo/foobar/some/debug/flag</code> file, contains <code>baz</code></li>
+<li><code>$HOME/mygitrepo/foobar/debug/flag2</code> file, also contains <code>baz</code></li>
+</ul>
+<p>Repository filetree:</p>
+<pre><code>.
+└── foobar
+    ├── debug
+    │   └── flag2
+    └── some
+        └── debug
+            └── flag
+</code></pre>
+<h2>Walkthrough</h2>
+<p>Now, <code>git add foobar/ &amp;&amp; git status --branch --short</code> shows:</p>
+<pre><code>## master
+A  foobar/some/debug/flag
+</code></pre>
+<p>Which is correct, as we want to ignore folder <code>debug</code> only if it is <code>$HOME/mygitrepo/foobar/debug</code> (child node of the <code>foobar</code> folder located in the <code>$GITROOT</code>), not if it is <code>$HOME/mygitrepo/foobar/some/debug</code> (folder named <code>debug</code> elsewhere in the repository).</p>
+<p>Now let's try to use <code>rg</code> here: <code>cd &quot;$HOME/mygitrepo/foobar &amp;&amp; rg baz&quot;</code></p>
+<pre><code>rg: No files were searched, which means ripgrep probably applied a filter you didn't expect.
+Running with --debug will show why files are being skipped.
+</code></pre>
+<p>OK, sure: <code>rg --debug &quot;baz&quot; 2&gt;&amp;1 | grep debug</code></p>
+<pre><code>rg: DEBUG|ignore::walk|/usr/share/cargo/registry/ignore-0.4.23/src/walk.rs:1799: ignoring ./debu: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/home/user/mygitrepo/.gitignore&quot;), original: &quot;foobar/debug&quot;, actual: &quot;foobar/debug&quot;, is_whitelist: false, is_only_dir: false })))
+rg: DEBUG|ignore::walk|/usr/share/cargo/registry/ignore-0.4.23/src/walk.rs:1799: ignoring ./somedebug: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/home/user/mygitrepo/.gitignore&quot;), original: &quot;foobar/debug&quot;, actual: &quot;foobar/debug&quot;, is_whitelist: false, is_only_dir: false })))
+Running with --debug will show why files are being skipped.
+</code></pre>
+<p>What's going on? Let's try to remove the <code>.gitignore</code> temporarily: <code>rm ../.gitignore &amp;&amp; rg baz</code>:</p>
+<pre><code>some/debug/flag
+baz
+
+debug/flag2
+baz
+</code></pre>
+<p>Which leads us to unclear logic where <code>foobar/debug</code> in the <code>.gitignore</code> makes <code>rg</code> to ignore <code>foobar/some/debug/flag</code>.</p>
+<h3>How did you install ripgrep?</h3>
+<p>apt</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Debian 13</p>
+<h3>Describe your bug.</h3>
+<p>ripgrep ignores files that should not be ignored</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>ripgrep treats <code>.gitignore</code> differently compared to <code>git</code></p>
+<h3>What is the actual behavior?</h3>
+<pre><code>rg: DEBUG|ignore::walk|/usr/share/cargo/registry/ignore-0.4.23/src/walk.rs:1799: ignoring ./debu: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/home/user/mygitrepo/.gitignore&quot;), original: &quot;foobar/debug&quot;, actual: &quot;foobar/debug&quot;, is_whitelist: false, is_only_dir: false })))
+rg: DEBUG|ignore::walk|/usr/share/cargo/registry/ignore-0.4.23/src/walk.rs:1799: ignoring ./somedebug: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/home/user/mygitrepo/.gitignore&quot;), original: &quot;foobar/debug&quot;, actual: &quot;foobar/debug&quot;, is_whitelist: false, is_only_dir: false })))
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>ripgrep should have returned 2 matches</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/savchenko">@savchenko</a> on 2025-06-13 01:21</div>
+            <div class="timeline-body"><p>The bug appears to be fixed by <a href="https://patch-diff.githubusercontent.com/raw/BurntSushi/ripgrep/pull/2933.patch">#2933</a> which applies cleanly on top of <a href="https://github.com/BurntSushi/ripgrep/releases/tag/14.1.1">14.1.1</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MrGreenTea">@MrGreenTea</a> on 2025-10-09 08:50</div>
+            <div class="timeline-body"><p>I have a similar issue where ripgrep does NOT ignore files it should ignore depending on from which directory the search is started:</p>
+<p>Correct when run from project root (inside a monorepo, so one level deep, i.e. git root is <code>/root</code> and we're in <code>/root/directus</code></p>
+<pre><code>&gt; rg schedule -l
+pnpm-lock.yaml
+docs/how_to_generate_activities.md
+schema-sync/data/seed__multiple_choice_activity_definition.json
+schema-sync/data/directus_operations.json
+schema-sync/data/directus_permissions.json
+schema-sync/data/directus_flows.json
+schema-sync/data/schema/multiple_choice_activity_definition.json
+schema-sync/data/schema/weekly_schedules_question_pools.json
+schema-sync/data/schema/courses.json
+schema-sync/data/schema/weekly_schedules.json
+extensions/news-notification/src/index.ts
+extensions/activity-notifications/src/index.ts
+</code></pre>
+<p>But i'm only interested in the code of extensions, so I would expect this to work:</p>
+<pre><code>&gt; rg schedule extensions/ -l
+extensions/news-notification/src/index.ts
+extensions/activity-notifications/src/index.ts
+extensions/push-notifications/dist/index.js
+extensions/news-notification/dist/index.js
+extensions/activity-notifications/dist/index.js
+</code></pre>
+<p>But suddenly it searches ignored build artifacts (<code>dist/index.js</code>) which messes up the results.</p>
+<p>Would this be caused by the same issue or should I create a separate one?</p>
+<p>The relevant <code>.gitignore</code> from <code>/root/directus</code>:</p>
+<pre><code class="language-gitignore">extensions/*/node_modules
+extensions/*/dist
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2025-10-11 01:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-10-11 02:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:55 UTC
+    </footer>
+</body>
+</html>

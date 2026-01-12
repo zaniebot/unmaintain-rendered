@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add RISC-V (riscv64gc-unknown-linux-gnu) CI and release artifacts - BurntSushi/ripgrep #3165</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add RISC-V (riscv64gc-unknown-linux-gnu) CI and release artifacts</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/3165">#3165</a>
+        opened by <a href="https://github.com/mariano-m13">@mariano-m13</a>
+        on 2025-10-04 05:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mariano-m13">@mariano-m13</a></div>
+            <div class="timeline-body"><p><strong>This PR adds official riscv64 Linux release artifacts so RISC-V developers can run ripgrep natively without cross-compiling.</strong></p>
+<h2>Context &amp; Purpose</h2>
+<p><strong>Why</strong>: ripgrep ships binaries for many platforms but not riscv64. Adding a riscv64 GNU artifact gives day-zero parity for RISC-V dev boards and CI and avoids fragmentation. Microsoft's ripgrep-prebuilt already demonstrates feasibility; upstreaming closes the gap and helps hardware teams run standard tools natively without cross-compiling.</p>
+<p><strong>Value for RISC-V hardware teams</strong>: Native rg on boards/SoCs speeds bring-up, enables native/emulated CI jobs on riscv64, and signals downstream packagers to follow.</p>
+<p><strong>Scope philosophy</strong>: Keep it small and safe — CI build + smoke test + GNU release artifacts + a short docs line. No feature changes, no perf guarantees, no musl until explicitly requested.</p>
+<h2>Changes</h2>
+<ul>
+<li><strong>CI</strong>: Added <code>riscv64gc-unknown-linux-gnu</code> target to the CI workflow matrix, following the same cross-compilation pattern as other architectures (aarch64, armv7, powerpc64, s390x)</li>
+<li><strong>Release</strong>: Added <code>riscv64gc-unknown-linux-gnu</code> target to the release workflow with proper stripping and QEMU emulation for generating completions and man pages</li>
+<li><strong>Docs</strong>: Added RISC-V Linux installation instructions to README.md with example commands for downloading and installing precompiled binaries</li>
+</ul>
+<h2>Testing &amp; Verification</h2>
+<p><strong>Local Testing</strong>: Built and tested the riscv64gc-unknown-linux-gnu target locally using <code>cross</code>:</p>
+<ul>
+<li>Debug build completed successfully in 18.6s</li>
+<li>Release build completed successfully in 39.6s</li>
+<li>Binary verified as <code>ELF 64-bit LSB pie executable, UCB RISC-V, RVC, double-float ABI</code></li>
+<li>Successfully ran <code>rg --version</code> under QEMU emulation: <code>ripgrep 14.1.1</code></li>
+<li>Confirmed correct dynamic linking with GNU libc (<code>/lib/ld-linux-riscv64-lp64d.so.1</code>)</li>
+</ul>
+<p><strong>CI Verification</strong> (on merge):</p>
+<ul>
+<li>[ ] CI job successfully builds <code>riscv64gc-unknown-linux-gnu</code> target using cross</li>
+<li>[ ] CI job runs basic smoke tests under QEMU</li>
+<li>[ ] Tagged release includes both <code>.tar.gz</code> and <code>.zip</code> archives for riscv64</li>
+<li>[ ] Release artifacts include proper <code>sha256sum.txt</code> checksums</li>
+<li>[ ] Binary stripping works correctly via Docker cross container</li>
+<li>[ ] Shell completions and man pages are generated via QEMU emulation</li>
+</ul>
+<h2>Notes</h2>
+<ul>
+<li><strong>GNU only</strong>: This PR targets <code>riscv64gc-unknown-linux-gnu</code> (glibc-based). musl support can be added in a future PR if desired</li>
+<li><strong>Cross-compilation</strong>: Uses the <code>cross</code> tool with QEMU for testing, consistent with other non-x86 targets</li>
+<li><strong>No source changes</strong>: This is purely a CI/release/docs change with zero modifications to Rust code or features</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>README.md</code>:398 on 2025-10-04 12:21</div>
+            <div class="timeline-body"><p>This section should be removed. The GitHub release binaries are covered at the top.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>tests/util.rs</code>:53 on 2025-10-04 12:22</div>
+            <div class="timeline-body"><p>Why did you add this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-10-04 12:23</div>
+            <div class="timeline-body"><p>I think I'm okay to accept this, but the typical problem with adding targets like this is that the release pipeline doesn't work. Testing it is annoying. I'm happy to do a little work at release time if it doesn't work as-is, but I reserve the right to remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mariano-m13">@mariano-m13</a> on <code>README.md</code>:398 on 2025-10-04 16:11</div>
+            <div class="timeline-body"><p>got it, sorry. For testing, I'm hoping to have some time to try on real hardware soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mariano-m13">@mariano-m13</a> reviewed on 2025-10-04 16:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mariano-m13">@mariano-m13</a> reviewed on 2025-10-04 16:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mariano-m13">@mariano-m13</a> on <code>tests/util.rs</code>:53 on 2025-10-04 16:23</div>
+            <div class="timeline-body"><p>the tests compressed_lz4, compressed_brotli, and compressed_zstd were failing on RISC-V with exit code 2 and the error particularly was: rg: sherlock.zst: <stderr is empty>. So I added a helper that tests actual decompression capability before running the test.</p>
+<p>But I do think a better solution to avoid runtime overhead for all platforms would be to skip these specific tests on RISC-V with #[cfg]. Because these tools are x86_64 binaries, they can't execute inside the RISC-V QEMU environment, and bringing in RISC-V versions of them would maybe add more complexity than we want.</p>
+<p>I added #[cfg(not(target_arch = &quot;riscv64&quot;))] to skip these 3 tests at compile-time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-10-05 12:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>README.md</code>:398 on 2025-10-05 12:37</div>
+            <div class="timeline-body"><p>Why did you mark this as resolved without removing this section?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mariano-m13">@mariano-m13</a> reviewed on 2025-10-06 06:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mariano-m13">@mariano-m13</a> on <code>README.md</code>:398 on 2025-10-06 06:32</div>
+            <div class="timeline-body"><p>oh my bad, forgot to drop the commit 1c6666a. Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-10-11 00:40</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-10-11 00:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-10-11 00:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-16 02:08</div>
+            <div class="timeline-body"><p>Sorry, but this ended up failing during the release CI workflow: https://github.com/BurntSushi/ripgrep-release-test/actions/runs/18547794531/job/52869080774</p>
+<p>So I'm going to remove this artifact. It's not worth my headache.</p>
+<p>I'm open to adding this back in the future, but someone else will need to take on the burden of testing it and demonstrating that it works before I will merge it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/OctopusET">@OctopusET</a> on 2025-12-16 14:11</div>
+            <div class="timeline-body"><p>test seems failing on risc-v because of glibc 2.34+ bug. Not because of riscv64.</p>
+<p>It returns true even when it fails</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/OctopusET">@OctopusET</a> on 2025-12-16 18:04</div>
+            <div class="timeline-body"><p>It's more like limitations of QEMU not a 'bug'</p>
+<p>See also
+https://github.com/rust-lang/rust/issues/90825</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/OctopusET">@OctopusET</a> on 2025-12-25 15:48</div>
+            <div class="timeline-body"><p>This CI failure can be fixed after this bug is resolved for Ubuntu 22.04 or update to Ubuntu 24.04. Anyways cross-rs should be updated either.</p>
+<p>https://sourceware.org/bugzilla/show_bug.cgi?id=30237</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:24 UTC
+    </footer>
+</body>
+</html>

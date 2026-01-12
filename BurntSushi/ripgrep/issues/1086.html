@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>globset: case-insensitive matching of literal globs is unnecessarily slow - BurntSushi/ripgrep #1086</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>globset: case-insensitive matching of literal globs is unnecessarily slow</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1086">#1086</a>
+        opened by <a href="https://github.com/Deewiant">@Deewiant</a>
+        on 2018-10-17 12:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Deewiant">@Deewiant</a></div>
+            <div class="timeline-body"><p>Case-insensitive matching forces regex matching, and with a large amount of patterns this can be noticeably slow. (Benchmark below.) It's also easy to hit the <a href="https://github.com/BurntSushi/ripgrep/blob/master/FAQ.md#how-do-i-get-around-the-regex-size-limit">regex size limit</a> merely by enabling case insensitivity.</p>
+<p>I ran into this since I had a small amount of <code>*.foo</code>-style patterns, for which I wanted case insensitivity, alongside a fairly large amount of literal patterns for which I didn't really care, so for simplicity I enabled case insensitivity for everything. Eventually I ran into the regex size limit and added a simple hack: I only enabled case insensitivity for strings containing the <code>*</code> character. This solved my problem and naturally also considerably sped up matching.</p>
+<p>It should be possible to optimize case-insensitive literal patterns similarly to case-sensitive ones, by keeping a separate set dedicated to them. Here's a Criterion benchmark that uses <code>ignore::overrides</code> (I used the API I was most familiar with for convenience but I'm sure the results can be reproduced with just <code>globset</code>) for both case-sensitive and case-insensitive matching, and demonstrates the performance of a <code>BTreeSet&lt;UniCase&gt;</code> (from <a href="https://crates.io/crates/unicase"><code>unicase</code></a>) as a fast case-insensitive literal matcher:</p>
+<pre><code class="language-rust">#[macro_use]
+extern crate criterion;
+extern crate ignore;
+extern crate unicase;
+
+use std::collections::BTreeSet;
+use std::rc::Rc;
+
+use criterion::Criterion;
+use ignore::overrides;
+use unicase::UniCase;
+
+fn create_overrides(case_insensitive: bool) -&gt; overrides::Override {
+    let mut builder = overrides::OverrideBuilder::new(&quot;main-dir&quot;);
+    builder.case_insensitive(case_insensitive).unwrap();
+    for i in 0..0x6000 {
+        builder.add(&amp;format!(&quot;/{:x}&quot;, i)).unwrap();
+    }
+    builder.build().unwrap()
+}
+
+fn bench(c: &amp;mut Criterion, case_insensitive: bool) {
+    let overrides = Rc::new(create_overrides(case_insensitive));
+    {
+        let overrides = overrides.clone();
+        c.bench_function(
+            &amp;format!(&quot;no-match case_insensitive={}&quot;, case_insensitive),
+            move |b| b.iter(|| assert!(overrides.matched(&quot;something-else&quot;, false).is_ignore())),
+        );
+    }
+    {
+        let overrides = overrides.clone();
+        c.bench_function(
+            &amp;format!(&quot;near-match case_insensitive={}&quot;, case_insensitive),
+            move |b| b.iter(|| assert!(overrides.matched(&quot;4abcnope&quot;, false).is_ignore())),
+        );
+    }
+    {
+        let overrides = overrides.clone();
+        c.bench_function(
+            &amp;format!(&quot;match case_insensitive={}&quot;, case_insensitive),
+            move |b| b.iter(|| assert!(overrides.matched(&quot;5ffa&quot;, false).is_whitelist())),
+        );
+    }
+}
+
+fn bench_sensitive(c: &amp;mut Criterion) {
+    bench(c, false);
+}
+
+fn bench_insensitive(c: &amp;mut Criterion) {
+    bench(c, true);
+}
+
+fn bench_insensitive_simulated(c: &amp;mut Criterion) {
+    let mut set = BTreeSet::new();
+    for i in 0..0x6000 {
+        set.insert(UniCase::new(format!(&quot;{:x}&quot;, i)));
+    }
+    let set = Rc::new(set);
+    {
+        let set = set.clone();
+        c.bench_function(&amp;format!(&quot;no-match simulated case-insensitive&quot;), move |b| {
+            b.iter(|| assert!(!set.contains(&amp;UniCase::new(&quot;something-else&quot;.to_owned()))))
+        });
+    }
+    {
+        let set = set.clone();
+        c.bench_function(
+            &amp;format!(&quot;near-match simulated case-insensitive&quot;),
+            move |b| b.iter(|| assert!(!set.contains(&amp;UniCase::new(&quot;4abcnope&quot;.to_owned())))),
+        );
+    }
+    {
+        let set = set.clone();
+        c.bench_function(&amp;format!(&quot;match simulated case-insensitive&quot;), move |b| {
+            b.iter(|| assert!(set.contains(&amp;UniCase::new(&quot;5ffa&quot;.to_owned()))))
+        });
+    }
+}
+
+criterion_group!(
+    benches,
+    bench_sensitive,
+    bench_insensitive,
+    bench_insensitive_simulated
+);
+criterion_main!(benches);
+</code></pre>
+<p>One set of results I got from this:</p>
+<pre><code>no-match case_insensitive=false
+                        time:   [288.10 ns 288.36 ns 288.66 ns]
+Found 23 outliers among 100 measurements (23.00%)
+  1 (1.00%) low severe
+  2 (2.00%) high mild
+  20 (20.00%) high severe
+
+near-match case_insensitive=false
+                        time:   [251.46 ns 251.73 ns 252.10 ns]
+Found 12 outliers among 100 measurements (12.00%)
+  12 (12.00%) high severe
+
+match case_insensitive=false
+                        time:   [327.48 ns 328.12 ns 328.91 ns]
+Found 16 outliers among 100 measurements (16.00%)
+  1 (1.00%) low mild
+  3 (3.00%) high mild
+  12 (12.00%) high severe
+
+no-match case_insensitive=true
+                        time:   [34.779 us 34.786 us 34.795 us]
+Found 15 outliers among 100 measurements (15.00%)
+  1 (1.00%) low severe
+  1 (1.00%) low mild
+  1 (1.00%) high mild
+  12 (12.00%) high severe
+
+near-match case_insensitive=true
+                        time:   [2.1756 ms 2.1861 ms 2.1981 ms]
+Found 12 outliers among 100 measurements (12.00%)
+  7 (7.00%) high mild
+  5 (5.00%) high severe
+
+match case_insensitive=true
+                        time:   [2.1379 ms 2.1719 ms 2.2157 ms]
+Found 12 outliers among 100 measurements (12.00%)
+  4 (4.00%) high mild
+  8 (8.00%) high severe
+
+no-match simulated case-insensitive
+                        time:   [179.83 ns 180.32 ns 180.81 ns]
+Found 10 outliers among 100 measurements (10.00%)
+  2 (2.00%) low mild
+  5 (5.00%) high mild
+  3 (3.00%) high severe
+
+near-match simulated case-insensitive
+                        time:   [157.66 ns 158.36 ns 159.19 ns]
+Found 3 outliers among 100 measurements (3.00%)
+  1 (1.00%) high mild
+  2 (2.00%) high severe
+
+match simulated case-insensitive
+                        time:   [228.11 ns 228.82 ns 229.55 ns]
+Found 3 outliers among 100 measurements (3.00%)
+  1 (1.00%) high mild
+  2 (2.00%) high severe
+</code></pre>
+<p>So, for this particular contrived case, we see that performance relative to the case-sensitive looks as follows:</p>
+<p>||case-sensitive|case-insensitive|<code>BTreeSet&lt;UniCase&gt;</code>
+-|-|-|-
+|no match|1.00|120|0.62
+|near match|1.00|8680|0.63
+|match|1.00|6620|0.70</p>
+<p>Of course the fact that <code>UniCase</code> is faster is due to the fact that we're doing less work here by only incorporating one low-level aspect instead of going through the full matching process. This is also all in ASCII and doesn't actually test cross-case matching, alongside a bunch of other caveats. Still, I'd expect this to be representative in the sense that the &quot;actual&quot; performance would at least be in the same order of magnitude instead of 2–4 orders away, so there's definitely room to improve.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-10-17 12:59</div>
+            <div class="timeline-body"><p>Thanks for the great analysis! I'm not sure when I'll personally dive into this, but PRs would be welcome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2018-10-17 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @BurntSushi on 2018-10-17 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">icebox</span> added by @BurntSushi on 2019-01-27 18:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:43 UTC
+    </footer>
+</body>
+</html>

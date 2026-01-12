@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParallelVisitor being called multiple times with the same path - BurntSushi/ripgrep #1539</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ParallelVisitor being called multiple times with the same path</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1539">#1539</a>
+        opened by <a href="https://github.com/orf">@orf</a>
+        on 2020-04-03 18:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/orf">@orf</a></div>
+            <div class="timeline-body"><p>I'm experimenting with the <a href="https://docs.rs/ignore/0.4.14/ignore/trait.ParallelVisitor.html">ParallelVisitor</a> feature of the ignore crate, and I came across some surprising behaviour:</p>
+<pre><code class="language-rust">fn main() {
+    let mut walker = WalkBuilder::new(path);
+    walker
+        .hidden(false)
+        .parents(false)
+        .ignore(false)
+        .git_ignore(false)
+        .git_global(false)
+        .git_exclude(false)
+        .follow_links(false);
+
+    walker.add(PathBuf::from(&quot;... some path ..&quot;));
+    let mut collection_manager = CollectorManager::new();
+    walker
+        .threads(10)
+        .build_parallel()
+        .visit(&amp;mut collection_manager);
+}
+
+struct CollectorManager {}
+
+impl CollectorManager {
+    pub fn new() -&gt; CollectorManager {
+        CollectorManager {}
+    }
+}
+
+impl&lt;'a&gt; ParallelVisitorBuilder&lt;'a&gt; for CollectorManager {
+    fn build(&amp;mut self) -&gt; Box&lt;dyn ParallelVisitor + 'a&gt; {
+        Box::new(Collector::new())
+    }
+}
+
+struct Collector {}
+
+impl Collector {
+    pub fn new() -&gt; Collector {
+        Collector {}
+    }
+}
+
+impl ParallelVisitor for Collector {
+    fn visit(&amp;mut self, entry: Result&lt;DirEntry, Error&gt;) -&gt; WalkState {
+        println!(&quot;{:?} = {:?}&quot;, std::thread::current().id(), entry);
+        WalkState::Continue
+    }
+}
+</code></pre>
+<p>On my machine, when run against a simple directory structure like</p>
+<pre><code>a-directory/1/saved_model.pb
+a-directory/2/saved_model.pb
+a-directory/3/saved_model.pb
+</code></pre>
+<p>I can see from the output that several threads both visit the same file. In the case below thread 3 and 4 both visit <code>a-directory/2/saved_model.pb</code>:</p>
+<pre><code>ThreadId(4) = Ok(DirEntry { dent: Raw(DirEntryRaw { path: &quot;a-directory/3/saved_model.pb&quot;, follow_link: false, depth: 3 }), err: None })
+ThreadId(3) = Ok(DirEntry { dent: Raw(DirEntryRaw { path: &quot;a-directory/2/saved_model.pb&quot;, follow_link: false, depth: 3 }), err: None })
+ThreadId(4) = Ok(DirEntry { dent: Raw(DirEntryRaw { path: &quot;a-directory/1/saved_model.pb&quot;, follow_link: false, depth: 3 }), err: None })
+ThreadId(3) = Ok(DirEntry { dent: Raw(DirEntryRaw { path: &quot;a-directory/3/saved_model.pb&quot;, follow_link: false, depth: 3 }), err: None })
+ThreadId(4) = Ok(DirEntry { dent: Raw(DirEntryRaw { path: &quot;a-directory/2/saved_model.pb&quot;, follow_link: false, depth: 3 }), err: None })
+ThreadId(2) = Ok(DirEntry { dent: Raw(DirEntryRaw { path: &quot;a-directory/1/saved_model.pb&quot;, follow_link: false, depth: 3 }), err: None })
+</code></pre>
+<p>This behaviour is surprising - I assumed that each thread would visit a given <code>DirEntry</code> once. Is this a bug?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-04-03 18:51</div>
+            <div class="timeline-body"><p>Please provide a <em>complete</em> code sample that compiles and runs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/orf">@orf</a> on 2020-04-03 18:55</div>
+            <div class="timeline-body"><p>Forgive me, I'm a complete idiot. I'm constructing the <code>WalkBuilder</code> with <code>path</code>, and I'm also passing it to <code>walker.add</code>.</p>
+<p>Sorry for wasting your time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @orf on 2020-04-03 18:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2020-04-03 18:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:09 UTC
+    </footer>
+</body>
+</html>

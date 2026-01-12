@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ignore: fix filtering searching subdir or .ignore in parent dir - BurntSushi/ripgrep #2933</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ignore: fix filtering searching subdir or .ignore in parent dir</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/2933">#2933</a>
+        opened by <a href="https://github.com/WalterScottYoung">@WalterScottYoung</a>
+        on 2024-11-15 11:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/WalterScottYoung">@WalterScottYoung</a></div>
+            <div class="timeline-body"><p>The previous code deleted too many parts of the path when constructing the absolute path, resulting in a shortened final path. This patch creates the correct absolute path by only removing the necessary parts.</p>
+<p>Fixes #2836 and  #2747 and #2731</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WalterScottYoung">@WalterScottYoung</a> on 2024-11-15 11:44</div>
+            <div class="timeline-body"><p>One thing to notice is that commit cad1f5f didn't seems to fully fix https://github.com/BurntSushi/ripgrep/issues/1757, the test in issue 1757 will fail if we add one more directory in the path. I don't know if we should reopen 1757 or something like that to note others about this?</p>
+<p>The following test from 1757 with &quot;onemore&quot; directory will fail before this fix.</p>
+<pre><code class="language-bash">mkdir tmp
+cd tmp
+mkdir rust
+mkdir -p rust/target/onemore
+echo needle &gt; rust/source.rs
+echo needle &gt; rust/target/onemore/rustdoc-output.html
+echo rust/target/onemore &gt; .ignore
+rg --files-with-matches needle
+rg --files-with-matches needle rust
+echo target &gt;&gt; .ignore
+rg --files-with-matches needle rust
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gstokkink">@gstokkink</a> on 2025-01-07 06:29</div>
+            <div class="timeline-body"><p>@BurntSushi do you have time to review/merge this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lucus16">@Lucus16</a> on 2025-02-03 12:53</div>
+            <div class="timeline-body"><p>I can confirm this fixes some bugs I was about to report where some files listed in gitignore glob rules were not excluded depending on the directory that <code>rg --files</code> was run from. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woess">@woess</a> on 2025-02-12 00:51</div>
+            <div class="timeline-body"><p>This PR also fixes https://github.com/BurntSushi/ripgrep/issues/2778.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/beeb">@beeb</a> on 2025-04-22 11:06</div>
+            <div class="timeline-body"><p>@BurntSushi sorry for the mention, my project is affected by the underlying bugs fixed in this PR. Would it be possible to review it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fenuks">@fenuks</a> on 2025-05-26 12:40</div>
+            <div class="timeline-body"><p>I'm also affected by this bug in ripgrep, but also in https://github.com/sharkdp/fd/issues/1506 which also depends on ignore crate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/reneleonhardt">@reneleonhardt</a> on 2025-07-01 06:32</div>
+            <div class="timeline-body"><p>Great work, thank you! 👍
+Just wondering, one test was enough for negation and nesting?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gstokkink">@gstokkink</a> on 2025-07-01 07:24</div>
+            <div class="timeline-body"><p>@BurntSushi any chance of a merge &amp; release?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WalterScottYoung">@WalterScottYoung</a> on 2025-07-03 12:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Great work, thank you! 👍
+Just wondering, one test was enough for negation and nesting?</p>
+</blockquote>
+<p>It's been some time and I don't really remember the detail of this, but I'm pretty sure that the original problem was cause by the path concatenation and the target file's relative depth to where ripgrep was called be positive or 0 or negative was the boardline that this  bug would be triggered, so only tests for those boardline scenarios was added, since more layer of dir won't matter as the bug would be triggered in the first nested layer of dir. Thank you for your question and you can add some more tests that you think is valuable  :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2025-07-06 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-09-20 01:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:17 UTC
+    </footer>
+</body>
+</html>

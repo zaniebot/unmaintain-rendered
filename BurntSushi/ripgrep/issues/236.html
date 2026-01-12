@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>limit search to specific namespaces and classes - BurntSushi/ripgrep #236</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>limit search to specific namespaces and classes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/236">#236</a>
+        opened by <a href="https://github.com/phipse">@phipse</a>
+        on 2016-11-16 11:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/phipse">@phipse</a></div>
+            <div class="timeline-body"><p>Hi,
+I'd like to be able to focus the search in a C++ code base to classes/functions in specific namespaces;
+Meaning, I'd like to do something like this:</p>
+<pre><code class="language-sh">rg ns::Foo ./path/
+</code></pre>
+<p>and get a result 'class Foo' defined in namespace 'ns' ; and no results of 'class Foo'  defined in other namespaces.</p>
+<p>Or if I am looking for a function 'fn' in class 'Bar', I'd like to do:</p>
+<pre><code class="language-sh">rg Bar::fn ./path/
+</code></pre>
+<p>and get not only a result for a member function definition outside the class declaration, which already contains the string &quot;Bar::fn&quot;, e.g.:</p>
+<pre><code class="language-c++">void Bar::fn(int a, int b) { ... }
+</code></pre>
+<p>but also results for a function definition 'fn' inside a class declaration e.g.:</p>
+<pre><code class="language-c++">class Bar {
+void fn(int a, int b) { ... }
+};
+</code></pre>
+<p>Is something like this already possible?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-16 11:50</div>
+            <div class="timeline-body"><p>This requires language aware search. As of right now, ripgrep is a <em>general purpose line oriented search tool</em>. Language aware search is not something ripgrep currently supports, and it's not really on the horizon either. Language aware search would require <em>significant effort</em>.</p>
+<p>The closest thing to your request (and it's admittedly not <em>that</em> close) is #95, which is about adding fulltext search to ripgrep. It doesn't have to be strictly language aware, but having language aware tokenizers could potentially improve the quality of results. However, language aware tokenizers is a totally different story than actually understanding language level concepts like classes or namespaces.</p>
+<p>Maybe something like this will appear in ripgrep (or a related tool) some day, but I'd expect that time scale to be measured in <em>years</em>. So I'm just going to close this for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-11-16 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-16 11:53</div>
+            <div class="timeline-body"><p>@phipse Out of curiosity, is there another tool you use that has this feature? (Other than something like a specific C++ IDE plugin or something.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phipse">@phipse</a> on 2016-11-16 12:22</div>
+            <div class="timeline-body"><p>No, there isn't, unfortunately. Is there a way to match the corresponding closing brace using ripgrep,  such that I can search for &quot;namespace Foo {.*}&quot; ?</p>
+<p>In my head it's basically this:</p>
+<pre><code>for each file in `rg -l &quot;namespace Foo&quot;`:
+do
+rg &quot;class Bar&quot; file
+done;
+</code></pre>
+<p>and in between count the opening and closing braces to limit the content of <code>file</code> to the namespace.
+A language aware tokenizer would be nice to have, but I think for my use case this might also be a little bit over the top.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-16 12:39</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there a way to match the corresponding closing brace using ripgrep, such that I can search for &quot;namespace Foo {.*}&quot; ?</p>
+</blockquote>
+<p>ripgrep is line-oriented. It doesn't support multi-line search. Stated more clearly: no part of a regex can ever match a <code>\n</code>.</p>
+<blockquote>
+<p>and in between count the opening and closing braces to limit the content of file to the namespace.</p>
+</blockquote>
+<p>In normal operation, ripgrep never actually holds the contents of an entire file in memory (unless it happens to be small enough to fit into ripgrep's buffer).</p>
+<blockquote>
+<p>A language aware tokenizer would be nice to have, but I think for my use case this might also be a little bit over the top.</p>
+</blockquote>
+<p>But the specification you've described <em>is</em> language aware. (I only mentioned a language aware <em>tokenizer</em> in the context of <em>fulltext search</em>. I agree that it is both insufficient and overkill at the same time for your problem.) More to the point, the implementation path you've described is also insufficient. You can't just count braces because they can appear inside of strings or comments where they have no significance.</p>
+<hr />
+<p>I will say this: I do continue to noodle on the possibility of multi-line search, because it is occasionally useful, and it could possibly bail you out too in a problem like this. There are unfortunately significant performance trade offs that come with multi-line search though (both time <em>and</em> memory), so it needs careful thought and probably won't happen soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phipse">@phipse</a> on 2016-11-16 12:55</div>
+            <div class="timeline-body"><p>Alright, thanks a lot for your thoughts.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:53 UTC
+    </footer>
+</body>
+</html>

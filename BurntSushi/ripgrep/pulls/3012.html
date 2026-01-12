@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ignore: fix confusing lifetimes in ParallelVisitor{,Builder} with an associated type - BurntSushi/ripgrep #3012</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ignore: fix confusing lifetimes in ParallelVisitor{,Builder} with an associated type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/3012">#3012</a>
+        opened by <a href="https://github.com/cosmicexplorer">@cosmicexplorer</a>
+        on 2025-03-06 09:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cosmicexplorer">@cosmicexplorer</a></div>
+            <div class="timeline-body"><h1>Problem</h1>
+<p>The docs for <a href="https://docs.rs/ignore/latest/ignore/struct.WalkParallel.html#method.visit"><code>WalkParallel::visit()</code></a> state the following:</p>
+<blockquote>
+<p>Typically, creating a custom visitor is useful if you need to perform some kind of cleanup once traversal is finished. This can be achieved by implementing <code>Drop</code> for your builder (or for your visitor, if you want to execute cleanup for every thread that is launched).</p>
+</blockquote>
+<p>However, by accepting an <code>&amp;mut dyn ParallelVisitorBuilder&lt;'_&gt;</code>, the <code>visit()</code> method makes it rather unclear when the builder's <code>Drop</code> method is called. There's also no example of this custom visitor usage in the repo, and all examples instead use the neighboring <code>.run()</code> method.</p>
+<p>It's also relatively unclear what the purpose of the lifetime <code>'s</code> in <code>ParallelVisitorBuilder&lt;'s&gt;</code> is--I understand it's supposed to just avoid the need to enforce a <code>'static</code> lifetime so we can use <code>std::thread::scope()</code>, but implementors may not know what to do with it. While looking to use this API, I was under the impression that the builder would be able to create visitors scoped to the builder's lifetime, but this ended up not being possible, because of the <code>&amp;mut self</code> requirement meaning that the builder can't hand out references to its own fields. This further increases confusion about where and how the <code>Drop</code> impl of the builder is supposed to get called.</p>
+<p>Finally, the API requires creating a <code>Box</code> where none is necessary. This is very unlikely to cause any performance issues, but is a little awkward.</p>
+<h1>Solution</h1>
+<ol>
+<li>Make the <code>ParallelVisitorBuilder</code> return a lifetime-annotated associated type <code>Self::Visitor&lt;'s&gt;</code>.</li>
+<li>Make the <code>build()</code> method return a concrete instance of <code>Self::Visitor</code>, scoped to the builder's own lifetime.</li>
+<li>Make the <code>WalkParallel::visit()</code> method accept an <code>impl ParallelVisitorBuilder</code>, which allows the user to move a builder into the <code>visit()</code> method so that the <code>Drop</code> method can be called immediately after the conclusion of the parallel traversal.</li>
+<li>Make the <code>WalkParallel::visit()</code> method return the <code>ParallelVisitorBuilder</code> argument after completion.</li>
+</ol>
+<h1>Result</h1>
+<p>The <code>.run()</code> and <code>.visit()</code> methods' signatures were modified, <strong>but this should make them strictly more general</strong>. I've removed a few <code>Box::new()</code> calls to demonstrate how this works, but the code will still compile with the <code>Box::new()</code> calls. The newly added example script looks like:</p>
+<pre><code class="language-rust">fn walk_dir(
+    dir: impl AsRef&lt;Path&gt;,
+) -&gt; Result&lt;BTreeSet&lt;PathBuf&gt;, ignore::Error&gt; {
+    ignore::WalkBuilder::new(dir)
+        .build_parallel()
+        .visit(VisitorBuilder::new())
+        // This is an impl method on the returned VisitorBuilder:
+        .into_result()
+}
+
+fn main() {
+    println!(&quot;success: {:?}&quot;, walk_dir(&quot;.&quot;).unwrap());
+    println!(&quot;err: {:?}&quot;, walk_dir(&quot;asdf&quot;));
+}
+</code></pre>
+<p>Because of the more expansive API which allows the builder to be consumed by the <code>visit()</code> call, it is now clear from a glance that the result of the successful first crawl will be printed to stdout, before the failing second crawl is started at all. It is also clear that if the failing second crawl is removed, there will be no deadlock, because we were able to have the builder take ownership of its data and return a result on the stack instead of creating extraneous <code>Arc</code> and <code>mpsc::channel</code> instances.</p>
+<p>It is my belief that this approach is much easier to follow, and actually fulfills the expectations of the existing docstring for <code>WalkParallel::visit()</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ignore: avoid boxing in ParallelVisitor{,Builder} with an associated type" to "ignore: fix confusing lifetimes in ParallelVisitor{,Builder} with an associated type instead of boxing" by @cosmicexplorer on 2025-03-06 09:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ignore: fix confusing lifetimes in ParallelVisitor{,Builder} with an associated type instead of boxing" to "ignore: fix confusing lifetimes in ParallelVisitor{,Builder} with an associated type" by @cosmicexplorer on 2025-03-06 09:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cosmicexplorer">@cosmicexplorer</a> on 2025-03-06 11:17</div>
+            <div class="timeline-body"><p>I believe I have just figured out how to allow the builder to return scoped data (on the stack) by having <code>WalkParallel::visit()</code> return the provided builder argument. This makes it possible for a <code>ParallelBuilderVisitor</code> implementation to produce a really slick synchronous API if desired, by consuming the builder returned by the <code>visit()</code> method (this is not required, and fully asynchronous/channel-based message passing still works, without any changes to the code--this is <em>strictly more general</em>). The added example script demonstrates how returning the builder argument can be used in a high-level API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">icebox</span> added by @BurntSushi on 2025-08-17 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-17 21:11</div>
+            <div class="timeline-body"><p>I appreciate your work here, but I'm not prepared to be making semver incompatible changes to <code>ignore</code>.</p>
+<p>I 100% agree with you that the current API is weird and awkward and confusing. I very much dislike it. And many other things about <code>ignore</code>. Unfortunately, it has been in this state for a very long time while still being &quot;good enough.&quot; A terrible case of local optima.</p>
+<p>I have hopes of re-building <code>ignore</code> (and <code>globset</code>) from first principles some day. Arguably, I shouldn't let perfect be the enemy of the good and accept smaller revisions like this. But that has its own costs, such as inducing churn in the ecosystem. Essentially, my bar for semver incompatible changes at this point has to include a grander vision for the future.</p>
+<p>I tagged this as <code>icebox</code> so that it's something I can revisit for inspiration when rethinking the <code>ignore</code> API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-08-17 21:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:19 UTC
+    </footer>
+</body>
+</html>

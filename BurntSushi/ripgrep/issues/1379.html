@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--smart-case ignores .ignore file when using path argument - BurntSushi/ripgrep #1379</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--smart-case ignores .ignore file when using path argument</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1379">#1379</a>
+        opened by <a href="https://github.com/blueyed">@blueyed</a>
+        on 2019-09-15 14:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueyed">@blueyed</a></div>
+            <div class="timeline-body"><p>Using <code>--smart-case</code> does not ignore a file specified in <code>.ignore</code>.</p>
+<p><code>.ignore</code> includes:</p>
+<pre><code>test/functional/fixtures/bigfile.txt
+test/functional/fixtures/bigfile_oneline.txt
+</code></pre>
+<pre><code>% /usr/bin/rg scroll -l test/functional --smart-case | grep oneline
+test/functional/fixtures/bigfile_oneline.txt
+</code></pre>
+<pre><code>% /usr/bin/rg scroll -l test/functional | grep oneline
+</code></pre>
+<p>The whole .ignore file:</p>
+<pre><code>src/nvim/po/*.po
+luacov.report*
+!local.mk
+log-*
+
+test/functional/fixtures/bigfile.txt
+test/functional/fixtures/bigfile_oneline.txt
+
+# https://github.com/BurntSushi/ripgrep/issues/1349
+!/build
+/build/**
+!/build/src
+!/build/src/nvim
+!/build/src/nvim/auto
+!/build/src/nvim/auto/**/*.c
+</code></pre>
+<p>This might be due to the file itself (via https://github.com/neovim/neovim/tree/b9d035a39cfcd61eab2633f55e6064460f557c69/test/functional/fixtures), I can provide more info if it is not reproducible for you.</p>
+<p>ripgrep 11.0.2
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueyed">@blueyed</a> on 2019-09-15 14:37</div>
+            <div class="timeline-body"><p>It only happens when specifying the dir as an arg.
+With just <code>/usr/bin/rg scroll -l</code> it makes no difference if <code>--smart-case</code> is used (it is always ignored then as expected).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "--smart-case ignores .ignore file?!" to "--smart-case ignores .ignore file when using path argument" by @blueyed on 2019-09-15 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-09-16 02:41</div>
+            <div class="timeline-body"><p>I don't see what smart case has to do with this. The output you've shown is invariant with respect to whether smart case is enabled or not.</p>
+<p>This looks like a duplicate of a big where ignore rules aren't always handled correctly when a directory is specified as an argument. But I'm on mobile, so I'm not searching for it right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueyed">@blueyed</a> on 2019-09-16 12:54</div>
+            <div class="timeline-body"><p>Oh, sorry, edited the text - with <code>/usr/bin/rg scroll -l test/functional --smart-case | grep oneline</code> the output is empty, i.e. it is ignored there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-09-16 13:08</div>
+            <div class="timeline-body"><p>The <code>--smart-case</code> behavior is easily explained. The file contains the text <code>SCROLL</code>, so <code>rg scroll</code> won't match it but <code>rg scroll --smart-case</code> will. This is expected and correct.</p>
+<p>Otherwise, this looks like a duplicate of #829.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-09-16 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2019-09-16 13:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @BurntSushi on 2019-09-16 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2019-09-16 13:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:00 UTC
+    </footer>
+</body>
+</html>

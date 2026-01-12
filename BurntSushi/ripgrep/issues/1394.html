@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ignore: WalkBuilder.add_ignore() patterns are not rooted in the path being walked - BurntSushi/ripgrep #1394</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ignore: WalkBuilder.add_ignore() patterns are not rooted in the path being walked</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1394">#1394</a>
+        opened by <a href="https://github.com/dragonmaus">@dragonmaus</a>
+        on 2019-09-30 20:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dragonmaus">@dragonmaus</a></div>
+            <div class="timeline-body"><p><code>Alternative title: No way to specify &quot;root path&quot; for WalkBuilder.add_ignore()</code></p>
+<not-ripgrep-snip>
+
+<h4>Describe your question, feature request, or bug.</h4>
+<p>When building an instance of <code>Walk</code> using <code>ignore::WalkBuilder</code>, the patterns in files added by <code>.add_ignore()</code> are matched against the current working directory of the process, instead of the root of the tree being <code>Walk</code>ed.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>After downloading the files in <a href="https://gist.github.com/dragonmaus/65aec98cdc163693c162ac2884bf0cc5">this gist</a>, perform the following steps:</p>
+<pre><code class="language-sh">mkdir src
+mv main.rs src
+cargo build --release
+target/release/test -I ignore .              # this is &quot;Test 1&quot;
+cd ..
+test/target/release/test -I test/ignore test # this is &quot;Test 2&quot;
+</code></pre>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<p>Test 1 produces the expected output:</p>
+<pre><code>.
+./Cargo.lock
+./Cargo.toml
+./ignore
+./src
+./src/main.rs
+</code></pre>
+<p>Test 2, however, also includes the contents of the target directory (full output <a href="https://gist.github.com/dragonmaus/c7fcc6b5e8f631cfd19060e9dad82c95">here</a>).</p>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>Test 2 should produce the following output:</p>
+<pre><code>test
+test/Cargo.lock
+test/Cargo.toml
+test/ignore
+test/src
+test/src/main.rs
+</code></pre>
+<p>Changing the pattern in the file <code>ignore</code> to <code>/test/target/</code> produces the desired results, but is not what I would expect (or want) to have to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tommilligan">@tommilligan</a> on 2019-10-03 12:03</div>
+            <div class="timeline-body"><p>I'd like to take this issue - I've reproduced it and should have a fix this week.</p>
+<p>Minimal test case:</p>
+<pre><code class="language-diff">diff --git a/ignore/src/walk.rs b/ignore/src/walk.rs
+index e00b29a..f765b7f 100644
+--- a/ignore/src/walk.rs
++++ b/ignore/src/walk.rs
+@@ -1919,6 +1919,22 @@ mod tests {
+         );
+     }
+ 
++    #[test]
++    fn explicit_ignore_absolute_path() {
++        let td = tmpdir();
++        let igpath = td.path().join(&quot;.not-an-ignore&quot;);
++        mkdirp(td.path().join(&quot;a&quot;));
++        wfile(&amp;igpath, &quot;/a&quot;);
++        wfile(td.path().join(&quot;foo&quot;), &quot;&quot;);
++        wfile(td.path().join(&quot;a/foo&quot;), &quot;&quot;);
++        wfile(td.path().join(&quot;bar&quot;), &quot;&quot;);
++        wfile(td.path().join(&quot;a/bar&quot;), &quot;&quot;);
++
++        let mut builder = WalkBuilder::new(td.path());
++        assert!(builder.add_ignore(&amp;igpath).is_none());
++        assert_paths(td.path(), &amp;builder, &amp;[&quot;foo&quot;, &quot;bar&quot;]);
++    }
++
+     #[test]
+     fn gitignore_parent() {
+         let td = tmpdir();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-02-15 16:08</div>
+            <div class="timeline-body"><p>@dragonmaus Thank you very much for the detailed bug report! Unfortunately, I'm quite unsure how to fix this. Please see my comment in #1399: https://github.com/BurntSushi/ripgrep/pull/1399#issuecomment-586613865</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2020-02-15 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2020-02-15 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dragonmaus">@dragonmaus</a> on 2020-02-15 16:33</div>
+            <div class="timeline-body"><p>@BurntSushi Thank you for looking into this, and thank you @tommilligan for doing the legwork.</p>
+<p>I will have to re-evaluate how I am <a href="/dragonmaus/tarball.rs/blob/master/src/main.rs#L174">using</a> <code>WalkBuilder</code>; perhaps there is some cognitive disconnect on my end, or maybe a novel solution will present itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-02-15 19:32</div>
+            <div class="timeline-body"><p>I don't think you are doing anything wrong. I think your use case is valid. I just don't know how quite to do it with the current API. We <em>could</em> use @tommilligan's solution with a new method, e.g., <code>add_ignore_relative</code>, and just panic if <code>add</code> is called to add additional roots. That would make your use case work. I wouldn't be <em>too</em> opposed to doing this since IMO the <code>ignore</code> API is an unmitigated disaster at this point anyway. So adding another quirk isn't that big of a deal. Once I summon the courage to redo the crate, I can rethink everything from first principles. The <code>ignore</code> crate has gone through a lot of requirements evolution and has badly needed an overhaul for quite some time now. But it will a long time before I get to doing it. (I'd say on the order of a year.)</p>
+<p>So if you want a work-around until then, then I think I'd be okay with the aforementioned tweaks to @tommilligan's PR. (Apologies for closing it, but I want to completely clear the PR queue before doing the next release.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">gitignore</span> added by @BurntSushi on 2020-05-08 11:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:01 UTC
+    </footer>
+</body>
+</html>

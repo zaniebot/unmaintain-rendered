@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for replace in files - BurntSushi/ripgrep #74</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for replace in files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/74">#74</a>
+        opened by <a href="https://github.com/kfir-drivenets">@kfir-drivenets</a>
+        on 2016-09-25 06:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kfir-drivenets">@kfir-drivenets</a></div>
+            <div class="timeline-body"><p>One of the usecases that many people have is a simple search and replace in multiple files.
+Usually I achieve this functionality with <code>xargs sed</code> for example with <code>ag -l 'hello' | xargs sed -i &quot;s/hello/bye/g</code>.
+Since rg contains the replace flag it will be nice to add support for this feature by replacing in the files directly.</p>
+<p>This will be a nice addition after https://github.com/BurntSushi/ripgrep/issues/26</p>
+<p>An example on how to do this with <code>sed</code> can be found in the comments here.
+https://github.com/BurntSushi/ripgrep/issues/74#issuecomment-376659557</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 13:21</div>
+            <div class="timeline-body"><p>I don't think I'd be willing to do this. It would change rg from a tool that will never modify your files to one that will modify your files. It is also a very complicated feature to get right to make sure you don't really mess up files on disk.</p>
+<p>Just use <code>sed</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-09-25 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samuelcolvin">@samuelcolvin</a> on 2016-10-04 12:44</div>
+            <div class="timeline-body"><p>Real search and replace would be an absolutely excellent feature.</p>
+<p>But I can well believe it would be painful and complex to implement.</p>
+<p>Perhaps there could be a reasonable middle way: if <code>rg</code> could output in <code>.patch</code> file based on the replace argument the user could then review the patch and apply it when they're happy.</p>
+<p>Something like:</p>
+<pre><code class="language-shell">rg '(foo) (bar)' --replace '$2 $1' --diff-output &gt; rg.diff
+cat rg.diff
+...
+patch &lt; rg.diff
+</code></pre>
+<p>That has the advantage that the user couldn't easily mess up a directory by happening to add an argument and the business of modifying files is left to another command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-04 12:51</div>
+            <div class="timeline-body"><p>@samuelcolvin Why would someone do that over using <code>sed</code>?</p>
+<p>I guess your suggestion does satisfy one of my primary concerns, but it doesn't seem like good UX to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samuelcolvin">@samuelcolvin</a> on 2016-10-04 13:01</div>
+            <div class="timeline-body"><p>Because for me (and lots of other developers) <code>sed</code> is a complete anathema, it's not at all easy to get started with or reason with and it's documentation doesn't help much. I'm also not sure how well it deals with unicode.</p>
+<p>Most people seem to open up sublime or atom or their IDE when they want to do a search and replace. For me that says a lot about the dearth of decent tools in the terminal for this.</p>
+<p>I agree the UX isn't great but since some kind of review step is likely to be required anyway, it couldn't be that much more succinct. If you know what you want you could of course pipe the output of <code>rg</code> straight into patch.</p>
+<p>(by the way, I'm a big fan of <code>rg</code>, sorry to sound like I'm demanding lots highly complex features. The current tool is already great.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-04 13:36</div>
+            <div class="timeline-body"><p>@samuelcolvin Thanks for explaining. I can appreciate that <code>sed</code> might be an opaque tool, however, its functionality is vast and I really don't want to start down the path of being a <code>sed</code> replacement. The patch idea is clever, but I don't think it's a particularly good fit for <code>ripgrep</code>.</p>
+<p>With all that said, I am actively working towards moving more of <code>ripgrep</code> out into libraries (a lot of it already is), so if someone wanted to build a <code>sed</code> replacement down the line using the same components that make <code>ripgrep</code> work, I think that would actually be a feasible thing to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leeoniya">@leeoniya</a> on 2016-10-05 14:37</div>
+            <div class="timeline-body"><p>Sorry if this is a stupid question, but what's the use case for <code>--replace</code> if it has no way to provide actionable output?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-05 14:51</div>
+            <div class="timeline-body"><p>Why is the output of <code>ripgrep</code> not actionable? It could be used to create a new file, for example. It could also be used to pipe input into other line-oriented command tools.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leeoniya">@leeoniya</a> on 2016-10-05 15:28</div>
+            <div class="timeline-body"><p>nvm, it looks good, now that i actually tried it.</p>
+<p>sorry for the noise :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/despairblue">@despairblue</a> on 2016-10-06 14:31</div>
+            <div class="timeline-body"><p>How about an option to print out the whole file? Than I can simply pipe it over the file if I wish to.</p>
+<p>That would make this easier: <code>rg -C 9999999 -N '(57ed11b0add205adee02a9bd)' --replace '\'$1\'' file.js | sponge file.js</code></p>
+<p>This can also work for multiple files:</p>
+<pre><code class="language-fish">for f in (rg -l '(57ed11b0add205adee02a9bd)')
+  rg -C 9999999 -N '(57ed11b0add205adee02a9bd)' --replace '\'$1\'' $f | sponge $f
+end
+</code></pre>
+<p>(that's fish, not bash, but differences should be subtle)</p>
+<hr />
+<p>by the way this was easier to come up with than googling and reading <code>sed</code> tutorials, I tried...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/luisbelloch">@luisbelloch</a> on 2016-10-07 09:11</div>
+            <div class="timeline-body"><p>I like @samuelcolvin suggestion on producing diffs, looks like a good compromise.</p>
+<p>The problem using <code>sed</code> is that we've to search inside the file again, so <code>rg</code> is only useful to scan the files <em>quickly</em>. For instance, redacting a bunch of IPs from files results in a quite cumbersome expression:</p>
+<pre><code>rg -e &quot;\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}&quot; -c | \
+  cut -d&quot;:&quot; -f1 | \
+   xargs sed -b -i &quot;s/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/REDACTED/g&quot;
+</code></pre>
+<p>In any case, knowing that <code>rg</code> has already opened the file and can do replacements with <code>--replace</code> I don't fully understand the negative of adding an option to make inline replaces (I might be omitting implementation reasons, probably).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-07 10:11</div>
+            <div class="timeline-body"><p>Let me say this: IMO, the cumbersomeness of <code>sed</code> is not a reason for <code>rg</code> to support basic replacement. The cumbersomeness of <code>sed</code> is a reason to <em>go out and build a replacement for <code>sed</code> itself</em>. We've already covered the point that some people find <code>sed</code> hard to use. I understand and acknowledge that, but <em>I do not want to get into the business of replacing <code>sed</code> at the point in time</em>. Adding simple inline replacements is going to open the flood gates for features requests like, &quot;<code>sed</code> supports doing X, please add it to <code>ripgrep</code>.&quot; I do not want to open those flood gates.</p>
+<blockquote>
+<p>In any case, knowing that rg has already opened the file and can do replacements with --replace I don't fully understand the negative of adding an option to make inline replaces (I might be omitting implementation reasons, probably).</p>
+</blockquote>
+<p><code>rg</code> is a search tool that will never touch your files. Inline replacements means it becomes a search tool that will sometimes mutate your files. This is a huge change because <code>rg</code> now has to be very careful when it starts mutating files. It's a <em>completely different implementation path</em> than searching and requires being absolutely sure that you don't mess up the end user's data. (What happens if the end user Ctrl-C's in the middle of writing a file?)</p>
+<p>I, as the maintainer of this project, do not want to go down this road. I admit that the patch idea is a clever compromise, but I find the the UX to be very bad personally. It also doesn't stop the floodgates from opening to start supporting every nook and cranny of <code>sed</code> itself.</p>
+<p>I suggest we drop this and wait for the components of <code>ripgrep</code> to get put into a library so that someone can build a better <code>sed</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/luisbelloch">@luisbelloch</a> on 2016-10-09 08:15</div>
+            <div class="timeline-body"><p>I agree with your point, making a <code>sed</code> replacement is a different business. However, the <code>--replace</code> flag suggest a different thing, the purpose is a bit confusing.</p>
+<p>Better to wait for <code>libripgrep</code>, is that happening in a branch or another repo? I'm interested to contribute to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/OJFord">@OJFord</a> on 2016-10-09 16:59</div>
+            <div class="timeline-body"><p>I second the statement that, given this, <code>--replace</code> is confusing.</p>
+<p>I found this thread trying to find out how to 'accept' the changes, after realising it output what I thought was a confirmation.</p>
+<p>I'm sure it's possible to pipe line numbers and changes to some other utility to apply the replacement, but I agree that it's non-obvious, and it would be good to be able to say in <code>rg --help | rg -A2 replace</code> that this can be done &quot;by piping to <code>command</code>&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 00:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Better to wait for libripgrep, is that happening in a branch or another repo? I'm interested to contribute to it.</p>
+</blockquote>
+<p>A lot of it is already done, but there is no canonical &quot;libripgrep.&quot; I wrote up more details in #162.</p>
+<p>I've updated the documentation of <code>--replace</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ticki">@ticki</a> on 2016-10-14 17:40</div>
+            <div class="timeline-body"><p>@BurntSushi Would you be open to PRs implementing this functionality?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-14 17:48</div>
+            <div class="timeline-body"><p>@ticki Not really. I don't think any of my objections to this feature were related to my personal unwillingness to implement it initially.</p>
+<p>I am making good progress on #162. I'd rather see this functionality built out in a separate tool. My hope is that #162 makes this actually feasible to do without becoming an expert in text search.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lydell">@lydell</a> on 2017-06-17 13:02</div>
+            <div class="timeline-body"><p>I made a little <a href="https://github.com/lydell/dotfiles/blob/d279dedf4904687bd537ee33a4146715abe0ba14/bin/pre">bash script</a> for using ripgrep as a command-line find-and-replace tool. It might be terrible. But it works great for my use cases so far. (Note: You need to replace <code>(e</code> with <code>(rg</code> on line 21.)</p>
+<p>The idea is to first search and see what matches:</p>
+<pre><code>rg something
+</code></pre>
+<p>Then, press the Up arrow and edit in a replacement:</p>
+<pre><code>rg something --replace SOMETHING
+</code></pre>
+<p>If it looks good, press the Up arrow again and add a <code>w</code> at the beginning (w for write) (although my script is called <code>pre</code>, not <code>wrg</code> for historical reasons):</p>
+<pre><code>wrg something --replace SOMETHING
+</code></pre>
+<p>Voila! The changes should be written to disk.</p>
+<p>(I'm not saying that ripgrep should add a feature for &quot;writing the replacements&quot; – I'm just sharing that a couple of lines of bash can be enough :) )</p>
+<p>(Edit: macOS support thanks to the next comment.)</p>
+<p>(Edit: Warning – there seems to be some bug that corrupts your file if <code>-U/--multiline</code> is enabled. Edit again: Thought it was an issue with my script, but it’s this issue: https://github.com/BurntSushi/ripgrep/issues/2095)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/greglearns">@greglearns</a> on 2017-12-25 15:18</div>
+            <div class="timeline-body"><p>For those on MacOSX who try out <a href="https://github.com/lydell/dotfiles/blob/330e9245ba8f820e2459a876d31cad78a49215b3/bin/pre">lydell's bash script solution</a>, which does not support &quot;head -n -1&quot; (get all except the last line); you can replace &quot;head -n -1&quot; with &quot; sed '$d' &quot; (take the input and delete the last line).</p>
+<p>Thank you BurntSushi for ripgrep, and lydell for the simple solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/z2oh">@z2oh</a> on 2018-03-27 20:14</div>
+            <div class="timeline-body"><p>This is more easily accomplished using <code>sed</code> than I think people realize. <code>sed</code> is quite a beast and is not very user friendly, but simple regex find and replace is easier than one may think. To perform find and replace in a directory (using <code>ripgrep</code> to find files with matches) you can do something akin to the following:</p>
+<p>(GNU sed)</p>
+<pre><code>rg 'foo' --files-with-matches | xargs sed -i 's/foo/bar/g'
+</code></pre>
+<p>(BSD sed) &lt;-- this includes OSx</p>
+<pre><code>rg 'foo' --files-with-matches | xargs sed -i '' 's/foo/bar/g'
+</code></pre>
+<p>(keep in mind here that <code>foo</code> can be a regex, as you would expect for <code>ripgrep</code>)</p>
+<p>I'll break down what is happening here:</p>
+<p><code>rg 'foo'</code> looks for matches with <code>foo</code>. By using the <code>--files-with-matches</code> flag, we only print out the filenames for files that have matches, but none of the actual matches themselves. We pipe this output (which is a list of matching filenames) into <code>xargs</code> which essentially splits our list of filenames from standard in into individual command line arguments for the next program we execute. This program happens to be <code>sed</code>. The <code>-i</code> flag to <code>sed</code> tells <code>sed</code> to edit files in place. On BSD sed, we need to use <code>-i ''</code> to specify that we do not want file backups (the empty string indicates a lack of backup extension i.e. no backups). Lastly <code>'s/foo/bar/g</code> indicates we want to perform a <strong>s</strong>ubstitution, replacing matches of the pattern <code>foo</code> with <code>bar</code>, and that we want to perform this substitution <strong>g</strong>lobally, i.e. for all matches in the file.</p>
+<p>This method works very well for me, fits in the UNIX philosophy, and avoids using any sort of extra shell script. For people googling &quot;ripgrep search and replace&quot;, hopefully this will help you use some basic <code>sed</code> to accomplish your goals!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-03-27 20:23</div>
+            <div class="timeline-body"><p>@z2oh Thanks for that write up! I would be delighted if you'd be willing to contribute that to the FAQ. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-03-27 20:43</div>
+            <div class="timeline-body"><p>If you don't like <code>sed</code> (because of the command syntax or its regex features) you can also use <code>perl -i</code>, which works quite similarly but is more powerful and probably more intuitive.</p>
+<p><code>sed</code> and <code>perl</code> do have issues that you need to be aware of, though. Despite <code>-i</code> being described as an 'in-place' modification, what it actually does is delete and replace the whole file. This means that it'll have a new inode, so any open handles to the old file will be out of date, and they will both destroy symlinks, hard links, file-system attributes and flags (<code>chattr</code>/<code>chflags</code>), extended attributes (including POSIX ACLs and Spotlight meta-data), and in some cases file permissions. No idea what kind of shenanigans you might have to deal with on Windows.</p>
+<p>I'm guessing that the difficulty of handling cases like that in a robust manner is one of the reasons doing this in <code>rg</code> isn't an exciting prospect, and maybe also a reason there isn't already a dedicated recursive find/replace tool that everyone uses.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lydell">@lydell</a> on 2018-03-27 20:44</div>
+            <div class="timeline-body"><p><code>sed</code> sure is a competent tool. Just in case somebody gets confused what the differences between the <code>sed</code> way and my script are:</p>
+<p>With <code>sed</code> you need to provide one regex to <code>rg</code> and one (probably the same) to <code>sed</code> (beware of regex differences between the two!) My script: Just one regex (passed to <code>rg</code>).</p>
+<p><code>sed</code> workflow:</p>
+<ol>
+<li><code>rg 'foo'</code>. Adjust the search regex until you find what you need.</li>
+<li><code>rg 'foo' --files-with-matches | xargs sed -i 's/foo/bar/g'</code>.</li>
+<li>Hold your breath and hope you got that replacement right.</li>
+</ol>
+<p>My script:</p>
+<ol>
+<li><code>rg 'foo'</code>. Adjust the search regex until you find what you need.</li>
+<li><code>rg 'foo' -r 'bar'</code>. See if the replacements look good.</li>
+<li><code>wrg 'foo' -r 'bar'</code>. Profit.</li>
+</ol>
+<p>Not trying to promote my script or say that one is better than the other. But something to keep in mind :)</p>
+<hr />
+<p>Edited <code>sed</code> workflow thanks to the tip in the next comment:</p>
+<ol>
+<li><code>rg 'foo'</code>. Adjust the search regex until you find what you need.</li>
+<li><code>rg 'foo' --files-with-matches | xargs sed 's/foo/bar/g'</code>. Try to spot if your replacements look good.</li>
+<li><code>rg 'foo' --files-with-matches | xargs sed -i 's/foo/bar/g'</code>. Profit. (Notice the added <code>-i</code> flag.)</li>
+</ol>
+<p>The reason I say “<em>try</em> to spot if your replacements look good” is because <code>sed</code> prints the <em>entire</em> files, while <code>rg -r</code> only prints the relevant lines with the changes highlighted in color.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/OJFord">@OJFord</a> on 2018-08-21 14:14</div>
+            <div class="timeline-body"><p>@lydell I do like your solution, but it's a little disingenuous to say:</p>
+<blockquote>
+<p>Hold your breath and hope you got that replacement right.</p>
+</blockquote>
+<p>the equivalent <code>sed</code> steps would be 2. without <code>-i</code>, and then 3. with it, analogously to 2. <code>rg</code>; 3. <code>wrg</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sergeevabc">@sergeevabc</a> on 2019-03-16 11:47</div>
+            <div class="timeline-body"><p>Anyone found a Windows solution without installing Unix utils?</p>
+<p>Edit: there is <a href="https://github.com/piranha/goreplace">Goreplace</a> by @piranha, which helped me as follows <code>gr &quot;night is dark&quot; -r &quot;day is light&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/frangio">@frangio</a> on 2019-04-17 21:19</div>
+            <div class="timeline-body"><p>I would like a ripgrep-like sed replacement because I don't want to mentally switch between ripgrep-style and sed-style regex syntax.</p>
+<p>I wrote a bash script that uses ripgrep to find the matching files, bash to loop over them, and ripgrep with the <code>--passthru</code> option to do the actual replacement it. It requires <code>sponge</code> from <a href="https://joeyh.name/code/moreutils/"><code>moreutils</code></a>.</p>
+<p>https://gist.github.com/frangio/462d5563d88a2982b6c23e6d2e72e93c</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stefanvanburen">@stefanvanburen</a> on 2019-04-17 21:21</div>
+            <div class="timeline-body"><p>@frangio how about https://github.com/chmln/sd?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2019-08-08 01:04</div>
+            <div class="timeline-body"><p>In case it's of use to anyone, here's a Python script I wrote that's a thin wrapper around <code>rg --replace</code>. You can accept or reject changes individually using the <code>--ask</code> flag. It also accepts all of ripgrep's flags.</p>
+<p>https://github.com/hauntsaninja/rg-sed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CantGetRight82">@CantGetRight82</a> on 2019-08-11 12:15</div>
+            <div class="timeline-body"><p>I also wrote a wrapper in NodeJS that shows the ripgrep output and then asks to apply them all or separately:</p>
+<p>https://github.com/CantGetRight82/rgw</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssbarnea">@ssbarnea</a> on 2020-01-05 13:26</div>
+            <div class="timeline-body"><p>Can we reopen this? sed workaround is cross-platform compatible due to gnu/bsd differences so it would be much better to have a solution that does not rely on external dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-01-05 14:09</div>
+            <div class="timeline-body"><p>No. Feel free to go build one or use any of the numerous projects linked above or in the FAQ.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nevdelap">@nevdelap</a> on 2020-02-05 01:37</div>
+            <div class="timeline-body"><p><code>ned</code> is <code>grep</code> with replace/<code>sed</code> over multiple lines... https://github.com/nevdelap/ned#replace</p>
+<p>I started it, for my own use, before <code>ripgrep</code> existed, and for search <code>ripgrep</code> is probably much better (I don't use it because <code>ned</code> does what I need), but the point of <code>ned</code> is to make it easy to do bulk edits.</p>
+<p>I mention at the top of the TL;DR that if you are just doing searches to use <code>ripgrep</code>. https://github.com/nevdelap/ned#tldr</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2020-04-02 01:11</div>
+            <div class="timeline-body"><p>I actually really like the <code>patch</code> format idea and was going to suggest it until I found this thread. I have been using something similar to the <code>sed</code>/<code>perl</code> solution above since before RipGrep was released (I used <code>ack</code> before I switched to RipGrep`).</p>
+<p>I'd be happy to write a tool to convert RipGrep's output to the patch format, but I'm not sure that's possible as-is, since <code>patch</code> includes the original line as well as the replacement, but <code>rg --replace</code> doesn't print out the pre-replacement line. @BurntSushi would you be open to a PR with a flag for use in conjunction with <code>--replace</code> that would include the pre-replacement text as well?</p>
+<p>The main reasons I'd prefer a patch file are because, as mentioned above, it would be nice to be able to review a large-scale change before applying it, and because patches are easily revertible, whereas reversing the search-and-replace is not (in case the replacement string already existed anywhere in the directory).</p>
+<p>One other major benefit is that patchfiles can be used as-is with multiple other tools (such as Git). It's also possible that using multiple regex tools may eventually reveal incompatibilities between them, and that a patch-based approach would be faster than re-running a complex regex twice on every line of the files that will be modified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-04-02 01:20</div>
+            <div class="timeline-body"><p>@BatmanAoD I think it would be better to build a dedicated tool for such functionality. It sounds exactly like the kind of feature that will beget more features, and I'm not that interested in maintaining it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jessekv">@jessekv</a> on 2020-05-07 19:03</div>
+            <div class="timeline-body"><p>@lydell Here is my interactive version of your script:</p>
+<pre><code class="language-bash">rgr () {
+    if [ $# -lt 2 ]
+    then
+        echo &quot;rg with interactive text replacement&quot;
+        echo &quot;Usage: rgr text replacement-text&quot;
+        return
+    fi
+    vim --clean -c &quot;:execute ':argdo %s%$1%$2%gc | update' | :q&quot; -- $(rg $1 -l ${@:3})
+}
+</code></pre>
+<p>You can also reuse your rg args, e.g:</p>
+<pre><code class="language-bash">$ rg foo ./my-dir/ -t py
+$ rgr foo bar ./my-dir/ -t py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2020-05-09 23:51</div>
+            <div class="timeline-body"><p>It looks like <a href="https://crates.io/crates/ruplacer">ruplacer</a> has output in patch format.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dreua">@dreua</a> on 2021-02-14 12:17</div>
+            <div class="timeline-body"><p>@kfir-drivenets could you add links to some solutions to your top post? My favorite would be: https://github.com/BurntSushi/ripgrep/issues/74#issuecomment-376659557</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/donhector">@donhector</a> on 2021-12-10 00:38</div>
+            <div class="timeline-body"><p>Quick and dirty shell function based on https://github.com/BurntSushi/ripgrep/issues/74#issuecomment-625440008</p>
+<pre><code class="language-shell">replace(){ rg &quot;$1&quot; --files-with-matches | xargs sed -i &quot;s/$1/$2/g&quot; }
+</code></pre>
+<p>Usage:</p>
+<p><code>replace 'foo' 'bar'</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ElectricRCAircraftGuy">@ElectricRCAircraftGuy</a> on 2022-01-04 07:28</div>
+            <div class="timeline-body"><p>For anyone looking for this feature, as I have been:</p>
+<ol>
+<li>For the simple solution/manual command approach, see this excellent 1-liner by @z2oh here: https://github.com/BurntSushi/ripgrep/issues/74#issuecomment-376659557</li>
+<li>For those looking for a more-complete solution with printed output of the replacements, ability to specify paths, etc--ie: a full implementation within ripgrep itself, or wrapping ripgrep, it was not trivial, but I just wrote a wrapper around RipGrep to give it this feature. I call it <code>rgr</code> for RipGrep Replace, since it will do the find-and-replace feature on your disk. See installation instructions at the top of the file here: https://github.com/ElectricRCAircraftGuy/eRCaGuy_dotfiles/blob/master/useful_scripts/rg_replace.sh</li>
+</ol>
+<p>Example usage from <code>rgr -h</code>:</p>
+<pre><code>EXAMPLE USAGES:
+
+    rgr foo -r boo
+        Do a *dry run* to replace all instances of 'foo' with 'boo' in this folder and down.
+    rgr foo -R boo
+        ACTUALLY REPLACE ON YOUR DISK all instances of 'foo' with 'boo' in this folder and down.
+    rgr foo -R boo file1.c file2.c file3.c
+        Same as above, but only in these 3 files.
+    rgr foo -R boo -g '*.txt'
+        Use a glob filter to replace on your disk all instances of 'foo' with 'boo' in .txt files
+        ONLY, inside this folder and down. Learn more about RipGrep's glob feature here:
+        https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#manual-filtering-globs
+    rgr foo -R boo --stats
+        Replace on your disk all instances of 'foo' with 'boo', showing detailed statistics.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ElectricRCAircraftGuy">@ElectricRCAircraftGuy</a> on 2022-01-04 07:32</div>
+            <div class="timeline-body"><p>Full <code>rgr -h</code> help menu:</p>
+<pre><code>rgr ('rgr') version 0.1.0
+
+RipGrep Replace (rgr). This program is a wrapper around RipGrep ('rg') in order to allow some
+extra features, such as find and replace in-place in files. It doesn't rely on 'sed'. It uses
+RipGrep only. Since it's a wrapper around 'rg', it forwards all options to 'rg', so you can use it
+as a permanent replacement for 'rg' if you like.
+
+Currently, the only significant new option added is '-R' or '--Replace', which is the same as
+RipGrep's '-r' except it MODIFIES THE FILES IN-PLACE ON YOUR FILESYSTEM! This is great! If you
+think so too, go and star this project (link below).
+
+USAGE (exact same as 'rg')
+    rgr [options] &lt;regex&gt; [paths...]
+
+OPTIONS
+    ALL OPTIONS ACCEPTED BY RIPGREP ('rg') ARE ALSO ACCEPTED BY THIS PROGRAM. Here are just a few
+    of the options I've amended and/or would like to highlight. Not all Ripgrep options have been
+    tested, and not all of them ever will be by me at least.
+
+    -h, -?, --help
+        Print help menu
+    -v, --version
+        Print version information.
+    --run_tests
+        Run unit tests (none yet).
+    -d, --debug
+        Turn on debug prints. '-d' is not part of 'rg' but if you use either of these options here
+        it will auto-forward '--debug' to 'rg' under-the-hood.
+    -r &lt;replacement_text&gt;, --replace &lt;replacement_text&gt;
+        Do a dry-run to replace all matches of regular expression 'regex' with 'replacement_text'.
+        This only does the replacement in the stdout output; it does NOT modify your disk!
+    -R &lt;replacement_text&gt;, --Replace &lt;replacement_text&gt;
+        THIS IS THE ONE! Bingo! This is the sole purpose for the creation of this wrapper. This
+        option will actually replace all matches of regular expression 'regex' with
+        'replacement_text' ON YOUR DISK. It actually modifies your file system! This is great
+        for large code-wide replacements when programming in large repos, for instance.
+    --stats
+        Show detailed statistics about the ripgrep search and replacements made.
+
+    SEE ALSO 'rg -h' AND 'man rg' FOR THE FULL HELP MENU OF RIPGREP ITSELF, WHICH OPTIONS ARE ALSO
+    ALLOWED AND PASSED THROUGH BY THIS 'rgr' WRAPPER PROGRAM.
+
+EXAMPLE USAGES:
+
+    rgr foo -r boo
+        Do a *dry run* to replace all instances of 'foo' with 'boo' in this folder and down.
+    rgr foo -R boo
+        ACTUALLY REPLACE ON YOUR DISK all instances of 'foo' with 'boo' in this folder and down.
+    rgr foo -R boo file1.c file2.c file3.c
+        Same as above, but only in these 3 files.
+    rgr foo -R boo -g '*.txt'
+        Use a glob filter to replace on your disk all instances of 'foo' with 'boo' in .txt files
+        ONLY, inside this folder and down. Learn more about RipGrep's glob feature here:
+        https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#manual-filtering-globs
+    rgr foo -R boo --stats
+        Replace on your disk all instances of 'foo' with 'boo', showing detailed statistics.
+
+
+Note to self: the only free lowercase letters not yet used by 'rg' as of 3 Jan. 2021 are:
+    -d, -k, -y
+
+This program is part of eRCaGuy_dotfiles: https://github.com/ElectricRCAircraftGuy/eRCaGuy_dotfiles
+by Gabriel Staples.
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Spongman">@Spongman</a> on 2022-02-05 23:12</div>
+            <div class="timeline-body"><p>the whole &quot;just use sed&quot; thing would be fine if sed and rg had compatible syntax.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steabert">@steabert</a> on 2022-02-12 09:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Real search and replace would be an absolutely excellent feature.</p>
+<p>But I can well believe it would be painful and complex to implement.</p>
+<p>Perhaps there could be a reasonable middle way: if <code>rg</code> could output in <code>.patch</code> file based on the replace argument the user could then review the patch and apply it with they're happy.</p>
+<p>Something like:</p>
+<pre><code class="language-shell">rg '(foo) (bar)' --replace '$2 $1' --diff-output &gt; rg.diff
+cat rg.diff
+...
+patch &lt; rg.diff
+</code></pre>
+<p>That has the advantage that the user couldn't easily mess up a directory by happening to add an argument and the business of modifying files is left to another command.</p>
+</blockquote>
+<p>I've been using <a href="https://github.com/ms-jpq/sad">sad</a> for a while, and in the README there I discovered that ripgrep actually supports <code>--replace</code>. That made me wonder about the same thing you proposed here, to have ripgrep generate diff output. The beauty of that solution is that it doesn't require ripgrep to modify any files, and at the same time it's very flexible as the output can be viewed with any kind of diff pager for easy previewing, and to eventually apply with e.g. <code>patch</code> or <code>git apply</code>.</p>
+<p>My quick-and-dirty solution (for single-line changes) has been the following little snippet to produce a sad-person's diff format:</p>
+<pre><code>cat ./my-sad-script
+#!/usr/bin/env bash
+m=$(mktemp)
+f=$(mktemp)
+r=$(mktemp)
+rg &quot;$1&quot; --vimgrep | sort &gt;$m
+cat $m | awk -F ':' '{print $1}' | uniq &gt;$f
+cat $f | xargs rg &quot;$1&quot; --replace &quot;$2&quot; --vimgrep | sort &gt;$r
+cat $m | awk 'match($0, /([^:]+):([0-9]+):[0-9]+:(.*)/, a) {print &quot;--- &quot; a[1] &quot;\n&quot; &quot;@@ &quot; &quot;-&quot; a[2] &quot; +&quot; a[2] &quot; @@&quot; &quot;\n&quot; &quot;-&quot; a[3]}' &gt;$m.s
+cat $r | awk 'match($0, /([^:]+):([0-9]+):[0-9]+:(.*)/, a) {print &quot;+++ &quot; a[1] &quot;\n&quot; &quot;@@ &quot; &quot;-&quot; a[2] &quot; +&quot; a[2] &quot; @@&quot; &quot;\n&quot; &quot;+&quot; a[3]}' &gt;$r.s
+paste -d&quot;\n&quot; $m.s $r.s | uniq
+</code></pre>
+<p>I then usually pipe the output to <a href="https://github.com/dandavison/delta">delta</a> for previewing with:</p>
+<pre><code>./my-sad-script 'search-regex 'replace' | tee /tmp/patch | delta
+</code></pre>
+<p>and when it looks good, I just</p>
+<pre><code>git apply -p0 --unidiff-zero /tmp/patch
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ElectricRCAircraftGuy">@ElectricRCAircraftGuy</a> on 2022-02-13 21:26</div>
+            <div class="timeline-body"><p>@steabert , the limitation of using diff output is that is only works inside git repos. If you want to do find and replace outside a git repo you're out-of-luck. I recommend using my <a href="https://github.com/ElectricRCAircraftGuy/eRCaGuy_dotfiles/blob/master/useful_scripts/rg_replace.sh"><code>rgr</code> (Ripgrep replace) wrapper</a> instead. It's super easy to use, and since it wraps <code>rg</code>, it gives you access to <em>all</em> of <code>rg</code> plus the <code>-R</code> option, which does an actual in-file replace.</p>
+<p>From <code>rgr -h</code>:</p>
+<pre><code class="language-bash">    rgr foo -r boo
+        Do a *dry run* to replace all instances of 'foo' with 'boo' in this folder and down.
+    rgr foo -R boo
+        ACTUALLY REPLACE ON YOUR DISK all instances of 'foo' with 'boo' in this folder and down.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2022-02-13 23:47</div>
+            <div class="timeline-body"><p>@ElectricRCAircraftGuy Patch files are <em>much</em> older than git, and you can apply them anywhere with the <code>patch</code> command (assuming you have standard Unix-y tools or a suitable substitute).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abitrolly">@abitrolly</a> on 2022-06-18 12:01</div>
+            <div class="timeline-body"><p>For those who is coming late to the party, <strong>no, there is no support for replace in files</strong>, here is <strong><a href="https://github.com/BurntSushi/ripgrep/blob/master/FAQ.md#search-and-replace">the link to FAQ</a></strong> and TL;DR to <strong><a href="https://github.com/facebookincubator/fastmod">fastmod</a></strong>.</p>
+<p><code>rg</code> + <code>fastmod</code> = :heart:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Corallus-Caninus">@Corallus-Caninus</a> on 2022-07-21 02:55</div>
+            <div class="timeline-body"><p>I don't want to be &quot;that guy&quot; but this should definitely be supported. While its important to be able to pipe together commands which rg does a great job of, there should at least be support for a &quot;modification&quot; feature flag. Theres something about piping rg with single-threaded, non-vectorized and largely scripted tools that curbs my enthusiasm.
+This would be a great help to beginners of macro programming and consolidate CLI tools that should have been integrated decades ago (in my opinion).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ElectricRCAircraftGuy">@ElectricRCAircraftGuy</a> on 2022-07-21 03:29</div>
+            <div class="timeline-body"><p>@Corallus-Caninus , meanwhile, have you seen my wrapper above? Use <code>rgr -R</code> to replace on the disk.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-07-21 10:48</div>
+            <div class="timeline-body"><p>I am <em>never</em> going to add this to ripgrep. It isn't happening.</p>
+<p>Normally I would lock this issue. But folks are still posting helpful content about other approaches. So I'm going to leave this open, but I'm going to mark comments asking for this to be in ripgrep as off topic.</p>
+<p>There is no hope. It will never happen. Final decision.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2022-08-07 00:22</div>
+            <div class="timeline-body"><p>Disclaimer: I think <code>fastmod</code> (also recommended above) is probably the best tool for anyone who wants a decently full-featured search-and-replace CLI tool. With that said...</p>
+<p>Now that <code>ripgrep</code> has been refactored into libraries, and one of those libraries is a set of &quot;printers&quot;, I went through the exercise of adding a &quot;patch printer&quot; that would print patch-output. I then extracted just the necessary patch-printer and arg-parsing bits from this fork of <code>ripgrep</code> to create a separate tool with the same functionality.</p>
+<p>Here's the version that's a branch of <code>ripgrep</code>: https://github.com/BurntSushi/ripgrep/pull/2275</p>
+<p>Here's the version that extracts the necessary bits: https://github.com/BatmanAoD/RipPatch</p>
+<p>Note that it relies on a <a href="https://github.com/BurntSushi/ripgrep/pull/2276">a branch</a> that publishes <code>ripgrep</code>'s actual text-replacement functionality, which currently isn't usable outside of RipGrep.</p>
+<p>I wanted RipPatch to respect or ignore every <code>ripgrep</code> argument it could, so that working <code>ripgrep</code> searches could be trivially transformed into RipPatch commands. Between this and some other functionality that <code>ripgrep</code> doesn't expose for import and had to be copied over, there's <em>a lot</em> of duplication of code from <code>ripgrep</code>, which doesn't thrill me. The fork-of-ripgrep approach seems ultimately simpler.</p>
+<p>There's a third possible approach, which is to use either the <code>json</code> printer or the <code>--byte-offset</code> option to generate <code>ripgrep</code> output that can provide sufficient information for a separate tool to generate the patch itself. That seems like the least straightforward approach, though, especially since the simplest way to transfer the data from <code>ripgrep</code> to the new tool would be something platform-specific (or at least shell-specific) like a pipe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ElectricRCAircraftGuy">@ElectricRCAircraftGuy</a> on 2022-08-07 04:20</div>
+            <div class="timeline-body"><blockquote>
+<p>so that working ripgrep searches could be trivially transformed into RipPatch commands.</p>
+</blockquote>
+<p>Or, just use regular ripgrep commands, plus <code>-R</code>.</p>
+<p>@BatmanAoD , at the risk of me sounding redundant, or self-promoting, have you tried running this to do an on-disk replacement?: <code>rgr foo -R boo</code>. From the <code>rgr -h</code> help menu:</p>
+<pre><code class="language-bash">    rgr foo -r boo
+        Do a *dry run* to replace all instances of 'foo' with 'boo' in this folder and down.
+    rgr foo -R boo
+        ACTUALLY REPLACE ON YOUR DISK all instances of 'foo' with 'boo' in this folder and down.
+</code></pre>
+<p>I feel like people either don't know about the wrapper I wrote, don't understand how to use it, or don't believe how easy it is to use. It is a wrapper around ripgrep and it supports <strong>all</strong> ripgrep commands, period, plus <code>-R</code> to do an actual on-disk replacement (ripgrep only supports <code>-r</code>).</p>
+<p>It is here: https://github.com/ElectricRCAircraftGuy/eRCaGuy_dotfiles/blob/master/useful_scripts/rg_replace.sh</p>
+<p>Installation instructions are at the top of the file. I plan on keeping it functional as long as <code>ripgrep</code> exists, and I am alive. Once you've installed it, run <code>rgr -h</code> for a full help menu.</p>
+<hr />
+<p>Can anyone offering an alternative please tell me what problem my wrapper has yet to solve? I don't understand. I feel like if you just knew it existed, you'd use it and be done asking for an on-disk ripgrep replace option, since this is the sole purpose of my wrapper and exactly what it does. And again, it supports <strong>all</strong> ripgrep commands, <strong>exactly</strong> as ripgrep does, as well.</p>
+<p>That being said, if you're needing some sort of patch tool instead of an on-disk ripgrep-based search and replace tool, my wrapper may not be what you want (albeit, I don't know what a patch tool is or does or why someone would want one :slightly_smiling_face:).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/abitrolly">@abitrolly</a> on 2022-08-07 05:14</div>
+            <div class="timeline-body"><p>@ElectricRCAircraftGuy I can install <code>fastmod</code> with <code>brew install fastmod</code>. While downloading your script and tossing it into some PATH accessible dir is too old school for me. There is also no separate repo, so it is hard to track versions and see related bugs. It is also not clear if it support confirming changes or not. If interface gives previews with context of what is replaced. I could probably go and read the script to find out, but I didn't. But.. if there was a recorded <code>.gif</code> demo (which <code>fastmod</code> does not) I could at least watch it. Frankly, because of lack of demo, I would ignore <code>fastmod</code> too, but <code>facebook</code> name together with stars convinced my to give it a try and spend 15 minutes to try.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/OJFord">@OJFord</a> on 2022-08-07 18:20</div>
+            <div class="timeline-body"><p>Yes, @ElectricRCAircraftGuy, I agree with both you and @abitrolly, 'people don't know about' your wrapper because discoverability is hard, it's not obviously supported, etc.</p>
+<p>If you put it in its own repo it will no doubt collect 'stars', seem like a 'real' thing that's visibly maintained, more people will package it even if you don't provide first-party ones, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2022-08-07 23:00</div>
+            <div class="timeline-body"><p>@ElectricRCAircraftGuy <code>patch</code> is a standard POSIX tool, and <code>git</code> implements some of its functionality. It takes a diff between files (in one of several formats) and applies it. <a href="https://man7.org/linux/man-pages/man1/patch.1.html">Here's the Linux man page.</a></p>
+<p>Regarding making a version of <code>ripgrep</code> that can produce output consumable by <code>patch</code>: I just thought it was a cool idea, and despite being suggested 6 years ago, it appeared that no one else had actually implemented it, so I wanted to see what a proof-of-concept would look like. The benefits of creating a <code>patch</code>-readable diff are primarily in the fact that the diff itself is a separate artifact, so you can examine it before applying it, and it's trivial to reverse the change after applying it (both BSD and GNU <code>patch</code> support this using <code>--reverse</code>).</p>
+<p>Regarding your script, I haven't actually tried it, but I did know about it prior to writing my code, and I actually read through the source before posting my comment.</p>
+<p>To be honest, the <em>primary</em> reason I don't use your script is simply that I already have a Bash function <a href="https://github.com/BatmanAoD/public-config/blob/master/dotfiles/bash.d/functions#L356">in my personal config</a> that works about equally well for my purposes. It does suffer from some drawbacks that your script avoids, particularly the risk of <code>perl</code> and <code>rg</code> potentially not handling a complex regex in the same way.</p>
+<p>The secondary reason is that it's nontrivial to install your script and make it work on all platforms. I always install <code>git</code> on Windows, and that comes with <code>git-bash</code>, but I don't necessarily have the <code>.sh</code> file extension set up to run with <code>git-bash</code>, so the most reliable way to run the script on Windows would be to create <code>rgr.bat</code> to invoke Git Bash with that script. That's trivial but (for me personally) not worth the effort.</p>
+<p>The tertiary reason is simply that Bash scripts are notoriously flaky, and your script is a lot more complex than the function I wrote with <code>xargs perl</code>, so I feel that there's a low but not-insignificant chance that if I replaced my solution with yours, I'd end up running into a weird edge-case behavior. (Though to your credit, it looks quite clean as Bash scripts go.)</p>
+<p>Note that the <code>patch</code> solution, your script, and my <code>xargs perl</code> solution are all probably slower than a single-executable solution would be when run on large directories with lots of matches; this is part of why <code>fastmod</code> is appealing (the other reasons being the interactive-confirmation UX and the ease of cross-platform installation). In the non-<code>fastmod</code> approaches, the matching files must be handled serially rather than in parallel, and their contents must be searched twice. Additionally, your script loads the entire contents of each file into memory, which could be a problem for very large files. With that said, it's purely conjecture on my part that <code>fastmod</code> performs better than your script; the observation is not very useful without some empirical data. If you're interested, I'd recommend comparing the performance of <code>fastmod --accept-all</code> against <code>rgr -R</code> on large directories.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ElectricRCAircraftGuy">@ElectricRCAircraftGuy</a> on 2022-09-19 06:24</div>
+            <div class="timeline-body"><p>@abitrolly @OJFord @BatmanAoD , I appreciate the feedback. In an attempt to begin addressing your concerns, collect stars--as you said, have broader support and better tracking, etc., I've moved my <code>rgr</code> &quot;ripgrep replace&quot; script to its own repo:</p>
+<p>https://github.com/ElectricRCAircraftGuy/ripgrep_replace</p>
+<p>If anyone wants to make a gif of its usage, feel free, and I can add it to the readme via a pull request. Otherwise, I'll make an issue to do that.</p>
+<p>Issue: https://github.com/ElectricRCAircraftGuy/ripgrep_replace/issues/1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aagit">@aagit</a> on 2025-10-02 07:36</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>I recently improved my code assistant workflow by having the LLM rewrite the ripgrep's output. This keeps the transformer's input/output razor-thin, boosting accuracy, increasing performance, while avoiding the complexity and overhead of full agentic AI if all you need is to grep and modify multiple files in a large codebase.</p>
+<p>The problem then was to  apply the changes of the rewritten/refactored ripgrep back to the original files, to do that I had to write a new tool, not even wgrep would work while dealing with a full gptel-rewrite including all metadata.</p>
+<p>However it should be useful for general regex-based edits and can be integrated with any editor or sed-like workflow.</p>
+<p>https://gitlab.com/aarcange/ripgrep-edit/</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:40 UTC
+    </footer>
+</body>
+</html>

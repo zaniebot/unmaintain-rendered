@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add option to report file position instead of line number - BurntSushi/ripgrep #812</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add option to report file position instead of line number</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/812">#812</a>
+        opened by <a href="https://github.com/David-Gould">@David-Gould</a>
+        on 2018-02-17 06:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/David-Gould">@David-Gould</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.8.0 (rev 23d1b91ead)
++SIMD -AVX</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Ubuntu 16.04</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>Please add a feature to report the file offset of the lines containing matches. GNU grep has this</p>
+<pre><code>       -b, --byte-offset
+              Print the 0-based byte offset within the  input  file  before  each  line  of  output.   If  -o
+              (--only-matching) is specified, print the offset of the matching part itself.
+
+</code></pre>
+<p>I have a process that generates terabytes of diagnostic output daily. I desire to scan all that
+for certain patterns and then to have a script read forward from the lines the patterns are on.
+It would be much faster to fseek() to the offset of each matching line than to read all the data
+counting lines. rg would be the perfect tool for generating the list of interesting offsets if it offered
+that functionality. Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2018-02-17 13:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @BurntSushi on 2018-02-17 13:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-17 13:25</div>
+            <div class="timeline-body"><p>Definitely agree with this request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/balajisivaraman">@balajisivaraman</a> on 2018-02-18 05:04</div>
+            <div class="timeline-body"><p>The spec for this looks quite straightforward. Duplicate what GNU Grep does, which is the following just to be clear:</p>
+<pre><code>$ echo -e &quot;foo foo\nsomething else bar bar\nbaz baz&quot; &gt; grep.txt
+$ echo -e &quot;foo foo\nsomething else bar bar\nbaz baz&quot; &gt; grep1.txt
+$ grep -b 'bar' grep.txt (No filename for a single file, prints offset of line)
+8:something else bar bar
+$ grep -bo 'bar' grep.txt (No filename for a single file, prints offset of every occurrence)
+23:bar
+27:bar
+$ grep -b 'bar' *.txt (Prints filename, followed by offset of matching line and then line itself)
+grep1.txt:8:something else bar bar
+grep.txt:8:something else bar bar
+$ grep -bo 'bar' *.txt (Prints filename, followed by offset of every occurrence and then the occurrence itself)
+grep1.txt:23:bar
+grep1.txt:27:bar
+grep.txt:23:bar
+grep.txt:27:bar
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/balajisivaraman">@balajisivaraman</a> on 2018-02-18 12:22</div>
+            <div class="timeline-body"><p>Another question, how should this flag interact with <code>--line-number</code> and <code>--column</code>. Currently, the latter implies the former. If we add <code>-b</code> into the mix, then that will be three values printed before the actual match itself.</p>
+<p>In my current implementation, which is complete, this is how the output looks like with all 3 flags. The line number is colored in Green by default, and the match is colored in Red. The column number and byte offset are white. Are we good to go with this as the default?</p>
+<pre><code>$ ./target/release/rg --line-number --column -bo 'bar' grep.txt
+2:16:23:bar
+2:20:27:bar
+</code></pre>
+<p>GNU Grep does not have <code>--column</code>, but if I combine <code>--line-number</code> and <code>--byte-offset</code>, this is what I get.</p>
+<pre><code>$ grep --line-number -bo 'bar' grep.txt
+2:23:bar
+2:27:bar
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/David-Gould">@David-Gould</a> on 2018-02-18 21:21</div>
+            <div class="timeline-body"><p>I don't see the colors here, but it looks like the order when all three are requested is line:column:offset: Fine with me, I&quot;m most interested in the '-b' case so I don't have a strong preference. But it seems sensible to have line and column output adjacent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-03-10 15:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:27 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rg --no-heading -N faults on multiple large files unless multithreading disabled - BurntSushi/ripgrep #1448</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rg --no-heading -N faults on multiple large files unless multithreading disabled</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1448">#1448</a>
+        opened by <a href="https://github.com/drekbot">@drekbot</a>
+        on 2019-12-16 20:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/drekbot">@drekbot</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>11.0.2 (also observed with 0.8.1)</p>
+<h4>How did you install ripgrep?</h4>
+<p>Cargo and debian package method, both showed the same behavior.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Ubuntu 16.04 and Redhat Server 7.6</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>When ripgrep is run with the --no-heading and -N flags and multiple large files are searched. The sample files tested against were hundreds of gigabytes, larger than available system memory. A large percentage of the data in the files would match the search term.
+-N and --no-heading appear to function when used separately, but together they cause this error.</p>
+<p>The behavior does not occur when -j1 is used, or when used against a single large file (even if the same size as the multiple files in the failing example).</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>Fails
+rg --no-heading -N 'asearch' largeFile1 largeFile2</p>
+<p>Works as expected
+rg --no-heading -N -j1 'asearch' largeFile1 largeFile2</p>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<p>rg --no-heading -N 'asearch' largeFile1 largeFile2</p>
+<p>On rg 11.0.2 the command fails with a memory allocation error similar to the following.</p>
+<p><code>memory allocation of 206158430208 bytes failedAborted (core dumped)</code></p>
+<p>On rg 0.8.1 the command fails silently (no visible error message) or has this error message.</p>
+<pre><code>fatal runtime error: allocator memory exhausted
+Illegal instruction
+</code></pre>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>Returned normal search results and not crashed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-12-16 21:03</div>
+            <div class="timeline-body"><p>This is expected. From the CAVEATS section of the man page:</p>
+<blockquote>
+<p>ripgrep may use a large amount of memory depending on a few factors.
+Firstly, if ripgrep uses parallelism for search (the default), then the
+entire output for each individual file is buffered into memory in order to
+prevent interleaving matches in the output. To avoid this, you can disable
+parallelism with the -j1 flag. Secondly, ripgrep always needs to have at
+least a single line in memory in order to execute a search. A file with a
+very long line can thus cause ripgrep to use a lot of memory. Generally,
+this only occurs when searching binary data with the -a flag enabled. (When
+the -a flag isn’t enabled, ripgrep will replace all NUL bytes with line
+terminators, which typically prevents exorbitant memory usage.) Thirdly, when
+ripgrep searches a large file using a memory map, the process will report its
+resident memory usage as the size of the file. However, this does not mean
+ripgrep actually needed to use that much memory; the operating system will
+generally handle this for you.</p>
+</blockquote>
+<p>This <em>normally</em> isn't a problem because this is only an issue with the size of the <em>output</em>, not the input.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-12-16 21:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2019-12-16 21:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/drekbot">@drekbot</a> on 2019-12-16 21:28</div>
+            <div class="timeline-body"><p>Thank you for the quick response.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/drekbot">@drekbot</a> on 2019-12-17 00:58</div>
+            <div class="timeline-body"><p>The main reason I wanted to document is that this only occurred when we were using both --no-heading and -N. When run by themselves everything got allocated and there was output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-12-17 01:23</div>
+            <div class="timeline-body"><p>Yeah that makes sense. <code>--no-heading -N</code> increase the output size, potentially by a lot, since the file path is printed for every matching line. So that's going to use more memory.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:04 UTC
+    </footer>
+</body>
+</html>

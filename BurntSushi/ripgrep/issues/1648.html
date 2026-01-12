@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>-M not recognized if preceding pattern - BurntSushi/ripgrep #1648</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>-M not recognized if preceding pattern</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1648">#1648</a>
+        opened by <a href="https://github.com/bedge">@bedge</a>
+        on 2020-07-29 16:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bedge">@bedge</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>[I] ➜ rg --version
+ripgrep 12.1.1
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>homebrew</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>osx mojave</p>
+<p>Give a high level description of the bug.</p>
+<p>Syntax info says:</p>
+<pre><code>USAGE:
+
+    rg [OPTIONS] PATTERN [PATH ...]
+</code></pre>
+<p>So this should work:</p>
+<pre><code>[I] ➜ echo test | rg -M 900 st
+error: The following required arguments were not provided:
+    &lt;PATTERN&gt;
+</code></pre>
+<p>but it doesn't, one has to use:</p>
+<pre><code>[I] ➜ echo test | rg st -M 900
+test
+</code></pre>
+<p>IOW, options before the pattern should be allowed, but it appears that at least the -M option only works if after the pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-07-29 16:47</div>
+            <div class="timeline-body"><p>I can't reproduce:</p>
+<pre><code>$ echo test | rg st -M 900
+test
+$ echo test | rg st -M900
+test
+$ echo test | rg -M 900 st
+test
+$ echo test | rg -M900 st
+test
+</code></pre>
+<p>Do you have any aliases, wrapper scripts or config files being used? Can you show the same command, but with the <code>--debug</code> flag set?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2020-07-29 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bedge">@bedge</a> on 2020-07-29 17:52</div>
+            <div class="timeline-body"><p>No aliases:</p>
+<p>[I] ➜ which -a rg
+/usr/local/bin/rg</p>
+<p>Here's a few permutations with --debug</p>
+<pre><code>[I] ➜ echo test | rg -M 900 st
+error: The following required arguments were not provided:
+    &lt;PATTERN&gt;
+
+USAGE:
+
+    rg [OPTIONS] PATTERN [PATH ...]
+    rg [OPTIONS] [-e PATTERN ...] [-f PATTERNFILE ...] [PATH ...]
+    rg [OPTIONS] --files [PATH ...]
+    rg [OPTIONS] --type-list
+    command | rg [OPTIONS] PATTERN
+
+For more information try --help
+
+
+[I] ➜ echo test | rg --debug  -M 900 st
+DEBUG|rg::config|crates/core/config.rs:40: /Users/edgeb1/.ripgreprc: arguments loaded from config file: [&quot;--max-columns=150&quot;, &quot;--max-columns-preview&quot;, &quot;--glob=!git/*&quot;, &quot;--colors=line:style:bold&quot;, &quot;--smart-case&quot;, &quot;--type-add&quot;, &quot;tfv:*.{tf,tfvars}&quot;]
+DEBUG|rg::args|crates/core/args.rs:543: final argv: [&quot;rg&quot;, &quot;--max-columns=150&quot;, &quot;--max-columns-preview&quot;, &quot;--glob=!git/*&quot;, &quot;--colors=line:style:bold&quot;, &quot;--smart-case&quot;, &quot;--type-add&quot;, &quot;tfv:*.{tf,tfvars}&quot;, &quot;--debug&quot;, &quot;-M&quot;, &quot;900&quot;, &quot;st&quot;]
+error: The following required arguments were not provided:
+    &lt;PATTERN&gt;
+
+USAGE:
+
+    rg [OPTIONS] PATTERN [PATH ...]
+    rg [OPTIONS] [-e PATTERN ...] [-f PATTERNFILE ...] [PATH ...]
+    rg [OPTIONS] --files [PATH ...]
+    rg [OPTIONS] --type-list
+    command | rg [OPTIONS] PATTERN
+
+For more information try --help
+
+
+[I] ➜ echo test | rg --debug  -M900 st
+DEBUG|rg::config|crates/core/config.rs:40: /Users/edgeb1/.ripgreprc: arguments loaded from config file: [&quot;--max-columns=150&quot;, &quot;--max-columns-preview&quot;, &quot;--glob=!git/*&quot;, &quot;--colors=line:style:bold&quot;, &quot;--smart-case&quot;, &quot;--type-add&quot;, &quot;tfv:*.{tf,tfvars}&quot;]
+DEBUG|rg::args|crates/core/args.rs:543: final argv: [&quot;rg&quot;, &quot;--max-columns=150&quot;, &quot;--max-columns-preview&quot;, &quot;--glob=!git/*&quot;, &quot;--colors=line:style:bold&quot;, &quot;--smart-case&quot;, &quot;--type-add&quot;, &quot;tfv:*.{tf,tfvars}&quot;, &quot;--debug&quot;, &quot;-M900&quot;, &quot;st&quot;]
+DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(ST), Complete(sT), Complete(ſT), Complete(St), Complete(st), Complete(ſt)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;git/*&quot;, re: &quot;(?-u)^git/[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([Literal('g'), Literal('i'), Literal('t'), Literal('/'), ZeroOrMore]) }
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
+DEBUG|globset|crates/globset/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;**/*.sw[nop]&quot;, re: &quot;(?-u)^(?:/?|.*/)[^/]*\\.sw[nop]$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, ZeroOrMore, Literal('.'), Literal('s'), Literal('w'), Class { negated: false, ranges: [('n', 'n'), ('o', 'o'), ('p', 'p')] }]) }
+DEBUG|globset|crates/globset/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;tmp/**/*&quot;, re: &quot;(?-u)^tmp(?:/|/.*/)[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([Literal('t'), Literal('m'), Literal('p'), RecursiveZeroOrMore, ZeroOrMore]) }
+DEBUG|globset|crates/globset/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;.history/*&quot;, re: &quot;(?-u)^\\.history/[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([Literal('.'), Literal('h'), Literal('i'), Literal('s'), Literal('t'), Literal('o'), Literal('r'), Literal('y'), Literal('/'), ZeroOrMore]) }
+DEBUG|globset|crates/globset/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;.notes/*&quot;, re: &quot;(?-u)^\\.notes/[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([Literal('.'), Literal('n'), Literal('o'), Literal('t'), Literal('e'), Literal('s'), Literal('/'), ZeroOrMore]) }
+DEBUG|globset|crates/globset/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;**/.junk/*&quot;, re: &quot;(?-u)^(?:/?|.*/)\\.junk/[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('.'), Literal('j'), Literal('u'), Literal('n'), Literal('k'), Literal('/'), ZeroOrMore]) }
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 5 literals, 10 basenames, 1 extensions, 0 prefixes, 0 suffixes, 2 required extensions, 5 regexes
+test
+
+[I] ➜ echo test | rg --debug st  -M900
+DEBUG|rg::config|crates/core/config.rs:40: /Users/edgeb1/.ripgreprc: arguments loaded from config file: [&quot;--max-columns=150&quot;, &quot;--max-columns-preview&quot;, &quot;--glob=!git/*&quot;, &quot;--colors=line:style:bold&quot;, &quot;--smart-case&quot;, &quot;--type-add&quot;, &quot;tfv:*.{tf,tfvars}&quot;]
+DEBUG|rg::args|crates/core/args.rs:543: final argv: [&quot;rg&quot;, &quot;--max-columns=150&quot;, &quot;--max-columns-preview&quot;, &quot;--glob=!git/*&quot;, &quot;--colors=line:style:bold&quot;, &quot;--smart-case&quot;, &quot;--type-add&quot;, &quot;tfv:*.{tf,tfvars}&quot;, &quot;--debug&quot;, &quot;st&quot;, &quot;-M900&quot;]
+DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(ST), Complete(sT), Complete(ſT), Complete(St), Complete(st), Complete(ſt)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;git/*&quot;, re: &quot;(?-u)^git/[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([Literal('g'), Literal('i'), Literal('t'), Literal('/'), ZeroOrMore]) }
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
+DEBUG|globset|crates/globset/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;**/*.sw[nop]&quot;, re: &quot;(?-u)^(?:/?|.*/)[^/]*\\.sw[nop]$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, ZeroOrMore, Literal('.'), Literal('s'), Literal('w'), Class { negated: false, ranges: [('n', 'n'), ('o', 'o'), ('p', 'p')] }]) }
+DEBUG|globset|crates/globset/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;tmp/**/*&quot;, re: &quot;(?-u)^tmp(?:/|/.*/)[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([Literal('t'), Literal('m'), Literal('p'), RecursiveZeroOrMore, ZeroOrMore]) }
+DEBUG|globset|crates/globset/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;.history/*&quot;, re: &quot;(?-u)^\\.history/[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([Literal('.'), Literal('h'), Literal('i'), Literal('s'), Literal('t'), Literal('o'), Literal('r'), Literal('y'), Literal('/'), ZeroOrMore]) }
+DEBUG|globset|crates/globset/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;.notes/*&quot;, re: &quot;(?-u)^\\.notes/[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([Literal('.'), Literal('n'), Literal('o'), Literal('t'), Literal('e'), Literal('s'), Literal('/'), ZeroOrMore]) }
+DEBUG|globset|crates/globset/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;**/.junk/*&quot;, re: &quot;(?-u)^(?:/?|.*/)\\.junk/[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('.'), Literal('j'), Literal('u'), Literal('n'), Literal('k'), Literal('/'), ZeroOrMore]) }
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 5 literals, 10 basenames, 1 extensions, 0 prefixes, 0 suffixes, 2 required extensions, 5 regexes
+test
+
+[I] ➜ echo test | rg --debug st  -M 900
+DEBUG|rg::config|crates/core/config.rs:40: /Users/edgeb1/.ripgreprc: arguments loaded from config file: [&quot;--max-columns=150&quot;, &quot;--max-columns-preview&quot;, &quot;--glob=!git/*&quot;, &quot;--colors=line:style:bold&quot;, &quot;--smart-case&quot;, &quot;--type-add&quot;, &quot;tfv:*.{tf,tfvars}&quot;]
+DEBUG|rg::args|crates/core/args.rs:543: final argv: [&quot;rg&quot;, &quot;--max-columns=150&quot;, &quot;--max-columns-preview&quot;, &quot;--glob=!git/*&quot;, &quot;--colors=line:style:bold&quot;, &quot;--smart-case&quot;, &quot;--type-add&quot;, &quot;tfv:*.{tf,tfvars}&quot;, &quot;--debug&quot;, &quot;st&quot;, &quot;-M&quot;, &quot;900&quot;]
+DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(ST), Complete(sT), Complete(ſT), Complete(St), Complete(st), Complete(ſt)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;git/*&quot;, re: &quot;(?-u)^git/[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([Literal('g'), Literal('i'), Literal('t'), Literal('/'), ZeroOrMore]) }
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
+DEBUG|globset|crates/globset/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;**/*.sw[nop]&quot;, re: &quot;(?-u)^(?:/?|.*/)[^/]*\\.sw[nop]$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, ZeroOrMore, Literal('.'), Literal('s'), Literal('w'), Class { negated: false, ranges: [('n', 'n'), ('o', 'o'), ('p', 'p')] }]) }
+DEBUG|globset|crates/globset/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;tmp/**/*&quot;, re: &quot;(?-u)^tmp(?:/|/.*/)[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([Literal('t'), Literal('m'), Literal('p'), RecursiveZeroOrMore, ZeroOrMore]) }
+DEBUG|globset|crates/globset/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;.history/*&quot;, re: &quot;(?-u)^\\.history/[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([Literal('.'), Literal('h'), Literal('i'), Literal('s'), Literal('t'), Literal('o'), Literal('r'), Literal('y'), Literal('/'), ZeroOrMore]) }
+DEBUG|globset|crates/globset/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;.notes/*&quot;, re: &quot;(?-u)^\\.notes/[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([Literal('.'), Literal('n'), Literal('o'), Literal('t'), Literal('e'), Literal('s'), Literal('/'), ZeroOrMore]) }
+DEBUG|globset|crates/globset/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;**/.junk/*&quot;, re: &quot;(?-u)^(?:/?|.*/)\\.junk/[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('.'), Literal('j'), Literal('u'), Literal('n'), Literal('k'), Literal('/'), ZeroOrMore]) }
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 5 literals, 10 basenames, 1 extensions, 0 prefixes, 0 suffixes, 2 required extensions, 5 regexes
+test
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bedge">@bedge</a> on 2020-07-29 17:54</div>
+            <div class="timeline-body"><p>Found the culprit, my ~/.ripgreprc has:</p>
+<pre><code># Don't let ripgrep vomit really long lines to my terminal, and show a preview.
+--max-columns=150
+--max-columns-preview
+</code></pre>
+<p>commenting the <code>--max-columns=150</code> fixes the problem, but I would still call the behavior a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-07-29 18:03</div>
+            <div class="timeline-body"><p>Aye, I see it now. Yes, it is a bug, but is almost certainly in <code>clap</code>, which is the argv parser that ripgrep uses. I wonder if it might be related to #884. The next step for this issue is for someone to create a minimal Rust program that reproduces the clap bug and then report it upstream. I doubt I'll do this personally any time soon.</p>
+<p>FWIW, if you use <code>-M900</code> instead of <code>-M 900</code>, then it works. (Which also confirms for me that this is a bug in clap.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @BurntSushi on 2020-07-29 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2020-07-29 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bedge">@bedge</a> on 2020-07-29 19:06</div>
+            <div class="timeline-body"><p>Thanks for the help, makes perfect sense. Just gave me a WTF moment so I had to pass along.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssent1">@ssent1</a> on 2022-11-12 20:05</div>
+            <div class="timeline-body"><p>I also got the desired behaviour by adding <code>=</code> or removing the <code>&lt;Space&gt;</code> character.</p>
+<p>It's not clear whether there is an unambiguous bug. But, updating the manpage to show:</p>
+<blockquote>
+<p>-MNUM --max-columns=<strong><em>NUM</em></strong></p>
+</blockquote>
+<p>instead of <code>-M, --max-columns NUM</code> makes the patterns that work clear.</p>
+<p>NB: <code>-M NUM</code> and <code>--max-columns=NUM</code> seem to be the more intuitive CLI patterns.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-11-12 20:07</div>
+            <div class="timeline-body"><p>No, it's definitely a bug. I rarely use <code>-x N</code> or <code>--flag=value</code> myself. I usually write <code>-xN</code> or <code>--flag value</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-11-21 00:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-21 04:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:12 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issues with -f or --file switch and a file with a backslash character (\) - BurntSushi/ripgrep #832</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Issues with -f or --file switch and a file with a backslash character ()</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/832">#832</a>
+        opened by <a href="https://github.com/leftcoastbeard">@leftcoastbeard</a>
+        on 2018-02-23 01:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/leftcoastbeard">@leftcoastbeard</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.8.1
+-SIMD -AVX</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Windows 10 x64, 1709</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<pre><code>-f or --file switch causing issues with files that have back slash character (\)
+</code></pre>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>Using file.txt as this:</p>
+<pre><code>This is text \fixme \hello \break \choose, etc...
+</code></pre>
+<p>This produces:</p>
+<pre><code>rg hello -f file.txt
+Error parsing regex near 'xme \hello' at character offset 21: Unrecognized escape sequence: '\h'.
+(Hint: Try the --fixed-strings flag to search for a literal string.)
+</code></pre>
+<p>If I run without the -f switch I get:</p>
+<pre><code>rg hello file.txt
+1:This is text \fixme \hello \break \choose, etc...
+</code></pre>
+<p>Another weird error: test.txt</p>
+<pre><code>This is a test string.
+With slashes\forward in it.
+Going to break\rg.
+</code></pre>
+<p>Running:</p>
+<pre><code>rg slashes -f test.txt
+slashes: IO error for operation on slashes: The system cannot find the file specified. (os error 2)
+No files were searched, which means ripgrep probably applied a filter you didn't expect. Try running again with --debug.
+</code></pre>
+<p>Should have done this:</p>
+<pre><code>rg slashes test.txt
+2:With slashes\forward in it.
+</code></pre>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<p>Debug for first:</p>
+<pre><code>rg text -f file.txt --debug
+Error parsing regex near 'xme \hello' at character offset 25: Unrecognized escape sequence: '\h'.
+(Hint: Try the --fixed-strings flag to search for a literal string.)
+</code></pre>
+<p>Debug for second:
+<a href="https://gist.github.com/leftcoastbeard/d2d480972c3d88f34107f7e6571b2cf6">Gist Here</a></p>
+<p>The --debug stopped working after this dumped (couldn't replicate the debug output again).
+Show the command you ran and the actual output. Include the <code>--debug</code> flag in
+your invocation of ripgrep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leftcoastbeard">@leftcoastbeard</a> on 2018-02-23 01:31</div>
+            <div class="timeline-body"><p>Am I misinterpreting the usage of the -f/--file parameter? Am I supposed to be using the file as my search query? <strong>facepalm</strong></p>
+<p>EDIT: Yup. The Slashes example is still an issue though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-02-23 02:23</div>
+            <div class="timeline-body"><p>The <code>-f</code> file contains a list of patterns that <code>rg</code> should search for (instead of using a pattern supplied directly on the command line). For example, these are basically equivalent searches:</p>
+<pre><code># Pattern supplied on command line
+% rg 'foo.*bar' file1 file2 file3
+
+# Pattern supplied via file with `-f`
+% cat patterns
+foo.*bar
+% rg -f patterns file1 file2 file3
+</code></pre>
+<p>The patterns in the file have to follow the same regex syntax rules as a pattern supplied on the command line. In Rust's regex engine, the <code>\</code> character can be used either to make characters that are normally special <em>not</em> special (for example, <code>\*</code> matches a literal <code>*</code> character) or the other way around (for example, <code>\d</code> matches a digit). Since <code>\</code> itself is therefore a special character, you need to escape it to make it match a literal <code>\</code> in your file.</p>
+<p>So, instead of <code>\fixme</code> (or whatever), make your pattern <code>\\fixme</code>.</p>
+<p>Alternatively, you might be able to use the <code>-F</code> option to make <code>rg</code> treat patterns as literal strings (see <code>rg --help</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leftcoastbeard">@leftcoastbeard</a> on 2018-02-23 03:36</div>
+            <div class="timeline-body"><p>I appreciate the feedback, this clears up my misunderstanding. I think you can probably close this issue as I was not using the switch correctly.</p>
+<ul>
+<li>Paul Hey
+From Outlook<a href="https://aka.ms/qtex0l">https://aka.ms/qtex0l</a> iOS</li>
+</ul>
+<hr />
+<p>From: dana <a href="mailto:notifications@github.com">notifications@github.com</a>
+Sent: Thursday, February 22, 2018 6:23:05 PM
+To: BurntSushi/ripgrep
+Cc: Paul Hey; Author
+Subject: Re: [BurntSushi/ripgrep] Issues with -f or --file switch and a file with a backslash character () (#832)</p>
+<p>The -f file contains a list of patterns that rg should search for (instead of using a pattern supplied directly on the command line). For example, these are basically equivalent searches:</p>
+<h1>Pattern supplied on command line</h1>
+<p>% rg 'foo.*bar' file1 file2 file3</p>
+<h1>Pattern supplied via file with <code>-f</code></h1>
+<p>% cat patterns
+foo.*bar
+% rg -f patterns file1 file2 file3</p>
+<p>The patterns in the file have to follow the same regex syntax rules as a pattern supplied on the command line. In Rust's regex engine, the \ character can be used either to make characters that are normally special not special (for example, * matches a literal * character) or the other way around (for example, \d matches a digit). Since \ itself is therefore a special character, you need to escape it to make it match a literal \ in your file.</p>
+<p>So, instead of \fixme (or whatever), make your pattern \fixme.</p>
+<p>Alternatively, you might be able to use the -F option to make rg treat patterns as literal strings (see rg --help).</p>
+<p>—
+You are receiving this because you authored the thread.
+Reply to this email directly, view it on GitHub<a href="https://github.com/BurntSushi/ripgrep/issues/832#issuecomment-367889855">https://github.com/BurntSushi/ripgrep/issues/832#issuecomment-367889855</a>, or mute the thread<a href="https://github.com/notifications/unsubscribe-auth/AOfyKqfsXiL21-gDOINxZpDMQ-BxiVHiks5tXiEIgaJpZM4SQQGu">https://github.com/notifications/unsubscribe-auth/AOfyKqfsXiL21-gDOINxZpDMQ-BxiVHiks5tXiEIgaJpZM4SQQGu</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-23 11:50</div>
+            <div class="timeline-body"><p>@leftcoastbeard Thanks for the bug report! Could you please help us understand how we can improve ripgrep's documentation such that it would have prevented this confusion?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-02-23 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">doc</span> added by @BurntSushi on 2018-02-23 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leftcoastbeard">@leftcoastbeard</a> on 2018-02-23 17:11</div>
+            <div class="timeline-body"><p>I think the simplest way would be to update the Usage options from:</p>
+<pre><code>USAGE:
+
+    rg [OPTIONS] PATTERN [PATH ...]
+    rg [OPTIONS] [-e PATTERN ...] [-f FILE ...] [PATH ...]
+    rg [OPTIONS] --files [PATH ...]
+    rg [OPTIONS] --type-list
+</code></pre>
+<p>To something like:</p>
+<pre><code>USAGE:
+
+    rg [OPTIONS] PATTERN [PATH ...]
+    rg [OPTIONS] [-e PATTERN ...] [-f PATTERNFILE ...] [PATH ...]
+    rg [OPTIONS] --files [PATH ...]
+    rg [OPTIONS] --type-list
+</code></pre>
+<p>The full help has it explained clearly, more or less. I just needed to RTM.</p>
+<p>Thanks,</p>
+<p>-Paul Hey</p>
+<p>From: Andrew Gallant [mailto:notifications@github.com]
+Sent: February 23, 2018 03:50
+To: BurntSushi/ripgrep <a href="mailto:ripgrep@noreply.github.com">ripgrep@noreply.github.com</a>
+Cc: Paul Hey <a href="mailto:HeyP@camosun.bc.ca">HeyP@camosun.bc.ca</a>; Mention <a href="mailto:mention@noreply.github.com">mention@noreply.github.com</a>
+Subject: Re: [BurntSushi/ripgrep] Issues with -f or --file switch and a file with a backslash character () (#832)</p>
+<p>@leftcoastbeard<a href="https://github.com/leftcoastbeard">https://github.com/leftcoastbeard</a> Thanks for the bug report! Could you please help us understand how we can improve ripgrep's documentation such that it would have prevented this confusion?</p>
+<p>—
+You are receiving this because you were mentioned.
+Reply to this email directly, view it on GitHub<a href="https://github.com/BurntSushi/ripgrep/issues/832#issuecomment-367988932">https://github.com/BurntSushi/ripgrep/issues/832#issuecomment-367988932</a>, or mute the thread<a href="https://github.com/notifications/unsubscribe-auth/AOfyKhi0lXu-sl2tZuOKF8mvfWHpigZVks5tXqX3gaJpZM4SQQGu">https://github.com/notifications/unsubscribe-auth/AOfyKhi0lXu-sl2tZuOKF8mvfWHpigZVks5tXqX3gaJpZM4SQQGu</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-02-23 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-23 17:18</div>
+            <div class="timeline-body"><p>@leftcoastbeard Done! Thanks.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:28 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ripgrep match digit use [0-9] or [[:digit:]] slow \d - BurntSushi/ripgrep #1867</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ripgrep match digit use [0-9] or [[:digit:]] slow \d</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1867">#1867</a>
+        opened by <a href="https://github.com/x1e">@x1e</a>
+        on 2021-05-19 06:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/x1e">@x1e</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 11.0.2 (rev 3de31f7527)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<p>ripgrep 12.1.1 (rev 7cb211378a)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>ripgrep 11.0.2 Github binary releases
+ripgrep 12.1.1 Github binary releases</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Debian 9.12 stretch</p>
+<h4>Describe your bug.</h4>
+<p>[0-9] or [[:digit:]] match digit slow \d</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>11.0.2</p>
+<p>time rg -c 996947807574403616 xxxx.log
+7
+real    0m24.966s
+user    0m17.292s
+sys     0m7.612s</p>
+<p>time rg -c 99694780757440361[0-9] xxxx.log
+40
+real    2m40.820s
+user    2m37.720s
+sys     0m2.716s</p>
+<p>time rg -c '99694780757440361[[:digit:]]' xxx.log
+40</p>
+<p>real    2m39.442s
+user    2m37.456s
+sys     0m1.604s</p>
+<p>time rg -c 99694780757440361\d xxxx.log
+40
+real    0m19.755s
+user    0m18.072s
+sys     0m1.632s</p>
+<p>time rg -c 99694780757440361. xxxx.log
+40
+real    0m19.156s
+user    0m17.504s
+sys     0m1.604s</p>
+<p>time rg -c 99694780757[0-9]40361[0-9] xxxx.log
+645
+real    0m51.093s
+user    0m49.356s
+sys     0m1.612s</p>
+<p>time rg -c 99694780757\d40361\d  xxxx.log
+645
+real    0m34.909s
+user    0m33.080s
+sys     0m1.732s</p>
+<p>12.1.1</p>
+<p>time rg -c 996947807574403616 xxxx.log
+7
+real    0m19.576s
+user    0m17.924s
+sys     0m1.604s</p>
+<p>time rg -c 99694780757440361[0-9] xxxx.log
+40
+real    1m53.430s
+user    1m51.496s
+sys     0m1.664s</p>
+<p>time rg -c '99694780757440361[[:digit:]]' xxx.log
+40
+real    1m53.763s
+user    1m52.132s
+sys     0m1.360s</p>
+<p>time rg -c 99694780757440361\d xxxx.log
+40
+real    0m19.009s
+user    0m17.308s
+sys     0m1.652s</p>
+<p>time rg -c 99694780757440361. xxxx.log
+40
+real    0m19.673s
+user    0m18.028s
+sys     0m1.596s</p>
+<p>time rg -c 99694780757[0-9]40361[0-9] xxxx.log
+645
+real    0m55.672s
+user    0m53.968s
+sys     0m1.568s</p>
+<p>time rg -c 99694780757\d40361\d  xxxx.log
+645
+real    0m34.300s
+user    0m32.612s
+sys     0m1.604s</p>
+<h4>What is the actual behavior?</h4>
+<p>[0-9] or [[:digit:]] slow \d or .</p>
+<h4>What is the expected behavior?</h4>
+<p>[0-9] or [[:digit:]] or \d have same speed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-19 10:12</div>
+            <div class="timeline-body"><p>I'm sorry but this report isn't actionable. Please provide the input. If you can't share the input, then please find a way to anonymize it or another input that we both have access to.</p>
+<p>Also, the search times here are quite long. To me, they suggest the file is quite large. Possibly large enough that it does not fit into your I/O cache, and that most time is being spent doing I/O. Thus, you might just be witnessing noise.</p>
+<p>And finally, <code>\d</code> is not equivalent to <code>[0-9]</code>. <code>\d</code> is Unicode-aware. But I wouldn't really expect that to matter here. Alas, I don't know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2021-05-19 10:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-31 23:34</div>
+            <div class="timeline-body"><p>Closing due to inactivity. Happy to re-open if given more data.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-05-31 23:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:22 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[globset] option to capture groups  - BurntSushi/ripgrep #2116</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[globset] option to capture groups</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2116">#2116</a>
+        opened by <a href="https://github.com/svark">@svark</a>
+        on 2022-01-02 13:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/svark">@svark</a></div>
+            <div class="timeline-body"><h4>Option to capture groups in globset crate.</h4>
+<p>Currently, Glob::regex method does not capture groups that represent globs.
+In some scenarios  it would be useful to access the individual captures within a path that matched a glob pattern.<br />
+In this feature request we ask for an option to return a regex from Glob struct with captured groups.</p>
+<p>So for a glob pattern such as</p>
+<p><code>*.rs</code> we return <code>.*\.rs </code>or <code>[^/]*\.rs</code> from Glob::regex.</p>
+<p>With the option to capture groups.
+we could return
+<code>(.*)\.rs </code>or <code>([^/]*)\.rs</code></p>
+<p>In general each glob could have a group in the regex.   This option would not change any functionality currently exposed in globset other than returning a regex with groups.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-01-03 13:08</div>
+            <div class="timeline-body"><p>Sorry, but it's not clear to me what specific API additions you're requesting. Could you please write out the changes you want to make to the API? Ideally, any new routines would include documentation stating their contract.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/svark">@svark</a> on 2022-01-03 16:53</div>
+            <div class="timeline-body"><p>I propose the following two changes</p>
+<ol>
+<li>New addition in GlobBuilder that sets an option:</li>
+</ol>
+<pre><code class="language-rust">pub fn GlobBuilder::capture_globs(&amp;mut self, yes: bool) -&gt; &amp;mut GlobBuilder&lt;'a&gt;
+</code></pre>
+<p>When the option <code>capture_globs</code> is set to true,  the regex returned from <code>Glob</code> has capturing groups for each glob pattern.
+By default this will be set to false.</p>
+<ol start="2">
+<li>Change the implementation of the existing api</li>
+</ol>
+<pre><code class="language-rust">pub fn Glob::regex(&amp;self) -&gt; &amp;str
+</code></pre>
+<p>to return a regex with capturing groups for each glob pattern when <code>GlobBuilder::capture_globs</code> is set to true.
+The regex with captured groups can used to format results of matches or perform replacements.</p>
+<hr />
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-01-03 16:55</div>
+            <div class="timeline-body"><p>How is it determined where capture groups are placed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/svark">@svark</a> on 2022-01-03 17:09</div>
+            <div class="timeline-body"><p>We could wrap each  occurence of a glob pattern with a corresponding regex capturing group.
+Any(<code>?</code>) pattern becomes <code>(.)</code> or <code>([^/])</code>
+ZeroOrmore  becomes <code>(.*)</code>
+RecursivePrefix -&gt; <code>(/?|.*/)</code>
+RecursiveSuffix -&gt; <code>/(.?)</code>
+ClassRange -&gt; <code>([xxxx])</code>
+Alternates is already captured.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-01-03 17:14</div>
+            <div class="timeline-body"><p>Could you show some code that you would write in order to make use of this new API? And ideally describe the use case at a high level. To be honest, I'm kind of confused at what you're trying to achieve here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/svark">@svark</a> on 2022-01-04 04:56</div>
+            <div class="timeline-body"><p>Hi Andrew,</p>
+<p>A simple example is what is done in build rules to build targets based on input selected using glob patterns.
+So the input of a build rule selects some files using glob patterns.
+We apply a rule to produce outputs based on selecting portions (where globs occur) of the file.</p>
+<p>This rule below is from <a href="http://gittup.org/tup/manual.html">Tup  manual</a> which is easy to read.</p>
+<pre><code>: foreach *_text.txt |&gt; foo %f |&gt; %g_binary.bin
+</code></pre>
+<p><code>foreach *_text.txt</code> selects files based on glob pattern, and applies the <code>rule foo %f</code>  each file.  Files of the form <code>%g_binary</code> are generated by rule.  <code>%g</code> in the ouput indicates where expanded/substituted glob pattern appear in the output files
+We could use %1g,%2g,.. etc to make different globs substitutions.</p>
+<p>Here is some code that can accomplish this for existing files on filesystem. Walking down the directory we discover inputs files based on globs calling is_match to filter files. From the filtered_paths we then collect first group using the regex with capturing groups.  This would be used for substitution in %g.</p>
+<p>https://gist.github.com/svark/3d39be5f4da7c5a4e385d74be9072202</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-01-04 14:29</div>
+            <div class="timeline-body"><p>I see, okay, thank you for providing that.</p>
+<p>So, in theory, I'm not opposed to this, but I have two concerns.</p>
+<p>Firstly, I'm not sure that this library will always use regexes internally to do glob matching. So I'm hesitant to add further APIs that expose the current implementation. I realize that there is already an API that returns the regex though, and just because we have APIs that return the glob converted to a regex doesn't mean that the implementation has to actually use that regex. So I think I can look past this concern.</p>
+<p>Secondly though, it kind of seems like this API is a little difficult to use. I hinted at this earlier by asking for a function contract, but specifically, it seems difficult to me to know where exactly capturing groups are inserted. I realize you provided a mapping, but this doesn't seem like an easy to understand API to me. More to the point, if we get it wrong in the first go-round, then changing the way capturing groups are inserted is likely to break existing uses of it in very subtle ways. And perhaps it's not even about getting it &quot;wrong&quot; per se, but rather, perhaps there are multiple reasonable mappings.</p>
+<p>Overall, this seems like kind of a hazard to me. You might consider copying the glob parser out of this crate, and then also copying the regex generation code and modify it to fit your needs. It is actually a relatively small bit of what this crate does. <em>Most</em> of the crate is about dealing with glob sets and optimizing the heck out of them. But since you're just using the regex, you are actually pulling in a large bit of code that you're not even using anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/svark">@svark</a> on 2022-01-04 14:38</div>
+            <div class="timeline-body"><p>Thank you, I understand your concerns. As you said this approach to mapping may not be exactly what users might need always. I will copy the relevant parsers to fit my needs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @svark on 2022-01-04 14:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:29 UTC
+    </footer>
+</body>
+</html>

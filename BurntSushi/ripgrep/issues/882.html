@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ripgrep giving permission denied on Ubuntu 16.04 - BurntSushi/ripgrep #882</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ripgrep giving permission denied on Ubuntu 16.04</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/882">#882</a>
+        opened by <a href="https://github.com/DiarmaidEverycs">@DiarmaidEverycs</a>
+        on 2018-04-12 12:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/DiarmaidEverycs">@DiarmaidEverycs</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.8.1 (rev c8e9f25b85)
+-SIMD -AVX</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Ubuntu 64bit 16.04 LTS</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>I am using a virtual machine to run Ubuntu in VirtualBox.   VirtualBox allows you to share folders between the host and the virtual machine (which I have done). However, when I try to search through files in the shared folder with rg, I get</p>
+<pre><code>$rg -in up
+./: IO error for operation on ./: Permission denied (os error 13)
+No files were searched, which means ripgrep probably applied a filter you didn't expect. Try running again with --debug.
+</code></pre>
+<p>Running it with --debug:</p>
+<pre><code>$rg -in up --debug
+DEBUG/grep::search/grep/src/search.rs:195: regex ast:
+Literal {
+    chars: [
+        'u',
+        'p'
+    ],
+    casei: true
+}
+DEBUG/grep::literals/grep/src/literals.rs:38: literal prefixes detected: Literals { lits: [Complete(up)], limit_size: 250, limit_class: 10 }
+./: IO error for operation on ./: Permission denied (os error 13)
+No files were searched, which means ripgrep probably applied a filter you didn't expect. Try running again with --debug.
+</code></pre>
+<p>I think that this is a permissions issue - when I try to run rg in /opt/ or /dev I get the same issue.</p>
+<p>grep doesn't appear to have this issue though - in /opt/ when I run grep -in up **/* I get</p>
+<pre><code>$ grep -in up **/*
+grep: orientdb/benchmarks: Is a directory
+grep: orientdb/bin: Is a directory
+grep: orientdb/config: Is a directory
+grep: orientdb/databases: Is a directory
+orientdb/history.txt:178: - New Incremental Backup (Enterprise Edition only)
+orientdb/history.txt:181: - Support SALT in passwords
+&lt;more output&gt;
+</code></pre>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>Should have given me each line in the files which contained the characters up, UP, uP or Up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-04-12 12:06</div>
+            <div class="timeline-body"><p>How did you install ripgrep? Did you do it with snap? If so, please see the <a href="https://github.com/BurntSushi/ripgrep#installation">installation instructions</a>:</p>
+<blockquote>
+<p>If you get permission errors when running ripgrep after installation, try uninstalling and then re-installing with the --classic flag.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-04-12 12:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DiarmaidEverycs">@DiarmaidEverycs</a> on 2018-04-12 12:10</div>
+            <div class="timeline-body"><p>Yup, that fixed it. I missed it in the installation instructions, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @DiarmaidEverycs on 2018-04-12 12:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-04-12 12:23</div>
+            <div class="timeline-body"><p>I really wish someone that knew something about Snap could explain why this is happening and how to fix it. It's really frustrating. I mean, if I go to <a href="https://snapcraft.io/rg">Snap's page for ripgrep</a>, not only does it incorrectly list the license as proprietary, but there is literally zero information about who uploaded the package or how to report bugs. As a result, people come here, and all I can do is tell people that didn't read the README to read the README.</p>
+<p>cc @hackel @tasdomas @anuragsoni @ChrisMacNaughton @cstorres  (sorry, CC'ing everyone who has submitted a PR about snap, with the hope that someone knows something)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anuragsoni">@anuragsoni</a> on 2018-04-12 13:37</div>
+            <div class="timeline-body"><p>@BurntSushi I don't use snap anymore, but last I checked, for tools like grep, ripgrep or anything that needs access to the system should be setup in 'classic' mode. By default snaps use a strict confinement with access to only its install space. I don't know much about how snapcraft works, or if packages are vetted there.</p>
+<p>If the published package marked its confinement as 'classic', it will show a good error message when trying to install it without the <code>--classic</code> flag.</p>
+<p>For example this is the message you see when trying to install <code>asciinema</code> without the <code>--classic</code> flag.</p>
+<pre><code>error: This revision of snap &quot;asciinema&quot; was published using classic confinement and thus may
+       perform arbitrary system changes outside of the security sandbox that snaps are usually
+       confined to, which may put your system at risk.
+
+       If you understand and want to proceed repeat the command including --classic.
+</code></pre>
+<p>Reference: https://docs.snapcraft.io/reference/confinement</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChrisMacNaughton">@ChrisMacNaughton</a> on 2018-04-12 13:47</div>
+            <div class="timeline-body"><p>I've updated the published snap, as well as inviting @BurntSushi to collaborate, as a first step to making you an admin and handing that off</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChrisMacNaughton">@ChrisMacNaughton</a> on 2018-04-12 13:50</div>
+            <div class="timeline-body"><p>Also, updated license information to reflect current MIT or Unlicense</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChrisMacNaughton">@ChrisMacNaughton</a> on 2018-04-12 13:56</div>
+            <div class="timeline-body"><p>To be clear, only for the snap named <code>ripgrep</code>, I have no connection to the person who published <code>rg</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-04-12 14:00</div>
+            <div class="timeline-body"><p>@anuragsoni @ChrisMacNaughton Thanks so much! I will try to sort this out now that I have access to <code>ripgrep</code>. Thanks for the tip about classic mode. I had no idea that snaps had that restriction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChrisMacNaughton">@ChrisMacNaughton</a> on 2018-04-12 14:01</div>
+            <div class="timeline-body"><p>Given that the snapcraft.yaml had been updated with classic confinement, updating to add classic confinement just meant re-building and publishing; @BurntSushi now that you have access, you could setup https://build.snapcraft.io/ to automatically build &amp; publish to a testing channel for the snap</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-04-12 14:03</div>
+            <div class="timeline-body"><p>@ChrisMacNaughton Thanks! I will try to look into that for the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChrisMacNaughton">@ChrisMacNaughton</a> on 2018-04-13 06:00</div>
+            <div class="timeline-body"><p>As a lower priority thing, it can be setup to have an &quot;edge&quot; channel always building from master on every commit, and then you would publish a release build through &quot;beta&quot;, &quot;candidate&quot;, and &quot;stable&quot; (optionally ignoring any you don't want to use)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:31 UTC
+    </footer>
+</body>
+</html>

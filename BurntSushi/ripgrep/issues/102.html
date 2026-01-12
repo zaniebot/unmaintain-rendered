@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to search for hyphen followed by a character - BurntSushi/ripgrep #102</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to search for hyphen followed by a character</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/102">#102</a>
+        opened by <a href="https://github.com/kaushalmodi">@kaushalmodi</a>
+        on 2016-09-26 14:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kaushalmodi">@kaushalmodi</a></div>
+            <div class="timeline-body"><p>I was trying to search for hyphen followed by a character. But that did not work, even when trying to escape the hyphen.</p>
+<p>This example demonstrates that:</p>
+<pre><code>km²~/temp/:proj/SOMEPRJ&gt; tree -a
+.
+└── foo
+
+0 directories, 1 file
+km²~/temp/:proj/SOMEPRJ&gt; cat foo
+-bar
+km²~/temp/:proj/SOMEPRJ&gt; \rg --no-ignore-vcs '-' 
+foo
+1:-bar
+km²~/temp/:proj/SOMEPRJ&gt; \rg --no-ignore-vcs '-b'  
+Unknown flag: '-b'
+
+Usage: rg [options] -e PATTERN ... [&lt;path&gt; ...]
+       rg [options] &lt;pattern&gt; [&lt;path&gt; ...]
+       rg [options] --files [&lt;path&gt; ...]
+       rg [options] --type-list
+       rg [options] --help
+       rg [options] --version
+km²~/temp/:proj/SOMEPRJ&gt; \rg --no-ignore-vcs '\-b' 
+Error parsing regex near '\-b' at character offset 1: Unrecognized escape sequence: '\-'.
+km²~/temp/:proj/SOMEPRJ&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-09-26 14:39</div>
+            <div class="timeline-body"><p>Found a workaround soon after I posted that.</p>
+<pre><code>km²~/temp/:proj/SOMEPRJ&gt; \rg --no-ignore-vcs -- '-b' 
+foo
+1:-bar
+</code></pre>
+<p>But this works with <code>ag</code>:</p>
+<pre><code>km²~/temp/:proj/SOMEPRJ&gt; \ag '\-b' 
+foo
+1:-bar
+</code></pre>
+<p>Is that a bug? Or a limitation of the Rust regex engine? Feel free to close this issue if it's not possible to support the escaped hyphen syntax.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-26 16:24</div>
+            <div class="timeline-body"><p><code>\-</code> doesn't work because <code>-</code> doesn't need to be escaped. Rust's regex engine doesn't let you willy nilly escape any character.</p>
+<p>There are two work arounds. Either use <code>rg -- -a</code> or <code>rg -e -a</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-09-26 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-09-26 16:25</div>
+            <div class="timeline-body"><p>Got it, thanks.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:43 UTC
+    </footer>
+</body>
+</html>

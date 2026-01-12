@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ignore: gracefully quit worker threads upon panic in ParallelVisitor - BurntSushi/ripgrep #3010</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ignore: gracefully quit worker threads upon panic in ParallelVisitor</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/3010">#3010</a>
+        opened by <a href="https://github.com/cosmicexplorer">@cosmicexplorer</a>
+        on 2025-03-06 04:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cosmicexplorer">@cosmicexplorer</a></div>
+            <div class="timeline-body"><p><em>Fixes #3009.</em></p>
+<h1>Problem</h1>
+<p><code>WalkParallel::visit()</code> will nondeterministically hang if the <code>ParallelVisitor::visit()</code> implementation panics. This also occurs when providing a closure to <code>WalkParallel::run()</code>. Minimal repro is provided in #3009:</p>
+<pre><code class="language-rust">        WalkBuilder::new(path)
+            .build_parallel()
+            .run(|| Box::new(|_| panic!(&quot;oops!&quot;)));
+</code></pre>
+<p>The above code will nondeterministically hang, because of an infinite loop when no new work is available: https://github.com/BurntSushi/ripgrep/blob/de4baa10024f2cb62d438596274b9b710e01c59b/crates/ignore/src/walk.rs#L1695-L1707</p>
+<h1>Solution</h1>
+<ol>
+<li>Check the <code>quit_now</code> flag in our wait loop.</li>
+<li>Catch any panic in the <code>run()</code> method and set <code>quit_now</code> before propagating the panic.</li>
+</ol>
+<p><strong>Breaking change:</strong> In order to ensure soundness, we also enforce that the filter method provided to <code>WalkBuilder#filter_entry()</code> is <code>UnwindSafe</code>. Users can circumvent this by wrapping in <code>AssertUnwindSafe</code> as needed.</p>
+<h1>Result</h1>
+<p>The added test <code>panic_in_parallel()</code> always succeeds instead of hanging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "correctly quit out of busy loops if a ParallelVisitor panics to avoid a hang" to "ignore: correctly quit out of busy loops if a ParallelVisitor panics to avoid a hang" by @cosmicexplorer on 2025-03-06 04:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ignore: correctly quit out of busy loops if a ParallelVisitor panics to avoid a hang" to "ignore: gracefully quit worker threads upon panic in ParallelVisitor" by @cosmicexplorer on 2025-03-06 04:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-17 21:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ignore/src/walk.rs</code>:915 on 2025-08-17 21:05</div>
+            <div class="timeline-body"><p>Unfortunately, I think this is plausibly too big of a breaking change for me to stomach in a semver compatible release. And I don't have the bandwidth to do a semver incompatible release right now. Which kind of makes this PR stuck.</p>
+<p>One possible way to get this unstuck is to <em>add</em> a new API that avoid this problem and deprecate the old one. But I'd only want to go this route if it was a very small addition that doesn't significantly complicate the implementation. I'm not sure if such a solution exists.</p>
+<p>Otherwise, I'm inclined to leave this bug open for now, and just something to address in the next semver incompatible release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-17 21:05</div>
+            <div class="timeline-body"><p>Closing, but keeping #3010 open.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-08-17 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-17 21:06</div>
+            <div class="timeline-body"><p>Also, thank you for your work on this! Even though I ended up not taking this PR, your work will be something worth building on for <code>ignore 0.5</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cosmicexplorer">@cosmicexplorer</a> on 2025-11-27 13:34</div>
+            <div class="timeline-body"><p>Wanted to confirm here that:</p>
+<ul>
+<li>I always love working with you and your projects,</li>
+<li>this is exactly the choice I would make as a maintainer,</li>
+<li>and thanks so much for your careful and thorough reply!</li>
+</ul>
+<p>And I am super glad to hear <code>ignore 0.5</code> is on the horizon!</p>
+<p>I would like you to know that as usual, it is extremely difficult to improve upon the kind of work you do. I have tried to argue with your comments in my head and largely failed. I have spent months investigating this, and I have had to introduce some immense complexity in order to make a pretty minor use case more robust. Great work.</p>
+<p>I'm also looking at the API, and while I'm not done with mine yet, I would absolutely recommend considering the use of <a href="https://doc.rust-lang.org/std/ops/enum.ControlFlow.html"><code>ops::ControlFlow</code></a>, either internally or in the API. I think using <code>ControlFlow</code> may contain strictly more information than the untagged stop token. Personally, I have also separated the worker threads by category, and given each category individually configurable thread counts. I don't know if that will help performance, but I <em>do</em> think that the definition of &quot;done&quot; differs based upon whether the current node is a directory or not, which I think may justify slightly different looping techniques..</p>
+<p>I also think the deadlock that occurred here is a symptom of a more general misalignment of the threading model to the input distribution. I think work stealing + <em>recursive</em> data generation (so each work item can always produce more) is necessarily prone to this deadlock. I do not have a proof of this, and I also do not have a more appropriate answer myself yet. I <em>do</em> understand that work stealing is a good approach to avoid having a single very large directory fill up its own queue. I <em>also</em> wonder whether there is any benefit to maximizing thread locality.</p>
+<p>Finally, I was informed about a very widely available syscall <code>getdents()</code>, which is provided in Linux and BSD stdlibs, but not macOS, which writes multiple directory entries into a provided buffer. There is even a <code>posix_getdents()</code> from POSIX 2024, and musl supports it, but I have been having a very difficult time getting it accepted to the rust libc crate: https://github.com/rust-lang/libc/pull/4522.</p>
+<p>I am actually very confident that supporting <code>getdents()</code> will produce a drastic performance improvement for <code>fs::read_dir()</code>, so I'm going to try demonstrating that today. If I can demonstrate its utility with benchmarks, I will probably ping you again, and ask you to help support my quest to get this syscall into the stdlib.</p>
+<p><code>ignore 0.5</code> may be able to just call upon <code>fs::read_dir()</code>, but for pipelining it can be nice to control the buffer size. Note that the alignment of the output is (1) very stable (2) ridiculous.
+https://codeberg.org/cosmicexplorer/deep-link/src/commit/1ea3eba5d599d8c48ea56816b7103b12ee49d505/d-major/readdir-sys/src/getdents.rs#L101-L188</p>
+<p>Again, very impressed by your engineering judgement, and I appreciate when you write a comment about decisions you <em>didn't</em> take too. Keep it up!!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:19 UTC
+    </footer>
+</body>
+</html>

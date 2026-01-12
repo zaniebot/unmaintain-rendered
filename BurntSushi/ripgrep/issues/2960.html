@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`grep-printer` not exactly following matcher regex - BurntSushi/ripgrep #2960</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>grep-printer</code> not exactly following matcher regex</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2960">#2960</a>
+        opened by <a href="https://github.com/OleMussmann">@OleMussmann</a>
+        on 2025-01-03 09:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/OleMussmann">@OleMussmann</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>crate: grep = &quot;0.3.2&quot;</p>
+<h3>How did you install ripgrep?</h3>
+<p>Cargo</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>NixOS 24.11.20241230.3ffbbdb (Vicuna)</p>
+<h3>Describe your bug.</h3>
+<p><code>grep::printer</code> does not color all the matches when searching for a regex matching the start of a line, only the first one. Regular matches or matches at the end of a line work fine.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>Example code:</p>
+<pre><code class="language-rust">use grep::{printer, regex, searcher};
+use termcolor;
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let content = &quot;abcde abcde\nabcde abcde\nabcde abcde&quot;;
+    let search_terms = [
+        &quot;abcde&quot;,  // regular match
+        &quot;^abcde&quot;, // start of the line
+        &quot;abcde$&quot;, // end of the line
+    ];
+    let color_specs = printer::ColorSpecs::new(&amp;[&quot;match:fg:red&quot;.parse()?]);
+
+    for search_term in search_terms {
+        let matcher = regex::RegexMatcherBuilder::new().build(search_term)?;
+        let mut printer = printer::StandardBuilder::new()
+            .color_specs(color_specs.clone())
+            .build(termcolor::StandardStream::stdout(
+                termcolor::ColorChoice::Always,
+            ));
+
+        println!();
+        println!(&quot;Searching for \&quot;{search_term}\&quot;:&quot;);
+        searcher::Searcher::new().search_slice(
+            &amp;matcher,
+            &amp;content.as_bytes(),
+            printer.sink(&amp;matcher),
+        )?;
+    }
+
+    Ok(())
+}
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<p>Output image from example code:</p>
+<p><img src="https://github.com/user-attachments/assets/e0ff8b50-2c37-42c7-8967-e4507e034c69" alt="image" /></p>
+<h3>What is the expected behavior?</h3>
+<p>My expectation would be that for the search term &quot;^abcde&quot; matches would be colored for <em>all</em> printed lines.</p>
+<p>Is it a bug in <code>grep-printer</code> or am I using the libraries incorrectly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Locked by @ghost on 2025-01-03 13:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:52 UTC
+    </footer>
+</body>
+</html>

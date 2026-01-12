@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Failure on Windows 11 ARM64: misc::sort_accessed Output Order Mismatch Due to Access Time Handling - BurntSushi/ripgrep #3071</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Test Failure on Windows 11 ARM64: misc::sort_accessed Output Order Mismatch Due to Access Time Handling</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3071">#3071</a>
+        opened by <a href="https://github.com/vishvanatarajan">@vishvanatarajan</a>
+        on 2025-06-21 14:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/vishvanatarajan">@vishvanatarajan</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[x] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>ripgrep 14.1.1 (rev 4649aa9700)</p>
+<p>Features:</p>
+<ul>
+<li>pcre2</li>
+</ul>
+<p>SIMD:</p>
+<ul>
+<li>compile: +NEON</li>
+<li>runtime: +NEON</li>
+</ul>
+<p>Note: PCRE2 is not available in this build of ripgrep.</p>
+<h3>How did you install ripgrep?</h3>
+<p>Built from source.</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>OS: Microsoft Windows 11 Home (Build 10.0.26100)
+Architecture: ARM64</p>
+<h3>Describe your bug.</h3>
+<p>When running cargo test --all, the following two tests fail:</p>
+<p>misc::sort_accessed – consistently fails on the system.
+misc::sortr_accessed – fails intermittently on the system.</p>
+<p>The failure appears to be related to differences in how file access times are handled on Windows ARM64, possibly due to NTFS behavior or platform-specific metadata handling.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<ol>
+<li><p>Clone the ripgrep repository.</p>
+</li>
+<li><p>Build the project using cargo build.</p>
+</li>
+<li><p>Run the full test suite with:
+<code>cargo test --all</code></p>
+</li>
+</ol>
+<h3>What is the actual behavior?</h3>
+<p>The test misc::sort_accessed fails due to a mismatch in expected vs actual output order. The expected output assumes a specific access time order that is not preserved on this platform.</p>
+<p>https://gist.github.com/vishvanatarajan/a2c3301b52f11be9b98ec4a411c62761</p>
+<h3>What is the expected behavior?</h3>
+<p>All the tests must pass.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vishvanatarajan">@vishvanatarajan</a> on 2025-06-21 15:01</div>
+            <div class="timeline-body"><p>I would be happy to try a fix for this, however, I have a very basic (almost non-existent) knowledge of Rust and the ripgrep codebase, I would highly appreciate any support I can get.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-06-21 16:49</div>
+            <div class="timeline-body"><p>The tests are here:</p>
+<p>https://github.com/BurntSushi/ripgrep/blob/cbc598f245f3c157a872b69102653e2e349b6d92/tests/misc.rs#L1114-L1130</p>
+<p>I would play with the sleep times in the setup code for those tests:</p>
+<p>https://github.com/BurntSushi/ripgrep/blob/cbc598f245f3c157a872b69102653e2e349b6d92/tests/misc.rs#L1093-L1106</p>
+<p>Maybe Windows is using a clock that lacks precision to the nearest hundredth of a millisecond? Seems kinda crazy if so, but that's where I would start.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vishvanatarajan">@vishvanatarajan</a> on 2025-06-21 17:25</div>
+            <div class="timeline-body"><p>playing with the sleep duration does make a difference.</p>
+<p>In general, I am able to get all tests passing reasonably consistently with 400ms of sleep. Any lower and it does not pass consistently. However, this could depend on the system load and hardware capabilities.</p>
+<p>It does look like Windows lacks precision in updating the metadata of files in the file system. Does it make sense to set the sleep duration to 1000ms in an attempt to ensure that the test is not flaky depending on the system load or hardware capabilites?</p>
+<p>P.S - It could also be that Windows/ARM64 lacks precision on file metadata updates in the nearest hundreth of a millisecond. I do not have a x64 Windows system to test this on though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-06-21 17:47</div>
+            <div class="timeline-body"><p>I'm not especially enthused about making the test take ten times longer just because of Windows bullshit. What I would be okay with doing is increasing it to 1000md on Windows/arm64 though. I'm on mobile, but something like <code>#[cfg(all(windows, target_arch = &quot;aarch64&quot;))]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vishvanatarajan">@vishvanatarajan</a> on 2025-06-21 19:40</div>
+            <div class="timeline-body"><p>I understand of course!</p>
+<pre><code class="language-rust">fn sort_setup(dir: Dir) {
+    use std::{thread::sleep, time::Duration};
+    
+    // As reported in https://github.com/BurntSushi/ripgrep/issues/3071
+    // this test fails if sufficient delay is not given on Windows/Aarch64.
+    let delay = if cfg!(all(windows, target_arch = &quot;aarch64&quot;)) {
+        Duration::from_millis(1000)
+    } else {
+        Duration::from_millis(100)
+    };
+
+    let sub_dir = dir.path().join(&quot;dir&quot;);
+    dir.create(&quot;a&quot;, &quot;test&quot;);
+    sleep(delay);
+    dir.create_dir(&amp;sub_dir);
+    sleep(delay);
+    dir.create(sub_dir.join(&quot;c&quot;), &quot;test&quot;);
+    sleep(delay);
+    dir.create(&quot;b&quot;, &quot;test&quot;);
+    sleep(delay);
+    dir.create(sub_dir.join(&quot;d&quot;), &quot;test&quot;);
+}
+</code></pre>
+<p>Would this be something acceptable? I do believe cfg! is a compile-time conditional macro and this should not cause any runtime overheads.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-06-21 19:48</div>
+            <div class="timeline-body"><p>Looks okay</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2025-08-19 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-09-20 01:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:56 UTC
+    </footer>
+</body>
+</html>

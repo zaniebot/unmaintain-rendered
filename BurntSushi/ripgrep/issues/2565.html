@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>perf(ignore): don't search subdirs for git/ignore files if max depth is reached - BurntSushi/ripgrep #2565</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>perf(ignore): don't search subdirs for git/ignore files if max depth is reached</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2565">#2565</a>
+        opened by <a href="https://github.com/sigmaSd">@sigmaSd</a>
+        on 2023-07-23 08:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sigmaSd">@sigmaSd</a></div>
+            <div class="timeline-body"><p>When searching for git/ignore files (the one set with <code>.ignore</code> <code>.git_ignore</code> <code>.git_exclude</code>), the crate should not search the sub-directories if its at the max depth</p>
+<p>example:</p>
+<pre><code>mkdir a
+for ((i=1; i&lt;=100; i++)); do     mktemp --directory XXX; done
+</code></pre>
+<p>a.rs</p>
+<pre><code class="language-rs">use ignore::WalkBuilder;
+
+fn main() {
+    let arg = std::env::args().nth(1).unwrap();
+    let files: Vec&lt;_&gt; = WalkBuilder::new(&amp;arg)
+        .hidden(false)
+        .follow_links(false) // We're scanning over depth 1
+        .max_depth(Some(1))
+        .build()
+        .collect();
+}
+</code></pre>
+<pre><code>cargo b --release
+strace target/release/a a
+</code></pre>
+<p>you can see that we do a lot of unneeded syscalls because we're reading git/ignore files even though we won't search inside those directorates</p>
+<pre><code>openat(AT_FDCWD, &quot;/home/mrcool/dev/rust/others/ripgrep/crates/ignore/a/Vwe&quot;, O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 4
+newfstatat(4, &quot;&quot;, {st_mode=S_IFDIR|0700, st_size=4096, ...}, AT_EMPTY_PATH) = 0
+statx(AT_FDCWD, &quot;/home/mrcool/dev/rust/others/ripgrep/crates/ignore/a/Vwe/.git&quot;, AT_STATX_SYNC_AS_STAT, STATX_ALL, 0x7fffdb02f030) = -1 ENOENT (Aucun fichier ou dossier de ce type)
+statx(AT_FDCWD, &quot;/home/mrcool/dev/rust/others/ripgrep/crates/ignore/a/Vwe/.ignore&quot;, AT_STATX_SYNC_AS_STAT, STATX_ALL, 0x7fffdb02ed60) = -1 ENOENT (Aucun fichier ou dossier de ce type)
+statx(AT_FDCWD, &quot;/home/mrcool/dev/rust/others/ripgrep/crates/ignore/a/Vwe/.gitignore&quot;, AT_STATX_SYNC_AS_STAT, STATX_ALL, {stx_mask=STATX_ALL|STATX_MNT_ID, stx_attributes=0, stx_mode=S_IFREG|0644, stx_size=0, ...}) = 0
+openat(AT_FDCWD, &quot;/home/mrcool/dev/rust/others/ripgrep/crates/ignore/a/Vwe/.gitignore&quot;, O_RDONLY|O_CLOEXEC) = 5
+close(5)                                = 0
+statx(AT_FDCWD, &quot;/home/mrcool/dev/rust/others/ripgrep/crates/ignore/a/Vwe/.git/info/exclude&quot;, AT_STATX_SYNC_AS_STAT, STATX_ALL, 0x7fffdb02ed60) = -1 ENOENT (Aucun fichier ou dossier de ce type)
+close(4)                                = 0
+</code></pre>
+<p>this is the best case (empty dirs), in practice its worse because directory can have those files, and this crate will have to issue read syscalls for them</p>
+<p>without that search, it would be only 3 syscalls per directory</p>
+<p><strong>suggestion:</strong>
+I'm suggestion to not search for those files inside subdirs if we reach the max depth
+Unless I'm missing something it should keep the exact same functionality while having all the performance boost</p>
+<p><strong>motivation:</strong>
+you can checkout https://github.com/helix-editor/helix/issues/7715 where disabling this behavior improved the walking from ~4000 syscalls to ~900 and from 20 seconds to 100 ms in my old pc with hdd drive
+so ~3000 wasted syscalls for ~300 files</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sigmaSd">@sigmaSd</a> on 2023-07-23 09:02</div>
+            <div class="timeline-body"><p>To be clear this optimization only affects users which set <code>max_depth</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-23 12:02</div>
+            <div class="timeline-body"><p>The implementation should already do this:</p>
+<p>https://github.com/BurntSushi/ripgrep/blob/304a60e8e9d4b2a42dc3dfb1ba4cef6d7bf92515/crates/ignore/src/walk.rs#L1493-L1495</p>
+<p>If it's not, I'm not sure why. I personally won't have a chance to investigate this probably until I give <code>ignore</code> a refresh. And I don't know when that will happen. Help is wanted if there's a simple fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @BurntSushi on 2023-07-23 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sigmaSd">@sigmaSd</a> on 2023-07-23 12:37</div>
+            <div class="timeline-body"><p>That path seems to be only reached for <code>WalkParallel</code> but not <code>Walk</code> iterator</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-23 12:38</div>
+            <div class="timeline-body"><p>Yes, that's because the single threaded case uses <a href="https://docs.rs/walkdir/latest/walkdir/struct.WalkDir.html#method.max_depth">walkdir's <code>max_depth</code> option</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sigmaSd">@sigmaSd</a> on 2023-07-23 12:45</div>
+            <div class="timeline-body"><p>The path that my example code take is this https://github.com/BurntSushi/ripgrep/blob/304a60e8e9d4b2a42dc3dfb1ba4cef6d7bf92515/crates/ignore/src/walk.rs#L1022 where add_child will internally do the expensive operations</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-23 12:47</div>
+            <div class="timeline-body"><p>Like I said, I haven't looked into this. I only know that <code>max_depth</code> is being used in some capacity. If there's an easy fix, patches are welcome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AgustinRamiroDiaz">@AgustinRamiroDiaz</a> on 2023-08-01 21:34</div>
+            <div class="timeline-body"><p>@sigmaSd I've tried reproducing your steps but didn't hit the issue :thinking:</p>
+<p>Here's my last output while following your guide</p>
+<pre><code>execve(&quot;target/release/rg&quot;, [&quot;target/release/rg&quot;], 0x7ffe7abc8160 /* 71 vars */) = 0
+brk(NULL)                               = 0x562e07ec1000
+arch_prctl(0x3001 /* ARCH_??? */, 0x7fffbb302e30) = -1 EINVAL (Invalid argument)
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f82514dd000
+access(&quot;/etc/ld.so.preload&quot;, R_OK)      = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/etc/ld.so.cache&quot;, O_RDONLY|O_CLOEXEC) = 3
+newfstatat(3, &quot;&quot;, {st_mode=S_IFREG|0644, st_size=80371, ...}, AT_EMPTY_PATH) = 0
+mmap(NULL, 80371, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7f82514c9000
+close(3)                                = 0
+openat(AT_FDCWD, &quot;/lib/x86_64-linux-gnu/libgcc_s.so.1&quot;, O_RDONLY|O_CLOEXEC) = 3
+read(3, &quot;\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0&gt;\0\1\0\0\0\0\0\0\0\0\0\0\0&quot;..., 832) = 832
+newfstatat(3, &quot;&quot;, {st_mode=S_IFREG|0644, st_size=125488, ...}, AT_EMPTY_PATH) = 0
+mmap(NULL, 127720, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f82514a9000
+mmap(0x7f82514ac000, 94208, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x3000) = 0x7f82514ac000
+mmap(0x7f82514c3000, 16384, PROT_READ, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1a000) = 0x7f82514c3000
+mmap(0x7f82514c7000, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1d000) = 0x7f82514c7000
+close(3)                                = 0
+openat(AT_FDCWD, &quot;/lib/x86_64-linux-gnu/libc.so.6&quot;, O_RDONLY|O_CLOEXEC) = 3
+read(3, &quot;\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0&gt;\0\1\0\0\0P\237\2\0\0\0\0\0&quot;..., 832) = 832
+pread64(3, &quot;\6\0\0\0\4\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0&quot;..., 784, 64) = 784
+pread64(3, &quot;\4\0\0\0 \0\0\0\5\0\0\0GNU\0\2\0\0\300\4\0\0\0\3\0\0\0\0\0\0\0&quot;..., 48, 848) = 48
+pread64(3, &quot;\4\0\0\0\24\0\0\0\3\0\0\0GNU\0i8\235HZ\227\223\333\350s\360\352,\223\340.&quot;..., 68, 896) = 68
+newfstatat(3, &quot;&quot;, {st_mode=S_IFREG|0644, st_size=2216304, ...}, AT_EMPTY_PATH) = 0
+pread64(3, &quot;\6\0\0\0\4\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0@\0\0\0\0\0\0\0&quot;..., 784, 64) = 784
+mmap(NULL, 2260560, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f8251281000
+mmap(0x7f82512a9000, 1658880, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x28000) = 0x7f82512a9000
+mmap(0x7f825143e000, 360448, PROT_READ, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1bd000) = 0x7f825143e000
+mmap(0x7f8251496000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x214000) = 0x7f8251496000
+mmap(0x7f825149c000, 52816, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7f825149c000
+close(3)                                = 0
+mmap(NULL, 12288, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f825127e000
+arch_prctl(ARCH_SET_FS, 0x7f825127e800) = 0
+set_tid_address(0x7f825127ead0)         = 61339
+set_robust_list(0x7f825127eae0, 24)     = 0
+rseq(0x7f825127f1a0, 0x20, 0, 0x53053053) = 0
+mprotect(0x7f8251496000, 16384, PROT_READ) = 0
+mprotect(0x7f82514c7000, 4096, PROT_READ) = 0
+mprotect(0x562e069e0000, 192512, PROT_READ) = 0
+mprotect(0x7f8251517000, 8192, PROT_READ) = 0
+prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+munmap(0x7f82514c9000, 80371)           = 0
+poll([{fd=0, events=0}, {fd=1, events=0}, {fd=2, events=0}], 3, 0) = 0 (Timeout)
+rt_sigaction(SIGPIPE, {sa_handler=SIG_IGN, sa_mask=[PIPE], sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x7f82512c3520}, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+rt_sigaction(SIGSEGV, NULL, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+rt_sigaction(SIGSEGV, {sa_handler=0x562e0692fa60, sa_mask=[], sa_flags=SA_RESTORER|SA_ONSTACK|SA_SIGINFO, sa_restorer=0x7f82512c3520}, NULL, 8) = 0
+rt_sigaction(SIGBUS, NULL, {sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+rt_sigaction(SIGBUS, {sa_handler=0x562e0692fa60, sa_mask=[], sa_flags=SA_RESTORER|SA_ONSTACK|SA_SIGINFO, sa_restorer=0x7f82512c3520}, NULL, 8) = 0
+sigaltstack(NULL, {ss_sp=NULL, ss_flags=SS_DISABLE, ss_size=0}) = 0
+mmap(NULL, 12288, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_STACK, -1, 0) = 0x7f82514da000
+mprotect(0x7f82514da000, 4096, PROT_NONE) = 0
+sigaltstack({ss_sp=0x7f82514db000, ss_flags=0, ss_size=8192}, NULL) = 0
+getrandom(&quot;\x77\xba\xaa\x05\x8a\xeb\xbe\xfc&quot;, 8, GRND_NONBLOCK) = 8
+brk(NULL)                               = 0x562e07ec1000
+brk(0x562e07ee2000)                     = 0x562e07ee2000
+openat(AT_FDCWD, &quot;/proc/self/maps&quot;, O_RDONLY|O_CLOEXEC) = 3
+prlimit64(0, RLIMIT_STACK, NULL, {rlim_cur=8192*1024, rlim_max=RLIM64_INFINITY}) = 0
+newfstatat(3, &quot;&quot;, {st_mode=S_IFREG|0444, st_size=0, ...}, AT_EMPTY_PATH) = 0
+read(3, &quot;562e067ad000-562e067ea000 r--p 0&quot;..., 1024) = 1024
+read(3, &quot;6000-7f825149a000 r--p 00214000 &quot;..., 1024) = 1024
+read(3, &quot;linux-x86-64.so.2\n7f82514e1000-7&quot;..., 1024) = 823
+close(3)                                = 0
+sched_getaffinity(61339, 32, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]) = 8
+write(2, &quot;thread '&quot;, 8thread ')                 = 8
+write(2, &quot;main&quot;, 4main)                     = 4
+write(2, &quot;' panicked at '&quot;, 15' panicked at ')         = 15
+write(2, &quot;called `Option::unwrap()` on a `&quot;..., 43called `Option::unwrap()` on a `None` value) = 43
+write(2, &quot;', &quot;, 3', )                      = 3
+write(2, &quot;crates/core/main.rs&quot;, 19crates/core/main.rs)     = 19
+write(2, &quot;:&quot;, 1:)                        = 1
+write(2, &quot;51&quot;, 251)                       = 2
+write(2, &quot;:&quot;, 1:)                        = 1
+write(2, &quot;39&quot;, 239)                       = 2
+write(2, &quot;\n&quot;, 1
+)                       = 1
+write(2, &quot;note: run with `RUST_BACKTRACE=1&quot;..., 78note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+) = 78
+futex(0x7f82514c8210, FUTEX_WAKE_PRIVATE, 2147483647) = 0
+sigaltstack({ss_sp=NULL, ss_flags=SS_DISABLE, ss_size=8192}, NULL) = 0
+munmap(0x7f82514da000, 12288)           = 0
+exit_group(101)                         = ?
++++ exited with 101 +++
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sigmaSd">@sigmaSd</a> on 2023-08-01 21:39</div>
+            <div class="timeline-body"><p>@AgustinRamiroDiaz I'm not sure what steps are you following,  you seem to be spawning rg for some reason</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AgustinRamiroDiaz">@AgustinRamiroDiaz</a> on 2023-08-02 12:08</div>
+            <div class="timeline-body"><p>@sigmaSd yeah, I forgot to clarify</p>
+<p>I couldn't follow this steps</p>
+<pre><code>cargo b --release
+strace target/release/a a
+</code></pre>
+<p>because I wasn't getting a <code>target/release/a</code> binary. So instead of creating the <code>a.rs</code> file I've modified the <code>main.rs</code> to be
+use ignore::WalkBuilder;</p>
+<pre><code>fn main() {
+    let arg = std::env::args().nth(1).unwrap();
+    let files: Vec&lt;_&gt; = WalkBuilder::new(&amp;arg)
+        .hidden(false)
+        .follow_links(false) // We're scanning over depth 1
+        .max_depth(Some(1))
+        .build()
+        .collect();
+}
+</code></pre>
+<p>and then ran</p>
+<pre><code>cargo b --release
+strace target/release/rg
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sigmaSd">@sigmaSd</a> on 2023-08-02 13:01</div>
+            <div class="timeline-body"><p>As shown above you have to create a directory with nested subdirectories, then you can strace the compiled program against the root dir</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:42 UTC
+    </footer>
+</body>
+</html>

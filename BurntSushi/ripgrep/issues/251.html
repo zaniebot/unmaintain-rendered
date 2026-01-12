@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>russian text not matched - BurntSushi/ripgrep #251</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>russian text not matched</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/251">#251</a>
+        opened by <a href="https://github.com/acidnik">@acidnik</a>
+        on 2016-11-25 13:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/acidnik">@acidnik</a></div>
+            <div class="timeline-body"><pre><code>$ cat test.txt 
+привет
+Привет
+ПрИвЕт
+$ rg -i привет test.txt 
+$ grep -i привет test.txt 
+привет
+Привет
+ПрИвЕт
+$ locale
+LANG=en_US.UTF-8
+LANGUAGE=
+LC_CTYPE=&quot;en_US.utf8&quot;
+LC_NUMERIC=&quot;en_US.utf8&quot;
+LC_TIME=&quot;en_US.utf8&quot;
+LC_COLLATE=&quot;en_US.utf8&quot;
+LC_MONETARY=&quot;en_US.utf8&quot;
+LC_MESSAGES=&quot;en_US.utf8&quot;
+LC_PAPER=&quot;en_US.utf8&quot;
+LC_NAME=&quot;en_US.utf8&quot;
+LC_ADDRESS=&quot;en_US.utf8&quot;
+LC_TELEPHONE=&quot;en_US.utf8&quot;
+LC_MEASUREMENT=&quot;en_US.utf8&quot;
+LC_IDENTIFICATION=&quot;en_US.utf8&quot;
+LC_ALL=en_US.utf8
+$ file test.txt
+test.txt: UTF-8 Unicode text
+$ rg --version
+ripgrep 0.3.0
+</code></pre>
+<p>looks like a bug to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2016-11-25 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-25 14:56</div>
+            <div class="timeline-body"><p>Hmm, yes, it does appear to be a bug. I don't know the source of it yet, but it does at least appear that that the literals detected are correct:</p>
+<pre><code>$ rg привет test.txt --debug -i
+DEBUG:grep::search: regex ast:
+Literal {
+    chars: [
+        'п',                                                                                                                                                                                         
+        'р',                                                                                                                                                                                         
+        'и',                                                                                                                                                                                         
+        'в',                                                                                                                                                                                         
+        'е',                                                                                                                                                                                         
+        'т'                                                                                                                                                                                          
+    ],                                                                                                                                                                                               
+    casei: true                                                                                                                                                                                      
+}                                                                                                                                                                                                    
+DEBUG:grep::literals: required literals found: [Cut(ПРИВ), Cut(пРИВ), Cut(ПрИВ), Cut(прИВ), Cut(ПРиВ), Cut(пРиВ), Cut(ПриВ), Cut(приВ), Cut(ПРИв), Cut(пРИв), Cut(ПрИв), Cut(прИв), Cut(ПРив), Cut(пРив), Cut(Прив), Cut(прив)]                                                                                                                                                                           
+DEBUG:rg::args: will try to use memory maps
+</code></pre>
+<p>Notably <code>Прив</code> is in the set (second from last), and searching that explicitly works:</p>
+<pre><code>$ rg 'Прив' test.txt                                                                                                                                                              
+2:Привет
+</code></pre>
+<p>In fact, adding a <code>-i</code> flag works too:</p>
+<pre><code>$ rg 'Прив' test.txt -i
+1:привет                                                                                                                                                                                             
+2:Привет                                                                                                                                                                                             
+3:ПрИвЕт
+</code></pre>
+<p>Regardless of what's going on, the following should <em>never</em> happen:</p>
+<pre><code>$ rg -i привет test.txt                                                                                                                                                           
+$ rg привет test.txt 
+1:привет
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-25 14:56</div>
+            <div class="timeline-body"><p>I'll be on vacation for the next few days, so unfortunately this bug will have to linger.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-11-28 23:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-28 23:32</div>
+            <div class="timeline-body"><p>This was a subtly gross bug, but it should be fixed now. See the <a href="https://github.com/BurntSushi/ripgrep/commit/0473df1ef5721143941fb7f883e22b17292b35bb">commit message</a> for details.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:55 UTC
+    </footer>
+</body>
+</html>

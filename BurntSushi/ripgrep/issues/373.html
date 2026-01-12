@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>./.gitignore: line 2: invalid use of **; must be one path component - BurntSushi/ripgrep #373</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>./.gitignore: line 2: invalid use of **; must be one path component</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/373">#373</a>
+        opened by <a href="https://github.com/azhang">@azhang</a>
+        on 2017-02-21 19:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/azhang">@azhang</a></div>
+            <div class="timeline-body"><p><code>**/something</code> is valid .gitignore syntax, but rg prints an error</p>
+<blockquote>
+<p>A leading &quot;**&quot; followed by a slash means match in all directories. For example, &quot;**/foo&quot; matches file or directory &quot;foo&quot; anywhere, the same as pattern &quot;foo&quot;. &quot;**/foo/bar&quot; matches file or directory &quot;bar&quot; anywhere that is directly under directory &quot;foo&quot;. (https://git-scm.com/docs/gitignore)</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-02-21 20:53</div>
+            <div class="timeline-body"><p>Could you please provide a reproducible example? I can't reproduce it using the information you've given:</p>
+<pre><code>[andrew@Cheetah ripgrep-373] tree -a
+.
+├── a
+│   └── something
+├── foo
+└── .gitignore
+
+1 directory, 3 files
+[andrew@Cheetah ripgrep-373] cat .gitignore
+**/something
+[andrew@Cheetah ripgrep-373] cat a/something
+test
+[andrew@Cheetah ripgrep-373] cat foo
+test
+[andrew@Cheetah ripgrep-373] rg test
+foo
+1:test
+[andrew@Cheetah ripgrep-373] rg test --debug
+DEBUG:grep::search: regex ast:
+Literal {
+    chars: [
+        't',
+        'e',
+        's',
+        't'
+    ],
+    casei: false
+}
+DEBUG:grep::literals: literal prefixes detected: Literals { lits: [Complete(test)], limit_size: 250, limit_class: 10 }
+DEBUG:globset: built glob set; 0 literals, 1 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG:ignore::walk: ignoring ./.gitignore: Ignore(IgnoreMatch(Hidden))
+DEBUG:ignore::walk: ignoring ./a/something: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;**/something&quot;, actual: &quot;**/something&quot;, is_whitelist: false, is_only_dir: false })))
+foo
+1:test
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-02-21 20:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-12 21:03</div>
+            <div class="timeline-body"><p>Closing due to inactivity. Please feel free to reopen with a repro. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-03-12 21:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/millerjs">@millerjs</a> on 2017-03-29 15:27</div>
+            <div class="timeline-body"><p>@BurntSushi, ran into the same issue and isolated it with a</p>
+<pre><code class="language-bash">mkdir scratch
+cd scratch
+echo '**.txt' &gt; .gitignore
+rg pattern
+</code></pre>
+<p>receiving a <code>./.gitignore: line 1: invalid use of **; must be one path component</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-29 15:36</div>
+            <div class="timeline-body"><p>Interesting. That isn't actually enough to reproduce the full issue, because it doesn't demonstrate that <code>**.txt</code> is actually recognized by <code>git</code>:</p>
+<pre><code>$ git init
+Initialized empty Git repository in /tmp/ripgrep-373/.git/
+$ touch hi.txt
+$ git status
+On branch master
+
+Initial commit
+
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+
+        hi.txt
+
+nothing added to commit but untracked files present (use &quot;git add&quot; to track)
+$ echo '**.txt' &gt; .gitignore
+$ git status
+On branch master
+
+Initial commit
+
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+
+        .gitignore
+
+nothing added to commit but untracked files present (use &quot;git add&quot; to track)
+</code></pre>
+<p>But according to the specification that I actually implemented (see <code>man gitignore</code>), the <code>**.txt</code> construction is actually invalid:</p>
+<pre><code>Two consecutive asterisks (&quot;**&quot;) in patterns matched against full pathname may
+have special meaning:
+
+  * A leading &quot;**&quot; followed by a slash means match in all directories. For
+    example, &quot;**/foo&quot; matches file or directory &quot;foo&quot; anywhere, the same as
+    pattern &quot;foo&quot;. &quot;**/foo/bar&quot; matches file or directory &quot;bar&quot; anywhere that
+    is directly under directory &quot;foo&quot;.
+
+  * A trailing &quot;/**&quot; matches everything inside. For example, &quot;abc/**&quot; matches
+    all files inside directory &quot;abc&quot;, relative to the location of the
+    .gitignore file, with infinite depth.
+
+  * A slash followed by two consecutive asterisks then a slash matches zero or
+    more directories. For example, &quot;a/**/b&quot; matches &quot;a/b&quot;, &quot;a/x/b&quot;, &quot;a/x/y/b&quot;
+    and so on.
+
+  * Other consecutive asterisks are considered invalid.
+</code></pre>
+<p>I'm not sure what to do here. Either <code>git</code> has a bug in their specification or their implementation is non-conforming. If it's the former, then ripgrep should probably implement <code>**.txt</code>. If it's the latter, then ripgrep should continue to recognize <code>**.txt</code> as invalid.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @BurntSushi on 2017-03-29 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/derimagia">@derimagia</a> on 2017-03-31 15:56</div>
+            <div class="timeline-body"><p>Had the same issue, I always thought git used <code>fnmatch</code> for this. I looked through git and see that actually moved to use <code>wildmatch</code> (https://github.com/davvid/wildmatch) in recent versions. Without looking too much into it I think this may be the reason for it.</p>
+<p><code>The wildmatch extension allows ** to match / when WM_PATHNAME is present. This gives the practical benefit of being able to match all subdirectories of a path by using ** and reserves the use of the single-asterisk * character for matching within path components.</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-31 16:02</div>
+            <div class="timeline-body"><blockquote>
+<p>The wildmatch extension allows ** to match / when WM_PATHNAME is present. This gives the practical benefit of being able to match all subdirectories of a path by using ** and reserves the use of the single-asterisk * character for matching within path components.</p>
+</blockquote>
+<p>That particular piece seems fine. It looks like that's just stating support for <code>**</code> itself. In particular, I don't think <code>fnmatch</code> supports the <code>**</code> construction at all. The issue is that particular uses of <code>**</code> are seemingly forbidden by the spec in <code>man gitignore</code>, but those forbidden uses still seem to actually work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/derimagia">@derimagia</a> on 2017-03-31 16:23</div>
+            <div class="timeline-body"><p>Not sure about that one reading https://github.com/davvid/wildmatch/blob/350d6cde61cc901d4d22d60878dab445675fdd02/wildmatch/wildmatch.h#L55</p>
+<p>But agreed, it's a documentation issue. But a quick search shows this sadly has always been an issue with gitignore even before wildmatch</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-31 16:40</div>
+            <div class="timeline-body"><p>@derimagia Oh, I see, <code>WM_PATHNAME</code> is changing whether <code>**</code> matches <code>/</code> or not. e.g., in the pattern <code>*.txt</code>, according to <code>man gitignore</code>, <code>*</code> matches a <code>/</code>, but in <code>foo/*.txt</code>, <code>*</code> cannot match a <code>/</code>.</p>
+<p>I still think this is unrelated to whether patterns like <code>**.txt</code> are allowed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/millerjs">@millerjs</a> on 2017-04-03 03:20</div>
+            <div class="timeline-body"><p>It looks like <code>*literal</code> <a href="https://github.com/git/git/blob/master/dir.c#L877">will be matched</a> prior to a call to <code>wildmatch</code>. If it's <code>**literal</code>, it will <a href="https://github.com/git/git/blob/master/dir.c#L884">be passed to wildmatch</a>, where the first and second wildcards <a href="https://github.com/git/git/blob/master/wildmatch.c#L84-L85">will be consumed</a>, the <code>WM_PATHNAME</code> flag will not have been set, the rest of the<code>literal</code> text <a href="https://github.com/git/git/blob/master/wildmatch.c#L154">consumed</a>, and <a href="https://github.com/git/git/blob/master/wildmatch.c#L161">a successful match will be returned</a>.</p>
+<p>Side note, wildmatch was integrated in v1.8.2-rc0 and a prior tag (v1.8.1.6) reproduces the behavior of git to match <code>**.txt</code> to <code>hello.txt</code> so it seems it wasn't a bug introduced when wildmatch was integrated.</p>
+<p>Looks like the spec and implementation are just inconsistent...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/flippidippi">@flippidippi</a> on 2017-04-07 15:09</div>
+            <div class="timeline-body"><p>Having this issue also. If I take out the line <code>**.orig</code> then it fixes the issue. But from what it looks like <code>*.orig</code> should behave the same way and not throw the error correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-07 15:11</div>
+            <div class="timeline-body"><blockquote>
+<p>But from what it looks like <code>*.orig</code> should behave the same way and not throw the error correct?</p>
+</blockquote>
+<p>If I had to guess, yes? But nobody can say for sure, since the specification says that <code>**.orig</code> is an invalid ignore pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/millerjs">@millerjs</a> on 2017-04-08 19:24</div>
+            <div class="timeline-body"><p>@BurntSushi imho it might be worth choosing consistency with implementation over spec in this case and making a prominent note of it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-04-08 20:05</div>
+            <div class="timeline-body"><p>@millerjs What are the semantics? Who is going to reverse engineer <code>git</code>'s implementation? What if this is a bug in <code>git</code> and they decide to fix it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-05-08 22:33</div>
+            <div class="timeline-body"><p>I'm going to close this because the current behavior is the conservative choice, and being conservative allows us to be flexible in the future. In particular, I think there is either a specification bug or an implementation bug in git, and I don't know which one it is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-05-08 22:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Yggdroot">@Yggdroot</a> on 2017-06-07 05:16</div>
+            <div class="timeline-body"><p>Could rg add an option to ignore this error? For example, <code> --ignore-2asterisks-error</code>. I think it does no harm to rg.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-07 10:57</div>
+            <div class="timeline-body"><blockquote>
+<p>I think it does no harm to rg.</p>
+</blockquote>
+<p>You can basically say that about any particular flag. But if I add <code>--ignore-2asterisks-error</code>---which is incredibly specific---then what's to stop a deluge of other similar flags like <code>--ignore-file-permission-error</code>?</p>
+<p>@Yggdroot Could you please say more about why the <code>--no-messages</code> flag isn't sufficient for your use case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Yggdroot">@Yggdroot</a> on 2017-06-07 13:34</div>
+            <div class="timeline-body"><p>Error message is necessary. Up to now, the<code>**.txt</code> is not considered to be an error by git.
+If you insist on your idea, I have nothing more to say.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-07 13:39</div>
+            <div class="timeline-body"><p>@Yggdroot Sorry, but I don't understand. Could you say more about why <code>--no-mesages</code> isn't sufficient?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Yggdroot">@Yggdroot</a> on 2017-06-08 01:49</div>
+            <div class="timeline-body"><p>I mean the <strong>real</strong> error should be reported, it's necessary to see the reason why the error occurs, while with <code>--no-mesages</code>, all the error messages are suppressed.
+But <code>**.txt</code> has not been considered to be an error by now.
+Anyway, It's OK for me if rg does not support this specific scenario.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kenorb">@kenorb</a> on 2018-04-28 00:13</div>
+            <div class="timeline-body"><p>Same here.</p>
+<p>Workaround:</p>
+<pre><code>rg --files 2&gt; /dev/null</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-04-28 11:43</div>
+            <div class="timeline-body"><p>Current master has a <code>--no-ignore-messages</code> that will suppress just these types of error messages. It will be in the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylan-chong">@dylan-chong</a> on 2018-11-25 03:26</div>
+            <div class="timeline-body"><p>I have sent an email to the Git mailing list requesting that the **.extension format be added to the documentation of Git ignore. I will update this issue when I have gotten a response.</p>
+<p>FYI, if anybody is using FZF.vim with <code>rg --files [--no-ignore-messages]</code> the FZF window seems to be blank if there are <code>**.extension</code>lines and the Git ignore file. If the Git maintainers decide to document such a format, supporting it with ripgrep should solve the problem. If it does not, I will create a new issue in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-11-25 03:30</div>
+            <div class="timeline-body"><blockquote>
+<p>I have sent an email to the Git mailing list requesting that the **.extension format be added to the documentation of Git ignore.</p>
+</blockquote>
+<p>It already has been. See the commit referenced in #1098</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @BurntSushi on 2019-01-24 00:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-01-24 00:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-01-24 01:00</div>
+            <div class="timeline-body"><p>This is now fixed for good on master. ripgrep recognizes previously invalid <code>**</code> patterns as two consecutive <code>*</code> patterns, in line with <a href="https://github.com/git/git/commit/627186d0206dcb219c43f8e6670b4487802a4921">git's updated spec</a>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:04 UTC
+    </footer>
+</body>
+</html>

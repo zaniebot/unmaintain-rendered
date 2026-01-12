@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>exits unexpectedly with code 1 when ran within systemd sanbox - BurntSushi/ripgrep #2546</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>exits unexpectedly with code 1 when ran within systemd sanbox</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2546">#2546</a>
+        opened by <a href="https://github.com/adrian-gierakowski">@adrian-gierakowski</a>
+        on 2023-06-30 15:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/adrian-gierakowski">@adrian-gierakowski</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>via <a href="https://nixos.org/">nix</a></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>NixOS</p>
+<h4>Describe your bug.</h4>
+<p>running the following inside systemd sandbox, in an empy directory:</p>
+<pre><code class="language-sh">echo something &gt; test
+rg --no-ignore --debug something
+</code></pre>
+<p>produces the following output, followed by exit with code 1:</p>
+<pre><code>DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(shared)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+</code></pre>
+<p>When ran on the same machine, but outside the sandbox produces the following, so I'm assuming in the previous case it exited prematurely:</p>
+<pre><code>DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(something)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+test
+1:something
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+</code></pre>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>as above</p>
+<h4>What is the actual behavior?</h4>
+<p>as above</p>
+<h4>What is the expected behavior?</h4>
+<p>results are listed and exit with code 0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-06-30 15:37</div>
+            <div class="timeline-body"><p>I don't see a complete set of commands required to reproduce this issue, so I'm not sure what to say there.</p>
+<p>Otherwise, at a guess, I'd expect that perhaps the systemd sandbox is messing with ripgrep's tty detection. Since you've called ripgrep with a pattern but didn't tell it what to search, you're asking ripgrep to guess. The two choices are &quot;search the current directory&quot; or &quot;search stdin.&quot; It's possible systemd has configured the environment in a way that ripgrep incorrectly chooses to search stdin, and if stdin is closed/empty, then ripgrep will search it and report no results. And thus exit with <code>1</code>.</p>
+<p>I'd suggest you tell ripgrep what to search instead of asking it to guess.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "exists unexpectedly with code 1 when ran within systemd sanbox" to "exits unexpectedly with code 1 when ran within systemd sanbox" by @adrian-gierakowski on 2023-07-01 07:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adrian-gierakowski">@adrian-gierakowski</a> on 2023-07-01 10:21</div>
+            <div class="timeline-body"><blockquote>
+<p>It's possible systemd has configured the environment in a way that ripgrep incorrectly chooses to search stdin, and if stdin is closed/empty, then ripgrep will search it and report no results. And thus exit with 1.</p>
+</blockquote>
+<p>That was it :facepalm:</p>
+<p>Thank you for your help (ant the great software) and apologies for taking your time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @adrian-gierakowski on 2023-07-01 10:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:41 UTC
+    </footer>
+</body>
+</html>

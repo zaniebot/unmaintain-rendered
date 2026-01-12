@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Force binary existance check - BurntSushi/ripgrep #1946</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Force binary existance check</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/1946">#1946</a>
+        opened by <a href="https://github.com/sstadick">@sstadick</a>
+        on 2021-07-22 14:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sstadick">@sstadick</a></div>
+            <div class="timeline-body"><p>This PR allows for explicit checking for binary existence when using the <code>associate</code> and <code>try_associate</code> methods on the <code>DecompressionMatcherBuilder</code>. I have tried to preserve the current <code>resolve_binary</code> api being a no-op on non-windows as well.</p>
+<p>Currently, a use tries to <code>{try_}associate</code> a program on a non-windows OS, <code>resolve_binary</code> no-ops and never checks the path to see if that binary actually exists or not.</p>
+<p>This change forces a path check for existence even on non-windows OS so that a user can try to associate several different binaries with a glob and only the binaries found on the system will be associated.</p>
+<p>Concrete example: https://github.com/sstadick/hck/blob/f5aca37b0a06523074fe229fa77bb863e4f8574c/src/lib/core.rs#L365</p>
+<p>I want to associate <code>pigz</code> with <code>*.gz</code> only if <code>pigz</code> is installed on the users system, otherwise it can fail and <code>gzip</code> can be used. Currently <code>pigz</code> is not actually tested for existence, it's added as a matcher and then fails to find it when called resulting in no decompression happening.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-07-08 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2023-07-08 21:18</div>
+            <div class="timeline-body"><p>I'll take this (with a minor refactoring I did to get rid of the boolean parameter), but I am a little worried about this. Because this now forces our ad hoc (and previously Windows specific) binary lookup logic to apply on all platforms. See, the point of <code>resolve_binary</code> is not to check the existence of a binary, but to find the full path to the binary without falling prey to binaries relative to the CWD.</p>
+<p>I think it's probably fine and I do think the behavior implemented by this PR is more sensible. Although I note it isn't strictly necessary. One could write a wrapper program to dynamically select between <code>pigz</code> or <code>gz</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-07-08 22:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:03 UTC
+    </footer>
+</body>
+</html>

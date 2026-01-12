@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>.gitignore not respected outside of git repositories - BurntSushi/ripgrep #1109</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>.gitignore not respected outside of git repositories</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1109">#1109</a>
+        opened by <a href="https://github.com/Tim-at-AST">@Tim-at-AST</a>
+        on 2018-11-16 03:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Tim-at-AST">@Tim-at-AST</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>$ rg --version
+ripgrep 0.10.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>macports</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>mac osx 10.14.1 (mojave)</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>here is my .gitignore file:</p>
+<pre><code>$ cat ~/.gitignore
+**/*.pdf
+*.pdf
+</code></pre>
+<p>I am trying to ignore pdf files in my rg search.</p>
+<p>Here is a test directory:</p>
+<pre><code>$ cd /tmp/test
+$ touch a.pdf b.txt
+$ ls
+a.pdf
+b.txt
+
+$ rg --files --debug
+b.txt
+a.pdf
+</code></pre>
+<p>The problem is that the file <code>a.pdf</code> should be ignored.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-11-16 13:35</div>
+            <div class="timeline-body"><p>Your <code>.gitignore</code> is in your home directory and you are searching outside your home directory. Therefore, what you're observing is expected behavior. Try using a standard git repository setup instead. See <code>man gitignore</code> for how to specify global gitignore rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-11-16 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tim-at-AST">@Tim-at-AST</a> on 2018-11-16 20:18</div>
+            <div class="timeline-body"><p>The example was badly chosen.  But the problem persists inside the home directory also.  Here is a better example:</p>
+<pre><code>$ cat ~/.gitignore
+**/*.pdf
+*.pdf
+**/*.jpg
+$ cd /Users/tim/documents/rg/test
+$ touch a.pdf b.txt
+$ ls
+a.pdf
+b.txt
+$ rg --files --debug
+DEBUG|rg::config|src/config.rs:37: /Users/tim/gdrive/tim/app-support/ripgreprc: arguments loaded from config file: [&quot;--max-columns=150&quot;, &quot;--smart-case&quot;]
+DEBUG|rg::args|src/args.rs:508: final argv: [&quot;rg&quot;, &quot;--max-columns=150&quot;, &quot;--smart-case&quot;, &quot;--files&quot;, &quot;--debug&quot;]
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 2 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+b.txt
+a.pdf
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-11-16 20:25</div>
+            <div class="timeline-body"><p>Well, is <code>/Users/tim/documents/rg/test</code> a git repository? If not, then <code>.gitignore</code> isn't going to apply to it because, well, it's not a git repository. This is expected behavior. Here is a transcript showing this:</p>
+<pre><code>$ touch a.pdf b.txt
+
+$ rg --files
+b.txt
+a.pdf
+
+$ echo '*.pdf' &gt; .gitignore
+
+$ rg --files
+b.txt
+a.pdf
+
+$ git init
+Initialized empty Git repository in /tmp/ripgrep-1109/.git/
+
+$ rg --files
+b.txt
+
+$ rm -rf .git
+
+$ rg --files
+b.txt
+a.pdf
+
+$ mv .gitignore .ignore
+
+$ rg --files
+b.txt
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from ".gitignore not respected at all." to ".gitignore not respected outside of git repositories" by @BurntSushi on 2018-11-16 20:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tim-at-AST">@Tim-at-AST</a> on 2018-11-16 21:15</div>
+            <div class="timeline-body"><p>ok, I changed .gitignore to .rgignore and problem solved.<br />
+The documentation seems to me to indicate that .gitignore was used by rg.</p>
+<blockquote>
+<p>After recursive search, ripgrep's most important feature is what it doesn't search. By default, when you search a directory, ripgrep will ignore all of the following:</p>
+</blockquote>
+<blockquote>
+<ol>
+<li>Files and directories that match the rules in your .gitignore glob pattern.</li>
+</ol>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-11-16 21:17</div>
+            <div class="timeline-body"><blockquote>
+<p>The documentation seems to me to indicate that .gitignore was used by rg.</p>
+</blockquote>
+<p>Right, <em>in a git repository</em>. I agree that the docs could be more precise on this point. In particular, I do not think ripgrep always behaved this way, but I can't find the corresponding bug report that prompted the change to require a git repository before respecting <code>.gitignore</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anntzer">@anntzer</a> on 2019-02-07 21:12</div>
+            <div class="timeline-body"><p>Note that currently, if rg follows a symlink that points to a subdirectory of a git repo, it will not detect that it is in a git repo, and thus won't respect a gitignore file in that subdirectory (even though that gitignore is indeed in a git repo), as shown by:</p>
+<pre><code>$ tree -a -L 3
+.
+├── a
+│   └── subdir -&gt; ../c/subdir
+└── c
+    ├── .git
+    │   ├── branches
+    │   ├── config
+    │   ├── description
+    │   ├── HEAD
+    │   ├── hooks
+    │   ├── info
+    │   ├── objects
+    │   └── refs
+    └── subdir
+        ├── .gitignore
+        └── somefile
+$ cat a/subdir/.gitignore
+*
+$ rg --follow --files
+a/subdir/somedir  # oops, not ignored.
+</code></pre>
+<p>I would thus suggest revisiting the choice of not respecting gitignores outside of git repos -- the alternative being, I guess, to check for each <em>resolved</em> symlink whether it is in a git repo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-02-07 22:00</div>
+            <div class="timeline-body"><p>@anntzer Yes, that's interesting, although it's definitely a distinct bug from this ticket. My guess is that I'd probably mark it as <code>wontfix</code>. I don't think I'm willing to start messing with the resolved paths of symlinks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anntzer">@anntzer</a> on 2019-02-07 22:11</div>
+            <div class="timeline-body"><p>That's why I listed checking the resolved paths as the alternative solution -- if you don't remember what change prompted you to ignore gitignores outside of git repositories, perhaps you can consider the above an argument in favor of always taking them into account?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-02-07 22:20</div>
+            <div class="timeline-body"><p>I'm not going to change that. It's semantically incorrect and leads to other types of bugs. I wrote &quot;I don't remember&quot; above because it's often inconvenient for me to spend the time to remember. Looking at revision history, I found this commit https://github.com/BurntSushi/ripgrep/commit/e65ca21a which fixed this bug https://github.com/BurntSushi/ripgrep/issues/934</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anntzer">@anntzer</a> on 2019-02-07 22:31</div>
+            <div class="timeline-body"><p>Sure, thanks for the reference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/EndlessDex">@EndlessDex</a> on 2021-04-02 16:56</div>
+            <div class="timeline-body"><p>A note for future readers:  The ~/.ignore file DOES work for non-git repos. It is just the .gitignore file that does not work</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:44 UTC
+    </footer>
+</body>
+</html>

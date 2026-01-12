@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `Candidate::from_utf8` to bypass `Path -&gt; str` conversion? - BurntSushi/ripgrep #1143</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>Candidate::from_utf8</code> to bypass <code>Path -&gt; str</code> conversion?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1143">#1143</a>
+        opened by <a href="https://github.com/quark-zju">@quark-zju</a>
+        on 2018-12-16 06:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/quark-zju">@quark-zju</a></div>
+            <div class="timeline-body"><p>In <code>globset</code>, patterns are <code>str</code> (as <code>Glob::new</code> takes a <code>str</code>), but paths to test are <code>Path</code> (as <code>GlobSet::is_match</code> takes a <code>Path</code>). It's a bit inconsistent.</p>
+<p>There are 2 places where <code>Path</code> can be undesirable:</p>
+<ul>
+<li>Windows. Converting between <code>Path</code> and utf-8 <code>str</code> has a cost. In <code>globset</code>, that's <code>os_str_bytes</code>.</li>
+<li>Paths not generated from filesystem APIs. For example, source control software might store <code>path</code> in its internal form (ex. git tree objects or index), which might be utf-8 already. It can also be paths from a utf-8 <code>Makefile</code>, or some sort of source code.</li>
+</ul>
+<p>It seems a <code>Candidate::from_utf8</code> API can be useful in this case.</p>
+<p>If the idea sounds good, I can help draft a patch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "globset: `Candidate::from_utf8` to bypass `Path -> str` conversion?" to "Add `Candidate::from_utf8` to bypass `Path -> str` conversion?" by @quark-zju on 2018-12-16 06:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-12-16 13:12</div>
+            <div class="timeline-body"><blockquote>
+<p>In <code>globset</code>, patterns are <code>str</code> (as <code>Glob::new</code> takes a <code>str</code>), but paths to test are <code>Path</code> (as <code>GlobSet::is_match</code> takes a <code>Path</code>). It's a bit inconsistent.</p>
+</blockquote>
+<p>I don't agree. I don't think there is any inconsistency in a pattern having a different type than the thing it matches. The same is true for regexes themselves. Patterns are always <code>&amp;str</code>, but they can match <code>&amp;[u8]</code>.</p>
+<blockquote>
+<p>Windows. Converting between <code>Path</code> and utf-8 <code>str</code> has a cost. In <code>globset</code>, that's <code>os_str_bytes</code>.</p>
+</blockquote>
+<p>Sorry, but I don't understand how your proposal resolves this. Could you please elaborate?</p>
+<blockquote>
+<p>Paths not generated from filesystem APIs. For example, source control software might store <code>path</code> in its internal form (ex. git tree objects or index), which might be utf-8 already. It can also be paths from a utf-8 <code>Makefile</code>, or some sort of source code.</p>
+</blockquote>
+<p>Again, I don't understand how your proposal addresses this. If you have something that is known to be UTF-8, then you can convert it to a <code>&amp;str</code> at zero cost using <code>unsafe</code>, at which point, you can build a <code>Path</code> at zero cost.</p>
+<p>Overall, I don't think I understand what the intended semantics of this new <code>from_utf8</code> API should be, I don't understand what problem it's trying to solve and I don't understand how either of the two problems you've pointed out are addressed by your proposal. You might consider following up with a focus on the problem you're trying to solve and perhaps a couple of real examples.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-12-16 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/quark-zju">@quark-zju</a> on 2018-12-17 03:26</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>In <code>globset</code>, patterns are <code>str</code> (as <code>Glob::new</code> takes a <code>str</code>), but paths to test are <code>Path</code> (as <code>GlobSet::is_match</code> takes a <code>Path</code>). It's a bit inconsistent.</p>
+</blockquote>
+<p>I don't agree. I don't think there is any inconsistency in a pattern having a different type than the thing it matches. The same is true for regexes themselves. Patterns are always <code>&amp;str</code>, but they can match <code>&amp;[u8]</code>.</p>
+</blockquote>
+<p>That's fair. I can understand this part.</p>
+<blockquote>
+<blockquote>
+<p>Windows. Converting between <code>Path</code> and utf-8 <code>str</code> has a cost. In <code>globset</code>, that's <code>os_str_bytes</code>.</p>
+</blockquote>
+<p>Sorry, but I don't understand how your proposal resolves this. Could you please elaborate?</p>
+</blockquote>
+<p>For example, given a <code>str</code> that needs to be tested by <code>GlobSet::is_match</code>. It goes through <code>str -&gt; Path -&gt; str / bytes</code> internally. The <code>str -&gt; Path</code> part is because the API only exposes <code>Path</code>. The <code>Path -&gt; str</code> part is because <code>GlobSet::is_match</code> -&gt; <code>Candidate::new</code> -&gt; <code>pathutil::os_str_bytes</code>. <a href="https://github.com/BurntSushi/ripgrep/blob/118b950085ff674c1c7142bc5e171dd2b4688934/globset/src/pathutil.rs#L95"><code>os_str_bytes</code></a> has a cost on Windows.</p>
+<p>If <code>Candidate</code> can be constructed from <code>str</code>, such cost would be removed. I made a mistake thinking that <code>Path</code> is <code>[u16]</code> on Windows. That's not true and the concern is relieved at least on Windows. It seems still nice to have a way to bypass the <code>str -&gt; Path -&gt; str</code> round-trip, though, since the stdlib does not specify the actual encoding used by <code>Path</code>.</p>
+<blockquote>
+<blockquote>
+<p>Paths not generated from filesystem APIs. For example, source control software might store <code>path</code> in its internal form (ex. git tree objects or index), which might be utf-8 already. It can also be paths from a utf-8 <code>Makefile</code>, or some sort of source code.</p>
+</blockquote>
+<p>Again, I don't understand how your proposal addresses this. If you have something that is known to be UTF-8, then you can convert it to a <code>&amp;str</code> at zero cost using <code>unsafe</code>, at which point, you can build a <code>Path</code> at zero cost.</p>
+</blockquote>
+<p>This was the main problem. I was under the (wrong) impression that <code>OsStr</code> (and <code>Path</code>) on Windows is some kind of <code>[u16]</code> so round-trip with <code>str</code> are expensive, partially because <a href="https://github.com/rust-lang/rust/commit/a1e9c7fc2e4806fe72c84178bf1116f645d18c43#diff-01cdc7c78b710001e8b4ed10732d60ddL594">some of the stdlib doc said so</a>. However, when I checked the actual source code, there is no <code>[u16]</code> and <code>OsStr</code> is <a href="https://github.com/rust-lang/rust/blob/a8a2a887d0a65fff6c777f9bcd7b1c0bdfbbddc0/src/libstd/sys_common/wtf8.rs#L172">pretty much just utf-8</a>.</p>
+<blockquote>
+<p>Overall, I don't think I understand what the intended semantics of this new <code>from_utf8</code> API should be, I don't understand what problem it's trying to solve and I don't understand how either of the two problems you've pointed out are addressed by your proposal. You might consider following up with a focus on the problem you're trying to solve and perhaps a couple of real examples.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-12-17 12:16</div>
+            <div class="timeline-body"><p>I see. More succinctly, I think what you're saying is that, today, since the API requires a <code>&amp;Path</code>, there <em>may</em> be a cost associated with converting that <code>&amp;Path</code> internally to something that can be matched by the glob rules, and you would like a way to avoid that cost. In particular, you have a specific use case where you are storing paths somewhere that are already valid UTF-8, and can therefore be matched directly and shouldn't need any platform specific code to handle them.</p>
+<p>In principle, I'd be OK with an addition to the API that lets you circumvent this. Note, however, that the internal representation of a <code>Candidate</code> isn't just the path, but it also contains path components such as <code>basename</code> and <code>ext</code>, which are used for optimization purposes. See here: https://github.com/BurntSushi/ripgrep/blob/118b950085ff674c1c7142bc5e171dd2b4688934/globset/src/lib.rs#L495-L496</p>
+<p>Personally, I would rather like to see a benchmark on a real workload that benefits from a change like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/quark-zju">@quark-zju</a> on 2018-12-18 00:23</div>
+            <div class="timeline-body"><p>Yep. I also noticed the overhead in <code>Candidate</code>. I think the <code>Path</code> conversion overhead is neglectable comparing to <code>file_name</code> overhead.</p>
+<p>Ideally, <code>GlobSet::is_match</code> is nearly as fast as <code>BTreeMap</code> if there are only literal patterns. Currently, it's at least 3x slower.</p>
+<hr />
+<p>Some more context. Not directly related to this issue.</p>
+<p>I was wanting a <code>match_recursive(dir) -&gt; None | Some(true) | Some(false)</code> interface, which returns <code>Some(true)</code> if all possible paths under <code>dir</code> will match; <code>Some(false)</code> if none can match; <code>None</code> if some paths can match. This can make certain tree walking logic fast, and the matcher can be negated without losing fast paths.</p>
+<p>For example, for a single pattern <code>&quot;a/b/**&quot;</code>, <code>match_recursive(&quot;a&quot;)</code> returns <code>None</code>, <code>match_recursive(&quot;a/b/c&quot;)</code> returns <code>Some(true)</code>, and <code>match_recursive(&quot;b&quot;)</code> returns <code>Some(false)</code>.</p>
+<p>If all patterns are just literal + <code>/**</code>, then things become simple. A tree struct like <code>struct TreeMatcher { subtrees: HashMap&lt;String, TreeMatcher&gt;, has_double_star: bool }</code> would answer questions easily.</p>
+<p>Some patterns can have globs (ex. <code>a*/b*/**</code>). So it feels natural to just replace the above <code>HashMap</code> with <code>GlobSet</code>.</p>
+<p>EDIT:</p>
+<p>I guess another way to solve it is to just use a single <code>GlobSet</code>, then insert all parent patterns into the <code>GlobSet</code> to be able to tell &quot;this directory&quot; might have something that matches. To be able to get parent patterns, some logic to expand <code>{}</code> in glob patterns need to be written.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-01-24 14:58</div>
+            <div class="timeline-body"><p>@quark-zju Could you please clarify whether this proposed new API would suit your use case?</p>
+<pre><code class="language-rust">    /// Create a new candidate for matching from the given path as a slice of
+    /// arbitrary bytes.
+    ///
+    /// The purpose of using this method is that it may be able to circumvent
+    /// some costly platform specific initialization steps.
+    pub fn from_bytes&lt;P: AsRef&lt;[u8]&gt; + ?Sized&gt;(path: &amp;'a P) -&gt; Candidate&lt;'a&gt; {
+        /// elided...
+    }
+</code></pre>
+<p>If so, I'm not really convinced of this API. In particular, platform specific initialization steps are still required in order to handle path separators.</p>
+<p>If you can:</p>
+<ol>
+<li>Add this API.</li>
+<li>Provide a convincing real world benchmark that shows a non-trivial improvement.</li>
+</ol>
+<p>then I might be willing to reconsider this. Until then, I think this is just too complex and niche to justify. Yes, Windows requires a bit more processing here, but nothing is going to change that unless you can lobby Rust's standard library to expose an <code>OsStr</code>'s internal <code>WTF-8</code> representation, but thus far, they have remained ideologically opposed to such conveniences.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-01-24 14:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:46 UTC
+    </footer>
+</body>
+</html>

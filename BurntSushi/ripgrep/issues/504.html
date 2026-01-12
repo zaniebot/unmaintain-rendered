@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[request] More built-in types (globs) - BurntSushi/ripgrep #504</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[request] More built-in types (globs)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/504">#504</a>
+        opened by <a href="https://github.com/phrohdoh">@phrohdoh</a>
+        on 2017-06-06 15:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/phrohdoh">@phrohdoh</a></div>
+            <div class="timeline-body"><p>I'd like to have (and possibly implement myself, I can't image this is too difficult):</p>
+<pre><code>$ rg -t cshtml
+$ rg -t javascript
+</code></pre>
+<p>I say <code>javascript</code> because <code>cs</code> has a matching <code>csharp</code> but <code>js</code> is the only javascript option.</p>
+<p>These could of course be added in a shell alias with <code>--type-add</code> but then I also need to alias in a <code>-tcshtml -tjavascript $@</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-06 15:50</div>
+            <div class="timeline-body"><p>Sorry, but I don't understand your feature request. Could you please rephrase and show an example? I also don't understand what the problem with <code>--type-add</code> is?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phrohdoh">@phrohdoh</a> on 2017-06-06 15:52</div>
+            <div class="timeline-body"><p>ripgrep has types <a href="https://github.com/BurntSushi/ripgrep/blob/cd6c54f5f4ec6882d5ee3f8c5f0ce74e025477af/ignore/src/types.rs#L117-L118"><code>cs</code>, <code>csharp</code></a>, and <a href="https://github.com/BurntSushi/ripgrep/blob/cd6c54f5f4ec6882d5ee3f8c5f0ce74e025477af/ignore/src/types.rs#L140-L142"><code>js</code></a> but no <code>javascript</code>.</p>
+<p>So I'm requesting a <code>javascript</code> be added for the reason above (cs + csharp, js + javascript), and also asking for <code>cshtml</code> (because I do a lot of ASP.NET work and often want to do <code>rg -t csharp -t cshtml pattern</code>).</p>
+<p><code>cshtml</code> would be <code>(&quot;cshtml&quot;, &amp;[&quot;*.cshtml&quot;]),</code>.</p>
+<p>Does this make sense?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-06 16:00</div>
+            <div class="timeline-body"><p>I'm still not clear. Are you asking for two completely different things? You want a <code>javascript</code> type that is an alias of <code>js</code>... for what reason? Some types have aliases, but it's probably because <code>csharp</code> was added first and someone wanted something shorter.</p>
+<p>It's hard to understand your other request. You're asking for <code>cshtml</code> but your example is <code>rg -t csharp -t cshtml pattern</code> which doesn't make sense to me, since you're including the thing you want in its definition? Did you mean <code>rg -t csharp -t html pattern</code>?</p>
+<p>Have you by any chance looked at the document for <code>--type-add</code>? You can include the rules of other types. For example:</p>
+<pre><code>$ rg --type-add 'cshtml:include:csharp,html' -tcshtml pattern
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phrohdoh">@phrohdoh</a> on 2017-06-06 16:09</div>
+            <div class="timeline-body"><p><code>javascript</code> as an alias for <code>js</code> would address an inconsistency with <code>cs</code> and <code>csharp</code> existing but not <code>javascript</code>.</p>
+<p>If ripgrep is to favor shorter aliases then <code>csharp</code> should probably be removed because, IME, once people see <code>csharp</code> they expect other long forms to exist and get tripped up when they don't.</p>
+<blockquote>
+<p>Are you asking for two completely different things?</p>
+</blockquote>
+<p>Yes: Adding <code>javascript</code> and <code>cshtml</code> types.</p>
+<blockquote>
+<p>Did you mean rg -t csharp -t html pattern?</p>
+</blockquote>
+<p>No, I am not asking for <code>-t html</code> but <code>-t cshtml</code> which, to use with the <code>-t</code> flag, has to be built into ripgrep.</p>
+<p>Yes I know about <code>--type-add</code> and even mentioned it in the original description but would rather my search tool had this built in so I don't have to type out long commands.</p>
+<p>I could of course write an alias that is:
+<code>export rg=&quot;rg --type-add 'cshtml:*.cshtml' --type-add 'javascript:*.js'&quot;</code></p>
+<p>But then to actually use those I have to remember to use <code>-tjavascript</code> or <code>-tcshtml</code> instead of <code>-t cshtml</code>, for example.</p>
+<p>I don't know how else to word this. If this isn't desired then that's fine I understand not wanting to throw everything into ripgrep's type list.</p>
+<p>If necessary I can jump onto IRC later today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-06 16:12</div>
+            <div class="timeline-body"><p>Could you please tell me exactly what you expect <code>-tcshtml</code> to do?</p>
+<blockquote>
+<p>If ripgrep is to favor shorter aliases then csharp should probably be removed because, IME, once people see csharp they expect other long forms to exist and get tripped up when they don't.</p>
+</blockquote>
+<p>No, I'm not removing anything. It's an unnecessary breaking change. I'd rather deal with the wart.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phrohdoh">@phrohdoh</a> on 2017-06-06 16:14</div>
+            <div class="timeline-body"><p><code>rg -t cshtml foo</code> would search all <code>*.cshtml</code> files for the <code>foo</code> pattern similar to how <code>rg -t cs foo</code> would search all <code>*.cs</code> files for <code>foo</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-06 16:15</div>
+            <div class="timeline-body"><p>OK, but you don't need to create an <code>rg-cshtml</code> alias for that. You can just create an <code>rg</code> alias:</p>
+<pre><code>$ alias rg=&quot;rg --type-add 'cshtml:*.cshtml'&quot;
+$ rg -tcshtml foo
+... it works
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phrohdoh">@phrohdoh</a> on 2017-06-06 16:19</div>
+            <div class="timeline-body"><p>Indeed but having <code>cshtml</code> built in to the type list means I can use <code>rg -t cshtml</code> (note the space) which is the same syntax as the existing types so I do not need to remember that I have aliases <code>rg</code> and therefore use <code>-tcshtml</code> instead of <code>-t cshtml</code>.</p>
+<p>You seem quite opposed to adding <code>cshtml</code> but not <code>svg</code> (https://github.com/BurntSushi/ripgrep/issues/394#issuecomment-285808790) and I do not understand why.</p>
+<p>If it won't happen then let's close this ticket and end the circular discussion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-06 16:35</div>
+            <div class="timeline-body"><p>@Phrohdoh Apologies if you think this is a circular discussion, but I am <em>trying to understand what your request is</em>. I didn't know what &quot;cshtml&quot; was and it wasn't at all clear from your comments. It wasn't until https://github.com/BurntSushi/ripgrep/issues/504#issuecomment-306537545 that I understood that <code>cshtml</code> meant <code>*.cshtml</code> and not <code>*.{cs,html}</code>. If it's the latter, then I hope you can understand why I was trying to point out that <code>--type-add</code> can be used to define a new type that includes other, pre-existing types. I haven't said <em>anything</em> about my willingness to add a new file type, but I am only just now realizing that's what you're asking for!</p>
+<p>I see you've edited some of your comments (with respect to what I saw in my email) that do now indeed contain important clarifications. :-)</p>
+<blockquote>
+<p>Indeed but having cshtml built in to the type list means I can use <code>rg -t cshtml</code> (note the space) which is the same syntax as the existing types so I do not need to remember that I have aliases rg and therefore use <code>-tcshtml</code> instead of <code>-t cshtml</code>.</p>
+</blockquote>
+<p>Sorry, but I still don't understand this? I can't reproduce your space problem. Aliases work fine and you don't need to remember any specific alias:</p>
+<pre><code>$ alias rg=&quot;rg --type-add 'cshtml:*.cshtml'&quot;
+$ rg test
+foo.cshtml
+1:test
+
+foo.html
+1:test
+$ rg -tcshtml test
+foo.cshtml
+1:test
+$ rg -t cshtml test
+foo.cshtml
+1:test
+</code></pre>
+<hr />
+<p>If you want to add a new file type, then PRs against <a href="https://github.com/BurntSushi/ripgrep/blob/master/ignore/src/types.rs"><code>types.rs</code></a> are welcome. If you look carefully at the existing list, you'll see that things like <code>*.ejs</code> are included in the <code>html</code> file type, and similarly, <code>*.jsx</code> is included in the <code>js</code> file type. It's impossible for me personally to know what the right classification is for every file type, so I've mostly just been relying on other folks to make the right decisions for me. I don't know whether <code>*.cshtml</code> belongs with <code>html</code> or <code>js</code> or in its own new file type <code>cshtml</code>, so I defer to your judgment on that. But yes, of course, <code>*.cshtml</code> certainly belongs somewhere in the file type list given that I now know it is its own distinct file extension used by lots of folks. (That was <em>not</em> clear to me.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phrohdoh">@phrohdoh</a> on 2017-06-06 16:42</div>
+            <div class="timeline-body"><p>Okay I see the disconnect, sorry this is entirely my fault.</p>
+<p>I did not realize that both <code>rg -tcshtml test</code> and <code>rg -t cshtml test</code> would work if <code>cshtml</code> was defined via <code>--type-add</code> (the help does not reflect this), that alone is enough to close this as solved.</p>
+<p>I'll try to carve out some time later to open a PR.</p>
+<p>As you noted I edited in more details as they came to me.</p>
+<p>Apologies about the confusion!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phrohdoh">@phrohdoh</a> on 2017-06-06 16:43</div>
+            <div class="timeline-body"><p>The help for <code>--type-add</code> contains this:</p>
+<pre><code>            Example: rg --type-add 'foo:*.foo' -tfoo PATTERN.
+</code></pre>
+<p>Adding another example (such as the following) may help.</p>
+<pre><code>            Example: rg --type-add 'bar:*.bar' -t bar PATTERN.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-06-06 22:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:12 UTC
+    </footer>
+</body>
+</html>

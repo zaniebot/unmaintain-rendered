@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rg skips directories that have been checked into git, but whose names match a .gitignore pattern - BurntSushi/ripgrep #695</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rg skips directories that have been checked into git, but whose names match a .gitignore pattern</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/695">#695</a>
+        opened by <a href="https://github.com/mosesn">@mosesn</a>
+        on 2017-11-28 19:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mosesn">@mosesn</a></div>
+            <div class="timeline-body"><p>I recently ran into an issue where rg doesn't look in all directories.</p>
+<pre><code>$ rg 'libthrift-0.5.0' 'src/java/com/twitter/search/common'
+... (didn't find it)
+</code></pre>
+<pre><code>$ rg 'libthrift-0.5.0' 'src/java/com/twitter/search/common/images'
+... (found it)
+</code></pre>
+<p>I thought maybe the name &quot;images&quot; was special, but I didn't find anything promising in the rg repository.</p>
+<p>Sorry for the sort of crummy bug report.  I looked at the permissions for the &quot;images&quot; directory that it doesn't want to search recursively, and it doesn't look weird.  Happy to include any other information, but I didn't really know what to say.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-11-28 19:33</div>
+            <div class="timeline-body"><p>Try it with <code>--debug</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-11-28 19:44</div>
+            <div class="timeline-body"><p>@mosesn The first sentence of the README says:</p>
+<blockquote>
+<p>ripgrep is a line-oriented search tool that recursively searches your current directory for a regex pattern while <strong>respecting your gitignore rules.</strong></p>
+</blockquote>
+<p>Your bug report doesn't mention anything about your gitignore rules, so I can't tell whether you've account for that or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mosesn">@mosesn</a> on 2017-11-29 16:14</div>
+            <div class="timeline-body"><p>good question–it's not ignored according to git</p>
+<pre><code>$ git check-ignore 'src/java/com/twitter/search/common/images'; echo $?
+1
+</code></pre>
+<p>but when I output the debug information, it seems to think it's ignored</p>
+<pre><code>DEBUG:ignore::walk: ignoring src/java/com/twitter/search/common/images: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/mnakamura/workspace/sources/2/.gitignore&quot;), original: &quot;images&quot;, actual: &quot;**/images&quot;, is_whitelist: false, is_only_dir: false })))
+</code></pre>
+<p>I looked in the .gitignore file, and it does include &quot;images&quot;.  And indeed, when I turn on --no-index, it seems to be ignored.</p>
+<pre><code>$ git check-ignore --verbose --no-index 'src/java/com/twitter/search/common/images'; echo $?
+.gitignore:128:images	src/java/com/twitter/search/common/images
+0
+</code></pre>
+<p>With that said, now that it's in the index, it's no longer subject to .gitignore, according to git.  So I would expect it to be inspected by rg.  Should I close this ticket and file a feature request to also search files that are in .gitignore, but also in the git index?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-11-29 16:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Should I close this ticket and file a feature request to also search files that are in .gitignore, but also in the git index?</p>
+</blockquote>
+<p>It has been requested but it's not happening. The recommended work-around is to explicitly whitelist files that are in your <code>.gitignore</code> but you still want to search. You can do that in either a <code>.gitignore</code> or a <code>.ignore</code> file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-11-29 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-11-29 16:17</div>
+            <div class="timeline-body"><p>@mosesn See also https://github.com/BurntSushi/ripgrep/issues/645</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mosesn">@mosesn</a> on 2017-11-29 16:39</div>
+            <div class="timeline-body"><p>If anyone else is curious, I did some follow-up research in how other tools handle this.</p>
+<p>git grep looks in the index directly, so it gets this for free.</p>
+<pre><code>$ git grep 'libthrift-0.5.0' 'src/java/com/twitter/search/common'
+(FINDS IT)
+</code></pre>
+<p>if you tell it to not use the index but to use gitignore, it doesn't find it.</p>
+<pre><code>$ git grep --exclude-standard --no-index 'libthrift-0.5.0' 'src/java/com/twitter/search/common'
+(DOESN'T FIND IT)
+</code></pre>
+<p>If you search using ag, it does find it (???)</p>
+<pre><code>$ ag 'libthrift-0.5.0' src/java/com/twitter/search/common
+(FINDS IT)
+</code></pre>
+<p>However, if you search using ag from the root of the repository, and then grep for the directory, it's not there.</p>
+<pre><code>$ ag 'libthrift-0.5.0' | grep 'src/java/com/twitter/search/common'; echo $?
+1
+</code></pre>
+<p>So it seems like ag only looks for .gitignore files in the directories you specify for them to search.</p>
+<p>I think rg handles this the right way–it's quite confusing that ag sees different results depending upon which directory you search from.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "don't skip directories" to "rg skips directories that have been checked into git, but whose names match a .gitignore pattern" by @mosesn on 2017-11-29 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-11-29 16:46</div>
+            <div class="timeline-body"><p>@mosesn Yeah, <code>git grep</code> has one-up on us here. With respect to <code>ag</code>, its <code>gitignore</code> support is incredibly buggy. I say that because when I was first building ripgrep, I'd often use <code>ag</code> as my standard of correctness. But I soon realized that this was folly, because it gets a lot of the <code>gitignore</code> rules wrong. (The irony is that I say that in an issue that highlights what's most reasonably considered a <code>wontfix</code> bug in ripgrep on the very same functionality! :rofl:)</p>
+<p>There are a couple other tools that claim to respect gitignores such as <code>pt</code> and <code>sift</code>, which each have their own independent implementation.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:22 UTC
+    </footer>
+</body>
+</html>

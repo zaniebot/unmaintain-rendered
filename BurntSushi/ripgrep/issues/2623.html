@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>-w/--word-regexp sometimes returns odd results - BurntSushi/ripgrep #2623</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>-w/--word-regexp sometimes returns odd results</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2623">#2623</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2023-10-10 00:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>It turns out that ripgrep's <code>-w/--word-regexp</code> flag doesn't quite do what it claims to. And as a result, it actually differs from GNU grep in some cases (and even with PCRE2 within ripgrep):</p>
+<pre><code>$ echo '###' | grep -w -o .
+#
+#
+#
+$ echo '###' | rg-13.0.0 -w -o .
+#
+#
+$ echo '###' | rg-13.0.0 -P -w -o .
+#
+#
+#
+</code></pre>
+<p>ripgrep 14 will fix this:</p>
+<pre><code>$ echo '###' | rg-14.0.0 -w -o .
+#
+#
+#
+</code></pre>
+<p>The actual issue here is that ripgrep used a hacky work-around to implement <code>-w/--word-regexp</code> that just didn't work right in all cases. For PCRE2, it was implemented via look-around assertions that always got it right:</p>
+<p>https://github.com/BurntSushi/ripgrep/blob/52731cdfb2e1f10ee068d8c40fac819484615c81/crates/pcre2/src/matcher.rs#L64-L69</p>
+<p>The work-around I used basically tried to emulate look-around with capture groups. And while it works in a lot of cases, it doesn't work in all of them. I spent quite a bit of time trying to figure out how to fix the work-around once and for all, but couldn't see a way to make the code obviously correct. Instead, I just added support for <code>\b{start-half}</code> and <code>\b{end-half}</code> word boundary assertions that do exactly what the look-around does in PCRE2. See: https://github.com/rust-lang/regex/issues/469</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2023-10-10 00:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-10-10 00:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-10-10 00:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:43 UTC
+    </footer>
+</body>
+</html>

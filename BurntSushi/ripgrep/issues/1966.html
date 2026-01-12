@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`rg --unknown-switch` panics on broken pipe error - BurntSushi/ripgrep #1966</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>rg --unknown-switch</code> panics on broken pipe error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1966">#1966</a>
+        opened by <a href="https://github.com/lopopolo">@lopopolo</a>
+        on 2021-08-06 19:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lopopolo">@lopopolo</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code class="language-console">$ ./target/debug/rg --version
+ripgrep 13.0.0 (rev 9b01a8f9ae)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>Compiled from source.</p>
+<pre><code class="language-console">$ git rev-parse HEAD
+9b01a8f9ae53ebcd05c27ec21843758c2c1e823f
+</code></pre>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>macOS Big Sur 11.5.1 (20G80)</p>
+<h4>Describe your bug.</h4>
+<p>ripgrep panics when printing a clap error to stderr if stderr is closed.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>Apply this diff to ripgrep:</p>
+<pre><code class="language-diff">diff --git a/crates/core/main.rs b/crates/core/main.rs
+index 47385de..f3d9889 100644
+--- a/crates/core/main.rs
++++ b/crates/core/main.rs
+@@ -46,10 +46,14 @@ static ALLOC: jemallocator::Jemalloc = jemallocator::Jemalloc;
+ type Result&lt;T&gt; = ::std::result::Result&lt;T, Box&lt;dyn error::Error&gt;&gt;;
+
+ fn main() {
+-    if let Err(err) = Args::parse().and_then(try_main) {
+-        eprintln!(&quot;{}&quot;, err);
+-        process::exit(2);
+-    }
++    let f = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
++        if let Err(err) = Args::parse().and_then(try_main) {
++            eprintln!(&quot;{}&quot;, err);
++            process::exit(2);
++        }
++    }));
++    println!(&quot;panicked? - {}&quot;, f.is_err());
++    process::exit(1);
+ }
+
+ fn try_main(args: Args) -&gt; Result&lt;()&gt; {
+</code></pre>
+<p>Then:</p>
+<pre><code class="language-console">$ cargo build
+$ ./target/debug/rg --unknown-switch 3&gt;&amp;1 1&gt;&amp;2 2&gt;&amp;3 | head -c 0 # swap stdout and stderr, close stdout
+head: illegal byte count -- 0
+panicked? - true
+$ echo $?
+1
+</code></pre>
+<p>I'm not sure how I could observe this panic without the patch since rust writes the panic to stderr. Maybe if ripgrep is compiled with <code>panic = abort</code>?</p>
+<h4>What is the actual behavior?</h4>
+<p>ripgrep panics if stderr is closed despite going to great lengths to avoid panicking when writing to stdout.</p>
+<h4>What is the expected behavior?</h4>
+<p>ripgrep does not panic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lopopolo">@lopopolo</a> on 2021-08-06 20:01</div>
+            <div class="timeline-body"><p>I discovered this in my own project after trying to match ripgrep's panic free printing of <code>--help</code> text from clap: https://github.com/artichoke/artichoke/issues/1314.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-11-21 00:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2023-11-21 00:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-21 04:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:25 UTC
+    </footer>
+</body>
+</html>

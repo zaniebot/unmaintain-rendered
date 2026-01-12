@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--replace should work on every line of output - BurntSushi/ripgrep #158</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--replace should work on every line of output</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/158">#158</a>
+        opened by <a href="https://github.com/AshwinJay">@AshwinJay</a>
+        on 2016-10-09 06:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AshwinJay">@AshwinJay</a></div>
+            <div class="timeline-body"><p>Hello, I could not find any switch to make ripgrep print all the column numbers if a pattern appears more than once on a single line. It seems to print only the first match but colors all the matches.</p>
+<pre><code>./rg IS LICENSE-MIT --column
+15:14:THE SOFTWARE *IS* PROVIDED &quot;AS *IS*&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+19:60:LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERW*IS*E, AR*IS*ING FROM,
+</code></pre>
+<p>My other question is more of an enhancement request.</p>
+<p>Here's what I would love to use ripgrep for:
+Stream a long list of multiline strings, delimited by some special character and have ripgrep output the position of the string in the stream that contains a match(es) along with the column and length of the matching text.</p>
+<p>Example:</p>
+<pre><code>echo &quot;string 1\0string 2... \0string 3\0string...&quot; | \
+./rg &quot;foo*bar&quot; -stream -separator &quot;\0&quot; -print-locations-only
+</code></pre>
+<p>Output:</p>
+<pre><code>&lt;stream-position&gt;[column-start:column-end, column-start:column-end,...]
+&lt;stream-position&gt;[column-start:column-end, column-start:column-end,...]
+&lt;stream-position&gt;[column-start:column-end, column-start:column-end,...]
+</code></pre>
+<p>Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AshwinJay">@AshwinJay</a> on 2016-10-10 00:20</div>
+            <div class="timeline-body"><p>I think I almost got what I was looking for with the <code>vimgrep</code> switch but not quite.</p>
+<pre><code>./rg &quot;(C?ON)&quot; * --replace '«$1»' --vimgrep
+LICENSE-MIT
+17:39:FITNESS FOR A PARTICULAR PURPOSE AND N«ON»INFRINGEMENT. IN NO EVENT SHALL THE
+19:30:LIABILITY, WHETHER IN AN ACTI«ON» OF «CON»TRACT, TORT OR OTHERWISE, ARISING FROM,
+19:36:LIABILITY, WHETHER IN AN ACTI«ON» OF «CON»TRACT, TORT OR OTHERWISE, ARISING FROM,
+20:14:OUT OF OR IN «CON»NECTI«ON» WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+20:22:OUT OF OR IN «CON»NECTI«ON» WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+
+UNLICENSE
+18:56:MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND N«ON»INFRINGEMENT.
+20:36:OTHER LIABILITY, WHETHER IN AN ACTI«ON» OF «CON»TRACT, TORT OR OTHERWISE,
+20:42:OTHER LIABILITY, WHETHER IN AN ACTI«ON» OF «CON»TRACT, TORT OR OTHERWISE,
+21:28:ARISING FROM, OUT OF OR IN «CON»NECTI«ON» WITH THE SOFTWARE OR THE USE OR
+21:36:ARISING FROM, OUT OF OR IN «CON»NECTI«ON» WITH THE SOFTWARE OR THE USE OR
+
+rg.1
+22:14:.SH DESCRIPTI«ON»
+26:9:.SH COMM«ON» OPTI«ON»S
+26:16:.SH COMM«ON» OPTI«ON»S
+131:14:.SH LESS COMM«ON» OPTI«ON»S
+131:21:.SH LESS COMM«ON» OPTI«ON»S
+280:30:.SH FILE TYPE MANAGEMENT OPTI«ON»S
+</code></pre>
+<p>@BurntSushi It would be nice if we have a <code>-o</code> switch like grep combined with <code>ripgrep</code>'s <code>replace</code> or some way to not print the entire string repeatedly like this:</p>
+<pre><code>UNLICENSE
+18:56:«ON»
+20:36:«ON»
+20:42:«CON»
+21:28:«CON»
+21:36:«ON»
+</code></pre>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 00:28</div>
+            <div class="timeline-body"><p>@AshwinJay I had a hard time following what exactly you want here. I'm glad to see <code>--vimgrep</code> got you most of the way. It looks like you could technically go the rest of the way with more <code>--replace</code> trickery. e.g.,</p>
+<pre><code>rg --replace '«$1»' --vimgrep '.*(C?ON).*'
+</code></pre>
+<p>... ah, I see, this does not work because it only shows the replacement for the first match in each line. I think that's a bug. I'd expect <code>--replace</code> combined with <code>--vimgrep</code> to do the replacement for each match in each line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2016-10-11 00:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "--column only prints the first match (and other questions)" to "--replace should work on every line of output" by @BurntSushi on 2016-10-11 00:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 00:31</div>
+            <div class="timeline-body"><p>Note that #34 requests an <code>--only-matching</code> flag, and it even has a work-around that would appear to match your use case. The issue here is the interaction between printing each match on each line and the operation of <code>--replace</code>.</p>
+<p>There is also #125 that adds an <code>--only-matching</code> flag, but there are several unresolved questions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AshwinJay">@AshwinJay</a> on 2016-10-11 02:36</div>
+            <div class="timeline-body"><p>@BurntSushi I think #34 is exactly what I'm looking for. When that gets implemented, there will be no need to use <code>replace</code>. I was only using replace to illustrate what I'd have to do to demarcate the matching text programmatically (meaning, I'd have to parse the output of ripgrep and extract the matches).</p>
+<p>With the combination of <code>--vimgrep</code> and <code>--only-matching</code> my plan is to produce output like this:</p>
+<pre><code>line:column:matching-text
+line:column:matching-text
+line:column:matching-text
+...
+</code></pre>
+<p>Then stream the output to a program, perhaps a UI. If the user wants to dig into any specific output line, then I'd use the &quot;line:column&quot; combination to dive into the specific area of the text file and then read the entire text.</p>
+<p>Hope that makes it clear. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AshwinJay on 2016-10-11 02:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @BurntSushi on 2016-10-11 02:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 02:54</div>
+            <div class="timeline-body"><p>Right, I understand, but I still consider the behavior between <code>--replace</code> and <code>--vimgrep</code> to be surprising, which is why I labeled this a bug. Reopening. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AshwinJay">@AshwinJay</a> on 2016-10-12 00:44</div>
+            <div class="timeline-body"><p>I realized only now that <code>grep</code> has a <code>-b</code> option which is better than row and column. It's the byte offset within the file where the match was found. It would be great if we had that option in ripgrep over the <code>--vimgrep</code> option.</p>
+<p>Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AshwinJay">@AshwinJay</a> on 2016-10-13 05:55</div>
+            <div class="timeline-body"><p>Outstanding performance compared to <code>grep</code>!! I have a 2.5GB file with 5,000,000 relatively nested JSON documents.</p>
+<pre><code>Me$ ls -al
+total 5269584
+drwxr-xr-x   3 Me  1384426549   102B Oct 12 22:40 .
+drwxr-xr-x  19 Me  1384426549   646B Oct 12 21:46 ..
+-rw-r--r--   1 Me  1384426549   2.5G Oct 12 22:41 user.json
+</code></pre>
+<pre><code>Me$ time ~/Downloads/ripgrep-0.2.1-i686-apple-darwin/./rg -c --no-mmap Ste user.json
+282855
+
+real    0m1.082s
+user    0m0.612s
+sys 0m0.469s
+</code></pre>
+<pre><code>Me$ time grep -c  Ste user.json
+282855
+
+real    0m56.202s
+user    0m55.744s
+sys 0m0.445s
+</code></pre>
+<pre><code>2.4 GHz Intel Core i7
+16 GB 1600 MHz DDR3
+MacBook Pro (Retina, 15-inch, Early 2013)
+</code></pre>
+<p>If you implement #34 along with <code>-b</code> this will be a super fast text ETL tool like no other. Keep it up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-13 09:36</div>
+            <div class="timeline-body"><p>To be fair, if you are on a mac, then grep is probably bsdgrep, which is
+known to be slow. You probably want to compare with GNU grep, which you can
+install from brew. Its binary name is ggrep.</p>
+<p>On Oct 13, 2016 01:55, &quot;Ashwin Jayaprakash&quot; notifications@github.com
+wrote:</p>
+<blockquote>
+<p>Outstanding performance compared to grep!! I have a 2.5GB file with
+5,000,000 relatively nested JSON documents.</p>
+<p>Me$ ls -al
+total 5269584
+drwxr-xr-x   3 Me  1384426549   102B Oct 12 22:40 .
+drwxr-xr-x  19 Me  1384426549   646B Oct 12 21:46 ..
+-rw-r--r--   1 Me  1384426549   2.5G Oct 12 22:41 user.json</p>
+<p>Me$ time ~/Downloads/ripgrep-0.2.1-i686-apple-darwin/./rg -c --no-mmap Ste user.json
+282855</p>
+<p>real    0m1.082s
+user    0m0.612s
+sys 0m0.469s</p>
+<p>Me$ time grep -c  Ste user.json
+282855</p>
+<p>real    0m56.202s
+user    0m55.744s
+sys 0m0.445s</p>
+<p>2.4 GHz Intel Core i7
+16 GB 1600 MHz DDR3
+MacBook Pro (Retina, 15-inch, Early 2013)</p>
+<p>If you implement #34 https://github.com/BurntSushi/ripgrep/issues/34
+along with -b this will be a super fast text ETL tool like no other. Keep
+it up!</p>
+<p>—
+You are receiving this because you modified the open/close state.
+Reply to this email directly, view it on GitHub
+https://github.com/BurntSushi/ripgrep/issues/158#issuecomment-253421045,
+or mute the thread
+https://github.com/notifications/unsubscribe-auth/AAb34lU7FiTNOWjsIvrMhT9_nmW_-N6Fks5qzcfSgaJpZM4KR7CP
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AshwinJay">@AshwinJay</a> on 2016-10-14 00:40</div>
+            <div class="timeline-body"><p>Ok I tried ggrep. It's pretty fast but yours is faster.</p>
+<pre><code>time ~/Downloads/ripgrep-0.2.1-i686-apple-darwin/rg -c Ste user.json --no-mmap
+282471
+
+real    0m1.122s
+user    0m0.603s
+sys 0m0.517s
+
+time ggrep -c Ste user.json
+282471
+
+real    0m3.943s
+user    0m3.507s
+sys 0m0.431s
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-14 00:46</div>
+            <div class="timeline-body"><p>@AshwinJay Nice! That's a great result. If you're curious about the specific reason why <code>ripgrep</code> beats GNU grep there, it's likely because <code>ripgrep</code> looks for <code>S</code> while GNU grep looks for <code>e</code>. <code>e</code> is probably much much more common than <code>S</code>, so it ends up with a lot more false positives. You can read more about it here: http://blog.burntsushi.net/ripgrep/#subtitles-literal</p>
+<p>Also, if you upgrade to <code>ripgrep 0.2.3</code>, I believe memory maps will always be disabled on Mac (unless explicitly enabled).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-06 18:53</div>
+            <div class="timeline-body"><p>I'm going to close this because I believe I was too hasty in marking this as a bug. Specifically, the regex <code>.*(C?ON).*</code> is going to match the entire line, so I think the behavior is correct.</p>
+<p>Otherwise, I think the original use case is solved by #34 (which is still open).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-11-06 18:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:47 UTC
+    </footer>
+</body>
+</html>

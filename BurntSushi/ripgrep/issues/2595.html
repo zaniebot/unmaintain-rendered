@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>not respecting `.gitignore` when specifying git ignored path ? - BurntSushi/ripgrep #2595</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>not respecting <code>.gitignore</code> when specifying git ignored path ?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2595">#2595</a>
+        opened by <a href="https://github.com/f-moya">@f-moya</a>
+        on 2023-08-24 18:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/f-moya">@f-moya</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p><code>brew install ripgrep</code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>macOS Ventura 13.5.1</p>
+<h4>Describe your bug.</h4>
+<p>Running searches on a git ignored folder shows results.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<pre><code class="language-sh">#/bin/bash
+mkdir git_ignore_issue
+cd git_ignore_issue
+git init
+touch .gitignore
+echo &quot;dir&quot; &gt;&gt; .gitignore
+echo &quot;A&quot; &gt;&gt; A.txt
+git add .
+git commit -m &quot;Initial commit&quot;
+mkdir dir
+echo &quot;here&quot; &gt;&gt; dir/here.txt
+echo &quot;Searching with rg&quot;
+rg here dir
+echo &quot;Searching with git grep&quot;
+git grep here dir
+</code></pre>
+<h4>What is the actual behavior?</h4>
+<p>It's finding an occurrence of <code>here</code> on a file ignored by git.
+command</p>
+<pre><code class="language-sh">$ rg --debug here dir
+</code></pre>
+<p>output</p>
+<pre><code class="language-sh">DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(here)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 1 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+dir/here.txt
+1:here
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>It's not clear to me, but I believe it shouldn't find any occurrence of &quot;here&quot;.</p>
+<h4>What do you think ripgrep should have done?</h4>
+<p>Work similar to how <code>git grep</code> does, <em>I think</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "don't respecting `.gitignore` when specifying git ignored path ?" to "not respecting `.gitignore` when specifying git ignored path ?" by @f-moya on 2023-08-24 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-08-24 18:23</div>
+            <div class="timeline-body"><p>You <em>explicitly</em> asked ripgrep to search <code>dir</code>. Even if <code>dir</code> is ignored, ripgrep will respect your request because doing otherwise is bonkers IMO.</p>
+<p><code>git grep</code> has perhaps different UX expectations here. <code>git grep</code> doesn't behave (by default) by respecting your <code>.gitignore</code>. It behaves by <em>only searching the files that are in your repository</em>. That is, the files emitted by <code>git ls-files</code>. ripgrep behaves differently. Instead, it doesn't look at what's in your repository, but rather, what is ignored by <code>.gitignore</code> (and <code>.ignore</code> and <code>.rgignore</code>). For example, <code>git</code> will let you add a gitignored-file to your repository and then <code>git grep</code> will search it even though it's still technically gitignored because the file is in the repository. But ripgrep will ignore that it's in the repository and still respect the <code>.gitignore</code> rules.</p>
+<p>This was a design decision I made in the initial design of ripgrep. Namely, it avoids needing to read git repository state, and also permits it to treat <code>.gitignore</code> just like it treats <code>.ignore</code> and <code>.rgignore</code>. ripgrep is, after all, not a git-specific tool. It is designed to be able to search any directory tree, regardless of whether there are git repositories in it. This is unlike <code>git grep</code> which is primarily intended to only search a single git repository. (Although there are flags you can pass to it to force it to search other things.) This gives ripgrep a uniform way in how it behaves.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-08-24 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2023-08-24 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/f-moya">@f-moya</a> on 2023-08-24 18:32</div>
+            <div class="timeline-body"><p>@BurntSushi Thanks for the detailed answer, appreciated!. Sounds reasonable. I actually encountered this using <code>WalkBuilder::new(&quot;/git_ignore_path&quot;)</code>, I couldn't find any flag to set or any setting to indicate <code>WalkBuilder</code> not to descend if it's a git ignored directory, there isn't any right ?. Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-08-24 18:40</div>
+            <div class="timeline-body"><p>Nope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/f-moya">@f-moya</a> on 2023-08-24 18:41</div>
+            <div class="timeline-body"><p>Thank you!.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:42 UTC
+    </footer>
+</body>
+</html>

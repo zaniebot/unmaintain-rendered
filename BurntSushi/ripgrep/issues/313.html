@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cargo install ripgrep is failing - BurntSushi/ripgrep #313</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>cargo install ripgrep is failing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/313">#313</a>
+        opened by <a href="https://github.com/justbur">@justbur</a>
+        on 2017-01-10 04:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/justbur">@justbur</a></div>
+            <div class="timeline-body"><p>Here's the output. I'm not familiar with rust, but I'm happy to provide additional information.</p>
+<pre><code>$ cargo install ripgrep
+    Updating registry `https://github.com/rust-lang/crates.io-index`
+   Compiling winapi-build v0.1.1
+   Compiling unicode-segmentation v0.1.3
+   Compiling regex-syntax v0.3.9
+   Compiling winapi v0.2.8
+   Compiling fnv v1.0.5
+   Compiling bytecount v0.1.5
+   Compiling utf8-ranges v0.1.3
+.cargo/registry/src/github.com-1ecc6299db9ec823/bytecount-0.1.5/src/lib.rs:151:45: 151:48 error: use of unstable library feature 'iter_arith': bounds recently changed (see issue #27739)
+.cargo/registry/src/github.com-1ecc6299db9ec823/bytecount-0.1.5/src/lib.rs:151         self[..].iter().map(ByteChunk::sum).sum()
+                                                                                                                           ^~~
+error: aborting due to previous error
+Build failed, waiting for other jobs to finish...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-10 11:50</div>
+            <div class="timeline-body"><p>It looks like one of ripgrep's dependencies increased the minimum Rust version and didn't do a semver version bump.</p>
+<p>This is still strange though. <a href="https://github.com/BurntSushi/ripgrep/blob/0.3.2/Cargo.lock#L42-L43">ripgrep 0.3.2 has <code>bytecount 0.1.4</code> in its <code>Cargo.lock</code></a>, which I think should cause <code>cargo install ripgrep</code> to use <code>bytecount 0.1.4</code>. Instead, it seems to be picking up <code>bytecount 0.1.5</code> but I'm not sure why.</p>
+<p>cc @llogiq, @alexcrichton</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2017-01-10 11:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-10 11:52</div>
+            <div class="timeline-body"><p>@justbur You have a few work-arounds available to you:</p>
+<ol>
+<li>Upgrade your version of Rust. I'm assuming you're using a version older than 1.11.0 (you can check by running <code>rustc --version</code>) and try <code>cargo install ripgrep</code> again.</li>
+<li><a href="https://github.com/BurntSushi/ripgrep/releases">Download a binary release.</a></li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/llogiq">@llogiq</a> on 2017-01-10 13:26</div>
+            <div class="timeline-body"><p>Sorry, my fault. Will fix shortly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/justbur">@justbur</a> on 2017-01-10 14:33</div>
+            <div class="timeline-body"><p>@BurntSushi makes sense to me.</p>
+<p>I'm on Ubuntu 16.10 currently, using rust from the repos. My rustc is version 1.10.0, so yes you're right. Just tested the binary and it works fine. I'm not that interested in maintaining a different version of rust at the moment.</p>
+<p>I was just reporting because I felt like I had a pretty common setup and the instructions on the README failed for me.</p>
+<p>Thanks for the help</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/llogiq">@llogiq</a> on 2017-01-10 16:22</div>
+            <div class="timeline-body"><p>@justbur, again, my apologies. I'll try to fix as soon as possible (but had too little time for my last attempt). It's literally a one-line fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-10 16:28</div>
+            <div class="timeline-body"><p>FWIW, I think this is strange behavior from Cargo. I don't think it should be using <code>bytecount 0.1.5</code> when the lockfile says <code>0.1.4</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexcrichton">@alexcrichton</a> on 2017-01-10 17:00</div>
+            <div class="timeline-body"><p>@BurntSushi ah yes I think this is a bug in Cargo where <code>cargo install</code> doesn't respect lock files: https://github.com/rust-lang/cargo/issues/2263</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-01-10 23:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/justbur">@justbur</a> on 2017-01-11 20:21</div>
+            <div class="timeline-body"><p>ok, I just tried again, and I got past the initial error but ran into another one. Here's the output</p>
+<pre><code>$ cargo install ripgrep 
+    Updating registry `https://github.com/rust-lang/crates.io-index`
+   Compiling unicode-segmentation v0.1.3
+   Compiling winapi-build v0.1.1
+   Compiling regex-syntax v0.3.9
+   Compiling fnv v1.0.5
+   Compiling ansi_term v0.9.0
+   Compiling libc v0.2.19
+   Compiling unicode-width v0.1.4
+   Compiling void v1.0.2
+   Compiling utf8-ranges v0.1.3
+   Compiling unreachable v0.1.1
+   Compiling crossbeam v0.2.10
+   Compiling bytecount v0.1.6
+   Compiling same-file v0.1.1
+   Compiling thread-id v3.0.0
+   Compiling num_cpus v1.2.1
+   Compiling thread_local v0.3.2
+   Compiling memchr v0.1.11
+   Compiling walkdir v1.0.7
+   Compiling memmap v0.5.0
+   Compiling aho-corasick v0.5.3
+   Compiling kernel32-sys v0.2.2
+   Compiling bitflags v0.7.0
+   Compiling termcolor v0.1.1
+   Compiling winapi v0.2.8
+   Compiling lazy_static v0.2.2
+   Compiling strsim v0.5.2
+   Compiling thread-id v2.0.0
+   Compiling ctrlc v2.0.1
+   Compiling term_size v0.2.1
+   Compiling log v0.3.6
+   Compiling vec_map v0.6.0
+   Compiling thread_local v0.2.7
+   Compiling clap v2.19.3
+.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.19.3/src/errors.rs:882:35: 882:46 error: no method named `description` found for type `std::fmt::Error` in the current scope
+.cargo/registry/src/github.com-1ecc6299db9ec823/clap-2.19.3/src/errors.rs:882         Error::with_description(e.description(), ErrorKind::Format)
+                                                                                                                ^~~~~~~~~~~
+error: aborting due to previous error
+Build failed, waiting for other jobs to finish...
+error: failed to compile `ripgrep v0.3.2`, intermediate artifacts can be found at `/tmp/cargo-install.noglV3JyQm5G`
+
+Caused by:
+  Could not compile `clap`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/justbur">@justbur</a> on 2017-01-11 20:22</div>
+            <div class="timeline-body"><p>Actually that looks like it might be due to having an older version of the std library.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-11 20:23</div>
+            <div class="timeline-body"><p>ripgrep <code>0.3</code> requires Rust 1.11 or newer unfortunately. You can try installing an older version of ripgrep:</p>
+<pre><code>cargo install --vers 0.2.9 ripgrep</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/justbur">@justbur</a> on 2017-01-11 20:26</div>
+            <div class="timeline-body"><p>@BurntSushi That explains it. Thanks. Maybe you could add a note to that effect next to the <code>cargo install ripgrep</code> line in the readme?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-11 20:28</div>
+            <div class="timeline-body"><p>@justbur Yeah. I think the minimum version is elsewhere in the README but it would definitely make sense to also put it with the <code>cargo install</code> step! :-)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:00 UTC
+    </footer>
+</body>
+</html>

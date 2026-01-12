@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>14x slowdown when using -A1  - BurntSushi/ripgrep #1403</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>14x slowdown when using -A1</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1403">#1403</a>
+        opened by <a href="https://github.com/aslushnikov">@aslushnikov</a>
+        on 2019-10-14 06:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/aslushnikov">@aslushnikov</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 11.0.1
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>I used github release sources.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>OSX/Linux</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>I suspect my exact setup does not matter that much, but still - here it is:</p>
+<ol>
+<li>Shallow-clone webkit repository: <code>git clone --depth=1 --single-branch https://github.com/webkit/webkit</code>.</li>
+<li><code>cd</code> to the root of webkit repository</li>
+<li>run <code>time rg InspectorDOMAgent</code></li>
+<li>run <code>time rg -A1 InspectorDOMAgent</code> and compare time with step (3)</li>
+</ol>
+<p>For me, <code>ripgrep</code> is 14 times slower when using the -A1 option - on both mac and linux:</p>
+<pre><code>aslushnikov:~/prog/webkit(master)$ time rg InspectorDOMAgent &gt; /dev/null
+
+real    0m1.424s
+user    0m5.622s
+sys     0m6.904s
+aslushnikov:~/prog/webkit(master)$ time rg -A1 InspectorDOMAgent &gt; /dev/null
+
+real    0m18.790s
+user    2m49.995s
+sys     0m21.041s
+</code></pre>
+<p>I find this weird - is this expected behavior?</p>
+<p>P.S. Thank you for the <code>ripgrep</code>! ❤️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-10-14 17:49</div>
+            <div class="timeline-body"><p>I can't reproduce on master:</p>
+<pre><code>$ time rg InspectorDOMAgent &gt; /dev/null
+
+real    0.510
+user    2.585
+sys     3.091
+maxmem  109 MB
+faults  0
+
+$ time rg InspectorDOMAgent -A1 &gt; /dev/null
+
+real    0.521
+user    2.571
+sys     3.287
+maxmem  96 MB
+faults  0
+</code></pre>
+<p>The repository is 4.7GB, and ripgrep reports (via <code>-q --stats</code>) that it's searching through 1.8GB of that. That doesn't seem like that much to me, but if your machine has a small amount of RAM, then it's possible that you're just benchmarking disk access.</p>
+<p>Otherwise, I can't think of any plausible reason why adding <code>-A1</code> would slow ripgrep down by the amount you're observing. It's almost certain that there is some other cause at work here.</p>
+<p>Can you give me more information about your environment? Are you actually able to reliably reproduce this issue on <em>both</em> macOS and Linux? Also, why are you using <code>ripgrep 11.0.1</code> instead of <code>ripgrep 11.0.2</code>?</p>
+<p>Ah okay, it looks like this bug has been fixed on master. If I compile <code>ripgrep 11.0.1</code>, then I can reproduce your bug:</p>
+<pre><code>$ time rg InspectorDOMAgent &gt; /dev/null
+
+real    3.720
+user    38.309
+sys     5.084
+maxmem  109 MB
+faults  0
+
+$ time rg InspectorDOMAgent -A1 &gt; /dev/null
+
+real    36.178
+user    6:53.61
+sys     13.603
+maxmem  117 MB
+faults  0
+</code></pre>
+<p>This was almost certainly fixed in: https://github.com/BurntSushi/ripgrep/commit/813c676ecac053559a3b1b72034e0c34c8ed7e06</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-10-14 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2019-10-14 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aslushnikov">@aslushnikov</a> on 2019-10-14 21:50</div>
+            <div class="timeline-body"><p>Thank you for the investigation. If I understand correctly, the fix didn't make it to the 11.0.2. Is a new release scheduled?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aslushnikov">@aslushnikov</a> on 2019-10-14 22:08</div>
+            <div class="timeline-body"><p>Apologies if there's some release schedule that I don't know about - I'd appreciate a pointer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-10-14 22:44</div>
+            <div class="timeline-body"><p>The fix is not in any release, no. If you need it now, then build ripgrep from source.</p>
+<blockquote>
+<p>Is a new release scheduled?</p>
+</blockquote>
+<p>https://github.com/BurntSushi/ripgrep/blob/master/FAQ.md#release</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:02 UTC
+    </footer>
+</body>
+</html>

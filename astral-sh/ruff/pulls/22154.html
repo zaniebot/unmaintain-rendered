@@ -22,7 +22,7 @@
 
     <div class="timeline">
         <div class="timeline-entry">
-            <div class="timeline-header">Pull request opened by <a href="https://github.com/Minibrams">@Minibrams</a> on 2025-12-23 02:15</div>
+            <div class="timeline-header"><a href="https://github.com/Minibrams">@Minibrams</a></div>
             <div class="timeline-body"><h2>Summary</h2>
 <p>This PR adds completion logic to the <code>ty</code> language server to offer string literal completions when the user is typing a string literal in a function call (arg or kwarg), in the rhs of an annotated assignment, or as a key in a TypedDict-compatible object.</p>
 <pre><code class="language-python">from typing import Literal, TypedDict
@@ -414,10 +414,86 @@ xs: list[A] = [&quot;&lt;CURSOR&gt;&quot;]
             <div class="timeline-body"><p>Oof, 20% performance hit. Happy to hear ideas on how to optimize. Maybe we could lazyload expected types?</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:659 on 2026-01-12 14:19</div>
+            <div class="timeline-body"><p>I'm not following. If there's no <code>ExprStringLiteral</code>, then doesn't <code>cursor.string_literal()</code> return <code>None</code> and thus this function bails and no completions are provided?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:375 on 2026-01-12 14:21</div>
+            <div class="timeline-body"><p>I think this should go away. I'm guessing it slipped in via a bad merge or something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:659 on 2026-01-12 14:24</div>
+            <div class="timeline-body"><p>Basically, <code>string_literal()</code> starts by bailing when <code>cursor.is_in_string()</code> is <code>false</code>. But the <em>only</em> call to <code>string_literal()</code> is guarded by the condition that <code>cursor.is_in_string()</code> is <code>true</code>. I think there should be a simplification here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:1397 on 2026-01-12 14:41</div>
+            <div class="timeline-body"><p>I think this should be removed? It's available at <code>cursor.parsed</code> anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:1467 on 2026-01-12 14:45</div>
+            <div class="timeline-body"><p>It seems like you could accept <code>QuoteStyle</code> here and just do <code>QuoteStyle::as_char()</code>. And then delete the case analysis above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:1425 on 2026-01-12 14:47</div>
+            <div class="timeline-body"><p>If we're just going to create a <code>Box&lt;str&gt;</code> anyway, then why have <code>escape_for_quote</code> return a <code>Cow</code>?</p>
+<p>Even better, probably just have <code>escape_for_quote</code> return a <code>Name</code>, since that's ultimately what we want here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:1467 on 2026-01-12 14:51</div>
+            <div class="timeline-body"><p>Also, please add a contract to this function.</p>
+<p>It took me a minute to figure out why this was needed, so saying more about that would help too.</p>
+<p>Also, from a quick glance, I don't see tests that exercise a code path that uses this.</p>
+<p>Finally, are we sure a routine like this doesn't already exist? It looks like maybe there is something in <code>ruff_python_literal</code>. And if not, perhaps this routine should live there. cc @MichaReiser</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:1421 on 2026-01-12 14:54</div>
+            <div class="timeline-body"><p>Hmmm. Somewhat recently, I changed the completion display to prioritize the actual insertion text:</p>
+<p>https://github.com/astral-sh/ruff/blob/1094009790a799e8274e4088158c99c5273bd891/crates/ty_server/src/server/api/requests/completion.rs#L84</p>
+<p>But I think this implies that this will show escape quotes to the human when that really should be hidden.</p>
+<p>I guess this means that we probably <em>shouldn't</em> show the insertion text in completions and instead have more sophistication around just improving <code>name</code> instead.</p>
+<p>I'd be fine ignoring this for now and creating an issue when this PR gets merged tracking a fix for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:1462 on 2026-01-12 14:57</div>
+            <div class="timeline-body"><p>My understanding is that if we're doing recursion based on the structure of <code>Type</code>, then we need cycle detection. e.g.,</p>
+<p>https://github.com/astral-sh/ruff/blob/1094009790a799e8274e4088158c99c5273bd891/crates/ty_ide/src/completion.rs#L2331-L2387</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:1458 on 2026-01-12 14:58</div>
+            <div class="timeline-body"><p>Should this only add values present in all branches of the intersection?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_ide/src/completion.rs</code>:1464 on 2026-01-12 14:59</div>
+            <div class="timeline-body"><p>Can you add tests the cover each of these cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2026-01-12 15:03</div>
+            <div class="timeline-body"><p>Thank you for working on this! I feel like the new approach here is probably the right way to go about this instead of trying to write bespoke code for each type of string literal. I left a number of comments specifically on the completion side of things here.</p>
+<p>I'm less well equipped to review the changes for adding <code>HasExpectedType</code> though. It might make sense to land that in a separate PR and get review from probably @AlexWaygood. But I'll defer to Alex to whether a separate PR makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @BurntSushi on 2026-01-12 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @BurntSushi on 2026-01-12 15:09</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-10 15:56:31 UTC
+        Synced at 2026-01-12 17:18:22 UTC
     </footer>
 </body>
 </html>

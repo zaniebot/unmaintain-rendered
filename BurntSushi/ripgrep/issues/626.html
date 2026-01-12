@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support for equivalence classes - BurntSushi/ripgrep #626</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support for equivalence classes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/626">#626</a>
+        opened by <a href="https://github.com/albfan">@albfan</a>
+        on 2017-10-07 09:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/albfan">@albfan</a></div>
+            <div class="timeline-body"><p>Is there any chance to support equivalence classes?</p>
+<p>https://www.regular-expressions.info/posixbrackets.html#eq</p>
+<p>here is a scce test case:</p>
+<pre><code>$ cat &gt;test &lt;&lt;EOF
+Búsqueda global
+EOF
+$ grep -RiH &quot;B[[=u=]]squeda global&quot; *
+test:Búsqueda global
+$ ag -i &quot;b[[=u=]]squeda global&quot;
+ERR: Bad regex! pcre_compile() failed at position 2: POSIX collating elements are not supported
+If you meant to search for a literal string, run ag with -Q
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2017-10-07 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">icebox</span> added by @BurntSushi on 2017-10-07 11:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-07 11:56</div>
+            <div class="timeline-body"><p>I'm not in principle against it, but this enhancement requires enhancements to the regex engine itself. If this ever happens, it will not be for a very long time.</p>
+<p>Anywho, this issue isn't really for ripgrep but for the regex engine, so I've filed the issue there instead: https://github.com/rust-lang/regex/issues/404</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-10-07 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/albfan">@albfan</a> on 2017-10-07 20:18</div>
+            <div class="timeline-body"><p>Fair enough. Thanks for take time to do fill that. Let's see if I can provide a patch on that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-08 00:07</div>
+            <div class="timeline-body"><p>Please sketch out an implementation strategy before doing the work. It is a
+<em>significant</em> task.</p>
+<p>On Oct 7, 2017 4:18 PM, &quot;Alberto Fanjul&quot; <a href="mailto:notifications@github.com">notifications@github.com</a> wrote:</p>
+<blockquote>
+<p>Fair enough. Thanks for take time to do fill that. Let's see if I can
+provide a patch on that</p>
+<p>—
+You are receiving this because you modified the open/close state.
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/BurntSushi/ripgrep/issues/626#issuecomment-334963138">https://github.com/BurntSushi/ripgrep/issues/626#issuecomment-334963138</a>,
+or mute the thread
+<a href="https://github.com/notifications/unsubscribe-auth/AAb34k0G2-lOHplWu_063isreiwCqWJHks5sp9ytgaJpZM4PxTAP">https://github.com/notifications/unsubscribe-auth/AAb34k0G2-lOHplWu_063isreiwCqWJHks5sp9ytgaJpZM4PxTAP</a>
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/albfan">@albfan</a> on 2017-11-05 23:39</div>
+            <div class="timeline-body"><p>As a resume for anyone looking at this</p>
+<p>rust tries to be agnostic about charsets, so this concept of equivalence classes is not avaliable. The only thing remotely similar is the normalization form for chars, so <code>ò</code> can be decomposed on <code>o</code> and ``` so searching for <code>o</code> equivalences could detect <code>ò</code>as an equivalence. That implies a file preprocess. That can be done with https://crates.io/crates/unicode-normalization, but presumably it will slow down all searches</p>
+<p>provide custom config for this</p>
+<pre><code>[equivalence]
+a = aá
+e = eé
+i = ií
+o = oó
+u = uúü
+n = nñ</code></pre>
+<p>seems a better option, but I didn't see it as a useful contribution to ripgrep, seing #196, but for rust regex</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:18 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ripgrep always adds a newline at the end of data (including when `--passthru` is used) - BurntSushi/ripgrep #2474</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ripgrep always adds a newline at the end of data (including when <code>--passthru</code> is used)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2474">#2474</a>
+        opened by <a href="https://github.com/misaki-web">@misaki-web</a>
+        on 2023-03-22 23:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/misaki-web">@misaki-web</a></div>
+            <div class="timeline-body"><p>Using ripgrep 13.0.0 on Ubuntu 22.10, the argument <code>--passthru</code> adds a new line at the end of data (so it can't be used to get only changes explicitly requested with the <code>-r</code> argument). It seems to be a bug, the documentation doesn't refer to adding a newline, but only <code>Print both matching and non-matching lines</code>, implying that data should be the same at the end of the process (unless replacements occur).</p>
+<p>Example of the issue:</p>
+<pre><code class="language-bash">$ echo -n abc$'\n'def | rg --passthru 'b' -r 'B' | xxd -g 1
+00000000: 61 42 63 0a 64 65 66 0a                          aBc.def.
+</code></pre>
+<p>Expected result: no newline added at the end, like <code>sed</code> or other similar tools:</p>
+<pre><code class="language-bash">$ echo -n abc$'\n'def | sed 's/b/B/g' | xxd -g 1
+00000000: 61 42 63 0a 64 65 66                             aBc.def
+$ echo -n abc$'\n'def | perl -pe 's/b/B/g' | xxd -g 1
+00000000: 61 42 63 0a 64 65 66                             aBc.def
+$ echo -n abc$'\n'def | tr 'b' 'B' | xxd -g 1
+00000000: 61 42 63 0a 64 65 66                             aBc.def
+</code></pre>
+<p>Here's an example with <code>diff</code>:</p>
+<pre><code class="language-bash">$ cat lorem.txt | xxd -g 1
+00000000: 6c 6f 72 65 6d 0a 69 70 73 75 6d                 lorem.ipsum
+$ rg --passthru -e lorem -r Lorem lorem.txt | sponge lorem.txt
+$ git diff
+</code></pre>
+<p><img src="https://user-images.githubusercontent.com/64830812/227062658-1df7d8f5-90ca-4c96-b35e-a95361d67b6a.png" alt="diff-rg" /></p>
+<p>The same process with <code>sed</code> results in a different output for <code>diff</code>:</p>
+<pre><code class="language-bash">$ git restore lorem.txt
+$ sed -i 's/lorem/Lorem/g' lorem.txt
+$ git diff
+</code></pre>
+<p><img src="https://user-images.githubusercontent.com/64830812/227062664-72330bdf-246d-445e-a1d3-eab89ce80ba8.png" alt="diff-sed" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-22 23:51</div>
+            <div class="timeline-body"><p>I can confirm that this exists on master.</p>
+<p>This may be difficult to fix. I believe there have been past issues similar to this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2023-03-22 23:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-22 21:42</div>
+            <div class="timeline-body"><p>It's also worth pointing out this is not really specific to <code>--passthru</code> (and I've changed the issue title accordingly). Rather, it's what ripgrep does even without <code>--passthru</code> because the alternative is generally not great:</p>
+<pre><code>$ printf &quot;A&quot; | xxd
+00000000: 41                                       A
+$ printf &quot;A&quot; | rg . | xxd
+00000000: 410a                                     A.
+$ printf &quot;A&quot; | grep . | xxd
+00000000: 410a                                     A.
+</code></pre>
+<p>Notice that grep behaves the same here, so the appeal to the behavior of other tools in this space can go either way.</p>
+<p>This might wind up being a <code>wontfix</code> bug, and I'm pretty sure the existing behavior is actually intentional. With that said, I believe the way ripgrep deals with line terminators is generally sub-optimal, and I can agree that preserving them as they are in the input file can be useful. The gnarly part of this issue though is even if we could fix it, it's not clear that making <code>--passthru</code> better on this metric would be worth making ripgrep worse in the general case. That is, when searching arbitrary files and printing a match on the last line, you really really want to emit a line terminator even if the original doesn't end with one.</p>
+<p>Either way, this is unlikely to be fixed any time soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from ""--passthru" adds a newline at the end of data" to "ripgrep always adds a newline at the end of data (including when `--passthru` is used)" by @BurntSushi on 2023-11-22 21:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:39 UTC
+    </footer>
+</body>
+</html>

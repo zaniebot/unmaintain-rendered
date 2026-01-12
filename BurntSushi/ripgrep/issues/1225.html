@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speedup ripgrep using profile guided optimization - BurntSushi/ripgrep #1225</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Speedup ripgrep using profile guided optimization</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1225">#1225</a>
+        opened by <a href="https://github.com/ghost">@ghost</a>
+        on 2019-03-22 20:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ghost">@ghost</a></div>
+            <div class="timeline-body"><h3>Request for improvement</h3>
+<h4>What version of ripgrep are you using?</h4>
+<p>compiled current master (09139721047b1cda6ad88dbf89dc5fa74c66a3a2)</p>
+<h4>How did you install ripgrep?</h4>
+<p>compiled current master (09139721047b1cda6ad88dbf89dc5fa74c66a3a2)</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Linux Mint 19.1 with kernel 4.18.0-16-lowlatency</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>Profile guided optimization works by building the binary with profiling instrumentation first, then running the instrumented binary in a few test cases while saving runtime profiles and then using the profiles to optimize the code for example by reordering functions to improve cachability.</p>
+<p>Using the very naive benchmark <code>time sudo target/release/rg --with-filename --word-regexp --line-buffered a /home &gt; /dev/null</code> ripgrep needed <code>3.7s</code> on avg without profile guided optimization on my system and <code>3.3s</code> with pgo.</p>
+<p>This is how I compiled rg with pgo:</p>
+<pre><code># make sure we get a profile for each run, %p will be replaced with the pid
+export LLVM_PROFILE_FILE=./target/pgo/pgo-%p.profraw
+
+# compile instrumented binary
+RUSTFLAGS=&quot;-Z pgo-gen=llvm-profile-file-env-variable-overrides-this&quot; cargo +nightly build --release
+
+# run a few test cases (these need to be improved to cover more rg features)
+target/release/rg --help &gt; /dev/null
+target/release/rg a &gt; /dev/null
+target/release/rg B --line-buffered &gt; /dev/null
+target/release/rg c --word-regexp &gt; /dev/null
+target/release/rg D --vimgrep &gt; /dev/null
+target/release/rg e --with-filename &gt; /dev/null
+target/release/rg f --unrestricted &gt; /dev/null
+target/release/rg '[A-Z]+_SUSPEND' --with-filename --word-regexp --line-buffered &gt; /dev/null
+target/release/rg h --unrestricted --with-filename --vimgrep --word-regexp --line-buffered &gt; /dev/null
+
+# merge profiles
+rustup run nightly llvm-profdata merge -o target/pgo/pgo.profdata target/pgo/pgo*.profraw
+
+# compile with profile in mind
+RUSTFLAGS=&quot;-Z pgo-use=target/pgo/pgo.profdata&quot; cargo +nightly build --release
+</code></pre>
+<p>pgo could speed up ripgrep quite a bit when done correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-03-22 21:37</div>
+            <div class="timeline-body"><p>Neat. Could you please document the build dependencies here more thoroughly? Whether this is done or not almost completely depends on how much of a hassle it would be to add to the release process.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2019-03-22 21:58</div>
+            <div class="timeline-body"><p>I just checked this against alpine since it is used in .travis.yaml. The package llvm-dev would be required. The main problem is that <code>-Z</code> flags requires nightly rust, which is not available as an alpine package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-04-14 17:40</div>
+            <div class="timeline-body"><p>Thanks for suggesting this. I just briefly tried this out, and while I could get it to work, I couldn't really see any noticeable performance improvement. Moreover, this would complicate and prolong the release process by quite a bit. Not only does ripgrep need to be built twice, but it needs to get some sizable corpus on which to search a number of times. Overall, I don't think it's worth it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-04-14 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2019-04-14 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ArniDagur">@ArniDagur</a> on 2019-08-15 20:56</div>
+            <div class="timeline-body"><p>As of <a href="https://blog.rust-lang.org/2019/08/15/Rust-1.37.0.html#profile-guided-optimization">Rust 1.37</a>, PGO is stable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zamazan4ik">@zamazan4ik</a> on 2023-11-27 03:47</div>
+            <div class="timeline-body"><p>I didn't finish all the tests but I already have some preliminary results.</p>
+<p>On my Linux machine (Fedora 39, AMD Ryzen 5900x with disabled Turbo boost, 48 Gib RAM, Rust 1.74, with <code>ripgrep</code> from the latest <code>master</code> branch with commit <code>cd5440fb6230f72ab598916c1c5ab96686541d47</code>) I get the following results:</p>
+<pre><code>hyperfine --warmup 5 --min-runs 20 '../target/rg_release -n &quot;PM_RESUME&quot; data/linux' '../target/rg_release_with_lto -n &quot;PM_RESUME&quot; data/linux' '../target/rg_optimized_with_lto -n &quot;PM_RESUME&quot; data/linux'
+Benchmark 1: ../target/rg_release -n &quot;PM_RESUME&quot; data/linux
+  Time (mean ± σ):     137.2 ms ±   3.4 ms    [User: 529.9 ms, System: 986.1 ms]
+  Range (min … max):   129.3 ms … 142.4 ms    21 runs
+
+Benchmark 2: ../target/rg_release_with_lto -n &quot;PM_RESUME&quot; data/linux
+  Time (mean ± σ):     131.8 ms ±   2.2 ms    [User: 492.7 ms, System: 968.0 ms]
+  Range (min … max):   126.9 ms … 135.8 ms    22 runs
+
+Benchmark 3: ../target/rg_optimized_with_lto -n &quot;PM_RESUME&quot; data/linux
+  Time (mean ± σ):     125.1 ms ±   2.9 ms    [User: 406.6 ms, System: 975.1 ms]
+  Range (min … max):   119.5 ms … 132.5 ms    23 runs
+
+Summary
+  ../target/rg_optimized_with_lto -n &quot;PM_RESUME&quot; data/linux ran
+    1.05 ± 0.03 times faster than ../target/rg_release_with_lto -n &quot;PM_RESUME&quot; data/linux
+    1.10 ± 0.04 times faster than ../target/rg_release -n &quot;PM_RESUME&quot; data/linux
+</code></pre>
+<p>where:</p>
+<ul>
+<li><code>rg_release</code> - default Release build with <code>cargo build --release</code></li>
+<li><code>rg_release_with_lto</code> - default Release build with <code>cargo build --release</code> but with enabled <code>codegen-units = 1</code> and <code>lto = true</code></li>
+<li><code>rg_optimized_with_lto</code> - default Release build with <code>cargo build --release</code> but with enabled <code>codegen-units = 1</code> and <code>lto = true</code> and optimized with PGO</li>
+</ul>
+<p>As a PGO training set, I used Ripgrep's benchsuite.</p>
+<p>Right now I cannot provide you with all the results since on my machine for some unknown yet reasons the provided <code>benchsuite</code> script doesn't work (it complains about missing dependencies even if they are downloaded), so I ran all the commands manually.</p>
+<p>I ran several other commands from the bench suite - the performance improvements were near the same in the tested-by-me cases.</p>
+<p>I specially built ripgrep without <code>pcre</code> since it's a system dependency and cannot be easily PGOed. Since I bench PGO for Ripgrep, I decided to reduce external DLLs influence as much as I could. For someone, it still could be interesting since some people can build Ripgrep without PCRE support.</p>
+<p>I have some thoughts about these results:</p>
+<ul>
+<li>I've seen a <a href="https://github.com/BurntSushi/ripgrep/issues/413">discussion</a> before that LTO doesn't bring huge improvements. According to my tests, 5% improvement is a huge improvement (even if we are not talking about the binary size). So I think the LTO decision should be estimated (at least enable it in an additional <code>profile.release-lto</code> Cargo profile)</li>
+<li>PGO shows measurable improvements too. More tests should be evaluated with PGO - maybe some cases are pessimized with PGO (who knows). Especially would be especially interesting to recompile with PGO the PCRE dependency too.</li>
+</ul>
+<p>5-10% improvement for some people is really important. My main use-case for that - (rip)grepp'ing hundreds of logs on our log storage nodes with some non-trivial patterns. Some queries could run for tens of minutes/hours, and even a few percent of performance is definitely worth it (even if we need to recompile ripgrep - it's not a problem).</p>
+<p>@BurntSushi Should I create a separate issue/discussion for the topic?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-28 02:34</div>
+            <div class="timeline-body"><p>@zamazan4ik See https://github.com/BurntSushi/ripgrep/commit/b6bac8484e5466d332640c4022951061bb865329</p>
+<p>Basically, I'm still not convinced. I only tested LTO and not PGO, but PGO does not sound like something I'm keen on maintaining.</p>
+<p>In any case, I've at least added a <code>release-lto</code> profile to ripgrep, but stopped short of using it in the actual release binaries.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:51 UTC
+    </footer>
+</body>
+</html>

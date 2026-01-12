@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--line-regexp does not work with CRLF line endings - BurntSushi/ripgrep #1568</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--line-regexp does not work with CRLF line endings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1568">#1568</a>
+        opened by <a href="https://github.com/jftuga">@jftuga</a>
+        on 2020-05-05 22:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jftuga">@jftuga</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 12.0.1 (rev 1d5b1011e5)
+-SIMD -AVX (compiled)</p>
+<h4>How did you install ripgrep?</h4>
+<p>From the Github binary releases.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Windows 10 - 10.0.17763.1158</p>
+<h4>Describe your bug.</h4>
+<p>Using a text file with CRLF line endings, which is typical for <code>cmd.exe</code>, the <code>--line-regexp</code> will not match an entire line.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<pre><code>R:\&gt;type con &gt; test
+one
+two
+^Z
+
+:: Notice that `test` contains CRLF
+R:\&gt;od -tx1 test
+0000000 6f 6e 65 0d 0a 74 77 6f 0d 0a
+0000012
+
+:: this should return line 1, but does not
+R:\&gt;rg -x one test
+
+R:\&gt;copy test test2
+        1 file(s) copied.
+
+:: zip will convert CR LF to just LF
+R:\&gt;zip -ll z.zip test2 &amp;&amp; unzip -o z.zip
+  adding: test2 (172 bytes security) (stored 0%)
+Archive:  z.zip
+ extracting: test2
+
+:: Notice `test2` now only has LF
+R:\&gt;od -tx1 test2
+0000000 6f 6e 65 0a 74 77 6f 0a
+0000010
+
+:: Notice 'rg' now works as expected
+R:\&gt;rg -x one test2
+1:one
+</code></pre>
+<h4>What do you think ripgrep should have done?</h4>
+<p><code>rg</code> should be able to handle <code>CRLF</code> as a proper line ending, but it does not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2020-05-05 22:41</div>
+            <div class="timeline-body"><pre><code>% printf '%s\r\n' foo bar | rg -x foo
+% printf '%s\r\n' foo bar | rg --crlf -x foo
+foo
+</code></pre>
+<pre><code>--crlf
+    When enabled, ripgrep will treat CRLF (\r\n) as a line terminator
+    instead of just \n.
+
+    Principally, this permits $ in regex patterns to match just before
+    CRLF instead of just before LF. The underlying regex engine may not
+    support this natively, so ripgrep will translate all instances of $
+    to (?:\r??$). This may produce slightly different than desired
+    match offsets. It is intended as a work-around until the regex
+    engine supports this natively.
+
+    CRLF support can be disabled with --no-crlf.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jftuga">@jftuga</a> on 2020-05-05 22:56</div>
+            <div class="timeline-body"><p>Shouldn't this be the default for <code>Windows</code> builds?  As a Windows user, having to add `--crlf`` all of the time does not seem very user friendly.  It's also likely to be forgotten that it is required.</p>
+<p>I just tested and it does work for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-05-05 23:00</div>
+            <div class="timeline-body"><p>You can add it to your ripgrep config file.</p>
+<p>It isn't enabled by default because it has weird semantics in corner cases due to how its implemented. The docs point this out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-05-05 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2020-05-05 23:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:10 UTC
+    </footer>
+</body>
+</html>

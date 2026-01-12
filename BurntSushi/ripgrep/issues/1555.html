@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignore: Skip files on MacOS hidden by attribute - BurntSushi/ripgrep #1555</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ignore: Skip files on MacOS hidden by attribute</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1555">#1555</a>
+        opened by <a href="https://github.com/casey">@casey</a>
+        on 2020-04-20 01:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/casey">@casey</a></div>
+            <div class="timeline-body"><p>@Celeo is working on integrating <code>ignore</code> into a project, when before it was using <code>walkdir</code>, in order to benefit from <code>.gitignore</code> and <code>.ignore</code> processing. (Thanks for both of these crates!)</p>
+<p>There's one piece of functionality that isn't easy to replicate with <code>ignore</code>, which is skipping files and directories on MacOS if they're hidden by attribute. I had written my own function to check if files were hidden, and then applied it with the <code>filter_entry</code> iterator combinator from <code>walkdir</code>.</p>
+<p>It looks like <code>ignore</code> checks for the hidden attribute on Windows, but not MacOS, and it doesn't expose <code>filter_entry</code> from walkdir.</p>
+<p>What do you think about adding support for checking the macos hidden attribute? I'd be happy to contribute this as a PR. Or possibly is there something in the API that I've missed that allows filtering entries?</p>
+<p>Unfortunately, my implementation of checking the hidden attribute involves unsafe code, and I don't think there's a safe alternative. Here's <a href="https://github.com/casey/intermodal/blob/b67a2f1885c9445c08411457809f8893ebfa2045/src/platform.rs#L17">the code</a> for reference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-04-20 14:22</div>
+            <div class="timeline-body"><p>There is currently no &quot;filter entry&quot; API in the <code>ignore</code> crate.</p>
+<p>My understanding is that using a <code>.</code> prefix on macOS is fairly standard for indicating hidden files. I didn't even know of the existence of a separate attribute.</p>
+<p>I'm not inclined to support this in <code>ignore</code> directly. Windows support for this exists principally because the <code>.</code> prefix convention isn't really used there, <em>and</em> it's cheap. That is, it requires no additional stat calls, but it looks like macOS would. That's a pretty expensive proposition.</p>
+<p>I think the right path forward here is probably to add some kind of filtering functionality to the walker, possibly by adding a new method on <code>WalkBuilder</code> (instead of how the <code>walkdir</code> API works). Then callers could add their own filtering like this if they wanted.</p>
+<p>I'd be okay accepting a PR for that if it's a relatively simple change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2020-04-20 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/casey">@casey</a> on 2020-04-20 22:00</div>
+            <div class="timeline-body"><p>Whoops, I totally missed something, it looks like <code>st_flags</code> is <a href="https://github.com/rust-lang/rust/blob/d8bdb3fdcbd88eb16e1a6669236122c41ed2aed3/src/libstd/os/macos/fs.rs#L66">actually available</a> via <code>MetadataExt</code> on MacOS.</p>
+<p>I read the <a href="https://github.com/BurntSushi/ripgrep/blob/73103df6d982da1a0dc775e9b7a03f5bb8cfd7fb/crates/ignore/src/pathutil.rs#L33">comment here</a> about the call to <code>metadata</code> returning cached data, and thus being free. Is that only true on Windows? If it's also true on MacOS, then we could do the same thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-04-20 22:15</div>
+            <div class="timeline-body"><p>Yes, it's only true on Windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/casey">@casey</a> on 2020-04-20 22:39</div>
+            <div class="timeline-body"><p>Ah, that's too bad.</p>
+<p>For the API of <code>WalkBuilder::filter_entry</code>, taking a generic predicate would require parametrizing <code>WalkBuilder</code> on the type of that predicate. Some options:</p>
+<ol>
+<li>Make <code>WalkBuilder</code> generic over the type of that predicate, i.e. <code>WalkBuilder&lt;T&gt;</code>.</li>
+<li>Make WalkBuilder::filter_entry<code>take the concrete type</code>fn(&amp;DirEntry) -&gt; bool`. (This would work for my purposes, but wouldn't work for others.)</li>
+<li>Box the predicate.</li>
+</ol>
+<p>I'm leaning towards 2., since it meets my needs and doesn't complicate the types. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-04-20 22:44</div>
+            <div class="timeline-body"><p>Definitely (3). In particular, you can put it in an Arc. (You'll have to for the parallel traverser.) We already do something similar for the sort function: https://github.com/BurntSushi/ripgrep/blob/73103df6d982da1a0dc775e9b7a03f5bb8cfd7fb/crates/ignore/src/walk.rs#L489</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/casey">@casey</a> on 2020-04-27 01:54</div>
+            <div class="timeline-body"><p>I opened #1557 with an implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-05-09 03:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:10 UTC
+    </footer>
+</body>
+</html>

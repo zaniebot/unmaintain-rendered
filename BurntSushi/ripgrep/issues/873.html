@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segmentation fault on basic command - BurntSushi/ripgrep #873</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Segmentation fault on basic command</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/873">#873</a>
+        opened by <a href="https://github.com/atouminet">@atouminet</a>
+        on 2018-04-02 02:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/atouminet">@atouminet</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.8.1
+-SIMD -AVX</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Archlinux</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>Execute rg as super user on root directory.
+Example:</p>
+<pre><code class="language-shell">cd /
+rg azefdz
+</code></pre>
+<p>This produces the following output</p>
+<pre><code class="language-shell">thread '&lt;unnamed&gt;' panicked at 'slice index starts at 234 but ends at 3', src/libcore/slice/mod.rs:756:5
+note: Run with `RUST_BACKTRACE=1` for a backtrace.
+[1]    3419 segmentation fault (core dumped)  rg azefdz
+</code></pre>
+<p>It segfaults with any string though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-04-02 10:58</div>
+            <div class="timeline-body"><p>Could you please follow the instructions in the error message you got to get a backtrace?</p>
+<p>If the backtrace doesn't contain names, then please checkout the ripgrep repo and build it from source by running <code>cargo build --release</code>. Then retry via the binary at <code>target/release/rg</code>. This binary should have debug symbols enabled, which will give a better backtrace.</p>
+<p>I can't reproduce the problem, so you'll have to debug this. Playing with flags like <code>--no-mmap</code> and <code>--threads 1</code> might help, and running ripgrep under <code>strace</code> might help too.</p>
+<p>Note that in general, running a privileged process that reads every file on disk, including those found in <code>/proc</code> and <code>/sys</code>, is probably a bad idea. On my system, ripgrep makes its way through part of the system, but ends up hanging. <code>grep</code> behaves the same. If I ignore the <code>/proc</code> and <code>/sys</code> directories, then both ripgrep and grep behave as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-04-02 11:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-04-02 11:02</div>
+            <div class="timeline-body"><p>And please show the output with the <code>--debug</code> flag. The issue template specifically requests this for a reason.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-04-23 23:43</div>
+            <div class="timeline-body"><p>I can't reproduce this and the bug report doesn't provide enough information to make this remotely actionable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-04-23 23:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:30 UTC
+    </footer>
+</body>
+</html>

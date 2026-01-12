@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>search in hidden files not listed in .gitignore - BurntSushi/ripgrep #1303</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>search in hidden files not listed in .gitignore</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1303">#1303</a>
+        opened by <a href="https://github.com/minusf">@minusf</a>
+        on 2019-06-17 11:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/minusf">@minusf</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 11.0.1
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p><code>brew</code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>macOS mojave 10.14.5</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>I have an issue with <code>--hidden</code> behaving like <code>-uu</code>...</p>
+<p>First of all, why have 2 ways to do the same...</p>
+<p>Second, there is no easy way to honour <code>.gitignore</code> but still search in hidden files...</p>
+<p>In my reading of the manual:</p>
+<pre><code>DESCRIPTION
+       ripgrep (rg) recursively searches your current directory for
+       a regex pattern. By default, ripgrep will respect your .gitignore
+       and automatically skip hidden files/directories and binary files.
+</code></pre>
+<p>and later:</p>
+<pre><code> --hidden
+           Search hidden files and directories. By default, hidden files and
+           directories are skipped. Note that if a hidden file or a directory
+           is whitelisted in an ignore file, then it will be searched even if
+           this flag isn't provided.
+
+           This flag can be disabled with --no-hidden.
+</code></pre>
+<p>So by default: .gitignore respected, hidden files skipped.</p>
+<p>Just by adding a hidden flag, it surprises me that the other default behaviour: respecting .gitignore gets turned off as well.  This is not reflected in the documentation either, and i think it's reasonable to expect that other defaults remain as they are.</p>
+<p>So how do I search in hidden files tracked byt git?  <code>--hidden --ignore</code> also does not work, but as respecting .gitignore is default, i would find that confusing as well...</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<pre><code>$ ls -a1
+.git/
+.gitignore
+.some_config_file
+
+$ rg --stats needle          
+
+0 matches
+0 matched lines
+0 files contained matches
+1 files searched
+0 bytes printed
+381 bytes searched
+0.000026 seconds spent searching
+0.004888 seconds
+
+$ rg --hidden --stats needle
+.some_config_file
+1:needle
+
+1 matches
+1 matched lines
+1 files contained matches
+18 files searched       &lt;---- this should be &quot;2&quot; (.gitignore + .some_config_file)
+27 bytes printed
+19689 bytes searched
+0.000216 seconds spent searching
+0.004950 seconds
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-06-17 11:23</div>
+            <div class="timeline-body"><p>This is intended behavior. <code>--hidden</code> is orthogonal from gitignore. When you specify <code>--hidden</code>, you're explicitly disabling ripgrep's filter on hidden files. Therefore, it searches your <code>.git</code> directory. Your <code>.git</code> directory is presumably not in any ignore file (but since you didn't provide the contents of your ignore files, I cannot say for sure), so ripgrep searches it, <em>because you told it to.</em></p>
+<p>If you only want to search <em>some</em> hidden files, then, for example, add <code>!.some_config_file</code> to an <code>.ignore</code> file. As the docs you quoted say, whitelisted hidden files will be searched even when <code>--hidden</code> isn't used.</p>
+<blockquote>
+<p>First of all, why have 2 ways to do the same...</p>
+</blockquote>
+<p><code>-uu</code> is not the same as <code>--hidden</code>. <code>-uu</code> is the same as <code>--no-ignore --hidden</code>. The example you've given isn't sufficient to discriminate them, so it only <em>looks</em> the same to you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-06-17 11:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2019-06-17 11:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/minusf">@minusf</a> on 2019-06-17 12:34</div>
+            <div class="timeline-body"><p>i understand where you are coming from, but <code>.git</code> is special right...</p>
+<p><code>rg</code> or <code>rg --ignore</code> will ignore <code>.git</code>, whether it's in <code>.gitignore</code> or not.  it's implied.</p>
+<p>but <code>rg --ignore --hidden</code> will not.  it breaks this implicit expectation: to make <code>rg --hidden</code> skip <code>.git</code> requires to have <code>.git</code> in <code>.gitignore</code>, and that is quite uncommon afaik.</p>
+<p>this assymetry is what is confusing me.</p>
+<p>as rg is by default &quot;.git conscious&quot;, i am making the argument that <code>--hidden</code> should be too, and i should have to jump through the same hoops (<code>--no-ignore</code>) when i want to &quot;search in hidden files regardless of ignores&quot; as when i am searching in &quot;non-hidden files regardless of ignores&quot;...  it just seems more consistent to me.</p>
+<p>if you still think this is not a bug, let me just close with this:</p>
+<blockquote>
+<p>For example, the --no-ignore flag (listed below) disables ripgrep's gitignore logic, but the --ignore flag (not listed below) enables it.</p>
+</blockquote>
+<pre><code>$ cat .gitignore
+$ rg --hidden --no-ignore needle
+.some_config_file
+1:needle
+
+.git/needle
+1:needle
+$ rg --hidden --ignore needle   
+.some_config_file
+1:needle
+
+.git/needle
+1:needle
+</code></pre>
+<p>(if by &quot;gitignore logic&quot; you also mean &quot;ignore .git implicitly&quot;)</p>
+<p>or</p>
+<p>all i am asking is how can i search also in hidden files tracked by git without putting <code>.git</code> in <code>.gitignore</code> ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-06-17 12:40</div>
+            <div class="timeline-body"><blockquote>
+<p>i understand where you are coming from, but <code>.git</code> is special right...</p>
+<p><code>rg</code> or <code>rg --ignore</code> will ignore <code>.git</code>, whether it's in <code>.gitignore</code> or not.  it's implied.</p>
+</blockquote>
+<p>ripgrep does not treat <code>.git</code> as special. It treats it as a hidden directory, and whether ripgrep searches or not follows from whether it is told to search hidden files (absent any other globs or ignore rules).</p>
+<blockquote>
+<p>i am making the argument that --hidden should be too</p>
+</blockquote>
+<p>I know. And I disagree for reasons already stated.</p>
+<blockquote>
+<p>all i am asking is how can i search also in hidden files tracked by git without putting .git in .gitignore ?</p>
+</blockquote>
+<p>I already told you in my first comment. Put <code>!.some_config_file</code> into a <code>.ignore</code> file that lives right next to <code>.gitignore</code>.</p>
+<p>Or put <code>.git</code> in your <code>.gitignore</code>. Or a <code>.ignore</code>. Or whatever.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/minusf">@minusf</a> on 2019-06-17 12:51</div>
+            <div class="timeline-body"><blockquote>
+<p>ripgrep does not treat .git as special. It treats it as a hidden directory, and whether ripgrep searches or not follows from whether it is told to search hidden files (absent any other globs or ignore rules).</p>
+</blockquote>
+<p>thanks, this was the missing piece of the puzzle for me.  now <code>--hidden</code> makes much more sense.</p>
+<p>(unfortunately i am not a fan of &quot;dont-ignore&quot; rules in ignore files ¯_(ツ)_/¯ )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/raven-rock">@raven-rock</a> on 2020-09-18 20:01</div>
+            <div class="timeline-body"><p>I had a similar use case @minusf, i.e. search hidden dot files yet ignore the <code>.git</code> directory and anything else defined in the supported ignore files. I solved it by combining the <code>--hidden</code> and <code>--glob</code> flags: <code>rg --hidden --glob &quot;!**/.git/**&quot; [ARGS....]</code>. For convenience, I set an alias. You can see/reproduce the behavior with:</p>
+<pre><code class="language-bash">$ cd $(mktemp -d)
+$ git init --quiet
+$ touch normal_file .hidden_file_i_want_searched
+$ rg --files
+normal_file
+$ rg --files --hidden
+normal_file
+.git/hooks/update.sample
+.git/hooks/pre-push.sample
+.git/hooks/pre-applypatch.sample
+.git/hooks/pre-merge-commit.sample
+.git/hooks/post-update.sample
+.git/hooks/prepare-commit-msg.sample
+.git/hooks/pre-receive.sample
+.git/hooks/fsmonitor-watchman.sample
+.git/hooks/applypatch-msg.sample
+.git/hooks/pre-commit.sample
+.git/hooks/pre-rebase.sample
+.git/hooks/commit-msg.sample
+.git/description
+.git/info/exclude
+.git/HEAD
+.hidden_file_i_want_searched
+.git/config
+$ rg --files --hidden --glob '!**/.git/**'
+normal_file
+.hidden_file_i_want_searched
+$ alias myrg='rg --hidden --glob &quot;!**/.git/**&quot;'
+$ myrg --files
+normal_file
+.hidden_file_i_want_searched
+$ touch .hidden_file_i_want_ignored
+$ echo .hidden_file_i_want_ignored &gt; .gitignore
+$ rg --files --hidden --glob '!**/.git/**'
+normal_file
+.hidden_file_i_want_searched
+.gitignore
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:56 UTC
+    </footer>
+</body>
+</html>

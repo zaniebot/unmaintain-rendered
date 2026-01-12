@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ripgrep fails with 'PCRE2: error matching: JIT stack limit reached' - BurntSushi/ripgrep #1132</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ripgrep fails with 'PCRE2: error matching: JIT stack limit reached'</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1132">#1132</a>
+        opened by <a href="https://github.com/vineelkovvuri">@vineelkovvuri</a>
+        on 2018-12-06 19:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/vineelkovvuri">@vineelkovvuri</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.10.0 (rev 8a7db1a918)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>I am using Github binaries and this bug is not related to file permissions</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Microsoft Windows [Version 10.0.17134.468]</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>This is a bug.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>I am trying to find strings like (new Object(...)) in my source files. As mentioned here https://stackoverflow.com/q/53656081/2407966 and based on the comments, I finalized on following regex pattern <code>new(?:(?s).(?&lt;!new))*?ccon</code>. When I run the command for small files(<a href="https://github.com/BurntSushi/ripgrep/files/2654475/small.txt">small.txt</a>) it works but for other files(<a href="https://github.com/BurntSushi/ripgrep/files/2654458/aa.txt">aa.txt</a>)(hardly 120 lines) the command fails with <code>PCRE2: error matching: JIT stack limit reached</code></p>
+<p><code>rg -P --regex-size-limit 1G --dfa-size-limit 1G -U &quot;new(?:(?s).(?&lt;!new))*?ccon&quot; -g aa.txt --debug --trace</code></p>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<pre><code>D:\Temp\rip&gt;rg -P --regex-size-limit 1G --dfa-size-limit 1G -U &quot;new(?:(?s).(?&lt;!new))*?ccon&quot; -g aa.txt --debug --trace
+DEBUG|globset|globset\src\lib.rs:429: built glob set; 0 literals, 1 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|globset\src\lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|globset\src\lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|globset\src\lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|ignore::walk|ignore\src\walk.rs:1614: whitelisting ./aa.txt: Whitelist(IgnoreMatch(Override(Glob(Matched(Glob { from: None, original: &quot;aa.txt&quot;, actual: &quot;**/aa.txt&quot;, is_whitelist: false, is_only_dir: false })))))
+DEBUG|globset|globset\src\lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+TRACE|grep_searcher::searcher|grep-searcher\src\searcher\mod.rs:629: Some(&quot;aa.txt&quot;): reading entire file on to heap for mulitline
+DEBUG|globset|globset\src\lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+TRACE|grep_searcher::searcher|grep-searcher\src\searcher\mod.rs:631: Some(&quot;aa.txt&quot;): searching via multiline strategy
+DEBUG|globset|globset\src\lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+aa.txt: PCRE2: error matching: JIT stack limit reached
+DEBUG|globset|globset\src\lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|globset\src\lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|globset\src\lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+</code></pre>
+<p><a href="https://github.com/BurntSushi/ripgrep/files/2654458/aa.txt">aa.txt</a></p>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>If the string is not found the command should output nothing else print the matching strings. Same regex via perl <code>perl -n000le &quot;print $&amp; while /new(?:(?s).(?&lt;!new))*?OSF_CCONNECTION/mg&quot; aa.txt</code> works. Sorry I had to obfuscate aa.txt(it still repros the issue)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-12-06 20:42</div>
+            <div class="timeline-body"><p>This doesn't look like a bug to me. ripgrep is giving you an error from PCRE2. It's a limitation of using a backtracking engine in your search. You should find another way to run your search.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-12-06 20:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:45 UTC
+    </footer>
+</body>
+</html>

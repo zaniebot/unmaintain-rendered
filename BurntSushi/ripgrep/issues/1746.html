@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ripgrep is slower then grep when searching for e-mail regex - BurntSushi/ripgrep #1746</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ripgrep is slower then grep when searching for e-mail regex</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1746">#1746</a>
+        opened by <a href="https://github.com/MaxG87">@MaxG87</a>
+        on 2020-11-27 14:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MaxG87">@MaxG87</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>rg --version
+ripgrep 12.1.1 (rev a6d05475fb)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>I run a locally compiled version.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Ubuntu 20.04.</p>
+<h4>Describe your bug.</h4>
+<p>Searching for an e-mail pattern is faster using <code>grep</code> than <code>rg</code>. I experience this in my local Maildir and in the Linux kernels <code>linux/fs/</code> subfolder.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>I use the Linux kernels <code>linux/fs</code> (rev 85a2c56cb4454c73f56d3099d96942e7919b292f) subfolder as an example for a folder we both have access too. In practice I would like to run the commands in my Maildir.</p>
+<h5>Pattern without match (~25ms vs ~135ms)</h5>
+<pre><code class="language-bash">cd /path/to/linux/fs
+pattern=&quot;[A-Z0-9._%+-]*lin[A-Z0-9._%+-]*tor[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot;
+# some grep warm up runs
+time grep -rhioE &quot;$pattern&quot; | len
+0
+grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox} -rhioE   0,02s user 0,01s system 89% cpu 0,025 total
+wc -l  0,00s user 0,00s system 4% cpu 0,024 total
+# some ripgrep warm up runs
+time rg -ioI &quot;$pattern&quot; | len
+0
+/tmp/rg -ioI &quot;$pattern&quot;  0,34s user 0,01s system 252% cpu 0,137 total
+wc -l  0,00s user 0,00s system 1% cpu 0,136 total
+</code></pre>
+<h5>Pattern with some matches (~50ms vs ~60ms)</h5>
+<pre><code class="language-bash">cd /path/to/linux/fs
+pattern=&quot;[A-Z0-9._%+-]*vid[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot;
+# some grep warm up runs
+time grep -rhioE &quot;$pattern&quot; | len
+10
+grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn,.idea,.tox} -rhioE   0,02s user 0,03s system 98% cpu 0,048 total
+wc -l  0,00s user 0,00s system 5% cpu 0,047 total
+# some ripgrep warm up runs
+time rg -ioI &quot;$pattern&quot; | len
+10
+/tmp/rg -ioI &quot;$pattern&quot;  0,16s user 0,03s system 294% cpu 0,065 total
+wc -l  0,00s user 0,00s system 4% cpu 0,065 total
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>I would expect ripgrep to be faster than grep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-27 15:37</div>
+            <div class="timeline-body"><p>I cannot seem to reproduce this easily... But read on.</p>
+<p>For your second example, I'd consider those times close enough (especially on such a small corpus) that they are effectively the same. But in any case, ripgrep is faster for me:</p>
+<pre><code>$ hyperfine 'rg -i &quot;[A-Z0-9._%+-]*vid[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot;'
+Benchmark #1: rg -i &quot;[A-Z0-9._%+-]*vid[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot;
+  Time (mean ± σ):      19.5 ms ±   1.4 ms    [User: 115.1 ms, System: 22.6 ms]
+  Range (min … max):    16.2 ms …  23.5 ms    115 runs
+
+$ hyperfine 'grep -riE &quot;[A-Z0-9._%+-]*vid[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot;'
+Benchmark #1: grep -riE &quot;[A-Z0-9._%+-]*vid[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot;
+  Time (mean ± σ):      46.3 ms ±   1.1 ms    [User: 25.3 ms, System: 20.7 ms]
+  Range (min … max):    43.6 ms …  48.7 ms    58 runs
+</code></pre>
+<p>Now, your first example is more interesting. That's a substantial difference. On my machine, ripgrep runs a hair faster, but they're effectively tied:</p>
+<pre><code>$ hyperfine --ignore-failure 'rg -i &quot;[A-Z0-9._%+-]*lin[A-Z0-9._%+-]*tor[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot;'
+Benchmark #1: rg -i &quot;[A-Z0-9._%+-]*lin[A-Z0-9._%+-]*tor[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot;
+  Time (mean ± σ):      40.1 ms ±   1.6 ms    [User: 364.8 ms, System: 22.6 ms]
+  Range (min … max):    36.7 ms …  44.4 ms    65 runs
+
+  Warning: Ignoring non-zero exit code.
+
+$ hyperfine --ignore-failure 'grep -riE &quot;[A-Z0-9._%+-]*lin[A-Z0-9._%+-]*tor[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot;'
+Benchmark #1: grep -riE &quot;[A-Z0-9._%+-]*lin[A-Z0-9._%+-]*tor[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot;
+  Time (mean ± σ):      46.8 ms ±   1.4 ms    [User: 24.0 ms, System: 22.3 ms]
+  Range (min … max):    43.9 ms …  50.7 ms    59 runs
+
+  Warning: Ignoring non-zero exit code.
+</code></pre>
+<p>Do you perhaps have a ripgrep config file that is running ripgrep single threaded? If I force ripgrep into a single thread, then it gets closer to your reproduction:</p>
+<pre><code>$ hyperfine 'rg -i -j1 &quot;[A-Z0-9._%+-]*vid[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot;'
+Benchmark #1: rg -i -j1 &quot;[A-Z0-9._%+-]*vid[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot;
+  Time (mean ± σ):      91.7 ms ±   5.4 ms    [User: 71.1 ms, System: 20.3 ms]
+  Range (min … max):    75.7 ms …  98.1 ms    29 runs
+</code></pre>
+<p>And if I have ripgrep search the same set of files as grep, then a real difference can be observed:</p>
+<pre><code>$ hyperfine 'rg -i -j1 -uuu &quot;[A-Z0-9._%+-]*vid[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot;'
+Benchmark #1: rg -i -j1 -uuu &quot;[A-Z0-9._%+-]*vid[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot;
+  Time (mean ± σ):     151.0 ms ±  10.4 ms    [User: 129.2 ms, System: 21.3 ms]
+  Range (min … max):   140.5 ms … 168.4 ms    17 runs
+</code></pre>
+<p>OK, let's see if this is a regex engine problem or a directory traversal problem. Easiest way to do that is to see if we can reproduce the performance difference on a single file. So I've just concatenated all of the files in <code>linux/fs</code> into a single file. And to make differences more pronounced (and eliminate the effects of noise), I've made the file 10x bigger:</p>
+<pre><code>$ find ./ -type f -print0 | xargs -0 cat &gt; /tmp/linux-fs-all
+$ for ((i=0;i&lt;10;i++)); do cat /tmp/linux-fs-all; done &gt; /tmp/linux-fs-all.10x
+</code></pre>
+<p>The first thing to note is that there is some binary data:</p>
+<pre><code>$ grep -iE &quot;[A-Z0-9._%+-]*vid[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot; /tmp/linux-fs-all.10x
+grep: /tmp/linux-fs-all.10x: binary file matches
+</code></pre>
+<p>So let's use the <code>-a/--text</code> flag and see if we can re-create the performance difference on a single file:</p>
+<pre><code>$ time grep -aciE &quot;[A-Z0-9._%+-]*vid[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot; /tmp/linux-fs-all.10x
+100
+
+real    0.295
+user    0.199
+sys     0.096
+maxmem  7 MB
+faults  0
+
+$ time rg -aci &quot;[A-Z0-9._%+-]*vid[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot; /tmp/linux-fs-all.10x
+100
+
+real    1.249
+user    1.231
+sys     0.017
+maxmem  580 MB
+faults  0
+</code></pre>
+<p>Great, got it. Running it under <code>perf</code> shows the total time split between Teddy (a fast literal prefilter) and the regex engine. My first thought is whether this is a case where ripgrep's more aggressive literal optimizations result in it being slower than grep. To figure that out, we need to find 1) which literals ripgrep is searching for and 2) whether they have a lot of matches or not. We can do (1) by running ripgrep with the <code>--trace</code> flag:</p>
+<pre><code>$ rg -aci &quot;[A-Z0-9._%+-]*vid[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot; /tmp/linux-fs-all.10x --trace
+...
+DEBUG|grep_regex::literal|crates/regex/src/literal.rs:109: required literals found: [Cut(VID), Cut(vID), Cut(ViD), Cut(viD), Cut(VId), Cut(vId), Cut(Vid), Cut(vid), Cut(@), Cut(.)]
+DEBUG|grep_regex::matcher|crates/regex/src/matcher.rs:50: extracted fast line regex: (?-u:VID|vID|ViD|viD|VId|vId|Vid|vid|@|\x2e)
+...
+</code></pre>
+<p>Yeah... That doesn't look so good. Let's see how often the &quot;fast line regex&quot; matches:</p>
+<pre><code>$ time rg -c '(?-u:VID|vID|ViD|viD|VId|vId|Vid|vid|@|\x2e)' /tmp/linux-fs-all.10x
+4489830
+
+real    0.722
+user    0.701
+sys     0.020
+maxmem  580 MB
+faults  0
+</code></pre>
+<p>Yikes. That is almost certainly the problem. The killers are the <code>@</code> and <code>.</code> literals that were extracted, because they make up the vast majority of all false positives. (<code>0x2E</code> is ASCII for <code>.</code>.) If we remove them from the literal search, the number of matches drops precipitously:</p>
+<pre><code>$ time rg -c '(?-u:VID|vID|ViD|viD|VId|vId|Vid|vid)' /tmp/linux-fs-all.10x
+24320
+
+real    0.157
+user    0.139
+sys     0.017
+maxmem  580 MB
+faults  0
+</code></pre>
+<p>For grins, observe how ripgrep is actually faster than GNU grep on these specific queries:</p>
+<pre><code>$ time grep -cE '(?-u:VID|vID|ViD|viD|VId|vId|Vid|vid|@|\.)' /tmp/linux-fs-all.10x
+4773860
+
+real    1.098
+user    0.990
+sys     0.107
+maxmem  7 MB
+faults  0
+
+$ time grep -cE '(?-u:VID|vID|ViD|viD|VId|vId|Vid|vid)' /tmp/linux-fs-all.10x
+22320
+
+real    0.963
+user    0.895
+sys     0.067
+maxmem  7 MB
+faults  0
+</code></pre>
+<p>The problem here is that ripgrep's heuristic optimization is sub-optimal in this case. These sorts of things are difficult to fix, because fixing it for one case might actually result in making other cases slower. One possible fix would be to just remove <code>@</code> and <code>.</code> from the set of literals we search. And indeed this is a correct transformation in this case. And removing things like that is probably a smart thing to do anyway, since they are very common. Well, at least <code>.</code> is. <code>@</code> is common in some corpora and not others. We can see what performance <em>could</em> be like by replacing <code>@</code> and <code>.</code> with <code>\S</code> to defeat the literal detection:</p>
+<pre><code>$ time rg -aci &quot;[A-Z0-9._%+-]*vid[A-Z0-9._%+-]*\S[a-z]+\S[a-z]{2,}&quot; /tmp/linux-fs-all.10x
+10760
+
+real    0.144
+user    0.100
+sys     0.043
+maxmem  581 MB
+faults  0
+</code></pre>
+<p>Obviously it doesn't produce the same results, but if you put it together into a pipeline...</p>
+<pre><code>$ time rg -ai &quot;[A-Z0-9._%+-]*vid[A-Z0-9._%+-]*\S[a-z]+\S[a-z]{2,}&quot; /tmp/linux-fs-all.10x | rg -aci '[A-Z0-9._%+-]*vid[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}'
+100
+
+real    0.168
+user    0.134
+sys     0.034
+maxmem  579 MB
+faults  0
+</code></pre>
+<p>Unfortunately, while removing <code>.</code> and <code>@</code> from the literal detection is conceptually simple, the code for extracting literals is not really flexible enough to do this easily. I've been meaning to rewrite it for years, but it's pretty thorny.</p>
+<p>Anyway, good find and thank you for the great report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2020-11-27 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-25 18:48</div>
+            <div class="timeline-body"><p>This should be improved quite a bit in the ripgrep 14 release. It isn't still quite ideal, but better:</p>
+<pre><code>[andrew@duff fs]$ time rg -aci &quot;[A-Z0-9._%+-]*vid[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot; /dev/shm/linux-fs-all.10x
+110
+
+real    0.248
+user    0.227
+sys     0.020
+maxmem  625 MB
+faults  0
+[andrew@duff fs]$ time rg-13.0.0 -aci &quot;[A-Z0-9._%+-]*vid[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot; /dev/shm/linux-fs-all.10x
+110
+
+real    0.662
+user    0.628
+sys     0.033
+maxmem  624 MB
+faults  0
+[andrew@duff fs]$ time rg -aci &quot;[A-Z0-9._%+-]*vid[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot; /dev/shm/linux-fs-all.10x --no-mmap
+110
+
+real    0.106
+user    0.043
+sys     0.063
+maxmem  15 MB
+faults  0
+[andrew@duff fs]$ time rg-13.0.0 -aci &quot;[A-Z0-9._%+-]*vid[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot; /dev/shm/linux-fs-all.10x --no-mmap
+110
+
+real    0.678
+user    0.608
+sys     0.070
+maxmem  15 MB
+faults  0
+[andrew@duff fs]$ time grep -aciE &quot;[A-Z0-9._%+-]*vid[A-Z0-9._%+-]*@[a-z]+\.[a-z]{2,}&quot; /dev/shm/linux-fs-all.10x
+110
+
+real    0.166
+user    0.116
+sys     0.050
+maxmem  15 MB
+faults  0
+</code></pre>
+<p>The interesting thing to note above is that <code>--no-mmap</code> actually runs quite a bit faster than <code>--mmap</code> in the upcoming release. Explaining this is tricky, but I'll try:</p>
+<ol>
+<li>At time of writing, ripgrep master still tries to detect inner literals from the regex pattern (as it has always done). But, the regex engine has also grown more sophisticated inner literal detection, and ripgrep's inner literal extractor only runs if the regex engine's own detector fails. (ripgrep's is more flexible because of line oriented search.)</li>
+<li>In this case, the regex engine thinks its inner literal extraction is good. Indeed, it is, and it extracts the same literals as the ripgrep's extractor. That is, <code>(?i:vid)</code>. Thus, ripgrep defers to the regex engine and doesn't try to do its own optimization. This is usually fine.</li>
+<li>Even the regex engine extracts the same literals, in order for the optimization to work in the context of a general regex engine, it has to put up some safeguards to avoid worst case quadratic behavior. Those safeguards end up activating in this benchmark which forces ripgrep to, in some cases, fall back to a non-literal accelerated search.</li>
+<li>The non-mmap version runs faster because ripgrep searches smaller buffers. So by a twist of fate, it spends less time in the non-accelerated regex engine than it does in the mmap version.</li>
+</ol>
+<p>The main issue preventing improvement here is unfortunately abstraction boundaries. ripgrep can't really know exactly what the regex engine plans to do and how it might be sub-optimal here. The regex engine could expose something about its plan, but I'm hesitant to do such things because it is an implementation detail.</p>
+<p>Probably the next step here is figuring out how to push ripgrep's more flexible inner literal optimization down into the regex engine so that everyone who uses the regex engine can benefit from it when doing line oriented search.</p>
+<p>But I'm calling this good enough for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-11-25 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-25 20:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:16 UTC
+    </footer>
+</body>
+</html>

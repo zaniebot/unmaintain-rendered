@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is &quot;rg -l | xargs&quot; vulnerable to files with leading dashes? - BurntSushi/ripgrep #2078</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Is &quot;rg -l | xargs&quot; vulnerable to files with leading dashes?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2078">#2078</a>
+        opened by <a href="https://github.com/jzinn">@jzinn</a>
+        on 2021-11-19 18:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jzinn">@jzinn</a></div>
+            <div class="timeline-body"><p>Should <code>rg -l</code> prepend <code>./</code> to relative paths when outputting to a non-interactive tty to protect against files named with leading dashes being unintentionally interpreted as flags by <code>xargs</code> commands?</p>
+<p><code>fd</code> is looking at this: https://github.com/sharkdp/fd/issues/760.  <code>rg -l</code> seems similar.</p>
+<h4>Edit</h4>
+<p>If it's a problem, it's bigger than <code>rg -l</code>:</p>
+<p>Actual</p>
+<pre><code>$ echo there &gt; hi
+$ rg ere
+hi
+1:there
+$ rg ere | cat
+hi:there
+</code></pre>
+<p>Expected?</p>
+<pre><code>$ rg ere | cat
+./hi:there
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-11-19 19:21</div>
+            <div class="timeline-body"><p>No, I don't think this is necessary. Not even GNU grep does this. But in either case, if you want to have <code>./</code> preprended to each path, then you just need to specify it:</p>
+<pre><code>$ rg -l 'fn is_empty'
+GUIDE.md
+crates/globset/src/lib.rs
+crates/ignore/src/overrides.rs
+crates/ignore/src/gitignore.rs
+crates/ignore/src/types.rs
+crates/matcher/src/lib.rs
+crates/cli/src/process.rs
+
+$ rg -l 'fn is_empty' ./
+./GUIDE.md
+./crates/globset/src/lib.rs
+./crates/ignore/src/types.rs
+./crates/ignore/src/gitignore.rs
+./crates/ignore/src/overrides.rs
+./crates/matcher/src/lib.rs
+./crates/cli/src/process.rs
+
+$ grep -rl 'fn is_empty'
+crates/matcher/src/lib.rs
+crates/cli/src/process.rs
+crates/ignore/src/types.rs
+crates/ignore/src/gitignore.rs
+crates/ignore/src/overrides.rs
+crates/globset/src/lib.rs
+GUIDE.md
+
+$ grep -rl 'fn is_empty' ./
+./crates/matcher/src/lib.rs
+./crates/cli/src/process.rs
+./crates/ignore/src/types.rs
+./crates/ignore/src/gitignore.rs
+./crates/ignore/src/overrides.rs
+./crates/globset/src/lib.rs
+./GUIDE.md
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jzinn">@jzinn</a> on 2021-11-19 19:51</div>
+            <div class="timeline-body"><p>Grep and posix have history and compatibility restraints, and this would be a breaking change.  Maybe it's a good idea to prefix, but compatibility prevents it?  Maybe @ken considered it and decided it's not necessary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-11-19 20:02</div>
+            <div class="timeline-body"><p>I don't see this as necessary. File paths starting with a <code>-</code> are not something I've ever seen personally, <em>and</em> there's a way to work-around it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-11-19 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2021-11-19 20:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:28 UTC
+    </footer>
+</body>
+</html>

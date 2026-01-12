@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rg should skip holes in files - BurntSushi/ripgrep #1836</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rg should skip holes in files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1836">#1836</a>
+        opened by <a href="https://github.com/umanwizard">@umanwizard</a>
+        on 2021-03-25 18:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/umanwizard">@umanwizard</a></div>
+            <div class="timeline-body"><p>Some files on some filesystems (e.g. ext4) can be sparse - they contain holes which are read as all zero bytes and occupy no space on disk.</p>
+<pre><code>$ truncate -s 1000G fake_big_file
+$ du fake_big_file
+0       fake_big_file
+$ rg foo fake_big_file # this takes a long time, but could be made to take a short time
+</code></pre>
+<p>See e.g. this (never landed) PR to <code>ag</code> from 2015: https://github.com/ggreer/the_silver_searcher/pull/579</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-25 18:55</div>
+            <div class="timeline-body"><p>Unfortunately, I don't think this is a good fit for ripgrep. I note also that GNU grep doesn't appear to implement any hole-oriented optimizations either.</p>
+<p>For the most part, I just don't see how to robustly implement something like this. Your implementation in <code>ag</code>, for example, seems tightly coupled to the memory map method of searching. Memory maps don't work for all files. Moreover, when the &quot;skip holes&quot; flag is enabled, there is a non-trivial additional amount of overhead for every file searched.</p>
+<p>With that said, I don't think you're stuck. I suspect that you would be able to write a preprocessor program that did this handling for you. See the section in the guide on the <code>--pre</code> flag: https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#preprocessor</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-03-25 18:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2021-03-25 18:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:20 UTC
+    </footer>
+</body>
+</html>

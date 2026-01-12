@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Override causes other matches directories to no longer grep recursively - BurntSushi/ripgrep #1664</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Override causes other matches directories to no longer grep recursively</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1664">#1664</a>
+        opened by <a href="https://github.com/nataliescottdavidson">@nataliescottdavidson</a>
+        on 2020-08-26 14:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nataliescottdavidson">@nataliescottdavidson</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ignore = &quot;0.4.16&quot;</p>
+<h4>How did you install ripgrep?</h4>
+<p>As a dependency in my <code>Cargo.toml</code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Ubuntu 18.04</p>
+<h4>Describe your bug.</h4>
+<p>Override causes other matches directories to no longer grep recursively</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>Minimized example here: https://github.com/nataliescottdavidson/walkbuilder-example</p>
+<h2>How to reproduce issue</h2>
+<p>Run test-setup.sh</p>
+<p>Output before using override:</p>
+<pre><code class="language-File">File &quot;test_dir&quot;
+File &quot;test_dir/other_nested_dir&quot;
+File &quot;test_dir/other_nested_dir/file1.txt&quot;
+File &quot;test_dir/nested_dir&quot;
+File &quot;test_dir/nested_dir/file1.txt&quot;
+File &quot;test_dir/nested_dir/file.txt&quot;
+File &quot;test_dir/nested_dir/file2.txt&quot;
+File &quot;test_dir/file.txt&quot;
+</code></pre>
+<p>Expected output after using override:</p>
+<pre><code class="language-File">File &quot;test_dir&quot;
+File &quot;test_dir/other_nested_dir&quot;
+File &quot;test_dir/other_nested_dir/file1.txt&quot;
+File &quot;test_dir/nested_dir&quot;
+File &quot;test_dir/nested_dir/file1.txt&quot;
+File &quot;test_dir/nested_dir/file.txt&quot;
+File &quot;test_dir/nested_dir/file2.txt&quot;
+File &quot;test_dir/file.txt&quot;
+File &quot;test_dir/.hidden_dir/file.txt&quot;
+File &quot;test_dir/.hidden_dir/.hidden_file.txt&quot;
+</code></pre>
+<p>Actual output after using override:</p>
+<pre><code>File &quot;test_dir&quot;
+File &quot;test_dir/other_nested_dir&quot;
+File &quot;test_dir/nested_dir&quot;
+File &quot;test_dir/.hidden_dir&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-08-26 14:58</div>
+            <div class="timeline-body"><p>This is correct. Specifying an override creates a whitelist, which means that all paths yielded <em>must</em> be in that whitelist. The behavior you're asking for doesn't really make sense. e.g., <code>rg foo -g '*.rs'</code> for example would wind up searching everything anyway. And that's the use case that <code>Overrides</code> is intended for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-08-26 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2020-08-26 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-08-26 14:59</div>
+            <div class="timeline-body"><p>Thank you for the very nice reproduction though. That is much appreciated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> removed by @BurntSushi on 2020-08-26 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2020-08-26 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nataliescottdavidson">@nataliescottdavidson</a> on 2020-08-26 15:05</div>
+            <div class="timeline-body"><p>Ah ok. Is there a way to produce the desired behavior of matching all non-hidden dirs and files recursively, + a single specified hidden dir and its contents?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-08-26 15:22</div>
+            <div class="timeline-body"><p>It's a little awkward, but you could do use these globs (in this order):</p>
+<pre><code>*
+!.*
+.whitelist
+</code></pre>
+<p>This basically says, &quot;match everything, but exclude all hidden dirs, but include this one hidden dir.&quot; At least, I think that should work.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:13 UTC
+    </footer>
+</body>
+</html>

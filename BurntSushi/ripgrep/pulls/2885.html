@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>regex: fix inner literal extraction that resulted in false negatives - BurntSushi/ripgrep #2885</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>regex: fix inner literal extraction that resulted in false negatives</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/2885">#2885</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-09-09 01:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>In some rare cases, it was possible for ripgrep's inner literal detector
+to extract a set of literals that could produce a false negative. #2884
+gives an example: <code>(?i:e.x|ex)</code>. In this case, the set extracted can be
+discovered by running <code>rg '(?i:e.x|ex) --trace</code>:</p>
+<pre><code>Seq[E(&quot;EX&quot;), E(&quot;Ex&quot;), E(&quot;eX&quot;), E(&quot;ex&quot;)]</code></pre>
+<p>This extraction leads to building a multi-substring matcher for <code>EX</code>,
+<code>Ex</code>, <code>eX</code> and <code>ex</code>. Searching the haystack <code>e-x</code> produces no match,
+and thus, ripgrep shows no matches. But the regex <code>(?i:e.x|ex)</code> matches
+<code>e-x</code>.</p>
+<p>The issue at play here was that when two extracted literal sequences
+were unioned, we were incorrectly unioning their &quot;prefix&quot; attribute.
+And this in turn leads to those literal sequences being combined
+incorrectly via cross product. This case in particular triggers it
+because two different optimizations combine to produce an incorrect
+result. Firslty, the regex has a common prefix extracted and is
+rewritten as <code>(?i:e(?:.x|x))</code>. Secondly, the <code>x</code> in the first branch of
+the alternation has its <code>prefix</code> attribute set to <code>false</code> (correctly),
+which means it can't be cross producted with another concatenation. But
+in this case, it is unioned with the <code>x</code> from the second branch, and
+this results in the union result having <code>prefix</code> set to <code>true</code>. This
+in turn pops up and lets it get cross producted with the <code>e</code> prefix,
+producing an incorrect literal sequence.</p>
+<p>We fix this by changing the implementation of <code>union</code> to return
+<code>prefix</code> set to <code>true</code> only when <em>both</em> literal sequences being unioned
+have <code>prefix</code> set to <code>true</code>.</p>
+<p>Doing this exposed a second bug that was present, but was purely
+cosmetic: the extracted literals in this case, after the fix, are
+<code>X</code> and <code>x</code>. They were considered &quot;exact&quot; (i.e., lead to a match),
+but of course they are not. Observing an <code>X</code> or an <code>x</code> does not mean
+there is a match. This was fixed by making <code>choose</code> always return
+an inexact literal sequence. This is perhaps too conservative in
+aggregate in some cases, but always correct. The idea here is that if
+one is choosing between two concatenations, then it is likely the case
+that the sequence returned should be considered inexact. The issue
+is that this can lead to avoiding cross products in some cases that
+would otherwise be correct. This is bad because it means extracting
+shorter literals in some cases. (In general, the longer the literal the
+better.) But we prioritize correctness for now and fix it. You can see
+a few tests where this shortens some extracted literals.</p>
+<p>Fixes #2884</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-09-09 02:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-09-09 02:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-09-09 02:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:17 UTC
+    </footer>
+</body>
+</html>

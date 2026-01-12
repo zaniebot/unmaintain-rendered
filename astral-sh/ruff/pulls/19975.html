@@ -22,7 +22,7 @@
 
     <div class="timeline">
         <div class="timeline-entry">
-            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-08-18 18:32</div>
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
             <div class="timeline-body"><p>This change rejiggers how we register globs for file watching with the
 LSP client. Previously, we registered a few globs like <code>**/*.py</code>,
 <code>**/pyproject.toml</code> and more. There were two problems with this
@@ -101,9 +101,40 @@ No memory usage changes detected ✅</p>
             <div class="event">Label <span class="label">ty</span> added by @AlexWaygood on 2025-08-18 20:07</div>
         </div>
         <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/main_loop.rs</code>:162 on 2025-08-19 04:47</div>
+            <div class="timeline-body"><p>I think this needs to be moved inside <code>self.session.initialize_workspace</code> because we call that method directly (instead of taking this branch) for clients that doesn't support <code>workspace/configuration</code>. Refer to the other reference call of <code>self.session.initialize_workspace</code>.</p>
+<p>The <code>try_register_file_watcher</code> should also be moved on the <code>Session</code> then. At that point, I think it would be useful to use the <code>Session::register_dynamic_capabilities</code> method to include the logic from <code>try_register_file_watcher</code> by checking whether the client supports it and then adding the <code>Unregistration</code> and <code>Registration</code> accordingly to the vector.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/main_loop.rs</code>:296 on 2025-08-19 04:54</div>
+            <div class="timeline-body"><p>I think it would be useful to move this on <code>Session</code> and re-use the <code>register_dynamic_capabilities</code> method. Refer to my other comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/main_loop.rs</code>:299 on 2025-08-19 04:56</div>
+            <div class="timeline-body"><p>nit: this seems to only be used once, should we inline the logic unless I've missed any other usage?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/main_loop.rs</code>:336 on 2025-08-19 04:57</div>
+            <div class="timeline-body"><p>What's the reason that this message is at the warning level? I think it should be fine at the info level because I don't think the user is in control of this and they cannot act on this warning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ty_server/src/server/main_loop.rs</code>:366 on 2025-08-19 04:59</div>
+            <div class="timeline-body"><p>Yeah, I forgot that we didn't unregister the file watcher before registering it. I think we can re-use the <code>Session::register_dynamic_capabilities</code>. The spec doesn't mention whether the server can unregister a capability which wasn't registered before but I've avoided that in the above mentioned method. I think we should follow that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-08-19 05:02</div>
             <div class="timeline-body"><p>This looks great!</p>
 <p>The only thing that would be required in this PR is to move the <code>try_register_file_watcher</code> to be called inside <code>initialize_workspaces</code> and optionally re-use the <code>register_dynamic_capabilities</code> for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/main_loop.rs</code>:326 on 2025-08-19 05:58</div>
+            <div class="timeline-body"><p>Can you expand on what issues you ran into and what you used as base uri so that a future reader knows what to test if they want to fix file watching for clients not supporting relative paths (I'm not suggesting we should fix this now, I just wouldn't know what I'd have to test)</p>
 </div>
         </div>
         <div class="timeline-entry">
@@ -116,20 +147,65 @@ No memory usage changes detected ✅</p>
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_server/src/server/main_loop.rs</code>:162 on 2025-08-19 11:43</div>
+            <div class="timeline-body"><p>Got it. That makes sense!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-19 11:47</div>
             <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_server/src/server/main_loop.rs</code>:336 on 2025-08-19 11:47</div>
+            <div class="timeline-body"><p>Just copying what was already there. Specifically:</p>
+<p>https://github.com/astral-sh/ruff/blob/e5c091b850a95601c86d7db718953a91de1e1b48/crates/ty_server/src/server/main_loop.rs#L290-L293</p>
+<p>Should I change that to an info-level message as well?</p>
+</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-19 11:49</div>
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_server/src/server/main_loop.rs</code>:299 on 2025-08-19 11:49</div>
+            <div class="timeline-body"><p>No, you're right, it's only used once. But I'd prefer to keep it. <code>make_relative_watcher</code> is only used once too. IMO it makes the code a touch easier to read as it pulls out some mildly tedious construction of LSP glob patterns and lets the reader focus on the surrounding logic. The &quot;legacy&quot; branch becomes straight-forwardly simple and the relative glob branch lets you focus on how the search paths are collected and deduplicated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-08-19 11:57</div>
             <div class="timeline-body"></div>
         </div>
         <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ty_server/src/server/main_loop.rs</code>:336 on 2025-08-19 11:57</div>
+            <div class="timeline-body"><p>My reasoning for using warn for <code>&quot;Client does not support file system watching&quot;</code> was that it can lead to a degraded experience. In hindsight, I think it would have been great to phrase the message like: <code>Your LSP client doesn't support file watching: You may see stale results when files change outside the editor</code>.</p>
+<p>I'd suggest that we keep the message at warning severity if it impacts the user experience and include a summary of what behavior they have to expect</p>
+</div>
+        </div>
+        <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-19 12:11</div>
             <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_server/src/server/main_loop.rs</code>:336 on 2025-08-19 12:11</div>
+            <div class="timeline-body"><p>Sounds good. Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_server/src/server/main_loop.rs</code>:326 on 2025-08-19 12:22</div>
+            <div class="timeline-body"><p>I expanded on this a bit:</p>
+<pre><code class="language-rust">        // We also want to watch everything in the search paths as
+        // well. But this seems to require &quot;relative&quot; watcher support.
+        // I had trouble getting this working without using a base uri.
+        //
+        // Specifically, I tried this for each search path:
+        //
+        //     make_watcher(&amp;format!(&quot;{path}/**&quot;))
+        //
+        // But while this seemed to work for the project root, it
+        // simply wouldn't result in any file notifications for changes
+        // to files outside of the project root.
+</code></pre>
+</div>
         </div>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-19 12:22</div>
@@ -138,6 +214,11 @@ No memory usage changes detected ✅</p>
         <div class="timeline-entry">
             <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-08-19 14:43</div>
             <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ty_server/src/server/main_loop.rs</code>:162 on 2025-08-19 14:43</div>
+            <div class="timeline-body"><p>This is done. Much cleaner!</p>
+</div>
         </div>
         <div class="timeline-entry">
             <div class="event">Merged by @BurntSushi on 2025-08-19 14:57</div>
@@ -151,7 +232,7 @@ No memory usage changes detected ✅</p>
     </div>
 
     <footer>
-        Synced at 2026-01-10 17:46:47 UTC
+        Synced at 2026-01-12 17:15:09 UTC
     </footer>
 </body>
 </html>

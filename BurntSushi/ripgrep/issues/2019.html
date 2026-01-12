@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combining -z and -l works but prints error messages - BurntSushi/ripgrep #2019</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Combining -z and -l works but prints error messages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2019">#2019</a>
+        opened by <a href="https://github.com/golimarrrr">@golimarrrr</a>
+        on 2021-10-14 06:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/golimarrrr">@golimarrrr</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 13.0.0 (rev af6b6c543b)</p>
+<h4>How did you install ripgrep?</h4>
+<p>Downloaded the zip file for Windows</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Win10 1809</p>
+<h4>Describe your bug.</h4>
+<p>Combining -z and -l works but there is a seemingly unrelated error in the output</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p><code>rg -zl pattern</code> having gz files that contain &quot;pattern&quot; in the current directory</p>
+<h4>What is the actual behavior?</h4>
+<pre><code>&gt;c:\temp\rg -zl &quot;Connection reset&quot;
+MyLogFile-56.log.gz:
+-------------------------------------------------------------------------------
+stdout: Invalid argument
+
+gzip:
+-------------------------------------------------------------------------------
+MyLogFile-54.log.gz:
+-------------------------------------------------------------------------------
+stdout: Invalid argument
+
+gzip:
+
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<pre><code>&gt;c:\temp\rg -zl &quot;Connection reset&quot;
+MyLogFile-56.log.gz
+MyLogFile-54.log.gz
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-10-14 11:46</div>
+            <div class="timeline-body"><p>Please share gz files that provoke this error. Please also show the output of <code>gzip --help</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/golimarrrr">@golimarrrr</a> on 2021-10-14 12:13</div>
+            <div class="timeline-body"><p>Don't have the gz files right now but I'll try to get them. The gzip I use is the one from the GnuWin32 project:</p>
+<pre><code>
+&gt;gzip --help
+Usage: gzip [OPTION]... [FILE]...
+Compress or uncompress FILEs (by default, compress FILES in-place).
+
+Mandatory arguments to long options are mandatory for short options too.
+
+  -a, --ascii       ascii text; convert end-of-line using local conventions
+  -c, --stdout      write on standard output, keep original files unchanged
+  -d, --decompress  decompress
+  -f, --force       force overwrite of output file and compress links
+  -h, --help        give this help
+  -k, --keep        keep (don't delete) input files
+  -l, --list        list compressed file contents
+  -L, --license     display software license
+  -n, --no-name     do not save or restore the original name and time stamp
+  -N, --name        save or restore the original name and time stamp
+  -q, --quiet       suppress all warnings
+  -r, --recursive   operate recursively on directories
+  -S, --suffix=SUF  use suffix SUF on compressed files
+  -t, --test        test compressed file integrity
+  -v, --verbose     verbose mode
+  -V, --version     display version number
+  -1, --fast        compress faster
+  -9, --best        compress better
+    --rsyncable   Make rsync-friendly archive
+
+With no FILE, or when FILE is -, read standard input.
+
+Report bugs to &lt;bug-gzip@gnu.org&gt;.
+
+&gt;gzip --version
+gzip 1.3.12
+Copyright (C) 2007 Free Software Foundation, Inc.
+Copyright (C) 1993 Jean-loup Gailly.
+This is free software.  You may redistribute copies of it under the terms of
+the GNU General Public License &lt;http://www.gnu.org/licenses/gpl.html&gt;.
+There is NO WARRANTY, to the extent permitted by law.
+
+Written by Jean-loup Gailly.
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-10-14 12:22</div>
+            <div class="timeline-body"><p>Yeah, it's important to provide as much detail as you can in bug reports. We have to rule out this being a problem with your <code>gzip</code> installation or the files themselves. ripgrep is just shelling out to <code>gzip</code> and passing along the input and output, and the errors if one occurs. So if you're seeing an error from ripgrep, the <em>very first thing</em> you should do is check whether gzip produces that same error: <code>gzip -d -c &lt; MyLogFile-56.log.gz</code>.</p>
+<p>You also say:</p>
+<blockquote>
+<p>Combining -z and -l works but there is a seemingly unrelated error in the output</p>
+</blockquote>
+<p>But that's not obviously the case for me. Try searching for something that <em>doesn't</em> exist in those files. Do you get the same output? If so, then nothing is really working at all. You're just seeing errors.</p>
+<p>And does this same error occur when <em>not</em> using <code>-l</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/golimarrrr">@golimarrrr</a> on 2021-11-08 07:25</div>
+            <div class="timeline-body"><p>I'm attaching a file where it happens; about the questions you asked:</p>
+<ul>
+<li><code>gzip -d -c &lt; file.gz</code> does not produce any error, just outputs the content</li>
+<li>if I search something that doesn't exist there are no errors and also no output (as expected)</li>
+<li>it doesn't occur when not using <code>-l</code> , it outputs the matching filenames, line numbers and lines as expected</li>
+</ul>
+<p><a href="https://github.com/BurntSushi/ripgrep/files/7494946/aqui.txt.gz">aqui.txt.gz</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-24 20:13</div>
+            <div class="timeline-body"><p>I can't reproduce the problem:</p>
+<pre><code>$ tree /tmp/rg2019/
+/tmp/rg2019/
+└── aqui.txt.gz
+
+1 directory, 1 file
+
+$ rg -zl . /tmp/rg2019/
+/tmp/rg2019/aqui.txt.gz
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-24 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2023-11-24 20:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:27 UTC
+    </footer>
+</body>
+</html>

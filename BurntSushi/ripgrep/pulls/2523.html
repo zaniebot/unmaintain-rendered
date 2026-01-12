@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cli: make `resolve_binary()` take COM executables into account - BurntSushi/ripgrep #2523</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>cli: make <code>resolve_binary()</code> take COM executables into account</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/2523">#2523</a>
+        opened by <a href="https://github.com/mataha">@mataha</a>
+        on 2023-05-30 00:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mataha">@mataha</a></div>
+            <div class="timeline-body"><p>When <code>resolve_binary()</code> attempts to resolve a path to a program on Windows while searching for a program in <code>PATH</code> without an extension, <code>ripgrep</code> will assume the extension of the file to be <code>.exe</code> as it's the <em>de facto</em> standard, which will work most (99.99%) of the time...</p>
+<p>...unless the binary is a COM executable (we're on Windows, duh).</p>
+<p>(It feels weird being the first person to run into this.)</p>
+<p>Related: sharkdp/bat#2570 (<code>more</code> is a COM executable)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mataha">@mataha</a> reviewed on 2023-05-30 11:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mataha">@mataha</a> on <code>crates/cli/src/decompress.rs</code>:458 on 2023-05-30 11:55</div>
+            <div class="timeline-body"><p>I've added <code>com</code> here, but frankly I don't think that's the way to go - it probably would be better to respect <code>PATHEXT</code> in terms of executable extensions.</p>
+<p>Opinion?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2023-07-05 18:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-07-05 18:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/cli/src/decompress.rs</code>:458 on 2023-07-05 18:54</div>
+            <div class="timeline-body"><p>I don't think Rust has a <code>PATHEXT</code> for Windows? The closest thing it has is <a href="https://doc.rust-lang.org/std/env/consts/constant.EXE_SUFFIX.html"><code>std::env::consts::EXE_SUFFIX</code></a> (or <a href="https://doc.rust-lang.org/std/env/consts/constant.EXE_EXTENSION.html"><code>std::env::consts::EXE_EXTENSION</code></a>), but it's just a single value, not a list.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-07-05 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mataha">@mataha</a> on <code>crates/cli/src/decompress.rs</code>:458 on 2023-07-06 15:41</div>
+            <div class="timeline-body"><p>Rust doesn't have it indeed - it needs to be pulled manually.</p>
+<p>This is the best I came up with; <code>PATHEXT</code> entries contain leading dots so these have to be trimmed:</p>
+<pre><code class="language-diff">diff --git a/crates/cli/src/decompress.rs b/crates/cli/src/decompress.rs
+index f2f2a67478ca..4fc257bb7603 100644
+--- a/crates/cli/src/decompress.rs
++++ b/crates/cli/src/decompress.rs
+@@ -455,8 +455,14 @@ pub fn resolve_binary&lt;P: AsRef&lt;Path&gt;&gt;(
+             return Ok(abs_prog.to_path_buf());
+         }
+         if abs_prog.extension().is_none() {
+-            for extension in [&quot;com&quot;, &quot;exe&quot;] {
+-                let abs_prog = abs_prog.with_extension(extension);
++            let exts = match env::var_os(&quot;PATHEXT&quot;) {
++                Some(exts) =&gt; exts,
++                None =&gt; env::consts::EXE_SUFFIX.into(),
++            };
++            for ext in env::split_paths(&amp;exts)
++                .filter_map(|e| e.to_str().map(|s| s.to_lowercase()))
++            {
++                let abs_prog = abs_prog.with_extension(ext.trim_matches('.'));
+                 if is_exe(&amp;abs_prog) {
+                     return Ok(abs_prog.to_path_buf());
+                 }
+</code></pre>
+<p>(sorry for the double message - I've accidentally clicked the wrong button)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mataha">@mataha</a> reviewed on 2023-07-06 15:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-07-06 15:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/cli/src/decompress.rs</code>:458 on 2023-07-06 15:44</div>
+            <div class="timeline-body"><p>I'm just going to go with hard-coding <code>com</code> and <code>exe</code> for now. If that's not enough, we can revisit it if someone runs into a real problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mataha">@mataha</a> on <code>crates/cli/src/decompress.rs</code>:458 on 2023-07-06 15:45</div>
+            <div class="timeline-body"><p>Sure!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mataha">@mataha</a> reviewed on 2023-07-06 15:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-07-08 22:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-07-10 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mataha">@mataha</a> on 2023-07-18 17:19</div>
+            <div class="timeline-body"><p>Is there a chance for <code>grep-cli</code> to receive a release with this fix included?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-18 17:25</div>
+            <div class="timeline-body"><p>This PR is on crates.io in <code>grep-cli 0.1.9</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mataha">@mataha</a> on 2023-07-18 17:26</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:09 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ripgrep applies a root level pattern inside subdirectories. Git does not. - BurntSushi/ripgrep #1897</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ripgrep applies a root level pattern inside subdirectories. Git does not.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1897">#1897</a>
+        opened by <a href="https://github.com/pmontrasio">@pmontrasio</a>
+        on 2021-06-16 08:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pmontrasio">@pmontrasio</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p><code>0.1.16</code></p>
+<h4>How did you install ripgrep?</h4>
+<pre><code>sudo apt install ripgrep
+</code></pre>
+<h4>What operating system are you using ripgrep on?</h4>
+<pre><code>$ lsb_release -a
+No LSB modules are available.
+Distributor ID:	Ubuntu
+Description:	Ubuntu 20.04.2 LTS
+Release:	20.04
+Codename:	focal
+</code></pre>
+<h4>Describe your bug.</h4>
+<p>Ripgrep applies root level ignore patterns such as <code>/a/**</code> to subdirectories. A <code>.gitignore</code> like that in the root of a repository prevents ripgrep to look into any <code>a</code> subdirectory at any level. Git ignores <code>a</code> only at the root level of the repository.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<pre><code>$ mkdir bug-demo
+$ cd bug-demo
+$ mkdir a a/a b b/a
+$ echo a &gt; a/a/a.txt
+$ echo a &gt; b/a/a.txt
+$ echo '/a/**' &gt; .gitignore
+$ git init
+$ git status
+On branch master
+
+No commits yet
+
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+	.gitignore
+	b/
+nothing added to commit but untracked files present (use &quot;git add&quot; to track)
+</code></pre>
+<p>Git ignores <code>a</code> at the root level, this is correct.</p>
+<pre><code>$ git add b
+$ git status
+On branch master
+
+No commits yet
+
+Changes to be committed:
+  (use &quot;git rm --cached &lt;file&gt;...&quot; to unstage)
+	new file:   b/a/a.txt
+
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+	.gitignore
+</code></pre>
+<p>So git doesn't ignore <code>b/a/a.txt</code> because of <code>/a/**</code></p>
+<p>From within a subdirectory:</p>
+<pre><code>$ cd b
+$ echo b &gt; a/b.txt
+$ git status
+On branch master
+
+No commits yet
+
+Changes to be committed:
+  (use &quot;git rm --cached &lt;file&gt;...&quot; to unstage)
+	new file:   a/a.txt
+
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+	../.gitignore
+	a/b.txt
+</code></pre>
+<p>So git doesn't ignore <code>b/a/b.txt</code> when called from within <code>b</code> even if it sees an <code>a</code> directory there.</p>
+<h4>What is the actual behavior?</h4>
+<p>This is what happens with ripgrep, called from within the <code>b</code> directory</p>
+<pre><code>$ rg a
+No files were searched, which means ripgrep probably applied a filter you didn't expect. Try running again with --debug.
+
+$ rg a --debug
+DEBUG:grep::search: regex ast:
+Literal {
+    chars: [
+        'a'
+    ],
+    casei: false
+}
+DEBUG:grep::literals: literal prefixes detected: Literals { lits: [Complete(a)], limit_size: 250, limit_class: 10 }
+DEBUG:rg::ignore: ./a ignored by Pattern { from: &quot;/home/me/bug-demo/.gitignore&quot;, original: &quot;/a/**&quot;, pat: &quot;a/**&quot;, whitelist: false, only_dir: false }
+No files were searched, which means ripgrep probably applied a filter you didn't expect. Try running again with --debug.
+</code></pre>
+<p>This is inconsistent with git's behavior. It makes difficult or impossible to use ripgrep in some git repositories.</p>
+<p>I wonder if the key is <code>original: &quot;/a/**&quot;, pat: &quot;a/**&quot;</code>: The original is <code>/a/**</code> but pat (pattern?) is <code>a/**</code> without the leading slash.</p>
+<h4>What is the expected behavior?</h4>
+<pre><code>$ rg a
+a/a.txt
+1:a
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pmontrasio">@pmontrasio</a> on 2021-06-16 09:14</div>
+            <div class="timeline-body"><p>I'm closing the issue. I did install ripgrep with <code>sudo apt install ripgrep</code> but I didn't realize that I downloaded a binary two years ago into a directory with higher precedence in my PATH, then forgot about it.
+I removed the old binary and the newer version (ripgrep 11.0.2) works well.</p>
+<p>Sorry for wasting your time reading this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pmontrasio on 2021-06-16 09:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-06-16 11:51</div>
+            <div class="timeline-body"><p>@pmontrasio Nice! And no problem. Bugs that fix themselves before I even have a chance to read them are great. :-)</p>
+<p>Do note though that ripgrep 11.0.2 is itself almost two years old: https://github.com/BurntSushi/ripgrep/blob/master/CHANGELOG.md#1102-2019-08-01</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:23 UTC
+    </footer>
+</body>
+</html>

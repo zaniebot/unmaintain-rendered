@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>investigate slowness of -f flag - BurntSushi/ripgrep #497</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>investigate slowness of -f flag</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/497">#497</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2017-05-30 11:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>This <a href="https://iabdb.me/2017/05/29/how-the-mighty-have-fallen-or-how-i-learned-to-love-grep/">blog post</a> highlights a couple interesting problems with the <code>-f</code> flag. Or more explicitly, when a large set of literal patterns are given.</p>
+<p>The first issue is known. ripgrep should use Aho-Corasick explicitly when <code>-F</code> is provided with multiple patterns.</p>
+<p>The second issue is more interesting, but it appears that the order of the literal patterns provided actually impacts performance quite a bit. I wonder if the literal detection inside the regex engine is hitting a bad case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2017-05-30 11:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-05-30 11:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-05-30 11:37</div>
+            <div class="timeline-body"><blockquote>
+<p>The first issue is known. ripgrep should use Aho-Corasick explicitly when -F is provided with multiple patterns.</p>
+</blockquote>
+<p>To add more context to this: right now, we take all of the patterns and join them together and sprinkle a <code>|</code> between each pattern. This works fine for small lists, but for large lists, it's not so great. Not only does it have to go through the entire regex parsing/compiling machinery, but the automaton construction itself is going to be quite wasteful. Instead, ripgrep should explicitly construct an Aho-Corasick automaton when it knows all of the patterns are literals using the <code>aho-corasick</code> crate. While this is conceptually simple to do, it requires plumbing an <code>aho_corasick::AcAutomaton</code> (or perhaps <code>aho_corasick::FullAcAutomaton</code> for small sets of literals for faster searching) through all of the search code, which is current hard-coded to take a <code>Regex</code>. We could do this by either introducing an enum of possible strategies, or using generics. There's a lot of code that knows about a <code>Regex</code>, so I worry about the hit on compilation time if we force the compiler to monomorphize all of that. Using an enum requires a branch for every search, but this intuitively feels fine since the branch predictor should make that effectively free.</p>
+<p>With all that said, it might be wise to tackle this in libripgrep rather than trying to force it into the existing infrastructure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">libripgrep</span> added by @BurntSushi on 2017-05-30 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "libripgrep" by @BurntSushi on 2017-05-30 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pevalme">@pevalme</a> on 2017-06-28 16:37</div>
+            <div class="timeline-body"><p>I've found some interesting results related to the performance of <code>rg -f</code> on big sets of regexs.</p>
+<p>For the experiments I'll describe I have used <a href="https://drive.google.com/file/d/0B3oOQ14-tellNzhlU0tKT2xFSW8/view">a 100 MB English subtitles file</a> and a <a href="https://drive.google.com/file/d/0B3oOQ14-tellOG5WcXBlRmFWY00/view">big set of 580 regular expressions</a>.</p>
+<p>Let's feed <code>rg</code> with the first 100 regular expressions of the file; with these 100 regexs plus regex &quot;a&quot; and with these 100 regex plus regex &quot;\.&quot;. In my machine (Intel(R) Core(TM) i5-5200U CPU @ 2.20GHz; 4 Cores; 8 GB RAM), I get the following results (time given in minutes:seconds):</p>
+<p>| Command | 100 regex | 100 + &quot;a&quot; | 100 + &quot;\.&quot; |
+| --- | :-: | :-: | :-: |
+| <code> rg -f file --dfa-size-limit=10M</code> | 4:17  | 0:08 | 1:53 |
+| <code> rg -f file --dfa-size-limit=50M</code> | 2:58 | 0:06 | 0:57 |
+| <code> rg -f file --dfa-size-limit=100M</code> | 0:52 | 0:06 | 0:20 |
+| <code> rg -f file --dfa-size-limit=200M</code> | 0:10 | 0:06 | 0:15 |
+| <code> rg -f file --dfa-size-limit=500M</code> | 0:08 | 0:06 | 0:14 |
+| <code> rg -f file --dfa-size-limit=1G</code> | 0:08 | 0:06 | 0:14 |</p>
+<h3>Why &quot;a&quot; and &quot;\.&quot;?</h3>
+<p>Because each of these two regular expression matches most of the lines in the file (2319098 and 2207743 out of  3414821, respectively) while there is a great difference between them: <strong>the letter 'a' uses to appear  within the first characters of any line while the dot uses to appear only at the end each line</strong>.</p>
+<h3>My guess</h3>
+<p>According to what I have read, <code>rg</code> is doing a lazy determinization of the NFA that represents the big regex (an OR of all patterns). From time to time, due to the space limit for storing the DFA, <code>rg</code> removes the least used parts of it, having to built them again when needed.</p>
+<p>By adding the regex &quot;a&quot;, the NFA reaches a final state <em>fast</em> (in terms of the number of symbols of the line read before reaching it) and the required DFA remains small, without reaching the 10M bound and, thus, it is built only once.</p>
+<p>The case in which the regex &quot;\.&quot; is added instead of &quot;a&quot; could also be explained this way.
+Since the dot uses to appear only at the end of each string, the NFA is much <em>less fast</em>. Thus, the advantage of adding this regex is not that big since most of the transitions required to check whether a line matches the NFA before adding it are still taking place. Basically, the DFA is bigger now since longer substrings must be matched against the NFA before deciding if the whole line matches or not.
+Nevertheless, since lines in this example are generally short, the DFA remains smaller than in the <em>100 regex</em> case.</p>
+<h3>Conclusion</h3>
+<p>It seems that detecting all matches of a big OR regex in a single line works really fast. However, the algorithm deciding whether a line matches the NFA suffers from the DFA-memory bound. Besides, even when the memory is not a problem, a simple regex that matches <em>fast</em> the line greatly improves the performance of <code>rg</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-28 16:46</div>
+            <div class="timeline-body"><p>@pevalme Great analysis! I think I agree with all of it. There's probably some general advice that should be mentioned in the docs of <code>-f</code> that says that if you're trying to match against a large set of regexes, then you probably want to increase the DFA size limit using <code>--dfa-size-limit</code>. We could also just use a very large default value, since it represents a <em>limit</em>, to reduce the number of cases where <code>--dfa-size-limit</code> is needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">libripgrep</span> removed by @BurntSushi on 2018-08-19 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "libripgrep" by @BurntSushi on 2018-08-19 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">icebox</span> added by @BurntSushi on 2019-01-27 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-04-07 23:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:11 UTC
+    </footer>
+</body>
+</html>

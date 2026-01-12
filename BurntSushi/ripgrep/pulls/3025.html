@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement `IntoIterator` for `GlobSetBuilder` - BurntSushi/ripgrep #3025</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement <code>IntoIterator</code> for <code>GlobSetBuilder</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/3025">#3025</a>
+        opened by <a href="https://github.com/squidfunk">@squidfunk</a>
+        on 2025-04-09 18:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/squidfunk">@squidfunk</a></div>
+            <div class="timeline-body"><p>Originally reported here: https://github.com/BurntSushi/globset/issues/8</p>
+<p>This PR fixes the linked issue. See below:</p>
+<hr />
+<p>The <code>Debug</code> implementation of <code>GlobSetBuilder</code> is quite noisy. For better introspectability in consuming packages, it would be perfect if one of two things could be implemented, so the <code>Debug</code> implementation can be adjusted (favorite) or is more readable:</p>
+<ol>
+<li>An <code>IntoIterator&lt;Item = &amp;Glob&gt;</code> implementation for <code>&amp;GlobSetBuilder</code>, so we can use the <code>Display</code> implementation of <code>Glob</code> where applicable. This would be a non-invasive addition, as the consumer can decide what style they want.</li>
+<li>A <code>Debug</code> implementation for <code>GlobSetBuilder</code> that does 1., i.e., prints <code>Glob</code> via <code>Display</code>.</li>
+</ol>
+<p>I'm happy to send a PR for either of which, if this is a good match.</p>
+<h3>Example</h3>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    use globset::{Glob, GlobSetBuilder};
+
+    #[test]
+    fn test() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+        let mut builder = GlobSetBuilder::new();
+        builder.add(Glob::new(&quot;src/**/*.rs&quot;)?);
+        builder.add(Glob::new(&quot;*.txt&quot;)?);
+        builder.add(Glob::new(&quot;docs/**/*.md&quot;)?);
+        println!(&quot;{:#?}&quot;, builder);
+        Ok(())
+    }
+}
+</code></pre>
+<h3>Current Result</h3>
+<pre><code class="language-rust">GlobSetBuilder {
+    pats: [
+        Glob {
+            glob: &quot;src/**/*.rs&quot;,
+            re: &quot;(?-u)^src(?:/|/.*/).*\\.rs$&quot;,
+            opts: GlobOptions {
+                case_insensitive: false,
+                literal_separator: false,
+                backslash_escape: true,
+            },
+            tokens: Tokens(
+                [
+                    Literal(
+                        's',
+                    ),
+                    Literal(
+                        'r',
+                    ),
+                    Literal(
+                        'c',
+                    ),
+                    RecursiveZeroOrMore,
+                    ZeroOrMore,
+                    Literal(
+                        '.',
+                    ),
+                    Literal(
+                        'r',
+                    ),
+                    Literal(
+                        's',
+                    ),
+                ],
+            ),
+        },
+        Glob {
+            glob: &quot;*.txt&quot;,
+            re: &quot;(?-u)^.*\\.txt$&quot;,
+            opts: GlobOptions {
+                case_insensitive: false,
+                literal_separator: false,
+                backslash_escape: true,
+            },
+            tokens: Tokens(
+                [
+                    ZeroOrMore,
+                    Literal(
+                        '.',
+                    ),
+                    Literal(
+                        't',
+                    ),
+                    Literal(
+                        'x',
+                    ),
+                    Literal(
+                        't',
+                    ),
+                ],
+            ),
+        },
+        Glob {
+            glob: &quot;docs/**/*.md&quot;,
+            re: &quot;(?-u)^docs(?:/|/.*/).*\\.md$&quot;,
+            opts: GlobOptions {
+                case_insensitive: false,
+                literal_separator: false,
+                backslash_escape: true,
+            },
+            tokens: Tokens(
+                [
+                    Literal(
+                        'd',
+                    ),
+                    Literal(
+                        'o',
+                    ),
+                    Literal(
+                        'c',
+                    ),
+                    Literal(
+                        's',
+                    ),
+                    RecursiveZeroOrMore,
+                    ZeroOrMore,
+                    Literal(
+                        '.',
+                    ),
+                    Literal(
+                        'm',
+                    ),
+                    Literal(
+                        'd',
+                    ),
+                ],
+            ),
+        },
+    ],
+}
+</code></pre>
+<h3>Ideal Result:</h3>
+<pre><code class="language-rust">GlobSetBuilder {
+    pats: [
+        &quot;src/**/*.rs&quot;,
+        &quot;*.txt&quot;,
+        &quot;docs/**/*.md&quot;,
+    ]
+}
+</code></pre>
+<p>Oh and thanks for this library, it is awesome!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-09 18:55</div>
+            <div class="timeline-body"><p>Oh hmmm, I think I might have misread your original issue. I was thinking that we'd just make the <code>Debug</code> impl smaller without exposing new APIs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squidfunk">@squidfunk</a> on 2025-04-09 19:05</div>
+            <div class="timeline-body"><p>No problem, so something like this maybe?</p>
+<pre><code class="language-rust">impl std::fmt::Debug for GlobSetBuilder {
+    fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+        let pats = self.pats.iter().map(ToString::to_string).collect::&lt;Vec&lt;_&gt;&gt;();
+        f.debug_struct(&quot;GlobSetBuilder&quot;).field(&quot;pats&quot;, &amp;pats).finish()
+    }
+}
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-rust">GlobSetBuilder {
+    pats: [
+        &quot;foo&quot;,
+        &quot;bar&quot;,
+    ],
+}
+</code></pre>
+<p>Or would you want to change the debug impl of <code>Glob</code>? I though that maybe that's not what you wanted, given that inspecting globs might be another use case than inspecting a glob set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-09 19:08</div>
+            <div class="timeline-body"><p>That looks fine to me. But you'll want to branch on <code>f.alternate()</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squidfunk">@squidfunk</a> on 2025-04-09 19:19</div>
+            <div class="timeline-body"><p>Okay, I hope I understand you correctly:</p>
+<pre><code class="language-rust">impl std::fmt::Debug for GlobSetBuilder {
+    fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+        if f.alternate() {
+            f.debug_struct(&quot;GlobSetBuilder&quot;).field(&quot;pats&quot;, &amp;self.pats).finish()
+        // Print the patterns in a way that is easy to read.
+        } else {
+            let pats = self.pats.iter().map(ToString::to_string).collect::&lt;Vec&lt;_&gt;&gt;();
+            f.debug_struct(&quot;GlobSetBuilder&quot;).field(&quot;pats&quot;, &amp;pats).finish()
+        }
+    }
+}
+</code></pre>
+<p>If that's fine, I can send another PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squidfunk">@squidfunk</a> on 2025-04-09 19:25</div>
+            <div class="timeline-body"><p>Superseded by #3026.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @squidfunk on 2025-04-09 19:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:19 UTC
+    </footer>
+</body>
+</html>

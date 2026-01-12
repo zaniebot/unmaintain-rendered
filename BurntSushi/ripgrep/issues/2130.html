@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failing CI on nightly-arm build, `version 'GLIBC_2.25' not found` - BurntSushi/ripgrep #2130</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Failing CI on nightly-arm build, <code>version 'GLIBC_2.25' not found</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2130">#2130</a>
+        opened by <a href="https://github.com/arcsi42">@arcsi42</a>
+        on 2022-01-19 21:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/arcsi42">@arcsi42</a></div>
+            <div class="timeline-body"><h4>What are the steps to reproduce the behavior?</h4>
+<p>Run <a href="https://github.com/BurntSushi/ripgrep/actions/workflows/ci.yml">ci.yml</a> workflow.</p>
+<h4>What is the actual behavior?</h4>
+<p>https://github.com/BurntSushi/ripgrep/runs/4343255639?check_suite_focus=true#step:12:139</p>
+<pre><code class="language-console">/target/arm-unknown-linux-gnueabihf/debug/deps/globset-da336622f9a19f46: /usr/arm-linux-gnueabihf/lib/libc.so.6: version `GLIBC_2.25' not found (required by /target/arm-unknown-linux-gnueabihf/debug/deps/globset-da336622f9a19f46)
+error: test failed, to rerun pass '-p globset --lib'
+Error: Process completed with exit code 1.
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>Successful CI run.</p>
+<h4>Describe your bug.</h4>
+<p>Since 2021-Nov-28 a glibc issue consistently fails the ci.yml workflow, https://github.com/BurntSushi/ripgrep/runs/4343255639?check_suite_focus=true#step:12:139, with the following error:</p>
+<pre><code class="language-console">/target/arm-unknown-linux-gnueabihf/debug/deps/globset-da336622f9a19f46: /usr/arm-linux-gnueabihf/lib/libc.so.6: version `GLIBC_2.25' not found (required by /target/arm-unknown-linux-gnueabihf/debug/deps/globset-da336622f9a19f46)
+</code></pre>
+<p>The previous successful CI used the same <code>0b36942</code> commit. I am not experienced enough to know the cause, maybe something on the dependency tree of the <code>globset</code> crate changed.</p>
+<p>But I did check the <code>glibc</code> version in the docker image from <a href="https://github.com/BurntSushi/ripgrep/blob/master/Cross.toml#L11"><code>Cross.toml#L11</code></a>, which should be <a href="https://hub.docker.com/layers/burntsushi/cross/arm-unknown-linux-gnueabihf/images/sha256-e31d41b0555ad4a17197eafdd8945de3574d4789315c7f752fc519fca457c95b?context=explore"><code>burntsushi/cross:arm-unknown-linux-gnueabihf@sha256:e31d41b0555ad4a17197eafdd8945de3574d4789315c7f752fc519fca457c95b</code></a>. I think this image should get pulled by the CI runner and used by <code>cross</code>.</p>
+<pre><code class="language-console">$ docker run --rm burntsushi/cross:arm-unknown-linux-gnueabihf@sha256:e31d41b0555ad4a17197eafdd8945de3574d4789315c7f752fc519fca457c95b ldd --version
+ldd (Ubuntu GLIBC 2.23-0ubuntu11) 2.23
+Copyright (C) 2016 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+Written by Roland McGrath and Ulrich Drepper.
+</code></pre>
+<h4>Possible fix</h4>
+<ul>
+<li>Disable <code>nightly-arm</code> from the build matrix for now, so the <code>ci.yml</code> workflow doesn't block pull request checks.</li>
+<li>The nightly-arm tests could also be removed, but this seems wrong?</li>
+<li>Build a new docker image burntsushi/cross:arm-unknown-linux-gnueabihf and push it to dockerhub</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arcsi42">@arcsi42</a> on 2022-01-19 21:34</div>
+            <div class="timeline-body"><p>On dockerhub, <code>rustembedded/cross:arm-unknown-linux-gnueabihf</code> has an updated image, which is used as a base for <code>burntsushi/cross:arm-unknown-linux-gnueabihf</code>. Therefore we can test a new image, just by rebuilding the image the same way as in https://github.com/BurntSushi/ripgrep/tree/master/ci/docker.</p>
+<p>Using this new image, from <a href="https://hub.docker.com/layers/arcsi42/cross/arm-unknown-linux-gnueabihf/images/sha256-b53e068270cd833c2d6ec4fdb987fccce5e35472f0680a1194c5bc1df7f2b9c1?context=explore">arcsi42/cross:arm-unknown-linux-gnueabihf</a> in my fork, the tests on <code>nightly-arm</code> doesn't have an error related to <code>glibc</code> version, but there are still 2 failing tests, https://github.com/arcsi42/ripgrep/runs/4874128956?check_suite_focus=true#step:12:1186.</p>
+<pre><code class="language-console">failures:
+
+---- misc::compressed_brotli stdout ----
+thread 'main' panicked at '
+
+==========
+command failed but expected success!
+
+command: &quot;qemu-arm&quot; &quot;/target/arm-unknown-linux-gnueabihf/debug/deps/../rg&quot; &quot;--path-separator&quot; &quot;/&quot; &quot;-z&quot; &quot;Sherlock&quot; &quot;sherlock.br&quot;
+
+cwd: /tmp/ripgrep-tests/compressed_brotli/109
+
+dir list: [&quot;/tmp/ripgrep-tests/compressed_brotli/109&quot;, &quot;/tmp/ripgrep-tests/compressed_brotli/109/sherlock.br&quot;]
+
+status: exit status: 2
+
+stdout: 
+
+stderr: sherlock.br: &lt;stderr is empty&gt;
+
+
+==========
+', tests/util.rs:406:13
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- misc::compressed_zstd stdout ----
+thread 'main' panicked at '
+
+==========
+command failed but expected success!
+
+command: &quot;qemu-arm&quot; &quot;/target/arm-unknown-linux-gnueabihf/debug/deps/../rg&quot; &quot;--path-separator&quot; &quot;/&quot; &quot;-z&quot; &quot;Sherlock&quot; &quot;sherlock.zst&quot;
+
+cwd: /tmp/ripgrep-tests/compressed_zstd/117
+
+dir list: [&quot;/tmp/ripgrep-tests/compressed_zstd/117&quot;, &quot;/tmp/ripgrep-tests/compressed_zstd/117/sherlock.zst&quot;]
+
+status: exit status: 2
+
+stdout: 
+
+stderr: sherlock.zst: &lt;stderr is empty&gt;
+
+
+==========
+', tests/util.rs:406:13
+
+
+failures:
+    misc::compressed_brotli
+    misc::compressed_zstd
+
+test result: FAILED. 271 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 190.07s
+
+error: test failed, to rerun pass '-p ripgrep --test integration'
+Error: Process completed with exit code 101.
+</code></pre>
+<p>I am not quite sure why the <code>note: run with </code>RUST_BACKTRACE=1<code> environment variable to display a backtrace</code> is there. The <code>ci</code> should that environment variable set as far as I know, https://github.com/arcsi42/ripgrep/blob/master/.github/workflows/ci.yml#L21. Maybe it is not propagated to <code>cross</code> or <code>qemu</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arcsi42">@arcsi42</a> on 2022-01-19 22:29</div>
+            <div class="timeline-body"><blockquote>
+<p>but there are still 2 failing tests, https://github.com/arcsi42/ripgrep/runs/4874128956?check_suite_focus=true#step:12:1186.</p>
+</blockquote>
+<p>This can be fixed by installing <code>brotli</code> and <code>zstd</code> in <a href="https://github.com/BurntSushi/ripgrep/blob/master/ci/ubuntu-install-packages"><code>ubuntu-install-packages</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2022-03-21 12:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:30 UTC
+    </footer>
+</body>
+</html>

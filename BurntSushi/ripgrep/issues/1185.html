@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a short option for --no-filename - BurntSushi/ripgrep #1185</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a short option for --no-filename</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1185">#1185</a>
+        opened by <a href="https://github.com/sbraz">@sbraz</a>
+        on 2019-02-02 15:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbraz">@sbraz</a></div>
+            <div class="timeline-body"><p>Hello,
+Would it be possible to add a short option for <code>--no-filename</code>?
+I can understand that you may not want to use <code>-h</code> like grep to avoid confusion but I think that any short option would be better than none :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-02-02 16:32</div>
+            <div class="timeline-body"><p>Please suggest a short flag that hasn't been used yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbraz">@sbraz</a> on 2019-02-03 15:35</div>
+            <div class="timeline-body"><p>The only letters which aren't used are:</p>
+<pre><code>d
+h
+k
+y
+D
+G
+I
+J
+K
+O
+Q
+R
+V
+W
+X
+Y
+Z
+</code></pre>
+<p>Out of which only <code>d</code>, <code>k</code> and <code>y</code> are neither used in lower-case or upper-case.
+I think using <code>-h</code> would be nice for consistency with grep (and I guess that we could still use <code>--help</code> to print the help). But if you don't want to use this one, I have no preference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-02-03 15:42</div>
+            <div class="timeline-body"><p>I'm not sold on adding a short option for this flag. With that said, I don't have a good feel for how often it's used, so it's pretty hard to make a decision. However, I do know that short flags are in short supply, and I'd like to be very careful in how we spend our budget there.</p>
+<p>To make one thing clear, there is absolutely no way that I'll be changing the behavior of <code>-h</code>. Prescriptively, I think it is a mistake that grep doesn't print help output when the <code>-h</code> flag is used. Descriptively, the behavior of <code>-h</code> and <code>--help</code> in ripgrep is <strong>not the same</strong>, so we cannot just use <code>--help</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2019-02-03 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbraz">@sbraz</a> on 2019-02-03 15:53</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't have a good feel for how often it's used</p>
+</blockquote>
+<p>Then I guess we should wait and see if anybody else feels like this is needed. All I can say is that I will often do stuff like <code>zgrep pattern somelog-*.gz</code> and I will add <code>-h</code> because the time recorded in the log file is enough and I don't need the filenames.</p>
+<blockquote>
+<p>I think it is a mistake that grep doesn't print help output when the -h flag is used</p>
+</blockquote>
+<p>I totally agree, it's just that I've gotten so used to it…</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lydell">@lydell</a> on 2019-02-10 14:10</div>
+            <div class="timeline-body"><p>Just to provide a usage data point:</p>
+<p>I sometimes run stuff like this:</p>
+<pre><code>rg 'font-family:\s*([^;]+)' -r '$1' -o --no-filename -tsass | sort | uniq -c | sort -hr
+</code></pre>
+<p>... to find the most common values for the CSS <code>font-family</code> property in a project (or for <code>font-weight</code>, <code>z-index</code>, you name it). From time to time I do similar aggregations for JavaScript and Python code (&quot;extract all <em>such and such</em> from <em>that</em> part of the code base&quot;).</p>
+<p>So I wouldn't mind a shortcut.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-04-03 13:09</div>
+            <div class="timeline-body"><p>I do kind of feel like this might deserve a short flag. But I don't know which to pick.</p>
+<p><code>-h</code> is the obvious choice, since that's what grep uses and is likely what everyone is familiar with. Unfortunately, I am 100% unwilling to change the behavior of <code>-h</code> today.</p>
+<p>I'd also like to avoid using a short flag that has both lowercase and uppercase variants available. For example, both <code>-d</code> and <code>-D</code> are unused, which means they could be a convenient way to enable or disable some other feature in the future. Since we already have <code>-H</code> to enable file names and can't use <code>-h</code>, we should pick a flag that has no chance of being paired with something else.</p>
+<p>For example, the <code>-J</code> flag is available, and its lowercase variant, <code>-j</code>, controls parallelism with the number of threads. So <code>-j</code> will never need a <code>-J</code> to &quot;negate&quot; it, making it available. Using this logic and the list above, I think that narrows our choices down to the following:</p>
+<pre><code>G
+I
+J
+O
+Q
+R
+V
+W
+X
+Z
+</code></pre>
+<p>I don't think I see any obvious mnemonic device here between the flags above and <code>--no-filename</code>. The only one I can think of is <code>-I</code>, which &quot;comes after <code>-H</code> in the alphabet&quot; and is also the second letter in the word <code>filename</code>. grep does have an <code>-I</code> flag, but I don't see ripgrep ever needing to add a similar flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbraz">@sbraz</a> on 2019-04-03 13:51</div>
+            <div class="timeline-body"><p>Both <code>-I</code> and <code>-J</code> seem fine :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-04-14 23:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kastiglione">@kastiglione</a> on 2019-04-16 02:31</div>
+            <div class="timeline-body"><p>Thanks for adding this, I use it a lot</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/banool">@banool</a> on 2024-05-20 14:07</div>
+            <div class="timeline-body"><p>For anyone reading this looking for a super quick answer to what the flags are:</p>
+<ul>
+<li><code>-H, --with-filename</code> Print the file path with each matching line.</li>
+<li><code>-I, --no-filename</code> Never print the path with each matching line.</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:49 UTC
+    </footer>
+</body>
+</html>

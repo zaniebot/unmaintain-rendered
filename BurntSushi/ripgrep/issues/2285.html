@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>likely broken github actions release workflow - BurntSushi/ripgrep #2285</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>likely broken github actions release workflow</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2285">#2285</a>
+        opened by <a href="https://github.com/jxs">@jxs</a>
+        on 2022-08-17 10:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jxs">@jxs</a></div>
+            <div class="timeline-body"><h4>Describe your bug.</h4>
+<p><code>cross-rs</code> changed it's <a href="https://github.com/cross-rs/cross/issues/969#issuecomment-1193204537">behavior</a>, which will break  the <a href="https://github.com/BurntSushi/ripgrep/blob/master/.github/workflows/release.yml">release.yml</a> workflow.<br />
+I fixed this on my use case by <a href="https://github.com/rust-db/refinery/commit/3650a0dcdb9431aca63cf603db85856a59629902">deprecating <code>cross-rs</code> and just building on the native workers</a>, if that works for <code>ripgrep</code> I can try submitting a PR similar to what I did.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "broken github actions release workflow" to "likely broken github actions release workflow" by @BurntSushi on 2022-08-17 12:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-08-17 12:42</div>
+            <div class="timeline-body"><p>I'm not sure what's going on with Cross to be honest, but the issue you linked seems specific to Windows. So the release workflow might need to be updated to <em>not</em> use <code>cross</code> in that case. Which is fine. We don't need <code>cross</code> there.</p>
+<p>But ripgrep builds musl and arm targets. Using cross there is a big advantage. Your CI release doesn't produce arm builds, so you don't care about Cross for that. You do have musl builds, which you make possible by explicitly installing <code>musl-tools</code> (ripgrep's CI does not do that). IIRC, the other complication with ripgrep and musl specifically is the use of jemalloc. But I can't remember the details other than that Cross made everything just work.</p>
+<p>I'll leave this open since it looks like there's probably some work/testing to be done. And I have contemplated moving off of Cross because of the recent changes, but setting up cross compiler toolchains is no fun either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-08-17 12:43</div>
+            <div class="timeline-body"><p>Yeah, the normal CI only uses Cross when <code>matrix.target</code> is set: https://github.com/BurntSushi/ripgrep/blob/387df97d85291f75511dc77329395931af348b34/.github/workflows/ci.yml#L106</p>
+<p>But the release workflow uses Cross unconditionally. I'm not sure why that difference exists, but I'd guess that the release workflow should also have <code>if: matrix.target != ''</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-24 19:20</div>
+            <div class="timeline-body"><p>The release was indeed broken for this reason and others. I ended up doing some fairly extensive surgery, but it should be working again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-24 19:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2023-11-24 19:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:34 UTC
+    </footer>
+</body>
+</html>

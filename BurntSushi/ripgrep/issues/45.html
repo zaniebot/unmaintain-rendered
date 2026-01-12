@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add flag to specify one or more additional ignore files - BurntSushi/ripgrep #45</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>add flag to specify one or more additional ignore files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/45">#45</a>
+        opened by <a href="https://github.com/kaushalmodi">@kaushalmodi</a>
+        on 2016-09-24 03:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kaushalmodi">@kaushalmodi</a></div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>This might be a feature borrowed from <code>ag</code>.</p>
+<p>It is very convenient to have a global <code>~/.rgignore</code> that applies <strong>everywhere</strong>. It would contain stuff like:</p>
+<pre><code>*~
+*.lib
+*.cdb
+*.dm
+*.tag
+*.oa
+*.png
+*.db
+*.state
+*.SVM
+*.dat
+*.sdc
+*.il
+*.tr
+*.Cat
+*.cfg
+*.info
+*.stateScripts
+*#*#
+TAGS
+GTAGS
+GRTAGS
+GPATH
+</code></pre>
+<p>Then, even if I am working in <code>/proj/SOMEPRJ/</code> and if I have <code>/proj/SOMEPRJ/.rgignore</code>, then the <code>SOMEPRJ</code> specific <code>.rgignore</code> + <code>~/.rgignore</code>, both will be respected.</p>
+<p>That way I do not copy the common stuff in the <code>.rgignore</code> of all the projects. <em>Note that <code>~</code> (or <code>/home/$USER</code>) and <code>/proj/SOMEPRJ/</code> do not share the same parent dir.</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 04:13</div>
+            <div class="timeline-body"><p>Hmm. Would you be opposed to this going in <code>$XDG_CONFIG_HOME/ripgrep/ignore</code>? That way, we won't need to specify any weird interaction between the current semantics, which are &quot;obeys parent directory <code>.ignore</code> files,&quot; and the new semantics, which if we did what you suggested would be, &quot;obeys parent directory unless $HOME/.ignore exists, in which case, it's used everywhere.&quot; <code>$XDG_CONFIG_HOME</code> feels a bit more right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2016-09-24 04:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-09-24 04:16</div>
+            <div class="timeline-body"><p>I am on RHEL6.6 and <code>echo $XDG_CONFIG_HOME</code> returns</p>
+<blockquote>
+<p>XDG_CONFIG_HOME: Undefined variable.</p>
+</blockquote>
+<p>Also this is work machine.. so I don't have admin rights. Do we have an xdg alternative in that case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 04:44</div>
+            <div class="timeline-body"><p>Sorry, by <code>$XDG_CONFIG_HOME</code>, I meant &quot;follow the XDG basedir spec.&quot; Specifically, if <code>XDG_CONFIG_HOME</code> isn't set, then it defaults to <code>$HOME/.config</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-09-24 04:55</div>
+            <div class="timeline-body"><p>Hmm, I symlinked <code>$HOME/.config/ripgrep/ignore</code> to <code>~/.agignore</code>. I also tried few other symlink names. But none helped.. The files ignored in <code>~.agignore</code> are still being searched.</p>
+<pre><code>km²~/.config/:ripgrep&gt; lta                                                        
+total 8.0K
+drwxr-xr-x 28 kmodi users 4.0K Sep 24 00:48 ../
+lrwxrwxrwx  1 kmodi users   21 Sep 24 00:52 .rpignore -&gt; /home/kmodi/.agignore
+lrwxrwxrwx  1 kmodi users   21 Sep 24 00:52 .ignore -&gt; /home/kmodi/.agignore
+lrwxrwxrwx  1 kmodi users   21 Sep 24 00:52 ignore -&gt; /home/kmodi/.agignore
+drwxr-xr-x  2 kmodi users 4.0K Sep 24 00:52 ./
+km²~/.config/:ripgrep&gt; pwd                                                             
+/home/kmodi/.config/ripgrep
+km²~/.config/:ripgrep&gt; 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 04:57</div>
+            <div class="timeline-body"><p>Well, <code>$HOME/.config/ripgrep/ignore</code> functionality doesn't exist. I was proposing it and asking if it would satisfy your use case. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-09-24 04:58</div>
+            <div class="timeline-body"><p>Ah OK, that would work as long as I can maintain just one common global ignore file :)</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Support ~/.rgignore in addition to .rgignore files in current+parent dirs" to "support XDG_CONFIG_HOME/ripgrep/ignore" by @BurntSushi on 2016-09-24 23:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-09-26 12:21</div>
+            <div class="timeline-body"><p>Here's another idea to implement the same. I like it better because then I use an alias to have the complete <code>rg</code> configuration control.</p>
+<p>How about having a switch named <code>--ignore-file</code>. Here's a spec suggestion for that:</p>
+<blockquote>
+<p>--ignore-file FILE: Read the <code>.ignore</code> file FILE before reading the <code>.ignore</code>, <code>.gitignore</code>, etc. in the current or parent directories. Multiple <code>--ignore-file</code> flags may be used.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-26 12:30</div>
+            <div class="timeline-body"><p>When you say &quot;Read the ignore file before reading .ignore .gitignore in current or parent directories,&quot; do you mean that <code>--ignore-file</code> takes precedence over them? (In contrast, I'd expect <code>.ignore</code>/<code>.gitignore</code> to take precedence over a global config file.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-09-26 12:42</div>
+            <div class="timeline-body"><blockquote>
+<p>do you mean that --ignore-file takes precedence over them?</p>
+</blockquote>
+<p>No, here was my thinking..</p>
+<p>Let's use we did <code>rg --ignore-file ~/.ignore foo</code> and suppose we had:</p>
+<pre><code>$ cat ~/.ignore
+*.log
+</code></pre>
+<p>Suppose we had a <code>/proj</code> and</p>
+<pre><code>$ cat /proj/.ignore
+!imp.log
+</code></pre>
+<p>Then if <code>~/.ignore</code> (FILE arg to <code>--ignore-file</code>) is read first, <code>/proj/.ignore</code> will be able to white-list some part out of the ignore set by the previously read file <em>if we are running <code>rg --ignore-file ~/.ignore foo</code> from the <code>/proj</code> directory.</em></p>
+<p>So, <em>read first</em> implies <em>open to be overridden</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-26 13:02</div>
+            <div class="timeline-body"><p>@kaushalmodi Hmm, yes, I see, I think those semantics makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidosomething">@davidosomething</a> on 2016-09-26 18:52</div>
+            <div class="timeline-body"><p>FWIW the_silver_searcher uses <code>--path-to-ignore SOMEPATH</code> and the file name used is (as of 0.33.0) <code>.ignore</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-09-27 16:01</div>
+            <div class="timeline-body"><p>Allowing multiple <code>--ignore-file</code> becomes even more useful as I see an application where I can have a central <code>.ignore</code> file for the whole project (version controlled), and then users can add their specific <code>.ignore</code> files on top of that if they wish.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-28 20:50</div>
+            <div class="timeline-body"><p>@kaushalmodi I definitely like the idea of <code>--ignore-file</code> (allowing multiple uses) better than a global ignore file. If we just add that, does that satisfy your use case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-09-28 20:58</div>
+            <div class="timeline-body"><blockquote>
+<p>If we just add that, does that satisfy your use case?</p>
+</blockquote>
+<p>Absolutely! Then I need to simply add that to my alias and then it becomes as good as a global ignore file. What's even better is that I can have more than one global ignores.. one that is central to the whole project, others which could be user-specific.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-28 21:00</div>
+            <div class="timeline-body"><p>Perfect. Much easier to implement. Hopefully tonight. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "support XDG_CONFIG_HOME/ripgrep/ignore" to "add flag to specify one or more additional ignore files" by @BurntSushi on 2016-09-28 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-09-28 21:12</div>
+            <div class="timeline-body"><p>Thanks! Just to confirm that they will have the lowest priority when compared with the ones in the current/parent directories <a href="https://github.com/BurntSushi/ripgrep/issues/45#issuecomment-249558700">as in my example above</a>, correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-28 21:35</div>
+            <div class="timeline-body"><p>Yes. The terminology I'd like to use is &quot;precedence.&quot; That is, ignore files specified via --ignore-file have a lower precedence than any other ignore file. That means a whitelisted pattern in an ignore file in a directory will override an ignore pattern in an --ignore-file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-29 01:11</div>
+            <div class="timeline-body"><p>This is slightly trickier than I thought and probably exceeds my budget for middle-of-the-week work unfortunately. The issue is that every ignore file needs to interpret paths relative to <em>itself</em> (these are the semantics of <code>.gitignore</code>, and frankly, nothing else really makes much sense), and current ignore code makes this a little tricky. I'm happy to hack this in because I have plans to overhaul the ignore code anyway, but it requires a bit more attention than I'm capable of right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-10-11 01:28</div>
+            <div class="timeline-body"><p>I hope that the overhaul in the globbing code now makes it possible to implement this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 01:34</div>
+            <div class="timeline-body"><p>No. The ignore code and the glob code are related but distinct. Sorry.</p>
+<p>Refactoring the ignore code is pretty high on my list because I hope to get perf gains out of it.</p>
+<p>I just got married. I'll get to this when I can.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-10-11 01:36</div>
+            <div class="timeline-body"><blockquote>
+<p>I just got married. I'll get to this when I can.</p>
+</blockquote>
+<p>Understood. Congratulations! :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-30 01:21</div>
+            <div class="timeline-body"><p>Fixed in #202.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-10-30 01:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/OJFord">@OJFord</a> on 2021-07-28 18:49</div>
+            <div class="timeline-body"><p>@BurntSushi I think it's unfortunate that there's no way (?) to get the behaviour you proposed but ultimately decided against:</p>
+<pre><code># $XDG_CONFIG_HOME/ripgrep/profile
+export RIPGREP_CONFIG_PATH=&quot;$XDG_CONFIG_HOME/ripgrep/ripgreprc&quot;
+</code></pre>
+<pre><code># ripgreprc
+--ignore-file=&quot;$XDG_CONFIG_HOME/ripgrep/ignore&quot;
+</code></pre>
+<pre><code># ignore
+*.lock
+</code></pre>
+<blockquote>
+<p>&quot;$XDG_CONFIG_HOME/ripgrep/ignore&quot;: No such file or directory (os error 2)</p>
+</blockquote>
+<p>Would you be open to making something possible here? If so, which issue do I open - 'parse env vars in ripgreprc', or 'revisit global ignore file'? 🙂</p>
+<p>NB: another (probably simpler) approach could be to allow relative (to the <code>RIPGREP_CONFIG_PATH</code>) paths:</p>
+<blockquote>
+<p>./ignore: No such file or directory (os error 2)</p>
+</blockquote>
+<p>(edit: when I say 'no way', I suppose I mean 'with static config files' - obviously I could have my <code>.profile</code> write out the location to <code>ripgreprc</code>, or <code>alias</code> it. It's just the former seems.. not great, and the latter would really need to be a wrapper script on PATH, since I'd also want this in vim for example, so that ends up quite 'hacky' too.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-07-29 13:21</div>
+            <div class="timeline-body"><p>@OJFord See: https://github.com/BurntSushi/ripgrep/issues/1792</p>
+<p>I don't know why you see wrapper scripts as hacky. I have a whole bunch of them in my <code>~/bin</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:38 UTC
+    </footer>
+</body>
+</html>

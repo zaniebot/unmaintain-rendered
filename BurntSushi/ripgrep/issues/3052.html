@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unbreak legacy switches (and my heart) - BurntSushi/ripgrep #3052</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unbreak legacy switches (and my heart)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3052">#3052</a>
+        opened by <a href="https://github.com/forthrin">@forthrin</a>
+        on 2025-05-19 09:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/forthrin">@forthrin</a></div>
+            <div class="timeline-body"><p>When comparing the command line switches of <code>grep</code> and <code>rg</code>, two breaks with legacy stand out in particular, ie. <code>-h</code> and <code>-L</code>. These are used all the time, and it's a pain to type them out in full.</p>
+<ol>
+<li>Question: What were rationales for breaking compatibility with one most fundamental UNIX tool in the first place?</li>
+<li>Proposal: Look into ways to make them comply with legacy <code>grep</code> switches.</li>
+</ol>
+<p>Preliminary suggestion:</p>
+<ol>
+<li>Make <code>rg</code> display short help</li>
+<li>Make <code>rg -h</code> do as <code>grep -h</code></li>
+</ol>
+<p><code>-L</code> may require some more consideration, since <code>grep</code> has at least three related switches for links (<code>-O</code>, <code>-p</code> and <code>-S</code>).</p>
+<p>PS! There may be more breaking than emphasized in the table, which only highlights on explicit changes in the long switches.</p>
+<p>| gr | rg | grep | ripgrep
+|-|-|-|-
+|    | -. |                       | --hidden                 |
+|    | -0 |                       | --null                   |
+| -a | -a | --text                | --text                   |
+| -b | -b | --byte-offset         | --byte-offset            |
+| -c | -c | --count               | --count                  |
+| -E |    | --extended-regexp     |                          |
+| -F | -F | --fixed-strings       | --fixed-strings          |
+| -G |    | --basic-regexp        |                          |
+| -H | -H |                       | --with-filename          |
+| -h | -h | --no-filename         | <strong>--help</strong>               |
+| -i | -i | --ignore-case         | --ignore-case            |
+| -I | -I |                       | --no-filename            |
+| -J |    | --bz2decompress       |                          |
+| -L | -L | --files-without-match | <strong>--follow</strong>             |
+| -l | -l | --files-with-matches  | --files-with-matches     |
+| -M |    | --lzma                |                          |
+| -n | -n | --line-number         | --line-number            |
+|    | -N |                       | --no-line-number         |
+| -o | -o | --only-matching       | --only-matching          |
+| -O |    |                       |                          |
+| -p | -p |                       | --pretty                 |
+|    | -P |                       | --pcre2                  |
+| -q | -q | --silent              | <strong>--quiet</strong>              |
+| -r |    | --recursive           |                          |
+| -s | -s | --no-messages         | <strong>--case-sensitive</strong>     |
+| -S | -S |                       | --smart-case             |
+| -u | -u |                       | --unrestricted           |
+| -U | -U | --binary              | <strong>--multiline</strong>          |
+| -V | -V | --version             | --version                |
+| -v | -v | --invert-match        | --invert-match           |
+| -w | -w | --word-regexp         | --word-regexp            |
+| -X |    | --xz                  |                          |
+| -x | -x | --line-regexp         | --line-regexp            |
+| -y |    |                       |                          |
+| -z | -z | --null-data           | <strong>--search-zip</strong>         |
+| -Z |    | --decompress          |                          |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-05-19 13:03</div>
+            <div class="timeline-body"><p>Somewhat related: https://github.com/BurntSushi/ripgrep/blob/master/FAQ.md#posix4ever</p>
+<p>ripgrep has no promised compatibility with grep. And <em>not</em> breaking existing users of ripgrep is way more important to me than trying to match grep compatibility, particularly at this stage.</p>
+<blockquote>
+<p>Question: What were rationales for breaking compatibility with one most fundamental UNIX tool in the first place?</p>
+</blockquote>
+<p>I didn't &quot;break compatibility.&quot; ripgrep is a new tool that is intentionally and specifically not POSIX grep. Compatibility is not really a factor so much as familiarity. That is, I did try to make a number of options in ripgrep behave the same or roughly the same as they do in GNU grep.</p>
+<p>More specifically, for <code>-h</code>, you really should flip the question around. Not why does ripgrep break compatibility with one of the most &quot;fundamental UNIX tools,&quot; but rather, why does grep break compatibility with one of the most foundational Unix conventions ever?</p>
+<p>Righteous indignation cuts both ways.</p>
+<p>As for <code>-L</code>, that's because ripgrep is recursive by default. There is no non-recursive vs recursive mode. (Although you can achieve non-recursive mode with <code>--max-depth</code>.)</p>
+<blockquote>
+<p>since grep has at least three related switches for links (<code>-O</code>, <code>-p</code> and <code>-S</code>).</p>
+</blockquote>
+<p>None of <code>-O</code>, <code>-p</code> or <code>-S</code> appear in <code>man grep</code> on my system (GNU grep) or in the <a href="https://pubs.opengroup.org/onlinepubs/9699919799/utilities/grep.html">POSIX grep specification</a>. So I don't know what you're talking about here.</p>
+<blockquote>
+<p>AI assisted comparison based on respective man pages (not proof-read).</p>
+</blockquote>
+<p>Your tables are bunk.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-05-19 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2025-05-19 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/forthrin">@forthrin</a> on 2025-05-19 14:50</div>
+            <div class="timeline-body"><p>Your unfriendly response just ruined the joy of using this software.</p>
+<pre><code>$ brew uninstall rg
+Uninstalling /opt/homebrew/Cellar/ripgrep
+$
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zenspider">@zenspider</a> on 2025-07-01 00:45</div>
+            <div class="timeline-body"><p>FWIW... I banned the guy for similar behavior.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:55 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do not fail when replace was not successful - BurntSushi/ripgrep #3175</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Do not fail when replace was not successful</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3175">#3175</a>
+        opened by <a href="https://github.com/pkuczynski">@pkuczynski</a>
+        on 2025-10-10 11:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pkuczynski">@pkuczynski</a></div>
+            <div class="timeline-body"><h4>Describe your feature request</h4>
+<p>Currently when <code>-r</code> flag is passed to replace a matched string, when no match is found, ripgrep fails with code <code>1</code> and it breaks pipe excution. I am using ripgrep to clean the found output, wich sometimes might contain some text, which I want to get rid of:</p>
+<pre><code class="language-bash">ansifilter some.log | rg -oN &quot;some pattern&quot; | rg ' \(?[0-9]+ *(ms|s)\)?$' -r '' | sort | uniq -d
+</code></pre>
+<p>The second <code>rg</code> call is to remove duration marks, which sometimes exist, and sometimes not. When they don't above command would fail. As a workaround I am using:</p>
+<pre><code class="language-bash">ansifilter some.log | rg -oN &quot;some pattern&quot; | { rg ' \(?[0-9]+ *(ms|s)\)?$' -r '' || true } | sort | uniq -d
+</code></pre>
+<p>This works, but I would prefer to have a switch (eg: <code>--ignore-missing</code> or <code>-R</code> as opposite to <code>-r</code>) and silently ignore when replace could not find a match:</p>
+<pre><code class="language-bash">ansifilter some.log | rg -oN &quot;some pattern&quot; | rg ' \(?[0-9]+ *(ms|s)\)?$' -R '' | sort | uniq -d
+ansifilter some.log | rg -oN &quot;some pattern&quot; | rg ' \(?[0-9]+ *(ms|s)\)?$' -r '' --ignore-missing | sort | uniq -d
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-10 11:41</div>
+            <div class="timeline-body"><p>I don't think this is worth a flag, sorry. I think your <code>|| true</code> is exactly the right thing to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-10-10 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2025-10-10 11:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pkuczynski">@pkuczynski</a> on 2025-10-10 13:02</div>
+            <div class="timeline-body"><p>Unless you have to use it zillion of times and remember about it. Maybe additional flag is not worth it but <code>-R</code> to ignore when pattern does not exists sound like a good compromise...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-10 13:17</div>
+            <div class="timeline-body"><p>ripgrep has over 100 flags. I can't add a new flag for every niche use case, especially when there is an easy work-around. And I'm definitely not using one of the few remaining unused short flags for something like this.</p>
+<p>If you're having trouble remembering to use it and you happen to use it a lot, then the solution is to write a wrapper script with the behavior you want.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:59 UTC
+    </footer>
+</body>
+</html>

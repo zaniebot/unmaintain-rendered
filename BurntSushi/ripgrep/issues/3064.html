@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`BasenameLiteralStrategy` fails to match when basename ends with `.` - BurntSushi/ripgrep #3064</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>BasenameLiteralStrategy</code> fails to match when basename ends with <code>.</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3064">#3064</a>
+        opened by <a href="https://github.com/tjjfvi">@tjjfvi</a>
+        on 2025-06-06 17:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tjjfvi">@tjjfvi</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[x] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>globset 0.4.16</p>
+<h3>How did you install ripgrep?</h3>
+<p>Cargo</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>N/A</p>
+<h3>Describe your bug.</h3>
+<p><code>globset</code> fails to match the path <code>foo.</code> for the glob <code>**/foo.</code></p>
+<p>I believe the offending code is here: https://github.com/BurntSushi/ripgrep/blob/master/crates/globset/src/pathutil.rs#L10-L12</p>
+<pre><code class="language-rs">    if path.last_byte().map_or(true, |b| b == b'.') {
+        return None;
+    }
+</code></pre>
+<p><code>file_name</code> reports any path ending in the character <code>.</code> as having no file name; not just paths with a final component of <code>.</code> or <code>..</code>.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<pre><code class="language-rs">fn main() {
+    assert!(
+        dbg!(globset::GlobSetBuilder::new()
+            .add(globset::Glob::new(&quot;**/foo.&quot;).unwrap())
+            .build())
+        .unwrap()
+        .matches(&quot;foo.&quot;)
+        .len()
+            == 1
+    );
+}
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<p>The assertion fails, as there were zero matches.</p>
+<h3>What is the expected behavior?</h3>
+<p>The assertion should succeed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjjfvi">@tjjfvi</a> on 2025-06-06 17:54</div>
+            <div class="timeline-body"><p>🤦 having a really hard time reading today. sorry for all the noise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @tjjfvi on 2025-06-06 17:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:55 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option to consider only parent .rgignore files? - BurntSushi/ripgrep #53</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Option to consider only parent .rgignore files?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/53">#53</a>
+        opened by <a href="https://github.com/kaushalmodi">@kaushalmodi</a>
+        on 2016-09-24 05:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kaushalmodi">@kaushalmodi</a></div>
+            <div class="timeline-body"><p>I have a <code>~/.gitignore</code> and that is considered as an ignore file for everything in my <code>$HOME</code>. In my use case the contents of <code>~/.gitignore</code> do not apply as ignore criteria for searches! I have <code>~/.gitignore</code> set up just to prevent committing sensitive text files to git (and then push) by mistake. So that file contains something like</p>
+<pre><code>a*
+!a_ok_to_commit
+</code></pre>
+<p>That would prevent search of all <code>a*</code> files everywhere in my <code>$HOME</code>.</p>
+<p>So it would be great to allow parent <code>.rgignore</code> (only) file consideration.</p>
+<p>In addition a <code>.gitignore</code> specific <code>-u</code> would also be needed.</p>
+<p>In summary, there is very little overlap of the contents of <code>.gitignore</code> and search ignore files like <code>.agignore</code> and <code>.rgignore</code>.</p>
+<p>For <code>.gitignore</code>:</p>
+<ul>
+<li>Never use that for search ignores</li>
+<li>Do not use parent <code>.gitignore</code></li>
+</ul>
+<p>For <code>.rgignore</code>:</p>
+<ul>
+<li>Use that for search ignores</li>
+<li>Use parent <code>.rgignore</code> files</li>
+</ul>
+<p>From what I understand, right now <code>-u</code> and <code>--no-ignore-parent</code> applies to both of these files and you cannot set those options separately for those 2 files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 05:21</div>
+            <div class="timeline-body"><p>Why not just whitelist the files you want to search in your <code>~/.rgignore</code>? e.g., <code>!a*</code>.</p>
+<p>(I think I had the same problem as you, so I just put <code>!*</code> in my <code>$HOME/.rgignore</code>, which whitelists anything that would otherwise be ignored by <code>$HOME/.gitignore</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-09-24 05:37</div>
+            <div class="timeline-body"><p>Before whitelisting:</p>
+<pre><code>km²~/temp/:proj&gt; rg foo --debug                                                                                                                                                                      09/24 1:26am
+DEBUG:grep::search: regex ast:
+Literal {
+    chars: [
+        'f',
+        'o',
+        'o'
+    ],
+    casei: false
+}
+DEBUG:grep::literals: literal prefixes detected: Literals { lits: [Complete(foo)], limit_size: 250, limit_class: 10 }
+DEBUG:rg::ignore: ./SOMEPRJ/abc ignored by Pattern { from: &quot;/home/kmodi/.gitignore&quot;, original: &quot;a*&quot;, pat: &quot;**/a*&quot;, whitelist: false, only_dir: false }
+DEBUG:rg::ignore: ./SOMEPRJ/ghi ignored by Pattern { from: &quot;/home/kmodi/.gitignore&quot;, original: &quot;g*&quot;, pat: &quot;**/g*&quot;, whitelist: false, only_dir: false }
+DEBUG:rg::ignore: ./SOMEPRJ/.rgignore ignored because it is hidden
+No files were searched, which means ripgrep probably applied a filter you didn't expect. Try running again with --debug.
+</code></pre>
+<p>After whitelisting by add <code>!*</code> to the very top of <code>~/.rgignore</code>:</p>
+<pre><code>km²~/temp/:proj&gt; rg foo --debug                                                                                                                                                                      09/24 1:31am
+DEBUG:grep::search: regex ast:
+Literal {
+    chars: [
+        'f',
+        'o',
+        'o'
+    ],
+    casei: false
+}
+DEBUG:grep::literals: literal prefixes detected: Literals { lits: [Complete(foo)], limit_size: 250, limit_class: 10 }
+DEBUG:rg::ignore: ./SOMEPRJ whitelisted by Pattern { from: &quot;/home/kmodi/.rgignore&quot;, original: &quot;!*&quot;, pat: &quot;**/*&quot;, whitelist: true, only_dir: false }
+DEBUG:rg::ignore: ./SOMEPRJ/abc whitelisted by Pattern { from: &quot;/home/kmodi/.rgignore&quot;, original: &quot;!*&quot;, pat: &quot;**/*&quot;, whitelist: true, only_dir: false }
+DEBUG:rg::ignore: ./SOMEPRJ/abc/def whitelisted by Pattern { from: &quot;/home/kmodi/.rgignore&quot;, original: &quot;!*&quot;, pat: &quot;**/*&quot;, whitelist: true, only_dir: false }
+DEBUG:rg::ignore: ./SOMEPRJ/abc/def/XXX whitelisted by Pattern { from: &quot;/home/kmodi/.rgignore&quot;, original: &quot;!*&quot;, pat: &quot;**/*&quot;, whitelist: true, only_dir: false }
+DEBUG:rg::ignore: ./SOMEPRJ/abc/def/XXX/YYY whitelisted by Pattern { from: &quot;/home/kmodi/.rgignore&quot;, original: &quot;!*&quot;, pat: &quot;**/*&quot;, whitelist: true, only_dir: false }
+DEBUG:rg::ignore: ./SOMEPRJ/abc/def/XXX/YYY/bar whitelisted by Pattern { from: &quot;/home/kmodi/.rgignore&quot;, original: &quot;!*&quot;, pat: &quot;**/*&quot;, whitelist: true, only_dir: false }
+DEBUG:rg::ignore: ./SOMEPRJ/ghi whitelisted by Pattern { from: &quot;/home/kmodi/.rgignore&quot;, original: &quot;!*&quot;, pat: &quot;**/*&quot;, whitelist: true, only_dir: false }
+DEBUG:rg::ignore: ./SOMEPRJ/ghi/XXX whitelisted by Pattern { from: &quot;/home/kmodi/.rgignore&quot;, original: &quot;!*&quot;, pat: &quot;**/*&quot;, whitelist: true, only_dir: false }
+DEBUG:rg::ignore: ./SOMEPRJ/ghi/XXX/YYY whitelisted by Pattern { from: &quot;/home/kmodi/.rgignore&quot;, original: &quot;!*&quot;, pat: &quot;**/*&quot;, whitelist: true, only_dir: false }
+DEBUG:rg::ignore: ./SOMEPRJ/ghi/XXX/YYY/bar whitelisted by Pattern { from: &quot;/home/kmodi/.rgignore&quot;, original: &quot;!*&quot;, pat: &quot;**/*&quot;, whitelist: true, only_dir: false }
+DEBUG:rg::ignore: ./SOMEPRJ/.rgignore ignored because it is hidden
+SOMEPRJ/abc/def/XXX/YYY/bar
+1:foo
+
+SOMEPRJ/ghi/XXX/YYY/bar
+1:foo
+</code></pre>
+<p>I believe this works (just that this repeats the bug in https://github.com/BurntSushi/ripgrep/issues/50).</p>
+<p>Thanks,</p>
+<p>I only concern is that if you implement a global ignore file in <code>$HOME/ripgrep/ignore</code> ( https://github.com/BurntSushi/ripgrep/issues/45 ), then how would the priority work?</p>
+<p>Then I would need to put <code>!*</code> in <code>$HOME/ripgrep/ignore</code> that would override the ignores in <code>~/.gitignore</code>? But wouldn't that be the wrong order?</p>
+<p>On the other hand, if I put <code>!*</code> in <code>~/.rgignore</code>, then wouldn't that override all the ignores in <code>$HOME/ripgrep/ignore</code>? :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 05:50</div>
+            <div class="timeline-body"><p>It seems like the priority of any &quot;global&quot; ignores file should come strictly after any ignores from inside parent directories are considered. If you want to override <code>~/.gitignore</code> then it makes sense that you should use a <code>~/.rgignore</code> to do it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 01:15</div>
+            <div class="timeline-body"><p>It sounds like this use case should be solved either by a global ignore file (#45) or by using explicit per-directory overrides.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-09-25 01:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-09-26 12:47</div>
+            <div class="timeline-body"><p>This issue was more related to https://github.com/BurntSushi/ripgrep/issues/68.</p>
+<p>The fix for that issue ( https://github.com/BurntSushi/ripgrep/commit/8eeb0c0b60da59828a48d995e969bdba5816ea31 ) fixes this issue too.</p>
+<p>Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:39 UTC
+    </footer>
+</body>
+</html>

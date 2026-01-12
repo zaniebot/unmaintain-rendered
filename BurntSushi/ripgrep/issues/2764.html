@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[ignore] Fallback to use git check-ignore or support hook iteration - BurntSushi/ripgrep #2764</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[ignore] Fallback to use git check-ignore or support hook iteration</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2764">#2764</a>
+        opened by <a href="https://github.com/tisonkun">@tisonkun</a>
+        on 2024-03-24 04:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tisonkun">@tisonkun</a></div>
+            <div class="timeline-body"><p>Since ignore is unaware of git index, there is a pitfall that a file force added to Git repository is ignored.</p>
+<p>Currently, I write the logic below to switch the manner:</p>
+<pre><code class="language-rust">let walker = ignore::WalkBuilder::new(&amp;self.basedir)
+            .ignore(false) // do not use .ignore file
+            .hidden(false) // check hidden files
+            .follow_links(true) // proper path name
+            .parents(turn_on_ignore)
+            .git_exclude(turn_on_ignore)
+            .git_global(turn_on_ignore)
+            .git_ignore(turn_on_ignore)
+            .overrides( ... );
+
+for mat in walker {
+  ...
+                if let Some(helper) = git_helper.as_ref()
+                    &amp;&amp; helper.ignored(mat.path())?
+                {
+                    continue;
+                }
+                result.push(mat.into_path())
+}
+</code></pre>
+<p>where ignored is a wrapper of <code>git2::Repository::is_path_ignored</code>.</p>
+<p>However, this solution has a shortcoming that the walker iteration is determinated unaware of the Git ignore result, so it cannot skip directory ignored but must process all the files.</p>
+<p>So I propose add an option to fallback to use git check-ignore or support hook iteration.</p>
+<p>cc @BurntSushi</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tisonkun">@tisonkun</a> on 2024-03-24 04:30</div>
+            <div class="timeline-body"><p>Source code is publicly available at -</p>
+<p>https://github.com/korandoru/hawkeye/blob/v5.0.0/fmt/src/selection.rs#L99-L136
+https://github.com/korandoru/hawkeye/blob/v5.0.0/fmt/src/git.rs#L65-L70</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tisonkun">@tisonkun</a> on 2024-03-24 04:39</div>
+            <div class="timeline-body"><p>Or I may use <code>Override</code> directly and do a manual walk through. I don't give it a try though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tisonkun">@tisonkun</a> on 2024-03-24 05:28</div>
+            <div class="timeline-body"><p>Try to use a bare <code>Override</code> with <code>walkdir</code> crate. So far so good - https://github.com/korandoru/hawkeye/commit/e7be36cfb72f8ad663039fe4360a8a8aa4e05a9f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @tisonkun on 2024-03-24 05:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:47 UTC
+    </footer>
+</body>
+</html>

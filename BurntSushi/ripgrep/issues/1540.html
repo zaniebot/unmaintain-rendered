@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for files tagged as binary in .gitattributes - BurntSushi/ripgrep #1540</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for files tagged as binary in .gitattributes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1540">#1540</a>
+        opened by <a href="https://github.com/ghost">@ghost</a>
+        on 2020-04-03 19:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ghost">@ghost</a></div>
+            <div class="timeline-body"><p>Ripgrep usually ignores binary files quickly and correctly. Sometimes a versioned file may be tagged as binary in <code>.gitattributes</code>, because it contains binary data only towards the end of the file, because the file is text but noisy/meaningless (e.g. some postscript files), or because the file is generated and meant to be (typically) ignored. <code>git</code> will treat such files as binary for the purposes of displaying in diff/grep/etc, <code>rg</code> does not.</p>
+<p>Ripgrep should treat such files as binary unless <code>--text</code> is passed, the same as <code>git grep</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2020-04-03 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-04-03 19:50</div>
+            <div class="timeline-body"><p>I'll mark this as an desirable enhancement for now, but I'm still unsure about this. I'm unsure about trying more of ripgrep's behavior to git. Particularly since there are some fairly accessible work-arounds, such as putting said files into your <code>.gitignore</code> or <code>.ignore</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Uroc327">@Uroc327</a> on 2021-10-19 09:14</div>
+            <div class="timeline-body"><p>But especially with helpers such as <code>git-lfs</code>, one often does not want to ignore binary files in a git repo (anymore).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jcubic">@jcubic</a> on 2024-05-12 13:37</div>
+            <div class="timeline-body"><p>There are no workaround for this. I have minifed files in git repo and there is no way to ignore them. They are marked as binary to don't show but they are not ignored by <code>ignore</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-12 18:18</div>
+            <div class="timeline-body"><blockquote>
+<p>There are no workaround for this. I have minifed files in git repo and there is no way to ignore them. They are marked as binary to don't show but they are not ignored by <code>ignore</code>.</p>
+</blockquote>
+<p>Why can't you add them to a <code>.rgignore</code> file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jcubic">@jcubic</a> on 2024-05-12 20:08</div>
+            <div class="timeline-body"><p>Does it work outside of <code>ripgrep</code>. I was looking into Guide was testing <code>.ignore</code> and <code>.rgignore</code> but it doesn't work with difftastic which uses <code>ignore</code> crate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-12 20:16</div>
+            <div class="timeline-body"><p>Yes it works. The support for .ignore and .rgignore is in the ignore crate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jcubic">@jcubic</a> on 2024-05-12 20:36</div>
+            <div class="timeline-body"><p>In which version it was added? Because when I installed difftastic it didn't work.</p>
+<p>Does it work out of the box, or do you need to configure the <code>ignore</code> library to obey the ignore files?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-12 20:40</div>
+            <div class="timeline-body"><p>This isn't difftastic's issue tracker. Support for <code>.rgignore</code> has been there since the beginning. Support for <code>.ignore</code> was added shortly thereafter.</p>
+<p>I cannot tell you why difftastic doesn't work, especially when there are zero details about what is being tried. I've never even heard of difftastic before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jcubic">@jcubic</a> on 2024-05-12 22:05</div>
+            <div class="timeline-body"><p>I'm just trying to figure out what is needed to use <code>.ignore</code> file. This is bug tracker for <code>riggrep</code> and <code>ignore</code> so I don't see any other place where I can find help for those packages.</p>
+<p>The issue of ignoring binary files in difftastic was created a year ago and no one noticed that there is a library that can handle this. So I don't think they can help figure it out.</p>
+<p>Difftastic use this code:</p>
+<pre><code class="language-rust">use ignore::WalkBuilder;
+
+    WalkBuilder::new(dir)
+        .hidden(false)
+        .build()
+        .filter_map(Result::ok)
+        .map(|entry| Path::new(entry.path()).to_owned())
+        .filter(|path| !path.is_dir())
+        .map(|path| path.strip_prefix(dir).unwrap().to_path_buf())
+        .collect()
+</code></pre>
+<p>Will it work when I add:</p>
+<pre><code class="language-rust">ignore(true)
+</code></pre>
+<p>to the chain?</p>
+<p>It would be much better if there was <code>binary(true)</code> method that would ignore binary files from <code>.gitattributes</code>, so users don't need to create extra files just to ignore minifed files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-12 23:23</div>
+            <div class="timeline-body"><blockquote>
+<p>It would be much better if there was <code>binary(true)</code> method that would ignore binary files from <code>.gitattributes</code>, so users don't need to create extra files just to ignore minifed files.</p>
+</blockquote>
+<p>Hence why this is an open issue labeled as an enhancement. What you said is that there is no work around and no way to ignore files. But this is false.</p>
+<p>If <code>ignorr(true)</code> isn't working in a minimal Rust program then open a new bug issue with full reproduction details, as that is unrelated to this feature request. It should be a reasonably minimal reproduction, not &quot;difftastic doesn't work.&quot;</p>
+<p>Please keep this issue related to gitattributes support. This issue isn't about general ignore rules or debugging specific scenarios where it isn't working like you expect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robinmoussu">@robinmoussu</a> on 2024-12-05 09:59</div>
+            <div class="timeline-body"><p>@jcubic Did you made any progress on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jcubic">@jcubic</a> on 2024-12-05 12:15</div>
+            <div class="timeline-body"><p>@robinmoussu no, maybe I should revisit this.</p>
+<p><strong>EDIT</strong>: just found that I actually tested the <code>.ignore(true)</code>, and it doesn't work with difftastic. But I didn't have time to create reproduction. I'm not even sure if I will know how, since I don't know Rust.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/frankitox">@frankitox</a> on 2025-01-02 18:24</div>
+            <div class="timeline-body"><p>I just stumbled into this.</p>
+<blockquote>
+<p>I'm unsure about trying more of ripgrep's behavior to git.</p>
+</blockquote>
+<p>Maybe adding a flag like  <code>--follow-gitattributes</code> (default off) may palliate this problem? Using <code>.rpignore</code> for now, which works wonders!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/frankitox">@frankitox</a> on 2025-01-11 17:35</div>
+            <div class="timeline-body"><p>Hi Andrew (@BurntSushi)!</p>
+<p>Would you be interested in a PR to address this? Based on the <a href="https://git-scm.com/docs/gitattributes">.gitattributes docs</a> each line goes like this:</p>
+<pre><code>pattern attr1 attr2 ...
+</code></pre>
+<p>Turns out that the <code>binary</code> keyword is a macro that expands to <code>-diff -merge -text</code>, with <code>-text</code> being the relevant <code>attr</code>. To parse these attribute files I was thinking of looking for <code>-text</code> or <code>binary</code> in the attrs, trying to reuse as much of the code that already reads gitignore files.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:09 UTC
+    </footer>
+</body>
+</html>

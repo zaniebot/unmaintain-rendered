@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unexpected (or incorrect?) multiline replace behavior - BurntSushi/ripgrep #1311</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unexpected (or incorrect?) multiline replace behavior</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1311">#1311</a>
+        opened by <a href="https://github.com/mqudsi">@mqudsi</a>
+        on 2019-06-23 18:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mqudsi">@mqudsi</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 11.0.1 (rev 34677d2622)
++SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>cargo from git</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Distributor ID:	Debian
+Description:	Debian GNU/Linux 10 (buster)
+Release:	10
+Codename:	buster</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>I was trying to replace some of my usages of other commands (<code>sed</code>, <code>tr</code>, <code>ag</code>) with ripgrep now that it has proper multiline and pcre2 support features, and ran into the following odd behavior:</p>
+<pre><code>&gt; printf &quot;hello\nworld\n&quot; | rg -U &quot;\n&quot; --color always 
+hello
+world 
+</code></pre>
+<p>This works fine, everything matches, nothing is highlighted because the newline can't be colored.</p>
+<p>But when I try to replace, I get the following behavior:</p>
+<pre><code>&gt; printf &quot;hello\nworld\n&quot; | rg -U &quot;\n&quot; -r &quot;?&quot; 
+hello?
+world?
+</code></pre>
+<p>which isn't correct because the newline has been correctly matched but incorrectly retained in the output.</p>
+<p>Whereas the following does work:</p>
+<pre><code>&gt; printf &quot;hello\nworld\n&quot; | rg --null-data &quot;\n&quot; -r &quot;?&quot;
+hello?world?
+</code></pre>
+<p>But I don't see any documented reason why the former shouldn't give the same output as well. I can understand technically why this is happening (rg internally preserves the concept of lines but merely glosses over them for search purposes with <code>-U</code>), but the confluence of both <code>-U</code> and <code>-r</code> results in incorrect behavior: the output should either include the replacement character and no new lines (desirable) or the newlines and no replacement character (unfortunate but understandable limitation). I don't think including both can be considered correct, however.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mqudsi">@mqudsi</a> on 2019-06-23 18:39</div>
+            <div class="timeline-body"><p>Actually, this has to be a mere oversight because the following <em>does</em> work:</p>
+<pre><code>&gt; printf &quot;hello\nworld\n&quot; | rg -U o\nw -r '?'
+hell?orld
+</code></pre>
+<p>and I can even trick rg into giving me the behavior I'm looking for with this:</p>
+<pre><code>&gt; printf &quot;hello\nworld\n&quot; | rg -U '(.?)\n(.?)' -r '$1?$2'
+hello?world
+</code></pre>
+<p>(although that fails when there are empty lines in the input)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/learnbyexample">@learnbyexample</a> on 2019-06-24 05:23</div>
+            <div class="timeline-body"><p>My understanding is that <code>-U</code> doesn't strictly behave as if entire input is single input string. Rather, it allows the match to cross multiple lines when necessary, like the <code>printf &quot;hello\nworld\n&quot; | rg -U 'o\nw' -r '?'</code> example.</p>
+<p>You might feel <code>--null-data</code> is working, but that is simply adding NUL character for each block of output, instead of newline. It so happens you have only one block in your example as there is no NUL character in input. <code>printf &quot;hello\nworld\n&quot; | perl -0777 -pe 's/\n/?/g'</code> is an example for slurping entire input as single string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mqudsi">@mqudsi</a> on 2019-06-24 05:24</div>
+            <div class="timeline-body"><blockquote>
+<p>You might feel --null-data is working, but that is simply adding NUL character for each block of output, instead of newline.</p>
+</blockquote>
+<p>Yes, and that's why I would like <code>-U</code> to work instead ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2019-06-24 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-06-24 10:53</div>
+            <div class="timeline-body"><p>This is likely a bug in how new lines are handled by the printer. I don't know when I'll get around to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mqudsi">@mqudsi</a> on 2019-06-25 22:46</div>
+            <div class="timeline-body"><p>Thanks for the confirmation anyway, @BurntSushi!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dkasak">@dkasak</a> on 2020-06-04 14:12</div>
+            <div class="timeline-body"><p>Just found this bug myself. Here's some more weirdness in case it points to the source of the bug.</p>
+<pre><code>➜ printf 'foo\n bar' | rg --multiline --passthru --replace '?' '\s+'            
+foo?bar
+
+➜ printf 'foo \nbar' | rg --multiline --passthru --replace '?' '\s+' 
+foo?
+bar
+
+➜ printf 'foo \n bar' | rg --multiline --passthru --replace '?' '\s+'
+foo?bar
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2021-05-31 10:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-06-01 01:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krtab">@krtab</a> on 2021-06-16 18:33</div>
+            <div class="timeline-body"><p>Hi @BurntSushi!</p>
+<p>Just wanted to thank you for fixing this. I have just encountered this very bug, and it is very pleasing to see &quot;closed 16 days ago&quot;! :+1:</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:56 UTC
+    </footer>
+</body>
+</html>

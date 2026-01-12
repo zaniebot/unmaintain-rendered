@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Searching disk images for a text regex causes rg to be SIGKILL'd - BurntSushi/ripgrep #2831</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Searching disk images for a text regex causes rg to be SIGKILL'd</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2831">#2831</a>
+        opened by <a href="https://github.com/RecRanger">@RecRanger</a>
+        on 2024-06-04 16:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/RecRanger">@RecRanger</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>ripgrep 14.1.0</p>
+<p>features:-simd-accel,-pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,-AVX2</p>
+<p>PCRE2 is not available in this build of ripgrep.</p>
+<h3>How did you install ripgrep?</h3>
+<p>Cargo</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Linux Mint 21.3</p>
+<h3>Describe your bug.</h3>
+<p>Running the following example on several TB of disk images fails.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<pre><code>rg --byte-offset -uuu --text '[1-9A-H]{54}' .
+fish: Job 1, 'rg --byte-offset -uuu --text '[…' terminated by signal SIGKILL (Forced quit)
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<pre><code>fish: Job 1, 'rg --byte-offset -uuu --text '[…' terminated by signal SIGKILL (Forced quit)
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>It should work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-06-04 16:40</div>
+            <div class="timeline-body"><p>The SIGKILL is likely a symptom of your OS killing your process as a result of it using too much memory. In general, this is expected in some cases. It's documented in the man page:</p>
+<pre><code>ripgrep may use a large amount of memory depending on a few fac‐
+tors.  Firstly,  if ripgrep uses parallelism for search (the de‐
+fault), then the entire  output  for  each  individual  file  is
+buffered into memory in order to prevent interleaving matches in
+the  output. To avoid this, you can disable parallelism with the
+-j1 flag. Secondly, ripgrep always needs to have at least a sin‐
+gle line in memory in order to execute a search. A file  with  a
+very  long  line  can thus cause ripgrep to use a lot of memory.
+Generally, this only occurs when searching binary data with  the
+-a/--text  flag enabled. (When the -a/--text flag isn't enabled,
+ripgrep will replace all NUL bytes with line terminators,  which
+typically  prevents exorbitant memory usage.) Thirdly, when rip‐
+grep searches a large file using a memory map, the process  will
+likely report its resident memory usage as the size of the file.
+However,  this does not mean ripgrep actually needed to use that
+much heap memory; the operating  system  will  generally  handle
+this for you.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-06-04 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2024-06-04 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-06-04 16:43</div>
+            <div class="timeline-body"><p>The key sentence there for your case is likely:</p>
+<blockquote>
+<p>Secondly, ripgrep always needs to have at least a single line in memory in order to execute a search.</p>
+</blockquote>
+<p>Binary data can have very long runs of NUL bytes. Or just long runs of bytes that don't contain a line terminator.</p>
+<p>greps are fundamentally line oriented tools. The data you are searching is likely not line oriented. From the first sentence of the README:</p>
+<blockquote>
+<p>ripgrep is a <strong>line-oriented search tool</strong>...</p>
+</blockquote>
+<p>ripgrep makes an effort to work on data that isn't line oriented, but it is fundamentally not designed for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RecRanger">@RecRanger</a> on 2024-06-05 03:46</div>
+            <div class="timeline-body"><p><code>ugrep</code> supports searching these files.</p>
+<p>I'm not sure how ripgrep aims to compare to ugrep, but currently it's less good at this, and there's a solution possible to fix this. I'd suggest that leaving this issue open, even if you don't intend to solve it in the near future, might be valuable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-06-05 04:21</div>
+            <div class="timeline-body"><p>Without a reproduction to compare what precisely is happening, there's really not much more I can say. There are likely trade offs here that you aren't accounting for.</p>
+<blockquote>
+<p>I'd suggest that leaving this issue open, even if you don't intend to solve it in the near future, might be valuable.</p>
+</blockquote>
+<p>The issue isn't gone. It's just closed. If something changes, we can reopen it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RecRanger">@RecRanger</a> on 2024-06-05 05:11</div>
+            <div class="timeline-body"><p>It's exactly what you were describing with large strings of null bytes.</p>
+<p>Here's somewhat of a repro:</p>
+<h4>This prepped file seems to work fine:</h4>
+<pre><code class="language-bash"># 1 MiB of random data
+dd if=/dev/urandom count=1024 bs=1024 &gt;&gt; ./binary_test_1.bin
+
+# about 10 GB of zeros
+dd status=progress if=/dev/zero count=10240000 bs=1024 &gt;&gt; ./binary_test_1.bin
+
+echo &quot;This is the text I'm searching for&quot; &gt;&gt; ./binary_test_1.bin
+</code></pre>
+<h4>This prepped file results in very high memory usage:</h4>
+<pre><code class="language-bash">dd status=progress if=/dev/zero count=10240000 bs=1024 &gt; ./binary_test_2.bin ; echo 'This is the text I am searching for' &gt;&gt; ./binary_test_2.bin ; dd if=/dev/zero count=10240000 bs=1024 status=progress &gt;&gt; ./binary_test_2.bin
+</code></pre>
+<h4>Search the file:</h4>
+<pre><code class="language-bash">rg -uuu 'searching for' ./binary_test_2.bin
+rg -uuu --text --byte-offset --only-matching 'searching for' ./binary_test_2.bin
+</code></pre>
+<p>Use htop to see high memory usage while doing this. The usage grows steadily with time, all the way up to around 18G.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-06-05 12:55</div>
+            <div class="timeline-body"><p>Yeah, exactly as I thought. You're looking at its behavior with respect to memory, but you aren't actually checking that the result is consistent.</p>
+<p>I roughly copied your process but simplified things a little in places. Here's my <code>dd</code> command:</p>
+<pre><code>dd status=progress if=/dev/zero count=10240000 bs=1024 &gt; ./binary-test.bin ; echo 'ZQZQZQZQZQ' &gt;&gt; ./binary-test.bin ; dd if=/dev/zero count=10240000 bs=1024 status=progress &gt;&gt; ./binary-test.bin
+</code></pre>
+<p>And now my grep commands:</p>
+<pre><code>$ time rg -a --no-mmap ZQZQZQZQZQ binary-test.bin &gt; out.rg
+
+real    12.564
+user    2.550
+sys     8.708
+maxmem  11077 MB
+faults  0
+
+$ time LC_ALL=C grep -a ZQZQZQZQZQ binary-test.bin &gt; out.grep
+
+real    14.144
+user    4.070
+sys     10.062
+maxmem  16647 MB
+faults  0
+
+$ time LC_ALL=C grep -a ZQZQZQZQZQ binary-test.bin &gt; out.grep
+
+real    15.539
+user    4.040
+sys     10.257
+maxmem  16648 MB
+faults  0
+</code></pre>
+<p>(I added <code>--no-mmap</code> to ripgrep and ugrep to constrain things a bit here, since using file backed memory maps will usually impact the max resident memory usage reported. This just makes sure we're comparing the same thing. We don't need to do this for GNU grep because it will never use file backed memory maps. It used to long ago, but not any more.)</p>
+<p>Oh it must be that ugrep is doing something amazing here! No.... Let's check the output file:</p>
+<pre><code>$ l
+total 40G
+-rw-rw-r-- 1 andrew users  20G Jun  5 08:24 binary-test.bin
+-rw-rw-r-- 1 andrew users 9.8G Jun  5 08:28 out.grep
+-rw-rw-r-- 1 andrew users 9.8G Jun  5 08:26 out.rg
+-rw-rw-r-- 1 andrew users 114K Jun  5 08:28 out.ugrep
+</code></pre>
+<p>Both GNU grep and ripgrep emit the correct result here. Namely, the input file has two ~10GB sized lines, by construction. The thing we're searching for is at the very end of the first line. Both GNU grep and ripgrep print that line as-is. ugrep... does not. It prints a truncate version of it. You still see the match, but you're missing a huge chunk of the first part of the line.</p>
+<p>What ugrep does might be good enough for you, and that's fine and great. But silently truncating lines like this is not something ripgrep is going to do. I would rather ripgrep fail, because then at least you don't think you're getting the correct output.</p>
+<p>With all that said, there is a flag that will help in this case, where ripgrep will treat all NUL bytes as line terminators. GNU grep supports it too:</p>
+<pre><code>$ time rg --null-data --no-mmap ZQZQZQZQZQ binary-test.bin &gt; out.rg
+
+real    2:00.24
+user    1:57.95
+sys     2.246
+maxmem  19 MB
+faults  0
+
+$ time LC_ALL=C grep --null-data ZQZQZQZQZQ binary-test.bin &gt; out.grep
+
+real    6.202
+user    4.160
+sys     2.034
+maxmem  19 MB
+faults  0
+</code></pre>
+<p>There is a perf bug in ripgrep here (filed in #2832), but it does avoid the exorbitant memory usage. The search is just slow.</p>
+<p>What about ugrep? Its README says:</p>
+<blockquote>
+<p>Ugrep is a true drop-in replacement for GNU grep</p>
+</blockquote>
+<p>So the GNU grep command above should work if I swap out grep for ugrep right?</p>
+<pre><code>$ time ugrep-6.1.0 --null-data --no-mmap ZQZQZQZQZQ binary-test.bin &gt; out.ugrep
+ugrep: invalid option --null-data, did you mean --neg-regexp=, --not, --no-any-line, --no-ascii, --no-binary, --no-bool, --no-break, --no-byte-offset, --no-color, --no-config, --no-confirm, --no-decompress, --no-dereference, --no-dereference-files, --no-dotall, --no-empty, --no-filename, --no-filter, --no-glob-ignore-case, --no-group-separator, --no-heading, --no-hidden, --no-hyperlink, --no-ignore-binary, --no-ignore-case, --no-ignore-files --no-initial-tab, --no-invert-match, --no-line-number, --no-only-line-number, --no-only-matching, --no-messages, --no-mmap, --no-pager, --no-pretty, --no-smart-case, --no-sort, --no-split, --no-stats, --no-tree, --no-ungroup, --no-view or --null?
+For more help on options, try `ugrep --help' or `ugrep --help WHAT'
+
+$ ln -s ~/bin/x86_64/ugrep-6.1.0 grep
+
+$ time ./grep --null-data --no-mmap ZQZQZQZQZQ binary-test.bin &gt; out.ugrep
+ugrep: invalid option --null-data, did you mean --neg-regexp=, --not, --no-any-line, --no-ascii, --no-binary, --no-bool, --no-break, --no-byte-offset, --no-color, --no-config, --no-confirm, --no-decompress, --no-dereference, --no-dereference-files, --no-dotall, --no-empty, --no-filename, --no-filter, --no-glob-ignore-case, --no-group-separator, --no-heading, --no-hidden, --no-hyperlink, --no-ignore-binary, --no-ignore-case, --no-ignore-files --no-initial-tab, --no-invert-match, --no-line-number, --no-only-line-number, --no-only-matching, --no-messages, --no-mmap, --no-pager, --no-pretty, --no-smart-case, --no-sort, --no-split, --no-stats, --no-tree, --no-ungroup, --no-view or --null?
+For more help on options, try `ugrep --help' or `ugrep --help WHAT'
+</code></pre>
+<p>:thinking:</p>
+<p>Anyway, it looks like there's a perf bug to fix in ripgrep when <code>--null-data</code> is used, but otherwise, I don't see anything else to change here. You're fundamentally asking a grep here to print out a line that is 10GB long. You shouldn't be surprised when it uses a similar amount of memory. Your surprise seems rooted in the fact that &quot;ugrep can do it,&quot; but actually, ugrep can't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RecRanger">@RecRanger</a> on 2024-06-05 17:50</div>
+            <div class="timeline-body"><p>Notice that I mention the <code>--only-matching</code>, which restricts to only the matching regex (which is, of course, just a string here, but could be an actual interesting output). I think there's a potential optimization to not load entire &quot;lines&quot; into memory when the <code>--only-matching</code> flag is used, and when the regex has a clear max length. Thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-06-05 17:55</div>
+            <div class="timeline-body"><p>A potential optimization for sure, but not one that I plan to pursue. It requires the regex engine to support streaming, and this comes with a whole host of other trade offs. It's a big effort. ripgrep's regex engine supports this to a degree, but wiring everything up is non-trivial. Stream searching is abstraction busting.</p>
+<p>The lower hanging fruit here is to fix the perf bug in <code>--null-data</code>. Then you can use that.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:49 UTC
+    </footer>
+</body>
+</html>

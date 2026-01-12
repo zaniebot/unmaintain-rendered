@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>searcher: fix regression with `--line-buffered` flag - BurntSushi/ripgrep #3195</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>searcher: fix regression with <code>--line-buffered</code> flag</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/3195">#3195</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-10-19 14:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>In my fix for #3184, I actually had two fixes. One was a tweak to how we
+read data and the other was a tweak to how we determined how much of the
+buffer we needed to keep around. It turns out that fixing #3184 only
+required the latter fix, found in commit
+d4b77a8d8967ce1bf701ec65ceb9a75e85e5f2e0. The former fix also helped the
+specific case of #3184, but it ended up regressing <code>--line-buffered</code>.</p>
+<p>Specifically, previous to 8c6595c215d1e24bed5b7b86e2b18f3c871439ef (the
+first fix), we would do one <code>read</code> syscall. This call might not fill our
+caller provided buffer. And in particular, <code>stdin</code> seemed to fill fewer
+bytes than reading from a file. So the &quot;fix&quot; was to put <code>read</code> in a loop
+and keep calling it until the caller provided buffer was full or until
+the stream was exhausted. This helped alleviate #3184 by amortizing
+<code>read</code> syscalls better.</p>
+<p>But of course, in retrospect, this change is clearly contrary to how
+<code>--line-buffered</code> works. We specifically do <em>not</em> want to wait around
+until the buffer is full. We want to read what we can, search it and
+move on.</p>
+<p>So this reverts the first fix but leaves the second, which still
+keeps #3184 fixed and also fixes #3194 (the regression).</p>
+<p>This reverts commit 8c6595c215d1e24bed5b7b86e2b18f3c871439ef.</p>
+<p>Fixes #3194</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-10-19 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-10-19 15:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-19 15:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:25 UTC
+    </footer>
+</body>
+</html>

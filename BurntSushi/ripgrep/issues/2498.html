@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restricting directories leads gitignore to be interpreted too strongly - BurntSushi/ripgrep #2498</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Restricting directories leads gitignore to be interpreted too strongly</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2498">#2498</a>
+        opened by <a href="https://github.com/est31">@est31</a>
+        on 2023-04-23 09:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/est31">@est31</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>What operating system are you using ripgrep on?</h4>
+<p><code>NixOS 22.11 Raccoon</code></p>
+<h4>Describe your bug.</h4>
+<p>Ripgrep ignores some files through .gitignore that git doesn't ignore.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<pre><code>$ git clone https://github.com/rust-lang/rust
+$ cd rust
+$ rg &quot;Returns an rvalue suitable for use&quot;
+compiler/rustc_mir_build/src/build/expr/as_rvalue.rs
+22:    /// Returns an rvalue suitable for use until the end of the current
+$ rg &quot;Returns an rvalue suitable for use&quot; compiler/
+&lt;nothing&gt;
+$ rg &quot;Returns an rvalue suitable for use&quot; compiler/rustc_mir_build/src/build/
+compiler/rustc_mir_build/src/build/expr/as_rvalue.rs
+22:    /// Returns an rvalue suitable for use until the end of the current
+</code></pre>
+<p>As you can see, ripgrep doesn't traverse into the <code>build/</code> directory, but only if its directory is restricted. I'd put this on .gitignore containing <code>build/</code> and ripgrep interpreting that too strongly.</p>
+<p>git has no problems with the gitignore file, when you do:</p>
+<pre><code>$ touch compiler/rustc_mir_build/src/build/hello.rs
+$ git add compiler/
+</code></pre>
+<p>git adds that new file.</p>
+<p>git behaviour is a bit weird here because <code>build/</code> is meant to apply to all directories, including non-top-level ones. I'm not sure what the logic in git is but for ripgrep it was a bit unexpected for me. Btw, the file does show up in vscode's search even if you restrict yourself to <code>compiler/</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-04-23 11:46</div>
+            <div class="timeline-body"><p>So I can't quite tell which bug is being reported here. Could you say what the <em>expected</em> output of each <code>rg</code> command is?</p>
+<p>Basically:</p>
+<ol>
+<li>ripgrep has problems applying gitignore rules when searching explicit sub-directories. I believe there are several outstanding issues about this already. See for example: #1757, #1050, #829 and #278. I've basically resisted fixing it until I've had a chance to rethink <code>ignore</code>.</li>
+<li>You mention <code>git add some-file-that-is-ignored</code>. And then <code>git</code> handles it fine from there. That's an inconsistency between ripgrep and git that probably won't ever be resolved. The solution is to make <code>.gitignore</code> files precisely correct. That is, <code>.gitignore</code> should line up with files that are actually in revision control.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/est31">@est31</a> on 2023-04-23 17:53</div>
+            <div class="timeline-body"><blockquote>
+<p>2. You mention <code>git add some-file-that-is-ignored</code>. And then <code>git</code> handles it fine from there.</p>
+</blockquote>
+<p>FTR, the same happens if you do <code>git add .</code>, git picks up the file. For ignored files, git wants you to pass the -f option. And git status reports the file as changed, while no such behaviour occurs when you do the same with properly ignored files.</p>
+<p>The behaviour I expect is that ripgrep is consistent with git, and consistent with itself. If you don't restrict the directories, it works fine, see output above.</p>
+<p>I guess one workaround would be to turn the <code>build/</code> into <code>/build/</code> in rustc's gitignore, but it also feels like a ripgrep bug to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-04-23 17:55</div>
+            <div class="timeline-body"><p>Can you clarify the expected output for each of your <code>rg</code> commands please?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/est31">@est31</a> on 2023-04-23 17:56</div>
+            <div class="timeline-body"><p>Actual output:</p>
+<pre><code>$ rg &quot;Returns an rvalue suitable for use&quot;
+compiler/rustc_mir_build/src/build/expr/as_rvalue.rs
+22:    /// Returns an rvalue suitable for use until the end of the current
+$ rg &quot;Returns an rvalue suitable for use&quot; compiler/
+&lt;nothing&gt;
+$ rg &quot;Returns an rvalue suitable for use&quot; compiler/rustc_mir_build/src/build/
+compiler/rustc_mir_build/src/build/expr/as_rvalue.rs
+22:    /// Returns an rvalue suitable for use until the end of the current
+</code></pre>
+<p>Expected output:</p>
+<pre><code>$ rg &quot;Returns an rvalue suitable for use&quot;
+compiler/rustc_mir_build/src/build/expr/as_rvalue.rs
+22:    /// Returns an rvalue suitable for use until the end of the current
+$ rg &quot;Returns an rvalue suitable for use&quot; compiler/
+22:    /// Returns an rvalue suitable for use until the end of the current
+$ rg &quot;Returns an rvalue suitable for use&quot; compiler/rustc_mir_build/src/build/
+compiler/rustc_mir_build/src/build/expr/as_rvalue.rs
+22:    /// Returns an rvalue suitable for use until the end of the current
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-04-23 17:58</div>
+            <div class="timeline-body"><p>All righty, thanks. I <em>suspect</em> this is a duplicate, but I don't have the context paged into cache to know for sure. It does look like a ripgrep bug.</p>
+<p>(I sadly don't expect this to get fixed any time soon because I don't expect this to get fixed until <code>ignore</code> has been rethought.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2023-04-23 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/est31">@est31</a> on 2023-04-23 18:01</div>
+            <div class="timeline-body"><p>Hmm yeah it seems a lot like a dupe of #278. Closing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @est31 on 2023-04-23 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/est31">@est31</a> on 2023-04-23 19:57</div>
+            <div class="timeline-body"><p>oh I've checked rustc's gitignore, it seems to indeed be a case of #1050 -- the build dir is negatively exempted from the &quot;build should be ignored&quot; rule in gitignore. That's why it work in git...</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:40 UTC
+    </footer>
+</body>
+</html>

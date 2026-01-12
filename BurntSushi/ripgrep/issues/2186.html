@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support for special characters (such as new line characters) for --replace - BurntSushi/ripgrep #2186</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support for special characters (such as new line characters) for --replace</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2186">#2186</a>
+        opened by <a href="https://github.com/kenorb">@kenorb</a>
+        on 2022-04-18 15:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kenorb">@kenorb</a></div>
+            <div class="timeline-body"><h4>Describe your feature request</h4>
+<p>I've got the following command to grep for 2 words:</p>
+<pre><code>$ echo foo bar | rg -o '(\w+)\s(\w+)'
+foo bar</code></pre>
+<p>However I would like to extend it to print the second line with the opposite order.</p>
+<p>For example:</p>
+<pre><code>$ echo foo bar | rg -o '(\w+)\s(\w+)' -r '$1 $2\n$2 $1'
+foo bar\nbar foo</code></pre>
+<p>However new line character (<code>\n</code>) isn't processed.</p>
+<p>Same with: <code>-r &quot;\$1 \$2\n\$2 \$1&quot;</code>.</p>
+<p>I've tried with <code>^M</code>, but it prints the 2nd line only</p>
+<pre><code>$ echo foo bar | rg -o '(\w+)\s(\w+)' -r '$1 $2^M$2 $1'
+bar foo</code></pre>
+<p>Here is the workaround with expected results:</p>
+<pre><code>$ echo foo bar | rg -o '(\w+)\s(\w+)' -r &quot;\$1 \$2$(printf '\n\r')\$2 \$1&quot;
+foo bar
+bar foo</code></pre>
+<p>however it's still not working as expected (it's adding ^M at the beginning of the line, and <code>\n</code> alone doesn't work, so adding <code>tr -d &quot;\r&quot;</code> on top of it works).</p>
+<p>The feature is to add a support for special characters for replacement text.</p>
+<p>Version:</p>
+<pre><code>$ rg --version
+ripgrep 12.1.1</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kenorb">@kenorb</a> on 2022-04-19 11:06</div>
+            <div class="timeline-body"><p>I think I've found the acceptable workaround:</p>
+<pre><code>% echo foo bar | rg -o '(\w+)\s(\w+)' -r &quot;$(printf '$1 $2\n$2 $1')&quot;
+foo bar
+bar foo
+</code></pre>
+<p>or by mixing it with another command:</p>
+<pre><code>% echo foo bar | rg -o '(\w+)\s(\w+)' -r &quot;$(crunch 5 5 + + 12 -t '$% $%' 2&gt;/dev/null)&quot;
+foo foo
+foo bar
+bar foo
+bar bar
+</code></pre>
+<p>This should be enough for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kenorb on 2022-04-19 11:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:31 UTC
+    </footer>
+</body>
+</html>

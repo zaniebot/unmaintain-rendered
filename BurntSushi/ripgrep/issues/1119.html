@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Only search literal text  - BurntSushi/ripgrep #1119</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Only search literal text</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1119">#1119</a>
+        opened by <a href="https://github.com/Xatenev">@Xatenev</a>
+        on 2018-11-23 12:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Xatenev">@Xatenev</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.6.0
+-AVX -SIMD</p>
+<h4>How did you install ripgrep?</h4>
+<p>cargo install</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Ubuntu 16.04</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>Hi,</p>
+<p>I am using ripgrep via fzf.vim inside vim. I'd like to only find exact matches of my text without using the regex engine but I haven't found how to do that in the docs.</p>
+<p>Example:</p>
+<p>Search term: <code>exists: function</code></p>
+<p>I only want to find text that is literally <code>exists: function</code>.</p>
+<p>What arguments do I have to pass to <code>rg</code> that it only finds literal text?</p>
+<p>I have tried using     -F, --fixed-strings        Treat the pattern as a literal string instead of
+a regular expression.
+but I get the results seen below</p>
+<p>https://gyazo.com/03a5c370b24b635e04ba01b384ae2c48</p>
+<p>I am not 100% sure if this is a ripgrep question or a FZF question, if it is related to FZF please close this and I will move over.</p>
+<p>Greetings
+Xatenev</p>
+<p>EDIT: My current full <code>rg</code> call is <code>rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden -g &quot;*.js&quot; -g &quot;*.java&quot; --follow --glob &quot;!build/*&quot; --glob &quot;!.git/*&quot; --color &quot;always&quot;</code></p>
+<p>EDIT 2: Fixed it, it was a FZF configuration</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Xatenev on 2018-11-23 12:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-11-23 12:41</div>
+            <div class="timeline-body"><p>I'm glad you fixed it. Could you please share your fix so that others can benefit from it?</p>
+<p>Also, in the future, when filling bugs against ripgrep, please include a reproduction that uses ripgrep directly and not through some other tool.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Xatenev">@Xatenev</a> on 2018-11-26 18:43</div>
+            <div class="timeline-body"><p>The FZF Configuration that solved the problem was</p>
+<p><code>{ 'options': '-e' }</code></p>
+<p>E.g.
+<code>command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --smart-case --no-ignore --hidden -g &quot;*.js&quot; -g &quot;*.java&quot; --follow --glob &quot;!build/*&quot; --glob &quot;!.git/*&quot; --color &quot;always&quot; '.shellescape(&lt;q-args&gt;).'| tr -d &quot;\017&quot;', 1, { 'options': '-e' },&lt;bang&gt;0)</code></p>
+<p>Nothing related to <code>ripgrep</code>, nor a bug in <code>fzf</code> - just gotta read the docs :).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/philgyford">@philgyford</a> on 2019-06-07 10:45</div>
+            <div class="timeline-body"><p>Thanks for posting this @Xatenev ... I'm having trouble working out where to add <code>{'options': '-e'}</code> in my configuration though, as I have the extra <code>with_preview</code> section, and everywhere I've tried adding it causes errors:</p>
+<pre><code class="language-vim">command! -bang -nargs=* Find
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --fixed-strings --follow --smart-case --glob &quot;!{.git/*,node_modules/*}&quot; '.shellescape(&lt;q-args&gt;), 1,
+  \   &lt;bang&gt;0 ? fzf#vim#with_preview('up:40%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   &lt;bang&gt;0
+  \ )
+</code></pre>
+<p>Any ideas?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danamkaplan">@danamkaplan</a> on 2019-07-29 18:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for posting this @Xatenev ... I'm having trouble working out where to add <code>{'options': '-e'}</code> in my configuration though, as I have the extra <code>with_preview</code> section, and everywhere I've tried adding it causes errors:</p>
+<pre><code class="language-viml">command! -bang -nargs=* Find
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --fixed-strings --follow --smart-case --glob &quot;!{.git/*,node_modules/*}&quot; '.shellescape(&lt;q-args&gt;), 1,
+  \   &lt;bang&gt;0 ? fzf#vim#with_preview('up:40%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   &lt;bang&gt;0
+  \ )
+</code></pre>
+<p>Any ideas?</p>
+</blockquote>
+<p>I just had this issue. Try putting in after the second call to fzf like I did for your snippet below.</p>
+<pre><code class="language-viml">command! -bang -nargs=* Find
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --fixed-strings --follow --smart-case --glob &quot;!{.git/*,node_modules/*}&quot; '.shellescape(&lt;q-args&gt;), 1,
+  \   &lt;bang&gt;0 ? fzf#vim#with_preview('up:40%')
+  \           : fzf#vim#with_preview({ 'options': '-e' }, 'right:50%:hidden', '?'),
+  \   &lt;bang&gt;0
+  \ )
+</code></pre>
+<p>I can however guarantee that my following call makes Rg NOT search filenames and also makes the FZF interface EXACT and NOT fuzzy, only when content grepping.</p>
+<pre><code class="language-viml">&quot; Make Ripgrep ONLY search file contents and not filenames
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --hidden --ignore-case --no-heading --color=always '.shellescape(&lt;q-args&gt;), 1,
+  \   &lt;bang&gt;0 ? fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}, 'up:60%')
+  \           : fzf#vim#with_preview({'options': '--delimiter : --nth 4.. -e'}, 'right:50%:hidden', '?'),
+  \   &lt;bang&gt;0)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/philgyford">@philgyford</a> on 2019-09-04 17:12</div>
+            <div class="timeline-body"><p>Thanks for this @danamkaplan ! I've spent some time puzzling over this and finally have it all working, with pretty much your final example shown.</p>
+<p>Now, if I search for <code>dogs cats</code> then I get lines containing &quot;dogs&quot; and/or &quot;cats&quot;. (Previously I also got lines containing any of those letters.)</p>
+<p>If I search for <code>dogs\ cats</code> then I only get lines containing the phrase &quot;dogs cats&quot;.</p>
+<p>Whatever it is that stops fzf searching in filenames is also a real help - thanks again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bnoordsij">@bnoordsij</a> on 2025-07-10 05:51</div>
+            <div class="timeline-body"><p>a bit slow, but I use an alias for that</p>
+<pre><code>rg_raw() {
+   regex=$*
+   rg &quot;$regex&quot; | sed -E &quot;s~.*$regex.*~\1~&quot;
+}
+</code></pre>
+<p>you can use it like this: to for example find all quoted text <code>rg_raw (&quot;.*&quot;)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-10 13:18</div>
+            <div class="timeline-body"><p>@bnoordsij I think this is a different issue. This issue is something about fzf, not ripgrep. In any case, it seems like you could just do <code>rg '&quot;([^&quot;]+)&quot;' -or '$1'</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:45 UTC
+    </footer>
+</body>
+</html>

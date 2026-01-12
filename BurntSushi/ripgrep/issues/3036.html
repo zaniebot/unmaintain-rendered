@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ignore::Walk Fails to Ignore Files Specified in .gitignore of a tempdir - BurntSushi/ripgrep #3036</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ignore::Walk Fails to Ignore Files Specified in .gitignore of a tempdir</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3036">#3036</a>
+        opened by <a href="https://github.com/pluveto">@pluveto</a>
+        on 2025-04-20 14:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pluveto">@pluveto</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[x] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>ignore = &quot;0.4&quot;</p>
+<h3>How did you install ripgrep?</h3>
+<p>N/A</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>N/A</p>
+<h3>Describe your bug.</h3>
+<p>When using ignore::Walk::new() to traverse a directory structure, files and directory contents specified in a local .gitignore file are not being ignored as expected. The walk seems to proceed as if the .gitignore rules (*.log and target/ in this case) are not being applied, leading to the inclusion of normally ignored files in the results.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>The following minimal Rust test case demonstrates the issue. It sets up a temporary directory with a .gitignore file, a file that should not be ignored (a.rs), a file that should be ignored (b.log), and a directory with a file that should be ignored (target/c.o).</p>
+<pre><code class="language-rs">use std::fs;
+use std::path::PathBuf;
+use tempfile::tempdir; // Needs tempfile crate: `cargo add tempfile --dev`
+use ignore; // Needs ignore crate: `cargo add ignore`
+
+#[test]
+fn test_ignore_not_working() {
+    // 1. Setup: Create a temporary directory
+    let dir = tempdir().unwrap();
+    let dir_path = dir.path();
+    println!(&quot;Test directory: {}&quot;, dir_path.display());
+
+    // 2. Create .gitignore with rules to ignore *.log and target/
+    // Note: Ensure newline separation for rules.
+    let gitignore_content = &quot;*.log\ntarget/\n&quot;;
+    fs::write(dir_path.join(&quot;.gitignore&quot;), gitignore_content).expect(&quot;Failed to write .gitignore&quot;);
+    println!(&quot;.gitignore content written.&quot;);
+
+    // 3. Create files:
+    //    - a.rs (should NOT be ignored)
+    //    - b.log (should be ignored by *.log rule)
+    //    - target/c.o (should be ignored by target/ rule)
+    fs::write(dir_path.join(&quot;a.rs&quot;), &quot;// A&quot;).expect(&quot;Failed to write a.rs&quot;);
+    fs::write(dir_path.join(&quot;b.log&quot;), &quot;Log B&quot;).expect(&quot;Failed to write b.log&quot;);
+    fs::create_dir(dir_path.join(&quot;target&quot;)).expect(&quot;Failed to create target dir&quot;);
+    fs::write(dir_path.join(&quot;target/c.o&quot;), &quot;Object C&quot;).expect(&quot;Failed to write target/c.o&quot;);
+    println!(&quot;Test files created.&quot;);
+
+    // 4. Perform the walk using default settings
+    let matches: Vec&lt;PathBuf&gt; = ignore::Walk::new(dir_path)
+        .map(|result| {
+            let entry = result.expect(&quot;Walk resulted in an error&quot;);
+            println!(&quot;Walk found: {}&quot;, entry.path().display()); // Debug print
+            entry.path().to_owned()
+        })
+        .collect();
+
+    println!(&quot;Collected matches: {:#?}&quot;, matches);
+
+    // 5. Assertions
+    // This assertion passes
+    assert!(matches.contains(&amp;dir_path.join(&quot;a.rs&quot;)), &quot;a.rs should be present&quot;);
+
+    // This assertion FAILS: `b.log` IS present in `matches`, but should NOT be.
+    assert!(!matches.contains(&amp;dir_path.join(&quot;b.log&quot;)), &quot;b.log should be ignored but was found&quot;);
+
+    // This assertion FAILS: `target/c.o` IS present in `matches`, but should NOT be.
+    // Note: ignore::Walk yields directories too by default, but the check here is for the file within.
+    // If target/ itself was yielded, that might be okay depending on settings, but target/c.o should not be.
+    assert!(!matches.contains(&amp;dir_path.join(&quot;target/c.o&quot;)), &quot;target/c.o should be ignored but was found&quot;);
+
+    // This assertion passes
+    assert!(!matches.contains(&amp;dir_path.join(&quot;.gitignore&quot;)), &quot;.gitignore itself should be ignored&quot;);
+}
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<p>The matches vector incorrectly includes the paths that should have been ignored: a.rs, b.log, and target/c.o.</p>
+<p>Example actual matches vector might look like (relative paths): [&quot;.&quot;, &quot;./.gitignore&quot;, &quot;./a.rs&quot;, &quot;./b.log&quot;, &quot;./target&quot;, &quot;./target/c.o&quot;] or similar depending on whether hidden files/dirs are included.</p>
+<p>Crucially, the assertions assert!(!matches.contains(&amp;dir_path.join(&quot;b.log&quot;))) and assert!(!matches.contains(&amp;dir_path.join(&quot;target/c.o&quot;))) fail because these paths are present in the matches vector.</p>
+<h3>What is the expected behavior?</h3>
+<p>The matches vector collected from ignore::Walk::new(dir_path) should only contain the path to a.rs. The files b.log and target/c.o should be excluded because they match the rules (*.log, target/) specified in the .gitignore file located in the walked directory root. The .gitignore file itself should also be excluded by default due to being hidden.</p>
+<p>The expected final matches vector (relative paths for simplicity): [&quot;./a.rs&quot;] (or potentially [&quot;.&quot;], [&quot;./a.rs&quot;] if the root dir itself is included, depending on exact walk configuration/version).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-20 14:59</div>
+            <div class="timeline-body"><p>A <code>.gitignore</code> file is only respected when a git repository is present, unless <a href="https://docs.rs/ignore/latest/ignore/struct.WalkBuilder.html#method.require_git"><code>WalkBuilder::require_git</code></a> is disabled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pluveto">@pluveto</a> on 2025-04-20 15:02</div>
+            <div class="timeline-body"><p>Thanks, make sense</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @pluveto on 2025-04-20 15:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:55 UTC
+    </footer>
+</body>
+</html>

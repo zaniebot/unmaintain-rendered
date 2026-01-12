@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fulltext search - BurntSushi/ripgrep #95</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fulltext search</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/95">#95</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2016-09-26 00:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>One of the things I've wanted <code>ripgrep</code> to do from before I even started writing it was fulltext search. General fulltext search is hard, but I wonder how far we can get by focusing on fulltext search <em>for code</em>.</p>
+<p>I know there are some tools out there already that aspire to do this:</p>
+<ul>
+<li><a href="https://github.com/google/codesearch">CodeSearch</a>, which is based on Russ Cox's excellent <a href="https://swtch.com/~rsc/regexp/regexp4.html">trigram index</a> article.</li>
+<li><a href="https://github.com/etsy/hound">Hound</a> (which is also based on Cox's write up).</li>
+</ul>
+<p>I'd like to start collecting use cases for functionality like this. In particular, most of the technical problems are already solved. Obviously, we have <code>ripgrep</code> and we have a lighting fast <a href="https://github.com/BurntSushi/fst">data structure for representing an inverted index</a> already (indeed, it's the same as what Lucene uses internally). I think the key problems remaining are figuring out the user interaction story. Some things off the top of my head:</p>
+<ul>
+<li>Does such a tool belong in <code>ripgrep</code>? Can use of an index be done seamlessly while still being a top notch general purpose search tool?</li>
+<li>What specific things does it do that make <em>code</em> search in particular better? Do we need parsers for every language?</li>
+<li>How is an out-of-band index maintained? Does a user need to manually update? Is it a daemon that watches directories for file notification and update itself automatically? How do we know if an index is out-of-date?</li>
+</ul>
+<p>Anyway, I'd like to start thinking about this. I don't know when I'll start on an implementation, but it'd be good to get ideas from other folks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2016-09-26 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-26 23:01</div>
+            <div class="timeline-body"><p>cc @comex I think you had some thoughts on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2016-09-27 23:53</div>
+            <div class="timeline-body"><p>cc @DivineDominion - you might have some thoughts on this, it relates to your comment https://github.com/seongjaelee/nvatom/issues/35#issuecomment-236913962</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/aidansteele">@aidansteele</a> on 2017-05-31 05:01</div>
+            <div class="timeline-body"><p>I have about 50 GB of &quot;code&quot; in the form of Git repos with long histories across a corporate codebase. GitHub's search is abysmal in terms of functionality and ripgrep is the best thing since sliced bread, so I'm keen to wrap up ripgrep in a minimal web UI.</p>
+<p>To begin with, I'll be happy to do something as crude as shelling out to <code>rg</code> and massaging the results. In the medium-longer term I'd be interesting in picking off any low-hanging fruit that might help my particular use-case.</p>
+<p>I remember reading in your blog post that the multitude of <code>stat</code> syscalls are expensive. I don't know much about the implementation of ripgrep yet, but this is something that I might be able to optimise in the rg-as-a-daemon case. It could traverse the entire directory hierarchy (and subtract files ignored by ignore files) <em>once</em> and keep that cached in memory. Perhaps <code>SIGUSR1</code> would direct the process to reload the list of files.</p>
+<p>Would this be a useful optimisation? The 50GB in question consists of ~700K files across ~1500 repos. Searches typically take about 3 seconds. I'm not sure if rg yet has some built-in profiling to emit how much time is spent in the dir traversal and text scanning stages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-05-31 13:42</div>
+            <div class="timeline-body"><p>@aidansteele To be clear, this issue is about fulltext search. It's not an issue about turning ripgrep into a daemon. :-) Turning ripgrep into a daemon is one particular implementation path for fulltext search because fulltext search generally implies the management of an index. It's hard to imagine that working well <em>without</em> some kind of daemon watching files, but that seems more like a convenience to me. It should always be possible to use ripgrep without a daemon where by the end user updates the index manually.</p>
+<p>OK, with that said, I'll respond more directly.</p>
+<blockquote>
+<p>so I'm keen to wrap up ripgrep in a minimal web UI.</p>
+</blockquote>
+<p>This sounds exciting. If you ever want to chat more about this, I'd be happy if you opened a new more targeted issue.</p>
+<blockquote>
+<p>In the medium-longer term I'd be interesting in picking off any low-hanging fruit that might help my particular use-case.</p>
+</blockquote>
+<p>Thanks! Unfortunately, there's no low hanging fruit right now. Fulltext search is merely an idea in its infancy. (It's totally not even clear to me whether it should be a separate tool or not. I could make a <em>very good</em> argument for either way.) The most important thing <em>anyone</em> can do at this point in the game is help me come up with use cases. For example, if you could share more about how you envision your interaction with the tool, that would be great. Details about stat calls and daemons are better left out, but for example, things like this are useful:</p>
+<ul>
+<li>&quot;I expect ripgrep's search to do relevance ranking on the results&quot;</li>
+<li>&quot;I expect ripgrep's search results to be up to date with changes made to the corpus within the last 5 seconds&quot;</li>
+<li>&quot;I perceive updating ripgrep's index as expensive, so I'd like to manually control when that happens&quot;</li>
+<li>&quot;ripgrep takes programming language into account when ranking results&quot;</li>
+<li>(Blatantly stealing from bitbucket here) &quot;If I search a function name, I expect ripgrep to rank that function's definition above uses of that function&quot;</li>
+</ul>
+<p>Some of these are lofty goals---and they might not ever happen---but they are examples of the kind of thing I'm interested in at this point in time.</p>
+<blockquote>
+<p>I remember reading in your blog post that the multitude of stat syscalls are expensive. I don't know much about the implementation of ripgrep yet, but this is something that I might be able to optimise in the rg-as-a-daemon case. It could traverse the entire directory hierarchy (and subtract files ignored by ignore files) once and keep that cached in memory. Perhaps SIGUSR1 would direct the process to reload the list of files.</p>
+</blockquote>
+<p>To give you an idea of how premature this is, I wouldn't expect rg-as-a-daemon to be relevant for <em>at least</em> another year, and that's only if we start working on the fulltext side of things very soon.</p>
+<blockquote>
+<p>Would this be a useful optimisation? The 50GB in question consists of ~700K files across ~1500 repos. Searches typically take about 3 seconds. I'm not sure if rg yet has some built-in profiling to emit how much time is spent in the dir traversal and text scanning stages.</p>
+</blockquote>
+<p>A non-trivial amount of time is spent not only in directory traversal, but also in matching gitignore rules against each file path. I wouldn't be surprised if it shaved off a third of your search time, but I wouldn't expect much more than that.</p>
+<p>In any case, even if we do rg-as-a-daemon, the point isn't so much to &quot;save on directory traversal&quot; as it is to &quot;keep an index up to date.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DivineDominion">@DivineDominion</a> on 2017-06-01 13:28</div>
+            <div class="timeline-body"><p>Since you asked for a use case: I wish I had the power of <code>rg</code>  in my (Mac) note taking app project where I have to fiddle with my own file index -- so having a rg-daemon would be very cool since it basically means I don't have to port search and indexing across platforms and get its raw power for nearly free :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-01 13:30</div>
+            <div class="timeline-body"><p>@DivineDominion Thanks! Can you give more details on the precise interaction you'd want to see? I'm not familiar with your note taking app (or Macs, for that matter), so I don't understand what the specific integration points are. For example, can you say more about your &quot;file index&quot;? Do you have enough data where an index is beneficial?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-01 13:31</div>
+            <div class="timeline-body"><p>I'd like to stress another point here: fulltext search isn't necessarily about making ripgrep faster. It might help for truly large scale work loads (&quot;I want to search a 50GB repo faster than 3 seconds&quot;), but an index isn't going to do much for the average joe. What I'm particularly interested in doing is <em>ranking</em> results as well. (And this is kind of why I might consider pushing this to a new tool, because I'm not sure how well ranking meshes with a CLI search tool.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DivineDominion">@DivineDominion</a> on 2017-06-01 14:12</div>
+            <div class="timeline-body"><p>In an ideal world, the app offers auto-completion of note titles while you search and filters the results live. (It's already pretty fast with C strstr()) Hitting the drive for every search request (i.e. every n-th key stroke) is taxing the hardware a bit too much for my taste, though, so I work on an index at the moment. Nothing clever, just full text search based on word components.</p>
+<p>Like this one here (Notational Velocity/nvALT):
+https://www.youtube.com/watch?v=vP-rLLKL_6U&amp;t=0m55s</p>
+<p>Edit:
+Yes, the appeal of an index only becomes reality when you can query it in-memory for my purpose. It's more about 100k notes with 200 words each that I'm dealing with. Relevancy ranking would be great for my purposes, too :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alphapapa">@alphapapa</a> on 2017-07-23 16:17</div>
+            <div class="timeline-body"><p>I'm a little late to this issue, but I'll share this in case it helps @BurntSushi with any ideas.</p>
+<p>I've been maintaining and using the https://github.com/alphapapa/helm-org-rifle Emacs package for about a year and a half now.  It works well for searching Org-mode files that are already loaded into Emacs buffers, but for unopened files, it has to wait for Emacs to load each file before it can search it.  Emacs/Org users' styles vary: some use a few large Org files, while others use many smaller files, sometimes in a deep hierarchy of directories.  For example, one user uses a deep hierarchy of thousands of Org files essentially as a museum's database system.  Searching with helm-org-rifle works, but it takes some time to initially load all of the files into Emacs.</p>
+<p>So for some time I've been looking for and thinking about solutions for searching Org files with external processes; that way Emacs would only have to load the files that the user selects results from.  And also, searching text with an optimized binary like <code>grep</code> or <code>rg</code> is faster than searching inside Emacs with even byte-compiled elisp.</p>
+<p>Now of course, any plain-text search tool works in the general sense (<code>grep</code>, <code>rg</code>, etc), but the whole point of helm-org-rifle is to display results not as matching lines of plain text but as Org-mode entries (i.e. like Google displays matching pages, with titles and URLs, not just the matching lines in each page).  This requires the search tool to return context around the matching words up to an arbitrary token (in this case, between lines beginning and ending with one or more <code>*</code>, i.e. <code>^\*+\s+</code> in regexp terms).</p>
+<p>The closest I've come to finding a solution is actually <code>git grep</code>, because by setting:</p>
+<pre><code>[diff &quot;org&quot;]
+        xfuncname = &quot;^\\*+ +.*$&quot;
+</code></pre>
+<p>in <code>.git/config</code>, it provides the header of the entry the matching words are found in.  Unfortunately it doesn't seem to be completely reliable in that way; when I started testing it more seriously, I found that sometimes it just didn't do it correctly, for no apparent reason, and I wasn't able to tweak it into being reliable.</p>
+<p>So I've looked at just about every similar tool I can find, from <code>grep</code> to <code>awk</code> to even the seemingly abandoned but uniquely powerful <code>agrep</code>, but nothing quite does the job.  I haven't looked at this in a while, but as I recall, I am basically to the point that some kind of index tool is the only suitable solution.  Of course, for the relatively simple use cases I'm aiming for (the museum example is definitely an edge case), having to run and maintain an indexer is something I want to avoid.  I would much rather let a well-optimized tool like <code>rg</code> make use of the page cache, which would be fast enough to provide several orders of magnitude of improvement.</p>
+<p>So, for me, I wish <code>rg</code> could provide searching that would allow me to:</p>
+<ul>
+<li>Match words in arbitrary order (e.g. &quot;one two&quot; or &quot;two one&quot;)</li>
+<li>Use boolean operators to combine and exclude words (e.g. &quot;one NOT two&quot;, &quot;one AND two&quot;, etc)</li>
+<li>Consider matching records to be everything between arbitrary separator strings (i.e. basically a non-greedy <code>^\*+\s+.*$</code></li>
+</ul>
+<p>Maybe these requirements are too specific for a general-purpose tool like <code>rg</code>, but that's my dream.  :)</p>
+<p>Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rmccue">@rmccue</a> on 2017-12-10 14:22</div>
+            <div class="timeline-body"><p>Just chiming in to say I've been working on a code search service similar to Hound (using the same frontend, actually) powered by ripgrep under the hood. It's looking good so far, but this is going to be running across a massive codebase, so I imagine an index would help for performance. (Specifically, the codebase is <a href="https://github.com/markjaquith/WordPress-Plugin-Directory-Slurper">the entire WordPress.org plugins repository</a>, which is some 30GB+ on disk.)</p>
+<p>It would also be quite useful to be able to rank the results, although it's probably not our main use case. (As far as I could see, there also wasn't an <em>actual</em> rg-as-a-daemon thread apart from this one.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-12-10 15:27</div>
+            <div class="timeline-body"><p>@rmccue Wow that's very cool! I'll be excited to see the results of that. :-)</p>
+<p>My own personal leanings have somewhat shifted from &quot;add fulltext search to ripgrep&quot; to &quot;fulltext search should probably a completely different tool, albeit with large swathes of shared implementation details with ripgrep.&quot; Note though that I am specifically thinking of ranking results, which is perhaps too ambitious. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-02 14:14</div>
+            <div class="timeline-body"><p>I'm going to close this. It's a nice idea, but it is very nascent, and the more I've thought about this, the more I think it probably should be a separate tool. We can always revisit it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-02-02 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sluongng">@sluongng</a> on 2019-08-09 06:17</div>
+            <div class="timeline-body"><p>Im a bit curious toward this topic now as I am running into trouble scaling up hound.
+Even hound development itself seems to be quite stale at this point.</p>
+<p>Would love to hear what are some alternative direction, perhaps involving rust or ripgrep, that we can explore?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/keegancsmith">@keegancsmith</a> on 2019-08-09 07:44</div>
+            <div class="timeline-body"><p>There are alternatives to hound. Such as zoekt and Sourcegraph (disclaimer: I work at Sourcegraph).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sluongng">@sluongng</a> on 2019-08-09 08:21</div>
+            <div class="timeline-body"><blockquote>
+<p>There are alternatives to hound. Such as zoekt and Sourcegraph (disclaimer: I work at Sourcegraph).</p>
+</blockquote>
+<p>thanks for the suggestions.</p>
+<p>Zoekt looks quite primitive, but I will invest sometime into research it. (Docs dont seem to mention RegEx though)</p>
+<p>Sourcegraph is one of the solution we have been looking into, seems to be a bit complex and having the <code>EE edition</code> tag is a bit of a turn-off (admittedly i should do more research into it)</p>
+<p>I found <code>qgrep</code> so far which do a form of indexing, but I think thats per dir and lack of mechanism to rebuild index on adding new file.</p>
+<hr />
+<p>Perhaps what I am hoping for is the ability to use ripgrep (as well as equivalent <code>rg</code> binding to be used from applications level) in coupled with some indexing mechanism.</p>
+<p>Ripgrep itself does not need to do the indexing but it could support some sort of index file/cache specification that could speed up the search (plaintext or regex).</p>
+<p>any comment would be much appreciated @BurntSushi</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-08-09 11:01</div>
+            <div class="timeline-body"><blockquote>
+<p>Would love to hear what are some alternative direction, perhaps involving rust or ripgrep, that we can explore?</p>
+</blockquote>
+<p>I don't understand what kind of answer you're hoping for here. I closed this issue and haven't given much thought to it since.</p>
+<blockquote>
+<p>Ripgrep itself does not need to do the indexing but it could support some sort of index file/cache specification that could speed up the search (plaintext or regex).</p>
+</blockquote>
+<p>It already has one? You can tell ripgrep to only search a specific set of files like this: <code>rg &lt;pattern&gt; file1 file2 ... fileN</code>.</p>
+<hr />
+<p>To be honest, I still have a desire to build a tool like this, but I just do not have the time. My focus right now is on improvements to <code>regex</code>. (Which is an effort I started about two years ago, and will probably take me at least another year.) Moreover, a major impediment to building a tool like this is that I personally don't have a rock solid use case to dog food it with. That almost guarantees that I'll get something about the UX of the tool very wrong. I could <em>invent</em> a use case (i.e., clone a bunch of huge repositories), but it's fairly artificial.</p>
+<p><em>Many</em> of the technical pieces required for building a tool like this already exist in the Rust ecosystem. You don't even need ripgrep. ripgrep's core is just a shell (albeit, a complex one) around a bunch of libraries. The index could be built with <a href="https://docs.rs/fst"><code>fst</code></a>. There's even a cross platform crate for <a href="https://crates.io/crates/notify">listening to file system notifications</a>. My guess is that someone could build a <em>prototype</em> in about a week.</p>
+<p>But the success of a tool like this, IMO, is heavily dependent on its engineering quality, and in particular, its reliability. This is very hard to do, because the speed of the tool is the main selling point, and the speed is in turn dependent on an out-of-band index. That index needs to encapsulate state from the files being searched in a very reliable way. If the index's state gets out of sync, then searches are going to turn up incorrect or missing results. (A small number of false positives are probably tolerable, but false negatives are probably <em>never</em> tolerable.) This state synchronization, IMO, is the most significant initial hurdle that one has to overcome to build a tool like this. Because if you give wrong results, users aren't going to trust the tool, and if users don't trust the tool, they just aren't going to use it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alphapapa">@alphapapa</a> on 2019-08-09 19:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Moreover, a major impediment to building a tool like this is that I personally don't have a rock solid use case to dog food it with. That almost guarantees that I'll get something about the UX of the tool very wrong. I could invent a use case (i.e., clone a bunch of huge repositories), but it's fairly artificial.</p>
+</blockquote>
+<p>If only you were an <code>org-mode</code> user.  :)  That's my use-case: searching Org files, which are plain-text outlines whose nodes span multiple lines.  Line-based search tools work, of course, but per-line output (which omits outline headings) isn't as useful as per-node output (which treats the entire node as a result).</p>
+<blockquote>
+<p>That index needs to encapsulate state from the files being searched in a very reliable way. If the index's state gets out of sync, then searches are going to turn up incorrect or missing results. (A small number of false positives are probably tolerable, but false negatives are probably never tolerable.) This state synchronization, IMO, is the most significant initial hurdle that one has to overcome to build a tool like this. Because if you give wrong results, users aren't going to trust the tool, and if users don't trust the tool, they just aren't going to use it.</p>
+</blockquote>
+<p>Yes, exactly.  John Kitchin came up with a SQLite-based indexing tool for Org files, and I used it as a base for a prototype, which works fine, but the issue is expiring old data and reindexing whole files from scratch (because any change in the plain-text source file changes the positions of all the nodes later in the file).  The bottleneck seems to be deleting all the old table rows when a file changes.</p>
+<p>Anyway, having full-text/multi-line matching in Ripgrep would provide adequate performance for searching many large Org files, even without an out-of-band index.  I've tried all the grep-like tools I could find, but none of them were adequate to the task.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-08-09 19:59</div>
+            <div class="timeline-body"><p>@alphapapa I don't think you're just asking for fulltext search, you're asking for something that is aware of the semantic nature of the content that is being searched. As long as you don't have gigabytes of org mode files, I imagine your use case could be solved quite well without any index at all. You'd just need something that knows how to parse org mode files to the extent that it can show the output you want.</p>
+<p>I think fulltext search, at least as I conceptualize it here, is primarily about scale, and secondarily, potentially about relevance ranking. I think that in order to do relevance ranking well, particularly with code, you probably do need some semantic awareness. But it doesn't necessarily correspond to the same semantic awareness as needed for showing each result.</p>
+<p>But yeah, building a search engine is a lot of work. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rmchale">@rmchale</a> on 2021-02-01 06:32</div>
+            <div class="timeline-body"><p>Have you heard of the percolate concept?  https://docs.manticoresearch.com/2.7.5/html/searching/percolate_query.html. I learned about this for <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-percolate-query.html">elasticsearch</a>.  But I think this explains it well.  Essentially its search in reverse you run documents by a “compiled” query.  I think that would be a way to accomplish this feature.   I think this could work quite quickly / on the fly because you only need to index current search document</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-02-01 12:45</div>
+            <div class="timeline-body"><p>@rmchale Sorry, but I'm not sure I understand the relevance of percolate queries and ripgrep. Could you please be more specific?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-02-01 12:45</div>
+            <div class="timeline-body"><p>See also: #1497</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rmchale">@rmchale</a> on 2021-02-01 15:19</div>
+            <div class="timeline-body"><blockquote>
+<p>@rmchale Sorry, but I'm not sure I understand the relevance of percolate queries and ripgrep. Could you please be more specific?</p>
+</blockquote>
+<p>It's an inside out search so you don't have to create a daemon.  You index the query and send every document through the query.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-02-01 15:44</div>
+            <div class="timeline-body"><p>I think you're just repeating what the link says. :) What I don't understand is why I would want to do that for ripgrep.</p>
+<p>See my linked issue. There is no plan to make a daemon. The plan is to build an embedded IR engine, just like how Lucene works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/comex">@comex</a> on 2021-02-01 19:15</div>
+            <div class="timeline-body"><p>As far as I can tell, percolate queries aren't an alternative to indexes.  They still read through the whole search corpus just like a non-indexed search.  The use case is if you have a list of N different queries you want to run on the same corpus (you have to know all the queries in advance); with percolate queries you can read through the corpus one time instead of N times, while still giving each query its own results list.  But that doesn't really match the usage model of ripgrep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rmchale">@rmchale</a> on 2021-02-01 21:39</div>
+            <div class="timeline-body"><p>ripgrep seems like its super fast about determining which files to process regex/queries/search on.  But it doesn't know anything about the files its searching until run-time.  Typically search engines like lucene and I think what you are preposing requires that you have an index built up in order to return its results.  This seems a bit counter-intuitive to how ripgrep currently works.  percolate (or lucene-monitor) you don't have to build up any index.  You take the query (or multiple queries) compile it (index it in search terms) [should be super quick if there's only one] and run it against every document that matches the ripgrep file result set.  You would throw away the index after every call to ripgrep because most likely you would be indexing a new search the next time rg was called.  To me atleast it seems like a more intuitive fit for how ripgrep works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/comex">@comex</a> on 2021-02-01 22:02</div>
+            <div class="timeline-body"><p>That isn't any different from what ripgrep already does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rmchale">@rmchale</a> on 2021-02-01 22:21</div>
+            <div class="timeline-body"><p>I agree its similar to what rg is doing.  Except it doesn't support full-text search?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-02-01 22:42</div>
+            <div class="timeline-body"><ol>
+<li>This issue is closed.</li>
+<li>I linked to the issue tracking my current idea/work and it is a lot more specific then this issue.</li>
+<li>Perhaps you should define what you mean by &quot;fulltext search.&quot; (I think it was a poor choice of words to use on my part in this issue's title.)</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rmchale">@rmchale</a> on 2021-02-01 22:52</div>
+            <div class="timeline-body"><p>Sounds good</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:43 UTC
+    </footer>
+</body>
+</html>

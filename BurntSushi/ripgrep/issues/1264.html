@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>-j doesn't work for single large file. - BurntSushi/ripgrep #1264</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>-j doesn't work for single large file.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1264">#1264</a>
+        opened by <a href="https://github.com/leojay">@leojay</a>
+        on 2019-04-22 19:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/leojay">@leojay</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 11.0.1 (rev 973de50c9e)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>I downloaded the binary from the github release page.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Ubuntu 18.04</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>I use rg to search a huge file (&gt;20GB). And from &quot;top&quot; command, the cpu usage of rg is always &lt;=100%, which means that rg is using only 1 core, instead of multiple cores.
+&quot;-j 1&quot; and &quot;-j 6&quot; don't make any difference in terms of cpu usage and running time.
+My workstation has 6c/12t cpu, 64GB of ram and nvme ssd. So I don't think the hardware is the restriction here.</p>
+<p>Does ripgrep support multithreading in single large file at all? If not, is it on the roadmap?</p>
+<p>Thanks!
+Leo</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-04-22 19:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Does ripgrep support multithreading in single large file at all?</p>
+</blockquote>
+<p>Nope.</p>
+<blockquote>
+<p>If not, is it on the roadmap?</p>
+</blockquote>
+<p>Nope. It significantly complicates the implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-04-22 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2019-04-22 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/roycewilliams">@roycewilliams</a> on 2024-04-09 21:33</div>
+            <div class="timeline-body"><p>Since this is a semi-FAQ item, and searches for this question lead to this issue...</p>
+<p>A viable &quot;multithreaded ripgrep search of a single very large file&quot; workaround, <em>external</em> to ripgrep, is to use GNU Parallel with its <code>--pipepart -a [inputfile]</code> option.</p>
+<p>This will spawn multiple <code>rg</code> processes, and pass one raw <em>subsection</em> of <code>inputfile</code> to each process. You can adjust the number of blocks/processes to optimize for your hardware, including a <code>--block -1</code> option that spawns [core-count] processes to automaticallly divide the work into [core-count] chunks (which may be overkill, and bottlenecked on I/O).</p>
+<p><code>parallel --pipepart --block -1 -a haystackfile &quot;rg needlestring&quot;</code></p>
+<p>Note also that this workaround is specific to searching <em>single</em> files. ripgrep handles the multiple-file case quite efficiently on its own!</p>
+<p>(And for the record, I 100% support the idea that adding single-file multithreaded search to ripgrep would add complexity that @BurntSushi is perfectly justified in avoiding! I'm hoping this workaround will help others, but if it's not a net win to drop this here, let me know and I will delete it)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:53 UTC
+    </footer>
+</body>
+</html>

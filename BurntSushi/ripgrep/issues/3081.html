@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature: Add `id` to Glob to allow GlobSet identifying/reporting which one matched - BurntSushi/ripgrep #3081</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature: Add <code>id</code> to Glob to allow GlobSet identifying/reporting which one matched</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3081">#3081</a>
+        opened by <a href="https://github.com/reneleonhardt">@reneleonhardt</a>
+        on 2025-07-01 06:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/reneleonhardt">@reneleonhardt</a></div>
+            <div class="timeline-body"><h4>Describe your feature request</h4>
+<p><code>GlobSet</code> is very useful, but at the moment it can't report which specific Glob matched, it only reports true/false after iterating patterns.</p>
+<p>Current function:</p>
+<pre><code class="language-rust">pub fn is_match_candidate(&amp;self, path: &amp;Candidate&lt;'_&gt;) -&gt; bool {
+</code></pre>
+<p>New function:</p>
+<pre><code class="language-rust">pub fn get_match_id(&amp;self, path: &amp;Candidate&lt;'_&gt;) -&gt; Option&lt;String&gt; {
+</code></pre>
+<pre><code class="language-rust">pub struct Glob {
+    id: String, // Identifier
+    glob: String,
+    re: String,
+    opts: GlobOptions,
+    tokens: Tokens,
+}
+</code></pre>
+<p>This would allow to process even hundreds of Globs (maybe even in parallel with futures-concurrency) while still being able to identify which exact pattern matched and process a corresponding mapping accordingly (i.e. &quot;.gitignore discarded Cargo.lock&quot;).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-16 01:40</div>
+            <div class="timeline-body"><p>I'm open to this, but as mentioned in #3092, the IDs should be auto-assigned as monotonically increasing integers starting from <code>0</code>. Similar to how <code>regex-automata</code> and <code>aho-corasick</code> work. Attaching <code>String</code> values like suggested is bad juju and imposes extra costs that don't need to be paid for all such use cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2025-10-16 01:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:56 UTC
+    </footer>
+</body>
+</html>

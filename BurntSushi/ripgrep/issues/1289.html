@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is --null-data expected to behave like --null when printing file path? - BurntSushi/ripgrep #1289</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Is --null-data expected to behave like --null when printing file path?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1289">#1289</a>
+        opened by <a href="https://github.com/learnbyexample">@learnbyexample</a>
+        on 2019-05-30 06:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/learnbyexample">@learnbyexample</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code class="language-bash">$ rg --version
+ripgrep 11.0.1 (rev 1f1cd9b467)
+-SIMD -AVX (compiled)
++SIMD -AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>Using https://github.com/BurntSushi/ripgrep/releases/download/11.0.1/ripgrep_11.0.1_amd64.deb</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Ubuntu 16.04.1</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>When <code>--null-data</code> option is used (but without using <code>--null</code>) and filenames are part of output, such file paths are terminated with NUL byte, similar to what <code>--null</code> does. Is this expected behavior?</p>
+<pre><code class="language-bash">$ echo 'how are you?' &gt; f1.txt
+$ echo 'who are you?' &gt; f2.txt
+
+$ rg --null-data -l 'are' f1.txt f2.txt
+f1.txtf2.txt$ 
+
+$ rg --null-data 'are' f1.txt f2.txt
+f1.txt1:how are you?
+
+f2.txt1:who are you?
+
+$ rg --null-data -l 'are' f1.txt f2.txt | od -c
+0000000   f   1   .   t   x   t  \0   f   2   .   t   x   t  \0
+0000016
+$ rg --null-data --heading 'are' f1.txt f2.txt | od -c
+0000000   f   1   .   t   x   t  \0   h   o   w       a   r   e       y
+0000020   o   u   ?  \n  \0  \n   f   2   .   t   x   t  \0   w   h   o
+0000040       a   r   e       y   o   u   ?  \n  \0
+0000053
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-05-30 11:03</div>
+            <div class="timeline-body"><p>Interesting! Thanks for filing this.</p>
+<p>The problem here is that when ripgrep prints file headings (instead of the full file path for each matching line), it needs to print a new line after the file path. Currently, the new line character used for that is the newline character set by the end user. In this case, the <code>--null-data</code> flag explicitly and intentionally sets the newline character to <code>\x00</code>. So that when printing the heading, the newline character used is <code>\x00</code> instead of <code>\n</code>. The same logic applies when printing file paths, as the newline character that was set is used there as well.</p>
+<p>I wonder what the correct behavior should be. The current behavior is indeed surprising, but consistent. Is the correct behavior to just assume <code>\n</code> as a line terminator when printing headings and file paths, unless <code>--null</code> is given?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2019-05-30 11:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/learnbyexample">@learnbyexample</a> on 2019-05-30 11:50</div>
+            <div class="timeline-body"><p>Personally, I don't have a use case, so I don't have a preference and this could just be added to manual as a note. Couple of points to consider:</p>
+<ul>
+<li>Filename and line number combination like <code>f1.txt1:</code> looks odd because NUL isn't visible on terminal</li>
+<li>User can always add <code>--null</code> option to get NUL separated paths, whereas if they want newline separated ones, there isn't a way to do it (as far as I know)</li>
+</ul>
+<p>For reference, as far as I've noticed, GNU grep uses <code>-z</code> to change line separator only for input data processing and adding the NUL after each output data match. File names are separated by newline as usual.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnnytemp">@johnnytemp</a> on 2020-01-22 06:52</div>
+            <div class="timeline-body"><p>I also experienced the similar issue - with <code>--null-data</code>, but not using <code>-l</code>. In my case, I want to have normal newline (<code>\n</code>) to separate results in the output, unless --null is explicitly given. Otherwise, the output will be garbage - not displayed correctly line-by-line. Even pipeline to <code>wc -l</code> doesn't work for that output. (Current temporary fix: can only pipeline to <code>tr '\0' '\n'</code>, which breaks terminal coloring and some behaviors)</p>
+<p>Changing the input data as null-terminated not just mean an I/O stream of lines terminated by null. It can also mean we want a textual file not to be separated into lines, so that we could use <code>rg</code> to match only first line, e.g. search the linux shebang pattern by <code>rg --null-data -o '\A#!/.*'</code>. It doesn't always imply user want the output to be garbage with <code>\0</code> separators.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnnytemp">@johnnytemp</a> on 2020-01-22 07:15</div>
+            <div class="timeline-body"><h3>About the output problem I mentioned above</h3>
+<p>I just double checked. Output without pipeline is still line-by-line, it is NOT ALWAYS garbage (or hard-to-read, I should say). I found that in the output of <code>rg --null-data -o '\A#!/.*'</code> (without further pipeline!), the first-character of each line (the filename part) disappeared due to a <code>\r&lt;some-color-escapes&gt;\0</code> sequence (just before '\n') (my files is in DOS line ending). (Note: '\r' make cursor return home, and '\0' print a blank). <em>Should a &quot;.&quot; better don't match both \r &amp; \n by default? (This doesn't harm linux environment)</em></p>
+<p>i.e. expected correct output:</p>
+<pre><code>file1.sh 1:#!/bin/bash
+file2.sh 1:#!/bin/bash
+file3.sh 1:#!/bin/bash</code></pre>
+<p>become:</p>
+<pre><code> ile1.sh 1:#!/bin/bash
+ ile2.sh 1:#!/bin/bash
+ ile2.sh 1:#!/bin/bash</code></pre>
+<p>In addition, I've checked that with pipeline or not, the behavior is different. With a further <code>| cat</code>, the output of <code>rg</code> is always single-lined (no <code>\n</code> but only '\r' &amp; '\0'). These two behaviors seems confusing...</p>
+<p><code>rg --version</code> -&gt; 11.0.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnnytemp">@johnnytemp</a> on 2020-01-22 07:46</div>
+            <div class="timeline-body"><p>Info: for <code>grep</code>, '--null-data' or '-z' -&gt; <code>Treat  input  and  output  data  as  sequences  of lines, each terminated by a zero byte</code>. Thus, I cannot say <code>rg</code> is wrong, because current behavior align with <code>grep</code>. Just not quite convenient for the mentioned use cases.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:55 UTC
+    </footer>
+</body>
+</html>

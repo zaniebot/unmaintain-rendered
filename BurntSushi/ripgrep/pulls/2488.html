@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>args: use non-capturing groups when joining multiple patterns - BurntSushi/ripgrep #2488</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>args: use non-capturing groups when joining multiple patterns</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/2488">#2488</a>
+        opened by <a href="https://github.com/gofri">@gofri</a>
+        on 2023-04-13 06:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gofri">@gofri</a></div>
+            <div class="timeline-body"><p>Fixes #2480</p>
+<p>Fix the joined pattern so that multiple VALID patterns cannot affect each other.
+e.g. worked before but fixed now:
+<code>echo FooBar | rg -e '(?i)notfoo' -e bar # no result</code></p>
+<p>Wontfix the joined pattern to handle some cases of multiple INVALID patterns that are &quot;coordinated&quot; to fix each other.
+e.g. still works but is unexpected:
+<code>echo 'FooBar' | rg -e '(' -e ')' # matches with an empty string</code></p>
+<p>also, introduces a new class of invalid patterns that work now but wouldn't work before:
+e.g. got parse error before but not now:
+<code>echo 'FooBar' | rg ')(' # matches with an empty string</code></p>
+<p>edit: pushed another commit to avoid the regerssion for a single pattern.
+the new class still applies for multiple patterns:
+e.g. got parse error before but not now:
+<code>echo 'FooBar' | rg -e ')(' -e 'x' # matches with an empty string</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gofri">@gofri</a> on 2023-04-13 06:56</div>
+            <div class="timeline-body"><p>@BurntSushi I figured the new case just after creating the PR:</p>
+<blockquote>
+<p>also, introduces a new class of invalid patterns that work now but wouldn't work before:
+e.g. got parse error before but not now:
+echo 'FooBar' | rg ')(' # matches with an empty string</p>
+</blockquote>
+<p>IMHO:
+It's not too bad to have this new class for multiple patterns, but I really don't like the fact that it also affects the detection for a single pattern (namely, <code>)(</code>).
+let me know if you think I should handle <code>len(patterns) == 1</code> differently</p>
+<p>edit: I pushed the commit to fix it, so let me know if you prefer that I revert it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-07-07 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-07-08 22:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:08 UTC
+    </footer>
+</body>
+</html>

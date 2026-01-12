@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stop all threads and write ANSI-Reset on Ctrl-C - BurntSushi/ripgrep #2727</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Stop all threads and write ANSI-Reset on Ctrl-C</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/2727">#2727</a>
+        opened by <a href="https://github.com/th1000s">@th1000s</a>
+        on 2024-02-01 00:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/th1000s">@th1000s</a></div>
+            <div class="timeline-body"><p>On Ctrt-C stop all threads currently writing to the terminal, ignoring whatever they have locked, and write the ANSI-Reset code directly to the terminal, then exit.</p>
+<p>This uses <code>pthread_kill()</code> or <code>SuspendThread()</code>, then <code>libc::write()</code> or <code>WriteConsoleA()</code> on Unix or Windows, respectively.</p>
+<hr />
+<p>So far only tested and enabled on Linux, macOS and Windows (cmd.exe, Powershell, Mingw64), but I am sure this will
+work on the BSDs and several others which have <code>pthread_kill()</code> - but I'd rather have someone confirm this first.</p>
+<p>And to compare the before/after, running <code>rg</code> with a <code>-j</code>  of 7, 11, 22, 33.. etc. will disable this handler.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/th1000s">@th1000s</a> on 2024-02-01 00:33</div>
+            <div class="timeline-body"><p>When suggesting to someone to use <code>rg</code> instead of &quot;legacy&quot; <code>grep -R .. | grep -v -e .git -e build</code> or <code>git grep ..</code>
+on the <em>very first try</em> (maybe spooked by the speed of the output) after ^C the terminal remained blood red and I had a slightly embarrassed look on my face.</p>
+<p>A lot of users have shells or prompts which handle this automatically. But now that <code>rg</code> is packaged by most Linux distros, more users which don't customize their shells use it, and first impressions matter as to not end up as &quot;newfangled nonsense&quot; :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-01 01:06</div>
+            <div class="timeline-body"><p>I've only skimmed this PR so far, but there is a ton of code here. And it also introduces a new dependency on <code>winapi</code>, which <a href="https://github.com/BurntSushi/winapi-util/pull/13">I hope to be getting rid of soon</a>.</p>
+<p>Separate from that, ripgrep used to have handling like this, but it ended up offering a worse user experience. Namely, <code>^C</code> wouldn't always terminate ripgrep. And I believe it worked very poorly on Windows.</p>
+<blockquote>
+<p>A lot of users have shells or prompts which handle this automatically.</p>
+</blockquote>
+<p>I just use a simple little script to fix coloring if and when it happens (which is rare): https://github.com/BurntSushi/dotfiles/blob/eb14900839a210f31b826f0ab070506528ea6a99/bin/reset-term</p>
+<blockquote>
+<p>But now that rg is packaged by most Linux distros</p>
+</blockquote>
+<p>This is not a recent development. This has been true for years.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/th1000s">@th1000s</a> on 2024-02-02 11:50</div>
+            <div class="timeline-body"><blockquote>
+<p><code>winapi</code> -&gt; <code>windows-sys</code></p>
+</blockquote>
+<p>Both crates work fine, I added a commit which uses <code>windows-sys</code> instead.</p>
+<blockquote>
+<p>Separate from that, ripgrep used to have handling like this, but it ended up offering a worse user experience. Namely, <code>^C</code> wouldn't always terminate ripgrep. And I believe it worked very poorly on Windows.</p>
+</blockquote>
+<p>I've seen the previous behavior, this is fixed in this PR. It does this by (safely) ignoring any held locks which could slow down a fast exit, so a few syscalls have to be issued directly.</p>
+<blockquote>
+<p>[rg packaged by most Linux distros is] not a recent development. This has been true for years.</p>
+</blockquote>
+<p>I must be thinking in Debian releases, there it has only been included for one or two releases I think :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-02 12:21</div>
+            <div class="timeline-body"><p>ripgrep has been in Debian for years.</p>
+<p>I'm not sure if I'm going to take this. It is so much code to solve an issue that I don't think is a big deal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-11 19:53</div>
+            <div class="timeline-body"><p>I'm going to close this. I don't think my opinion has changed since the above. I've tried this in the past, and it just lead to worse problems. 500 lines of code to deal with this just isn't worth it IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-07-11 19:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:14 UTC
+    </footer>
+</body>
+</html>

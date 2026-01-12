@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flag to list matches like --vimgrep, but without the file content - BurntSushi/ripgrep #1877</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Flag to list matches like --vimgrep, but without the file content</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1877">#1877</a>
+        opened by <a href="https://github.com/ad-si">@ad-si</a>
+        on 2021-05-28 14:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ad-si">@ad-si</a></div>
+            <div class="timeline-body"><p>This is how <code>--vimgrep</code> works:</p>
+<pre><code class="language-shell">$ rg --vimgrep 'version'
+package.json:3:4:  &quot;version&quot;: &quot;0.1.0&quot;,
+</code></pre>
+<p>What I want as an extra flag (could be named differently):</p>
+<pre><code class="language-shell">$ rg --location 'version'
+package.json:3:4
+</code></pre>
+<p>This doesn't work (maybe it should?):</p>
+<pre><code class="language-shell">$ rg --files-with-matches --line-number --column 'version'
+package.json
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-28 15:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Flag to list matches like --vimgrep, but without the file content</p>
+</blockquote>
+<p>Why? Please provide a use case.</p>
+<p>If this is performance related, please provide a benchmark.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ad-si">@ad-si</a> on 2021-05-28 16:46</div>
+            <div class="timeline-body"><p>To open all occurrences at the correct position in Sublime:</p>
+<pre><code class="language-shell">rg --location 'version' | xargs subl
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-28 17:14</div>
+            <div class="timeline-body"><p>@ad-si Oh, that should be easy enough without adding a new feature then:</p>
+<pre><code>$ rg 'version' --vimgrep | cut -d':' -f1-3 | xargs subl
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-05-28 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ad-si">@ad-si</a> on 2021-05-28 17:40</div>
+            <div class="timeline-body"><p>Why does rg then have any features at all? I can hack anything together with cut/ack/sed 🙄.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ad-si">@ad-si</a> on 2021-05-28 17:41</div>
+            <div class="timeline-body"><p>Also leaves open the question if this shouldn't actually already do it <code>rg --files-with-matches --line-number --column</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-28 17:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Why does rg then have any features at all? I can hack anything together with cut/ack/sed roll_eyes.</p>
+</blockquote>
+<p>This sort of attitude isn't appreciated. If you continue making unconstructive comments on any of my issue trackers, then I'm going to block you. My issue trackers are not your dumping ground to whine sarcastically.</p>
+<p>To respond more directly: while ripgrep subsumes some things that are traditionally done with longer shell pipelines, it does not subsume all of them. In this case, I don't think it's worth adding another flag (or changing how <code>--files-with-matches</code> works) just to get rid of a <code>cut</code> command.</p>
+<blockquote>
+<p>Also leaves open the question if this shouldn't actually already do it <code>rg --files-with-matches --line-number --column</code></p>
+</blockquote>
+<p><code>--files-with-matches</code> is an aggregate output format that prints matching file paths exactly once. It doesn't make sense to me personally change that to &quot;write the path for every match but without the match&quot; when certain flags are given.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ad-si">@ad-si</a> on 2021-05-28 19:18</div>
+            <div class="timeline-body"><p>I think a flag which prints the line and column next to filename is quite important, since many editors support opening them nowadays. This would also be helpful across many rg subcommands, since it could be added whenever a filename is printed. Actually I'd rather remove the <code>--vimgrep</code> flag (which is very specific) and replace it with something like <code>rg --location --oneline</code>, where <code>--location</code> ads the line:column and <code>--oneline</code> makes it print the match right next to the filename.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ad-si">@ad-si</a> on 2021-05-28 19:19</div>
+            <div class="timeline-body"><p>So what I was looking for would then be <code>rg --files-with-matches --location 'version'</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:22 UTC
+    </footer>
+</body>
+</html>

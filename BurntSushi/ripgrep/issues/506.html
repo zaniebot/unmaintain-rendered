@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using an unparenthesized pipe with -w produces unexpected results - BurntSushi/ripgrep #506</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Using an unparenthesized pipe with -w produces unexpected results</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/506">#506</a>
+        opened by <a href="https://github.com/scottmcm">@scottmcm</a>
+        on 2017-06-07 02:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/scottmcm">@scottmcm</a></div>
+            <div class="timeline-body"><p>I ran <code>rg -w 'min|max' src/lib*</code> in the rust source, and got far more results than I expected.  For example:</p>
+<pre><code>src/liblibc\src\unix\solaris\mod.rs
+17:pub type minor_t = ::c_uint;
+250:        pub f_namemax: ::c_ulong,
+1070:    pub fn mincore(addr: *const ::c_void, len: ::size_t,
+</code></pre>
+<p>It seems to be matching <code>(\bmin)|(max\b)</code>, whereas I expected <code>\b(min|max)\b</code>.</p>
+<p>repro'd in 0.4.0 and 0.5.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-07 03:10</div>
+            <div class="timeline-body"><p>Hah. Nice. Looks like you are right: https://github.com/BurntSushi/ripgrep/blob/master/src/args.rs#L508</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2017-06-08 10:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @BurntSushi on 2017-06-08 10:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-06-08 10:57</div>
+            <div class="timeline-body"><p>This should be a relatively easy bug if anyone wants to take a crack at it. Basically, all that needs to be done is to put a non-capturing group around the inner expression here: https://github.com/BurntSushi/ripgrep/blob/13235b596f93f7f0e7ce76e7967996787147e96e/src/args.rs#L508 --- And put a regression test in <code>tests/tests.rs</code> (search for <code>regression</code> to see examples of other regression tests).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-06-15 10:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:12 UTC
+    </footer>
+</body>
+</html>

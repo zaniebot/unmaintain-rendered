@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>should --vimgrep run in single threaded mode by default? - BurntSushi/ripgrep #2505</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>should --vimgrep run in single threaded mode by default?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2505">#2505</a>
+        opened by <a href="https://github.com/voidus">@voidus</a>
+        on 2023-05-05 14:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/voidus">@voidus</a></div>
+            <div class="timeline-body"><p>I think I'm hitting #999 again</p>
+<h4>What version of ripgrep are you using?</h4>
+<p><code>ripgrep 13.0.0</code></p>
+<h4>How did you install ripgrep?</h4>
+<p>Via nix' home-manager @nixpkgs rev 402cc3633cc60dfc50378197305c984518b30773</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Arch linux with a lot of stuff (including rg) coming from nix</p>
+<h4>Describe your bug.</h4>
+<p>Project info:</p>
+<pre><code class="language-&gt;">98M	.
+incl gitignore
+5717
+90682
+excl gitignore
+410
+27827
+
+ &gt; nix run nixpkgs#time -- -v rg a | wc -l        
+	Command being timed: &quot;rg a&quot;
+	User time (seconds): 0.00
+	System time (seconds): 0.00
+	Percent of CPU this job got: 160%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:00.01
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 10880
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 2214
+	Voluntary context switches: 211
+	Involuntary context switches: 29
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+14008
+
+&gt; nix run nixpkgs#time -- -v rg --vimgrep a | wc -l
+Command terminated by signal 9
+	Command being timed: &quot;rg --vimgrep a&quot;
+	User time (seconds): 4.67
+	System time (seconds): 35.86
+	Percent of CPU this job got: 85%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:47.30
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 26359456
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 15488
+	Minor (reclaiming a frame) page faults: 7088456
+	Voluntary context switches: 467064
+	Involuntary context switches: 52122
+	Swaps: 0
+	File system inputs: 1722872
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+89447
+</code></pre>
+<p>26Gigs of memory to search through a hundred megs of stuff seems like an issue.</p>
+<p>I <code>^c</code>'d the vimgrep one once my 32GB of memory + 18GB of swap were full.</p>
+<p>I'm running this in this subfolder: https://gitlab.com/sea-watch.org/planner/-/tree/main/backoffice but I'm working in this repo so it might not be the same.
+I did move the big .direnv folder with the python virtualenvs out of the way to run the above test.</p>
+<p>I'd be more than happy to debug this further if you have any guidance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-05-05 14:18</div>
+            <div class="timeline-body"><p>This is just #999 but with different data. The walkthrough I did in that issue is precisely relevant to your case.</p>
+<p>First, let's capture all of the results (in my case, <code>--vimgrep</code> uses less memory than it does for you, but it's still an exorbitant amount):</p>
+<pre><code>$ time rg a &gt; /tmp/rg2505-normal.txt
+
+real    0.020
+user    0.027
+sys     0.018
+maxmem  13 MB
+faults  0
+
+$ time rg a --vimgrep &gt; /tmp/rg2505-vimgrep.txt
+
+real    6.090
+user    1.063
+sys     8.381
+maxmem  18370 MB
+faults  0
+</code></pre>
+<p>OK, that seems crazy, but how big is the actual output?</p>
+<pre><code>$ ls -lh /tmp/rg2505-*.txt
+-rw-rw-r-- 1 andrew users 2.7M May  5 10:10 /tmp/rg2505-normal.txt
+-rw-rw-r-- 1 andrew users  18G May  5 10:10 /tmp/rg2505-vimgrep.txt
+</code></pre>
+<p>Well, okay, there's your problem. Case closed. ripgrep is using a lot of memory because you've asked it to. Note the docs of <code>--vimgrep</code>:</p>
+<pre><code>--vimgrep                                
+    Show results with every match on its own line, including line numbers and
+    column numbers. With this option, a line with more than one match will be
+    printed more than once.
+</code></pre>
+<p>That last sentence is telling you what's happening here: for every match ripgrep finds, the entire line is printed. This is presumably what editors like <code>vim</code> expect.</p>
+<p>This means that even if your corpus is very small, the output as a result of <code>--vimgrep</code> can still be extremely large. Indeed, the relationship is worst case quadratic. You can compute the worst case concretely by multiplying the total size of the corpus (4.5 MB in this case it looks like) by the total number of bytes in the corpus (4,500,000). That gives us about 20 GB here, which is a bit more than what ripgrep actually used. It's not a precise bound, but it's pretty close.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-05-05 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2023-05-05 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/voidus">@voidus</a> on 2023-05-05 15:09</div>
+            <div class="timeline-body"><p>Yes, that makes sense. Sorry for not reading the other issue close enough.</p>
+<p>I am not sure I understand the memory usage though. Shouldn't this be somewhat streamable? The output size being this large makes total sense, but the resident memory should be manageable, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-05-05 15:14</div>
+            <div class="timeline-body"><p>That's also discussed (very briefly) in #999 too. Output from each file is buffered in memory before being printed. There really isn't another choice if you want to prevent interleaving, which we do. If you disable parallelism then ripgrep will of course stream the output to stdout. For example:</p>
+<pre><code>$ time rg a --vimgrep &gt; /tmp/rg2505-vimgrep.txt
+
+real    6.080
+user    0.959
+sys     8.501
+maxmem  18372 MB
+faults  0
+
+$ time rg -j1 a --vimgrep &gt; /tmp/rg2505-vimgrep.txt
+
+real    3.365
+user    0.017
+sys     3.340
+maxmem  9 MB
+faults  0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/voidus">@voidus</a> on 2023-05-05 15:18</div>
+            <div class="timeline-body"><p>Thank you for pointing this out again. I know how annoying this kind of work is sometimes so I really appreciate you taking the time to answer in this way.</p>
+<p>Do you think it might be reasonable to make <code>-j1</code> default when <code>--vimgrep</code> is given? It seems to me that a bunch of people are running into this.</p>
+<p>I personally thought it was just my 16Gigs beeing too little memory, so I upgraded and was a little surprised to see the same problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-05-05 15:24</div>
+            <div class="timeline-body"><p>Hmmm. I don't know, to be honest. It's an interesting idea. I'll re-open the issue. I'll note the following though:</p>
+<ol>
+<li>Text editor plugins and what not should be able to make the choice of whether to set <code>-j1</code> or not without ripgrep doing it.</li>
+<li>It's not at all clear to me that making <code>-j1</code> the default is the right trade off. If 99.999% of all <code>rg --vimgrep</code> runs use &quot;reasonable&quot; memory, then setting <code>-j1</code> by default is likely to result in a <em>massive</em> performance regression in the overwhelmingly common case.</li>
+<li><code>--vimgrep</code> is itself a strange thing, and is IMO legacy. It would probably be better if text editor plugins used ripgrep's <code>--json</code> flag to get structured matches. This is what VS Code does, for example.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @BurntSushi on 2023-05-05 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> removed by @BurntSushi on 2023-05-05 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2023-05-05 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "--vimgrep memory usage again" to "should --vimgrep run in single threaded mode by default?" by @BurntSushi on 2023-05-05 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/voidus">@voidus</a> on 2023-05-05 15:27</div>
+            <div class="timeline-body"><p>Yeah I agree, it's a weird decision to make. For very short inputs, it's probably sensible, for longer ones it probably isn't. But making it conditional on the input length is weird.</p>
+<p>I'll push to add <code>-j1</code> by default in the telescope threads, I think this is where most people are bitten by this since it searches on every input. So if you type <code>abc</code>, it'll kick off a <code>rg --vimgrep a</code> in the background (at least sometimes, I think)</p>
+<p>Again, thank you for your answer even though it's an old topic &lt;3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-05-05 15:40</div>
+            <div class="timeline-body"><blockquote>
+<p>So if you type <code>abc</code>, it'll kick off a <code>rg --vimgrep a</code> in the background (at least sometimes, I think)</p>
+</blockquote>
+<p>Ah! I see. Yeah I don't actually use any ripgrep text editor plugins (except I guess for <code>fzf</code> but it only uses ripgrep to list out the files, not for searching), so I don't have a good sense of how they actually work. But yeah, indeed, <code>rg --vimgrep a</code> is a dangerous thing to run!</p>
+<p>This is indeed a tricky situation. I do feel like <code>--json</code> is probably the right answer here. <code>--vimgrep</code> feels fatally flawed unfortunately. There are other various things that could be done, but they all feel yucky:</p>
+<ul>
+<li>As you mention, set <code>-j1</code> based on needle length. I'd venture <code>needle.len() &lt;= 2</code> =&gt; <code>-j1</code> might be good enough. Once you get beyond two bytes (assuming it's a literal), match frequency tends to drop off quite a bit in non-pathological cases. Of course, you could run a regex like <code>.*</code>, but then you get what you deserve I guess? Hah.</li>
+<li>We could add an option to ripgrep that caps the size of the output buffer used by each thread. And if ripgrep would exceed that size it.... emits an error? (I don't like this for a lot of reasons.)</li>
+<li>Don't use <code>--vimgrep</code> and instead just parse the normal output. Maybe with <code>--column</code>? I don't know how these editor plugins work and whether they really really need <code>--vimgrep</code>. This might be easier than going full hog with <code>--json</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/voidus">@voidus</a> on 2023-05-05 15:45</div>
+            <div class="timeline-body"><p>Good points, I guess maybe it's time to shift the whole ecosystem away from the --vimgrep format...</p>
+<p>Without knowing the actual code or any of the pitfalls, wouldn't it be possible to have limited buffers with blocking until they are consumed? (I'm completely ignoring a possibly huge refactoring here of course)
+I think the keyword is backpressure, but I only know it in the abstract, not if it would be a fit here or the intricacies of actually implementing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-05-05 15:55</div>
+            <div class="timeline-body"><p>In the abstract it is theoretically possible I believe. Playing it forward: All of the matches from a particular file need to be emitted in one contiguous chunk. Backpressure could work if <em>one particular</em> file resulted in a large output buffer and backpressure was based on <em>total</em> memory consumption. In that case, you'd wait for some of the other output buffers to get printed and then allocate their space to the one that is stuck because it ran out of room. At that point, you'd need to refactor the code to dynamically switch to streaming <em>just</em> the output of that one file to stdout, and once complete, switch back to the normal parallel strategy of buffering output. But what if there are multiple output buffers that are at or near capacity? You'd have to stop the entire search and focus on one buffer at a time until you've drained the buffers at capacity, and then resume the standard parallel search. In the worst case (and I kind of expect <code>rg a --vimgrep</code> to provoke exactly that), it will devolve to single threaded search, but with a lot of overhead.</p>
+<p>The overall strategy is infeasible to implement from my perspective. More generally, adding backpressure to a system that wasn't designed for it at the start is quite difficult. And it probably doesn't really solve the problem here any better than using <code>-j1</code> does with one exception: it would dynamically switch to <code>-j1</code> only when needed. But popping up a level, all of this is a result of incidental complexity caused by how editor plugins use ripgrep in the first place. So it's definitely not worth adding backpressure IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2023-08-02 07:35</div>
+            <div class="timeline-body"><p>Does --max-columns 4096 help on the test case for this issue? From my reading of my vim docs, grepprg functionality does not look past the first 4096 bytes of a line anyway. It seems like an option that can cut down the amount of work needing to be done here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-24 19:06</div>
+            <div class="timeline-body"><p>@bluss Interesting idea. I tried that out and it doesn't seem to help unfortunately.</p>
+<p>I thought about this and I think I'm going to leave the behavior of <code>--vimgrep</code> alone. Disabling parallelism for that mode seems like a pretty huge bummer. But I have added some extra docs warning about these failure modes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-11-24 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-25 20:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:40 UTC
+    </footer>
+</body>
+</html>

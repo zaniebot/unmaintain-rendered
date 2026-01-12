@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combination of --file and --replace with capture group does not work as expected - BurntSushi/ripgrep #2210</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Combination of --file and --replace with capture group does not work as expected</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2210">#2210</a>
+        opened by <a href="https://github.com/salsifis">@salsifis</a>
+        on 2022-05-12 07:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/salsifis">@salsifis</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p><code>cargo install ripgrep</code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Windows 10 21H2 (build 19044)</p>
+<h4>Describe your bug.</h4>
+<p>It is not possible to use <code>--file</code> in combination with <code>--replace</code> where there are capture groups.</p>
+<p><code>rg --file &lt;pattern_file&gt; --replace &quot;replacement_with_$capturegroup&quot; --only-matching</code></p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>Suppose I would like to extract names of streets in different languages from text files.
+I constitute the following pattern file:</p>
+<pre><code>\d+,?\s*rue (.+)
+(\S+?)strasse\s*\d+
+\d+,?\s*(.+?)\s+street
+</code></pre>
+<p>note: I have tried to use <code>\r</code>, <code>\n</code> and <code>\r\n</code> as line endings for the pattern file</p>
+<p>Now, I try to invoke ripgrep:</p>
+<p><code>rg --file pattern_file --glob *.txt --only-matching --replace &quot;$1&quot;</code></p>
+<p>with the following input (sorry if my German or English are broken) :</p>
+<pre><code>La maison est au 3 rue Victor Hugo.
+Du lebst am Hauptstrasse 39.
+19, Raffles street is the address.
+</code></pre>
+<h4>What is the actual behavior?</h4>
+<p>The actual behavior is that <code>$1</code> in my replace string corresponds only tho the capture group of the first pattern.</p>
+<p>The output is:</p>
+<pre><code>test.txt
+1:Victor Hugo
+2:
+3:
+</code></pre>
+<p>Replacing with <code>$1$2$3</code> works but this workaround could work only with a small and known number of pattern lines.</p>
+<h4>What is the expected behavior?</h4>
+<p>I think that the following output is desirable:</p>
+<pre><code>text.txt
+1:Victor Hugo.
+2:Haupt
+3:Raffles
+</code></pre>
+<h4>Notes</h4>
+<p>It is not possible to use a pattern file in which all patterns have a named capture group, with the same name.</p>
+<p>For example this is not supported, and an error complains that a named capture group is declared twice:</p>
+<pre><code>\d+,?\s*rue (?P&lt;street&gt;.+)
+(?P&lt;street&gt;\S+?)strasse\s*\d+
+\d+,?\s*(?P&lt;street&gt;.+?)\s+street
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-05-12 10:53</div>
+            <div class="timeline-body"><p>This is because the pattern file is compiled down into a single regex. I don't see any easy way of making what you want work. Sorry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2022-05-12 10:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2022-05-12 10:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/salsifis">@salsifis</a> on 2022-05-12 11:21</div>
+            <div class="timeline-body"><blockquote>
+<p>This is because the pattern file is compiled down into a single regex. I don't see any easy way of making what you want work. Sorry.</p>
+</blockquote>
+<p>Yes, I was a bit afraid that this would be too complicated because it would imply much refactoring.</p>
+<p>Maybe it would be worth mentioning in the documentation that capture groups and <code>-f</code> do not mix well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pamburus">@pamburus</a> on 2024-05-17 23:53</div>
+            <div class="timeline-body"><p>How about using this?
+https://docs.rs/regex-automata/latest/regex_automata/meta/struct.Regex.html#method.new_many</p>
+<p>It supports multiple regular expressions with repeated groups.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-18 00:02</div>
+            <div class="timeline-body"><p>Yes, I wrote that. I do have vague ambitions to eventually migrate ripgrep to those APIs, but there's a lot of engineering effort involved there. I believe it also currently inhibits some key optimizations. And there may be semantic differences that I can't think of off the top of my head that makes it difficult to do.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:32 UTC
+    </footer>
+</body>
+</html>

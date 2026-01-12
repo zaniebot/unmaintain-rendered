@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>-0 should add null byte to result not just path - BurntSushi/ripgrep #2296</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>-0 should add null byte to result not just path</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2296">#2296</a>
+        opened by <a href="https://github.com/nkh">@nkh</a>
+        on 2022-08-30 09:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nkh">@nkh</a></div>
+            <div class="timeline-body"><p>tested in ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<p>below command will not have a null byte after each match
+{ echo &quot;file name with space&quot; ; echo file ; } |  rg -0 &quot;file&quot;</p>
+<p>this is makes it difficult to feed to xargs -0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nkh">@nkh</a> on 2022-08-30 09:24</div>
+            <div class="timeline-body"><p>a simple tr in the pipeline fixes the problem but I was surprised by the behavior</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-08-30 12:15</div>
+            <div class="timeline-body"><p>The current behavior matches what is documented, so I'm unclear what is surprising about it. The current behavior also matches the behavior of GNU grep's <code>-Z/--null</code> flag.</p>
+<p>The point of the <code>--null</code> flag is to make it possible to extract the file path in all cases.</p>
+<p>I'm unclear of what you're trying to do here, but ripgrep is just passing through the newlines from what it searches. If you want ripgrep to output <code>xargs</code> compatible stuff, then you need to <em>feed</em> it <code>xargs</code> compatible stuff. For example:</p>
+<pre><code>$ find ./crates/core/ -print0 | rg --null-data '/a'
+</code></pre>
+<p>Both the <code>--null</code> and <code>--null-data</code> flags can be found in GNU grep as well, and to my knowledge, have identical behavior with ripgrep's flags of the same name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2022-08-30 12:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2022-08-30 12:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:34 UTC
+    </footer>
+</body>
+</html>

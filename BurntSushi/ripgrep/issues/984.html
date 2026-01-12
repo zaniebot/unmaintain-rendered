@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DirEntry::path_is_symlink returns incorrect result for first result from ignore iterators - BurntSushi/ripgrep #984</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>DirEntry::path_is_symlink returns incorrect result for first result from ignore iterators</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/984">#984</a>
+        opened by <a href="https://github.com/ssokolow">@ssokolow</a>
+        on 2018-07-17 13:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ssokolow">@ssokolow</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>I'm using the <code>ignore</code> crate, version 0.4.2, but you don't seem to have a separate repository for it.</p>
+<h4>How did you install ripgrep?</h4>
+<p>I added <code>ignore = &quot;0.4&quot;</code> to my <code>Cargo.toml</code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<pre><code>ssokolow@monolith ignore_test [master] % lsb_release -a
+No LSB modules are available.
+Distributor ID: Ubuntu
+Description:    Ubuntu 14.04.5 LTS
+Release:        14.04
+Codename:       trusty</code></pre>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>Iterators from the <code>ignore</code> crate incorrectly identify the argument passed to them as a symlink when they return it during the first iteration.</p>
+<p>This is actually quite the annoyance for a project I've just started, because it means I'm going to need to design some kind of minimally ugly hack to do a second syscall to get the <em>actual</em> value but only on the first iteration to avoid needlessly bogging down the following iterations.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<pre><code>use std::fs::metadata;
+
+extern crate ignore;
+use ignore::Walk;
+
+fn main() {
+    for result in Walk::new(&quot;./&quot;) {
+        if let Ok(entry) = result {
+            let verification = metadata(entry.path()).unwrap().file_type().is_symlink();
+            println!(&quot;{}: {}&quot;, entry.path_is_symlink() == verification, entry.path().display());
+        }
+    }
+}</code></pre>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<pre><code>ssokolow@monolith ignore_test [master] % cargo run
+   Compiling ignore_test v0.1.0 (file:///home/ssokolow//src/ignore_test)
+    Finished dev [unoptimized + debuginfo] target(s) in 4.72 secs
+     Running `target/debug/ignore_test`
+false: ./
+true: ./Cargo.lock
+true: ./src
+true: ./src/main.rs
+true: ./target
+true: ./target/debug
+[output truncated for brevity as the rest is irrelevant]</code></pre>
+<p>(Note that the first entry is <code>false</code>, indicating that the result returned by <code>ignore</code>'s <code>path_is_symlink</code> doesn't match the result returned by explicitly querying the filesystem.)</p>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<pre><code>ssokolow@monolith ignore_test [master] % cargo run
+   Compiling ignore_test v0.1.0 (file:///home/ssokolow//src/ignore_test)
+    Finished dev [unoptimized + debuginfo] target(s) in 4.72 secs
+     Running `target/debug/ignore_test`
+true: ./
+true: ./Cargo.lock
+true: ./src
+true: ./src/main.rs
+true: ./target
+true: ./target/debug
+[output truncated for brevity as the rest is irrelevant]</code></pre>
+<p>(Note that the first entry is <code>true</code> as well)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-17 13:12</div>
+            <div class="timeline-body"><p>Nice bug. This bug is actually present in <code>walkdir</code> in addition to the parallel walker in <code>ignore</code> as well. (I believe that's a total of two distinct bugs, since the single threaded <code>ignore</code> walker mostly just defers to <code>walkdir</code> internally.)</p>
+<p>Example, riffing off of yours:</p>
+<pre><code class="language-rust">extern crate ignore;
+extern crate walkdir;
+
+use std::fs::metadata;
+
+use ignore::{Walk, WalkBuilder, WalkState};
+use walkdir::WalkDir;
+
+fn main() {
+    for result in WalkDir::new(&quot;./&quot;) {
+        if let Ok(entry) = result {
+            let verification = metadata(entry.path())
+                .unwrap()
+                .file_type()
+                .is_symlink();
+            println!(
+                &quot;{}: {}&quot;,
+                entry.path_is_symlink() == verification,
+                entry.path().display(),
+            );
+        }
+    }
+
+    println!(&quot;\n----------------------------------------------\n&quot;);
+
+    for result in Walk::new(&quot;./&quot;) {
+        if let Ok(entry) = result {
+            let verification = metadata(entry.path())
+                .unwrap()
+                .file_type()
+                .is_symlink();
+            println!(
+                &quot;{}: {}&quot;,
+                entry.path_is_symlink() == verification,
+                entry.path().display(),
+            );
+        }
+    }
+
+    println!(&quot;\n----------------------------------------------\n&quot;);
+
+    let par = WalkBuilder::new(&quot;./&quot;).build_parallel();
+    par.run(|| {
+        Box::new(|result| {
+            if let Ok(entry) = result {
+                let verification = metadata(entry.path())
+                    .unwrap()
+                    .file_type()
+                    .is_symlink();
+                println!(
+                    &quot;{}: {}&quot;,
+                    entry.path_is_symlink() == verification,
+                    entry.path().display(),
+                );
+            }
+            WalkState::Continue
+        })
+    });
+}
+</code></pre>
+<p>The above shows the same bug in all three instances.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssokolow">@ssokolow</a> on 2018-07-17 13:24</div>
+            <div class="timeline-body"><p>*chuckle* I seem to have been finding quite a few good bugs in the project I just started.</p>
+<p>For example, only an hour or two after I made a note to come back to that, I got <code>serde_json</code> to <a href="https://github.com/serde-rs/json/issues/464">panic</a> because it turns out I have a file on one of my <code>ext3</code> partitions with a POSIX timestamp of <code>-1</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-17 13:28</div>
+            <div class="timeline-body"><p>This shouldn't be too hard to fix. It looks like the bug is that <a href="https://github.com/BurntSushi/walkdir/blob/4b21b55f2180bdd27d99a8999ae390a0568658da/src/lib.rs#L654">the initial path is turned into an entry using <code>from_link</code></a>, which always sets <code>follow_link</code> to <code>true</code>, which in turn implies that <a href="https://github.com/BurntSushi/walkdir/blob/4b21b55f2180bdd27d99a8999ae390a0568658da/src/lib.rs#L982"><code>path_is_symlink</code> always returns <code>true</code></a>.</p>
+<p>My guess is that I erroneously used <code>from_link</code> for the initial path because the initial path doesn't have a <code>DirEntry</code>. But this of course shouldn't always cause it to be interpreted as a symlink.</p>
+<p>Investigating a bit more, it looks like I introduced this bug in commit https://github.com/BurntSushi/walkdir/commit/373278952ff96fd01287c6ac89f1bf4b74c6490d, which appears motivated by the notion that the path given should always be followed, even if it's a symlink, which seems fine to me.</p>
+<p>I think the question I have is why <code>follow_link</code> is used at all in the implementation of <code>path_is_symlink</code>. I'll have to noodle on that one.</p>
+<p>And yeah, nice serde bug. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2018-07-17 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-08-22 01:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:36 UTC
+    </footer>
+</body>
+</html>

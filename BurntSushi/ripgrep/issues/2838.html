@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rg.exe does not complete in bash.exe(WSL2) - Incorrectly assumes stdin - BurntSushi/ripgrep #2838</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rg.exe does not complete in bash.exe(WSL2) - Incorrectly assumes stdin</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2838">#2838</a>
+        opened by <a href="https://github.com/sceneq">@sceneq</a>
+        on 2024-06-19 00:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sceneq">@sceneq</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>ripgrep 14.1.0 (rev c9ebcbd8ab)</p>
+<h3>How did you install ripgrep?</h3>
+<p>winget, and cargo.exe</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>WSL2 Ubuntu 22.04.4 LTS</p>
+<h3>Describe your bug.</h3>
+<p>The reason for using <code>rg.exe</code> on bash.exe: https://github.com/microsoft/WSL/issues/4197</p>
+<p>I ran <code>rg.exe aa -l &gt; list.txt</code> in bash.exe, but the command never completed.
+It stopped at this line <code>rdr.read(...) </code>
+The type of <code>rdr</code> was <code>encoding_rs_io::DecodeReaderBytes&lt;&amp;mut &amp;mut std::io::stdio::StdinLock, &amp;mut alloc::vec::Vec&lt;u8&gt;&gt;</code>.
+https://github.com/BurntSushi/ripgrep/blob/c9ebcbd8abe48c8336fb4826df7e9b6fb179de03/crates/searcher/src/line_buffer.rs#L418</p>
+<p>The search target was mistakenly determined to be Stdin because <code>grep::cli::is_readable_stdin</code> returned <code>true</code>. process is as follows.</p>
+<ul>
+<li>false if <code>std::io::stdin().is_terminal()</code></li>
+<li>true if <code>is_disk</code> (Windows)</li>
+<li>true if <code>is_pipe</code> (Windows)</li>
+</ul>
+<p>I wrote the following program and ran it with bash.exe and cmd.exe.</p>
+<pre><code class="language-rust">fn main() {
+    let is_terminal = std::io::stdin().is_terminal();
+
+    let stdin = winapi_util::HandleRef::stdin();
+    let typ = winapi_util::file::typ(stdin).unwrap();
+    let is_disk = typ.is_disk();
+    let is_pipe = typ.is_pipe();
+    eprintln!(&quot;is_terminal={is_terminal}, is_disk={is_disk}, is_pipe={is_pipe}&quot;);
+}
+</code></pre>
+<p>Result:
+bash.exe</p>
+<pre><code>&gt; ./target/debug/stdintest.exe
+is_terminal=true , is_disk=false, is_pipe=false
+
+&gt; ./target/debug/stdintest.exe &gt; f
+is_terminal=false, is_disk=false, is_pipe=true
+
+&gt; echo | ./target/debug/stdintest.exe
+is_terminal=false, is_disk=false, is_pipe=true
+</code></pre>
+<p>cmd.exe</p>
+<pre><code>&gt; .\target\debug\stdintest.exe
+is_terminal=true , is_disk=false, is_pipe=false
+
+&gt; .\target\debug\stdintest.exe &gt; f
+is_terminal=true , is_disk=false, is_pipe=false
+
+&gt; echo | .\target\debug\stdintest.exe
+is_terminal=false, is_disk=false, is_pipe=true
+</code></pre>
+<p>It seems that <code>is_readable_stdin</code> is also true because the redirect on bash.exe was determined to be <code>is_pipe</code>.
+The implementation of <code>is_pipe</code> is simple, but I don't know why it is so.</p>
+<p>The Rust <code>is_terminal</code> implementation is this
+https://github.com/rust-lang/rust/blob/737e42308c6e957575692965d73b17937f936f28/library/std/src/sys/pal/windows/io.rs#L83</p>
+<p>I've looked into it, but I can't identify whether the problem is with winapi-util, Rust std, WSL2, or some other cause. Apologies, but I need ripgrep, so I'm submitting this issue here.</p>
+<p>Note: <code>rg.exe aa . -l &gt; f</code>, this works fine.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p><code>rg.exe aaa -l &gt; f</code> on bash.exe</p>
+<h3>What is the actual behavior?</h3>
+<p><code>rg aaaaa --debug -l &gt; a</code></p>
+<pre><code>rg: DEBUG|rg::flags::parse|crates/core\flags\parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:1099: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=true, stdin_consumed=false, mode=Search(FilesWithMatches))
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:1112: heuristic chose to search stdin
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:1260: found hostname for hyperlink configuration: PC030
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:1270: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:174: using 1 thread(s)
+rg: DEBUG|grep_regex::config|crates\regex\src\config.rs:175: assembling HIR from 1 fixed string literals
+rg: DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:502: gzip: could not find executable in PATH
+rg: DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:502: gzip: could not find executable in PATH
+rg: DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:502: bzip2: could not find executable in PATH
+rg: DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:502: bzip2: could not find executable in PATH
+rg: DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:502: xz: could not find executable in PATH
+rg: DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:502: xz: could not find executable in PATH
+rg: DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:502: lz4: could not find executable in PATH
+rg: DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:502: xz: could not find executable in PATH
+rg: DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:502: brotli: could not find executable in PATH
+rg: DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:502: zstd: could not find executable in PATH
+rg: DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:502: zstd: could not find executable in PATH
+rg: DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:502: uncompress: could not find executable in PATH
+</code></pre>
+<p>rg.exe stops here.</p>
+<h3>What is the expected behavior?</h3>
+<p>rg.exe should scan under the current directory rather than waiting for stdin input, even without a path specification.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-06-19 00:54</div>
+            <div class="timeline-body"><p>ripgrep fundamentally has to rely on a heuristic to determine whether to search stdin or to search the current working directory. Something about your environment is advertising a readable stdin. <em>That</em> is what needs to be fixed. The only alternative available to you is to disable ripgrep's heuristic by always providing a path to search.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-06-19 00:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2024-06-19 11:58</div>
+            <div class="timeline-body"><p>Are you using a Windows build of ripgrep from WSL2? You should be using a Linux build, which will integrate much better with the rest of the environment.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:49 UTC
+    </footer>
+</body>
+</html>

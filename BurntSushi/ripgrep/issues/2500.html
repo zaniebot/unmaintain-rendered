@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reconsider returning 1 for &quot;no matches&quot; - BurntSushi/ripgrep #2500</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Reconsider returning 1 for &quot;no matches&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2500">#2500</a>
+        opened by <a href="https://github.com/dubrowgn">@dubrowgn</a>
+        on 2023-04-27 08:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dubrowgn">@dubrowgn</a></div>
+            <div class="timeline-body"><p>I know this has been discussed here before. I'm not really sure what I'm expecting to happen, but I do want to add some thoughts to the conversation.</p>
+<p>I've seen a lot of developers get bit by <code>grep</code>'s behavior of returning <code>1</code> when there are no matches, and I have personally had to work around this more times than I care to remember. So, I was sad to see this &quot;feature&quot; was replicated by <code>ripgrep</code>. I understand it can be useful in the following use case:</p>
+<pre><code class="language-bash">if rg -q foo file; then
+    echo matched
+fi
+</code></pre>
+<p>IMO, there is a better way to handle this specific case. I'm not aware of other use cases, so it would be interesting to learn about them if they exist.</p>
+<h2>The problem with returning <code>1</code></h2>
+<p>The root of the problem with returning <code>1</code> for no matches is that &quot;no matches&quot; is a perfectly normal and successful result for a search, but various aspects of shell scripting assume any non-zero return code is an error. This has a few annoying manifestations, but at a high level means error handing with <code>grep</code>/<code>ripgrep</code> is now more complicated. As error handling is highly desirable in reliable software, using these tools can introduce bugs because they don't follow the &quot;non-zero return code is an error&quot; convention. Some examples:</p>
+<h3>1. bailing out with <code>-e</code></h3>
+<p>One very common pattern for handling errors in scripts is to set the <code>-e</code> option. This causes the script to terminate in the event of any error encountered in the script. This isn't a great way to do error handling, but it does at least prevent your script from doing dumb things if a step in the middle fails. Because <code>ripgrep</code> returns <code>1</code> for no matches, you cannot use it in a script with <code>-e</code> set. I've seen this bite a lot of devs, as scripts appear to work normally, but sometimes fail silently for no obvious reason with no error output. The reason is that a <code>grep</code> somewhere had no matches.</p>
+<h3>2. propagating errors with <code>-o pipefail</code></h3>
+<p>Similarly, one can bail out of a series of piped commands if one of them fails by setting <code>-o pipefail</code>. This is very useful because you often otherwise end up propagating an empty string through your piped commands, again leading to silent failures that are not obvious. Because <code>ripgrep</code> returns <code>1</code> for no matches, you cannot use it in a series of piped commands with <code>-o pipefail</code> enabled. You can work around it by splitting your code, but the result is very ugly.</p>
+<pre><code class="language-bash"># without pipefail
+
+results=&quot;$(rg 'foo' file-name.txt | sed 's/bar//' | sort | uniq -c | head)&quot;
+# $? == 0, even if file-name.txt does not exist
+# we can't handle (most) errors because we can't detect them
+
+# with pipefail
+
+set -o pipefail
+
+results=&quot;$(rg 'foo' file-name.txt | sed 's/bar//' | sort | uniq -c | head)&quot;
+# $? == 1 if file-name.txt does not contain 'foo'; sed does not run
+# handing errors is impossible because we don't know where the `1` came from
+
+# so, we must split rg into its own execution, inefficiently spooling results into a variable
+# it's also very verbose
+matches=&quot;$(rg 'foo' file-name.txt)&quot;
+rc=&quot;$?&quot;
+if [[ &quot;$rc&quot; -gt &quot;1&quot; ]]; then
+   exit &quot;$rc&quot;
+fi
+
+results=&quot;$(echo &quot;$matches&quot; | sed 's/bar//' | sort | uniq -c | head)&quot;
+# now I can handle errors with $?
+</code></pre>
+<h2>Alternatives</h2>
+<p>If the only use case for returning <code>1</code> for no matches is so <code>ripgrep</code> can be used in conditionals, why not have a flag specifically for that?</p>
+<pre><code class="language-bash"># instead of this:
+if rg -q foo file; then
+    echo matched
+fi
+
+# why not this:
+if rg --matches foo file; then
+    echo matched
+fi
+</code></pre>
+<p>Maybe I'm missing another use case, but it seems to me you would never use <code>-q</code> unless you were going to look at the return code. So rather than having a flag that works with the normal return codes indirectly to get what you want (<code>-q</code>), why not have a flag that specifically handles the conditional use case? E.g. <code>ripgrep</code> normally returns <code>0</code> on success and non-<code>0</code> on error; passing it <code>--matches</code> (or whatever you want to call it) suppresses output and changes the return code to be <code>0</code> for one or more matches and <code>1</code> for no matches. You can then remove <code>-q</code>.</p>
+<h2>Related</h2>
+<p>This is most closely related to https://github.com/BurntSushi/ripgrep/issues/1290. See also: https://github.com/BurntSushi/ripgrep/issues/948 and https://github.com/BurntSushi/ripgrep/issues/1159.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-04-27 12:16</div>
+            <div class="timeline-body"><p>There is really no way this is going to change. It's certainly not going to change for <code>grep</code> because of backcompat, and differing from <code>grep</code> on this particular point would be <em>massively</em> confusing. This is a classic case of identifying some real problems with the status quo (I basically agree with the downsides and annoyances you've pointed out), but simultaneously not seeming to acknowledge the downsides of breaking existing behavior.</p>
+<p>Shell scripting is kind of a mine field of various quirks like this. I wish we had something better. But I think the path to something better is to move on to a different shell language entirely where there is no expectation of backcompat.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-04-27 12:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2023-04-27 12:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dubrowgn">@dubrowgn</a> on 2023-05-13 07:28</div>
+            <div class="timeline-body"><p>I definitely hear what you are saying.  Not breaking existing consumers is important, but it feels like we may be dismissing this out of hand without really exploring the solution space. Just a couple of thoughts:</p>
+<blockquote>
+<p>It's certainly not going to change for grep</p>
+</blockquote>
+<p>Agreed. That ship has sailed, but if we can't have nice things in ripgrep because grep doesn't have nice things, we might as well just stick to grep, right?</p>
+<blockquote>
+<p>differing from grep on this particular point would be massively confusing</p>
+</blockquote>
+<p>Personally, ripgrep's saner defaults that are the primary attraction, this particular behavior being a notable exception. I don't find it confusing that ripgrep behaves differently than grep, I find it refreshing. If ripgrep and grep behaved exactly the same, I wouldn't use ripgrep. Sample size of one, but there it is.</p>
+<blockquote>
+<p>but simultaneously not seeming to acknowledge the downsides of breaking existing behavior.</p>
+</blockquote>
+<p>It is true we need to consider any changes carefully, but changes don't necessarily have to be breaking. Given my proposal, it seems like making <code>-q</code> and alias for <code>--matches</code> (or whatever you want to call it), avoids breakage for current users of <code>-q</code>. It also seems unlikely this change would break other users, but you could permanently ban <code>1</code> as a valid return code (outside of <code>--matches</code>) so existing error handling keeps working (e.g. <code>&quot;$rc&quot; -gt &quot;1&quot;</code> and similar). That just leaves users who are specifically looking for return code <code>1</code> without <code>-q</code>. I can come up with some pretty contrived examples, but it doesn't seem like a particularly useful pattern. The trade off is future users can finally forget about this behavioral oddity, and you actually fix existing scripts that (I would say reasonably) expect ripgrep to return <code>0</code> for non-errors. You can deprecate <code>-q</code>, or not, remove it in some future version, or not. It's up to you.</p>
+<p>Alternatively, you can add a flag so users can opt into saner return codes.</p>
+<pre><code class="language-bash"># this:
+alias rg=&quot;rg --non-zero-return-code-on-error&quot; # TODO -- better flag name
+
+# instead of:
+function _rg() {
+    rg &quot;$@&quot;
+    rc=&quot;$?&quot;
+    if [[ &quot;$rc&quot; == &quot;1&quot; ]]; then
+        return 0
+    fi
+    return &quot;$rc&quot;
+}
+alias rg=&quot;_rg&quot;
+</code></pre>
+<p>Outside of that, IMO a breaking change here would still be a net win because of how many things the current behavior breaks inadvertently. It's not unheard of for terminal tools to change behavior. Ironically, we just recently encountered changing behavior in <code>grep</code> during a migration to a newer version. Changes happen; we updated our scripts and moved on. Should we make breaking changes regularly? Definitely not. But, that doesn't mean we can't consider it fairly and weigh the trade-offs.</p>
+<p>Anyway, for your consideration. Hopefully this doesn't come across the wrong way. Ripgrep is a great piece of technology, and I really enjoy using it. Thank you for all your efforts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-05-13 12:19</div>
+            <div class="timeline-body"><blockquote>
+<p>Agreed. That ship has sailed, but if we can't have nice things in ripgrep because grep doesn't have nice things, we might as well just stick to grep, right?</p>
+</blockquote>
+<p>Who said we can't have nice things in ripgrep because grep doesn't have nice things? I certainly didn't. And the existence of ripgrep and its differences from grep makes it absolutely clear that I don't believe it either. So I really just do not know where you're going with this.</p>
+<blockquote>
+<p>Personally, ripgrep's saner defaults that are the primary attraction, this particular behavior being a notable exception. I don't find it confusing that ripgrep behaves differently than grep, I find it refreshing. If ripgrep and grep behaved exactly the same, I wouldn't use ripgrep. Sample size of one, but there it is.</p>
+</blockquote>
+<p>Again, I don't understand your point. It seems like you're arguing against some straw man argument in favor of ripgrep and grep behaving exactly the same. But nobody in this issue is taking that position.</p>
+<p>Let's revisit what I said:</p>
+<blockquote>
+<p>It's certainly not going to change for <code>grep</code> because of backcompat, and differing from <code>grep</code> on this particular point would be <em>massively</em> confusing.</p>
+</blockquote>
+<p>Notice that this isn't a general argument in favor of making ripgrep and grep behave exactly the same. I was extremely careful to say &quot;<strong>on this particular point</strong>.&quot;</p>
+<p>This isn't some binary issue where our choices are &quot;bug-for-bug compatibility with grep&quot; and &quot;absolutely no compatibility at all.&quot; ripgrep differs from grep, <em>of course</em>, but there is a lot in common too. ripgrep covers a significant subset of GNU grep's flags for example, certainly a bigger subset than the flags that are unsupported. But it's not just about flags. ripgrep generally also behaves similarly with respect to binary data (with ripgrep defaulting to <code>-I/--binary-files=without-match</code>). And of course, the exit code behavior.</p>
+<p>Just because ripgrep differs from GNU grep on some points doesn't mean there aren't any costs to it. And it doesn't mean there aren't any costs to any new divergence from behavior.</p>
+<p>As I said before, shell scripts are a mine field of issues, and the fact that grep uses an error exit code to indicate &quot;no match&quot; is a time tested tradition. While changing the default in ripgrep <em>might</em> be easier on beginning shell script programmers, I'm 100% certain it would confound and piss off most others writing shell scripts and using ripgrep in them. ripgrep already probably pisses off enough people by defaulting to &quot;smart filtering.&quot; That's where it spends its &quot;weirdness&quot; budget. And that is where I want to continue to spend it. I don't want to spend it on changing how exit codes behave. Dealing with grep exit codes is already subtle enough. Making ripgrep differ on this point when so much capital has already been expended on how grep currently behaves. It's reasonable to expect ripgrep to behave the same on this point.</p>
+<p>On top of all of that, one of the most compelling reasons against changing the default is that the <strong>failure modes are potentially silent.</strong> That is the worst kind of breaking change. Previously, shell scripts that use <code>rg -q foo path</code> relied on them to exit with <code>1</code> when no match was found, but with your change, it wouldn't. No matches would exit with <code>0</code> instead. That's a very subtle change.</p>
+<p>Even if I could start all over again with ripgrep or a new tool, I'm pretty sure I would continue to mimic grep's behavior here. Despite the downsides you've listed, it also has upsides. And the downsides, at least to me, seem more like general downsides of shell scripting as opposed to how specific commands behave.</p>
+<p>What I'm getting at here, and what I mentioned before, is that this problem isn't something I see as solvable at the level of individual programs. You need to pick a different paradigm to fix things like this.</p>
+<p>It's easy for you to suggest changes like this. You aren't the maintainer. I am. I'm the one who has to deal with people coming here filing bugs about the change in behavior. I'm the one who's going to have to defend the choice. That's on <em>me</em>. Not you. You don't have to worry about the unseen masses of people that care a lot more about a program not breaking their shell scripts than an arguably small improvement to error handling in shell scripts. What I mean when I say this is that I don't think you are appropriately considering the downsides of a change like this.</p>
+<blockquote>
+<p>It's not unheard of for terminal tools to change behavior. Ironically, we just recently encountered changing behavior in <code>grep</code> during a migration to a newer version. Changes happen; we updated our scripts and moved on. Should we make breaking changes regularly? Definitely not. But, that doesn't mean we can't consider it fairly and weigh the trade-offs.</p>
+</blockquote>
+<p>Yes and? Obviously I'm aware that can ripgrep can make breaking changes. The CHANGELOG has several of them. My very first response to you very clearly used explicit language suggesting that I was indeed weighing trade offs!</p>
+<p>The frustrating part of your response here is that it seems to be a response to someone holding one or both of these dogmatic positions:</p>
+<ul>
+<li>ripgrep should behave exactly like GNU grep.</li>
+<li>ripgrep shouldn't have breaking changes in subsequent releases.</li>
+</ul>
+<p>I of course hold neither position. Despite you asking me to weigh the trade offs, it seems to me like your comment is more about treating that as a binary issue.</p>
+<blockquote>
+<p>Alternatively, you can add a flag so users can opt into saner return codes.</p>
+</blockquote>
+<p>A lot of my concerns revolve around changing the default behavior of ripgrep, so it's worth exploring this idea which I understand to be &quot;the current behavior remains, but a new flag is introduced to change how exit codes are handled.&quot; I am sympathetic to this approach, but ultimately against it. ripgrep has an enormous number of flags, and I am trying very hard to avoid adding more of them. New flags like this that target a niche of a niche, particularly ones that have existing work-arounds as you've documented, are generally not ones that I want to add.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dubrowgn">@dubrowgn</a> on 2023-05-15 06:07</div>
+            <div class="timeline-body"><p>I apologize if I offended you, as that is not my intent. I am sincerely just trying to make a rationale argument.</p>
+<p>Maybe we can clear up a lot of this by taking grep off the table. I was only trying to address a concern you raised:</p>
+<blockquote>
+<p>It's certainly not going to change for grep because of backcompat, and differing from grep on this particular point would be massively confusing.</p>
+</blockquote>
+<p>Which I took to mean, &quot;we can't do it differently because of grep.&quot; If my argument seemed dogmatic or straw-man, maybe we can just agree this isn't about grep and move on. I probably just misunderstood.</p>
+<p>I appreciate your response on the other points. Aside from avoiding any change in behavior at all, I would be curious is there is a counter argument against making <code>-q</code> an synonym for <code>--matches</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-05-15 11:46</div>
+            <div class="timeline-body"><blockquote>
+<p>I apologize if I offended you, as that is not my intent.</p>
+</blockquote>
+<p>I'm not offended! I wasn't personally insulted by your comments. It's not about taking offense. It's about being frustrated with the arguments being put forth. My previous comment was meant to tease them apart to show why they aren't good arguments. And those types of arguments are incredibly tedious to tease apart.</p>
+<blockquote>
+<p>Which I took to mean, &quot;we can't do it differently because of grep.&quot;</p>
+</blockquote>
+<p>No... You're dropping at least two critical parts from that summarization. Try this: &quot;we can't do it different because of grep <em>in this specific example</em> because <em>BurntSushi believes</em> it will cause more confusion than it's worth.&quot; Your short summary is dangerously imprecise because it gives the impression that we can't do <em>anything</em> differently from grep. But that's just not true. The reality is that the existence of grep and how it works has a non-absolutist influence on the design and behavior of ripgrep.</p>
+<p>I guess we can take grep off the table, but it's a pretty critical part of my argument here.</p>
+<blockquote>
+<p>Aside from avoiding any change in behavior at all, I would be curious is there is a counter argument against making <code>-q</code> an synonym for <code>--matches</code>.</p>
+</blockquote>
+<p>I think everything I've said is a counter argument to this? Presumably your proposal here is actually something more like this:</p>
+<ul>
+<li>When the <code>-q/--quiet</code> flag is not present, ripgrep will exit with code <code>0</code> even when no matches are found.</li>
+<li>When the <code>-q/--quiet</code> flag is present, ripgrep behaves as it does today, by returning an exit code <code>1</code> when no matches are found.</li>
+</ul>
+<p>In other words, it's changing the default behavior of ripgrep. If anyone is using <code>rg</code> in a shell script and relying on exit code <code>1</code> for the case when no matches are found <em>without</em> the <code>-q/--quiet</code> flag, then their scripts will almost certainly be broken by this change. And it would be a potentially silent breakage, which is the worst kind.</p>
+<p>Moreover, changing the exit code behavior based on whether <code>-q/--quiet</code> is given seems quite weird and confounding to me. Imagine someone trying to debug how ripgrep behaves in a script and them forgetting to pass <code>-q/--quiet</code> when debugging. They won't see the same kind of exit codes that they're script will see. And they would understandably not pass <code>-q/--quiet</code> because it doesn't look like a flag that changes the exit code behavior.</p>
+<p>I'll stop here because I really do feel like I've addressed this proposal already by talking above about changing the default behavior of ripgrep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dubrowgn">@dubrowgn</a> on 2023-05-15 13:57</div>
+            <div class="timeline-body"><blockquote>
+<p>It's about being frustrated with the arguments being put forth ... they aren't good arguments.</p>
+</blockquote>
+<p>I'm sorry to have wasted your time.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:40 UTC
+    </footer>
+</body>
+</html>

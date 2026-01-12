@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filtering on the presence or absence of captures - BurntSushi/ripgrep #606</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Filtering on the presence or absence of captures</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/606">#606</a>
+        opened by <a href="https://github.com/chocolateboy">@chocolateboy</a>
+        on 2017-09-17 20:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chocolateboy">@chocolateboy</a></div>
+            <div class="timeline-body"><blockquote>
+<p>💡 [This trick] relies on your ability to inspect Group 1 captures (at least in the generic flavor), so it will not work in a non-programming environment, such as a text editor's search-and-replace function <strong>or a grep command</strong> -- <a href="http://www.rexegg.com/regex-best-trick.html">The Best Regex Trick</a></p>
+</blockquote>
+<h3>TL;DR</h3>
+<p>Select all lines which match <code>\bTarzan\b</code> but not <code>&quot;Tarzan&quot;</code>:</p>
+<pre><code>$ rg -w '&quot;Tarzan&quot;|(Tarzan)' --defined '$1'</code></pre>
+<p>AKA</p>
+<pre><code>$ rg -w '&quot;Tarzan&quot;|(Tarzan)' -d '$1'</code></pre>
+<hr />
+<p>Suppose I want to select all lines which contain the unquoted word <code>Tarzan</code> i.e. <code>\bTarzan\b</code> but not <code>&quot;Tarzan&quot;</code> e.g. the first 4 lines of:</p>
+<h3>test.txt</h3>
+<pre><code>&quot;Tarzan and Jane&quot;
+&quot;Jane and Tarzan&quot;
+Me Tarzan, you Jane
+Tarzan vs &quot;Tarzan&quot;
+This line doesn't mention him
+He's moved to Tarzania
+He's no &quot;Tarzan&quot;!</code></pre>
+<p>It can be done with a pipeline e.g.:</p>
+<pre><code>$ rg -w 'Tarzan' test.txt | rg -v '&quot;Tarzan&quot;'</code></pre>
+<p>But that particular example rejects lines which contain both, which is not what we want in this case. The same would be true if ripgrep added e.g. an <code>-E</code> (<code>--no-regexp</code>) option to complement <code>-e</code>/<code>--regexp</code>:</p>
+<pre><code>$ rg -we 'Tarzan' -E '&quot;Tarzan&quot;' test.txt</code></pre>
+<p>It can be done in one pass with PCRE-flavored greps such as GNU grep and ack, with varying degrees of <a href="http://www.rexegg.com/regex-best-trick.html#typical">difficulty/unreadability</a>, by using negative lookahead/look-behind assertions e.g.:</p>
+<pre><code>$ grep -P '^(?:(?!&quot;Tarzan&quot;|Tarzan\w+)(Tarzan|.))+$' test.txt</code></pre>
+<p>That's already pretty gnarly for a single exclusion, and quickly becomes impractical/incomprehensible for multiple exclusions. It also matches lines which don't contain <code>Tarzan</code> and, again, excludes lines which contain both patterns.</p>
+<p>In programming languages, there's a common pattern for performing exclusions in a simple, readable way without multiple passes:</p>
+<ol>
+<li>match and discard the exclusions</li>
+<li>match and capture the inclusion</li>
+<li>test for its existence</li>
+</ol>
+<p>e.g.:</p>
+<h4>JavaScript</h4>
+<pre><code class="language-javascript">[ '', '&quot;Tarzan&quot;', 'Tarzan', 'Tarzania', 'Tarzan vs &quot;Tarzan&quot;' ].filter(it =&gt; {
+    const m = it.match(/&quot;Tarzan&quot;|\b(Tarzan)\b/)
+    return m &amp;&amp; m[1]
+}) // [ 'Tarzan', 'Tarzan vs &quot;Tarzan&quot;' ]
+</code></pre>
+<h4>ES.next<sup><a href="https://github.com/tc39/proposal-optional-chaining#syntax">[1]</a></sup></h4>
+<pre><code class="language-javascript">[ '', '&quot;Tarzan&quot;', 'Tarzan', 'Tarzania', 'Tarzan vs &quot;Tarzan&quot;' ].filter(it =&gt; {
+    return it.match(/&quot;Tarzan&quot;|\b(Tarzan)\b/)?.[1]
+}) // [ 'Tarzan', 'Tarzan vs &quot;Tarzan&quot;' ]
+</code></pre>
+<h4>Ruby</h4>
+<pre><code class="language-ruby">[ '', '&quot;Tarzan&quot;', 'Tarzan', 'Tarzania', 'Tarzan vs &quot;Tarzan&quot;' ].select { |it|
+    it[/&quot;Tarzan&quot;|\b(Tarzan)\b/, 1]
+} # =&gt; [ 'Tarzan', 'Tarzan vs &quot;Tarzan&quot;' ]
+</code></pre>
+<pre><code>$ ruby -ne 'print if $_[/&quot;Tarzan&quot;|\b(Tarzan)\b/, 1]' test.txt</code></pre>
+<p>etc.</p>
+<p>This isn't available in any greps I'm aware of, but since the machinery is already there to capture and reference subexpressions by index and name, it seems like a small step to use them in predicates to reproduce the flexibility and simplicity of this pattern on the command line e.g.:</p>
+<pre><code>$ rg -w '&quot;Tarzan&quot;|(Tarzan)' -d '$1' test.txt</code></pre>
+<h4>output</h4>
+<pre><code>&quot;Tarzan and Jane&quot;
+&quot;Jane and Tarzan&quot;
+Me Tarzan, you Jane
+Tarzan vs &quot;Tarzan&quot;
+</code></pre>
+<h3>Notes</h3>
+<p>1) I assume that the predicate can be inverted e.g.:</p>
+<pre><code>$ rg --not-defined '$1'</code></pre>
+<p>AKA</p>
+<pre><code>$ rg -D '$1'</code></pre>
+<p>There aren't many single-letter options left. The last remaining pairs are -<code>d</code>/<code>-D</code>, <code>-y</code>/<code>-Y</code> and <code>-z</code>/<code>-Z</code>. The latter are commonly used to denote null/zero values, so they could be used instead, with the meaning of <code>-d</code> and <code>-D</code> inverted e.g.:</p>
+<pre><code>$ rg -z '$1' # AKA rg --not-defined '$1'
+$ rg -Z '$1' # AKA rg --defined '$1'</code></pre>
+<p>2) I assume that indices increment across multiple patterns, and that multiple <code>-d</code> and <code>-D</code> options can be combined e.g.:</p>
+<pre><code>$ rg -e 'Foo|(Bar)' -e '(Baz|(Quux))' -d '$1' -D '$3'</code></pre>
+<p>3) I also assume that numbered and named captures can be mixed e.g.:</p>
+<pre><code>$ rg -e 'Foo|(Bar)' -e 'Baz|(?P&lt;name&gt;Quux)' -d '$1' -D '$name'</code></pre>
+<p>4) The full version of the matching command would currently be:</p>
+<pre><code>rg '^.*?(?:&quot;Tarzan&quot;|\b(Tarzan)\b).*$' -d '$1' test.txt</code></pre>
+<p>Hopefully some of that boilerplate can be removed e.g. via #389 or #593.</p>
+<p>5) For clarity, <code>&quot;Tarzan&quot; vs Tarzan</code> is omitted from the examples. Handling it only slightly complicates the regex:</p>
+<pre><code>$ rg '^(?:&quot;Tarzan&quot;|\b(Tarzan)\b|.)*$' -d '$1' test.txt</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-09-24 12:50</div>
+            <div class="timeline-body"><p>Thanks for this very thorough write up!</p>
+<p>I kind of feel like that semantics of this are too complex, which will probably lead to a feature that almost nobody uses. By that, I don't mean that the flags <code>--not-defined</code> and <code>--defined</code> are themselves complex, but using them effectively---as you've demonstrated here---requires some ingenuity in crafting the regex.</p>
+<p>With that said, I'd be willing to adopt a feature like this because I do agree that it could be useful, but I'd have to <strong>strongly</strong> insist on the following:</p>
+<ol>
+<li>It should not begin life with short flags. I used short flags whenever the flags are common, or if there was a precedent for their existence in other tools. For a feature like this, that is neither common nor familiar, I would like to hold off on adding short flags. If I'm wrong and it becomes popular, then we can revisit it.</li>
+<li>The maintenance burden of the feature needs to be low. That means adding the feature shouldn't require any significant complications and it should be reasonably well tested.</li>
+<li>Since the use case motivating the existence of these flags is somewhat complicated, I would like the documentation to be clear. It should be concise, but contain an example usage. (Perhaps a condensed version of the example in this ticket.)</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2017-09-24 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @BurntSushi on 2017-09-24 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">icebox</span> added by @BurntSushi on 2017-10-21 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2018-09-21 19:05</div>
+            <div class="timeline-body"><p>Now that PRCE is (optionally) supported, can either of you think of a use-case for this that isn't handled by lookahead and lookbehind? I <em>think</em> this would be strictly more powerful than negative <em>lookbehind</em>, since lookbehind can't contain variable-length patterns, but that's the only advantage I can see. (Granted, that's an advantage I think I would occasionally find useful.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-04-03 13:18</div>
+            <div class="timeline-body"><p>I think it could be possible to define a simpler UX than needing to resort to look-around.</p>
+<p>With that said, it's a good point and I was never a big fan of adding this feature anyway. So I'm going to close this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-04-03 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chocolateboy">@chocolateboy</a> on 2020-09-20 14:51</div>
+            <div class="timeline-body"><p>Lookaround assertions still have the issues mentioned above. For anyone looking for a clean solution to this with the PCRE engine, the <a href="https://pcre.org/current/doc/html/pcre2pattern.html#SEC29">backtracking-control verbs</a><a href="https://www.rexegg.com/backtracking-control-verbs.html">^1</a><a href="https://perldoc.perl.org/perlre.html#Special-Backtracking-Control-Verbs">^3</a> are your friends:</p>
+<h3>Input</h3>
+<pre><code>&quot;Tarzan and Jane&quot;
+&quot;Jane and Tarzan&quot;
+Me Tarzan, you Jane
+Tarzan vs &quot;Tarzan&quot;
+&quot;Tarzan&quot; vs Tarzan
+This line doesn't mention him
+He's moved to Tarzania
+He's no &quot;Tarzan&quot;!
+</code></pre>
+<h3>Command</h3>
+<pre><code class="language-bash">$ rg --pcre2 '(?:&quot;Tarzan&quot;)(*SKIP)(*FAIL)|\bTarzan\b' test.txt
+</code></pre>
+<h3>Output</h3>
+<pre><code>&quot;Tarzan and Jane&quot;
+&quot;Jane and Tarzan&quot;
+Me Tarzan, you Jane
+Tarzan vs &quot;Tarzan&quot;
+&quot;Tarzan&quot; vs Tarzan
+</code></pre>
+<p>Or, to exclude lines which contain <code>&quot;Tarzan&quot;</code>:</p>
+<h3>Command</h3>
+<pre><code class="language-bash">$ rg --pcre2 '(?:.*?&quot;Tarzan&quot;.*)(*SKIP)(*FAIL)|\bTarzan\b' test.txt
+$ rg --pcre2 '(?:.*?&quot;Tarzan&quot;.*)(*COMMIT)(*FAIL)|\bTarzan\b' test.txt
+</code></pre>
+<h3>Output</h3>
+<pre><code>&quot;Tarzan and Jane&quot;
+&quot;Jane and Tarzan&quot;
+Me Tarzan, you Jane
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2020-09-20 15:42</div>
+            <div class="timeline-body"><p>@chocolateboy Wow, I had never heard of those before. Thanks for sharing.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:16 UTC
+    </footer>
+</body>
+</html>

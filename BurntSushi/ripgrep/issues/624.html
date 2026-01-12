@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot search for a pattern that starts with a dash - BurntSushi/ripgrep #624</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot search for a pattern that starts with a dash</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/624">#624</a>
+        opened by <a href="https://github.com/kumar303">@kumar303</a>
+        on 2017-10-06 21:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kumar303">@kumar303</a></div>
+            <div class="timeline-body"><p>If I want to search for <code>-radius</code> in my code, I would think to type this:</p>
+<pre><code>rg &quot;-radius&quot;
+</code></pre>
+<p>but despite the quotes this seems to trip up the parser. I see:</p>
+<pre><code>error: The following required arguments were not provided:
+    &lt;PATTERN&gt;
+
+USAGE:
+
+    rg [options] PATTERN [path ...]
+    rg [options] [-e PATTERN ...] [-f FILE ...] [path ...]
+    rg [options] --files [path ...]
+    rg [options] --type-list
+
+For more information try --help
+</code></pre>
+<p>I'm on macOS 10.12.6</p>
+<pre><code>$ rg --version
+ripgrep 0.6.0
+-AVX -SIMD
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-10-06 21:31</div>
+            <div class="timeline-body"><p>This is standard behaviour for almost any UNIX command-line tool.</p>
+<p>If you run <code>rg -radius</code> (for example) the tool has no way of telling whether you meant the options <code>-r -a -d -i -u -s</code> or the literal string <code>-radius</code> — it just has to assume the former.</p>
+<p>Quoting won't help you, because <code>rg</code> doesn't see those quotes; they're handled entirely by the shell.</p>
+<p>There is a standard way of getting around this, though: the special <code>--</code> parameter. Whenever a tool with UNIX-style argument handling sees <code>--</code>, it knows that it should immediately stop processing options and treat everything that comes after it as a regular operand. So:</p>
+<pre><code>rg -- -radius
+</code></pre>
+<p>Alternatively, you can do this:</p>
+<pre><code>rg -e -radius
+</code></pre>
+<p>But the <code>--</code> method is conventional and works almost everywhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kumar303">@kumar303</a> on 2017-10-06 21:34</div>
+            <div class="timeline-body"><p>ah, right, I see what you mean. Thanks for the detailed explanation. I will close the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kumar303 on 2017-10-06 21:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:18 UTC
+    </footer>
+</body>
+</html>

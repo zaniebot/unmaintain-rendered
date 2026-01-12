@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global configuration for path exclusions - BurntSushi/ripgrep #3062</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Global configuration for path exclusions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3062">#3062</a>
+        opened by <a href="https://github.com/mharvey-jt">@mharvey-jt</a>
+        on 2025-06-05 11:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mharvey-jt">@mharvey-jt</a></div>
+            <div class="timeline-body"><p>Our environment is a multiuser HPC cluster with users using VSCode with the indexer that uses ripgrep.
+We persistently have issues with VSCode's indexing sending ripgrep off into the weeds indexing multi-petabyte filesystems. Fixing this involves teaching every user to apply config into their VSCode environments to exclude paths to the global. filesystems. We would like to be able to apply a global policy that ripgrep will respect, so that we can limit its activity administratively, without needing any end-user action.</p>
+<p>Because VSCode brings in its own ripgrep, rather than using a system version, we really would need the feature to be upstreamed to be useful.</p>
+<p>We can put some development effort on this, if it's a feature that you would consider in-scope for inclusion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-06-05 11:48</div>
+            <div class="timeline-body"><p>ripgrep doesn't do indexing. It only searches.</p>
+<p>Can you say what you've tried? For example, why doesn't using an <code>.ignore</code> file that excludes those directories work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mharvey-jt">@mharvey-jt</a> on 2025-06-05 12:09</div>
+            <div class="timeline-body"><p>Hi, yes, I appreciate that the real villain here is VSCode's indexing, which just happens to use ripgrep in its implementation. VSCode has no support for any global config, so we have the continual trial of getting individuals to manually reconfigure their VSCode indexing to explicitly exclude some paths.<br />
+The specific pain point we have is that ripgrep's high parallelism causes poor performance of these network filesystem mounts which affects all users of the system. It's not practical to fix the filesystem, and it is never correct for a user to indexing these filesystems; so we are looking for a way that we can administratively stop this happening.
+Fixing this at the ripgrep level rather than inside VSCode seems most tractable.</p>
+<p>If I understand your suggestion correctly, a <code>.ignore</code> file containing a list of exclusions could solve the problem for us - but where does that file need to reside? Can we put a global config in <code>/etc</code> for example, or specify a .ignore file via an environment variable, so we can be sure all users get it automatically?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-06-05 12:14</div>
+            <div class="timeline-body"><p>Have you <a href="https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md">read the guide</a>?</p>
+<p><code>.ignore</code> files work just like <code>.gitignore</code>.</p>
+<p>Moreover, ripgrep already supports reading from a config file. That's also documented in the guide.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mharvey-jt">@mharvey-jt</a> on 2025-06-05 12:49</div>
+            <div class="timeline-body"><p>Thank you for the pointer! Looks like we can solve this with</p>
+<pre><code># cat /etc/profile.d/ripgrep.sh
+export RIPGREP_CONFIG_PATH=/etc/ripgrep.d/config
+
+# cat /etc/ripgrep.d/config
+--ignore-file=/etc/ripgrep.d/ignore_list
+
+# cat /etc/ripgrep.d/ignore_list
+/mount/networkfs/*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mharvey-jt on 2025-06-05 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @mharvey-jt on 2025-06-05 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mharvey-jt">@mharvey-jt</a> on 2025-06-05 15:19</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>It turns out this does not work as desired because the ignore file format does not let us specify absolute paths -- even with a leading <code>/</code> the paths are relative to cwd. This means that the</p>
+<pre><code>cat /tmp/ignore_list
+/tmp/IGNORE/**
+
+cd /tmp/IGNORE
+echo FOO &gt; FOO
+rg --ignore-file=/tmp/ignore_list FOO  /tmp/IGNORE            # correctly ignores contents of /tmp/IGNORE
+
+but
+
+  rg --ignore-file=/tmp/ignore_list FOO .            # does not ignore contents of /tmp/IGNORE 
+./FOO
+1:FOO
+</code></pre>
+<p>ref https://github.com/BurntSushi/ripgrep/discussions/2421</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-06-05 15:25</div>
+            <div class="timeline-body"><p>Yeah that seems like a pretty convoluted solution to me. As I said, <code>.ignore</code> files are just like <code>.gitignore</code>. So look at it that way. In that case, I'd try this:</p>
+<pre><code>echo '*' &gt; /mount/networkfs/.ignore
+</code></pre>
+<p>And then ripgrep should just automatically respect it <em>unless</em> it is run with the <code>-u/--no-ignore</code> flag. If VS Code runs with <code>-u/--no-ignore</code>, then you're in a tighter spot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mharvey-jt">@mharvey-jt</a> on 2025-06-05 15:35</div>
+            <div class="timeline-body"><p>Hi!</p>
+<p>Thanks for the suggestion! That does work if ripgrep is traversing down through <code>/mount/networkfs/..</code> but typically we see that ripgrep is getting on to <code>/mount/networkfs</code> at some arbitrary lower path by following a symlink. We can't ensure that there's a <code>.ignore</code> in every directory unfortunately.
+I just noticed that there is a <code>--one-file-system</code> option. This might work for us as an alternative approach</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-06-05 15:40</div>
+            <div class="timeline-body"><blockquote>
+<p>but typically we see that ripgrep is getting on to <code>/mount/networkfs</code> at some arbitrary lower path by following a symlink</p>
+</blockquote>
+<p>This is critical information! Even if ripgrep had a way to ignore absolute paths via ignore files, that absolutely wouldn't cover this specific case. You would need some different kind of feature like, &quot;after fully canonicalizing a path so that it doesn't contain any symlinks, if it contains a prefix matching this thing we give it, then ignore it.&quot; I doubt ripgrep will ever have such a feature.</p>
+<p>And yes, <code>--one-file-system</code> might help here. Or convincing VS Code to stop telling ripgrep to follow symlinks (which ripgrep does not do by default).</p>
+<p>This overall seems like more of a VS Code problem to me. I'm not inclined to add features to ripgrep designed to work around how VS Code uses it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-06-05 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gcflymoto">@gcflymoto</a> on 2025-06-05 22:31</div>
+            <div class="timeline-body"><p>@mharvey-jt this exact issue has been the biggest VSCode pain point for us as well. We force each use to run an onboarding script which forces VSCode ripgrep json settings to never follow symlinks and use max four cores along path exclusions. All our HPC machines have to monitored for VSCode abusers. Not ideal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mharvey-jt">@mharvey-jt</a> on 2025-06-06 11:28</div>
+            <div class="timeline-body"><p>@gcflymoto Looking into this further, Microsoft runs ripgrep with <code>--no-config</code> which negates the proposed <code>RIPGREP_CONFIG_PATH</code> mitigation. They also dont appear to update their ripgrep package, so it's unlikely fixing upstream here is going to be a fast way to solve the issue.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:55 UTC
+    </footer>
+</body>
+</html>

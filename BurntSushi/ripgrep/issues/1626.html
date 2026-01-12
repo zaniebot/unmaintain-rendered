@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Environment variable for specifying path to ignore file - BurntSushi/ripgrep #1626</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Environment variable for specifying path to ignore file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1626">#1626</a>
+        opened by <a href="https://github.com/davidtwco">@davidtwco</a>
+        on 2020-06-23 12:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidtwco">@davidtwco</a></div>
+            <div class="timeline-body"><h4>Describe your feature request</h4>
+<p>It would be great if ripgrep could read <code>$RIPGREP_IGNORE_FILE</code> (or some other environment variable) for a path to the ignore file, falling back to the current <code>.ignore</code>, <code>.rgignore</code>, etc. locations if the variable is unset.</p>
+<p>This would be beneficial for users of <a href="https://nixos.org/">Nix development shells</a> to be able to define their ignore file as part of their development shell and have ripgrep use it without any further manual intervention (e.g. symlinking the path of <code>RIPGREP_IGNORE_FILE</code> to <code>.ignore</code> whenever you change the development shell).</p>
+<p>For example, when working on rustc, I have a <code>.ignore</code> file with directories like <code>src/llvm-project</code> that I don't typically work on - I define this file in <a href="https://github.com/davidtwco/veritas/blob/59d275b02eb40ba82d0f0298f37bdf591435175f/nix/shells/rustc.nix#L158-L181">my development shell</a> alongside all the other stuff, and I update the symlink to that file in the working directory whenever the file changes - if I didn't have to do that, and could just enter the development shell and always have ripgrep use the most recent version of the ignore file, then that'd be great.</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-06-23 12:59</div>
+            <div class="timeline-body"><blockquote>
+<p>It would be great if ripgrep could read <code>$RIPGREP_IGNORE_FILE</code> (or some other environment variable) for a path to the ignore file, falling back to the current <code>.ignore</code>, <code>.rgignore</code>, etc. locations if the variable is unset.</p>
+</blockquote>
+<p>To clarify, are you suggesting that if <code>RIPGREP_IGNORE_FILE</code> is set, then ripgrep <em>shouldn't</em> read any <code>.ignore</code> or <code>.rgignore</code> files?</p>
+<blockquote>
+<p>For example, when working on rustc, I have a <code>.ignore</code> file with directories like <code>src/llvm-project</code> that I don't typically work on - I define this file in <a href="https://github.com/davidtwco/veritas/blob/59d275b02eb40ba82d0f0298f37bdf591435175f/nix/shells/rustc.nix#L158-L181">my development shell</a> alongside all the other stuff, and I update the symlink to that file in the working directory whenever the file changes - if I didn't have to do that, and could just enter the development shell and always have ripgrep use the most recent version of the ignore file, then that'd be great.</p>
+</blockquote>
+<p>Could you say why you can't achieve this with ripgrep's <code>--ignore-file</code> flag? You can use an alias, a wrapper script or ripgrep's config file to set the flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2020-06-23 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidtwco">@davidtwco</a> on 2020-06-23 13:17</div>
+            <div class="timeline-body"><blockquote>
+<p>To clarify, are you suggesting that if <code>RIPGREP_IGNORE_FILE</code> is set, then ripgrep <em>shouldn't</em> read any <code>.ignore</code> or <code>.rgignore</code> files?</p>
+</blockquote>
+<p>I suppose I don't actually have a strong preference regarding this - so long as the environment variable was read.</p>
+<blockquote>
+<p>Could you say why you can't achieve this with ripgrep's --ignore-file flag? You can use an alias, a wrapper script or ripgrep's config file to set the flag.</p>
+</blockquote>
+<p>I could do something like this. Given that I would only want the ignore file to take effect when I enter the shell, making a wrapper script would probably be the cleanest solution which isn't too difficult with a Nix development shell. I do think it would be nicer if I could just expose an environment variable but if you'd rather not have that, then we can close this issue :slightly_smiling_face:.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-06-23 13:23</div>
+            <div class="timeline-body"><p>Aye. Yes, I'd rather not add another environment variable. I'm not opposed to it on principal, but I would want it to be well motivated. In particular, environment variables and tools like ripgrep don't particularly mesh well, since you might try using it inside of scripts which may then behave differently in the presence of environment variables. This is why for example GNU grep has deprecated its <code>GREP_OPTIONS</code> environment variable and is why ripgrep has a <code>--no-config</code> flag (which explicitly prevents ripgrep from respecting the <code>RIPGREP_CONFIG_PATH</code> environment variable). Overall, a careful weighing of the pros and cons led to adding <code>RIPGREP_CONFIG_PATH</code>, and that process would need to be repeated for any new environment variables.</p>
+<p>My general feeling is that ripgrep should respect either 0 or 1 environment variables. It's hard to ask end users to keep track of more than that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-06-23 13:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:12 UTC
+    </footer>
+</body>
+</html>

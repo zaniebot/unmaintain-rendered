@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>git setting core.excludesFile is ignored if placed inside an include.path of ~/.gitconfig - BurntSushi/ripgrep #2062</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>git setting core.excludesFile is ignored if placed inside an include.path of ~/.gitconfig</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2062">#2062</a>
+        opened by <a href="https://github.com/cdleonard">@cdleonard</a>
+        on 2021-11-13 07:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cdleonard">@cdleonard</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 11.0.2</p>
+<h4>How did you install ripgrep?</h4>
+<p>apt-get install ripgrep</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Linux, Mac</p>
+<h4>Describe your bug.</h4>
+<p>Give a high level description of the bug.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>I have multiple per-machine gitconfig files with sections like this:</p>
+<pre><code>[include]                                                                                                                                                                                                               
+           path = ~/.local/lib/private-scripts/common.gitconfig 
+</code></pre>
+<p>and inside <code>common.gitconfig</code> I have this section:</p>
+<pre><code>[core]                                                                                                                                                                                                                  
+           excludesFile = ~/.gitignore
+</code></pre>
+<p>The excludesFile setting inside <code>common.gitconfig</code> is ignored, I have to place this snippet in each per-machine gitconfig file instead.</p>
+<h4>What is the actual behavior?</h4>
+<p>The excludesFile setting inside <code>common.gitconfig</code> is ignored.</p>
+<h4>What is the expected behavior?</h4>
+<p>Looking through the code it seems that ripgrep has a custom regex-based parser for gitconfig files which does not support includes.</p>
+<p>I initially reported this for vscode https://github.com/microsoft/vscode/issues/134322 but after a little digging this behavior can be reproduced with standalone <code>rg</code> and after grepping for &quot;excludesFile&quot; the causes seems obvious: https://github.com/BurntSushi/ripgrep/blob/master/crates/ignore/src/gitignore.rs#L591</p>
+<p>An reasonably easy fix would be to call <code>git config core.excludesFile</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cdleonard">@cdleonard</a> on 2021-11-13 08:30</div>
+            <div class="timeline-body"><p>While lacking include support is a legitimate bug there is no good reason for me to use a custom core.excludesFile settings instead of the default ~/.config/git/ignore. I have just been doing so since before ~/.config/git/ignore was supported by git.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-11-15 14:49</div>
+            <div class="timeline-body"><p>Sadly, dupe of #1014.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-11-15 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2021-11-15 14:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:28 UTC
+    </footer>
+</body>
+</html>

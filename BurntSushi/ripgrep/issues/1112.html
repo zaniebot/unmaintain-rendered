@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider supporting tar file - BurntSushi/ripgrep #1112</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider supporting tar file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1112">#1112</a>
+        opened by <a href="https://github.com/upsuper">@upsuper</a>
+        on 2018-11-17 20:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/upsuper">@upsuper</a></div>
+            <div class="timeline-body"><p>Opening this issue as suggested by @BurntSushi in #1111.</p>
+<p>I think it would be helpful if ripgrep can support scanning archive files. Scanning tar files can briefly done via <code>-a</code> option, but there are downsides:</p>
+<ul>
+<li>you need to extract all files from the archive and scan again to identify the files you want</li>
+<li>the line number is unhelpfully large</li>
+<li>it may be wasting time on scanning files that we don't actually need</li>
+</ul>
+<p>It is unclear how scanning archive files should work. It should definitely be opt-in just like <code>--search-zip</code>. We can probably add <code>--search-archive</code> or <code>--search-tar</code> for this purpose. I guess ideally archive files should probably be handled like directory rather than single file in that mode.</p>
+<p>That should lead to some thing like</p>
+<blockquote>
+<p><strong>path/to/archive.tar/file1</strong>
+something <strong>matched</strong></p>
+<p><strong>path/to/archive.tar/file2</strong>
+something else <strong>matched</strong></p>
+</blockquote>
+<p>@BurntSushi what do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-11-17 20:59</div>
+            <div class="timeline-body"><p>Thanks for filing the ticket! I think this needs to be fleshed out quite a bit more though.</p>
+<blockquote>
+<p>I guess ideally archive files should probably be handled like directory rather than single file in that mode.</p>
+</blockquote>
+<p>ripgrep has fairly sophisticated filtering support. How does that interact with treating tar files as if they were a directory? e.g., If there is an applicable <code>*.txt</code> exclusion filter in play and a tar archive contains <code>foo.txt</code>, should that file also be ignored? If so, which filters are applied to it and how does that work? Personally, I suspect this will be a significant complication.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/upsuper">@upsuper</a> on 2018-11-17 21:16</div>
+            <div class="timeline-body"><p>For the case you mentioned, it should probably ignore the <code>foo.txt</code>, but still scan other files in the archives, just like what we do for directory.</p>
+<p>For how does that work... so it seems currently this is done via <code>ignore</code> crate, but integrating this support into that crate is probably not an option, because we would need decompression support there as well. Maybe we can change how <code>ignore</code> work, that we walk through directories in ripgrep, and feed file path into <code>ignore</code> for whether a directory should be further traversed, and whether a file should be scanned. This effectively would split <code>ignore</code> into two crates, one for walking through file system, another for checking file inclusion. It would be a non-trivial refactor. Alternatively we can add some new API to <code>ignore</code> for querying this kind of information, probably.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2018-11-17 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-11-17 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">icebox</span> added by @BurntSushi on 2018-11-17 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-11-17 21:38</div>
+            <div class="timeline-body"><p>Right. This is probably blocked on refactoring and cleaning up the <code>ignore</code> crate in general. I don't expect that to happen any time soon, and I haven't had the time to write down enough of my thoughts on that for others to see.</p>
+<p>I'll leave this open for now, but I don't think this is going to happen any time soon. Moreover, I am still not quite convinced that this feature belongs in ripgrep. It's definitely something that folks have requested before though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mateon1">@mateon1</a> on 2019-07-18 08:54</div>
+            <div class="timeline-body"><p>I suggest adding a generic <code>--search-archive</code> flag, so this can support different types of archives (like zip files) in the future.</p>
+<p>This would be really helpful for me, as I often need to grep through a massive corpus of text, hundreds of gigabytes in size. If I use ripgrep on the unpacked corpus, I get very useful information like filenames of the files that matched, and real line numbers. Unfortunately, because of spinning disk random access times this search usually takes over 6 hours to process the whole corpus.
+If I instead search the compressed version of the corpus by piping the output of <code>unzip -p '*'.zip</code>, the search only takes about an hour, but I lose information like which file a specific matching line came from, which sometimes forces me to repeat the search (or do a more specific search) on the uncompressed corpus later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/genivia-inc">@genivia-inc</a> on 2019-11-25 20:22</div>
+            <div class="timeline-body"><p>My 2c.</p>
+<p>I was looking for the same thing as I have several archived projects (.tar.gz) from years ago that I want to grep through fast without extracting files first. Eventually I decided to implement my own grep tool for this and other reasons. Recently I added tar file searches that I had on my TODO list, see <a href="https://github.com/Genivia/ugrep">ugrep</a> for the latest. Be warned that ugrep is pretty new (since mid 2019). It is stable but there may still be some rough edges, though I've tested it regularly on large test cases and tar files without issues. Supports (gzip compressed) tar v7, ustar, gnu tar, and pax extended header blocks for long file names. So right now it covers the common use cases.</p>
+<p>Anyway, if this is not helpful to ripgrep then I hope it may be helpful to you.</p>
+<p>You can shoot me down for not helping this community to implement tar file search in a ripgrep fork, but I'm just old fashioned and mostly code C/C++ and I'm too lazy too learn Rust.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eadmaster">@eadmaster</a> on 2021-05-05 08:20</div>
+            <div class="timeline-body"><p>I've just found <a href="https://github.com/phiresky/ripgrep-all">this wrapper</a> that adds some compressed archives support.</p>
+<p>Older alternatives i know are <code>zipgrep</code> and <a href="http://stahlworks.com/dev/index.php?tool=zzfind"><code>zzfind</code></a>.</p>
+<p>Btw, it is not clear to me how the current <code>--search-zip</code> flag is supposed to work, can you provide some examples?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-05 11:35</div>
+            <div class="timeline-body"><p>@eadmaster It's pretty simple. You give ripgrep compressed files and it searches them:</p>
+<pre><code>$ echo 'foo bar quux' &gt; /tmp/haystack
+$ rg bar /tmp/haystack
+1:foo bar quux
+$ gzip /tmp/haystack
+$ rg bar /tmp/haystack.gz
+$ rg -z bar /tmp/haystack.gz
+1:foo bar quux
+</code></pre>
+<p>It sounds like you're trying to give ripgrep compressed <em>archive</em> files. ripgrep doesn't support iterating over archives, even when they're uncompressed. It's orthogonal to <code>--search-zip</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eadmaster">@eadmaster</a> on 2021-05-05 13:51</div>
+            <div class="timeline-body"><p>I see, then the name <code>search-zip</code> is a bit ambiguous for me, why not changing to <code>search-gz</code> or <code>search-gzip</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-05 13:58</div>
+            <div class="timeline-body"><p>Because the flag name is used in other tools, change causes churn and gzip is not the only supported compression format.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/knutwannheden">@knutwannheden</a> on 2022-03-17 16:08</div>
+            <div class="timeline-body"><p>Support for archives would be really nice!</p>
+<p>Apart from being able to search the occasional downloaded <code>.zip</code> and <code>.tar.gz</code> archive, I also have another use case: I was surprised that ripgrep appeared to be so slow on a VPS hosted by a public cloud provider. It turns out that they use <a href="https://en.wikipedia.org/wiki/Ceph_(software">Ceph</a>) and (at least the way it is configured) I get good throughput put high latencies when reading files (ephemeral disks are not available). In my case I have over a million files I want to search and it just takes forever. So I created a compressed <code>.tar.gz</code> archive, which I can now search using the <code>-a</code> and <code>-z</code> options, which is a lot faster. The downside here being that ripgrep can't tell me which file within the archive contains the match. This is admittedly a strange use case, but IMHO archive support would still be very nice to have.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jumarko">@jumarko</a> on 2022-05-25 03:12</div>
+            <div class="timeline-body"><p>I would love to see this implemented.
+I also agree with @eadmaster that <code>search-zip</code> option name is confusing (https://github.com/BurntSushi/ripgrep/issues/1112#issuecomment-832704390)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-05-25 12:25</div>
+            <div class="timeline-body"><p>The flag name isn't changing.</p>
+<p>More comments saying &quot;I want this&quot; <em>aren't</em> helpful. I have questions about how to implement this. What would be helpful is if folks could dive into answering those questions. See my previous comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mateon1">@mateon1</a> on 2022-05-25 22:58</div>
+            <div class="timeline-body"><p>My view of how the implementation should roughly look:</p>
+<ul>
+<li>ripgrep, with an appropriate cli flag should be able to recurse into and open archive files as a pseudo-directory, and search each file within the archive as usual (semantically, almost exactly as if the archive was a subdirectory you entered). Implementation-level, I believe you could define an <code>Archive</code> trait which you could implement for tar files, zip files, and whatever else people want to implement (rar, 7z, zpaq, whatever you can find a crate for - but most behind a feature flag most likely).</li>
+<li>The Archive trait would provide methods for traversing the directories and providing whatever file reading methods ripgrep needs. Some hint methods could be useful to indicate that e.g. tar files cannot be reasonably traversed in parallel, only sequentially, while most other archive formats let you do random access to select a file.</li>
+<li>ripgrep can report the matching file as <code>path/to/archive.zip//archived/path.txt</code> (exact format open to bikeshedding, maybe <code>::</code> as separator? I think I've seen antivirus software report files in archives this way)</li>
+<li>ripgrep SHOULD be able to recurse into nested archives, possibly limited by some flag.</li>
+</ul>
+<p>Note: I have very little understanding of how ripgrep is internally architected, maybe the <code>Archive</code> trait idea won't work, but that's the first thing that comes to mind for how to implement this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ujay68">@ujay68</a> on 2023-11-30 11:07</div>
+            <div class="timeline-body"><p>I would also like to vote for such a feature. (Recursively searching through a directory structure that contains archive formats is really painful ATM.) Some additional ideas:</p>
+<ul>
+<li>Could also support Zip-based file formats. Lots of these with different endings: Java (.jar, .war, .ear), Microsoft (.docx, .xlsx &amp; Co.), LibreOffice (.odt &amp; Co.) …</li>
+<li>If a specific command-line option is set, I would suggest to treat such archive files as if they were extracted at their location, ie, a file <code>./d1/d2/a.zip</code> would be treated, for globbing and filtering purposes, like a directory <code>./d1/d2/a.zip/</code> containing the contents of <code>a.zip</code>. (Java URIs use a the special character <code>!</code> for that, ie, paths like <code>d1/d2/a.zip!a.txt</code>.)</li>
+<li>Second mateon1's idea of allowing recursion into nested archives (which one has, eg, with .war and .ear).</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/allefeld">@allefeld</a> on 2025-11-09 19:09</div>
+            <div class="timeline-body"><p>I agree that this would be useful, but it should be opt-in, through an option like <code>--search-archive</code>.</p>
+<p>Leaving handling archives to a preprocessor (which e.g. <code>rga</code> implements) will often give useless results, because the preprocessor can return only one file / stream, which might be extremely long and mix text with binary parts.</p>
+<p>I think the extended pathname idea (path to zip + path to file in zip) is good. However, &quot;treat such archive files as if they were extracted at their location&quot; doesn't always work, because at least <code>.zip</code> files can store absolute paths for files. That would be best accommodated by a Java-style string, where both <code>d1/d2/a.zip!a.txt</code> (path relative to zip, similar to &quot;as if extracted into  a directory <code>a.zip</code>&quot;) and <code>d1/d2/a.zip!/a.txt</code> (absolute path within archive) are possible.</p>
+<p>That means that archive searching would be implemented at the level of file system traversal. For an archive file, the traversal produces not one pathname but as many extended pathnames as there are files in the archive. When the pattern search encounters such an extended pathname, it extracts contained files one-by-one (to deal with very large archives) to temporary files. For the preprocessing to work, the file extension (or generally, the part matched by one of the <code>--pre-glob</code>s) would have to be preserved on the extracted file. Matches found in the temporary file then need to be translated back into extended pathname format.</p>
+<p>Btw., I was also misled by the option name <code>--search-zip</code>, which I interpreted as referencing <code>zip</code>, not <code>gzip</code>. Better might be <code>--search-compressed</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:44 UTC
+    </footer>
+</body>
+</html>

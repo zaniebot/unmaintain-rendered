@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recursive search fails in GitHub Actions - BurntSushi/ripgrep #2181</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Recursive search fails in GitHub Actions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2181">#2181</a>
+        opened by <a href="https://github.com/AndrewSouthpaw">@AndrewSouthpaw</a>
+        on 2022-04-15 01:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AndrewSouthpaw">@AndrewSouthpaw</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code># local
+$ rg --version
+ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+
+# github action
+ripgrep 13.0.0 (rev 7ec2fd51ba)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>Followed these instructions:</p>
+<pre><code>          curl -LO https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep_13.0.0_amd64.deb
+          sudo dpkg -i ripgrep_13.0.0_amd64.deb
+</code></pre>
+<h4>Describe your bug.</h4>
+<p>I'm running v13.0.0, and it works fine locally, but not in CI with GitHub Actions:</p>
+<p>Local</p>
+<pre><code>$ rg '&lt;&lt;&lt;&lt;&lt;&lt; HEAD'
+modules/mypkg/package.json
+1:&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+
+modules/mypkg/package-lock.json
+3:  &lt;&lt;&lt;&lt;&lt;&lt; HEAD
+</code></pre>
+<p>When I run it in CI with these commands:</p>
+<pre><code>          echo 'checking merge conflicts with explicit path'
+          rg '&lt;&lt;&lt;&lt;&lt;&lt; HEAD' modules/mypkg/package-lock.json
+          echo 'checking merge conflicts recursively'
+          rg '&lt;&lt;&lt;&lt;&lt;&lt; HEAD'
+</code></pre>
+<p>It works fine for the explicit path but not for the recursive search.</p>
+<pre><code>(output)
+checking merge conflicts with explicit path
+  &lt;&lt;&lt;&lt;&lt;&lt; HEAD
+checking merge conflicts recursively
+Error: Process completed with exit code 1.
+</code></pre>
+<p>Any ideas what's going on?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-04-15 01:56</div>
+            <div class="timeline-body"><p>Probably something related to Actions attaching something to stdin when it shouldn't, thus ripgrep tries to search stdin.</p>
+<p>The work around is easy: don't rely on auto detection. Use <code>rg foo ./</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2022-04-15 01:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2022-04-15 01:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndrewSouthpaw">@AndrewSouthpaw</a> on 2022-04-15 02:20</div>
+            <div class="timeline-body"><p>Yep that did the trick, I never would've guessed to do that. Thanks for the quick response!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/casey">@casey</a> on 2022-08-16 20:36</div>
+            <div class="timeline-body"><p>I just hit this, and it was pretty hard to debug. This is definitely not ripgrep's fault, but documenting this somewhere might be helpful for users who hit it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/casey">@casey</a> on 2022-08-16 20:53</div>
+            <div class="timeline-body"><p>Created a discussion <a href="https://github.com/orgs/community/discussions/29721">here</a>, hopefully they revert this.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:31 UTC
+    </footer>
+</body>
+</html>

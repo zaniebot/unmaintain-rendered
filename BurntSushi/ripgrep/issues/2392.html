@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ripgrep not respecting global .gitignore - BurntSushi/ripgrep #2392</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ripgrep not respecting global .gitignore</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2392">#2392</a>
+        opened by <a href="https://github.com/Avishayy">@Avishayy</a>
+        on 2023-01-06 01:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Avishayy">@Avishayy</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p><code>brew</code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>macOS Ventura 13.1</p>
+<h4>Describe your bug.</h4>
+<p>I have some local backup files in my dev repo and I'd like to ignore them from all <code>rg</code> functionalities. Since they exist on my local machine I don't add them to the repo tracked .gitignore, so I configured a global gitignore but it seems to not work. https://github.com/BurntSushi/ripgrep/issues/9 seems to create support for it, but it's quite old already so perhaps it's now broken.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<pre><code class="language-sh">$ git config core.excludesFile
+~/.gitignore
+
+$ cat ~/.gitignore
+*.sql
+
+$ rg --files | rg backup
+backup
+backup_21_07_2022.sql
+backup_11-12-22.sql
+db_backup.sql
+
+$ git add db_backup.sql
+The following paths are ignored by one of your .gitignore files:
+db_backup.sql
+hint: Use -f if you really want to add them.
+hint: Turn this message off by running
+hint: &quot;git config advice.addIgnoredFile false&quot;
+
+$ echo &quot;*.sql&quot; &gt;&gt; .gitignore
+
+$ rg --files | rg backup
+backup
+</code></pre>
+<p>You can see that git refuses to add the file since it is ignored by the global .gitignore and then that ripgrep would only respect it if is present in the working directory.</p>
+<h4>What is the actual behavior?</h4>
+<p>Patterns from global .gitignore are ignored by ripgrep</p>
+<h4>What is the expected behavior?</h4>
+<p>Patterns from global .gitignore are respected by ripgrep</p>
+<h4>What do you think ripgrep should have done?</h4>
+<p>Ignore the patterns present in the global .gitignore</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avishayy">@Avishayy</a> on 2023-01-06 01:42</div>
+            <div class="timeline-body"><p>Using the following paths for the global path doesn't work either:
+<code>$HOME/.gitignore</code>
+<code>/Users/user/.gitignore</code>
+(but it does work for git as expected)
+So it's not an issue of not resolving the tilde or something of sorts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-01-06 01:45</div>
+            <div class="timeline-body"><p>Please include <code>--debug</code> output, as requested in the issue template.</p>
+<p>Also, a small reproducible example that I can run would be helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avishayy">@Avishayy</a> on 2023-01-06 01:54</div>
+            <div class="timeline-body"><p>Sorry for not doing this yet, I found the root cause.
+I edited the .gitconfig file manually and written the path as a string, i.e.</p>
+<pre><code>[core]
+	excludesFile = &quot;~/.gitignore&quot;
+</code></pre>
+<p>(which git is happy with)</p>
+<p>Changing it to a regular form</p>
+<pre><code>[core]
+	excludesFile = ~/.gitignore
+</code></pre>
+<p>Makes ripgrep respect the global config as well, I'll attach a reproducer soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avishayy">@Avishayy</a> on 2023-01-06 02:00</div>
+            <div class="timeline-body"><pre><code class="language-sh">mkdir rg_global_gitignore
+cd rg_global_gitignore
+git init
+
+# adding the config this way will strip the quotation marks
+#git config --global core.excludesFile &quot;~/.gitignore&quot;
+
+# open ~/.gitconfig and add:
+#
+# [core]
+# 	excludesFile = &quot;~/.gitignore&quot;
+
+echo &quot;*.sql&quot; &gt; ~/.gitignore
+
+touch backup backup.sql backup123.sql db_backup.sql
+rg --files --debug
+</code></pre>
+<p>Output is</p>
+<pre><code>DEBUG|ignore::walk|crates/ignore/src/walk.rs:1741: ignoring ./.gitignore: Ignore(IgnoreMatch(Hidden))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1741: ignoring ./.git: Ignore(IgnoreMatch(Hidden))
+backup.sql
+backup
+backup_21_07_2022.sql
+backup123.sql
+backup_11-12-22.sql
+db_backup.sql
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-01-06 13:21</div>
+            <div class="timeline-body"><p>My guess is that this can be fixed with a simple tweak to the regex used for parsing this file: https://github.com/BurntSushi/ripgrep/blob/bc5504932764d8d4735bf955f6f7e04a95f151b8/crates/ignore/src/gitignore.rs#L600</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2023-01-06 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kentokamoto">@Kentokamoto</a> on 2023-10-11 14:43</div>
+            <div class="timeline-body"><p>I'd like to take a look into fixing this since it looks like a pretty straight forward task. From what I was able to gather, this seems to be a problem when .gitconfig files have double quotes surrounding the value for <code>excludesFile</code>. If this is a small change to the regex under <a href="https://github.com/BurntSushi/ripgrep/blob/bc5504932764d8d4735bf955f6f7e04a95f151b8/crates/ignore/src/gitignore.rs#L600">ripgrep/crates/ignore/src/gitignore.rs</a>, then we probably might be able to get away with adding the double quote character to a character set along with whitespaces. So the new regex would look like</p>
+<pre><code>r&quot;(?im)^\s*excludesfile\s*=[\x22\s]*(.+?)[\x22\s]*$&quot;gm
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-10-15 12:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-21 04:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:36 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>adding types and searching ignores files. - BurntSushi/ripgrep #3054</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>adding types and searching ignores files.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3054">#3054</a>
+        opened by <a href="https://github.com/egidijus">@egidijus</a>
+        on 2025-05-28 08:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/egidijus">@egidijus</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[x] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<pre><code>ripgrep 14.1.1
+
+features:+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2
+
+PCRE2 10.43 is available (JIT is available)
+</code></pre>
+<h3>How did you install ripgrep?</h3>
+<p>yay -S riprep</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>endeavouros, Kernel: Linux 6.12.29-1-lts</p>
+<h3>Describe your bug.</h3>
+<p>I am unable to configure types using &quot;B&quot; types.
+When using &quot;A&quot; types, rg ignores type.</p>
+<pre><code>$ env| grep -i rip
+RIPGREP_CONFIG_PATH=/home/egidijus/.ripgreprc
+</code></pre>
+<h2>A TYPES</h2>
+<p>I have tried both,</p>
+<pre><code>## add js type
+--type-add=js:*.{js,ts}*
+
+# 'web' type.
+--type-add=web:*.{html,css,js}*
+
+# 'docker' type.
+--type-add=docker:*.{dockerfile,Dockerfile,docker-compose.yml}*
+
+# justfile
+--type-add=just:*.justfile
+</code></pre>
+<p>above ignores just files</p>
+<pre><code>$ rg --type-list | grep -i just -B2
+julia: *.jl
+jupyter: *.ipynb, *.jpynb
+just: *.justfile
+</code></pre>
+<pre><code>$ rg --debug direnv -tjust 
+rg: DEBUG|rg::flags::config|crates/core/flags/config.rs:41: /home/egidijus/.ripgreprc: arguments loaded from config file: [&quot;--glob=!.git/&quot;, &quot;--glob=!node_modules/&quot;, &quot;--type-add=js:*.{js,ts}*&quot;, &quot;--type-add=web:*.{html,css,js}*&quot;, &quot;--type-add=docker:*.{dockerfile,Dockerfile,docker-compose.yml}*&quot;, &quot;--type-add=just:*.justfile&quot;, &quot;--colors=line:style:bold&quot;, &quot;--max-depth=5&quot;, &quot;--smart-case&quot;, &quot;--hidden&quot;]
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1083: number of paths given to search: 0
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1108: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=false, stdin_consumed=false, mode=Search(Standard))
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1118: heuristic chose to search ./
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1269: found hostname for hyperlink configuration: endy
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1279: hyperlink format: &quot;&quot;
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 1 required extensions, 0 regexes
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 2 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 8 thread(s)
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|ignore::gitignore|crates/ignore/src/gitignore.rs:393: opened gitignore file: ./.git/info/exclude
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1799: ignoring ./justfile: Ignore(IgnoreMatch(Types(Glob(UnmatchedIgnore))))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1799: ignoring ./.envrc: Ignore(IgnoreMatch(Types(Glob(UnmatchedIgnore))))
+</code></pre>
+<p>and ...</p>
+<h2>B TYPES</h2>
+<pre><code>--type-add
+js:*.{js,ts}*
+docker:*.{dockerfile,Dockerfile,docker-compose.yml}*
+just:*.justfile
+web:*.{html,css,js}*
+</code></pre>
+<pre><code>rg --type-list | grep -i just -B2
+</code></pre>
+<p>empty output</p>
+<pre><code>$ rg --debug direnv -tjust 
+rg: DEBUG|rg::flags::config|crates/core/flags/config.rs:41: /home/egidijus/.ripgreprc: arguments loaded from config file: [&quot;--glob=!.git/&quot;, &quot;--glob=!node_modules/&quot;, &quot;--type-add&quot;, &quot;js:*.{js,ts}*&quot;, &quot;docker:*.{dockerfile,Dockerfile,docker-compose.yml}*&quot;, &quot;just:*.justfile&quot;, &quot;web:*.{html,css,js}*&quot;, &quot;--colors=line:style:bold&quot;, &quot;--max-depth=5&quot;, &quot;--smart-case&quot;, &quot;--hidden&quot;]
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1083: number of paths given to search: 3
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1094: is_one_file? false
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1269: found hostname for hyperlink configuration: endy
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1279: hyperlink format: &quot;&quot;
+rg: unrecognized file type: just
+</code></pre>
+<h3>What are the steps to reproduce the behavior?</h3>
+<pre><code>$ env| grep -i rip
+RIPGREP_CONFIG_PATH=/home/egidijus/.ripgreprc
+</code></pre>
+<h2>A TYPES</h2>
+<p>I have tried both,</p>
+<pre><code>## add js type
+--type-add=js:*.{js,ts}*
+
+# 'web' type.
+--type-add=web:*.{html,css,js}*
+
+# 'docker' type.
+--type-add=docker:*.{dockerfile,Dockerfile,docker-compose.yml}*
+
+# justfile
+--type-add=just:*.justfile
+</code></pre>
+<p>above ignores just files</p>
+<h2>B TYPES</h2>
+<pre><code>--type-add
+js:*.{js,ts}*
+docker:*.{dockerfile,Dockerfile,docker-compose.yml}*
+just:*.justfile
+web:*.{html,css,js}*
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<h2>A TYPES</h2>
+<pre><code>$ rg --type-list | grep -i just -B2
+julia: *.jl
+jupyter: *.ipynb, *.jpynb
+just: *.justfile
+</code></pre>
+<pre><code>$ rg --debug direnv -tjust 
+rg: DEBUG|rg::flags::config|crates/core/flags/config.rs:41: /home/egidijus/.ripgreprc: arguments loaded from config file: [&quot;--glob=!.git/&quot;, &quot;--glob=!node_modules/&quot;, &quot;--type-add=js:*.{js,ts}*&quot;, &quot;--type-add=web:*.{html,css,js}*&quot;, &quot;--type-add=docker:*.{dockerfile,Dockerfile,docker-compose.yml}*&quot;, &quot;--type-add=just:*.justfile&quot;, &quot;--colors=line:style:bold&quot;, &quot;--max-depth=5&quot;, &quot;--smart-case&quot;, &quot;--hidden&quot;]
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1083: number of paths given to search: 0
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1108: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=false, stdin_consumed=false, mode=Search(Standard))
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1118: heuristic chose to search ./
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1269: found hostname for hyperlink configuration: endy
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1279: hyperlink format: &quot;&quot;
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 1 required extensions, 0 regexes
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 2 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 8 thread(s)
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|ignore::gitignore|crates/ignore/src/gitignore.rs:393: opened gitignore file: ./.git/info/exclude
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1799: ignoring ./justfile: Ignore(IgnoreMatch(Types(Glob(UnmatchedIgnore))))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1799: ignoring ./.envrc: Ignore(IgnoreMatch(Types(Glob(UnmatchedIgnore))))
+rg: No files were searched, which means ripgrep probably applied a filter you didn't expect.
+Running with --debug will show why files are being skipped.
+</code></pre>
+<h2>B TYPES</h2>
+<pre><code>rg --type-list | grep -i just -B2
+</code></pre>
+<p>empty output</p>
+<pre><code>$ rg --debug direnv -tjust 
+rg: DEBUG|rg::flags::config|crates/core/flags/config.rs:41: /home/egidijus/.ripgreprc: arguments loaded from config file: [&quot;--glob=!.git/&quot;, &quot;--glob=!node_modules/&quot;, &quot;--type-add&quot;, &quot;js:*.{js,ts}*&quot;, &quot;docker:*.{dockerfile,Dockerfile,docker-compose.yml}*&quot;, &quot;just:*.justfile&quot;, &quot;web:*.{html,css,js}*&quot;, &quot;--colors=line:style:bold&quot;, &quot;--max-depth=5&quot;, &quot;--smart-case&quot;, &quot;--hidden&quot;]
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1083: number of paths given to search: 3
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1094: is_one_file? false
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1269: found hostname for hyperlink configuration: endy
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1279: hyperlink format: &quot;&quot;
+rg: unrecognized file type: just
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>both syntax of setting custom types work:</p>
+<pre><code>--type-add
+js:*.{js,ts}*
+docker:*.{dockerfile,Dockerfile,docker-compose.yml}*
+just:*.justfile
+web:*.{html,css,js}
+</code></pre>
+<p>and</p>
+<pre><code># ## add js type
+--type-add=js:*.{js,ts}*
+
+# 'web' type.
+--type-add=web:*.{html,css,js}*
+</code></pre>
+<p>search custom types</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-05-28 12:08</div>
+            <div class="timeline-body"><p>This issue is very hard for me to understand. Your &quot;B TYPES&quot; configuration looks wrong. I don't know why you expect it to work. ripgrep is even printing an error.</p>
+<p>Your &quot;A TYPES&quot; configuration looks okay. I think you are saying it still isn't doing what you expect, but it is very unclear here because you don't provide an MRE. Please provide an MRE.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-09-23 01:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2025-09-23 01:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:55 UTC
+    </footer>
+</body>
+</html>

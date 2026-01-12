@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glob patterns and umlauts on HFS vs. APFS - BurntSushi/ripgrep #845</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Glob patterns and umlauts on HFS vs. APFS</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/845">#845</a>
+        opened by <a href="https://github.com/chrmarti">@chrmarti</a>
+        on 2018-03-05 15:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chrmarti">@chrmarti</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.8.1 (rev c8e9f25b85)
++SIMD -AVX</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>OSX 10.12.6 and 10.13.3</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>The glob patterns do not match umlauts because HFS uses a normalized encoding.</p>
+<p>Create a corpus:</p>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+void main()
+{
+    fopen(&quot;a\xc3\xbc&quot;, &quot;ab+&quot;);
+    fopen(&quot;b\x75\xcc\x88&quot;, &quot;ab+&quot;);
+}
+</code></pre>
+<p>Also create third through the command line for comparison:</p>
+<pre><code>touch cü
+</code></pre>
+<p><code>ls</code> shows:</p>
+<pre><code>aü   bü   cü
+</code></pre>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<p>Running <code>rg --files -g '*ü'</code> shows no output on OSX 10.12.6 with HFS, on OSX 10.13.3 with APFS it is:</p>
+<pre><code>cü
+aü
+</code></pre>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>Ideally on both versions of OSX we would get all three files as matches. The problem comes from HFS changing to the 3-byte code-point for all three variations of creating a file with the umlaut whereas APFS just leaves the representation of the filename as it is given.</p>
+<p>Found via Microsoft/vscode#43691.</p>
+<p>/cc @joaomoreno</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-03-05 16:20</div>
+            <div class="timeline-body"><p>Yeah ripgrep doesn't handle normalization at all. From your example, it looks like HFS specifically used the <em>decomposed</em> normal form. This doesn't just impact glob matching, but actual search as well. In particular, if you search for a composed Unicode codepoint, you won't find files that contain the same glyph in decomposed form and vice versa. This is because ripgrep doesn't really know which normal form to use.</p>
+<p>In this case, <em>if</em> we know that HFS always uses a specific type of Unicode normal form, then in theory, we could do the following:</p>
+<ul>
+<li>Detect if we're searching an HFS system.</li>
+<li>If so, apply the same normalization procedure <em>to the glob itself</em> that is applied to file paths on the HFS system.</li>
+</ul>
+<p>This is fraught with complications and unknowns. Some of them are significant:</p>
+<ul>
+<li>If you write <code>[X]</code> as a character class where <code>X</code> is a composed codepoint, then decomposing that is basically not possible without explicit support from the regex engine, which it does not have (and it is deeply non-trivial to add). This is because there is a fundamental assumption that character classes match exactly one codepoint.</li>
+<li>Even if we could translate the glob into decomposed normal form, the detection of HFS isn't clear to me. I don't know the first thing about it. In particular, this detection must be granular. That is, a glob converted to normal form can only be used on file paths on an HFS file system. If you search across additional HFS file systems, then you'd need to compile an additional glob.</li>
+</ul>
+<p>In other words, the only real way to solve this problem is to build normalization support into the regex engine itself. This is basically a rewrite and drastically alters the performance profile of regular expressions. If you read <a href="http://unicode.org/reports/tr18/">UTS#18</a>, you can see that the Unicode people are well aware of this, which is why <a href="http://unicode.org/reports/tr18/#Canonical_Equivalents">features like canonical equivalence</a> are pushed into &quot;extended&quot; level 2 support, which very few regex engines support at all.</p>
+<p>Unless there is a simple fix I'm missing---perhaps even one that partially fixes the issue---then I suspect this is a <code>wontfix</code> bug sadly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2018-03-05 21:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-03-05 21:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Unless there is a simple fix I'm missing</p>
+</blockquote>
+<p>One possibility is to decompose codepoints in a glob that <em>aren't</em> part of a character class. It would be a frustrating half-measure, and it would still be problematic with respect to needing to detect the HFS file system. One possible way to solve that would be to expose a flag to enable the normalization pass unconditionally if you know you're only searching an HFS file system. This wouldn't work if you search across multiple file systems, and a flag like that seems like not a good UX to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrmarti">@chrmarti</a> on 2018-03-06 06:53</div>
+            <div class="timeline-body"><p>Thanks for the great analysis! Reading <a href="http://unicode.org/reports/tr18/">UTS#18</a> this seems like a more general problem than just with HFS because other filesystems don't bother with normalization at all. UTS#18 suggests using NFD (or NFKD) for regular expression matching (HFS is using NFD).</p>
+<p>Maybe the regex engine could have a mode where it normalizes all inputs (glob and filename to match against) and character classes to NFD. That would also deal with the case where a filesystem without normalization (that seems most except HFS) ends up with a mixture of representations of the same visual character. Maybe that would leave the regex engine's core untouched, but I'm just guessing.</p>
+<p>As an aside: We noticed that while OSX's APFS does not change the filename's representation, it still does not allow you to create two files with filenames that have the same normalized representation. So it is aware of the equivalence.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-03-06 11:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Maybe the regex engine could have a mode where it normalizes all inputs (glob and filename to match against) and character classes to NFD.</p>
+</blockquote>
+<p>This is basically what I suggested above, and is exactly problematic for the reasons stated, specifically with regard to character classes. Note that UTS#18 S2.1 (on canonical equivalents) is specifically suggesting that the <em>end user</em> construct their pattern such that it uses NFD, likely for exactly the reasons I mentioned. Unicode hints at this with the last bullet point, which is <em>critical</em>: &quot;Applying the matching algorithm on a code point by code point basis, as usual.&quot;</p>
+<p>Translating the input to NFD is definitely not something that should be in the regex engine itself, mostly because it doesn't really confer any advantages. It would be something that ripgrep would do as a pre-processing step outside the regex engine if we were to pursue that path. As I hinted above, this would drastically alter the performance profile of ripgrep. Unicode normalization is decidedly not cheap.</p>
+<blockquote>
+<p>this seems like a more general problem than just with HFS because other filesystems don't bother with normalization at all</p>
+</blockquote>
+<p>Indeed! On Unix (and probably Windows too), it is entirely possible to create a file that contains a composed codepoint in its name, and then use the decomposed codepoint in a glob (and vice versa), and that would result in a match failure even though the text strings look the same to an end user. It is a frustrating UX, no doubt about it. Presumably HFS is trying to fix that.</p>
+<blockquote>
+<p>As an aside: We noticed that while OSX's APFS does not change the filename's representation, it still does not allow you to create two files with filenames that have the same normalized representation. So it is aware of the equivalence.</p>
+</blockquote>
+<p>Now that is interesting!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrmarti">@chrmarti</a> on 2018-03-06 15:10</div>
+            <div class="timeline-body"><p>Sounds good. I'll look into mitigating this on VS Code's side. We might get away with supplying two exclusion patterns when when the NFD form differs from the user input.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-03-06 16:22</div>
+            <div class="timeline-body"><p>@chrmarti Aye. Just be careful! If you replace <code>[ü]</code> (where <code>ü</code> is composed) with <code>[ü]</code> (where <code>ü</code> is decomposed), then the latter will match <em>either</em> the <code>u</code> or the umlaut independently of one another.</p>
+<p>If you just have a literal <code>ü</code>, then the normalization pass is fine either way because it's just a concatenation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2018-03-07 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-03-07 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maxnoe">@maxnoe</a> on 2020-01-10 15:44</div>
+            <div class="timeline-body"><p>I came across this today again. It would be great if ripgrep would support optionally normalizing all input text.</p>
+<p>For me it was not filenames but the actual contents were in different form and I had to search for both decomposed and composed form.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-01-10 15:50</div>
+            <div class="timeline-body"><p>Nothing has change since my comments above, so I don't see this happening. Sorry.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:28 UTC
+    </footer>
+</body>
+</html>

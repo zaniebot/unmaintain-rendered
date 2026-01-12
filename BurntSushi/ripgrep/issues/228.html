@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Out of memory - BurntSushi/ripgrep #228</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Out of memory</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/228">#228</a>
+        opened by <a href="https://github.com/andyleejordan">@andyleejordan</a>
+        on 2016-11-09 21:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andyleejordan">@andyleejordan</a></div>
+            <div class="timeline-body"><p>I managed to break <code>ripgrep</code> somehow.</p>
+<pre><code>$ git clone https://github.com/docker/docker.git
+$ cd docker
+
+$ rg --ignore-file vendor tar
+fatal runtime error: out of memory
+^C^C^C^CIllegal instruction (core dumped)
+
+$ rg --version
+ripgrep 0.2.8
+
+$ uname -r
+4.8.6-1.el7.elrepo.x86_64
+</code></pre>
+<p>This is on CentOS 7 virtualized with Hyper-V.</p>
+<p>I have since realized that <code>--ignore-file</code> was not what I wanted (I'm trying to exclude files). It's actual intention is a file which lists what to be ignored. However, by giving it a directory (any directory) I manage to crash ripgrep pretty easily.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andyleejordan">@andyleejordan</a> on 2016-11-09 21:26</div>
+            <div class="timeline-body"><p>@BurntSushi is it intended that <code>--ignore-file</code> accepts and walks a directory for ignore files? If it is not, I think I can fix it rather simply by denying the use of directories.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-09 21:44</div>
+            <div class="timeline-body"><p>This is an awesome bug, thanks for the report!</p>
+<p>The issue was that I got a bit overzealous with partial error reporting. Namely, when processing a gitignore file, we should try to use every pattern even if some patterns are invalid globs (e.g., <code>a**b</code>). In the process, I applied the same logic to I/O errors. In this case, it manifest by attempting to read lines from a directory, which appears to yield <code>Result</code>s forever, where each <code>Result</code> is an error of the form &quot;you can't read from a directory silly.&quot; Since I treated it as a partial error, ripgrep was just spinning and accruing each error in memory, which caused the OOM killer to kick in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2016-11-09 21:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-11-09 21:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andyleejordan">@andyleejordan</a> on 2016-11-09 21:57</div>
+            <div class="timeline-body"><p>Yay! This is why I love <code>ripgrep</code>. It's already fixed! Thanks @BurntSushi.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:53 UTC
+    </footer>
+</body>
+</html>

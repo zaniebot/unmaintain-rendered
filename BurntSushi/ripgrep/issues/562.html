@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Globset directory iteration hint? - BurntSushi/ripgrep #562</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Globset directory iteration hint?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/562">#562</a>
+        opened by <a href="https://github.com/mqudsi">@mqudsi</a>
+        on 2017-07-20 23:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mqudsi">@mqudsi</a></div>
+            <div class="timeline-body"><p>I've been working with the original <code>glob</code> for a while and have realized it has some severe shortcomings. I was hoping to contribute some changes to <code>globset</code> that would allow it to fill in for <code>glob</code> entirely.</p>
+<p>A question I've had pertains to performance; currently it does not seem that there's any way to find out via an api call whether or not there is a point in entering a directory to attempt to match against its children. Is this correct?</p>
+<p>To illustrate: given a glob <code>**/*.rs</code> and a cwd of <code>./</code>, one call <code>read_dir</code> on <code>./src</code> to see if it has any children that match <code>**/*.rs</code>.</p>
+<p>But if the glob is <code>*.rs</code>, it's obviously not necessary to enter any subdirectories, this directory can't match.
+Similarly, if <code>require_literal_separator</code> is true, there's no need to enter a subdirectory of <code>src/</code> to search for <code>*.rs</code> files - that glob won't match.</p>
+<p>Does globset expose this functionality so that it can be consumed from another crate/library?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-21 00:00</div>
+            <div class="timeline-body"><p>Is this a duplicate of #546? (If it isn't, then I don't think I understand what you're asking for.)</p>
+<p>What problem are you trying to solve?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mqudsi">@mqudsi</a> on 2017-07-21 00:01</div>
+            <div class="timeline-body"><p>I think it is. Although I use ripgrep, this was a general question about the <code>globset</code> crate and not about <code>ripgrep</code>.</p>
+<p>Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-21 00:07</div>
+            <div class="timeline-body"><p>Sure ya, but fixing that issue probably means solving it at the glob level I'm guessing.</p>
+<p>I'm still curious to hear the problem you're trying to solve though. Does the glob crate have this functionality?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mqudsi">@mqudsi</a> on 2017-07-21 00:15</div>
+            <div class="timeline-body"><p>The glob crate does directory walking for you (<code>glob::glob_with</code>), so the dev doesn't need to think about whether or not the result is optimized.</p>
+<p>I imagine it'll be tough to find all the corner cases, but something as simple as</p>
+<pre><code class="language-rust">fn max_depth(&amp;self) -&gt; Option&lt;int&gt; {
+    if !self.require_literal_separator() {
+        return None();
+    }
+    return Some(self.max_slash_count());
+}
+</code></pre>
+<p>where <code>max_slash_count()</code> is the maximum number of <code>/</code> instances in a single glob within the globset.</p>
+<p>(I'm sure I'm missing a corner case here, but anyway) would suffice as a basic performance improvement for an attempt at walking a tree while matching against a globset.</p>
+<p>I'm basically trying to avoid needlessly recursing into directories and matching futilely against the globset if we can know in advance that the contents of subdirectory x or any file past depth y will not match.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-22 01:10</div>
+            <div class="timeline-body"><p>I think I'm going to let #546 track this issue. I think the problem of &quot;don't descend into directories when you know there will be no matches&quot; is worth solving, but it does seem like a quite complicated optimization that requires a lot of testing. It's not something I plan on working on any time soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-10-22 01:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2017-10-22 01:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mqudsi">@mqudsi</a> on 2017-10-22 01:26</div>
+            <div class="timeline-body"><p>I almost feel like the optimal mapping between whitelist/blacklist and a list of globs is an np problem once you introduce <code>**</code> into the mix.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:14 UTC
+    </footer>
+</body>
+</html>

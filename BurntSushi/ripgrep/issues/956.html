@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>There should be a nicer way to view configuration dot files without seeing ./git/* files - BurntSushi/ripgrep #956</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>There should be a nicer way to view configuration dot files without seeing ./git/* files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/956">#956</a>
+        opened by <a href="https://github.com/dylan-chong">@dylan-chong</a>
+        on 2018-06-20 09:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylan-chong">@dylan-chong</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.8.1
+-SIMD -AVX</p>
+<h4>How did you install ripgrep?</h4>
+<p>homebrew</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>mac 10.13.4</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>Currently RG ignores files like .gitignore, and other configuration files that would be good to search by default.</p>
+<p>The <code>--hidden</code> option enables searching these files but then we get a whole lot of rubbish from files like this:</p>
+<pre><code>.git/objects/49/1b75aa65a8dae581d366e165e298dc17a4dcb7
+.git/objects/2e/79090eb54583b27f2a4943561d8f3e24778e18
+.git/objects/47/e35411c0bb53aa89b0ae2605869df78ea27825
+.git/objects/8b/19d74e3ae00274c088acb5e24f2eeb1b41a124
+.git/objects/8b/ac8c6bc6092a17cabdad6681285757bcea4957
+...
+</code></pre>
+<p>I'm not sure what the best solution would be here, but as an idea there could be an additional commandline option  that shows only reasonable hidden files, like configuration dot files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-20 10:55</div>
+            <div class="timeline-body"><blockquote>
+<p>but as an idea there could be an additional commandline option that shows only reasonable hidden files, like configuration dot files.</p>
+</blockquote>
+<p>This presupposes the ability of ripgrep to detect such things. I don't see how.</p>
+<p>In any case, it's not clear to me what you're expecting here, because you haven't told me what you've tried. There are a <em>variety</em> of ways to refine your search.</p>
+<p>Starting with:</p>
+<pre><code>$ mkdir .git
+$ echo test &gt; .good
+$ echo test &gt; .git/bad
+$ rg --files
+$ rg --files --hidden
+.good
+.git/bad
+</code></pre>
+<p>There are lots of ways to &quot;hide .git but show other things&quot;:</p>
+<p>First, with an explicit override to ignore <code>.git</code>:</p>
+<pre><code>$ rg --files -g '!.git' --hidden
+.good
+</code></pre>
+<p>Second, by whitelisting the files you want in your search via an <code>.ignore</code> file:</p>
+<pre><code>$ echo '!.good' &gt; .ignore
+$ rg --files
+.good
+</code></pre>
+<p>Third, by blacklisting <code>.git</code>:</p>
+<pre><code>$ echo '.git' &gt; .ignore
+$ rg --files
+$ rg --files --hidden
+.ignore
+.good
+</code></pre>
+<p>And fourth, any combination of (2) or (3) using the <code>--ignore-file</code> flag, which lets you keep a global list of ignore rules that can be given to every ripgrep invocation (e.g., via an alias or a config file).</p>
+<p>Can you say why none of these methods meets your criteria?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-06-20 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylan-chong">@dylan-chong</a> on 2018-06-20 22:01</div>
+            <div class="timeline-body"><p>Oops, sorry I forgot to mention what I was trying to use previously. I was trying to use something very similar to <code>-g '!.git' --hidden</code>. I'm not sure why exactly I was having some problems (with fzf.vim), but it seems to be working now... Thanks so much for the help it!</p>
+<p>EDIT: It may have been partially caused by using &quot; not ' around <code>!.git</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylan-chong on 2018-06-20 22:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:35 UTC
+    </footer>
+</body>
+</html>

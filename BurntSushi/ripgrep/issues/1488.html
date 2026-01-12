@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>make it easier to maintain fork with additional regex engines - BurntSushi/ripgrep #1488</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>make it easier to maintain fork with additional regex engines</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1488">#1488</a>
+        opened by <a href="https://github.com/pierreN">@pierreN</a>
+        on 2020-02-16 04:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pierreN">@pierreN</a></div>
+            <div class="timeline-body"><p>I needed a CLI tool to parse a massive amount of regexps (and improve my rust at the same time) so I made a crate implementing the <code>Matcher</code> trait : https://git.sr.ht/~pierrenn/grep-hyperscan</p>
+<p>From my (sporadic) tests, its starts to be useful when having at least 1000 regexps to parse more than 10GB of data. I had 4.5k on 150GB soo...  Since the data comes from disk reads, using <code>hyperscan</code> basically limits your speed to your disk speed.</p>
+<p>Plus there is a limit to the size of the compiled expressions in <code>ripgrep</code>, so using <code>hyperscan</code> allows to bypass that.</p>
+<p>Ideally it would be cool if it can be integrated in <code>ripgrep</code>. I prefered to open this issue before doing a PR to talk about it and gauge interest. Details are below.</p>
+<h2>Implementation</h2>
+<p>It's just an implementation of <code>find_at</code> since <code>hyperscan</code> doesn't support groups (<code>new_captures</code> is implemented using <code>NoCaptures</code>).</p>
+<p>I thought of 3 possible ways to implement <code>find_at</code>:</p>
+<ul>
+<li><code>hyperscan</code> has a <code>HS_FLAG_SINGLEMATCH</code> which would be great for <code>find_at</code>. However this is incompatible with the flag <code>HS_FLAG_SOM_LEFTMOST</code> which is required to get the <code>from</code> of the <code>Match</code>.</li>
+<li>you can force hyperscan to stop scanning a haystack after the first match by returning not 0 in the callback provided to <code>hyperscan</code>. However, this means a call to hyperstack each time we have a match. An (outdated...) implementation of this idea is available in the branch <code>ideas/single_match</code></li>
+<li>everytime we get a new haystack sent to <code>find_at</code>, scan it in one go with <code>hyperscan</code>, remember the matches into a <code>VecDeque</code>, and consume the deque at each new call. I guessed first that when we return <code>Ok(None)</code> from <code>find_at</code>, the next haystack will be a new one. However (and this is weird?) sometimes <code>find_at</code> get sent a new haystack while the &quot;current&quot; is not termined. From testing it seems to only be the same haystack with EOL added at the end, or the right-most part of the original haystack. Thus, we also start a new <code>hyperscan</code> run when we see a new haystack length. Avoiding the successive calls to <code>hyperscan</code> allows according to my (sporadic...) benchmarks to speed up the overall match by 10-20%. Ideally, it would be great if we could require <code>ripgrep</code> to only send once each haystack (or the minimal amount of data), but no idea how to do that.</li>
+</ul>
+<h2>Things to do for integration</h2>
+<p>I think the following tasks should be done for integration:</p>
+<ul>
+<li>[ ] add a way to switch regexp engines easily. For testing I added <code>-Y/--hyperscan</code> but this kind of clumsy... IMHO it would be best to have an option <code>--engine=</code> which accepts <code>default|pcre2|hyperscan</code> (and this would allow to easily add other engines such as <a href="https://intel.github.io/hyperscan/dev-reference/chimera.html">chimera</a>) (default to default, and the <code>-e</code> shortcut is already taken soo.. ?)</li>
+<li>[ ] allow <code>-f</code> to read a text file OR an <code>hyperscan</code> database. Most of the running time spend by hyperscan is actually to compile the list of text regexp pattern to it's own format DB (see benchmarks below). Plus a lot of DB comes in the already compiled form. Plus sometimes you want to rerun the same regexps on different files...</li>
+<li>[ ] hence add a parameter to write the hyperscan compiled database to a file (after DB compilation/read and before the matching) (<code>-d/--hyper-write=filename</code>, disabled by default)</li>
+<li>[ ] add hyperscan specific option to allow empty buffers match, see <code>HS_FLAG_ALLOWEMPTY</code> in https://intel.github.io/hyperscan/dev-reference/api_constants.html#pattern-flags (<code>--hyper-allow-empty</code>, default false)</li>
+<li>[ ] add hyperscan specific option to force utf-8 mode for all regexp patterns, See <code>HS_FLAG_UTF8</code> in same URL (<code>--hyper-utf8</code>, default false)</li>
+<li>[ ] add hyperscan specific option to enable unicode property support for all regexp patterns. See <code>HS_FLAG_UCP</code> in same URL. (<code>--hyper-unicode-property</code>, default false)</li>
+<li>[ ] in the helper text for the options above + case sensitiveness + dotall + multiline + ... add that if they are used with hyperscan engine, they override the default behavior of each regexp</li>
+<li>[ ] suggests to use hyperscan when the regexp size exceeds the limit</li>
+<li>[ ] docs and testing...</li>
+</ul>
+<p>Do you see something else ? Is there anything to change/which is not OK ? I'll edit the tasks accordingly.</p>
+<h2>Benchmarking</h2>
+<p>I has to parse around ~150GB of HTML scraped webpage through ~4500 regexps, so that was my benchmark. The format for hyperscan regexp and default regexp is different, so I used 2 set of regexps for benchmarking. Plus there is a limit to the amount of regexps that the default engine can handle, and since my list of regexp is in the shape:</p>
+<pre><code>some.domain1.com/@[\w.\+\-]+
+some.other.domain2.net/@[\w.\+\-]+
+...
+</code></pre>
+<p>where I have a 4.5k list of web domains (this is to find possible fediverse accounts in a webpage). Using a basic list like that is too big for the default engine, so I used: <code>(some.domain1.com|some.other.domain2.net|...)/@[\w.\+\-]+</code>.</p>
+<p>The default regexps are here : https://termbin.com/xdse , the hyperscan regexps are here : https://termbin.com/62ov</p>
+<p>I used a subset of 15GB of data for testing. Parsing the regexps with the default engine, it takes around 8:20mn (best case). Using the hyperscan engine it takes less than 30 seconds to parse the files (that's basically the speed of my SSD) AND 5 minutes to compile the regexps. That's why we need a flag to deserialize/serialize regexps so using the hyperscan engine becomes easier.</p>
+<hr />
+<p>Sorry for the (too!) long issue. The reason I opened this is:</p>
+<ul>
+<li>code reviews : I'm using this as an excuse to learn rust, so any comment on https://git.sr.ht/~pierrenn/grep-hyperscan is more than welcome</li>
+<li>gauge interest : do you think integrating this in ripgrep is a good idea ?</li>
+<li>instructions on how to proceed if interest : is the above todo list accurate ? what could be improved/changed/added/removed ?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-02-16 16:25</div>
+            <div class="timeline-body"><p>Thanks very much for filing this issue. I'm glad you did before doing more work
+on it.</p>
+<p>So firstly, the regex-geek side of me finds this very exciting. I've always
+wondered what it would look like to hook ripgrep up to Hyperscan. And indeed,
+some of the APIs (like the <code>Matcher</code> trait) were influenced by the knowledge
+that Hyperscan does internal iteration. However, it sounds like it's still not
+quite fitting together correctly.</p>
+<p>OK, so I'm just going to start by responding to a few points.</p>
+<blockquote>
+<p>Plus there is a limit to the size of the compiled expressions in ripgrep, so
+using hyperscan allows to bypass that.</p>
+</blockquote>
+<p>While true, it can be trivially increased via <code>--regex-size-limit</code>. You'll also
+want to increase <code>--dfa-size-limit</code>. Could you try that and see how ripgrep
+fairs? I still expect Hyperscan to easily beat Rust's regex engine on a
+benchmark like this, but numbers would still be interesting!</p>
+<blockquote>
+<p>hyperscan has a HS_FLAG_SINGLEMATCH which would be great for find_at. However
+this is incompatible with the flag HS_FLAG_SOM_LEFTMOST which is required to
+get the from of the Match.</p>
+</blockquote>
+<p>Oh interesting. Is <code>HS_FLAG_SINGLEMATCH</code> new? I don't think Hyperscan had that
+the last time I looked into it. In any case, it not working with SOM handling
+is unfortunate.</p>
+<blockquote>
+<p>you can force hyperscan to stop scanning a haystack after the first match by
+returning not 0 in the callback provided to hyperscan. However, this means a
+call to hyperstack each time we have a match. An (outdated...) implementation
+of this idea is available in the branch ideas/single_match</p>
+</blockquote>
+<p>Hmm. Did this work well? It seems like this should be the right way to go..?
+But I might be missing something. (I've never actually used Hyperscan in
+anger.)</p>
+<blockquote>
+<p>everytime we get a new haystack sent to find_at, scan it in one go with
+hyperscan, remember the matches into a VecDeque, and consume the deque at
+each new call.</p>
+</blockquote>
+<p>This is a good idea.</p>
+<blockquote>
+<p>Ideally, it would be great if we could require ripgrep to only send once each
+haystack (or the minimal amount of data), but no idea how to do that.</p>
+</blockquote>
+<p>Ah yeah, that sounds annoying. Unfortunately, this is correct and intended
+behavior. A <code>Matcher</code> must be re-run, depending on the output settings, to
+determine the offsets of each individual match. Otherwise, it can be quite a
+bit cheaper to detect <em>whether</em> a line matches at all without finding each
+individual match. In general, a <code>Matcher</code> definitely cannot and should not
+assume anything about the input. Certainly, checking the length is bound to be
+incorrect in some cases. So I think this optimization might not be possible...
+Unless you can some how store the matches in a way that makes them quick to
+look up on subsequent calls to <code>find_at</code> without rescanning. But that seems
+tricky. And it would still require knowing whether the previous <code>find_at</code> call
+corresponds to the same <code>haystack</code> as the one you're given.</p>
+<p>In general, the <code>Matcher</code> trait just wasn't designed to handle this sort of
+optimization. I think the right path here would be to figure out a new API for
+the <code>Matcher</code> trait. But this would likely make it quite a bit more complex, so
+I'm not sure I want to go down that path...</p>
+<blockquote>
+<p>Do you see something else ? Is there anything to change/which is not OK ?
+I'll edit the tasks accordingly.</p>
+</blockquote>
+<p>Your TODO list looks like a great start. There might be more things, e.g.,
+supporting all of ripgrep's options, but nothing else is coming to mind.</p>
+<blockquote>
+<p>where I have a 4.5k list of web domains (this is to find
+possible fediverse accounts in a webpage). Using a basic
+list like that is too big for the default engine, so I used:
+<code>(some.domain1.com|some.other.domain2.net|...)/@[\w.\+\-]+</code>.</p>
+</blockquote>
+<p>My guess is that Hyperscan doesn't have Unicode mode enabled by default, where
+as Rust's regex engine does. In particular, <code>\w</code> and <code>.</code> are Unicode aware. You
+can turn those things off with <code>(?-u)</code> at the beginning of each regex. (I
+should add a <code>--no-unicode</code> flag for this.) That should also decrease the size
+of each regex substantially, although you may still need to raise the regex and
+DFA size limits as described above.</p>
+<blockquote>
+<p>code reviews : I'm using this as an excuse to learn rust, so any comment on
+https://git.sr.ht/~pierrenn/grep-hyperscan is more than welcome</p>
+</blockquote>
+<p>Looks great! I'm impressed if this is your first Rust project. I don't see
+anything that offends me.</p>
+<blockquote>
+<p>gauge interest : do you think integrating this in ripgrep is a good idea ?</p>
+</blockquote>
+<p>Right, so... Unfortunately, I'm not sure it's a great idea. I think it would
+be very cool, but the maintenance burden this will add is substantial.
+Hyperscan is a beast to compile (last time I tried it), and just adding tests
+for it to CI (which would be an unnegotiable requirement for me maintaining
+it) would probably make CI times much longer. Nevermind keeping everything
+updated and managing the integration. I'm afraid bundling two regex engines
+with ripgrep proper is probably my limit. :-(</p>
+<blockquote>
+<p>instructions on how to proceed if interest : is the above todo list accurate
+? what could be improved/changed/added/removed ?</p>
+</blockquote>
+<p>I would really hate to see a world that didn't combine ripgrep with Hyperscan.
+I think it's a great idea and I think your use case is very valid and
+interesting. Unfortunately, I just can't personally justify taking it on. So I
+think the only option that leaves is for someone to maintain a Hyperscan patch
+for ripgrep. It <em>should</em> be possible to arrange things such that the patch can
+be cleanly applied to ripgrep going forwards, even as ripgrep evolves. I can't
+really think of any other path forward here. It would be nice if there were a
+way to add new regex engines to ripgrep without changing its source code, but
+that seems quite tricky on its own.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2020-02-16 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pierreN">@pierreN</a> on 2020-02-16 18:19</div>
+            <div class="timeline-body"><p>Thanks for the answer !</p>
+<blockquote>
+<p>While true, it can be trivially increased via --regex-size-limit. You'll also
+want to increase --dfa-size-limit. Could you try that and see how ripgrep
+fairs? I still expect Hyperscan to easily beat Rust's regex engine on a
+benchmark like this, but numbers would still be interesting!</p>
+</blockquote>
+<p>Hah good idea, I missed that option. Increasing the size does allow the regexps to compile, but it just makes performances worst (at least 2 times worst, I stopped the process after a while).</p>
+<blockquote>
+<p>Oh interesting. Is HS_FLAG_SINGLEMATCH new? I don't think Hyperscan had that
+the last time I looked into it. In any case, it not working with SOM handling
+is unfortunate.</p>
+</blockquote>
+<p>Yes this is unfortunate. Since the goal of hyperscan is mainly to detect if a payload is malicious or not it makes sense to not care about SOM... but not in our case.</p>
+<blockquote>
+<p>Certainly, checking the length is bound to be incorrect in some cases</p>
+</blockquote>
+<p>Hah fair enough, I didn't see it that way. I'll rollback the crate to using callback return values then. At this speed the real threshold is more the disk read speed anyway so it won't make that huge of a difference!</p>
+<blockquote>
+<p>My guess is that Hyperscan doesn't have Unicode mode enabled by default, where
+as Rust's regex engine does. In particular, \w and . are Unicode aware.</p>
+</blockquote>
+<p>Yes, this is indeed better  thanks (like the old <code>LC_ALL=C</code> grep trick...). Doing that, default engine is down to 6mn40s.</p>
+<blockquote>
+<p>Unfortunately, I'm not sure it's a great idea</p>
+</blockquote>
+<p>I'm disapointed by this answer ! But I understand you, maintaining free software is an ungrateful task. I could maintain a patchset but in the current state of thing it's going to be messy.. A good compromise would be to have the code infrastructure merged in the main project to handle tasks 1 and 2 (without the hyperscan bits) first and then have a maintenable patch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-02-16 23:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Hah good idea, I missed that option. Increasing the size does allow the regexps to compile, but it just makes performances worst (at least 2 times worst, I stopped the process after a while).</p>
+</blockquote>
+<p>Interesting. As a sanity check, did you also set <code>--dfa-size-limit</code> to a crazy high value? Even if you did, your result is still quite plausible. Basically, the lazy DFA ends up overwhelmed and just spends a ton of time generating new states. In any case, it just goes to show much of an engineering marvel Hyperscan is.</p>
+<blockquote>
+<p>A good compromise would be to have the code infrastructure merged in the main project to handle tasks 1 and 2 (without the hyperscan bits) first and then have a maintenable patch.</p>
+</blockquote>
+<p>Task 1 sounds good. I think the values should be <code>default</code>, <code>pcre2</code> and <code>auto-hybrid</code>. Task 2 seems Hyperscan specific?</p>
+<p>For the patchset, I think it would be helpful to try to put as much as the Hyperscan bits in a separate file as possible, and as little as you can in <code>src/args.rg</code> and <code>src/app.rs</code>.</p>
+<p>Anyway, good luck. I'm happy to accept PRs that will make maintaining a patchset easier, so long as they aren't too disruptive. I do really want to support your use case because I think it's awesome to integrate ripgrep and Hyperscan.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pierreN">@pierreN</a> on 2020-02-22 06:19</div>
+            <div class="timeline-body"><p>Sorry for the response delay.</p>
+<blockquote>
+<p>Interesting. As a sanity check, did you also set --dfa-size-limit to a crazy high value? Even if you did, your result is still quite plausible. Basically, the lazy DFA ends up overwhelmed and just spends a ton of time generating new states. In any case, it just goes to show much of an engineering marvel Hyperscan is.</p>
+</blockquote>
+<p>This highly depends on the regexp used I guess. In my tests, I guess it's just more efficient to send to the default regexp engine <code>(domain1.com|donain2.com|...)@[\w.\+\-]+</code> than <code>(domain1.com@[\w.\+\-]+|domain2.com@[\w.\+\-]+|...)</code></p>
+<blockquote>
+<p>Task 1 sounds good. I think the values should be default, pcre2 and auto-hybrid. Task 2 seems Hyperscan specific?</p>
+</blockquote>
+<p>I'll send a MR for task 1 in a couple of days, thanks.</p>
+<p>For task 2, what was worrying me was the <code>patterns: Vec&lt;String&gt;</code> in <code>args.rs</code> since a compiled hyperscan database is (roughly) a slice of <code>u8</code>. I started replacing it with <code>patterns: Vec&lt;T&gt;</code> but it ended up to make not much sense in the end (I didn't see at first all the pattern filling logic is in the <code>cli</code> crate..).</p>
+<p>I guess I'll just do in the patch a hackish <code>from_utf8_unchecked</code> in <code>ArgMatches::patterns</code> instead. (so that I convert the slice of <code>u8</code> to a <code>String</code> and then check in the <code>RegexpMatcherBuilder</code> that if a hyperscan db is present, the len of the Vec is 1).</p>
+<blockquote>
+<p>For the patchset, I think it would be helpful to try to put as much as the Hyperscan bits in a separate file as possible, and as little as you can in src/args.rg and src/app.rs.</p>
+</blockquote>
+<p>Yes, thanks indeed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-02-22 12:24</div>
+            <div class="timeline-body"><blockquote>
+<p>I guess I'll just do in the patch a hackish from_utf8_unchecked in ArgMatches::patterns instead.</p>
+</blockquote>
+<p>Please do not do this. It's undefined behavior to create a <code>String</code> from invalid UTF-8.</p>
+<p>I see what you mean though and how that could be annoying. I'm trying to think of an easy way to maintain a patch here. Hmmm... There is definitely a fairly strong assumption that <code>patterns</code> is actually a sequence of regex patterns and not something else. Maybe it could make sense to find some way to leave <code>patterns</code> alone and instead create a <code>dbs</code> that contains Hyperscan databases? At that point, all you'd have to do is find a way to populate each vec correctly, but it seems doable with some heuristics?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add hyperscan engine support" to "make it easier to maintain fork with additional regex engines" by @BurntSushi on 2020-03-15 13:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-03-15 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pierreN">@pierreN</a> on 2020-03-15 13:52</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pierreN">@pierreN</a> on 2020-03-21 00:26</div>
+            <div class="timeline-body"><p>For future reference the patchset is here : https://git.sr.ht/~pierrenn/ripgrep</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:06 UTC
+    </footer>
+</body>
+</html>

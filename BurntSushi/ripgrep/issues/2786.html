@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature Request: Early Bail Out for Time-Consuming Regex Matches in pcre2 - BurntSushi/ripgrep #2786</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature Request: Early Bail Out for Time-Consuming Regex Matches in pcre2</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2786">#2786</a>
+        opened by <a href="https://github.com/LangLangBart">@LangLangBart</a>
+        on 2024-04-23 00:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LangLangBart">@LangLangBart</a></div>
+            <div class="timeline-body"><h4>Describe your feature request</h4>
+<p>When using <code>rg</code> with <code>--engine pcre2</code> for regex patterns that include complex assertions such as <strong>lookaheads</strong>, the search can take an excessive amount of time, especially with very large input strings. It would be beneficial to have an option that allows <code>rg</code> to skip strings that exceed a certain processing time threshold, thus preventing long-running searches.</p>
+<p>The <code>rg</code> command at the bottom of the code block below took around 10 minutes to complete.</p>
+<pre><code class="language-bash">command rg --version
+# ripgrep 14.1.0
+
+# features:-simd-accel,+pcre2
+# simd(compile):+SSE2,+SSSE3,-AVX2
+# simd(runtime):+SSE2,+SSSE3,-AVX2
+
+# PCRE2 10.42 is available (JIT is available)
+
+# Generate a random alphanumeric string and store it in a file
+printf &quot;%s&quot; &quot;$(LC_ALL=C tr -dc &quot;[:alnum:]&quot; &lt;/dev/urandom | head -c 700000)&quot; &gt;/tmp/rg_test
+# Search the file using lookahead assertions
+command rg --engine pcre2 '(?=.*test)(?=.*ripgrep)' /tmp/rg_test
+</code></pre>
+<p>An early bail-out option in <code>rg</code> would help users prioritize search speed when processing complex regex patterns on large data, avoiding long waits for unlikely matches.</p>
+<h4>Example Usage</h4>
+<pre><code class="language-bash">command rg --engine pcre2 --max-match-time-pcre2 1000 '(?=.*test)(?=.*ripgrep)'  /tmp/rg_test
+</code></pre>
+<p>In this example, <code>--max-match-time-pcre2 1000</code> is a new option that instructs <code>rg</code> to spend no more than 1000 milliseconds attempting to find a match in a line. If the match attempt exceeds this duration, <code>rg</code> will skip it.</p>
+<details>
+
+<hr />
+<summary>Background Info</summary>
+
+<p>To provide some background information on why this feature request was created: After downloading the <code>Mailing List Archive</code> for <code>zsh</code>, <code>rg</code> was used to search for two words in the same line.</p>
+<pre><code class="language-bash">command rg --engine pcre2 '(?=.*export)(?=.*function)'
+</code></pre>
+<p>However, there is at least one base64 string with approximately 700,000 characters, which caused <code>rg</code> to take a considerable amount of time to process.
+<a href="https://zsh.org/mla/workers/2015/msg03191.html">zsh.org/mla/workers/2015/msg03191.html</a></p>
+<hr />
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2024-04-23 09:50</div>
+            <div class="timeline-body"><p>FWIW, here's a faster way to match two words in the same line: <code>^(?=.*?export)(?=.*?function)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LangLangBart">@LangLangBart</a> on 2024-04-23 11:44</div>
+            <div class="timeline-body"><blockquote>
+<p>^(?=.<em>?export)(?=.</em>?function)</p>
+</blockquote>
+<p>It serves me well, thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @LangLangBart on 2024-04-23 11:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-04-23 11:44</div>
+            <div class="timeline-body"><p>Or also, <code>rg export | rg function</code>.</p>
+<p>Anyway, PCRE2 doesn't support a way to say, &quot;if the search is taking longer than X time, stop.&quot; I don't know of any regex engine that supports that. If you think for a moment about how something like that would be implemented, it's pretty clear why: imagine trying to check a timeout value when you're in the middle of some <a href="https://github.com/BurntSushi/memchr/blob/20ef11fa92d8b393735f10906c436a8ce6e792a4/src/arch/generic/memchr.rs#L143-L230">vectorized SIMD loop</a>. It would trash performance. <em>And</em> this sort of timeout check would need to be in virtually every loop everywhere. Ain't going to happen.</p>
+<p>PCRE2, like most regex engines, does expose <a href="https://www.pcre.org/current/doc/html/pcre2api.html#matchcontext">other types of resource limits</a>. But none of them really approximate &quot;time.&quot;</p>
+<p>Your best bet is to filter out longer lines yourself (<code>rg -v '.{100}'</code> or something), or use a technique that doesn't require using a backtracking engine. Hopefully some day https://github.com/BurntSushi/ripgrep/issues/875 will happen and that will probably be the &quot;right&quot; way to solve your particular problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2024-04-23 12:51</div>
+            <div class="timeline-body"><p>I don't mean to be pedantic, but I'll add a few comments since it's an interestic topic 🙂</p>
+<p>The .NET regex engine supports timeouts (there's a constructor overload which takes a timeout parameter). This feature is mainly provided for searching with untrusted patterns in order to avoid DoS attacks. I haven't looked at how it's implemented but I believe a check is inserted when backtracking (and maybe in some other cases such as lookarounds). The check is <a href="https://github.com/dotnet/runtime/blob/56dcfd700383a9462d4b8632e88abd75b4252357/src/libraries/System.Text.RegularExpressions/src/System/Text/RegularExpressions/RegexRunner.cs#L356-L365">simple enough</a> but it still needs to retrieve the clock when enabled. In any case <a href="https://devblogs.microsoft.com/dotnet/regular-expression-improvements-in-dotnet-7/">this article</a> states:</p>
+<blockquote>
+<p><code>Regex</code> supports timeouts, and guarantees that it will only do at most <code>O(n)</code> work (where <code>n</code> is the length of the input) between timeout checks</p>
+</blockquote>
+<p>As for PCRE2, it has a <a href="https://pcre2project.github.io/pcre2/doc/html/pcre2callout.html"><code>PCRE2_AUTO_CALLOUT</code> flag</a> which causes the engine to call a user-provided function before each pattern &quot;item&quot;, and you can cancel execution from there, so in theory you could implement timeouts, but that would surely wreck the matching performance.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:48 UTC
+    </footer>
+</body>
+</html>

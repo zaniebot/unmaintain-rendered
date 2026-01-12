@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Process substitution search path behavior change in 14.0.0 - BurntSushi/ripgrep #2736</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Process substitution search path behavior change in 14.0.0</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2736">#2736</a>
+        opened by <a href="https://github.com/noahp">@noahp</a>
+        on 2024-02-15 16:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/noahp">@noahp</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>ripgrep 14.1.0</p>
+<h3>How did you install ripgrep?</h3>
+<p>binary download</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Ubuntu 23.10</p>
+<h3>Describe your bug.</h3>
+<p>ripgrep 14.1.0 behaves differently than 13.0.0 when passing a PATH arg using shell process substitution <code>&lt;()</code>. See repro steps for details.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>On ripgrep 13.0.0 (zsh shell; supports <code>=()</code> tmpfile process substitution variant):</p>
+<pre><code class="language-bash">❯ rg 'hello' &lt;(echo 'why hello there') | cat
+why hello there
+
+❯ rg 'hello' =(echo 'why hello there') | cat
+why hello there
+</code></pre>
+<p>On ripgrep 14.1.0:</p>
+<pre><code class="language-bash"># this includes the file (actually symlink to a file on my system) in the output
+❯ rg 'hello' &lt;(echo 'why hello there') | cat
+/proc/self/fd/20:why hello there
+
+❯ rg 'hello' =(echo 'why hello there') | cat
+why hello there
+</code></pre>
+<p>The ripgrep help says:</p>
+<pre><code class="language-bash">❯ rg --help | rg -A6 '\-I,'
+    -I, --no-filename
+        This flag instructs ripgrep to never print the file path with each
+        matching line. This is the default when ripgrep is explicitly
+        instructed to search one file or stdin.
+
+        This flag overrides -H/--with-filename.
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<p>The file path is included in the output.</p>
+<h3>What is the expected behavior?</h3>
+<p>Expected the process substitution arg to behave the same as before- it is a single file still, so the <code>-I</code> option should be enabled by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2024-02-15 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-02-15 17:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:46 UTC
+    </footer>
+</body>
+</html>

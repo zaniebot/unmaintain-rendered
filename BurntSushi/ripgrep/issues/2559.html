@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search string start with &quot;-&gt;&quot; will cause error. - BurntSushi/ripgrep #2559</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Search string start with &quot;-&gt;&quot; will cause error.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2559">#2559</a>
+        opened by <a href="https://github.com/lonelyeagle">@lonelyeagle</a>
+        on 2023-07-17 19:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lonelyeagle">@lonelyeagle</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>Homebrew on mac os</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>MacOS 13.4.1 also happens on Windows 10</p>
+<h4>Describe your bug.</h4>
+<p>Search text start with &quot;-&gt;&quot; will cause error.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>If I want to search a function call in a C++ project.
+I use<br />
+rg -g &quot;*.cpp&quot; -F &quot;-&gt;getPlaceholder()&quot;</p>
+<p>The terminal will return with an error.</p>
+<p>If the corpus is too big and you cannot decrease its size, file the bug anyway
+and the ripgrep maintainers will help figure out next steps.</p>
+<h4>What is the actual behavior?</h4>
+<p>Show the command you ran and the actual output. Include the <code>--debug</code> flag in
+your invocation of ripgrep.</p>
+<p>If the output is large, put it in a gist: https://gist.github.com/</p>
+<p>`rg -g &quot;*.cpp&quot; -F &quot;-&gt;call&quot;
+error: Found argument '-&gt;' which wasn't expected, or isn't valid in this context</p>
+<p>USAGE:</p>
+<pre><code>rg [OPTIONS] PATTERN [PATH ...]
+rg [OPTIONS] -e PATTERN ... [PATH ...]
+rg [OPTIONS] -f PATTERNFILE ... [PATH ...]
+rg [OPTIONS] --files [PATH ...]
+rg [OPTIONS] --type-list
+command | rg [OPTIONS] PATTERN
+rg [OPTIONS] --help
+rg [OPTIONS] --version</code></pre>
+<p>For more information try --help`</p>
+<h4>What is the expected behavior?</h4>
+<p>What do you think ripgrep should have done?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VladimirMarkelov">@VladimirMarkelov</a> on 2023-07-17 19:14</div>
+            <div class="timeline-body"><p>It is the way how arguments are processed. Everything that starts with <code>-</code> is an option, That is why it fails. E.g, <code>grep &quot;-&gt;call&quot;</code> fails with the similar error <code>Invalid option -- '&gt;'</code>.</p>
+<p>To make it work, you should escape <code>-</code> if it is the first character of a regex. In <code>bash</code> and <code>powershell</code> you can do this:</p>
+<pre><code>rg &quot;\-&gt;call&quot;
+</code></pre>
+<p>Edit: though, this escaping does not work for me in case of <code>-F</code> is used. Without <code>-F</code> everything works great.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-17 19:56</div>
+            <div class="timeline-body"><p>This is mentioned in the man page under the &quot;POSITIONAL ARGUMENTS&quot; section:</p>
+<blockquote>
+<p>A regular expression used for searching. To match a pattern beginning with a dash, use the <code>-e/--regexp</code> option.</p>
+</blockquote>
+<p>So, use <code>rg -e '-&gt;call'</code> or <code>rg -F -e '-&gt;call'</code>. There are a variety of ways to work around this, but <code>-e -</code> is the standard way that always works and doesn't require modifying the regex pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-07-17 19:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2023-07-17 19:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:42 UTC
+    </footer>
+</body>
+</html>

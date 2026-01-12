@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>report &quot;binary file match&quot; when possible - BurntSushi/ripgrep #631</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>report &quot;binary file match&quot; when possible</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/631">#631</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2017-10-09 16:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p><a href="https://news.ycombinator.com/item?id=15433341">This comment</a> describes a use case for searching binary files, but not actually emitting the match. <code>grep</code> does this by printing <code>Binary file foo matches</code>.</p>
+<p>The interesting interaction here is that ripgrep attempts to ignore binary files altogether by default. In particular, it will stop searching a file as soon as it think it's a binary file. I guess the intended effect here is to prevent a bunch of &quot;binary file matches&quot; messages from appearing when searching a large directory tree.</p>
+<p>The linked comment suggests emitting the message only when a single <code>-u</code> is given. It feels kind of right to me, but it also couples a single <code>-u</code> flag with &quot;disable gitignore and show binary file names that matched.&quot;</p>
+<p>What should we do here? I guess I find the use case interesting, but I'm having difficulty coming up with a good UX for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-10-09 16:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibotty">@ibotty</a> on 2017-10-11 14:33</div>
+            <div class="timeline-body"><p>I sometimes want to honor .gitignore, but still (rip)grep the binary files that are checked in that repository (pdfs, mostly). So I would prefer using a separate flag, i.e. <code>--report-binary-matches</code>, that I would just include in my rg alias.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-10-22 02:03</div>
+            <div class="timeline-body"><p>Whoops, I actually think this is a duplicate of #306.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-10-22 02:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2017-10-22 02:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sergeevabc">@sergeevabc</a> on 2024-02-17 07:58</div>
+            <div class="timeline-body"><p>I came here from <a href="https://news.ycombinator.com/item?id=15433006">Hacker News thread</a> looking for the final solution on how to deal with binary files properly. My case is to find all console apps written in Go. So far I used an unintuitive command <code>-uuu</code> and got the following output:</p>
+<pre><code class="language-console">$ rg.exe -uuu &quot;runtime.go&quot;
+network\croc.exe: binary file matches (found &quot;\0&quot; byte around offset 3)
+network\wormhole-william.exe: binary file matches (found &quot;\0&quot; byte around offset 3)
+</code></pre>
+<p>Is there a way to do it differently?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-17 11:41</div>
+            <div class="timeline-body"><blockquote>
+<p>I came here from <a href="https://news.ycombinator.com/item?id=15433006">Hacker News thread</a> looking for the final solution on how to deal with binary files properly. My case is to find all console apps written in Go. So far I used an unintuitive command <code>-uuu</code> and got the following output:</p>
+<pre><code>$ rg.exe -uuu &quot;runtime.go&quot;
+network\croc.exe: binary file matches (found &quot;\0&quot; byte around offset 3)
+network\wormhole-william.exe: binary file matches (found &quot;\0&quot; byte around offset 3)
+</code></pre>
+<p>Is there a way to do it differently?</p>
+</blockquote>
+<p>Please read the guide. It explains what <code>-uuu</code> does. In your case, it's probably the third <code>u</code> that matters, which disables filtering of binary files. But since you didn't provide a complete reproduction, I can't say for certain. It's possible the first <code>u</code> (disables gitignore filtering) is also relevant.</p>
+<p>If you just want to disable binary filtering, then use the <code>--binary</code> flag. This is documented in the guide.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sergeevabc">@sergeevabc</a> on 2024-02-17 12:21</div>
+            <div class="timeline-body"><p>Indeed, thank you.</p>
+<pre><code class="language-console">$ rg.exe --binary -l &quot;runtime.go&quot;
+network\croc.exe
+network\wormhole-william.exe
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:18 UTC
+    </footer>
+</body>
+</html>

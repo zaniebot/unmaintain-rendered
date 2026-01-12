@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature request: --directories - BurntSushi/ripgrep #169</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature request: --directories</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/169">#169</a>
+        opened by <a href="https://github.com/HerrmannM">@HerrmannM</a>
+        on 2016-10-11 22:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/HerrmannM">@HerrmannM</a></div>
+            <div class="timeline-body"><p>Hi there,</p>
+<p>I read the blog http://blog.burntsushi.net/ripgrep/#gathering-files-to-search and it seams that the ripgrep directory traversal is very efficient (http://burntsushi.net/rustdoc/walkdir/). This could be used for a feature like <code>--files</code>, but for directories (while coping with the ignore rules , e.g. r<code>g --hidden --directories</code>).</p>
+<p>Thank you for that amazing tool,
+Kind regards</p>
+<p>EDIT: formatting</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 22:02</div>
+            <div class="timeline-body"><p>What is the use case?</p>
+<p><code>--files</code> is a secondary feature of <code>ripgrep</code>, and its primary purpose is to tell you which files <code>ripgrep</code> will search.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/HerrmannM">@HerrmannM</a> on 2016-10-11 22:18</div>
+            <div class="timeline-body"><p>It can be used in the same way as <code>--files</code>, i.e. by showing which directories are searched.</p>
+<p>I also use the <code>--hidden --files</code> to create files listings as it is far more efficient than <code>ag -g &quot;&quot;</code>. The same could benefit directories listings, as I think we are stuck with <code>find -d</code>. And in combination with the <code>-g</code> option, it could be a <code>find -d</code> on steroids (I understand that this is not the primary purpose of <code>rg</code>, but it could be an other nice way to use that amazingly fast lib!).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 22:20</div>
+            <div class="timeline-body"><p>I'm kind of wishy washy on this. What I'm looking for is a use case. i.e., You run <code>rg --directories</code> and what do you actually do with the output? For example, would something like <code>rg --files | xargs dirname | sort -u</code> do what you need?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/HerrmannM">@HerrmannM</a> on 2016-10-11 22:42</div>
+            <div class="timeline-body"><p>Indeed, <code>rg --hidden --files --null | xargs -0 dirname | sort -u</code> does the trick, but it is less efficient than <code>find . -type d</code> (according to a quick and dirty <code>time</code> test in my home, <code>find</code> is 5 times than the <code>rg-xargs-sort</code> trick,  which is in fact not a surprised ;-) ).</p>
+<p>I generally feed such output to fuzzy searchers such as <code>fzf</code> or <code>ctrlp-p</code> (so speed is the key here) or I use them for creating folder listing for backuping tools.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 22:50</div>
+            <div class="timeline-body"><p>Is <code>rg --files</code> all by itself faster than <code>find</code>? I wouldn't expect so. <code>rg</code> has to fundamentally do quite a bit more work (processing ignore files).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/HerrmannM">@HerrmannM</a> on 2016-10-11 23:09</div>
+            <div class="timeline-body"><p>Indeed, it isn't. It is around 2.5 times slower than <code>find</code>.
+For info, <code>find</code> finds 25000 directories in around 200ms, while <code>rg</code> finds 129000 files in around 500ms, so it is 5 more items for only 2.5 the time.
+<code>find . -type f</code> finds 131000 files in around 300ms, which is similar to <code>rg -uuu --files</code>.
+I guess that if one is interested in a raw listing of files, <code>find</code> and <code>rg</code> are equivalent, and it may be the same for the directories. However, filtered listings (especially with the ignore files) are much more interesting. But I recognize that a <code>find . -type d | grep ...</code> will probably do the trick quite efficiently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 23:31</div>
+            <div class="timeline-body"><blockquote>
+<p>find and rg are equivalent</p>
+</blockquote>
+<p>This is my expectation. I actually <a href="https://github.com/BurntSushi/walkdir">wrote <code>walkdir</code></a> and specifically benchmarked it against GNU find and <code>nftw</code>. It's of comparable speed. :-)</p>
+<blockquote>
+<p>However, filtered listings (especially with the ignore files) are much more interesting. But I recognize that a find . -type d | grep ... will probably do the trick quite efficiently.</p>
+</blockquote>
+<p>Right, but the <code>dirname | sort -u</code> trick should also work. Perhaps the <code>sort</code> makes things a bit too slow on 100,000+ files though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/HerrmannM">@HerrmannM</a> on 2016-10-12 08:50</div>
+            <div class="timeline-body"><p>Well, <code>dirname | sort -u</code> does not give us a filtered listing, only the directories, so we have to filter it one more time through a <code>grep</code>, or <code>rg</code>.
+For example, searching hidden folders is quiet efficient with <code>find . -type d | rg -N '^\./\.'</code> (in fact, same perf as <code>grep</code> according to my quick tests, which is your expectation ;-) ). However, we won't be able to deal easily with ignore files, which is a strength of <code>rg</code>.</p>
+<p>EDIT :
+<code>rg --hidden --files --null | xargs -0  dirname | uniq</code> is faster (1.4s to 0.5s)  than <code>rg --hidden --files --null | xargs -0  dirname | sort -u</code> (but still 2 times slower then <code>find . -d</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-13 10:45</div>
+            <div class="timeline-body"><p>If <code>rg --hidden --files --null | xargs -0 dirname | uniq</code> is only 2 times slower than <code>find . -d</code>, then I'm inclined to say that's good enough.</p>
+<p>With that said, I am currently working on moving all of the ignore code out into its own library. When that's done, it would be relatively straight-forward to build your own tool that searches files/directories and respects ignore rules.</p>
+<p>I think at the end of the day, the <code>--files</code> flag is a nice convenience, but it's a non-goal for <code>rg</code> to become a <code>find</code> replacement. If we add <code>--directories</code>, what's to stop us from adding everything else in GNU find as well? I don't want to do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-10-13 10:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dieggsy">@dieggsy</a> on 2017-03-03 03:12</div>
+            <div class="timeline-body"><p>I know this is rather old, but I just wanted to comment that the ripgrep file search <em>and</em> the directory workaround search are both faster than find for me, on <code>macOS 10.12.13</code> with <code>ripgrep 0.4.0</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-03 11:55</div>
+            <div class="timeline-body"><p>@therockmandolinist Yeah, since my earlier comments the directory iterator in ripgrep became parallelized, so it is indeed possible that it is faster than <code>find</code>. (Although in my own experiments, it is only nominally faster.) The important benefit of parallelization is that processing the gitignores is parallelized, which is actually quite compute intensive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/braham-snyder">@braham-snyder</a> on 2017-07-01 19:20</div>
+            <div class="timeline-body"><p>A note for posterity using OS X: if you get <code>usage: dirname path</code> with the commands above, try using the GNU coreutils version of <code>dirname</code> (installable with Homebrew -- then available by default at <code>gdirname</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisjohnson">@chrisjohnson</a> on 2017-09-29 20:23</div>
+            <div class="timeline-body"><p>Thanks @braham-snyder for the tip, that helped. I also found that uniq requires duplicates to be adjacent to one another and I was getting many duplicates with this call. You can solve that with <code>|sort |uniq</code> but then it won't stream lines as it discovers them (and also takes 4x as long).</p>
+<p>So I found an awk snippet which does uniq's functionality for non-adjacent matches and has a happy benefit of being even faster than <code>|uniq</code>: <code>| awk '!h[$0]++'</code></p>
+<p>So combining the two tips above I can now use rg to get dir globbing that respects my <code>.ignore</code> for fzf with the following .fzf.zsh:</p>
+<pre><code>if [[ $(uname) == &quot;Darwin&quot; ]]; then
+	# dirname on OS X behaves funky, get gdirname via
+	# brew install coreutils
+	export dirname_command=&quot;gdirname&quot;
+else
+	export dirname_command=&quot;dirname&quot;
+fi
+_fzf_compgen_dir() {
+	rg --hidden --files --null &quot;$1&quot; 2&gt;/dev/null | xargs -0 &quot;$dirname_command&quot; | awk '!h[$0]++'
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-09-29 20:55</div>
+            <div class="timeline-body"><p>This is more idiomatic, more portable, and possibly faster:</p>
+<pre><code>_fzf_compgen_dir() {
+  print -rl -- ${(u)${(f)&quot;$( rg --hidden --files $1 2&gt; /dev/null )&quot;}:h}
+}
+</code></pre>
+<p>zsh only, obv</p>
+<p>edit: Actually, i'm sorry, i over-looked that you wanted the 'streaming' behaviour — in that respect it may not meet your needs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisjohnson">@chrisjohnson</a> on 2017-09-29 21:02</div>
+            <div class="timeline-body"><p>@okdana While it does run slightly faster, it has to wait until the full list is generated to return, so it suffers the same downside as <code>|sort|uniq</code>. Given that my intention is to use this for FZF which allows you to start filtering straight away that makes it not a viable option, unfortunately. Thanks though!</p>
+<p><em>Edit</em> It also uses a huge amount of memory</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-09-29 21:03</div>
+            <div class="timeline-body"><p>Yeah, i caught that right after i submitted it. Sorry, wasn't paying enough attention.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/braham-snyder">@braham-snyder</a> on 2017-09-30 00:42</div>
+            <div class="timeline-body"><p>@chrisjohnson <code>sort -u</code> does not block for me, but I too see the speed-up when using that <code>awk</code> snippet (given enough files/dirs) -- thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/partounian">@partounian</a> on 2017-10-17 02:48</div>
+            <div class="timeline-body"><p>Sorry if this is a dumb question, but seeing as some of you use FZF, what is the exact function/command alias you guys use for fzf + rg directory traversal?</p>
+<p>My current fzf aliases are (hoping this might help others):</p>
+<pre><code class="language-zsh">export FZF_DEFAULT_COMMAND='rg -L --files --hidden'
+
+# fe [FUZZY PATTERN] - Open the selected file with the default editor
+#   - Bypass fuzzy finder if there's only one match (--select-1)
+#   - Exit if there's no match (--exit-0)
+fe() {
+  local files
+  IFS=$'\n' files=($(fzf-tmux --query=&quot;$1&quot; --multi --select-1 --exit-0))
+  [[ -n &quot;$files&quot; ]] &amp;&amp; ${EDITOR:-vim} &quot;${files[@]}&quot;
+}
+
+# fd [FUZZY PATTERN] - Open the selected folder
+#   - Bypass fuzzy finder if there's only one match (--select-1)
+#   - Exit if there's no match (--exit-0)
+fd() {
+  local file
+  local dir
+  file=$(fzf +m -q &quot;$1&quot;) &amp;&amp; dir=$(dirname &quot;$file&quot;) &amp;&amp; cd &quot;$dir&quot;
+}
+
+if [[ $(uname) == &quot;Darwin&quot; ]]; then
+	# dirname on OS X behaves funky, get gdirname via
+	# brew install coreutils
+	export dirname_command=&quot;gdirname&quot;
+else
+	export dirname_command=&quot;dirname&quot;
+fi
+
+# Faster compgen
+_fzf_compgen_dir() {
+	rg --hidden --files --null &quot;$1&quot; 2 &gt; /dev/null | xargs -0 &quot;$dirname_command&quot; | awk '!h[$0]++'
+}
+</code></pre>
+<p>I would love for &quot;fd&quot; to be like fe except only show dir names, instead of dir and file names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisjohnson">@chrisjohnson</a> on 2017-10-17 03:34</div>
+            <div class="timeline-body"><p>https://github.com/junegunn/fzf#settings</p>
+<p>Just worked with the author of fzf to finalize this suggested fix. If you look at my PR <a href="https://github.com/junegunn/fzf/pull/1083">here</a> you can see a non-ruby version but honestly the ruby version is much better because it walks up the dir chain for every file to ensure the path is added all the way up, plus it's faster than the awk approach.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:48 UTC
+    </footer>
+</body>
+</html>

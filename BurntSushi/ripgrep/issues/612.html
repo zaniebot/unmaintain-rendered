@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to search for multiple terms in a file? - BurntSushi/ripgrep #612</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to search for multiple terms in a file?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/612">#612</a>
+        opened by <a href="https://github.com/ylluminate">@ylluminate</a>
+        on 2017-09-23 18:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ylluminate">@ylluminate</a></div>
+            <div class="timeline-body"><p>I'm looking for a way to use <code>ripgrep</code> to search for multiple keywords in files.  For example, I would like to grep through all files within a folder that have both terms present anywhere in the file (in this case &quot;head&quot; and &quot;qt&quot; from the Homebrew Formula folder).</p>
+<p>Is there a clean way to use an and operator as such?  I though that there may be other solutions as in <a href="https://unix.stackexchange.com/a/55391/47012">other here</a>, however it even appears that these commands (such as <code>awk '/pattern1/ &amp;&amp; /pattern2/' *</code>) only match via <code>and</code> per line and not the entire file...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-09-23 18:38</div>
+            <div class="timeline-body"><p>No, ripgrep doesn't have anything to support that out of the box. It is fundamentally a line oriented searcher. You will need to write a wrapper script of some sort, probably by using the <code>-l</code> flag. I can help you write it if you like.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-09-23 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ylluminate">@ylluminate</a> on 2017-09-23 18:52</div>
+            <div class="timeline-body"><p>Interesting, so I was thinking that perhaps <code>rg</code> would accept the output from <code>-l</code> as the input (<code>rg -l head * | rg qt</code>), but it's not working out as I expected since it doesn't use the output as the files args.</p>
+<p>Looks like I might have to use <code>xargs</code> with the <code>rg</code> <code>-f</code> arg... but that would remove a good bit of the efficiency of ripgrep it seems.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-09-23 19:18</div>
+            <div class="timeline-body"><p>You will want to use xargs.</p>
+<p>On Sep 23, 2017 2:52 PM, &quot;ylluminate&quot; <a href="mailto:notifications@github.com">notifications@github.com</a> wrote:</p>
+<p>Interesting, so I was thinking that perhaps rg would accept the output from
+-l as the input (``rg -l head * | rg qt`), but it's not working out as I
+expected since it doesn't use the output as the files args.</p>
+<p>—
+You are receiving this because you modified the open/close state.</p>
+<p>Reply to this email directly, view it on GitHub
+<a href="https://github.com/BurntSushi/ripgrep/issues/612#issuecomment-331662563">https://github.com/BurntSushi/ripgrep/issues/612#issuecomment-331662563</a>,
+or mute the thread
+<a href="https://github.com/notifications/unsubscribe-auth/AAb34n1ZENWSeLPFOCOQZhg7O2MUaEabks5slVOLgaJpZM4PhpDz">https://github.com/notifications/unsubscribe-auth/AAb34n1ZENWSeLPFOCOQZhg7O2MUaEabks5slVOLgaJpZM4PhpDz</a>
+.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ylluminate">@ylluminate</a> on 2017-09-23 19:25</div>
+            <div class="timeline-body"><p>So it turns out that <code>-l</code> output also has to have the newlines converted to null first, but this seems to work: <code>rg -l head * | tr '\n' '\0' | xargs -0 rg qt</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-09-24 00:00</div>
+            <div class="timeline-body"><p>@ylluminate You can do that with the <code>--null</code> flag. So <code>rg -l --null head * | xargs -0 rg qt</code> should work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davideuler">@davideuler</a> on 2025-05-26 13:23</div>
+            <div class="timeline-body"><p>In case you need the multiple keyword match to implement an AND logic within a line in file. I've implemented a version to support the feature.</p>
+<p>https://github.com/davideuler/ripgrep</p>
+<p>Sometimes you need to find lines that contain several specific words, but the order or exact positioning of these words doesn't matter. The <code>--and</code> flag is designed for this purpose. It allows you to specify a set of space-separated keywords, and only lines containing <em>all</em> of those keywords will be matched.</p>
+<p><strong>Syntax:</strong></p>
+<pre><code>rg --and &quot;keyword1 keyword2 keyword3&quot; [path...]
+</code></pre>
+<p>or with a primary pattern:</p>
+<pre><code>rg --and keyword1 --and keyword2 --and keyword3 [path...]
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:17 UTC
+    </footer>
+</body>
+</html>

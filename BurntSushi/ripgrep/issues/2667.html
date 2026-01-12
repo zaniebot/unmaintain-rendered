@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>14.x.x release now causes &quot;dpkg-deb: error: 'ripgrep_14.0.3_amd64.deb' is not a Debian format archive&quot; - BurntSushi/ripgrep #2667</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>14.x.x release now causes &quot;dpkg-deb: error: 'ripgrep_14.0.3_amd64.deb' is not a Debian format archive&quot;</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2667">#2667</a>
+        opened by <a href="https://github.com/Integralist">@Integralist</a>
+        on 2023-11-30 10:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Integralist">@Integralist</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>I'm trying to install latest Ripgrep.</p>
+<h3>How did you install ripgrep?</h3>
+<pre><code class="language-yaml">name: Testing Ripgrep Install
+on: push
+concurrency: # cancel in progress runs on push
+  group: &quot;ripgrep-test&quot;
+  cancel-in-progress: true
+defaults:
+  run:
+    shell: bash
+jobs:
+  install-ripgrep:
+    name: Install Ripgrep
+    runs-on: ubuntu-latest
+    steps:
+      - name: &quot;Install Ripgrep&quot;
+        run: |
+          RIPGREP_VERSION=$(curl -s &quot;https://api.github.com/repos/BurntSushi/ripgrep/releases/latest&quot; | grep -Po '&quot;tag_name&quot;: &quot;\K[0-9.]+')
+          RIPGREP_VERSION=13.0.0 # NOTE: override to validate why this stopped working 2 days ago
+          curl -LO &quot;https://github.com/BurntSushi/ripgrep/releases/download/${RIPGREP_VERSION}/ripgrep_${RIPGREP_VERSION}_amd64.deb&quot;
+          sudo dpkg -i &quot;ripgrep_${RIPGREP_VERSION}_amd64.deb&quot;
+          rg -h
+</code></pre>
+<p>Example of 14.0.0 failing:
+https://github.com/Integralist/actions-testing/actions/runs/7044888292/job/19173509725</p>
+<p>Example of 13.0.0 suceeding:
+https://github.com/Integralist/actions-testing/actions/runs/7044894703/job/19173530627</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>GitHub Actions ubuntu-latest runner.</p>
+<h3>Describe your bug.</h3>
+<p>Ripgrep 14.x.x releases don't appear to be valid for Debian anymore.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>See the above GitHub Actions install code.</p>
+<h3>What is the actual behavior?</h3>
+<p>The command fails as per the following error...</p>
+<pre><code>dpkg-deb: error: 'ripgrep_14.0.0_amd64.deb' is not a Debian format archive
+dpkg: error processing archive ripgrep_[14](https://github.com/Integralist/actions-testing/actions/runs/7044888292/job/19173509725#step:2:15).0.0_amd64.deb (--install):
+ dpkg-deb --control subprocess returned error exit status 2
+Errors were encountered while processing:
+ ripgrep_14.0.0_amd64.deb
+Error: Process completed with exit code 1.
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>Ripgrep should be installable on Ubuntu via GitHub Actions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-30 12:22</div>
+            <div class="timeline-body"><p><em>Please</em>, in the future, provide a more minimal reproduction. I don't have the time to debug GitHub Action stuff.</p>
+<p>In this case, I believe the 14.0.0 release tweaked the filename of the release asset to include a <code>-1</code> in the name. So it's <code>ripgrep_14.0.0-1_amd64.deb</code> instead of <code>ripgrep_14.0.0_amd64.deb</code>. It looks like this was a result of <a href="https://github.com/kornelski/cargo-deb/pull/105">this change in <code>cargo-deb</code></a>. Neither the PR nor the commit messages say <em>why</em> the change was made. Ah, but the <a href="https://github.com/kornelski/cargo-deb#debian-packages-from-cargo-projects">README mentions this in a note at the top</a>, and apparently the <code>-1</code> is desirable for compliance with Debian's packaging standard. OK, I'll take their word for it.</p>
+<p>So for you, change</p>
+<pre><code>curl -LO &quot;https://github.com/BurntSushi/ripgrep/releases/download/${RIPGREP_VERSION}/ripgrep_${RIPGREP_VERSION}_amd64.deb&quot;
+</code></pre>
+<p>to</p>
+<pre><code>curl --fail -LO &quot;https://github.com/BurntSushi/ripgrep/releases/download/${RIPGREP_VERSION}/ripgrep_${RIPGREP_VERSION}-1_amd64.deb&quot;
+</code></pre>
+<p>Notice that I also added the <code>--fail</code> flag there. That would have also told you that you were getting a 404.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-30 12:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2023-11-30 12:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Integralist">@Integralist</a> on 2023-11-30 13:06</div>
+            <div class="timeline-body"><p>Thanks. I'll be sure to use <code>--fail</code> in future (wasn't aware curl had that flag).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:44 UTC
+    </footer>
+</body>
+</html>

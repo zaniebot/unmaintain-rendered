@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--replace not working correctly with carriage returns on Windows - BurntSushi/ripgrep #1500</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--replace not working correctly with carriage returns on Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1500">#1500</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2020-02-27 13:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>Originally <a href="https://github.com/BurntSushi/ripgrep/issues/416#issuecomment-591925122">reported by @sergeevabc</a>. Namely, the third command below produces unexpected output:</p>
+<pre><code>printf &quot;1931. Arrowsmith&quot; | rg &quot;(\d+)..(.*)&quot; -r &quot;$2 $1&quot;
+Arrowsmith 1931               &lt;--- as expected, but printf is not a part of Windows 
+
+echo 1931. Arrowsmith | rg &quot;(\d+)..(.*)&quot; -r &quot;$2 $1&quot;
+ 1931smith                    &lt;--- weird misplacement
+
+echo 1931. Arrowsmith | rg &quot;(\d+)..(.*)&quot; -r &quot;$2 $1&quot; --crlf
+Arrowsmith  1931              &lt;--- extra space in between
+</code></pre>
+<p>Using <code>xxd</code> confirms the extra space:</p>
+<pre><code>echo 1931. Arrowsmith | rg &quot;(\d+)..(.*)&quot; -r &quot;$2 $1&quot; --crlf | xxd
+00000000: 4172 726f 7773 6d69 7468 2020 3139 3331  Arrowsmith  1931
+00000010: 0d0a 
+</code></pre>
+<p>I have not been able to reproduce this on Linux, even after inserting carriage returns. Below is copied from <a href="">my comment</a> in #416:</p>
+<p>OK, so I'm assuming that <code>echo</code> on Windows probably emits a <code>\r\n</code> as a new line, so let's try that:</p>
+<pre><code>$ printf &quot;1931. Arrowsmith\r\n&quot; | rg '(\d+)..(.*)' -r '$2 $1'
+ 1931smith
+</code></pre>
+<p>It's quite likely here that <code>(.*)</code> is matching the <code>\r</code> so the replacement actually winds up being <code>Arrowsmith\r 1931</code>. We can confirm this by looking at the hex output:</p>
+<pre><code>$ printf &quot;1931. Arrowsmith\r\n&quot; | rg '(\d+)..(.*)' -r '$2 $1' | xxd
+00000000: 4172 726f 7773 6d69 7468 0d20 3139 3331  Arrowsmith. 1931
+00000010: 0a
+</code></pre>
+<p>You can see the <code>0d</code> in there, which corresponds to <code>\r</code>. The strange output is actually what one expects:</p>
+<pre><code>$ echo 'Arrowsmith\r 1931'
+ 1931smith
+</code></pre>
+<p>Because <code>\r</code> will move the cursor position back to the beginning of the line. Subsequent printing then overwrites characters that were already printed. e.g.,</p>
+<pre><code>$ echo 'Arrowsmith\r 1931X'
+ 1931Xmith
+
+$ echo 'Arrowsmith\r 1931XX'
+ 1931XXith
+
+$ echo 'Arrowsmith\r 1931XXX'
+ 1931XXXth
+</code></pre>
+<p>Adding the <code>--crlf</code> flag seemingly gets this right:</p>
+<pre><code>$ printf &quot;1931. Arrowsmith\r\n&quot; | rg '(\d+)..(.*)' -r '$2 $1' --crlf
+Arrowsmith 1931
+</code></pre>
+<p>Confirming with <code>xxd</code> that there is a single space:</p>
+<pre><code>$ printf &quot;1931. Arrowsmith\r\n&quot; | rg '(\d+)..(.*)' -r '$2 $1' --crlf | xxd
+00000000: 4172 726f 7773 6d69 7468 2031 3933 310d  Arrowsmith 1931.
+00000010: 0a
+</code></pre>
+<p>Notice that there is only one <code>0x20</code> byte there. So I can't reproduce your issue, at least on Linux, and in theory, the above should be equivalent to what you're doing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2020-02-27 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2020-02-27 13:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2020-02-28 19:38</div>
+            <div class="timeline-body"><p>I have a Windows machine; I'll try to find time this weekend to reproduce this.</p>
+<p>At the moment I'm at a Darwin machine, which behaves the way you've shown for Linux.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2020-02-29 00:53</div>
+            <div class="timeline-body"><p>It looks like <code>cmd</code>'s <code>echo</code> is itself producing the extra space:</p>
+<pre><code>C:\Users\batma&gt;&quot;\Program Files\git\usr\bin\printf.exe&quot; &quot;1931. Arrowsmith\r\n&quot;  | &quot;\Program Files\Git\usr\bin\xxd.exe&quot;
+00000000: 3139 3331 2e20 4172 726f 7773 6d69 7468  1931. Arrowsmith
+00000010: 0d0a                                     ..
+
+C:\Users\batma&gt;echo 1931. Arrowsmith  | &quot;\Program Files\Git\usr\bin\xxd.exe&quot;
+00000000: 3139 3331 2e20 4172 726f 7773 6d69 7468  1931. Arrowsmith
+00000010: 2020 0d0a                                  ..
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BatmanAoD">@BatmanAoD</a> on 2020-02-29 00:58</div>
+            <div class="timeline-body"><p>Yep, <code>echo</code> in <code>cmd</code> consumes all spaces to the end of the command.</p>
+<pre><code>C:\Users\batma&gt;echo 1931. Arrowsmith| &quot;\Program Files\Git\usr\bin\xxd.exe&quot;
+00000000: 3139 3331 2e20 4172 726f 7773 6d69 7468  1931. Arrowsmith
+00000010: 0d0a                                     ..
+
+C:\Users\batma&gt;echo 1931. Arrowsmith | &quot;\Program Files\Git\usr\bin\xxd.exe&quot;
+00000000: 3139 3331 2e20 4172 726f 7773 6d69 7468  1931. Arrowsmith
+00000010: 200d 0a                                   ..
+</code></pre>
+<p>And, indeed, if the space before the <code>|</code> is removed in the original example, the output matches the Linux output:</p>
+<pre><code>C:\Users\batma&gt;echo 1931. Arrowsmith| rg &quot;(\d+)..(.*)&quot; -r &quot;$2 $1&quot; --crlf
+Arrowsmith 1931
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-02-29 01:04</div>
+            <div class="timeline-body"><p>How delightful. Thanks for tracking that down!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-02-29 01:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @BurntSushi on 2020-02-29 01:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @BurntSushi on 2020-02-29 01:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2020-02-29 01:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:07 UTC
+    </footer>
+</body>
+</html>

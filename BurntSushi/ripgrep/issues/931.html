@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use environment variables inside .rgrc - BurntSushi/ripgrep #931</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use environment variables inside .rgrc</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/931">#931</a>
+        opened by <a href="https://github.com/bastienbc">@bastienbc</a>
+        on 2018-05-29 08:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/bastienbc">@bastienbc</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.8.1 (rev c8e9f25b85)
++SIMD -AVX</p>
+<h4>How did you install ripgrep?</h4>
+<p>Using binary release</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Distributor ID: Ubuntu
+Description:    Ubuntu 16.04.4 LTS
+Release:        16.04
+Codename:       xenial</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>I think environment variables used inside RIPGREP_CONFIG_PATH file should be expanded.</p>
+<p>I have a file in my home (.rgrc):</p>
+<pre><code>--smart-case
+--hidden
+--ignore-file
+$HOME/.rgignore
+</code></pre>
+<p>But when I use <code>rg</code> I have this message:</p>
+<pre><code>$ export RIPGREP_CONFIG_PATH=$HOME/.rgrc
+$ rg any &gt; /dev/null
+$HOME/.rgignore: No such file or directory (os error 2)
+</code></pre>
+<p>I would like to be able to reuse those files (.rgrc and .rgingnore) across multiple accounts, this I source my zsh configuration from a git repo.</p>
+<p>Do you think it would be possible ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-05-29 12:44</div>
+            <div class="timeline-body"><p>No, sorry.</p>
+<p>ripgrep's configuration file is a thin veneer over specifying the argv sent to ripgrep's process, at which point, the argv parser merges all of the configuration directly. There are only two simple rules to follow: each line is a single argv parameter (after trimming ASCII whitespace) and lines beginning with a <code>#</code> are ignored. Adding environment variable interpolation means changing those rules to something quite a bit more complex, which includes the ability to escape environment variables so that folks can use them literally as well. Moreover, this sounds like a feature that begets even more features. Do we also need to support the <code>${...}</code> syntax? What about <code>${name:-default}</code> syntax?</p>
+<p>You have many alternative choices available to you:</p>
+<ul>
+<li>Use two different config files on your machines with different home directories.</li>
+<li>Add your config that uses environment variables to an alias wrapper around <code>rg</code>.</li>
+<li>Add your config that uses environment variables to a shell script wrapper around <code>rg</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-05-29 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-05-29 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2018-05-29 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-05-29 13:28</div>
+            <div class="timeline-body"><p>Here's a zsh script you could use if you were committed to the idea:</p>
+<pre><code class="language-sh"> #!/usr/bin/env zsh
+
+rgrc=${RIPGREP_CONFIG_PATH:-$HOME/.rgrc}
+
+if [[ -e $rgrc ]]; then
+  trap 'rm -f -- $tmp' EXIT INT
+  tmp=$( mktemp )
+  print -r - ${(Xe)&quot;$( &lt; $rgrc )&quot;} &gt; $tmp
+  rgrc=$tmp
+else
+  rgrc=
+fi
+
+RIPGREP_CONFIG_PATH=$rgrc rg &quot;$@&quot;
+</code></pre>
+<p>It takes your config file and runs it through zsh's <code>(e)</code> expansion flag (which performs parameter expansion and command substitution on the input), then dumps the evaluated version to a temp file, and passes that as the config file to <code>rg</code>.</p>
+<p>Obviously some security concerns here, since the script can execute arbitrary commands in the config file. It also adds probably 2 to 5 ms of over-head to each <code>rg</code> call. You could make it faster by caching the evaluated result. Not sure about making it safer, i don't think zsh has an option to do parameter expansion without command substitution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bastienbc">@bastienbc</a> on 2018-05-29 17:48</div>
+            <div class="timeline-body"><p>Thanks for your reply.</p>
+<p>I was hoping that something like https://crates.io/crates/shellexpand could be used to do the job, but it introduces a regression for people with $ in their configuration as you pointed out.</p>
+<p>I will do it differently then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sudoforge">@sudoforge</a> on 2020-12-06 22:54</div>
+            <div class="timeline-body"><p>Came across this because I was surprised it wasn't supported (and @BurntSushi isn't interested in supporting it). @okdana's solution is great for general purpose, however, in my case the only thing I need to reference is a file in my home directory. With that in mind, an alias is a much more efficient way to solve this problem:</p>
+<pre><code>alias rg=&quot;\rg --ignore-file ~/.ignore&quot;
+</code></pre>
+<p>The <code>\</code> is a shell &quot;trick&quot; that ignores aliases. You could alternatively specify <code>/usr/bin/rg</code> or whatever.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:33 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Style (from --color) is not applied to successfully matched tab (\t) characters - BurntSushi/ripgrep #2621</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Style (from --color) is not applied to successfully matched tab (\t) characters</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2621">#2621</a>
+        opened by <a href="https://github.com/condekind">@condekind</a>
+        on 2023-10-06 00:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/condekind">@condekind</a></div>
+            <div class="timeline-body"><h3>What version of ripgrep are you using?</h3>
+<p>ripgrep 13.0.0
++SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h3>How did you install ripgrep?</h3>
+<p>cargo install --features 'pcre2 simd-accel' ripgrep</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Up-to-date (2023-10-05) Arch Linux</p>
+<h3>Describe your bug.</h3>
+<p>Ripgrep doesn't apply the provided style to matched tab characters.
+I ran some tests with unicode defined whitespaces and it applies the style to them as expected. The exceptions are tab, zero-width characters and control/multiline-related characters (which is understandable, except for tab, unless I'm missing something)</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>Run ripgrep on a string/file containing one or more tab characters, providing a style (through --color) that would make it visible (e.g., bg, underline) and using a search pattern that matches just the tab (or, alternatively, any whitespace).</p>
+<p>All 6 runs below match successfully, as they should - but only the last 2 have the style applied to the matching part (just for reference, as they use regular space instead of tab)</p>
+<pre><code class="language-bash"># Input: tab character around braces; Search pattern: tabs only
+printf '[\t]' | rg --colors 'match:bg:cyan' --colors 'match:style:underline'         '\t';
+printf '[\t]' | rg --colors 'match:bg:cyan' --colors 'match:style:underline' --count '\t';
+
+# Input: tab character around braces; Search pattern: any whitespace
+printf '[\t]' | rg --colors 'match:bg:cyan' --colors 'match:style:underline'         '\s';
+printf '[\t]' | rg --colors 'match:bg:cyan' --colors 'match:style:underline' --count '\s';
+
+# Input: regular space around braces; Search pattern: any whitespace
+printf '[ ]'  | rg --colors 'match:bg:cyan' --colors 'match:style:underline'         '\s';
+printf '[ ]'  | rg --colors 'match:bg:cyan' --colors 'match:style:underline' --count '\s';
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<p>Git doesn't like colors, but since the issue is about style, I'm also providing a small screenshot, as the text output doesn't show the problem:</p>
+<p><img src="https://github.com/BurntSushi/ripgrep/assets/8984737/32b491c1-6d57-44e8-b711-e9b6c9ac984b" alt="2023-10-05-213501_581x86_scrot" /></p>
+<p>I tested it with terminals=(kitty, urxvt, alacritty) and shells=(zsh, bash).
+The issue happens in all of them.</p>
+<p>Commands run with --debug and output (It seems to me the debug info won't matter for this, though):</p>
+<pre><code>echo ''
+# Input: tab character around braces; Search pattern: tabs only
+printf '[\t]' | rg --debug --colors 'match:bg:cyan' --colors 'match:style:underline'         '\t';
+echo ''
+# Input: tab character around braces; Search pattern: any whitespace
+printf '[\t]' | rg --debug --colors 'match:bg:cyan' --colors 'match:style:underline'         '\s';
+echo ''
+# Input: regular space around braces; Search pattern: any whitespace
+printf '[ ]'  | rg --debug --colors 'match:bg:cyan' --colors 'match:style:underline'         '\s';
+echo ''
+
+DEBUG|grep_regex::literal|/home/foo/.local/share/cargo/registry/src/index.crates.io-6f17d22bba15001f/grep-regex-0.1.11/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(\t)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|/home/foo/.local/share/cargo/registry/src/index.crates.io-6f17d22bba15001f/globset-0.4.13/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/home/foo/.local/share/cargo/registry/src/index.crates.io-6f17d22bba15001f/globset-0.4.13/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;.vscode/*&quot;, re: &quot;(?-u)^\\.vscode/[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true, empty_alternates: false }, tokens: Tokens([Literal('.'), Literal('v'), Literal('s'), Literal('c'), Literal('o'), Literal('d'), Literal('e'), Literal('/'), ZeroOrMore]) }
+DEBUG|globset|/home/foo/.local/share/cargo/registry/src/index.crates.io-6f17d22bba15001f/globset-0.4.13/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
+[   ]
+
+DEBUG|globset|/home/foo/.local/share/cargo/registry/src/index.crates.io-6f17d22bba15001f/globset-0.4.13/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/home/foo/.local/share/cargo/registry/src/index.crates.io-6f17d22bba15001f/globset-0.4.13/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;.vscode/*&quot;, re: &quot;(?-u)^\\.vscode/[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true, empty_alternates: false }, tokens: Tokens([Literal('.'), Literal('v'), Literal('s'), Literal('c'), Literal('o'), Literal('d'), Literal('e'), Literal('/'), ZeroOrMore]) }
+DEBUG|globset|/home/foo/.local/share/cargo/registry/src/index.crates.io-6f17d22bba15001f/globset-0.4.13/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
+[   ]
+
+DEBUG|globset|/home/foo/.local/share/cargo/registry/src/index.crates.io-6f17d22bba15001f/globset-0.4.13/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/home/foo/.local/share/cargo/registry/src/index.crates.io-6f17d22bba15001f/globset-0.4.13/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;.vscode/*&quot;, re: &quot;(?-u)^\\.vscode/[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true, empty_alternates: false }, tokens: Tokens([Literal('.'), Literal('v'), Literal('s'), Literal('c'), Literal('o'), Literal('d'), Literal('e'), Literal('/'), ZeroOrMore]) }
+DEBUG|globset|/home/foo/.local/share/cargo/registry/src/index.crates.io-6f17d22bba15001f/globset-0.4.13/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
+[ ]
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>ripgrep should've applied the provided style to all matching characters in the output</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-10-06 00:56</div>
+            <div class="timeline-body"><p>This is correct behavior. <code>\t</code> isn't a printable character. It's a control character. It moves the cursor.</p>
+<p>Consider trying different programs with different terminal emulators. You should see that none of them colorize tab characters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-10-06 00:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2023-10-06 00:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:43 UTC
+    </footer>
+</body>
+</html>

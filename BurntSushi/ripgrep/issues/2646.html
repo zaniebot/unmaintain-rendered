@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`--pre`/`--pre-glob` doesn't seem to work in config file - BurntSushi/ripgrep #2646</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>--pre</code>/<code>--pre-glob</code> doesn't seem to work in config file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2646">#2646</a>
+        opened by <a href="https://github.com/zgracem">@zgracem</a>
+        on 2023-11-15 17:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zgracem">@zgracem</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<pre><code>ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h3>How did you install ripgrep?</h3>
+<p>Homebrew</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>macOS 14.1.1 (23B81)</p>
+<h3>Describe your bug.</h3>
+<p>I followed the <a href="https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#preprocessor">instructions</a> for creating a preprocessor. It works as advertised when specified on the command line, but stops working if I move the <code>--pre</code> and <code>--pre-glob</code> options into ripgrep's configuration file.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<pre><code class="language-sh">$ cat &quot;$RIPGREP_CONFIG_PATH&quot;
+--pre=pre-rg
+--pre-glob='*.pdf'
+
+$ cat &quot;$(type -P pre-rg)&quot;
+#!/usr/bin/env bash
+exec pdftotext &quot;$1&quot; -
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<pre><code class="language-sh"># options on command line :)
+$ rg --debug --no-config --pre=pre-rg --pre-glob='*.pdf' overwrite test.pdf
+DEBUG|rg::args|crates/core/args.rs:527: not reading config files because --no-config is present
+DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(overwrite)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:416: glob converted to regex: Glob { glob: &quot;**/*~&quot;, re: &quot;(?-u)^(?:/?|.*/)[^/]*\\~$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, ZeroOrMore, Literal('~')]) }
+DEBUG|globset|crates/globset/src/lib.rs:416: glob converted to regex: Glob { glob: &quot;tmp/**/*&quot;, re: &quot;(?-u)^tmp(?:/|/.*/)[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([Literal('t'), Literal('m'), Literal('p'), RecursiveZeroOrMore, ZeroOrMore]) }
+DEBUG|globset|crates/globset/src/lib.rs:416: glob converted to regex: Glob { glob: &quot;**/Icon?&quot;, re: &quot;(?-u)^(?:/?|.*/)Icon[^/]$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('I'), Literal('c'), Literal('o'), Literal('n'), Any]) }
+DEBUG|globset|crates/globset/src/lib.rs:416: glob converted to regex: Glob { glob: &quot;**/._*&quot;, re: &quot;(?-u)^(?:/?|.*/)\\._[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('.'), Literal('_'), ZeroOrMore]) }
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 19 basenames, 5 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 4 regexes
+278:existing file, you are prompted to overwrite, rename,
+307:item, you are prompted to overwrite, rename,
+381:Warning! This operation overwrites the entire memory in
+
+# options in config file :(
+$ rg --debug overwrite test.pdf || echo nope
+﻿DEBUG|rg::config|crates/core/config.rs:40: /Users/zozo/.config/ripgrep/ripgreprc: arguments loaded from config file: [&quot;--pre&quot;, &quot;pre-rg&quot;, &quot;--pre-glob&quot;, &quot;\'*.pdf\'&quot;]
+DEBUG|rg::args|crates/core/args.rs:543: final argv: [&quot;rg&quot;, &quot;--pre&quot;, &quot;pre-rg&quot;, &quot;--pre-glob&quot;, &quot;\'*.pdf\'&quot;, &quot;--debug&quot;, &quot;overwrite&quot;, &quot;test.pdf&quot;]
+DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(overwrite)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 1 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:416: glob converted to regex: Glob { glob: &quot;**/*~&quot;, re: &quot;(?-u)^(?:/?|.*/)[^/]*\\~$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, ZeroOrMore, Literal('~')]) }
+DEBUG|globset|crates/globset/src/lib.rs:416: glob converted to regex: Glob { glob: &quot;tmp/**/*&quot;, re: &quot;(?-u)^tmp(?:/|/.*/)[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([Literal('t'), Literal('m'), Literal('p'), RecursiveZeroOrMore, ZeroOrMore]) }
+DEBUG|globset|crates/globset/src/lib.rs:416: glob converted to regex: Glob { glob: &quot;**/Icon?&quot;, re: &quot;(?-u)^(?:/?|.*/)Icon[^/]$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('I'), Literal('c'), Literal('o'), Literal('n'), Any]) }
+DEBUG|globset|crates/globset/src/lib.rs:416: glob converted to regex: Glob { glob: &quot;**/._*&quot;, re: &quot;(?-u)^(?:/?|.*/)\\._[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('.'), Literal('_'), ZeroOrMore]) }
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 19 basenames, 5 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 4 regexes
+nope
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<pre><code class="language-sh"># with the config file and script as above
+$ rg overwrite test.pdf
+278:existing file, you are prompted to overwrite, rename,
+307:item, you are prompted to overwrite, rename,
+381:Warning! This operation overwrites the entire memory in
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-22 00:15</div>
+            <div class="timeline-body"><p>The debug output answers it
+Your glob has quotes in it. The quotes are for your shell, but your config file is not a shell. Remove the quotes and it should work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-22 00:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2023-11-22 00:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zgracem">@zgracem</a> on 2023-11-22 16:24</div>
+            <div class="timeline-body"><p>Ah, okay. I'll have to take your word for it about the debug output (I don't know enough about Rust to parse it) but I wonder if the documentation could be clearer? From reading this—</p>
+<blockquote>
+<ol>
+<li>Every line is a shell argument, after trimming whitespace.</li>
+</ol>
+</blockquote>
+<p>—and this—</p>
+<blockquote>
+<p>In particular, there is no escaping. Each line is given to ripgrep as a single command line argument verbatim.</p>
+</blockquote>
+<p>—I (incorrectly) assumed that each line in the config file would be treated as a verbatim command line argument, except for whitespace, and would therefore need the same treatment w/r/t quotes as entering it on the actual command line.</p>
+<p>The only place in the guide where quotes are even mentioned is here—</p>
+<blockquote>
+<p>Note that we put <code>'*.toml'</code> in single quotes to prevent our shell from expanding the <code>*</code>.</p>
+</blockquote>
+<p>—which probably also contributed to my misunderstanding.</p>
+<p>In any case, it works without the quotes, so thanks for letting me know. 👍️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-22 16:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Ah, okay. I'll have to take your word for it about the debug output (I don't know enough about Rust to parse it)</p>
+</blockquote>
+<p>I don't think you really need to know much if anything about Rust. Here, from the output you pasted:</p>
+<pre><code>﻿DEBUG|rg::config|crates/core/config.rs:40: /Users/zozo/.config/ripgrep/ripgreprc: arguments loaded from config file: [&quot;--pre&quot;, &quot;pre-rg&quot;, &quot;--pre-glob&quot;, &quot;\'*.pdf\'&quot;]
+DEBUG|rg::args|crates/core/args.rs:543: final argv: [&quot;rg&quot;, &quot;--pre&quot;, &quot;pre-rg&quot;, &quot;--pre-glob&quot;, &quot;\'*.pdf\'&quot;, &quot;--debug&quot;, &quot;overwrite&quot;, &quot;test.pdf&quot;]
+</code></pre>
+<p>Notice that the value after <code>&quot;--pre-glob&quot;</code> is <code>&quot;\'*.pdf\'&quot;</code>. So the value that ripgrep sees contains single quotes. If you pass it via a shell and not a config argument, then your shell will see interpret the quotes and pass the raw value to the process invocation.</p>
+<blockquote>
+<p>each line in the config file would be treated as a verbatim command line argument, except for whitespace, and would therefore need the same treatment w/r/t quotes as entering it on the actual command line.</p>
+</blockquote>
+<p>Yes. Each line is treated as a verbatim command line argument after trimming whitespace. But there's no whitespace here? In any case, to be doubly clear, this config file</p>
+<pre><code>--pre=pre-rg
+--pre-glob=*.pdf
+</code></pre>
+<p>is equivalent to</p>
+<pre><code>--pre
+pre-rg
+--pre-glob
+*.pdf
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:43 UTC
+    </footer>
+</body>
+</html>

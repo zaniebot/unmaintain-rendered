@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Have a --count option that counts occurrences instead of matched lines: - BurntSushi/ripgrep #566</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Have a --count option that counts occurrences instead of matched lines:</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/566">#566</a>
+        opened by <a href="https://github.com/santagada">@santagada</a>
+        on 2017-07-27 09:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/santagada">@santagada</a></div>
+            <div class="timeline-body"><p>Right now -c/--count counts line matches, it would be great to have an option to count matches and not lines matched. Looking at the example:</p>
+<pre><code class="language-bash">$ echo &quot;foo foo&quot; &gt; example.txt
+$ rg -c foo example.txt
+1
+$ rg -o foo example.txt
+1:foo
+1:foo
+</code></pre>
+<p>would be interesting to have a way to get the total matches (2) in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-27 10:35</div>
+            <div class="timeline-body"><p>Seems reasonable I guess. Maybe a <code>--count-all</code> flag?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2017-07-27 10:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/santagada">@santagada</a> on 2017-07-27 14:18</div>
+            <div class="timeline-body"><p>I personally would prefer a <code>--count-matches</code> to be clear on what is the difference between the two</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-07-27 15:10</div>
+            <div class="timeline-body"><p>Would it make sense to just tie the behaviour to <code>-o</code>?</p>
+<p>If i wasn't already familiar with <code>grep</code> i think that's how i would have expected it to work tbh. Because why else would someone want to use <code>-o</code> with <code>-c</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-07-27 15:16</div>
+            <div class="timeline-body"><p>Hmm. I guess I feel like <code>-o/--only-matching</code> is more of a flag for output control, but I agree it is a possibly reasonable path forward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/santagada">@santagada</a> on 2017-07-27 15:30</div>
+            <div class="timeline-body"><p>-o is totally unrelated to counting. I just used it to make the example simpler. My current problem is searching inside binary files where we see many matches on each &quot;line&quot; because counting lines on binary files seems very wrong (but the material of another bug request).... but I have use for both behaviors even on text files. for me --count and --count-matches seems the way to go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-07-27 16:22</div>
+            <div class="timeline-body"><blockquote>
+<p>-o is totally unrelated to counting</p>
+</blockquote>
+<p>Yeah, but it doesn't have to be. It literally tells <code>rg</code> to return 'only the matches' instead of whole lines. Why it doesn't change the behaviour of <code>-c</code> to <em>count</em> 'only the matches' instead of whole lines, i can't think of a super compelling reason, besides the fact that that's how <code>grep</code> happens to work. (And <code>grep -o</code> isn't part of POSIX — i think it was a GNU extension added in the early 2000s — so there's not really even a standard AFAIK.)</p>
+<p>idk, i don't feel super strongly about it, so that's all i'll say. Just thought i'd mention that that's how my intuition would've told me it should behave.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/balajisivaraman">@balajisivaraman</a> on 2018-02-15 18:34</div>
+            <div class="timeline-body"><p>I had a look at this (while looking a the code for the <code>--stats</code> feature) and can send a PR for this. But first of all, do we still want this feature implemented?</p>
+<p>Another thing to note about the behaviour of <code>grep</code> on my machine, with GNU Grep 3.1, <code>-o -c</code> doesn't behave as @okdana says. (<code>ag</code>, with version 2.1.0, prints no. of matches and not no. of lines with <code>-c</code>.)</p>
+<pre><code>$  echo &quot;foo foo&quot; &gt; grep.txt
+$ grep -c 'foo' grep.txt
+1
+$ grep -o -c 'foo' grep.txt
+1
+$ grep -o 'foo' grep.txt
+foo
+foo
+$ ag -c 'foo' grep.txt
+2
+</code></pre>
+<p>If we do want this, shall I put it behind <code>--count-matches</code> as suggested or as a combination of <code>-o -c</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-15 18:43</div>
+            <div class="timeline-body"><p>@balajisivaraman I don't know the right answer here. Part of me leans toward <code>--count-matches</code> so that it is explicit. If <code>grep -o -c</code> still reports a line count instead of match count, then there may be value in keeping ripgrep's current behavior there (which is the same as grep).</p>
+<p>Also, I think @okdana was pointing out that <code>grep -o -c</code> does report number of lines matched instead of number of total matches, and that that is one possible reason why ripgrep might want to do the same (to be consistent with grep).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/balajisivaraman">@balajisivaraman</a> on 2018-02-15 18:46</div>
+            <div class="timeline-body"><p>Ah, that does make a lot of sense. My bad for misunderstanding. I'll begin work under the assumption that we want <code>--count-matches</code> for this. 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-02-15 20:21</div>
+            <div class="timeline-body"><p>I was actually suggesting that <code>rg</code> do something different from everybody else and have <code>-o</code> modify the behaviour of <code>-c</code>, since it seems like an intuitive result of the combination to me (and using them together for any other reason is essentially pointless). I still like the idea, personally, but given how much emphasis there's been on matching <code>grep</code>'s behaviour lately i can see why the other approach would be chosen.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2018-02-15 20:52</div>
+            <div class="timeline-body"><p>I don't see why it can't be <em>both</em>.</p>
+<ul>
+<li>I like <code>--count-matches</code> because it's explicit and easy to search for in the manpages/help. It's also super intuitive.</li>
+<li>I like <code>-c -o</code> because it's short and makes conceptual sense  (<code>rg -co 'foo' test.txt</code> would be awesome) . When I look at the grep output, I actually stop and think, &quot;Huh? Oh well, that's strange but I guess so.&quot; I'd have a hard time people relying on this behavior</li>
+</ul>
+<p>Adding a blurb in the <code>--count-matches</code> help saying, <code>analogous to -c -o</code> is easy too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-15 21:15</div>
+            <div class="timeline-body"><p>@okdana Yeah I know, but I definitely feel a compelling attraction to match grep's behavior in subtle cases like this. But you and @kbknapp present strong arguments, and I like @kbknapp's suggestion for having both.</p>
+<p>@balajisivaraman If you want to start with <code>--count-matches</code> and continue on your current trajectory, then that sounds great. That can be introduced in the next minor version release. Changing the behavior of <code>-c -o</code> will have to wait for the next semver bump, so it should be in a separate PR. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/balajisivaraman">@balajisivaraman</a> on 2018-02-16 18:05</div>
+            <div class="timeline-body"><p>One question I have is how should <code>--count-matches</code> behave when <code>-v</code> is passed in. Once again, the default <code>ag</code> behaviour is befuddling to me. (Or maybe I'm missing something?)</p>
+<pre><code>$ echo -e &quot;foo foo\nbar bar\nbaz baz&quot; &gt; grep.txt
+$ ag -c 'foo' grep.txt
+2
+$ ag -c 'baz' grep.txt
+2
+$ ag -c 'bar' grep.txt
+2
+$ ag -v -c 'foo' grep.txt (If we're counting non-matching lines, shouldn't this be 2?)
+1
+$ ag -v -c 'bar' grep.txt (This returns nothing, but should again be 2.)
+$ ag -v -c 'baz' grep.txt (Same as above.)
+1
+</code></pre>
+<p>Do we want <code>rg</code> to invert matches in the same way it would if <code>-c</code> were passed in, or should we lean towards no interaction between <code>--count-matches</code> and <code>-v</code>? I'm not sure which way to go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-16 18:09</div>
+            <div class="timeline-body"><p>@balajisivaraman The <code>-v</code> flag basically causes any ripgrep option that deals with individual matches to not work because the <code>-v</code> is a line oriented &quot;match&quot; or &quot;no match.&quot; I don't think we should copy ag here, but instead, <code>--count-matches -v</code> should probably behave the same as <code>-c -v</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-03-10 15:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:15 UTC
+    </footer>
+</body>
+</html>

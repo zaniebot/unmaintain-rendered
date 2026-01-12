@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Early return / shortened output when reading from stdin with binary garbage in the middle of file - BurntSushi/ripgrep #1117</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Early return / shortened output when reading from stdin with binary garbage in the middle of file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1117">#1117</a>
+        opened by <a href="https://github.com/vorner">@vorner</a>
+        on 2018-11-22 09:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/vorner">@vorner</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>0.10.0</p>
+<h4>How did you install ripgrep?</h4>
+<p>By cargo install.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Gentoo linux (it doesn't have a „version“, it has rolling updates ‒ but I keep it up to date). Kernel 4.19.</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>I have a biggish log file (310MB). When I run rg like this:</p>
+<pre><code>rg 74.125.71.189 log.txt
+</code></pre>
+<p>I get several pages of output (5769 lines).</p>
+<p>If I put the data onto its stdin:</p>
+<pre><code>rg 74.125.71.189 &lt;log.txt
+</code></pre>
+<p>I get only the first 12 lines of output. It's always 12. If I pipe it from other command, the same happens.</p>
+<p>If using grep, it always prints the 12 lines and then <code>Binary file (standard input) matches</code>.</p>
+<p>I believe that:</p>
+<ul>
+<li>Both modes (file as a parameter and from stdin) should act consistently. This is surprising.</li>
+<li>If rg gives up because it finds some binary garbage, it should let me know <em>somehow</em> ‒ either by an error message like that, or additionaly by actually terminating with non-zero error code. This way I could have assumed the log file contained only the 12 matches, which is misleading.</li>
+</ul>
+<p>Adding the <code>-a</code> parameter makes it print all the lines.</p>
+<p>Sorry, I can't share the input file :-(. But I hope the description is clear enough without it.</p>
+<p>Running with <code>--debug</code> only prepends the output with these two lines:</p>
+<pre><code>DEBUG|grep_regex::literal|/home/vorner/.cargo/registry/src/github.com-1ecc6299db9ec823/grep-regex-0.1.1/src/literal.rs:110: required literal found: &quot;189&quot;
+DEBUG|globset|/home/vorner/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.2/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-11-22 12:47</div>
+            <div class="timeline-body"><p>I'm on mobile so I can't find the issue at the moment, but this is unfortunately a known bug. I agree that they should have the same behavior. The particular reason is that reason from stdin will do binary detection everywhere, where as searching a file could use memory maps, which only does binary detection on the first few KB of the file. This leads to a difference in behavior.</p>
+<p>I'm still trying to figure out how to overhaul binary detection. One thing you can do if you want consistent behavior is add the <code>--no-mmap</code> flag to your ripgrep config file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vorner">@vorner</a> on 2018-11-24 19:49</div>
+            <div class="timeline-body"><p>Anyway, some kind of „Binary file, giving up“ would be nice, so I at least know it's not the complete output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-11-29 17:57</div>
+            <div class="timeline-body"><p>This is a duplicate of #306. I've added a comment there explaining more about what the next steps might be.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-11-29 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2018-11-29 17:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:45 UTC
+    </footer>
+</body>
+</html>

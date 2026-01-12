@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fails to look for &quot;-1&quot;, &quot;-&gt;&quot;, etc. - BurntSushi/ripgrep #1744</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fails to look for &quot;-1&quot;, &quot;-&gt;&quot;, etc.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1744">#1744</a>
+        opened by <a href="https://github.com/westandskif">@westandskif</a>
+        on 2020-11-24 14:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/westandskif">@westandskif</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 12.1.1
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p><code>sudo pacman -S ripgrep</code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Arch Linux 5.9.10-arch1-1</p>
+<h4>Describe your bug.</h4>
+<p>rg fails to look for &quot;-1&quot;, &quot;-&gt;&quot;, etc.</p>
+<p>this one works:
+<code>rg 'idea' .gitignore</code></p>
+<p>this one doesn't:
+<code>rg '-1' .gitignore</code>
+<em>error: Found argument '-1' which wasn't expected, or isn't valid in this context</em></p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>Please see above.</p>
+<h4>What is the actual behavior?</h4>
+<p>The pattern is considered as an argument.</p>
+<h4>What is the expected behavior?</h4>
+<p>Looking for a pattern provided.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/westandskif">@westandskif</a> on 2020-11-24 14:36</div>
+            <div class="timeline-body"><p>thanks to the colleague of mine, this opt parsing issue is not an rg issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @westandskif on 2020-11-24 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-24 14:41</div>
+            <div class="timeline-body"><p>Right, and indeed, from the man page:</p>
+<pre><code>       PATTERN
+           A regular expression used for searching. To match a pattern beginning with a dash, use the
+           -e/--regexp option.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2020-11-24 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/westandskif">@westandskif</a> on 2020-11-24 14:48</div>
+            <div class="timeline-body"><p>Thanks! I was having a problem which is being resolved like this:
+<code>rg -F -- '-1'</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-24 14:53</div>
+            <div class="timeline-body"><p>Yes, that also works, because <code>--</code> indicates the end of all non-positional arguments. Therefore, anything after <code>--</code> is treated as a positional argument. Otherwise, when you use <code>-x</code>, there is ambiguity between whether <code>-x</code> is a flag or a positional argument.</p>
+<p>Also, the <code>-F</code> flag is unnecessary in this case. <code>rg -- -1</code> is equivalent. As is <code>rg -e -1</code>.</p>
+<p>These are standard problems in Unix command line tools. The <code>--</code> trick is the most common work-around. The <code>-e</code> trick is more specific to grep-like tools, but does work with GNU grep as well.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prevent empty search pattern to match every line in every file - BurntSushi/ripgrep #2607</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Prevent empty search pattern to match every line in every file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2607">#2607</a>
+        opened by <a href="https://github.com/hnorkowski">@hnorkowski</a>
+        on 2023-09-11 09:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hnorkowski">@hnorkowski</a></div>
+            <div class="timeline-body"><h4>Option to disable searching when given an empty pattern</h4>
+<p>When using ripgrep with an empty pattern (e.g. <code>rg &quot;&quot;</code>) it matches every line in every file. This was unexpected behavior for me but <code>grep</code> behaves the same (e.g. <code>grep --recursive &quot;&quot; .</code>). However there are use-cases where this behavior is problematic:</p>
+<p>I am trying to use ripgrep with skim to search a code base with a preview. There is an <a href="https://github.com/lotabout/skim#preview-window">example</a> on their github page that uses <code>ag</code> aka. <a href="https://github.com/ggreer/the_silver_searcher">the silver searcher</a>. I tried to use <code>rg</code> instead of <code>ag</code> like this: <code>sk --ansi -i -c 'rg --color always --line-number &quot;{}&quot;' --preview &quot;preview.sh {}&quot;</code>. This works, however in contrast to <code>ag</code> <code>rg</code> starts listing every line of every file in the code base because before the user of <code>sk</code> inputs anything <code>&quot;&quot;</code> is provided to <code>rg</code> as pattern. This can generate a LOT of overhead depending on the code base. Therefore it would be cool if <code>rg &quot;&quot;</code> would no produce results or offer an option to disable it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-11 11:38</div>
+            <div class="timeline-body"><blockquote>
+<p>When using ripgrep with an empty pattern (e.g. <code>rg &quot;&quot;</code>) it matches every line in every file. This was unexpected behavior for me but <code>grep</code> behaves the same (e.g. <code>grep --recursive &quot;&quot; .</code>).</p>
+</blockquote>
+<p>Yes, this is correct behavior. The empty regex matches the empty string and every string (including the empty string) contains the empty string. Just like every set is a superset of the empty set.</p>
+<p>See also: https://github.com/rust-lang/regex/discussions/896</p>
+<blockquote>
+<p>however in contrast to ag rg starts listing every line of every file in the code base because before the user of sk inputs anything &quot;&quot; is provided to rg as pattern.</p>
+</blockquote>
+<p>IMO, the way <code>ag</code> behaves is a bug:</p>
+<pre><code>$ echo bar | ag ''
+ERR: Error: No query. What do you want to search for?
+$ echo bar | rg ''
+bar
+$ echo bar | grep ''
+bar
+$ echo bar | ack ''
+bar
+</code></pre>
+<p>It's not like PCRE doesn't support searching for empty patterns:</p>
+<pre><code>$ echo bar | ag '(?:)'
+bar
+</code></pre>
+<p>IMO, this request is basically an instance of <a href="https://xkcd.com/1172/">this xkcd</a>.</p>
+<p>I also think this is just generally a poor interaction pattern with tools like skim (and also fzf). I agree that starting a search with an exhaustive search for the empty pattern is bad UX, but that doesn't mean we should change the meaning of the empty pattern. It means we shouldn't start searches with the empty pattern. Instead, either start without searching at all (probably a harder interaction pattern to implement) or start it with a regex that can never match. In the latter case, you can use <code>rg 'a^b'</code> for the current release. In the next release, <code>rg '[a&amp;&amp;b]'</code> will work.</p>
+<p>Once you have that, it's not hard to write a wrapper to do a translation for you:</p>
+<pre><code>$ echo bar | rg ''
+bar
+$ cat /tmp/rg-no-empty-pattern
+#!/bin/bash
+
+args=()
+for arg; do
+  if [ &quot;$arg&quot; = &quot;&quot; ]; then
+    args=(&quot;${args[@]}&quot; &quot;a^b&quot;)
+  else
+    args=(&quot;${args[@]}&quot; &quot;$arg&quot;)
+  fi
+done
+exec rg &quot;${args[@]}&quot;
+$ echo bar | /tmp/rg-no-empty-pattern ''
+$
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-09-11 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2023-09-11 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hnorkowski">@hnorkowski</a> on 2023-09-11 15:47</div>
+            <div class="timeline-body"><p>Yes, currently I am using a wrapper script but its not a very portable solution</p>
+<blockquote>
+<p>IMO, this request is basically an instance of <a href="https://xkcd.com/1172/">this xkcd</a></p>
+</blockquote>
+<p>Yes it is. That's why I suggested to make it an option: Just a parameter called <code>--skip-empty-pattern</code> or something.</p>
+<p>Would you be willing to accept a PR that would add such an option?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-11 15:54</div>
+            <div class="timeline-body"><p>No, sorry. ripgrep already has way too many flags, and if I accepted every request such as yours, it would grow to an unimaginable number. You'll need to use a wrapper script like the one I gave you or change the interaction pattern.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:42 UTC
+    </footer>
+</body>
+</html>

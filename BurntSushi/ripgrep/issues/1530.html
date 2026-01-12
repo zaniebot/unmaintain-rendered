@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ripgrep does not search files tracked by git because they are ignored by gitignore - BurntSushi/ripgrep #1530</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ripgrep does not search files tracked by git because they are ignored by gitignore</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1530">#1530</a>
+        opened by <a href="https://github.com/Dreomite">@Dreomite</a>
+        on 2020-03-26 11:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Dreomite">@Dreomite</a></div>
+            <div class="timeline-body"><p>Ver: <code>12.0.0</code>
+OS: <code>Arch Linux (x86_64, linux 5.5.9.arch1-2)</code>
+Installed via: <code>pacman</code></p>
+<h4>Description</h4>
+<p>If <code>!/some_folder</code> is used alongside <code>/**</code>, the folder itself will be visible for ripgrep, but its contents will be not.</p>
+<pre><code>DEBUG|ignore::walk|crates/ignore/src/walk.rs:1679: whitelisting ./some_folder: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!/some_folder&quot;, actual: &quot;some_folder&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./some_folder/some_other_folder_or_file: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+</code></pre>
+<p><code>git</code> parses everything correctly.</p>
+<h4>Steps to reproduce</h4>
+<ol>
+<li><code>git clone https://github.com/Vermintide-Mod-Framework/Vermintide-Mod-Builder.git .</code></li>
+<li><code>git checkout 87638bf</code> (Current HEAD commit, just in case something will be changed in the future)</li>
+<li><code>rg rmn</code></li>
+</ol>
+<p><strong>Expected:</strong></p>
+<ul>
+<li>ripgrep should find a string inside <code>./scripts/lib/str.js</code></li>
+</ul>
+<p><strong>Actual:</strong></p>
+<pre><code>DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(rmn)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;**&quot;, re: &quot;(?-u)^.*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix]) }
+DEBUG|globset|crates/globset/src/lib.rs:426: glob converted to regex: Glob { glob: &quot;mods/*&quot;, re: &quot;(?-u)^mods/[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([Literal('m'), Literal('o'), Literal('d'), Literal('s'), Literal('/'), ZeroOrMore]) }
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 7 literals, 9 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 2 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./.git: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1679: whitelisting ./.eslintrc.json: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!.eslintrc.json&quot;, actual: &quot;**/.eslintrc.json&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1679: whitelisting ./.template-vmf: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!/.template-vmf&quot;, actual: &quot;.template-vmf&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1679: whitelisting ./.template: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!/.template&quot;, actual: &quot;.template&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./.template-vmf/%%name.mod: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./.template-vmf/core: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./.template-vmf/item_preview.png: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./.template-vmf/resource_packages: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./.template-vmf/scripts: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./.template/%%name.mod: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1679: whitelisting ./LICENSE: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!LICENSE&quot;, actual: &quot;**/LICENSE&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./.template/core: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./.template/item_preview.png: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./.template/resource_packages: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./.template/scripts: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1679: whitelisting ./README.md: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!README.md&quot;, actual: &quot;**/README.md&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1679: whitelisting ./embedded: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!/embedded&quot;, actual: &quot;embedded&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1679: whitelisting ./gulpfile.js: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!gulpfile.js&quot;, actual: &quot;**/gulpfile.js&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1679: whitelisting ./logo: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!/logo&quot;, actual: &quot;logo&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1679: whitelisting ./mods: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!/mods&quot;, actual: &quot;mods&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1679: whitelisting ./package-lock.json: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!package-lock.json&quot;, actual: &quot;**/package-lock.json&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./embedded/placeholder.mod: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./logo/128.png: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./logo/16.png: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1679: whitelisting ./mods/.gitkeep: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!/mods/.gitkeep&quot;, actual: &quot;mods/.gitkeep&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1679: whitelisting ./package.json: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!package.json&quot;, actual: &quot;**/package.json&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./embedded/placeholderV1: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./embedded/placeholderV2: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./logo/256.png: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./logo/32.png: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./logo/48.png: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./logo/64.png: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./logo/96.png: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./logo/src.pdn: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./logo/vmb.ico: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./mods/what: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/mods/*&quot;, actual: &quot;mods/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1679: whitelisting ./scripts: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!/scripts&quot;, actual: &quot;scripts&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1679: whitelisting ./vmb-test.js: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!vmb-test.js&quot;, actual: &quot;**/vmb-test.js&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./scripts/lib: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1679: whitelisting ./vmb.js: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!vmb.js&quot;, actual: &quot;**/vmb.js&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1679: whitelisting ./.gitignore: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!.gitignore&quot;, actual: &quot;**/.gitignore&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./scripts/modules: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./scripts/print.js: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./scripts/tasks.js: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./scripts/tasks: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./scripts/tools: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./scripts/version.js: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1679: whitelisting ./scripts/vmb.js: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;!vmb.js&quot;, actual: &quot;**/vmb.js&quot;, is_whitelist: true, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1676: ignoring ./scripts/yay.txt: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/**&quot;, actual: &quot;**&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Incorect .gitignore parsing" to "Incorrect .gitignore parsing" by @Dreomite on 2020-03-26 11:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-03-26 13:03</div>
+            <div class="timeline-body"><p>This is expected but inconsistent behavior with <code>git</code>. <code>git</code> is not &quot;parsing&quot; your gitignore correctly here. The issue is that <code>git</code> knows which files are being tracked in your index. But according to gitignore, those files would otherwise be ignored. It is very easy to confirm this:</p>
+<pre><code>$ touch scripts/lib/wat
+$ git status
+HEAD detached at 87638bf
+nothing to commit, working tree clean
+</code></pre>
+<p>If your <code>.gitignore</code> file worked how you claimed it should, then <code>git</code> should report <code>wat</code> as an untracked file. But it doesn't, because it's ignored. So ripgrep's behavior here is correct, strictly speaking, from the perspective of your <code>.gitignore</code> rules. The inconsistency arises from the fact that ripgrep does not search files based on what is actually tracked in your git repository. The only way to fix this is to make your <code>.gitignore</code> file match the actual files being tracked or otherwise use a <code>.ignore</code> file somehow to override your <code>.gitignore</code>.</p>
+<p>There are several other tickets of this nature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-03-26 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2020-03-26 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Incorrect .gitignore parsing" to "ripgrep does not search files tracked by git because they are ignored by gitignore" by @BurntSushi on 2020-03-26 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Dreomite">@Dreomite</a> on 2020-03-26 14:22</div>
+            <div class="timeline-body"><p>Wow, it's so embarrassing I haven't recognized git file-tracking behavior, even though I'm well-aware of it. Sorry for making you spend your time on this pointless issue and thank you very much for thoroughly explaining everything.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:08 UTC
+    </footer>
+</body>
+</html>

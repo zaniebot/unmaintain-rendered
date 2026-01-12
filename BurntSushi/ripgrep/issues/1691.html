@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider using system allocator on musl - BurntSushi/ripgrep #1691</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider using system allocator on musl</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1691">#1691</a>
+        opened by <a href="https://github.com/Logarithmus">@Logarithmus</a>
+        on 2020-09-29 00:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Logarithmus">@Logarithmus</a></div>
+            <div class="timeline-body"><p>Recently <code>musl-1.2.1</code> has been released. Among other improvements, this version features new implementation of allocator called <em>mallocng</em>. My proposal is to rerun benchmarks with this new version of <code>musl</code>. Maybe we can use musl's allocator now instead of <code>jemalloc</code>.
+More info: https://musl.libc.org/releases.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wendajiang">@wendajiang</a> on 2021-02-25 02:45</div>
+            <div class="timeline-body"><p>In readme, there is no declare that exec command &quot;cargo build --release --target x86_64-unknown-linux-musl&quot; need to install musl-gcc?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-02-25 08:00</div>
+            <div class="timeline-body"><p>@wendajiang please don't hijack issues with unrelated problems. Please file a new issue. And please complete the issue template.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-31 23:46</div>
+            <div class="timeline-body"><p>Using musl with the system allocator on a checkout of https://github.com/BurntSushi/linux:</p>
+<pre><code>$ hyperfine -i 'rg-musl-sys zqzqzqzqzq'
+Benchmark #1: rg-musl-sys zqzqzqzqzq
+  Time (mean ± σ):     286.1 ms ±   5.5 ms    [User: 1.582 s, System: 0.520 s]
+  Range (min … max):   282.2 ms … 300.7 ms    10 runs
+</code></pre>
+<p>And now with jemalloc:</p>
+<pre><code>$ hyperfine -i 'rg-musl-jemalloc zqzqzqzqzq'
+Benchmark #1: rg-musl-jemalloc zqzqzqzqzq
+  Time (mean ± σ):     161.0 ms ±   2.0 ms    [User: 665.2 ms, System: 524.7 ms]
+  Range (min … max):   157.4 ms … 164.5 ms    18 runs
+</code></pre>
+<p>IIRC, this is an improvement, but jemalloc still has a noticeable leg up.</p>
+<p>You might wonder why ripgrep has such an allocation heavy workload. A lot of it is amortized, but a lot the allocations come from interactions with filesystem APIs. e.g., Converting strings to NUL-terminated strings to work on POSIX APIs. There is no real way to amortize those without building our own file system layer, which I'm not particularly inclined to do. (I started doing it in a branch on https://github.com/BurntSushi/walkdir, but it's a nightmare.)</p>
+<p>So I think for now, I'm going to leave it as-is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-05-31 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Piping">@Piping</a> on 2021-07-11 04:34</div>
+            <div class="timeline-body"><p>mimalloc seems to be an awesome allocator. And it also has a crate to replace the rust default allocator.  is anyone interested in seeing the benchmark number?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:14 UTC
+    </footer>
+</body>
+</html>

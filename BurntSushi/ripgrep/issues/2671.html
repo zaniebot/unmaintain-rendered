@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issues with ripgrep finding files with no newline at end of text file - BurntSushi/ripgrep #2671</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Issues with ripgrep finding files with no newline at end of text file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2671">#2671</a>
+        opened by <a href="https://github.com/ksandvik">@ksandvik</a>
+        on 2023-12-02 19:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ksandvik">@ksandvik</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>ripgrep 14.0.3</p>
+<h3>How did you install ripgrep?</h3>
+<p>brew</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>MacOSX 14.1.2</p>
+<h3>Describe your bug.</h3>
+<p>I used this syntax to find files with a missing last new line but just now I reports all files this way, whether they have a new line at the end or not:</p>
+<p>rg -s  -l '[^\n]\z'</p>
+<p>Is there a new syntax? Or something else? This worked in 13.0.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>rg -s  -l '[^\n]\z' on any file with a mixture of markdown files or other files with a mixture of missing new lines at the end.</p>
+<h3>What is the actual behavior?</h3>
+<pre><code>rg -s  -l '[^\n]\z' --debug
+DEBUG|rg::flags::parse|crates/core/flags/parse.rs:97: no extra arguments found from configuration file
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1099: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=false, stdin_consumed=false, mode=Search(FilesWithMatches))
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1109: heuristic chose to search ./
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1260: found hostname for hyperlink configuration: KSM1
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1270: hyperlink format: &quot;&quot;
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 10 thread(s)
+DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 4 basenames, 0 extensions, 0 prefixes, 0 suffixes, 1 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:448: glob converted to regex: Glob { glob: &quot;work/**/*&quot;, re: &quot;(?-u)^work(?:/|/.*/)[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true, empty_alternates: false }, tokens: Tokens([Literal('w'), Literal('o'), Literal('r'), Literal('k'), RecursiveZeroOrMore, ZeroOrMore]) }
+DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 4 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>Only find files with a missing single new line at end of text file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-01-06 19:07</div>
+            <div class="timeline-body"><p>You didn't provide a reproduction. Please provide one next time. I'll do it for you this time:</p>
+<pre><code>$ printf &quot;foo\nquux\n&quot; &gt; haystack-with-trailing-newline
+$ printf &quot;foo\nquux&quot; &gt; haystack-no-trailing-newline
+$ rg-13.0.0 -s -l '[^\n]\z'
+haystack-no-trailing-newline
+$ rg-14.0.3 -s -l '[^\n]\z'
+haystack-with-trailing-newline
+haystack-no-trailing-newline
+</code></pre>
+<p>The fact that that worked in ripgrep 13 was a bug. Anchors line <code>\A</code> and <code>\z</code> don't make sense with how you're using them because ripgrep is a line oriented searcher. There is no notion of &quot;end of file.&quot; The only thing available to you is &quot;end of line.&quot; And the logical model under which ripgrep operates is to search the contents of each line, and <em>not</em> the actual line terminators themselves.</p>
+<p>The only way to have this work correctly is to enable multiline mode. In multiline mode, ripgrep is no longer line oriented, and treats the entire contents of each file as a single haystack. In that context, you can use anchors like <code>\A</code> and <code>\z</code> to mean &quot;beginning of file&quot; and &quot;end of file,&quot; respectively.</p>
+<p>In your case, you just need to add the <code>-U</code> flag:</p>
+<pre><code>$ rg-13.0.0 -l -U '[^\n]\z'
+haystack-no-trailing-newline
+$ rg-14.0.3 -l -U '[^\n]\z'
+haystack-no-trailing-newline
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-01-06 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2024-01-06 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ksandvik">@ksandvik</a> on 2024-01-11 19:11</div>
+            <div class="timeline-body"><p>Thanks for the clarification.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:44 UTC
+    </footer>
+</body>
+</html>

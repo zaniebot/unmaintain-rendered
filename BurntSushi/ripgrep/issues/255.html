@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ripgrep since 0.3.0 produces terrible output in non-color xterms - BurntSushi/ripgrep #255</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ripgrep since 0.3.0 produces terrible output in non-color xterms</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/255">#255</a>
+        opened by <a href="https://github.com/siebenmann">@siebenmann</a>
+        on 2016-11-26 02:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/siebenmann">@siebenmann</a></div>
+            <div class="timeline-body"><p>If you used old versions of ripgrep (0.3.0) in an xterm that had color disabled, they simply bolded some portions of the output (it looks like file names, line numbers, and matching text). Versions from 0.3.0 onwards do truly unreadable things in this environment. Everything that used to be bolded now <em>blinks</em>, and matching text has a ~~strike~~ through it. Given the blinking, the result is not in the least bit usable.</p>
+<p>Can the old behavior be restored on non-color xterms? Better yet, can we also get an option that always does this (even when color is available)? Even in environments with colors I would often prefer not to use them and would rather have things just come out as bold.</p>
+<p>(In theory color can make things more readable. In practice automatically chosen highlight colors don't always go with certain choices of foreground and background colors. I use black text on white background, which clashes with most color schemes; they often seem designed for white on black.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-26 02:59</div>
+            <div class="timeline-body"><p>Does <code>--color never</code> not work for you?</p>
+<p>I don't really get why you are seeing blinking or strike through text. The intended behavior is to use ANSI escape sequences to color certain aspects of the output. If this is doing something else, then I'd like to fix it, but as it stands i don't understand your environment enough to reproduce the issue. Could you elaborate more?</p>
+<p>I would like to further avoid discussion about default colors in this issue. If you want to open a separate issue then that's okay. The short story is that you should be able to change colors/styles using the <code>--colors</code> flag. See <code>rg --help</code> for details.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-26 03:00</div>
+            <div class="timeline-body"><p>By the way, I use black on white and I use the default color scheme.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/siebenmann">@siebenmann</a> on 2016-11-26 03:07</div>
+            <div class="timeline-body"><p><code>-color=never</code> works, but it suppresses the bolding as well; everything comes out plain, and I like(d) the bolding. I believe the equivalent of my xterm X resources settings can be gotten through the command line with <code>xterm -cm</code> (and I would be happy to send you my full set of xterm resource settings).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-26 03:09</div>
+            <div class="timeline-body"><p>Have you looked at <code>--colors</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/siebenmann">@siebenmann</a> on 2016-11-26 03:24</div>
+            <div class="timeline-body"><p><code>--colors</code> works, in that sufficient application of it to 0.3.1 reverts things to the 0.2.9 behavior. What I appears to need is:</p>
+<pre><code>$ rg --colors path:none --colors line:none --colors match:none --colors path:style:bold --colors match:style:bold --colors line:style:bold &lt;search term&gt;
+</code></pre>
+<p>(If I don't clear the existing color settings first and just try to set everything bold, text still blinks and so on.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-26 21:31</div>
+            <div class="timeline-body"><p>I was able to reproduce this problem using <code>xterm -cm</code>. (The <code>-cm</code> option is necessary to reproduce the problem.)</p>
+<p>I wasn't familiar with <code>xterm -cm</code>, but I just had a chance to look it up:</p>
+<pre><code>       -cm     This option disables recognition of ANSI color-change escape sequences.  It sets the
+               colorMode resource to “false”.
+</code></pre>
+<p>I'm not sure what you're actually expecting to happen here. ripgrep doesn't know that you've disabled ANSI color escape sequences, and I don't know why <code>xterm</code> interprets them as strike-through/blinking text. Unless you can provide more insight here, this seems like a bug in <code>xterm</code>.</p>
+<p>Given that you can actually fix this with sufficient application of the <code>--colors</code> flag (which could go in an alias or a <code>~/bin</code> script), I'm inclined to mark this as <code>wontfix</code> unless there's some further insight than can be provided here. For example, if <code>xterm</code> signaled somehow that colors should be disabled, then ripgrep could pick up on and disable them since the default setting of <code>--color</code> is <code>auto</code>. However, style settings like bold are lumped in with this decision procedure, and it turns out that you do actually want text to be bolded. Therefore, this auto-detection (if it existed) wouldn't actually work for your use case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/siebenmann">@siebenmann</a> on 2016-11-26 22:23</div>
+            <div class="timeline-body"><p>I did some tests and things are interesting here. Rather than speculate, I will tell you what I've determined:</p>
+<ul>
+<li>Xterm will say whether colors are enabled or disabled as part of its response to an escape sequence that asks about device attributes; this is 'Send Device Attributes' request in <a href="http://invisible-island.net/xterm/ctlseqs/ctlseqs.html">the control sequences documentation</a>. However I don't think ripgrep 0.2.9 was (or is) using this.</li>
+<li>regardless of whether xterm is in color mode or not, ripgrep 0.2.9 sends a set of control sequences that render color on xterms with color enabled and bold (for all colors) on my xterms without it. I've tested this by using <code>script</code> to capture the raw output from ripgrep and using <code>cat</code> to display it in either type of xterm.</li>
+<li>again regardless of xterm type, ripgrep 0.3.1 sends a different set of control sequences that render as either color in color xterms or the blinking ~~strikethrough~~ in non-color ones.</li>
+</ul>
+<p>If I'm reading the raw output correctly, the 0.2.9 control sequence for eg file names are CSI 32 m CSI 1 m. In the same situation, 0.3.1 sends CSI m CSI 3 8 ; 5 ; 1 0 m. The xterm page doesn't document the latter, but it appears to be <a href="https://en.wikipedia.org/wiki/ANSI_escape_code#Colors">ANSI color codes</a> used to directly pick the high-intensity green. Ripgrep 0.3.1 appears to use high-intensity colors for all of its highlighting, and presumably a non-color xterm interprets these as 'they said high intensity so I'll make the text blink'.</p>
+<p>(Using <code>rg --color=ansi</code> vs <code>rg --color=always</code> or <code>rg --color=auto</code> doesn't appear to make a difference in xterm as far as what ripgrep 0.3.1 generates as escape sequences; they always seem to come out as the ANSI sequences instead of 0.2.9's.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-26 22:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Using rg --color=ansi vs rg --color=always or rg --color=auto doesn't appear to make a difference</p>
+</blockquote>
+<p>I wouldn't expect it to. If <code>--color=auto</code> outputs ANSI escape sequences, then so will <code>--color=ansi</code> and <code>--color=always</code>.</p>
+<blockquote>
+<p>Ripgrep 0.3.1 appears to use high-intensity colors for all of its highlighting, and presumably a non-color xterm interprets these as 'they said high intensity so I'll make the text blink'.</p>
+</blockquote>
+<p>Hmm, I'm not necessarily seeing the same thing. The intensity doesn't appear related to the blinking. For example, if you use <code>rg --colors 'match:style:nobold'</code>, then it will use a non-intense color, but the matched text still blinks. Interestingly, it becomes bold but not strike-through. If I change the color, e.g., <code>rg --colors 'match:style:nobold' --colors 'match:fg:cyan'</code>, then the bold goes away but the text still blinks.</p>
+<p>It looks like <code>-cm</code> isn't &quot;don't recognize ANSI escapes&quot; but instead is &quot;attempt to translate ANSI escapes.&quot;</p>
+<blockquote>
+<p>If I'm reading the raw output correctly, the 0.2.9 control sequence for eg file names are CSI 32 m CSI 1 m. In the same situation, 0.3.1 sends CSI m CSI 3 8 ; 5 ; 1 0 m.</p>
+</blockquote>
+<p>A big part of ripgrep 0.3.0 was a <a href="https://github.com/BurntSushi/ripgrep/pull/240">complete overhaul of how colors are handled</a>. In particular, we switched away from an <a href="https://github.com/BurntSushi/ripgrep/issues/37">error prone process of reading a <code>TERMINFO</code> database</a> to a simpler process that uses ANSI escape sequences only. Pretty much everything has some sane support for this. Apparently <code>xterm -cm</code> is an exception.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/siebenmann">@siebenmann</a> on 2016-11-26 23:07</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks like <code>-cm</code> isn't &quot;don't recognize ANSI escapes&quot; but instead is &quot;attempt to translate ANSI escapes.&quot;</p>
+</blockquote>
+<p>It does seem that way. I've tried to look at the xterm code in order to figure out how it behaves, but I can't follow the code well enough to do that; there is a lot of levels of magic involved in the handling of the <code>-cm</code> switch. So I can't tell if this is an xterm feature or a bug (and if it is a bug, it will be years before an updated version makes it everywhere).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-27 00:22</div>
+            <div class="timeline-body"><p>All right, I think I'm going to close this for a couple reasons:</p>
+<ol>
+<li>It seems like ripgrep &lt;0.3 did the &quot;right thing&quot; with respect to this use case, but it's possible that doing the right thing requires reading the <code>TERMINFO</code> database for <code>xterm</code> specifically, and I really want to try and avoid bringing that complexity back.</li>
+<li>There is a work-around for your use case using the <code>--colors</code> flag. It's pretty verbose, but it works, and the verboseness can be worked around by using an alias or a simple wrapper script in <code>$HOME/bin</code>.</li>
+<li>I feel like your use case is very niche: &quot;I use xterm and I disabled color ANSI escapes but still want to use bold ANSI escapes.&quot; Niche use cases aren't necessarily unimportant, but if niche use cases can be resolved with less than ideal paths (see 2 above), then I think I'm OK with that.</li>
+</ol>
+<p>In any case, thanks so much for the report and the follow up info. If the underlying issue spreads to non-niche use cases, then perhaps we will be forced to fix it for reals. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-11-27 00:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2016-11-27 00:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2016-11-27 00:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:55 UTC
+    </footer>
+</body>
+</html>

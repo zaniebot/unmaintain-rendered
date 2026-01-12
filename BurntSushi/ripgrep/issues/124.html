@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature request: add a command-line option to force case-sensitive search - BurntSushi/ripgrep #124</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature request: add a command-line option to force case-sensitive search</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/124">#124</a>
+        opened by <a href="https://github.com/jeberger">@jeberger</a>
+        on 2016-09-28 07:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jeberger">@jeberger</a></div>
+            <div class="timeline-body"><p>Rationale: I would prefer smart case to be the default. I can get that by creating an alias like <code>alias rg=&quot;rg -S&quot;</code> but then I need some way to force case-sensitive search when I need it e.g. <code>rg --case-sensitive</code>, which given the alias would become <code>rg -S --case-sensitive</code>, the last given flag would then override previous flags.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-28 09:30</div>
+            <div class="timeline-body"><p>Should it also override the <code>-i</code> flag?</p>
+<p>On Sep 28, 2016 3:30 AM, &quot;jeberger&quot; notifications@github.com wrote:</p>
+<blockquote>
+<p>Rationale: I would prefer smart case to be the default. I can get that by
+creating an alias like alias rg=&quot;rg -S&quot; but then I need some way to force
+case-sensitive search when I need it e.g. rg --case-sensitive, which
+given the alias would become rg -S --case-sensitive, the last given flag
+would then override previous flags.</p>
+<p>—
+You are receiving this because you are subscribed to this thread.
+Reply to this email directly, view it on GitHub
+https://github.com/BurntSushi/ripgrep/issues/124, or mute the thread
+https://github.com/notifications/unsubscribe-auth/AAb34golU18VZzSkNELICyf0zP2fxOJgks5quheOgaJpZM4KIf8v
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-09-28 13:39</div>
+            <div class="timeline-body"><blockquote>
+<p>Should it also override the <code>-i</code> flag?</p>
+</blockquote>
+<p>Is it possible to have the last flag win? The idea is to allow a user to override whatever is in the alias.</p>
+<ul>
+<li><code>rg -S --case-sensitive</code> ≈ <code>rg --case-sensitive</code></li>
+<li><code>rg --case-sensitive -S</code> ≈ <code>rg -S</code></li>
+<li><code>rg -S -i</code> ≈ <code>rg -i</code></li>
+<li><code>rg -i --case-sensitive</code> ≈ <code>rg --case-sensitive</code></li>
+<li>and so on.. (you get the idea :))</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-28 13:41</div>
+            <div class="timeline-body"><p>Sadly, no, although I agree that might be more intuitive. We'd probably have to switch arg parsing libraries. Docopt doesn't expose that kind of information.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lespea">@lespea</a> on 2016-09-28 15:11</div>
+            <div class="timeline-body"><p>Just a thought... most of the time this won't happen so if you detect both flags as being set you could just loop through argv and manually take the last one?  Not very clean but it would work without requiring a new library.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-28 15:30</div>
+            <div class="timeline-body"><p>Yeah, I don't really want to add that implementation complexity. We should either do it right (switch to a different arg parsing library, which I don't really want to do) or just specify a precedence.</p>
+<p>Let's punt on &quot;last flag wins for now&quot; and decide on precedence. I feel like the precedence should be:</p>
+<ul>
+<li><code>--case-sensitive</code></li>
+<li><code>--case-insensitive</code></li>
+<li><code>--smart-case</code></li>
+</ul>
+<p>where flags earlier in the list override flags later in the list.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaushalmodi">@kaushalmodi</a> on 2016-09-28 16:10</div>
+            <div class="timeline-body"><p>That precedence will work for my use case too where I have <code>--smart-case</code> in the alias.</p>
+<p>On a different note. Would you also please add <code>-s</code> as an alias to <code>--case-sensitive</code>?</p>
+<p><strong>Update</strong>:</p>
+<p><em>because I like tables :)</em></p>
+<pre><code>--case-sensitive &gt; --case-insensitive (-i) &gt; --smart-case (-S)
+
+|---------------------+--------------------+---------------------|
+| Alias               | Extra arg to alias | Effective           |
+|---------------------+--------------------+---------------------|
+| rg -S               | --case-sensitive   | rg --case-sensitive |
+| rg -S               | -i                 | rg -i               |
+| rg -i               | --case-sensitive   | rg --case-senstive  |
+| rg -i               | -S                 | rg -i               |
+| rg --case-sensitive | -i                 | rg --case-sensitive |
+| rg --case-sensitive | -S                 | rg --case-sensitive |
+|---------------------+--------------------+---------------------|
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jeberger">@jeberger</a> on 2016-09-28 16:20</div>
+            <div class="timeline-body"><p>Since we can't have &quot;last flag wins&quot;, that precedence would be fine. And +1 for the short alias for <code>--case-sensitive</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-09-28 20:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-28 20:32</div>
+            <div class="timeline-body"><p>This is done and will be in the next release. I implemented the precedence rules discussed here and made <code>-s</code> alias <code>--case-sensitive</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gomesalexandre">@gomesalexandre</a> on 2020-02-13 17:30</div>
+            <div class="timeline-body"><p>Thank you! Made case-insensitive my default <code>:Rg</code> binding, this is really helpful when having to case-sensitive search ❤️</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:45 UTC
+    </footer>
+</body>
+</html>

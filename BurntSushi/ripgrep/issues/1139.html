@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>file is unexpectedly being ignored - BurntSushi/ripgrep #1139</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>file is unexpectedly being ignored</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1139">#1139</a>
+        opened by <a href="https://github.com/directorscut82">@directorscut82</a>
+        on 2018-12-13 10:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/directorscut82">@directorscut82</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.10.0 (rev 8a7db1a918)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>$ curl -LO https://github.com/BurntSushi/ripgrep/releases/download/0.10.0/ripgrep_0.10.0_amd64.deb
+$ sudo dpkg -i ripgrep_0.10.0_amd64.deb</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Ubuntu 16.04.5 LTS</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>I am trying to replicate a simple grep search. I am not very familiar with all the command line
+options so it is probably an incorrect use case:</p>
+<pre><code>grep -inr 'Delay(25'
+saorview_app/build/board/src.ali/DVBCore/midware/stb/src/stbpes.c:184:            //STB_OSTaskDelay(25);
+saorview_app/build/board/src.ali/DVBCore/midware/stb/src/stbpes.c:190:         //STB_OSTaskDelay(25);
+
+rg -iFnp 'Delay(25'
+
+rg -iFnp -j1 --no-mmap 'Delay(25'
+
+cd saorview_app/build/board/src.ali/DVBCore/
+rg -iFnp 'Delay(25'
+midware/stb/src/stbpes.c
+184:         //STB_OSTaskDelay(25);
+190:         //STB_OSTaskDelay(25);
+</code></pre>
+<p>Is there a particular reason rg ignores the file 'stbpes.c' unless i change directory closer to the file?
+(i tried max depth and also debug flag which just shows all the compressed files it ignored while searching)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/directorscut82">@directorscut82</a> on 2018-12-13 10:26</div>
+            <div class="timeline-body"><p>I also checked the file in case something weird is going on with the permissions (even chmod 777 it just to be sure)</p>
+<pre><code>ls -lah saorview_app/build/board/src.ali/DVBCore/midware/stb/src/stbpes.c
+-rwxrwxrwx 1   
+
+file saorview_app/build/board/src.ali/DVBCore/midware/stb/src/stbpes.c
+saorview_app/build/board/src.ali/DVBCore/midware/stb/src/stbpes.c: C source, UTF-8 Unicode text
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-12-13 11:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there a particular reason rg ignores the file 'stbpes.c' unless i change directory closer to the file?</p>
+</blockquote>
+<p>I can't answer this question without more information or a reproducible test case. I believe the issue template requested the debug output. Could you please include it?</p>
+<p>Please also consider reading the guide section on automatic filtering.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/directorscut82">@directorscut82</a> on 2018-12-13 12:12</div>
+            <div class="timeline-body"><p>sorry, i forgot my pastebin:)</p>
+<p>https://pastebin.com/x7DzR0wx</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-12-13 12:41</div>
+            <div class="timeline-body"><p>@directorscut82 Did you read the guide's section on automatic filtering? Have you tried disabling filtering? If so, did that find the file?</p>
+<p>Your debug output suggests you have a rule to specifically ignore the <code>src.ali</code> directory:</p>
+<pre><code>DEBUG|ignore::walk|ignore/src/walk.rs:1611: ignoring ./src.ali: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/home/ekt/Desktop/PVR_SAORVIEW/saorview_app/.gitignore&quot;), original: &quot;src.ali&quot;, actual: &quot;**/src.ali&quot;, is_whitelist: false, is_only_dir: false })))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/directorscut82">@directorscut82</a> on 2018-12-13 12:58</div>
+            <div class="timeline-body"><p>Thank you very much for your help.</p>
+<p>I had tried with --hidden which i thought it was same with filtering out the restrictions from gitignore. So, it was indeed an incorrect use case:)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-12-13 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-12-13 13:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "incorrect use case?" to "file is unexpectedly being ignored" by @BurntSushi on 2018-12-13 13:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:46 UTC
+    </footer>
+</body>
+</html>

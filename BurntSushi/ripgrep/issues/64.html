@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--files ignores first path argument - BurntSushi/ripgrep #64</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--files ignores first path argument</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/64">#64</a>
+        opened by <a href="https://github.com/nickstenning">@nickstenning</a>
+        on 2016-09-24 14:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nickstenning">@nickstenning</a></div>
+            <div class="timeline-body"><p>I'm not sure whether this is a misunderstanding, a documentation bug, or an actual bug, but the <code>--files</code> option appears to ignore the first path argument given to it:</p>
+<h3>Steps to reproduce</h3>
+<p>Here's a shell session that shows the problem:</p>
+<pre><code>$ uname -mrsv
+Darwin 15.6.0 Darwin Kernel Version 15.6.0: Mon Aug 29 20:21:34 PDT 2016; root:xnu-3248.60.11~1/RELEASE_X86_64 x86_64
+$ rg --version
+0.1.17
+$ mkdir a b c
+$ touch {a,b,c}/{x,y,z}
+$ tree
+.
+├── a
+│   ├── x
+│   ├── y
+│   └── z
+├── b
+│   ├── x
+│   ├── y
+│   └── z
+└── c
+    ├── x
+    ├── y
+    └── z
+
+3 directories, 9 files
+$ rg --files
+./a/x
+./a/y
+./a/z
+./b/x
+./b/y
+./b/z
+./c/x
+./c/y
+./c/z
+$ rg --files a
+./a/x
+./a/y
+./a/z
+./b/x
+./b/y
+./b/z
+./c/x
+./c/y
+./c/z
+$ rg --files a b
+b/x
+b/y
+b/z
+$ rg --files a b c
+b/x
+b/y
+b/z
+c/x
+c/y
+c/z
+</code></pre>
+<p>Is this because the first argument is the (ignored) pattern? If so, I think the docs need updating, as the man page says:</p>
+<pre><code>   rg [options] --files [&lt;path&gt; ...]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/caipre">@caipre</a> on 2016-09-24 19:12</div>
+            <div class="timeline-body"><p>Also very confused by this. Does <code>rg</code> only search the current working directory?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 19:27</div>
+            <div class="timeline-body"><p>The title is likely accurate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-09-25 00:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/homeworkprod">@homeworkprod</a> on 2016-09-25 13:08</div>
+            <div class="timeline-body"><p>Thanks for reporting and fixing this, respectively!</p>
+<p>Just stumbled upon this, trying to use ripgrep with the CtrlP plugin for Vim.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/homeworkprod">@homeworkprod</a> on 2016-09-25 13:20</div>
+            <div class="timeline-body"><p>I can confirm that the patch works for me. Thanks again!</p>
+<p>In case somebody else is interested, this is now in my <code>~/.vimrc</code>:</p>
+<pre><code class="language-vim">if executable('rg')
+  let g:ctrlp_user_command = 'rg --files %s'
+  let g:ctrlp_use_caching = 0
+endif
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:39 UTC
+    </footer>
+</body>
+</html>

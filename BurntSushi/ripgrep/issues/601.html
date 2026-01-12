@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Does WalkParallel::run need to be blocking? - BurntSushi/ripgrep #601</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Does WalkParallel::run need to be blocking?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/601">#601</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2017-09-08 18:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a></div>
+            <div class="timeline-body"><p>Currently, there is the following loop at the end of the <code>WalkParallel::run</code> method:</p>
+<p>https://github.com/BurntSushi/ripgrep/blob/beb010d004a79eedb8baa6f4eab21532e83a0ef0/ignore/src/walk.rs#L944-L946</p>
+<p>When generating a <code>WalkParallel</code> over a directory with many entries in <a href="https://github.com/sharkdp/fd">fd</a> (see <a href="https://github.com/sharkdp/fd/pull/41">this PR</a>), this loop - and therefore, the <code>run</code>-method-call - takes several <em>seconds</em> to finish.</p>
+<p>I tried to simply remove them and it seems to work fine (for my use case :smile:). So without understanding the details, I'm just going to ask: are these calls necessary? Does <code>run</code> have to be blocking?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-09-08 21:05</div>
+            <div class="timeline-body"><p>Those thread join calls synchronize the completion of all worker threads. Without some synchronization step, there is no guarantee that the worker threads will terminate before the program terminates.</p>
+<p>This sounds like an XY problem to me honestly. What problem are you trying to solve?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2017-09-09 08:11</div>
+            <div class="timeline-body"><p>Thank you for the explanation!</p>
+<blockquote>
+<p>This sounds like an XY problem to me honestly.</p>
+</blockquote>
+<p>You were right, I figured out a way to solve this on my side.</p>
+<blockquote>
+<p>What problem are you trying to solve?</p>
+</blockquote>
+<p>I have a <code>sync::mpsc::channel</code> and each thread that is spawned by <code>WalkParallel::run</code> is sending results into the channel. I was calling <code>run</code> from the main thread and wanted to collect the results on the receiver-side of the channel in the main thread as well. Now, I'm spawning another thread for the receiver (before calling <code>WalkParallel::run</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2017-09-09 08:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:16 UTC
+    </footer>
+</body>
+</html>

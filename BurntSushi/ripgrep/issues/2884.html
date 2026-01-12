@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alternation match regression - BurntSushi/ripgrep #2884</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Alternation match regression</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2884">#2884</a>
+        opened by <a href="https://github.com/codido">@codido</a>
+        on 2024-09-09 01:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/codido">@codido</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>14.1.0</p>
+<h3>How did you install ripgrep?</h3>
+<p>Cargo</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Fedora 40</p>
+<h3>Describe your bug.</h3>
+<p>ripgrep fails to return some matches when case is ignored. This only happens with very particular matches and specific characters.</p>
+<p>A git bisect seems to suggest this is a regression introduced by
+ca740d9ace9065103036c101ca973b79e59ae85a.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>Run the following:</p>
+<pre><code>echo -n &quot;e-x&quot; | rg -i &quot;e.x|ex&quot;
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<pre><code>$ echo -n &quot;e-x&quot; | rg --debug -i &quot;e.x|ex&quot;
+rg: DEBUG|rg::flags::config|/home/ido/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.0/crates/core/flags/config.rs:41: /home/ido/.ripgreprc: arguments loaded from config file: []
+rg: DEBUG|rg::flags::parse|/home/ido/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.0/crates/core/flags/parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|/home/ido/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.0/crates/core/flags/hiargs.rs:1099: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=true, stdin_consumed=false, mode=Search(Standard))
+rg: DEBUG|rg::flags::hiargs|/home/ido/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.0/crates/core/flags/hiargs.rs:1112: heuristic chose to search stdin
+rg: DEBUG|rg::flags::hiargs|/home/ido/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.0/crates/core/flags/hiargs.rs:1260: found hostname for hyperlink configuration: sourcerer
+rg: DEBUG|rg::flags::hiargs|/home/ido/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.0/crates/core/flags/hiargs.rs:1270: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|/home/ido/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.0/crates/core/flags/hiargs.rs:174: using 1 thread(s)
+rg: DEBUG|grep_regex::literal|/home/ido/.cargo/registry/src/index.crates.io-6f17d22bba15001f/grep-regex-0.1.12/src/literal.rs:117: extracted fast line regex: &quot;(?:(?:EX)|(?:Ex)|(?:eX)|(?:ex))&quot;
+rg: DEBUG|globset|/home/ido/.cargo/registry/src/index.crates.io-6f17d22bba15001f/globset-0.4.14/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+$
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>ripgrep should have returned <code>e-x</code> instead of returning no matches.
+The same occurs when <code>e</code> is replaced with <code>k</code>, <code>s</code>, or <code>t</code>, but doesn't with any other alphabetic character, or if case isn't ignored.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2024-09-09 01:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-09 02:00</div>
+            <div class="timeline-body"><p>Excellent find. When you find weird behaviors like this where small perturbations to the regex make the bug go away, it almost always points toward literal extraction. In this case, the bug was in ripgrep's inner literal extractor (which isn't in the regex engine), and that only runs when the regex engine believes its own optimizations &quot;aren't great.&quot; And there are tons of layers here. In this case, multiple optimizations and heuristics have to come together to produce an incorrect result.</p>
+<p>This is also made clearer in ripgrep's trace logging, which shows the literals it extracted which are clearly incorrect:</p>
+<pre><code>$ echo &quot;e-x&quot; | rg-14.1.0 &quot;(?i:e.x|ex)&quot; --trace
+rg: DEBUG|rg::flags::config|crates/core/flags/config.rs:41: /home/andrew/.ripgreprc: arguments loaded from config file: [&quot;--max-columns-preview&quot;, &quot;--colors=match:bg:0xff,0x7f,0x00&quot;, &quot;--colors=match:fg:0xff,0xff,0xff&quot;, &quot;--colors=line:none&quot;, &quot;--colors=line:fg:magenta&quot;, &quot;--colors=path:fg:green&quot;, &quot;--type-add=got:*_test.go&quot;]
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1099: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=true, stdin_consumed=false, mode=Search(Standard))
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1112: heuristic chose to search stdin
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1260: found hostname for hyperlink configuration: duff
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1270: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 1 thread(s)
+rg: TRACE|grep_regex::matcher|crates/regex/src/matcher.rs:66: final regex: &quot;(?:[Ee](?:(?:[\0-\t\u{b}-\u{10ffff}][Xx])|[Xx]))&quot;
+rg: TRACE|grep_regex::literal|crates/regex/src/literal.rs:154: extracted inner literals: Seq[E(&quot;EX&quot;), E(&quot;Ex&quot;), E(&quot;EX&quot;), E(&quot;Ex&quot;), E(&quot;eX&quot;), E(&quot;ex&quot;), E(&quot;eX&quot;), E(&quot;ex&quot;)]
+rg: TRACE|grep_regex::literal|crates/regex/src/literal.rs:156: extracted inner literals after optimization: Seq[E(&quot;EX&quot;), E(&quot;Ex&quot;), E(&quot;eX&quot;), E(&quot;ex&quot;)]
+rg: DEBUG|grep_regex::literal|crates/regex/src/literal.rs:117: extracted fast line regex: &quot;(?:(?:EX)|(?:Ex)|(?:eX)|(?:ex))&quot;
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: TRACE|rg::search|crates/core/search.rs:254: &lt;stdin&gt;: binary detection: BinaryDetection(Convert(0))
+rg: TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:743: generic reader: searching via roll buffer strategy
+rg: TRACE|grep_searcher::searcher::core|crates/searcher/src/searcher/core.rs:65: searcher core: will use fast line searcher
+</code></pre>
+<p>Specifically, this bit:</p>
+<pre><code>extracted fast line regex: &quot;(?:(?:EX)|(?:Ex)|(?:eX)|(?:ex))&quot;
+</code></pre>
+<p>Clearly, this regex won't match the input, and thus ripgrep reports a false negative.</p>
+<p>I fixed this in #2885.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-09-09 02:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-09-09 02:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-09 02:32</div>
+            <div class="timeline-body"><p>This should be fixed in the <a href="https://github.com/BurntSushi/ripgrep/releases/tag/14.1.1">14.1.1 release</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codido">@codido</a> on 2024-09-09 04:18</div>
+            <div class="timeline-body"><p>Thank you @BurntSushi!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:50 UTC
+    </footer>
+</body>
+</html>

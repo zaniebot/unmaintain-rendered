@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adding --replace to a --multiline search can expand what content is matched - BurntSushi/ripgrep #2208</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Adding --replace to a --multiline search can expand what content is matched</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2208">#2208</a>
+        opened by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a>
+        on 2022-05-11 04:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AndydeCleyre">@AndydeCleyre</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p><code>apt</code>:</p>
+<pre><code>ripgrep:
+  Installed: 13.0.0-2
+  Candidate: 13.0.0-2
+  Version table:
+ *** 13.0.0-2 500
+        500 http://us.archive.ubuntu.com/ubuntu jammy/universe amd64 Packages
+        100 /var/lib/dpkg/status
+</code></pre>
+<h4>What operating system are you using ripgrep on?</h4>
+<p><code>Pop!_OS 22.04 LTS</code></p>
+<h4>Describe your bug.</h4>
+<p>I have a multiline (not dot-all) search with capture groups that works as expected without <code>--replace</code>, but with it, the last capture group seems to capture more content unexpectedly.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>Content to search, <code>patternfuncs.zsh</code>:</p>
+<pre><code class="language-bash"># Compile requirements.txt files from all found or specified requirements.in files (compile).
+# Use -h to include hashes, -u dep1,dep2... to upgrade specific dependencies, and -U to upgrade all.
+pipc () {  # [-h] [-U|-u &lt;pkgspec&gt;[,&lt;pkgspec&gt;...]] [&lt;reqs-in&gt;...] [-- &lt;pip-compile-arg&gt;...]
+    emulate -L zsh
+    unset REPLY
+    if [[ $1 == --help ]] { zpy $0; return }
+    [[ $ZPY_PROCS ]] || return
+
+    local gen_hashes upgrade upgrade_csv
+    while [[ $1 == -[hUu] ]] {
+        if [[ $1 == -h ]] { gen_hashes=--generate-hashes; shift   }
+        if [[ $1 == -U ]] { upgrade=1;                    shift   }
+        if [[ $1 == -u ]] { upgrade=1; upgrade_csv=$2;    shift 2 }
+    }
+}
+</code></pre>
+<pre><code class="language-console">$ rg --no-config --color never -NU -r '$usage' '^(?P&lt;predoc&gt;\n?(# .*\n)*)(alias (?P&lt;aname&gt;pipc)=&quot;[^&quot;]+&quot;|(?P&lt;fname&gt;pipc) \(\) \{)(  #(?P&lt;usage&gt; .+))?' patternfuncs.zsh
+</code></pre>
+<h4>What is the actual behavior?</h4>
+<pre><code class="language-console">$ rg --no-config --debug --color never -NU -r '$usage' '^(?P&lt;predoc&gt;\n?(# .*\n)*)(alias (?P&lt;aname&gt;pipc)=&quot;[^&quot;]+&quot;|(?P&lt;fname&gt;pipc) \(\) \{)(  #(?P&lt;usage&gt; .+))?' patternfuncs.zsh
+</code></pre>
+<pre><code class="language-shell">DEBUG|rg::args|crates/core/args.rs:527: not reading config files because --no-config is present
+DEBUG|globset|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/globset-0.4.8/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/globset-0.4.8/src/lib.rs:421: built glob set; 1 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+ [-h] [-U|-u &lt;pkgspec&gt;[,&lt;pkgspec&gt;...]] [&lt;reqs-in&gt;...] [-- &lt;pip-compile-arg&gt;...]
+    emulate -L zsh
+    unset REPLY
+    if [[ $1 == --help ]] { zpy $0; return }
+    [[ $ZPY_PROCS ]] || return
+
+    local gen_ha
+</code></pre>
+<p>The above output includes content which is not present when not using <code>-r</code>:</p>
+<pre><code class="language-console">$ rg --no-config --debug --color never -NU '^(?P&lt;predoc&gt;\n?(# .*\n)*)(alias (?P&lt;aname&gt;pipc)=&quot;[^&quot;]+&quot;|(?P&lt;fname&gt;pipc) \(\) \{)(  #(?P&lt;usage&gt; .+))?' patternfuncs.zsh
+</code></pre>
+<pre><code class="language-shell">DEBUG|rg::args|crates/core/args.rs:527: not reading config files because --no-config is present
+DEBUG|globset|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/globset-0.4.8/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/globset-0.4.8/src/lib.rs:421: built glob set; 1 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+# Compile requirements.txt files from all found or specified requirements.in files (compile).
+# Use -h to include hashes, -u dep1,dep2... to upgrade specific dependencies, and -U to upgrade all.
+pipc () {  # [-h] [-U|-u &lt;pkgspec&gt;[,&lt;pkgspec&gt;...]] [&lt;reqs-in&gt;...] [-- &lt;pip-compile-arg&gt;...]
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>I'd expect the command with <code>-r '$usage'</code> to output only the first line of its current output, that is:</p>
+<pre><code class="language-shell"> [-h] [-U|-u &lt;pkgspec&gt;[,&lt;pkgspec&gt;...]] [&lt;reqs-in&gt;...] [-- &lt;pip-compile-arg&gt;...]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-05-11 11:55</div>
+            <div class="timeline-body"><p>I believe this is a duplicate of #2095.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2022-05-11 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2022-05-11 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @BurntSushi on 2022-05-11 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2022-05-11 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AndydeCleyre">@AndydeCleyre</a> on 2022-05-11 13:14</div>
+            <div class="timeline-body"><p>I read that one but thought it was about repeated output of content that is usually matched, whereas this one is about matching previously unmatched content.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2022-05-11 13:19</div>
+            <div class="timeline-body"><p>Yes, that's reasonable, but they both have the same root cause.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:32 UTC
+    </footer>
+</body>
+</html>

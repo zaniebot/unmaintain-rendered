@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ripgrep isn't working on GitLab CI - BurntSushi/ripgrep #1630</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ripgrep isn't working on GitLab CI</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1630">#1630</a>
+        opened by <a href="https://github.com/ghost">@ghost</a>
+        on 2020-06-27 11:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ghost">@ghost</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 11.0.2
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<pre><code>apt-get install -y ripgrep strace
+</code></pre>
+<h4>What operating system are you using ripgrep on?</h4>
+<pre><code>Running with gitlab-runner 13.1.0 (6214287e)
+  on docker-auto-scale ed2dce3a
+Preparing the &quot;docker+machine&quot; executor
+Using Docker executor with image ubuntu:20.04 ...
+</code></pre>
+<h4>Describe your bug.</h4>
+<p>ripgrep doesn't show anything on GitLab CI and just quit.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>Use this <code>gitlab-ci.yml</code> and run the pipeline.</p>
+<pre><code>image: ubuntu:20.04
+before_script:
+  - apt-get update
+  - apt-get install -y ripgrep strace
+
+test:
+  script:
+    - mkdir -p /tmp/test
+    - cd /tmp/test
+    - echo test &gt; test
+    - echo temp &gt; temp
+    - ls -la
+    - grep te *
+    - rg --version
+    - rg te
+</code></pre>
+<h4>What is the actual behavior?</h4>
+<p>https://gitlab.com/danpintara/ripgrep-test/-/pipelines/160716263</p>
+<h4>What is the expected behavior?</h4>
+<p>It should works, at least show something like what <code>grep</code> does.</p>
+<pre><code>$ grep te *
+temp:temp
+test:test
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-06-27 11:50</div>
+            <div class="timeline-body"><p>My guess is that gitlab is improperly advertising stdin as available. Please use <code>rg te ./</code> instead. (When you provide no paths to ripgrep to search, it has to guess between reading stdin or searching the current directory. It does the former only when stdin is available. So ripgrep is likely trying to read from it, and gitlab is likely leaving it open but not writing anything to stdin. Which means ripgrep will block forever.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-06-27 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2020-06-27 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2020-06-27 12:45</div>
+            <div class="timeline-body"><p>Sorry for putting an invalid bug report, but thank you, @BurntSushi, for helping me with this problem, which I've struggled for nearly the whole day. I confirmed that your solution works here: https://gitlab.com/danpintara/ripgrep-test/-/jobs/614149788</p>
+<p>To clarify, it's not waiting forever but it just quit. From what I got from your comment, the situation is somewhat like this:</p>
+<pre><code class="language-bash">$ echo | rg te | cat
+
+$ echo $?
+1
+</code></pre>
+<p>If I put the path, ripgrep will use that instead of using the standard input:</p>
+<pre><code class="language-bash">$ echo | rg te . | cat
+./test:test
+./temp:temp
+
+$ echo $?
+1
+</code></pre>
+<p>I learned new things today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-06-27 12:49</div>
+            <div class="timeline-body"><p>Ah okay. It probably quit because stdin was closed.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:12 UTC
+    </footer>
+</body>
+</html>

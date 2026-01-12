@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;Ignore VCS&quot; + &quot;search hidden&quot; flags include the .git directory - BurntSushi/ripgrep #1509</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;Ignore VCS&quot; + &quot;search hidden&quot; flags include the .git directory</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1509">#1509</a>
+        opened by <a href="https://github.com/foundryspatial-duncan">@foundryspatial-duncan</a>
+        on 2020-03-06 19:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/foundryspatial-duncan">@foundryspatial-duncan</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 11.0.2 (rev 3de31f7527)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>from apt</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Ubuntu 18.04</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>This seems like it could be a bug. If it's the intended behavior, it's kind of non-intuitive.
+Searching with <code>--hidden</code> and <code>--ignore-vcs</code> includes the <code>.git/</code> folder in results.
+Similar to issue #807, which looks like it <em>was</em> a bug.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>In a git repo (ie, a folder with a <code>.git/</code> subfolder):</p>
+<ul>
+<li><p>If you run <code>rg --files</code>, it will list the files as expected: no hidden files, nothing from .gitignore, and no <code>.git/</code> directory since &quot;ignore VCS&quot; is enabled by default.</p>
+</li>
+<li><p>If you run <code>rg --files --ignore-vcs</code>, it's the same as above, again because &quot;ignore VCS&quot; is enabled by default.</p>
+</li>
+<li><p>if you add the &quot;hidden flag&quot; and run: <code>rg --files --hidden --ignore-vcs</code>, it will include the contents of the hidden <code>.git/</code> directory, even though it's one of the paths that should still be ignored by the &quot;ignore VCS&quot; option.</p>
+</li>
+</ul>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<p><code>--hidden</code> takes precedence over <code>--ignore-vcs</code> and the search includes <code>.git/</code></p>
+<p>Output from an example directory: <code>rg --hidden --files --ignore-vcs --debug</code></p>
+<pre><code>DEBUG|rg::config|src/config.rs:40: /home/duncan/.ripgreprc: arguments loaded from config file: []
+DEBUG|globset|globset/src/lib.rs:430: glob converted to regex: Glob { glob: &quot;**/*~&quot;, re: &quot;(?-u)^(?:/?|.*/)[^/]*\\~$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, ZeroOrMore, Literal('~')]) }
+DEBUG|globset|globset/src/lib.rs:430: glob converted to regex: Glob { glob: &quot;**/._*&quot;, re: &quot;(?-u)^(?:/?|.*/)\\._[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('.'), Literal('_'), ZeroOrMore]) }
+DEBUG|globset|globset/src/lib.rs:430: glob converted to regex: Glob { glob: &quot;**/.smbdelete*&quot;, re: &quot;(?-u)^(?:/?|.*/)\\.smbdelete[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('.'), Literal('s'), Literal('m'), Literal('b'), Literal('d'), Literal('e'), Literal('l'), Literal('e'), Literal('t'), Literal('e'), ZeroOrMore]) }
+DEBUG|globset|globset/src/lib.rs:430: glob converted to regex: Glob { glob: &quot;**/.v8flags.*&quot;, re: &quot;(?-u)^(?:/?|.*/)\\.v8flags\\.[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('.'), Literal('v'), Literal('8'), Literal('f'), Literal('l'), Literal('a'), Literal('g'), Literal('s'), Literal('.'), ZeroOrMore]) }
+DEBUG|globset|globset/src/lib.rs:435: built glob set; 0 literals, 5 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 4 regexes
+hello.txt
+foobar.js
+.git/config
+.git/HEAD
+.git/description
+.git/hooks/post-update.sample
+.git/hooks/update.sample
+.git/hooks/commit-msg.sample
+.git/hooks/pre-push.sample
+.git/hooks/pre-applypatch.sample
+.git/hooks/pre-commit.sample
+.git/hooks/applypatch-msg.sample
+.git/hooks/pre-receive.sample
+.git/hooks/fsmonitor-watchman.sample
+.git/hooks/prepare-commit-msg.sample
+.git/hooks/pre-rebase.sample
+.git/info/exclude
+</code></pre>
+<p>(I created a simple git repo with a couple files and commented everything out of my .ripgreprc file)</p>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p><code>.git/</code> and other VCS-related things should still not be searched unless <code>--no-ignore-vcs</code> is explicitly set.</p>
+<p>While the <code>.git/</code> dir isn't technically something from <code>.gitignore</code>, it's still ignored as part of the &quot;ignore VCS&quot; flag, so I'd expect it to still be ignored, regardless of the settings for hidden files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-03-06 20:02</div>
+            <div class="timeline-body"><p>This is expected behavior. The bug you linked was a particular matching bug. As you note, <code>.git</code> is not ignored by a .gitignore. it is ignored only because ripgrep skips hidden files and directories by default. Passing <code>--hidden</code> tells ripgrep to search those. The <code>--no-ignore-vcs</code> flag only applies to gitignore related rules. There is otherwise no baked in special paths that are ignored.</p>
+<p>If you want your command to still skip .git directories, then adding it to a <code>.ignore</code> file is the correct solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-03-06 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2020-03-06 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> removed by @BurntSushi on 2020-03-06 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2020-03-06 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/foundryspatial-duncan">@foundryspatial-duncan</a> on 2020-03-06 21:22</div>
+            <div class="timeline-body"><p>Ah! Thanks for clarifying. I had assumed there was some internal blacklist of VCS things to ignore if that option was set. It totally makes sense if it was only being ignored because it's a hidden folder.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:07 UTC
+    </footer>
+</body>
+</html>

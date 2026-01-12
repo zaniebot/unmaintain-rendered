@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rg panic caused by --replace, --multiline, a particular pattern, and search text containing repeats and newlines - BurntSushi/ripgrep #3180</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rg panic caused by --replace, --multiline, a particular pattern, and search text containing repeats and newlines</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3180">#3180</a>
+        opened by <a href="https://github.com/edhalter">@edhalter</a>
+        on 2025-10-12 17:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/edhalter">@edhalter</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[x] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>ripgrep 14.1.1</p>
+<p>features:+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2</p>
+<p>PCRE2 10.43 is available (JIT is available)</p>
+<h3>How did you install ripgrep?</h3>
+<p>Gentoo Portage</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Gentoo Linux</p>
+<h3>Describe your bug.</h3>
+<p>When using the --replace and --multiline flags w/ certain search patterns, ripgrep panics when it searches text containing certain sequences of repeated text and newlines. The panic message is &quot;slice index starts at x but ends at y&quot;, where x and y are integers and y &lt; x.</p>
+<p>Background: I have a program that runs ripgrep (and other regex software), parses its output, and counts and displays word sequences. Ripgrep has performed great; I've used many, many different search patterns on ~50 MiB of English text in ~5,000 files. Recently ran across this bug. The initial search pattern was much more complicated -- I spent some time simplifying it down to these 2 minimal test cases. (If it's useful, I can explain why the various groups in the pattern are there.)</p>
+<p>Each minimal search pattern is extremely specific. Removing almost any element will prevent the bug from appearing; for example, changing the initial group from <code>(^|[^a-z])</code> to <code>^</code>, or changing the &quot;\s&quot; in the middle to &quot; &quot;. Similar situation for the search text: for the lines2 test case, changing the initial &quot; &quot; to &quot;a&quot; prevents the bug from appearing.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>test case 1:</p>
+<pre><code>lines2=$(printf &quot; b b b b b b b b\nc&quot;)
+echo &quot;$lines2&quot; &gt; lines2.txt
+rg &quot;(^|[^a-z])((([a-z]+)?)\s)?b(\s([a-z]+)?)($|[^a-z])&quot; --replace=x --multiline lines2.txt
+</code></pre>
+<p>test case 2:</p>
+<pre><code>lines5=$(printf &quot; b\nb\nb\nb\nc&quot;)
+echo &quot;$lines5&quot; &gt; lines5.txt
+rg &quot;(^|[^a-z])((([a-z]+)?)\s)?b(\s([a-z]+)?)($|[^a-z])&quot; --replace=x --multiline lines5.txt
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<p>Note: The backtraces for the lines2 test case and the lines5 test case are identical, except for the slice indices mentioned in the panic messages at the top.</p>
+<p>cmd:</p>
+<p><code>RUST_BACKTRACE=1 rg &quot;(^|[^a-z])((([a-z]+)?)\s)?b(\s([a-z]+)?)($|[^a-z])&quot; --replace=x --multiline --debug lines2.txt</code></p>
+<p>output:</p>
+<pre><code>rg: DEBUG|rg::flags::parse|crates/core/flags/parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1083: number of paths given to search: 1
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1094: is_one_file? true
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1269: found hostname for hyperlink configuration: i7-5820k
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1279: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 1 thread(s)
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+thread 'main' panicked at /var/tmp/portage/sys-apps/ripgrep-14.1.1-r1/work/ripgrep-14.1.1/crates/printer/src/util.rs:568:22:
+slice index starts at 18 but ends at 17
+stack backtrace:
+   0: rust_begin_unwind
+             at /rustc/f6e511eec7342f59a25f7c0534f1dbea00d01b14/library/std/src/panicking.rs:662:5
+   1: core::panicking::panic_fmt
+             at /rustc/f6e511eec7342f59a25f7c0534f1dbea00d01b14/library/core/src/panicking.rs:74:14
+   2: core::slice::index::slice_index_order_fail_rt
+             at /rustc/f6e511eec7342f59a25f7c0534f1dbea00d01b14/library/core/src/slice/index.rs:85:5
+   3: core::slice::index::slice_index_order_fail
+             at /rustc/f6e511eec7342f59a25f7c0534f1dbea00d01b14/library/core/src/slice/index.rs:78:5
+   4: &lt;core::ops::range::Range&lt;usize&gt; as core::slice::index::SliceIndex&lt;[T]&gt;&gt;::index
+             at /rustc/f6e511eec7342f59a25f7c0534f1dbea00d01b14/library/core/src/slice/index.rs:464:13
+   5: core::slice::index::&lt;impl core::ops::index::Index&lt;I&gt; for [T]&gt;::index
+             at /rustc/f6e511eec7342f59a25f7c0534f1dbea00d01b14/library/core/src/slice/index.rs:16:9
+   6: grep_printer::util::replace_with_captures_in_context
+             at /var/tmp/portage/sys-apps/ripgrep-14.1.1-r1/work/ripgrep-14.1.1/crates/printer/src/util.rs:568:22
+   7: grep_printer::util::Replacer&lt;M&gt;::replace_all
+             at /var/tmp/portage/sys-apps/ripgrep-14.1.1-r1/work/ripgrep-14.1.1/crates/printer/src/util.rs:81:13
+   8: grep_printer::standard::StandardSink&lt;M,W&gt;::replace
+             at /var/tmp/portage/sys-apps/ripgrep-14.1.1-r1/work/ripgrep-14.1.1/crates/printer/src/standard.rs:769:13
+   9: &lt;grep_printer::standard::StandardSink&lt;M,W&gt; as grep_searcher::sink::Sink&gt;::matched
+             at /var/tmp/portage/sys-apps/ripgrep-14.1.1-r1/work/ripgrep-14.1.1/crates/printer/src/standard.rs:835:9
+  10: &lt;&amp;mut S as grep_searcher::sink::Sink&gt;::matched
+             at /var/tmp/portage/sys-apps/ripgrep-14.1.1-r1/work/ripgrep-14.1.1/crates/searcher/src/sink.rs:234:9
+  11: grep_searcher::searcher::core::Core&lt;M,S&gt;::sink_matched
+             at /var/tmp/portage/sys-apps/ripgrep-14.1.1-r1/work/ripgrep-14.1.1/crates/searcher/src/searcher/core.rs:468:25
+  12: grep_searcher::searcher::core::Core&lt;M,S&gt;::matched
+             at /var/tmp/portage/sys-apps/ripgrep-14.1.1-r1/work/ripgrep-14.1.1/crates/searcher/src/searcher/core.rs:94:9
+  13: grep_searcher::searcher::glue::MultiLine&lt;M,S&gt;::sink_matched
+             at /var/tmp/portage/sys-apps/ripgrep-14.1.1-r1/work/ripgrep-14.1.1/crates/searcher/src/searcher/glue.rs:299:19
+  14: grep_searcher::searcher::glue::MultiLine&lt;M,S&gt;::run
+             at /var/tmp/portage/sys-apps/ripgrep-14.1.1-r1/work/ripgrep-14.1.1/crates/searcher/src/searcher/glue.rs:172:38
+  15: grep_searcher::searcher::Searcher::search_slice
+             at /var/tmp/portage/sys-apps/ripgrep-14.1.1-r1/work/ripgrep-14.1.1/crates/searcher/src/searcher/mod.rs:770:13
+  16: grep_searcher::searcher::Searcher::search_file_maybe_path
+             at /var/tmp/portage/sys-apps/ripgrep-14.1.1-r1/work/ripgrep-14.1.1/crates/searcher/src/searcher/mod.rs:671:20
+  17: grep_searcher::searcher::Searcher::search_path
+             at /var/tmp/portage/sys-apps/ripgrep-14.1.1-r1/work/ripgrep-14.1.1/crates/searcher/src/searcher/mod.rs:636:9
+  18: rg::search::search_path
+             at /var/tmp/portage/sys-apps/ripgrep-14.1.1-r1/work/ripgrep-14.1.1/crates/core/search.rs:387:13
+  19: rg::search::SearchWorker&lt;W&gt;::search_path
+             at /var/tmp/portage/sys-apps/ripgrep-14.1.1-r1/work/ripgrep-14.1.1/crates/core/search.rs:345:33
+  20: rg::search::SearchWorker&lt;W&gt;::search
+             at /var/tmp/portage/sys-apps/ripgrep-14.1.1-r1/work/ripgrep-14.1.1/crates/core/search.rs:264:13
+  21: rg::search
+             at /var/tmp/portage/sys-apps/ripgrep-14.1.1-r1/work/ripgrep-14.1.1/crates/core/main.rs:126:35
+  22: rg::run
+             at /var/tmp/portage/sys-apps/ripgrep-14.1.1-r1/work/ripgrep-14.1.1/crates/core/main.rs:87:54
+  23: rg::main
+             at /var/tmp/portage/sys-apps/ripgrep-14.1.1-r1/work/ripgrep-14.1.1/crates/core/main.rs:44:11
+  24: core::ops::function::FnOnce::call_once
+             at /rustc/f6e511eec7342f59a25f7c0534f1dbea00d01b14/library/core/src/ops/function.rs:250:5
+</code></pre>
+<p>slightly-longer backtrace w/ <a href="https://gist.github.com/edhalter/bb05fea4784390663ffb88d6aed33bf1">RUST_BACKTRACE=full</a></p>
+<h3>What is the expected behavior?</h3>
+<p>ripgrep should have returned matching text</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2025-10-12 20:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-12 20:32</div>
+            <div class="timeline-body"><p>Nice find, thank you! This will be fixed in the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-10-12 21:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:59 UTC
+    </footer>
+</body>
+</html>

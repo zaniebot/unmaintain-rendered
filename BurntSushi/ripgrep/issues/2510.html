@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encoding issue when piping rg output - BurntSushi/ripgrep #2510</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Encoding issue when piping rg output</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2510">#2510</a>
+        opened by <a href="https://github.com/cesaryuan">@cesaryuan</a>
+        on 2023-05-09 14:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cesaryuan">@cesaryuan</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 13.0.0 (rev af6b6c543b)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>Scoop</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Windows 10 19045.2846
+PowerShell 7.3.4</p>
+<h4>Describe your bug.</h4>
+<p>There seems to be an encoding issue when piping the output of a ripgrep search. The chinese characters <code>测试</code> (and probably others, those are just the ones I've tested with) are converted to wrong characters(<code>娴嬭瘯</code>) when being piped to anything.</p>
+<p>Passing stdout to a file with &gt; is also with this problem.</p>
+<p>This is what I used to test.</p>
+<pre><code>PS D:\0-Download&gt; echo &quot;测试Chinese Test&quot; | rg -o &quot;测试&quot;
+测试
+PS D:\0-Download&gt; echo &quot;测试Chinese Test&quot; | rg -o &quot;测试&quot; | echo
+娴嬭瘯
+PS D:\0-Download&gt; echo &quot;测试Chinese Test&quot; | rg -o &quot;测试&quot; &gt; test.txt
+PS D:\0-Download&gt; cat .\test.txt
+娴嬭瘯
+</code></pre>
+<p><img src="https://github.com/BurntSushi/ripgrep/assets/35998162/eaa37a24-9800-4862-9f15-5189cab8900e" alt="image" /></p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<pre><code>PS D:\0-Download&gt; echo &quot;测试Chinese Test&quot; | rg -o &quot;测试&quot;
+PS D:\0-Download&gt; echo &quot;测试Chinese Test&quot; | rg -o &quot;测试&quot; | echo
+PS D:\0-Download&gt; echo &quot;测试Chinese Test&quot; | rg -o &quot;测试&quot; &gt; test.txt
+PS D:\0-Download&gt; cat .\test.txt
+</code></pre>
+<h4>What is the actual behavior?</h4>
+<pre><code>PS D:\0-Download&gt; echo &quot;测试Chinese Test&quot; | rg -o --debug &quot;测试&quot; | echo
+DEBUG|grep_regex::literal|crates\regex\src\literal.rs:58: literal prefixes detected: Literals { lits: [Complete(测试)], limit_size: 250, limit_class: 10 }
+DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:482: gzip: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:482: gzip: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:482: bzip2: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:482: bzip2: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:482: lz4: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:482: brotli: could not find executable in PATH
+DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:482: uncompress: could not find executable in PATH
+DEBUG|globset|crates\globset\src\lib.rs:421: built glob set; 0 literals, 0 basenames, 5 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+娴嬭瘯
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<pre><code>PS D:\0-Download&gt; echo &quot;测试Chinese Test&quot; | rg -o &quot;测试&quot; | echo
+测试
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cesaryuan">@cesaryuan</a> on 2023-05-09 14:25</div>
+            <div class="timeline-body"><p>https://github.com/BurntSushi/ripgrep/blob/041544853c86dde91c49983e5ddd0aa799bd2831/FAQ.md?plain=1#L810-L814</p>
+<p>Tried this. Now works!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @cesaryuan on 2023-05-09 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-05-09 14:33</div>
+            <div class="timeline-body"><p>Nice, glad you got it figured out and thank you for posting the solution!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Locked by @ghost on 2023-05-09 14:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:40 UTC
+    </footer>
+</body>
+</html>

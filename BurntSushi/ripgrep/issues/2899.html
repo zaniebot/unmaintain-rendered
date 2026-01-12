@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug: Inconsistent output for same input - BurntSushi/ripgrep #2899</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bug: Inconsistent output for same input</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2899">#2899</a>
+        opened by <a href="https://github.com/luochen1990">@luochen1990</a>
+        on 2024-09-19 07:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/luochen1990">@luochen1990</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>ripgrep 14.1.1</p>
+<p>features:+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2</p>
+<p>PCRE2 10.43 is available (JIT is available)</p>
+<h3>How did you install ripgrep?</h3>
+<p>From NixOS</p>
+<pre><code>environment.systemPackages = (with pkgs; [ ripgrep ])
+</code></pre>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>NixOS 24.11.20240914.6ca042d (Vicuna) x86_64</p>
+<h3>Describe your bug.</h3>
+<p>Run <code>nix registry list | rg nixpkgs</code> multiple times (for me 3~5 times is enough for reproduce), and you can get different output.</p>
+<p>Tried to run <code>sha256sum =(nix registry list)</code>  multiple times and the hash is consistent</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<ol>
+<li>Run <code>nix registry list | rg nixpkgs</code>  multiple times (10 might be enough)</li>
+</ol>
+<h3>What is the actual behavior?</h3>
+<pre><code>$ nix registry list | rg nixpkgs
+system flake:nixpkgs path:/nix/store/asmpdfb2aixsjl95a557c269ybzybjm3-source
+global flake:nixpkgs github:NixOS/nixpkgs/nixpkgs-unstable
+$ nix registry list | rg nixpkgs
+
+
+$ nix registry list | rg nixpkgs
+
+
+$ nix registry list | rg nixpkgs
+
+
+$ nix registry list | rg nixpkgs
+
+global flake:nixpkgs github:NixOS/nixpkgs/nixpkgs-unstable
+
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<pre><code>$ nix registry list | rg nixpkgs
+system flake:nixpkgs path:/nix/store/asmpdfb2aixsjl95a557c269ybzybjm3-source
+global flake:nixpkgs github:NixOS/nixpkgs/nixpkgs-unstable
+$ nix registry list | rg nixpkgs
+system flake:nixpkgs path:/nix/store/asmpdfb2aixsjl95a557c269ybzybjm3-source
+global flake:nixpkgs github:NixOS/nixpkgs/nixpkgs-unstable
+$ nix registry list | rg nixpkgs
+system flake:nixpkgs path:/nix/store/asmpdfb2aixsjl95a557c269ybzybjm3-source
+global flake:nixpkgs github:NixOS/nixpkgs/nixpkgs-unstable
+$ nix registry list | rg nixpkgs
+system flake:nixpkgs path:/nix/store/asmpdfb2aixsjl95a557c269ybzybjm3-source
+global flake:nixpkgs github:NixOS/nixpkgs/nixpkgs-unstable
+$ nix registry list | rg nixpkgs
+system flake:nixpkgs path:/nix/store/asmpdfb2aixsjl95a557c269ybzybjm3-source
+global flake:nixpkgs github:NixOS/nixpkgs/nixpkgs-unstable
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-19 13:46</div>
+            <div class="timeline-body"><p>I cannot reproduce:</p>
+<pre><code>$ cat /tmp/haystack
+system flake:nixpkgs path:/nix/store/asmpdfb2aixsjl95a557c269ybzybjm3-source
+global flake:nixpkgs github:NixOS/nixpkgs/nixpkgs-unstable
+$ cat /tmp/haystack | rg nixpkgs
+system flake:nixpkgs path:/nix/store/asmpdfb2aixsjl95a557c269ybzybjm3-source
+global flake:nixpkgs github:NixOS/nixpkgs/nixpkgs-unstable
+$ cat /tmp/haystack | rg nixpkgs
+system flake:nixpkgs path:/nix/store/asmpdfb2aixsjl95a557c269ybzybjm3-source
+global flake:nixpkgs github:NixOS/nixpkgs/nixpkgs-unstable
+$ cat /tmp/haystack | rg nixpkgs
+system flake:nixpkgs path:/nix/store/asmpdfb2aixsjl95a557c269ybzybjm3-source
+global flake:nixpkgs github:NixOS/nixpkgs/nixpkgs-unstable
+$ cat /tmp/haystack | rg nixpkgs
+system flake:nixpkgs path:/nix/store/asmpdfb2aixsjl95a557c269ybzybjm3-source
+global flake:nixpkgs github:NixOS/nixpkgs/nixpkgs-unstable
+$ cat /tmp/haystack | rg nixpkgs
+system flake:nixpkgs path:/nix/store/asmpdfb2aixsjl95a557c269ybzybjm3-source
+global flake:nixpkgs github:NixOS/nixpkgs/nixpkgs-unstable
+</code></pre>
+<p>Please provide a reproduction that doesn't require <code>nix</code>. As far as I can tell, your bug report doesn't exclude the possibility that <code>nix registry list</code>'s output is not itself consistent.</p>
+<p>Moreover, from looking at https://github.com/NixOS/nix/issues/4848, it looks like <code>nix registry list</code> is emitting color escape codes even though it isn't writing to a tty and isn't being instructed to force color (based on the data you've given me). I'd consider that a bug in <code>nix registry list</code>, and indeed, all manner of things can go wrong. So as far as I can tell, this isn't an issue in ripgrep and there really isn't anything ripgrep can do about it anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-09-19 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2024-09-19 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/luochen1990">@luochen1990</a> on 2024-09-19 22:51</div>
+            <div class="timeline-body"><p>Thanks for your reply, but I tested same code use <code>grep</code> and <code>ag</code>, they are all ok, only <code>rg</code> have this problem. It is probably a nix cli issue, but maybe we can figure out why and improve the compatibility of rg, that's why I report this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-19 23:10</div>
+            <div class="timeline-body"><p>It can just be an artifact of how color escape codes are generated. Bottom line is I need a reproduction. I'm not installing and setting up nix. Maybe you can provide a docker container or something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/luochen1990">@luochen1990</a> on 2024-09-19 23:17</div>
+            <div class="timeline-body"><p>I think a devcontainer like <a href="https://github.com/ocfox/den/blob/master/.devcontainer.json">this</a> will just work.</p>
+<p>Based on the results of discussion with my peers, it seems that the nix cli prints control chars to stderr for progress display which cause this issue</p>
+<pre><code>strace --trace=write -o strace-nix-registry-list.log nix registry list
+</code></pre>
+<p>Here is the <a href="https://fars.ee/LM23">output</a> of above command</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-20 01:25</div>
+            <div class="timeline-body"><p>Please provide a sequence of commands to reproduce the problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/luochen1990">@luochen1990</a> on 2024-09-20 01:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Please provide a sequence of commands to reproduce the problem.</p>
+</blockquote>
+<p>It might be:</p>
+<pre><code>nix registry list | rg nixpkgs
+nix registry list | rg nixpkgs
+nix registry list | rg nixpkgs
+nix registry list | rg nixpkgs
+nix registry list | rg nixpkgs
+nix registry list | rg nixpkgs
+nix registry list | rg nixpkgs
+nix registry list | rg nixpkgs
+nix registry list | rg nixpkgs
+nix registry list | rg nixpkgs
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-09-20 01:54</div>
+            <div class="timeline-body"><p>I don't have <code>nix</code> installed on my system.</p>
+<p>I'm done asking for a reproduction. This is the last comment I made until you provide a complete set of instructions for reproducing this problem workout installing nix on my system.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:50 UTC
+    </footer>
+</body>
+</html>

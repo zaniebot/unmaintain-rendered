@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ignore patterns with non-ASCII Unicode literals aren't allowed - BurntSushi/ripgrep #131</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ignore patterns with non-ASCII Unicode literals aren't allowed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/131">#131</a>
+        opened by <a href="https://github.com/elmart">@elmart</a>
+        on 2016-09-28 23:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/elmart">@elmart</a></div>
+            <div class="timeline-body"><p>When I do <code>rg &lt;pattern-with-diacritics&gt;</code>, I get:</p>
+<pre><code class="language-">Error parsing regex near 'TopÑAPA\.' at character offset 6769: Unicode features are not allowed when the Unicode (u) flag is not set
+</code></pre>
+<p>I also get that error when using this in combination with fzf, which is strange because there, rg output is only filenames, which has no non-ascii chars, as far as I know.</p>
+<p>I'm on OSX 10.11.6, and my locale is en_US.UTF-8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-28 23:15</div>
+            <div class="timeline-body"><p>Could you include the full command you are running?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elmart">@elmart</a> on 2016-09-28 23:28</div>
+            <div class="timeline-body"><p>I'm running just <code>rg café</code>.
+The literal 'TopÑAPA', mentioned in the error string, is indeed within some of my files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-28 23:33</div>
+            <div class="timeline-body"><p>I'm just having a hard time understanding, because that error message to me implies that <code>TopÑAPA</code> was in your pattern...</p>
+<p>Is there anyway you can provide a full reproduction? I.e., the full command and a file that you are searching that causes the problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-28 23:34</div>
+            <div class="timeline-body"><p>The error message also implies that the pattern is over 6,000 characters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elmart">@elmart</a> on 2016-09-28 23:39</div>
+            <div class="timeline-body"><p>Yes, I also had difficulties to try to understand the error message.
+I'll try to narrow this down and provide you something reproducible.
+But can't do it now. I'll come back soon.
+Thx.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-28 23:48</div>
+            <div class="timeline-body"><p>Thanks! To be clear, I can run <code>rg café</code> without any issues and see correct results.</p>
+<p>To provide more context, if I run <code>rg '(?-u)café'</code>, where that <code>(?-u)</code> disables Unicode support, then I get your error message:</p>
+<pre><code>Error parsing regex near ')café' at character offset 9: Unicode features are not allowed when the Unicode (u) flag is not set.
+</code></pre>
+<p>In this case, it's expected behavior, because when Unicode mode is disabled, you lose the ability to search for Unicode string literals. (I can go into more gruesome detail here if anyone is curious, but it's actually a design decision in the regex engine, not <code>ripgrep</code> itself.)</p>
+<p>Anyway, I kind of expect that there's some weirdness going on, so I shall look forward to more details. :-) Thank you for looking into it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2016-09-28 23:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samlh">@samlh</a> on 2016-09-29 23:27</div>
+            <div class="timeline-body"><p>It is something with .gitignore parsing - I can repro by running <code>c:\Users\samh\bin\rg.exe --files-with-matches &quot;(?-u).&quot; &quot;c:\foo&quot;</code> on a folder with only the following .gitignore file:</p>
+<pre><code>Offset(h) 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F
+
+00000000  EF BB BF 6E 6F 64 65 5F 6D 6F 64 75 6C 65 73 0D  ï»¿node_modules.
+00000010  0A 61 7A 75 72 65 5F 65 72 72 6F 72              .azure_error
+</code></pre>
+<p>yielding:</p>
+<pre><code>Error parsing regex near '\\])﻿node_' at character offset 28: Unicode features are not allowed when the Unicode (u) flag is not set.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-29 23:40</div>
+            <div class="timeline-body"><p>Ah, I got it now. The globber translates patterns to regexes and disables Unicode support. But this will fail if any literal is not an ASCII codepoint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2016-09-29 23:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @BurntSushi on 2016-09-29 23:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elmart">@elmart</a> on 2016-09-30 10:50</div>
+            <div class="timeline-body"><p>Yes! I can confirm that.
+'TopÑapa' literal is present in one of my .gitignore files.
+Removing that makes it all work again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/afk-mario">@afk-mario</a> on 2016-10-03 18:58</div>
+            <div class="timeline-body"><p>I get a similar error, I guess is my .gitignore file, but don't know how to search for '])# Cr'</p>
+<pre><code>rg --debug hola                                                                                                                  Unity/kleptocat develop
+DEBUG:grep::search: regex ast:
+Literal {
+    chars: [
+        'h',
+        'o',
+        'l',
+        'a'
+    ],
+    casei: false
+}
+DEBUG:grep::literals: literal prefixes detected: Literals { lits: [Complete(hola)], limit_size: 250, limit_class: 10 }
+Error parsing regex near '\\])\# Cr' at character offset 28: Unicode features are not allowed when the Unicode (u) flag is not set.
+No files were searched, which means ripgrep probably applied a filter you didn't expect. Try running again with --debug.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Unicode issues" to "ignore patterns with non-ASCII Unicode literals aren't allowed" by @BurntSushi on 2016-10-10 21:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-10 23:29</div>
+            <div class="timeline-body"><p>fixed in <code>e96e930</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-10-10 23:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:45 UTC
+    </footer>
+</body>
+</html>

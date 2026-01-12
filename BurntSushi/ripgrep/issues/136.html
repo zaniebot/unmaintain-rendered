@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>slowdown with many files on the command line, compared to no arguments - BurntSushi/ripgrep #136</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>slowdown with many files on the command line, compared to no arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/136">#136</a>
+        opened by <a href="https://github.com/oconnor663">@oconnor663</a>
+        on 2016-09-29 21:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a></div>
+            <div class="timeline-body"><p>Example using the https://github.com/keybase/client repo:</p>
+<pre><code>$ ls go/**/*.go | wc -l
+1352
+
+$ time rg blahblahblah go/       
+rg blahblahblah go/  0.03s user 0.01s system 210% cpu 0.017 total
+
+# &lt;&lt;&lt; this is the slow one &gt;&gt;&gt;
+$ time rg blahblahblah go/**/*.go
+rg blahblahblah go/**/*.go  0.14s user 0.01s system 104% cpu 0.137 total
+
+$ time grep blahblahblah -r go/  
+grep --color=auto blahblahblah -r go/  0.01s user 0.01s system 92% cpu 0.014 total
+
+$ time grep blahblahblah go/**/*.go
+grep --color=auto blahblahblah -r go/**/*.go  0.01s user 0.01s system 93% cpu 0.018 total
+</code></pre>
+<p>It looks like <code>rg</code> is slower when given a (long) list of files on the command line, than it is when it has to find those files itself. <code>grep</code> doesn't have this problem, so I don't think it's some confounder like my shell taking a long time to expand the glob.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-29 21:25</div>
+            <div class="timeline-body"><p>I think this is a dupe. On mobile.</p>
+<p>On Sep 29, 2016 5:10 PM, &quot;oconnor663&quot; notifications@github.com wrote:</p>
+<blockquote>
+<p>Example using the https://github.com/keybase/client repo:</p>
+<p>$ ls go/*<em>/</em>.go | wc -l
+1352</p>
+<p>$ time rg blahblahblah go/
+rg blahblahblah go/  0.03s user 0.01s system 210% cpu 0.017 total</p>
+<h1>&lt;&lt;&lt; this is the slow one &gt;&gt;&gt;</h1>
+<p>$ time rg blahblahblah go/<strong>/*.go
+rg blahblahblah go/</strong>/*.go  0.14s user 0.01s system 104% cpu 0.137 total</p>
+<p>$ time grep blahblahblah -r go/
+grep --color=auto blahblahblah -r go/  0.01s user 0.01s system 92% cpu 0.014 total</p>
+<p>$ time grep blahblahblah -r go/<strong>/*.go
+grep --color=auto blahblahblah -r go/</strong>/*.go  0.01s user 0.01s system 93% cpu 0.018 total</p>
+<p>It looks like rg is slower when given a (long) list of files on the
+command line, than it is when it has to find those files itself. grep
+doesn't have this problem, so I don't think it's some confounder like my
+shell taking a long time to expand the glob.</p>
+<p>—
+You are receiving this because you are subscribed to this thread.
+Reply to this email directly, view it on GitHub
+https://github.com/BurntSushi/ripgrep/issues/136, or mute the thread
+https://github.com/notifications/unsubscribe-auth/AAb34ju30o2BwZj2r7Gzif2cpz5Ge9ZZks5qvCksgaJpZM4KKe9M
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-29 22:49</div>
+            <div class="timeline-body"><p>Yeah, this is probably a dupe of #44. Your example is actually more embarrassing, because the positional arguments are <em>files</em>, not directories, which makes the reprocessing of parent ignore files even more strange.</p>
+<p>I have some grander plans in mind on refactoring the ignore code, so fixing this will probably get lumped in with that. For now, I think we can just track #44.</p>
+<p>Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-09-29 22:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2016-09-30 01:10</div>
+            <div class="timeline-body"><p>@BurntSushi I should've mentioned before, <code>--no-ignore</code> and <code>--no-ignore-parent</code> don't affect the slowdown here, unlike in #44. It might be a different cause?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-30 01:35</div>
+            <div class="timeline-body"><p>Oh. Neat. I didn't check that. I'll look into it.</p>
+<p>On Sep 29, 2016 21:10, &quot;oconnor663&quot; notifications@github.com wrote:</p>
+<blockquote>
+<p>@BurntSushi https://github.com/BurntSushi I should've mentioned before,
+--no-ignore and --no-ignore-parent <em>don't</em> affect the slowdown here,
+unlike in #44 https://github.com/BurntSushi/ripgrep/issues/44. It might
+be a different cause?</p>
+<p>—
+You are receiving this because you were mentioned.
+Reply to this email directly, view it on GitHub
+https://github.com/BurntSushi/ripgrep/issues/136#issuecomment-250634253,
+or mute the thread
+https://github.com/notifications/unsubscribe-auth/AAb34pM7Jix-s-RuaECmFq1CPmPQhFCsks5qvGFtgaJpZM4KKe9M
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @BurntSushi on 2016-09-30 10:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-30 10:44</div>
+            <div class="timeline-body"><p>You're right, something different is going on than what's in #44.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2016-09-30 14:53</div>
+            <div class="timeline-body"><p>cc @patrickxb who actually found this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2016-10-05 23:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-28 23:16</div>
+            <div class="timeline-body"><p>Sadly (and embarrassingly), the blame for this can be placed squarely on my implementation of <code>docopt</code>. Virtually all of the time is spent in matching the argv string against the docopt matcher. My guess is that I could re-implement this to go faster, but I don't have the energy for a rewrite of docopt.</p>
+<p>I think this means I should admit defeat switch to clap. :-) cc @kbknapp</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-10-29 15:25</div>
+            <div class="timeline-body"><p>@BurntSushi if &quot;admitting defeat&quot; means having spent all your time writing some of the best parsers and libraries known to Rust (perhaps any language), and helping ensure the Rust ecosystem/users maintains or even exceeds current levels of quality and professionalism....well then I <em>aspire</em> to one day &quot;admit defeat&quot; as well :wink:</p>
+<p>As for this issue, I'd like to do a build using clap just to compare the results. I'll post the results in the next day or so once I have time to make the build and do the tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-29 15:29</div>
+            <div class="timeline-body"><p>@kbknapp Haha aww shucks. FWIW, clap is unbelievably well maintained. I hadn't looked at it for a while, but when I checked it the other day I was completely blown away.</p>
+<p>To give you more context: you probably won't notice much of a difference in standard usage. The problem appears specifically when there's a long list of positional file arguments. Docopt struggles with this because it uses a weird backtracking algorithm to match <code>argv</code> against its matcher. When <code>argv</code> is large, there's a <em>significant</em> slow down. I doubt clap will even notice it at all.</p>
+<p>Converting <code>ripgrep</code> over to clap seems like a largeish undertaking, so please don't kill yourself over it! (In the sense that there's a lot of options, not in the sense that Docopt weirdness is spread throughout ripgrep.) I do kind of want to do it myself as a forcing function to get more familiar with clap, but I won't stop you. :-) I will note that this is kind of high on my priority list because it's really easy to provoke this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2016-10-29 15:55</div>
+            <div class="timeline-body"><p>Woah. Maybe there's some hack we could stick on the front of the whole thing (either docopt, or ripgrep) to handle the specific case of a ton of positional args, that wouldn't need a complete rewrite? I've never looked at docopt internals though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-29 16:04</div>
+            <div class="timeline-body"><p>I'm sure there's probably something. I'm just not feeling up to digging around in Docopt internals. Everything about it is too complex. (Which is my failing.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kbknapp">@kbknapp</a> on 2016-10-29 17:36</div>
+            <div class="timeline-body"><p>If you'd like to do the converting that's cool with me, I'll just standby for any questions/suggestions!</p>
+<p>Instead of doing a full re-write I just a simple test (called <code>lof</code> for lots-o-files) to see if it would in fact make a difference:</p>
+<pre><code>$ find ~/.config -print | wc -l
+4291
+
+$ time lof-docopt ~/.config/**/*
+0.52s user 0.11s system 99% cpu 0.629 total
+
+$ time lof-clap ~/.config/**/*
+0.05s user 0.02s system 97% cpu 0.075 total
+</code></pre>
+<p>I know it's not super scientific or perfect, but gives a rough estimate. Here's what I used:</p>
+<p>Docopt:</p>
+<pre><code class="language-rust">const USAGE: &amp;'static str = &quot;
+Lots of Files
+
+Usage:
+  lof &lt;files&gt;...
+
+&quot;;
+
+#[derive(RustcDecodable)]
+struct Args {
+    arg_files: Vec&lt;String&gt;,
+}
+
+fn main() {
+    let args: Args = Docopt::new(USAGE)
+        .and_then(|d| d.decode())
+        .unwrap_or_else(|e| e.exit());
+}
+</code></pre>
+<p>And clap:</p>
+<pre><code class="language-rust">fn main() {
+    let m = App::new(&quot;lof&quot;)
+        .arg(Arg::with_name(&quot;files&quot;)
+            .multiple(true))
+        .get_matches();
+}
+</code></pre>
+<p>I also did version where I looped through and printed out the values both as <code>Strings</code> and <code>OsStrings</code>, but the results were basically no different.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-13 01:46</div>
+            <div class="timeline-body"><p>OK, so I finally have ripgrep wired up to clap and I can confirm this issue in particular gets fixed. My test case with GNU grep:</p>
+<pre><code>[andrew@Cheetah linux] time sh ../cmd.grep
+./include/linux/ide.h:  REQ_TYPE_ATA_PM_RESUME, /* resume request */
+./include/linux/ide.h:   (rq)-&gt;cmd_type == REQ_TYPE_ATA_PM_RESUME)
+./include/linux/ide.h: * State information carried for REQ_TYPE_ATA_PM_SUSPEND and REQ_TYPE_ATA_PM_RESUME
+
+real    0m0.182s
+user    0m0.120s
+sys     0m0.043s
+</code></pre>
+<p>With current ripgrep master:</p>
+<pre><code>[andrew@Cheetah linux] time sh ../cmd.rg 
+include/linux/ide.h
+        REQ_TYPE_ATA_PM_RESUME, /* resume request */
+         (rq)-&gt;cmd_type == REQ_TYPE_ATA_PM_RESUME)
+ * State information carried for REQ_TYPE_ATA_PM_SUSPEND and REQ_TYPE_ATA_PM_RESUME
+
+real    0m1.025s
+user    0m0.783s
+sys     0m0.240s
+</code></pre>
+<p>and finally with ripgrep wired up to clap:</p>
+<pre><code>[andrew@Cheetah linux] time sh ../cmd.rg 
+include/linux/ide.h
+        REQ_TYPE_ATA_PM_RESUME, /* resume request */
+         (rq)-&gt;cmd_type == REQ_TYPE_ATA_PM_RESUME)
+ * State information carried for REQ_TYPE_ATA_PM_SUSPEND and REQ_TYPE_ATA_PM_RESUME
+
+real    0m0.106s
+user    0m0.067s
+sys     0m0.037s
+</code></pre>
+<p>Everything is run single-threaded on 3,458 files explicitly given on the command line. This test case was derived from the following <code>xargs</code> command in the <code>linux</code> repo (notice how gosh dang slow ripgrep <em>was</em>):</p>
+<pre><code>$ time find ./ -type f | xargs grep PM_RESUME | wc -l
+16
+
+real    0m1.170s
+user    0m0.833s
+sys     0m0.483s
+$ time find ./ -type f | xargs rg-master -j1 PM_RESUME | wc -l
+16
+
+real    0m17.562s
+user    0m13.960s
+sys     0m3.753s
+$ time find ./ -type f | xargs rg -j1 PM_RESUME | wc -l
+16
+
+real    0m1.136s
+user    0m0.630s
+sys     0m0.670s
+</code></pre>
+<p>Yay clap!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-11-18 01:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:46 UTC
+    </footer>
+</body>
+</html>

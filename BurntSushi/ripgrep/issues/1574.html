@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>specifying --ignore-file .gitignore works, but the normal gitignore logic does not - BurntSushi/ripgrep #1574</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>specifying --ignore-file .gitignore works, but the normal gitignore logic does not</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1574">#1574</a>
+        opened by <a href="https://github.com/Kagami">@Kagami</a>
+        on 2020-05-08 11:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Kagami">@Kagami</a></div>
+            <div class="timeline-body"><p>Sorry if it was already asked.</p>
+<p>Explanation of feature request with the code:</p>
+<pre><code class="language-bash"># Init structure
+$ git init t
+$ cd t
+$ echo a &gt; 1
+$ echo a &gt; 2
+$ mkdir sub
+$ echo a &gt; sub/1
+$ echo a &gt; sub/2
+$ echo sub/1 &gt; .gitignore
+
+# Search for a
+$ rg -l a
+1
+2
+sub/2
+
+# Want a only in sub
+$ rg -l a sub
+sub/1 # &lt; don't want this
+sub/2
+
+# Forcing ignore file
+$ rg -l --ignore-file .gitignore a sub
+sub/2 # &lt; ok
+
+# Works ok too
+$ cd sub
+$ rg -l a
+2
+
+# Don't know how to find gitignore (possible, but needs additional code)
+$ cd sub
+$ rg -l --ignore-file .gitignore a
+.gitignore: No such file or directory (os error 2)
+
+# Would be nice to have
+$ alias rgi='rg --force-ignore'
+$ rgi -l a sub
+sub/2 # &lt; ok
+$ cd sub
+$ rgi -l a
+2 # &lt; ok
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add option to respect ignore files with positional arguments" to "specifying --ignore-file .gitignore works, but the normal gitignore logic does not" by @BurntSushi on 2020-05-08 11:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2020-05-08 11:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">gitignore</span> added by @BurntSushi on 2020-05-08 11:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-05-08 11:46</div>
+            <div class="timeline-body"><p>I think there are two separate issues here. One is your request for ignore files to apply to explicitly given file paths. That won't ever happen, but it should still work when the explicitly given arguments are <em>directories</em>, which is the case here.</p>
+<p>I think the bug here is that <code>--ignore-file .gitignore</code> works where as the normal gitignore logic does not. That's quite strange to me and I don't know off-hand why they would be inconsistent with one another.</p>
+<p>This issue looks very similar to #278, #829 and #1050.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kagami">@Kagami</a> on 2020-05-08 11:56</div>
+            <div class="timeline-body"><p>Ah yes, it's the same as #829, thanks.</p>
+<p>I thought it's working as designed due to https://github.com/BurntSushi/ripgrep/issues/1531.</p>
+<p>Closing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Kagami on 2020-05-08 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rolfb">@rolfb</a> on 2020-05-20 11:15</div>
+            <div class="timeline-body"><p>How are you supposed to do <code>rg --files **/index.js</code> and always apply ignores (.gitignore) to the result?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-05-20 11:19</div>
+            <div class="timeline-body"><p>@rolfb You can't, by design.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rolfb">@rolfb</a> on 2020-05-20 11:21</div>
+            <div class="timeline-body"><p>@BurntSushi does that mean it's not possible to search for all index.js files recursively that respects the ignores?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-05-20 11:23</div>
+            <div class="timeline-body"><p>No it does not mean that. Why not open a new discussion question with the actual problem you're trying to solve instead of commenting on a closed issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rolfb">@rolfb</a> on 2020-05-20 11:50</div>
+            <div class="timeline-body"><p>@BurntSushi my apologies for this, created a discussion at #1589 and linking it here in case people land here the same way I did.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:10 UTC
+    </footer>
+</body>
+</html>

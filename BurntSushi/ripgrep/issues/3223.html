@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Numerous “No such file or directory (os error 2)” messages - BurntSushi/ripgrep #3223</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Numerous “No such file or directory (os error 2)” messages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3223">#3223</a>
+        opened by <a href="https://github.com/dbitouze">@dbitouze</a>
+        on 2025-11-19 20:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dbitouze">@dbitouze</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[x] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>15.1.0 (rev af60c2de9d)</p>
+<h3>How did you install ripgrep?</h3>
+<p><code>ripgrep</code> installed with <code>ripgrep-15.1.0-x86_64-unknown-linux-musl.tar.gz</code></p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Linux Mageia 9</p>
+<h3>Describe your bug.</h3>
+<p>In stdout, numerous “No such file or directory (os error 2)” messages appear mixed in with the relevant <code>rg</code> results.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>Run in the terminal such an innocuous command as:</p>
+<p><code>rg -F &quot;lst@definelanguage[maths]&quot; -g &quot;lstlang0.sty&quot; ~/</code></p>
+<h3>What is the actual behavior?</h3>
+<p>I get in stdout the relevant <code>rg</code> results but they are mixed with a lot of garbage of the form:</p>
+<p><code>rg: /home/⟨path to an (indeed) non-existent file⟩: No such file or directory (os error 2)</code></p>
+<p>On the other hand, if I collect the result in a file:</p>
+<p><code>rg -F &quot;lst@definelanguage[maths]&quot; -g &quot;lstlang0.sty&quot; ~/ &gt; ~/rg.txt</code></p>
+<p>this file contains only the relevant <code>rg</code> results.</p>
+<h3>What is the expected behavior?</h3>
+<p>I would expect only the the relevant <code>rg</code> results in stdout.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-11-19 21:21</div>
+            <div class="timeline-body"><p>Please provide an MRE. Without instructions to reproduce, this won't be actionable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dbitouze">@dbitouze</a> on 2025-11-20 08:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Please provide an MRE. Without instructions to reproduce, this won't be actionable.</p>
+</blockquote>
+<p>Sure, but I don't know how to built such a MRE.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-11-20 10:01</div>
+            <div class="timeline-body"><p>You'll probably need to debug this on your own then. My guess is that this isn't a problem with ripgrep specifically.</p>
+<p>In any case, there are a number of things you could try. For example, the command you've presented searches your entire home directory. Why not try searching something smaller to see if you can isolate the problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dbitouze">@dbitouze</a> on 2025-11-20 10:12</div>
+            <div class="timeline-body"><blockquote>
+<p>You'll probably need to debug this on your own then. My guess is that this isn't a problem with ripgrep specifically.</p>
+</blockquote>
+<p>Indeed, probably not a <code>ripgrep</code> issue per se (sorry for the noise in this case).</p>
+<blockquote>
+<p>In any case, there are a number of things you could try. For example, the command you've presented searches your entire home directory. Why not try searching something smaller to see if you can isolate the problem?</p>
+</blockquote>
+<p>If I restrict the search to a subdirectory of my home directory, the problem remains but only the (indeed) non-existent files of this subdirectory are mentioned.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jafd">@jafd</a> on 2025-11-20 10:22</div>
+            <div class="timeline-body"><p>Are you 100% sure the error messages indeed go to stdout and not to stderr? And you have no idea whatsoever where the nonexistent filenames are coming from?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dbitouze">@dbitouze</a> on 2025-11-20 10:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Are you 100% sure the error messages indeed go to stdout and not to stderr?</p>
+</blockquote>
+<p>Well, I guess you're right: the error messages go to stderr.</p>
+<blockquote>
+<p>And you have no idea whatsoever where the nonexistent filenames are coming from?</p>
+</blockquote>
+<p>No. If I'm right, these files were removed not at the same time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jafd">@jafd</a> on 2025-11-20 11:20</div>
+            <div class="timeline-body"><p>I then don't think it's a bug at all.</p>
+<p>When you read a directory and then act on its files, and some other process is racing you creating and deleting files at the same time, TOCTOU problems are pretty much unavoidable. It doesn't matter if you read the whole directory at once and then act on its files, or you act on each file as you are reading the directory; as long as there are two steps to it, races are possible and <em>will</em> happen.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dbitouze">@dbitouze</a> on 2025-11-20 11:26</div>
+            <div class="timeline-body"><p>OK, thank you very much for your insightful comments!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dbitouze on 2025-11-20 11:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:00 UTC
+    </footer>
+</body>
+</html>

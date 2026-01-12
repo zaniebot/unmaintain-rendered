@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fails grepping /proc/cpuinfo due to mmap - BurntSushi/ripgrep #55</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fails grepping /proc/cpuinfo due to mmap</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/55">#55</a>
+        opened by <a href="https://github.com/lespea">@lespea</a>
+        on 2016-09-24 06:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lespea">@lespea</a></div>
+            <div class="timeline-body"><p>Not sure if this is expected behavior or not.  Using 0.1.17.</p>
+<pre><code>rg -i mhz /proc/cpuinfo --debug
+DEBUG:rg::args: will try to use memory maps
+DEBUG:grep::search: regex ast:
+Literal {
+    chars: [
+        'm',
+        'h',
+        'z'
+    ],
+    casei: true
+}
+DEBUG:grep::literals: literal prefixes detected: Literals { lits: [Complete(MHZ), Complete(mHZ), Complete(MhZ), Complete(mhZ), Complete(MHz), Complete(mHz), Complete(Mhz), Complete(mhz)], limit_size: 250, limit_class: 10 }
+FAIL: 1
+</code></pre>
+<pre><code>rg -i mhz /proc/cpuinfo --no-mmap
+8:cpu MHz       : 1284.832
+35:cpu MHz      : 1216.351
+62:cpu MHz      : 1200.036
+89:cpu MHz      : 1199.835
+116:cpu MHz     : 1200.238
+143:cpu MHz     : 1199.835
+170:cpu MHz     : 1205.474
+197:cpu MHz     : 1228.033
+224:cpu MHz     : 1267.712
+251:cpu MHz     : 1199.835
+278:cpu MHz     : 1199.835
+305:cpu MHz     : 1209.301
+</code></pre>
+<pre><code>grep -i mhz /proc/cpuinfo
+cpu MHz     : 1199.835
+cpu MHz     : 1199.835
+cpu MHz     : 1199.835
+cpu MHz     : 1202.252
+cpu MHz     : 1199.633
+cpu MHz     : 1199.835
+cpu MHz     : 1219.573
+cpu MHz     : 1200.036
+cpu MHz     : 1199.633
+cpu MHz     : 1213.128
+cpu MHz     : 1199.835
+cpu MHz     : 1217.358
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 00:41</div>
+            <div class="timeline-body"><p>This is an interesting one. <code>/proc/cpuinfo</code> advertises itself as a regular empty file, but it appears that it cannot be memory mapped. <code>rg</code> will try to use memory maps for single file searches, but since <code>/proc/cpuinfo</code> is an empty file, it reports no matches.</p>
+<p>If you pass <code>--no-mmap</code> to <code>rg</code>, then searching works.</p>
+<p>(<code>ag</code> has the same failure mode.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 00:43</div>
+            <div class="timeline-body"><p>Duh. I know. If a file has size <code>0</code>, then just fall back to regular <code>read</code> calls.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-09-25 00:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:39 UTC
+    </footer>
+</body>
+</html>

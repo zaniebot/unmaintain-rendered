@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>set globs have incorrect behavior - BurntSushi/ripgrep #391</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>set globs have incorrect behavior</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/391">#391</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2017-03-03 13:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>Repro:</p>
+<pre><code>$ git clone git://github.com/bag-man/dotfiles
+$ cd dotfiles
+$ rg --no-ignore --hidden --follow --files --glob '!{.git,node_modules,plugged}/**' --glob '*.{js,json,php,md,styl,scss,sass,pug,html,config,py,cpp,c,go,hs}'
+</code></pre>
+<p>The output includes files in the <code>.git</code> directory. Interestingly, removing some of the extensions in the second <code>--glob</code> impacts the output in unexpected ways. Changing the first glob to not use a recursive glob also seems to make it work.</p>
+<p>If I look at the debug output, it looks like the generated regex for the second glob is:</p>
+<pre><code>(?-u)^(?:/?|.*/).*\\.hs|c|cpp|py|config|html|pug|sass|scss|styl|md|php|json|js$
+</code></pre>
+<p>Which is just plain wrong. The alternation should be in a group.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2017-03-03 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-03 13:39</div>
+            <div class="timeline-body"><p>Yup, the bug is here: https://github.com/BurntSushi/ripgrep/blob/cf750a190fcea9cabe16cd1bef4b21f62929a370/globset/src/glob.rs#L657-L665</p>
+<p>All it needs is a regression test and some parens pushed around the alternation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @BurntSushi on 2017-03-03 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-03-08 15:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:06 UTC
+    </footer>
+</body>
+</html>

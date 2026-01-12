@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect global .gitignore when excludesFile path uses surrounding double quotes - BurntSushi/ripgrep #2629</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Respect global .gitignore when excludesFile path uses surrounding double quotes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/2629">#2629</a>
+        opened by <a href="https://github.com/Kentokamoto">@Kentokamoto</a>
+        on 2023-10-14 06:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Kentokamoto">@Kentokamoto</a></div>
+            <div class="timeline-body"><p>Related Issue: #2392</p>
+<h1>Summary of problem:</h1>
+<p>In a .gitconfig file, a user may specify additional file patterns they may want to ignore when committing changes by using the <code>core.excludesFile</code> setting. RipGrep respects these file patterns as well.</p>
+<p>Git also handles file paths that are surrounded by double quotes like</p>
+<pre><code>[core]
+    excludesFile = &quot;~/foo/bar&quot;
+</code></pre>
+<p>RipGrep's logic does not handle for double quotes.</p>
+<h1>Changes</h1>
+<p>The regex used to parse the <code>excludesFile</code> section of the .gitconfig adds double quotes (\x22)  as a part of the parsing pattern.</p>
+<h1>Tests</h1>
+<p>Wrote <code>parse_excludes_file4</code>  for unit testing</p>
+<p>Manually tested from issue's example:</p>
+<pre><code>$ mkdir rg_global_gitignore
+$ cd rg_global_gitignore
+$ git init
+
+# adding the config this way will strip the quotation marks
+# git config --global core.excludesFile &quot;~/.gitignore&quot;
+
+# open ~/.gitconfig and add:
+#
+# [core]
+# 	excludesFile = &quot;~/.gitignore&quot;
+
+$ echo &quot;*.sql&quot; &gt; ~/.gitignore
+
+$ touch backup backup.sql backup123.sql db_backup.sql
+$ &lt;path&gt;/ripgrep/target/release/rg --files --debug
+DEBUG|grep_regex::config|crates/regex/src/config.rs:173: assembling HIR from 0 fixed string literals
+DEBUG|rg::args|crates/core/args.rs:555: running with 8 threads for parallelism
+DEBUG|rg::args|crates/core/args.rs:1148: hyperlink format: &quot;file://{host}{path}&quot;
+[126, 47, 46, 103, 105, 116, 105, 103, 110, 111, 114, 101]
+DEBUG|globset|crates/globset/src/lib.rs:445: built glob set; 0 literals, 0 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:445: built glob set; 0 literals, 0 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1804: ignoring ./db_backup.sql: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/kento/.gitignore&quot;), original: &quot;*.sql&quot;, actual: &quot;**/*.sql&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1804: ignoring ./backup123.sql: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/kento/.gitignore&quot;), original: &quot;*.sql&quot;, actual: &quot;**/*.sql&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1804: ignoring ./.gitignore: Ignore(IgnoreMatch(Hidden))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1804: ignoring ./.git: Ignore(IgnoreMatch(Hidden))
+DEBUG|ignore::walk|crates/ignore/src/walk.rs:1804: ignoring ./backup.sql: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/kento/.gitignore&quot;), original: &quot;*.sql&quot;, actual: &quot;**/*.sql&quot;, is_whitelist: false, is_only_dir: false })))
+backup
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> requested changes on 2023-10-14 11:38</div>
+            <div class="timeline-body"><p>Thanks! But the regex here looks too permissive. It accepts any sequence of whitespace and quotes. It probably should be <code>\s*&quot;?\s*</code> or something.</p>
+<p>And please use a literal quote instead of its hex escape. You'll want to use <code>r#&quot;...&quot;#</code> for the string syntax.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kentokamoto">@Kentokamoto</a> on 2023-10-14 13:14</div>
+            <div class="timeline-body"><p>@BurntSushi , Thanks for the feedback. I've gone ahead and made the changes you suggested. I added an extra test to check if more than one pair of double quotes surrounding the path is valid or not. I can remove it if it's overkill but let me know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @Kentokamoto on 2023-10-14 13:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2023-10-15 12:34</div>
+            <div class="timeline-body"><p>This does allow a quote on one side but not the other, but we're never going to get this exactly right with using a regex to parse this file anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-10-15 12:36</div>
+            <div class="timeline-body"><p>Also, in the future, PRs like this should just be one commit. So changes should be fixed up into one commit and then force pushed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-10-15 12:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2023-10-15 12:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/ignore/src/gitignore.rs</code>:784 on 2023-10-15 12:41</div>
+            <div class="timeline-body"><p>And also, code should follow the style of the surrounding code. In this case, there should be a blank
+line separating test functions.</p>
+<p>(You don't need to do this now. I've done it for you and this PR will get rolled up into another bigger one.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-21 04:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:11 UTC
+    </footer>
+</body>
+</html>

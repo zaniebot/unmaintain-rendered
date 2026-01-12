@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUG: exit code on windows not stable (wrong on first run, then stable), seems to leak - BurntSushi/ripgrep #2815</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>BUG: exit code on windows not stable (wrong on first run, then stable), seems to leak</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2815">#2815</a>
+        opened by <a href="https://github.com/h-vetinari">@h-vetinari</a>
+        on 2024-05-23 14:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/h-vetinari">@h-vetinari</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<pre><code>&gt;rg --version
+ripgrep 14.1.0
+
+features:-simd-accel,+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2
+
+PCRE2 10.42 is available (JIT is available)
+</code></pre>
+<h3>How did you install ripgrep?</h3>
+<p>Through <a href="https://github.com/conda-forge/ripgrep-feedstock">conda-forge</a>:</p>
+<pre><code>conda install -c conda-forge ripgrep
+</code></pre>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Windows</p>
+<h3>Describe your bug.</h3>
+<p>I'm looking for a pattern where I'm expecting no matches, and want to use the exit code 1 (well-documented here acros several issues) as the indicator whether no matches were found.</p>
+<p>However, I'm hitting something very strange - the exit code is inverted for the first call, and then fine for the second (and all later ones).</p>
+<pre><code># file does not contain carriage returns (\r)
+&gt;type foo.ext | rg \r &amp; echo %ERRORLEVEL%  # ❌ 
+0
+&gt;type foo.ext | rg \r &amp; echo %ERRORLEVEL%  # ✅ 
+1
+&gt;type foo.ext | rg \r &amp; echo %ERRORLEVEL%  # ✅ # and so on
+1
+</code></pre>
+<p>Here I'm looking for a carriage return, but the same thing happens when file or the search pattern, in the sense that the previous exit code &quot;leaks&quot; into the first execution of the new query, and then stabilizes again.</p>
+<pre><code># assuming file contains &quot;found&quot; &amp; &quot;also_found&quot;, but does not contain &quot;not_found&quot;
+&gt;type foo.ext | rg found &amp; echo %ERRORLEVEL%      # ✅
+0
+&gt;type foo.ext | rg found &amp; echo %ERRORLEVEL%      # ✅ (etc.)
+0
+&gt;type foo.ext | rg not_found &amp; echo %ERRORLEVEL%  # ❌ LEAKS
+0
+&gt;type foo.ext | rg not_found &amp; echo %ERRORLEVEL%  # ✅ (etc.)
+1
+&gt;type foo.ext | rg found &amp; echo %ERRORLEVEL%      # ❌ LEAKS
+1
+&gt;type foo.ext | rg found &amp; echo %ERRORLEVEL%      # ✅ (etc.)
+0
+&gt;type foo.ext | rg also_found &amp; echo %ERRORLEVEL% # ✅ (unchanged exit code; appearance of no leak)
+0
+&gt;type foo.ext | rg not_found &amp; echo %ERRORLEVEL%  # ❌ LEAKS again
+0
+&gt;type foo.ext | rg not_found &amp; echo %ERRORLEVEL%  # ✅ (etc.)
+1
+</code></pre>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>See above</p>
+<h3>What is the actual behavior?</h3>
+<pre><code>&gt;type foo.ext | rg --debug found &amp; echo %ERRORLEVEL%
+rg: DEBUG|rg::flags::parse|crates/core\flags\parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:1099: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=true, stdin_consumed=false, mode=Search(Standard))
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:1112: heuristic chose to search stdin
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:1260: found hostname for hyperlink configuration: [xxx]
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:1270: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:174: using 1 thread(s)
+rg: DEBUG|grep_regex::config|crates\regex\src\config.rs:175: assembling HIR from 1 fixed string literals
+rg: DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:502: brotli: could not find executable in PATH
+rg: DEBUG|globset|crates\globset\src\lib.rs:453: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+[...matching lines omitted...]
+0
+
+&gt;type foo.ext | rg --debug not_found &amp; echo %ERRORLEVEL%
+rg: DEBUG|rg::flags::parse|crates/core\flags\parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:1099: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=true, stdin_consumed=false, mode=Search(Standard))
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:1112: heuristic chose to search stdin
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:1260: found hostname for hyperlink configuration: [xxx]
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:1270: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:174: using 1 thread(s)
+rg: DEBUG|grep_regex::config|crates\regex\src\config.rs:175: assembling HIR from 1 fixed string literals
+rg: DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:502: brotli: could not find executable in PATH
+rg: DEBUG|globset|crates\globset\src\lib.rs:453: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+0
+
+&gt;type foo.ext | rg --debug not_found &amp; echo %ERRORLEVEL%
+rg: DEBUG|rg::flags::parse|crates/core\flags\parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:1099: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=true, stdin_consumed=false, mode=Search(Standard))
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:1112: heuristic chose to search stdin
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:1260: found hostname for hyperlink configuration: [xxx]
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:1270: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:174: using 1 thread(s)
+rg: DEBUG|grep_regex::config|crates\regex\src\config.rs:175: assembling HIR from 1 fixed string literals
+rg: DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:502: brotli: could not find executable in PATH
+rg: DEBUG|globset|crates\globset\src\lib.rs:453: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+1
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>Exit code should be correct already for first invocation; no leaks of exit codes between different invocations should occur.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-23 15:08</div>
+            <div class="timeline-body"><p>Can you give a full reproduction? Like maybe it starts with <code>git clone ...</code> so that we search the same input. Your output here is confusing to follow because I'd expect some of the output to include matching lines. But you might have clipped it out. But that's relevant for other examples where an exit status of <code>0</code> is returned with no matching lines. So I'm overall just confused.</p>
+<p>I'm also not that familiar with PowerShell (I assume that's what you're using), so this might be something you or someone else will need to debug. But the first step here is getting a complete reproduction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/h-vetinari">@h-vetinari</a> on 2024-05-23 15:09</div>
+            <div class="timeline-body"><p>Yes, I clipped the matching lines, because they're not relevant to the example and I didn't want to blow up the text much further.s</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/h-vetinari">@h-vetinari</a> on 2024-05-23 15:10</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm also not that familiar with PowerShell (I assume that's what you're using), so this might be something you or someone else will need to debug. But the first step here is getting a complete reproduction.</p>
+</blockquote>
+<p>This is regular cmd.exe</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2024-05-23 15:10</div>
+            <div class="timeline-body"><p>This seems to be relevant: https://superuser.com/a/1618520/373907</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-23 15:11</div>
+            <div class="timeline-body"><blockquote>
+<p>Yes, I clipped the matching lines, because they're not relevant to the example and I didn't want to blow up the text much further.s</p>
+</blockquote>
+<p>Yes but it's confusing to me, <em>especially without a reproduction</em>, because I can't easily tell what's actually being emitted as output and what isn't. The best way is to not edit the output. And if the output is too big, then come up with a smaller input that gives a more reasonably sized output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-23 15:12</div>
+            <div class="timeline-body"><blockquote>
+<p>This seems to be relevant: https://superuser.com/a/1618520/373907</p>
+</blockquote>
+<p>Indeed. That looks like the issue here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/h-vetinari">@h-vetinari</a> on 2024-05-23 15:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you give a full reproduction?</p>
+</blockquote>
+<p>With the following file:</p>
+<pre><code>found
+also_found
+</code></pre>
+<p>as <code>foo.ext</code>, the results are</p>
+<pre><code>&gt;type foo.ext | rg found &amp; echo %ERRORLEVEL%
+found
+also_found
+0
+
+&gt;type foo.ext | rg not_found &amp; echo %ERRORLEVEL%
+0
+
+&gt;type foo.ext | rg not_found &amp; echo %ERRORLEVEL%
+1
+
+&gt;type foo.ext | rg found &amp; echo %ERRORLEVEL%
+found
+also_found
+1
+
+&gt;type foo.ext | rg also_found &amp; echo %ERRORLEVEL%
+also_found
+0
+
+&gt;type foo.ext | rg not_found &amp; echo %ERRORLEVEL%
+0
+
+&gt;type foo.ext | rg not_found &amp; echo %ERRORLEVEL%
+1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/h-vetinari">@h-vetinari</a> on 2024-05-23 15:15</div>
+            <div class="timeline-body"><blockquote>
+<p>This seems to be relevant: https://superuser.com/a/1618520/373907</p>
+</blockquote>
+<p>Thanks for the link. I had a hunch about something like this (windows is a mess...). In this case, this is then not ripgreps fault, and I apologise for the noise...</p>
+<p>And thanks a lot for the super-quick responses!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2024-05-23 15:20</div>
+            <div class="timeline-body"><p>Yeah I have to agree, it's a mess 😅</p>
+<p>Here's a workaround: https://ss64.com/nt/delayedexpansion.html</p>
+<p>There's an explanation in <a href="https://devblogs.microsoft.com/oldnewthing/20060823-00/?p=29993">Raymon Chen's article</a>:</p>
+<blockquote>
+<p>Why is immediate expansion the default? Because prior to Windows NT, that was the only type of expansion supported by the command interpreter. Retaining immediate expansion as the default preserved backwards compatibility with existing batch files. (The original command interpreter was written in assembly language. You really didn’t want to be too clever or it would make your brain hurt trying to maintain the code. An interpreter loop of the form “Read a line, expand environment variables, evaluate” was therefore simple and effective.)</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-05-23 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2024-05-23 15:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:49 UTC
+    </footer>
+</body>
+</html>

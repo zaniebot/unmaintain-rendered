@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rg: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.33' not found (required by rg) - BurntSushi/ripgrep #1890</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rg: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.33' not found (required by rg)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1890">#1890</a>
+        opened by <a href="https://github.com/dflock">@dflock</a>
+        on 2021-06-12 16:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dflock">@dflock</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>rg 13.0.0</p>
+<p>The output of <code>rg --version</code> is actually <code>rg: /lib/x86_64-linux-gnu/libc.so.6: version </code>GLIBC_2.33' not found (required by rg)`</p>
+<h4>How did you install ripgrep?</h4>
+<p>Downloaded the .deb from the GitHub releases page and installed it:</p>
+<pre><code class="language-console">$ sudo apt install ./ripgrep_13.0.0_amd64.deb
+
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+Note, selecting 'ripgrep' instead of './ripgrep_13.0.0_amd64.deb'
+
+The following packages will be upgraded:
+  ripgrep
+1 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+Need to get 0 B/1,394 kB of archives.
+After this operation, 381 kB disk space will be freed.
+Get:1 /home/duncan/Downloads/ripgrep_13.0.0_amd64.deb ripgrep amd64 13.0.0 [1,394 kB]
+(Reading database ... 816353 files and directories currently installed.)
+Preparing to unpack .../ripgrep_13.0.0_amd64.deb ...
+Unpacking ripgrep (13.0.0) over (12.1.0) ...
+Setting up ripgrep (13.0.0) ...
+Processing triggers for man-db (2.9.1-1) ...
+</code></pre>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Ubuntu 20.04.2 LTS (Focal Fossa)</p>
+<h4>Describe your bug.</h4>
+<p>Whenever you run <code>rg</code>, it fails with this message, repeated twice:</p>
+<pre><code>rg: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.33' not found (required by rg)
+</code></pre>
+<p>So:</p>
+<pre><code class="language-console">$ rg --version
+rg: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.33' not found (required by rg)
+rg: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.32' not found (required by rg)
+$ echo $?
+1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dflock">@dflock</a> on 2021-06-12 16:29</div>
+            <div class="timeline-body"><p>So the musl build works. I did:</p>
+<ul>
+<li>sudo apt remove ripgrep</li>
+<li>download https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz</li>
+<li>extracted <code>rg</code> and put on PATH</li>
+</ul>
+<p>then it works:</p>
+<pre><code class="language-console">$ rg --version
+ripgrep 13.0.0 (rev af6b6c543b)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<p>So, the musl build works but the .deb doesn't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pvonmoradi">@pvonmoradi</a> on 2021-06-12 17:01</div>
+            <div class="timeline-body"><p>Same error here on Xubuntu 18.04. (Used the <code>.deb</code> file)
+Before:</p>
+<pre><code>rg --version
+ripgrep 12.1.1 (rev 7cb211378a)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<p>after:</p>
+<pre><code>rg --version
+rg: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.33' not found (required by rg)
+rg: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.32' not found (required by rg)
+</code></pre>
+<p>I guess the reason is that automatic builder is using a very new (and non-LTS) <code>ubuntu</code> image.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-06-12 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-06-12 17:39</div>
+            <div class="timeline-body"><p>This should be fixed. The Debian artifact for the 13.0.0 has been updated.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:23 UTC
+    </footer>
+</body>
+</html>

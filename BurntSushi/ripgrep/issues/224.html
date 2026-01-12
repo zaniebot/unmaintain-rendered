@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>.ignore / .rgignore files are not being respected - BurntSushi/ripgrep #224</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>.ignore / .rgignore files are not being respected</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/224">#224</a>
+        opened by <a href="https://github.com/ye">@ye</a>
+        on 2016-11-07 19:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ye">@ye</a></div>
+            <div class="timeline-body"><p>Not sure if this is a misunderstanding on my part, but I can't seem to get <code>rg</code> to respect <code>.ignore</code> or <code>.rgignore</code> files.</p>
+<p>In this example, I can't get <code>rg</code> to search the keyword string in the <code>.hidden-file</code> with ignore files. But <code>--hidden</code> flag does seem to work correctly as expected. Did I miss something with ignore files?</p>
+<pre><code class="language-bash">$ cat .hidden-file
+docker pull python:3.4-wheezy
+$ echo \!.hidden-file &gt; .ignore
+$ cat .ignore
+!.hidden-file
+$ rg python:3.4-wheezy
+$
+$ rg --debug python:3.4-wheezy
+DEBUG:grep::search: regex ast:
+Concat(
+    [
+        Literal {
+            chars: [
+                'p',
+                'y',
+                't',
+                'h',
+                'o',
+                'n',
+                ':',
+                '3'
+            ],
+            casei: false
+        },
+        AnyCharNoNL,
+        Literal {
+            chars: [
+                '4',
+                '-',
+                'w',
+                'h',
+                'e',
+                'e',
+                'z',
+                'y'
+            ],
+            casei: false
+        }
+    ]
+)
+...
+DEBUG:rg::ignore: ./.hidden-file ignored because it is hidden
+...
+$ mv .ignore .rgignore
+$
+$ rg python:3.4-wheezy
+$ 
+$ rg --hidden python:3.4-wheezy
+.hidden-file
+1:docker pull python:3.4-wheezy
+</code></pre>
+<p>This is opened as per request by @BurntSushi in #90</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-07 20:29</div>
+            <div class="timeline-body"><p>What version of ripgrep are you using?</p>
+<p>On Nov 7, 2016 2:03 PM, &quot;Ye Wang&quot; notifications@github.com wrote:</p>
+<blockquote>
+<p>Not sure if this is a misunderstanding on my part, but I can't seem to get
+rg to respect .ignore or .rgignore files.</p>
+<p>In this example, I can't get rg to search the keyword string in the
+.hidden-file with ignore files. But --hidden flag does seem to work
+correctly as expected. Did I miss something with ignore files?</p>
+<p>$ echo !.hidden-file &gt; .ignore
+$ cat .ignore!.hidden-file
+$ rg python:3.4-wheezy
+$
+$ rg --debug python:3.4-wheezy
+DEBUG:grep::search: regex ast:
+Concat(
+[
+Literal {
+chars: [
+'p',
+'y',
+'t',
+'h',
+'o',
+'n',
+':',
+'3'
+],
+casei: false
+},
+AnyCharNoNL,
+Literal {
+chars: [
+'4',
+'-',
+'w',
+'h',
+'e',
+'e',
+'z',
+'y'
+],
+casei: false
+}
+]
+)
+...
+DEBUG:rg::ignore: ./.hidden-file ignored because it is hidden
+...
+$ mv .ignore .rgignore
+$
+$ rg python:3.4-wheezy
+$
+$ rg --hidden python:3.4-wheezy
+.hidden-file
+1:docker pull python:3.4-wheezy</p>
+<p>This is opened as per request by @BurntSushi
+https://github.com/BurntSushi in #90
+https://github.com/BurntSushi/ripgrep/issues/90</p>
+<p>—
+You are receiving this because you were mentioned.
+Reply to this email directly, view it on GitHub
+https://github.com/BurntSushi/ripgrep/issues/224, or mute the thread
+https://github.com/notifications/unsubscribe-auth/AAb34m9OJiPLFEDiBD7bjZp9i4A6i2EXks5q73XlgaJpZM4KrlkD
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ye">@ye</a> on 2016-11-07 21:37</div>
+            <div class="timeline-body"><p>@BurntSushi right on! I was having <code>0.1.15</code> and after <code>brew upgrade ripgrep</code> to <code>0.2.8</code>, it worked like a charm!</p>
+<p>Sorry about it, I had a feeling this is human error from the start ...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ye on 2016-11-07 21:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-07 21:48</div>
+            <div class="timeline-body"><p>No problem! I love bugs that fix themselves. :-)</p>
+<p>On Nov 7, 2016 4:37 PM, &quot;Ye Wang&quot; notifications@github.com wrote:</p>
+<blockquote>
+<p>@BurntSushi https://github.com/BurntSushi right on! I was having 0.1.15
+and after brew upgrade ripgrep to 0.2.8, it worked like a charm!</p>
+<p>Sorry about it, I had a feeling this is human error from the start ...</p>
+<p>—
+You are receiving this because you were mentioned.
+Reply to this email directly, view it on GitHub
+https://github.com/BurntSushi/ripgrep/issues/224#issuecomment-258970749,
+or mute the thread
+https://github.com/notifications/unsubscribe-auth/AAb34nADnhNt1Y_3P4R6BiIF2eTpi_Dnks5q75opgaJpZM4KrlkD
+.</p>
+</blockquote>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:53 UTC
+    </footer>
+</body>
+</html>

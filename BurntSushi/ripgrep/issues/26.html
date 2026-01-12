@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add -l / --files-with-matches option? - BurntSushi/ripgrep #26</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>add -l / --files-with-matches option?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/26">#26</a>
+        opened by <a href="https://github.com/Roguelazer">@Roguelazer</a>
+        on 2016-09-23 18:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Roguelazer">@Roguelazer</a></div>
+            <div class="timeline-body"><p>I use the <code>-l</code> option to grep / ack / ag / etc quite a lot to list files containing matches for further processing in a shell pipeline. Does it seem reasonable as a thing to add to ripgrep?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 01:14</div>
+            <div class="timeline-body"><p>Does <code>-c</code>/<code>--count</code> satisfy your use case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andyleejordan">@andyleejordan</a> on 2016-09-24 01:52</div>
+            <div class="timeline-body"><p>@BurntSushi at least my use case is generally <code>ag -l something | xargs ...</code>, so <code>-c</code> doesn't work without an intermediate <code>awk</code> or something to strip the count.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 01:55</div>
+            <div class="timeline-body"><p>That's reasonable. <code>grep</code> also has these options, so it seems fine for <code>rg</code> to grow them as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2016-09-24 01:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andyleejordan">@andyleejordan</a> on 2016-09-24 01:56</div>
+            <div class="timeline-body"><p>I was looking at adding it to <code>ucg</code> yesterday... now I'm looking at doing it here (I do like Rust more!) (but no promises; recovering from a cold and might give up to play some video games).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 02:02</div>
+            <div class="timeline-body"><p>@andschwa No worries! I might actually bang this out tonight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andyleejordan">@andyleejordan</a> on 2016-09-24 02:43</div>
+            <div class="timeline-body"><p>@BurntSushi Hey I just got it working! Let me get some tests and docs written and cleaned up, and I'll open a PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 02:46</div>
+            <div class="timeline-body"><p>@andschwa Oh you're quick, awesome, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andyleejordan">@andyleejordan</a> on 2016-09-24 02:52</div>
+            <div class="timeline-body"><p>@BurntSushi Working, but not finished. Right now it operates almost exactly the same as <code>count</code> but calls <code>printer.path</code> instead of <code>printer.path_count</code>, but doing this <em>right</em> I think includes terminating the search after the first match.</p>
+<p>It also should be just as easy to add <code>-L/--files-without-match</code> that just sets <code>files_with_matches</code> and <code>invert_match</code>.</p>
+<p>I also think I could share a bit more logic with <code>count</code>... I might open a review to ask for some refactor help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andyleejordan">@andyleejordan</a> on 2016-09-24 02:53</div>
+            <div class="timeline-body"><p>Tada:</p>
+<pre><code class="language-sh">$ ./target/debug/rg -l files_with_matches
+src/search_buffer.rs
+src/search_stream.rs
+src/args.rs
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 03:01</div>
+            <div class="timeline-body"><p>Nice!</p>
+<blockquote>
+<p>but doing this right I think includes terminating the search after the first match.</p>
+</blockquote>
+<p>Absolutely, yes. This will probably need to go in both of the searchers, which means making them aware of this parameter as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 03:02</div>
+            <div class="timeline-body"><p>I'd be happy to do a review. The printer is due for a bit of refactoring, so don't feel too bad about it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andyleejordan">@andyleejordan</a> on 2016-09-24 03:08</div>
+            <div class="timeline-body"><p>Aye yai yai... figured out with <code>-L</code> wasn't working (but my quick addition of <code>--files-without-match</code> was); it's already used for <code>--follow</code>, but grep uses <code>-L</code> for this. What do you do in this case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-24 03:11</div>
+            <div class="timeline-body"><p>Bah. How about we prefer compatibility with <code>grep</code> (although I got <code>-L</code> from <code>find</code>)... Hmm...</p>
+<p>Maybe we can just drop the short hand for <code>--files-without-match</code> altogether?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-09-25 18:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:37 UTC
+    </footer>
+</body>
+</html>

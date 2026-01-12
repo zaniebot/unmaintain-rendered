@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ripgrep breaks while read loop. maybe stdin detection issue? - BurntSushi/ripgrep #1219</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ripgrep breaks while read loop. maybe stdin detection issue?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1219">#1219</a>
+        opened by <a href="https://github.com/davidszotten">@davidszotten</a>
+        on 2019-03-11 11:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/davidszotten">@davidszotten</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>testing</p>
+<pre><code>$ rg --version
+ripgrep 0.10.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<p>and</p>
+<pre><code>$ ./target/release/rg --version
+ripgrep 0.10.0 (rev 0913972104)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>homebrew / git + compiled manually</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>osx 10.14.2</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>I'm getting surprising behaviours calling <code>ripgrep</code> inside a <code>while read</code> loop</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>[empty dir]</p>
+<p>0.10.0 from homebrew (full -v above)</p>
+<pre><code>$ echo -e &quot;foo\nbar&quot; | while read flag; do echo &quot;flag: $flag&quot; &amp;&amp; echo &quot;rg: $(rg -l $flag)&quot; ; done
+
+flag: foo
+&lt;stdin&gt;: output kind PathWithMatch requires a file path
+rg:
+flag: bar
+&lt;stdin&gt;: output kind PathWithMatch requires a file path
+rg:
+</code></pre>
+<p>master manually compiled (full -v above)</p>
+<pre><code>echo -e &quot;foo\nbar&quot; | while read flag; do echo &quot;flag: $flag&quot; &amp;&amp; echo &quot;rg: $(../target/release/rg -l $flag)&quot; ; done
+flag: foo
+rg:
+</code></pre>
+<p>(n.b. aborts the while loop; <code>flag: bar</code> is missing)</p>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<p>repeat of the above with <code>--debug</code> (makes it hard to see the regular output)</p>
+<p>0.10.0 from homebrew (full -v above)</p>
+<pre><code>$ echo -e &quot;foo\nbar&quot; | while read flag; do echo &quot;flag: $flag&quot; &amp;&amp; echo &quot;rg: $(rg --debug -l $flag)&quot; ; done
+flag: foo
+DEBUG|grep_regex::literal|grep-regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(foo)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|globset/src/lib.rs:424: glob converted to regex: Glob { glob: &quot;**/.*.sw*&quot;, re: &quot;(?-u)^(?:/?|.*/)\\..*\\.sw.*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('.'), ZeroOrMore, Literal('.'), Literal('s'), Literal('w'), ZeroOrMore]) }
+DEBUG|globset|globset/src/lib.rs:424: glob converted to regex: Glob { glob: &quot;**/.sw*&quot;, re: &quot;(?-u)^(?:/?|.*/)\\.sw.*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('.'), Literal('s'), Literal('w'), ZeroOrMore]) }
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 5 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 2 regexes
+&lt;stdin&gt;: output kind PathWithMatch requires a file path
+rg:
+flag: bar
+DEBUG|grep_regex::literal|grep-regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(bar)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|globset/src/lib.rs:424: glob converted to regex: Glob { glob: &quot;**/.*.sw*&quot;, re: &quot;(?-u)^(?:/?|.*/)\\..*\\.sw.*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('.'), ZeroOrMore, Literal('.'), Literal('s'), Literal('w'), ZeroOrMore]) }
+DEBUG|globset|globset/src/lib.rs:424: glob converted to regex: Glob { glob: &quot;**/.sw*&quot;, re: &quot;(?-u)^(?:/?|.*/)\\.sw.*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('.'), Literal('s'), Literal('w'), ZeroOrMore]) }
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 5 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 2 regexes
+&lt;stdin&gt;: output kind PathWithMatch requires a file path
+rg:
+</code></pre>
+<p>master manually compiled (full -v above)</p>
+<pre><code>$ echo -e &quot;foo\nbar&quot; | while read flag; do echo &quot;flag: $flag&quot; &amp;&amp; echo &quot;rg: $(../target/release/rg --debug -l $flag)&quot; ; done
+flag: foo
+DEBUG|grep_regex::literal|grep-regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(foo)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|globset/src/lib.rs:434: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|globset/src/lib.rs:429: glob converted to regex: Glob { glob: &quot;**/.*.sw*&quot;, re: &quot;(?-u)^(?:/?|.*/)\\.[^/]*\\.sw[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('.'), ZeroOrMore, Literal('.'), Literal('s'), Literal('w'), ZeroOrMore]) }
+DEBUG|globset|globset/src/lib.rs:429: glob converted to regex: Glob { glob: &quot;**/.sw*&quot;, re: &quot;(?-u)^(?:/?|.*/)\\.sw[^/]*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: true, backslash_escape: true }, tokens: Tokens([RecursivePrefix, Literal('.'), Literal('s'), Literal('w'), ZeroOrMore]) }
+DEBUG|globset|globset/src/lib.rs:434: built glob set; 0 literals, 5 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 2 regexes
+rg:
+</code></pre>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>on master, i would expect the while loop to continue, (on 0.10.0 am surprised by the <code>&lt;stdin&gt;: output kind PathWithMatch requires a file path</code> output)</p>
+<p>What do you think ripgrep should have done?</p>
+<p>is there maybe still some issue with stdin detection?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-03-11 12:17</div>
+            <div class="timeline-body"><p>For <code>0.10.0</code>, you're hitting #1106, which is fixed on master.</p>
+<p>As for behavior on master... I'm not sure what's going on actually. At first I thought it might be because you were executing a search with no results, and therefore would get a <code>1</code> exit code which might cause the loop to stop? But <code>grep</code> has the same behavior and it still works:</p>
+<pre><code>$ echo -e &quot;foo\nbar&quot; | while read flag; do echo &quot;flag: $flag&quot; &amp;&amp; echo &quot;rg: $(rg -l $flag)&quot; ; done
+flag: foo
+rg:
+
+$ echo -e &quot;foo\nbar&quot; | while read flag; do echo &quot;flag: $flag&quot; &amp;&amp; echo &quot;rg: $(grep -r -l $flag)&quot; ; done
+flag: foo
+rg:
+flag: bar
+rg:
+
+$ for flag in foo bar; do echo &quot;flag: $flag&quot; &amp;&amp; echo &quot;rg: $(rg -l $flag)&quot;; done
+flag: foo
+rg:
+flag: bar
+rg:
+
+$ for flag in foo bar; do echo &quot;flag: $flag&quot; &amp;&amp; echo &quot;rg: $(grep -r -l $flag)&quot;; done
+flag: foo
+rg:
+flag: bar
+rg:
+</code></pre>
+<p>I couldn't imagine how stdin detection would be impacted here, but it looks like you're right. We can test it by supplying a file path to search directly, which overrides stdin detection.</p>
+<pre><code>$ echo -e &quot;foo\nbar&quot; | while read flag; do echo &quot;flag: $flag&quot; &amp;&amp; echo &quot;rg: $(rg -l $flag ./)&quot; ; done
+flag: foo
+rg:
+flag: bar
+rg:
+</code></pre>
+<p>Any shell wizards want to explain this? :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2019-03-11 15:40</div>
+            <div class="timeline-body"><p>where is the code for the stdin detection? i tried</p>
+<pre><code>use grep_cli::is_readable_stdin;
+
+fn main() {
+    println!(&quot;{:?}&quot;, is_readable_stdin());
+}
+</code></pre>
+<p>but unless i'm making some mistake, this doesn't reproduce the bug:</p>
+<pre><code>echo -e &quot;foo\nbar&quot; | while read flag; do echo &quot;flag: $flag&quot; &amp;&amp; echo &quot;rg: $(./target/release/rg-bug $flag)&quot; ; done
+flag: foo
+rg: true
+flag: bar
+rg: true
+</code></pre>
+<p>(maybe narrowing that down to a minimal example would give us some insights)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-03-11 15:46</div>
+            <div class="timeline-body"><p>That <em>does</em> appear to reproduce the bug though? That's saying that stdin <em>is</em> readable, which will in turn cause ripgrep to try to read stdin. Normally that manifests as ripgrep blocking on stdin, but my guess is that something is then immediately closing stdin which causes ripgrep to terminate without finding anything.</p>
+<p>The specific place where ripgrep does stdin detection is here:</p>
+<p>https://github.com/BurntSushi/ripgrep/blob/09139721047b1cda6ad88dbf89dc5fa74c66a3a2/src/args.rs#L1188-L1204</p>
+<p>In this case, all four parts of that conditional are return false, which means ripgrep will try to search stdin. Interesting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaelAquilina">@MichaelAquilina</a> on 2019-03-11 16:09</div>
+            <div class="timeline-body"><p>For what it's worth, I tested this on zsh and it's also present there - so it's not limited to just bash</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2019-03-11 16:37</div>
+            <div class="timeline-body"><p>ok so i wonder if what's happening is this: <code>while read</code> is just reading from stdin, the same stdin that commands in the body use:</p>
+<pre><code class="language-rust">use std::io::{self, Read};
+fn main() -&gt; io::Result&lt;()&gt; {
+    let mut buffer = String::new();
+    io::stdin().read_to_string(&amp;mut buffer)?;
+    println!(&quot;read: '{}'&quot;, buffer);
+    Ok(())
+}
+</code></pre>
+<pre><code class="language-bash">echo -e &quot;foo\nbar&quot; | while read flag; do echo &quot;flag: $flag&quot; &amp;&amp; echo &quot;rg: $(./target/debug/rg-bug $flag)&quot; ; done
+flag: foo
+rg: read: 'bar
+'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2019-03-11 16:38</div>
+            <div class="timeline-body"><p><code>rg</code> detecting standard input inside a <code>while | read</code> loop is expected. This is the same sort of problem people run into when they try to call <code>ssh</code> in a loop (for which it has the <code>-n</code> option).</p>
+<p>As for why the loop stops, it's because <code>rg</code> has consumed the rest of standard input (and found nothing, because the first <code>read</code> already consumed the flag it's searching for), so the second call to <code>read</code> returns <code>1</code>. Maybe having the second line contain the first better illustrates that:</p>
+<pre><code>% echo -e &quot;foo\nbar&quot; | while read flag; do echo &quot;flag: $flag&quot; &amp;&amp; echo &quot;rg: $(\rg -l $flag)&quot; ; done
+flag: foo
+rg: 
+% echo -e &quot;foo\nfoobar&quot; | while read flag; do echo &quot;flag: $flag&quot; &amp;&amp; echo &quot;rg: $(\rg -l $flag)&quot; ; done
+flag: foo
+rg: &lt;stdin&gt;
+</code></pre>
+<p>If you're using GNU <code>grep</code> for your <code>grep</code> comparison, i think it works because giving it <code>-r</code> just makes it ignore standard input.</p>
+<p>A general work-around is to have your loop input go to a different file descriptor:</p>
+<pre><code>% echo bar &gt; tmpfile
+% while read -u9 flag; do echo &quot;flag: $flag&quot; &amp;&amp; echo &quot;rg: $(\rg -l $flag)&quot; ; done 9&lt; &lt;( echo  -e 'foo\nbar' )
+flag: foo
+rg: 
+flag: bar
+rg: tmpfile
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2019-03-11 17:08</div>
+            <div class="timeline-body"><p>thanks @okdana ! (though in this case a nicer workaround might be to specify the path to override stdin detection)</p>
+<p>or i might just go back to <code>for</code> loops. (i originally switched to <code>while read</code> because it was a bit less to write, but i think your (albeit very cool!) workaround negates that</p>
+<p>thanks again for your helpful explanation</p>
+<p>will close as it seems ripgrep is working correctly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @davidszotten on 2019-03-11 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/knutwannheden">@knutwannheden</a> on 2020-08-25 07:31</div>
+            <div class="timeline-body"><p>Also just stumbled across this. Would it make sense for <code>rg</code> to offer something like <code>ssh</code>'s <code>-n</code> option?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-08-25 11:50</div>
+            <div class="timeline-body"><p>Why add a new flag when specifying the directory to search fixes the problem? Use <code>rg foo ./</code> instead of <code>rg foo</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/knutwannheden">@knutwannheden</a> on 2020-08-25 11:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Why add a new flag when specifying the directory to search fixes the problem? Use <code>rg foo ./</code> instead of <code>rg foo</code>.</p>
+</blockquote>
+<p>Yes, it is what I ended up doing. I was thinking an option or some text in the <code>rg --help</code> output might have helped me find the source of the problem more quickly, but maybe that is just wishful thinking :-)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:51 UTC
+    </footer>
+</body>
+</html>

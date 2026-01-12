@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rg hangs when called in a child process from node.js - BurntSushi/ripgrep #2056</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rg hangs when called in a child process from node.js</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2056">#2056</a>
+        opened by <a href="https://github.com/chuanqisun">@chuanqisun</a>
+        on 2021-11-11 02:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chuanqisun">@chuanqisun</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>13.0.0
+(for reference, 12.1.1 does not have this issue)</p>
+<h4>How did you install ripgrep?</h4>
+<p>Downloaded the binary from GitHub release. Installed via <code>dpkg -i</code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>WSL2 <code>5.10.60.1-microsoft-standard-WSL2 #1 SMP Wed Aug 25 23:20:18 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux</code>
+POP!_OS <code>5.13.0-7620-generic #20~1634827117~21.04~874b071-Ubuntu SMP Fri Oct 29 15:06:55 UTC x86_64 x86_64 x86_64 GNU/Linux</code></p>
+<h4>Describe your bug.</h4>
+<p>Node.js <a href="https://nodejs.org/api/child_process.html#child_processexeccommand-options-callback">child_process.exec</a> api allow you to spawn a shell and execute a command. In 12.1.1, rg works as expected. In 13.0.0, the exec never finishes, i.e. the callback is never invoked.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>(the repro uses execSync instead of exec, in order to collect error log. exec has no observable output)</p>
+<ol>
+<li>Ensure you have node v16 (v14) on the system</li>
+<li>Create the following file <code>index.js</code><pre><code class="language-javascript">const { execSync } = require(&quot;child_process&quot;);
+execSync(&quot;rg const --trace&quot;);
+</code></pre>
+</li>
+<li>In the same directory, run <code>node index.js</code></li>
+<li>Observe console output</li>
+</ol>
+<pre><code>DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(const)], limit_size: 250, limit_class: 10 }
+TRACE|grep_regex::matcher|crates/regex/src/matcher.rs:54: final regex: &quot;const&quot;
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+TRACE|rg::search|crates/core/search.rs:334: &lt;stdin&gt;: binary detection: BinaryDetection(Convert(0))
+TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:734: generic reader: searching via roll buffer strategy
+TRACE|grep_searcher::searcher::core|crates/searcher/src/searcher/core.rs:56: searcher core: will use fast line searcher
+node:child_process:903
+    throw err;
+    ^
+
+Error: Command failed: rg const --trace
+DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(const)], limit_size: 250, limit_class: 10 }
+TRACE|grep_regex::matcher|crates/regex/src/matcher.rs:54: final regex: &quot;const&quot;
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+TRACE|rg::search|crates/core/search.rs:334: &lt;stdin&gt;: binary detection: BinaryDetection(Convert(0))
+TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:734: generic reader: searching via roll buffer strategy
+TRACE|grep_searcher::searcher::core|crates/searcher/src/searcher/core.rs:56: searcher core: will use fast line searcher
+
+    at checkExecSyncError (node:child_process:826:11)
+    at execSync (node:child_process:900:15)
+    at Object.&lt;anonymous&gt; (/home/chusun/repos/rg-repro/index.js:3:1)
+    at Module._compile (node:internal/modules/cjs/loader:1101:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1153:10)
+    at Module.load (node:internal/modules/cjs/loader:981:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:81:12)
+    at node:internal/main/run_main_module:17:47 {
+  status: 1,
+  signal: null,
+  output: [
+    null,
+    Buffer(0) [Uint8Array] [],
+    Buffer(734) [Uint8Array] [
+       68,  69,  66,  85,  71, 124, 103, 114, 101, 112,  95, 114,
+      101, 103, 101, 120,  58,  58, 108, 105, 116, 101, 114,  97,
+      108, 124,  99, 114,  97, 116, 101, 115,  47, 114, 101, 103,
+      101, 120,  47, 115, 114,  99,  47, 108, 105, 116, 101, 114,
+       97, 108,  46, 114, 115,  58,  53,  56,  58,  32, 108, 105,
+      116, 101, 114,  97, 108,  32, 112, 114, 101, 102, 105, 120,
+      101, 115,  32, 100, 101, 116, 101,  99, 116, 101, 100,  58,
+       32,  76, 105, 116, 101, 114,  97, 108, 115,  32, 123,  32,
+      108, 105, 116, 115,
+      ... 634 more items
+    ]
+  ],
+  pid: 7293,
+  stdout: Buffer(0) [Uint8Array] [],
+  stderr: Buffer(734) [Uint8Array] [
+     68,  69,  66,  85,  71, 124, 103, 114, 101, 112,  95, 114,
+    101, 103, 101, 120,  58,  58, 108, 105, 116, 101, 114,  97,
+    108, 124,  99, 114,  97, 116, 101, 115,  47, 114, 101, 103,
+    101, 120,  47, 115, 114,  99,  47, 108, 105, 116, 101, 114,
+     97, 108,  46, 114, 115,  58,  53,  56,  58,  32, 108, 105,
+    116, 101, 114,  97, 108,  32, 112, 114, 101, 102, 105, 120,
+    101, 115,  32, 100, 101, 116, 101,  99, 116, 101, 100,  58,
+     32,  76, 105, 116, 101, 114,  97, 108, 115,  32, 123,  32,
+    108, 105, 116, 115,
+    ... 634 more items
+  ]
+}
+</code></pre>
+<p>For comparison. running the command <code>rg const --trace</code> in terminal (also 13.0.0)</p>
+<pre><code>DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(const)], limit_size: 250, limit_class: 10 }
+TRACE|grep_regex::matcher|crates/regex/src/matcher.rs:54: final regex: &quot;const&quot;
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+TRACE|rg::search|crates/core/search.rs:334: index.js: binary detection: BinaryDetection(Quit(0))
+TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:683: Some(&quot;index.js&quot;): searching using generic reader
+TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:734: generic reader: searching via roll buffer strategy
+TRACE|grep_searcher::searcher::core|crates/searcher/src/searcher/core.rs:56: searcher core: will use fast line searcher
+index.js
+1:const { execSync } = require(&quot;child_process&quot;);
+3:execSync(&quot;rg const --trace&quot;);
+TRACE|rg::search|crates/core/search.rs:334: debug.txt: binary detection: BinaryDetection(Quit(0))
+TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:683: Some(&quot;debug.txt&quot;): searching using generic reader
+TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:734: generic reader: searching via roll buffer strategy
+TRACE|grep_searcher::searcher::core|crates/searcher/src/searcher/core.rs:56: searcher core: will use fast line searcher
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+</code></pre>
+<p>In terminal, <code>echo $?</code> return <code>0</code></p>
+<p>Running <code>node index.js</code> with rg 12.1.1</p>
+<pre><code>DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(const)], limit_size: 250, limit_class: 10 }
+TRACE|grep_regex::matcher|crates/regex/src/matcher.rs:54: final regex: &quot;const&quot;
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:680: Some(&quot;index.js&quot;): searching using generic reader
+TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:729: generic reader: searching via roll buffer strategy
+TRACE|grep_searcher::searcher::core|crates/searcher/src/searcher/core.rs:56: searcher core: will use fast line searcher
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+</code></pre>
+<p>Running <code>rg const --trace</code> in terminal with rg 12.1.1</p>
+<pre><code>DEBUG|grep_regex::literal|crates/regex/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(const)], limit_size: 250, limit_class: 10 }
+TRACE|grep_regex::matcher|crates/regex/src/matcher.rs:54: final regex: &quot;const&quot;
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:680: Some(&quot;index.js&quot;): searching using generic reader
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+TRACE|grep_searcher::searcher|crates/searcher/src/searcher/mod.rs:729: generic reader: searching via roll buffer strategy
+TRACE|grep_searcher::searcher::core|crates/searcher/src/searcher/core.rs:56: searcher core: will use fast line searcher
+DEBUGindex.js
+1:const { execSync } = require(&quot;child_process&quot;);
+3:execSync(&quot;rg const --trace&quot;);
+|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+</code></pre>
+<p>What do you think ripgrep should have done?</p>
+<p>Possible a regression introduced by version 13? I'm not a rust expert so no clue on what might have caused it. Some wild guesses:</p>
+<ol>
+<li>Any changes to how rg exits the process?</li>
+<li>Any changes to rust threading logic? (e.g. joining child threads before exits)</li>
+<li>Any changes to how rg communicates with stdout?</li>
+<li>The fact that node error log is interwoven with rg trace might say something.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-11-11 13:34</div>
+            <div class="timeline-body"><p>This is likely a dupe of #1892.</p>
+<p>Note that the man page says:</p>
+<blockquote>
+<p>ripgrep will automatically detect if stdin exists and search stdin for a regex pattern, e.g. <code>ls | rg foo</code>. In some environments, stdin may exist when it shouldn’t. To turn off stdin detection explicitly specify the directory to search, e.g. <code>rg foo ./</code>.</p>
+</blockquote>
+<p>This is likely relevant to you. There are likely also parameters you can pass to Node's &quot;create process&quot; API that will close off stdin and not make it look readable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-11-11 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2021-11-11 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chuanqisun">@chuanqisun</a> on 2022-01-05 04:35</div>
+            <div class="timeline-body"><p>Just to confirm, adding <code>./</code> at the end of the command fixed the problem. Thanks again for the pointer!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:28 UTC
+    </footer>
+</body>
+</html>

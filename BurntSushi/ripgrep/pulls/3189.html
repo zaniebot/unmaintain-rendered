@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ignore: fix global gitignore bug that arises with absolute paths - BurntSushi/ripgrep #3189</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ignore: fix global gitignore bug that arises with absolute paths</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/3189">#3189</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-10-15 22:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>The <code>ignore</code> crate currently handles two different kinds of &quot;global&quot;
+gitignore files: gitignores from <code>~/.gitconfig</code>'s <code>core.excludesFile</code>
+and gitignores passed in via <code>WalkBuilder::add_ignore</code> (corresponding to
+ripgrep's <code>--ignore-file</code> flag).</p>
+<p>In contrast to any other kind of gitignore file, these gitignore files
+should have their patterns interpreted relative to the current working
+directory. (Arguably there are other choices we could make here, e.g.,
+based on the paths given. But the <code>ignore</code> infrastructure can't handle
+that, and it's not clearly correct to me.) Normally, a gitignore file
+has its patterns interpreted relative to where the gitignore file is.
+This relative interpretation matters for patterns like <code>/foo</code>, which are
+anchored to <em>some</em> directory.</p>
+<p>Previously, we would generally get the global gitignores correct because
+it's most common to use ripgrep without providing a path. Thus, it
+searches the current working directory. In this case, no stripping of
+the paths is needed in order for the gitignore patterns to be applied
+directly.</p>
+<p>But if one provides an absolute path (or something else) to ripgrep to
+search, the paths aren't stripped correctly. Indeed, in the core, I had
+just given up and not provided a &quot;root&quot; path to these global gitignores.
+So it had no hope of getting this correct.</p>
+<p>We fix this assigning the CWD to the <code>Gitignore</code> values created from
+global gitignore files. This was a painful thing to do because we'd
+ideally:</p>
+<ol>
+<li>Call <code>std::env::current_dir()</code> at most once for each traversal.</li>
+<li>Provide a way to avoid the library calling <code>std::env::current_dir()</code>
+at all. (Since this is global process state and folks might want to
+set it to different values for $reasons.)</li>
+</ol>
+<p>The <code>ignore</code> crate's internals are a total mess. But I think I've
+addressed the above 2 points in a semver compatible manner.</p>
+<p>Fixes #3179</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-10-15 23:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-10-15 23:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-10-15 23:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:24 UTC
+    </footer>
+</body>
+</html>

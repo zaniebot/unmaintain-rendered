@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete default recognized type names in Bash - BurntSushi/ripgrep #1549</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Complete default recognized type names in Bash</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1549">#1549</a>
+        opened by <a href="https://github.com/commonquail">@commonquail</a>
+        on 2020-04-11 12:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/commonquail">@commonquail</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 12.0.1 (rev 1143888259)
++SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>Compile from source.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Ubuntu 19.10</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>I would like to be able to complete default recognized type names in Bash.</p>
+<p>I compile ripgrep from source; mostly as a historical curiosity. Because I already compile from source I patch ripgrep's generated Bash completion to support type names: commonquail/ripgrep@1ce1701f9751bd743ca79b560254c04bb7063053:</p>
+<pre><code class="language-sh">$ rg -t j
+java     jinja    jl       js       json     jsonl    julia    jupyter
+</code></pre>
+<p>That has been fairly useful to me, if <a href="https://xkcd.com/1205/">technically not quite worth it</a>.</p>
+<p>Since the completion file is generated, it's not really feasible to propose that version for upstreaming. Fortunately, clap has built-in support for enumerating valid values and it's already being used a few places in ripgrep. Unfortunately, the type names seem very difficult to access at that point in time:
+commonquail/ripgrep@36447f5f0b804e264ce13fbaa7aa4ab777fb55b0:</p>
+<p>I appreciate that the generated completion scripts are <em>at best</em> a secondary concern, included purely &quot;because we can&quot;, so I understand not wanting to spend any time on this.</p>
+<p>See also</p>
+<ul>
+<li>#1543</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2023-11-21 00:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-21 01:01</div>
+            <div class="timeline-body"><p>I don't have any plans of working on this, but once #2626 is merged, ripgrep will own the generation process for bash shell completions. Previously, it asked a dependency (the Clap crate) to do it. This <em>should</em> make it much easier to augment the generation code to include all of the file types.</p>
+<p>With that said, the ideal here would be for the completion script to use <code>rg --type-list</code> to determine the complete list of types. Since they can be added to (or removed) by the end user.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/commonquail">@commonquail</a> on 2023-11-21 20:57</div>
+            <div class="timeline-body"><p>For Bash</p>
+<pre><code class="language-rs">impl Flag for Type {
+    fn doc_choices(&amp;self) -&gt; &amp;'static [&amp;'static str] {
+        &amp;[&quot;$(rg --type-list | cut -d: -f1)&quot;]
+    }
+}
+</code></pre>
+<p>is functionally equivalent to the modification I made. Nakedly shelling out this way would not work for Fish and PowerShell, of course, so some means of signalling dynamic generation would be necessary -- a richer return type or a new function definition, essentially.</p>
+<p><code>--type-list</code> could be taught a flag to omit the prefix and obviate <code>cut</code>, or an alternative argument (hidden?) could do the same to leave <code>--type-list</code> alone. This could allow an alternative design more specialized than arbitrarily shelling out, which may or may not be preferable.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:09 UTC
+    </footer>
+</body>
+</html>

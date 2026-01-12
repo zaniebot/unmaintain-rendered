@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>.ripgreprc &amp; glob patterns - BurntSushi/ripgrep #927</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>.ripgreprc &amp; glob patterns</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/927">#927</a>
+        opened by <a href="https://github.com/ahmedelgabri">@ahmedelgabri</a>
+        on 2018-05-24 21:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ahmedelgabri">@ahmedelgabri</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 0.8.1
+-SIMD -AVX
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>Homebrew</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>macOS 10.13.4</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>I'm trying to add a global <code>.ripgreprc</code> file with the following but I can't seem to make it work with <code>--glob</code></p>
+<pre><code>--hidden
+--smart-case
+--follow
+--glob &quot;!.git/*&quot;
+--glob &quot;!node_modules/*&quot;
+</code></pre>
+<p>This returns</p>
+<pre><code>error: Found argument '--glob &quot;!.git/*&quot;' which wasn't expected, or isn't valid in this context
+        Did you mean --glob?
+
+USAGE:
+    
+    rg [OPTIONS] PATTERN [PATH ...]
+    rg [OPTIONS] [-e PATTERN ...] [-f FILE ...] [PATH ...]
+    rg [OPTIONS] --files [PATH ...]
+    rg [OPTIONS] --type-list
+
+For more information try --help
+</code></pre>
+<p>I also tried</p>
+<pre><code>--hidden
+--smart-case
+--follow
+--glob 
+&quot;!.git/*&quot;
+--glob 
+&quot;!node_modules/*&quot;
+</code></pre>
+<p>this returns</p>
+<pre><code>No files were searched, which means ripgrep probably applied a filter you didn't expect. Try running again with --debug.
+</code></pre>
+<p>So how can I do this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-05-24 21:47</div>
+            <div class="timeline-body"><p>Each line in the <code>ripgreprc</code> is an individual argument, and there is no special handling of quoting or escaping or anything else. (If you're familiar with C, each line is basically an element of the <code>argv</code> array to <code>execve()</code> or similar.) The only special cases are (1) leading and trailing white space is trimmed from each line, and (2) lines with a leading <code>#</code> are ignored as comments.</p>
+<p>So you'd want to write your glob lines like either</p>
+<pre><code>--glob=!node_modules/*
+</code></pre>
+<p>or</p>
+<pre><code>--glob 
+!node_modules/*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ahmedelgabri">@ahmedelgabri</a> on 2018-05-24 22:22</div>
+            <div class="timeline-body"><p>I assumed I need to keep the quotes, thanks very much @okdana</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ahmedelgabri on 2018-05-24 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-05-24 22:29</div>
+            <div class="timeline-body"><p>Thanks @okdana!</p>
+<p>@ahmedelgabri Note that the format is document in both the <a href="https://github.com/BurntSushi/ripgrep/blob/c21b9b20cf0d4d25bd2765f39a2d19a782c4b254/doc/rg.1.txt.tpl#L73-L116">man page</a> and in the <a href="https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#configuration-file">guide</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ahmedelgabri">@ahmedelgabri</a> on 2018-05-24 22:35</div>
+            <div class="timeline-body"><p>@BurntSushi I did read the help but I didn't see any examples besides simple flags</p>
+<blockquote>
+<p>Every line is a shell argument, after trimming ASCII whitespace.</p>
+</blockquote>
+<p>When I read this I interpreted it as <code>--glob &quot;!git/*&quot;</code> not as <code>--glob=!git/*</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-05-24 22:40</div>
+            <div class="timeline-body"><p>@ahmedelgabri Does the <code>--type-add</code> example in the guide clarify things? If you think an explicit example with globs would help, then that sounds like a nice addition too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ahmedelgabri">@ahmedelgabri</a> on 2018-05-24 22:45</div>
+            <div class="timeline-body"><p>It’s useful indeed but I honestly I only checked the <code>manpage</code> &amp; searched for anything related to <code>RIPGREP_CONFIG_PATH</code></p>
+<p>But I’d add an example for glob too &amp; have the same examples in the manpage &amp; the guide. I can open a PR tomorrow for this if you want.</p>
+<p>Sent from my iPhone</p>
+<hr />
+<p>From: Andrew Gallant <a href="mailto:notifications@github.com">notifications@github.com</a>
+Sent: Friday, May 25, 2018 12:40:40 AM
+To: BurntSushi/ripgrep
+Cc: Ahmed El Gabri; Mention
+Subject: Re: [BurntSushi/ripgrep] .ripgreprc &amp; glob patterns (#927)</p>
+<p>@ahmedelgabri<a href="https://github.com/ahmedelgabri">https://github.com/ahmedelgabri</a> Does the --type-add example in the guide clarify things? If you think an explicit example with globs would help, then that sounds like a nice addition too.</p>
+<p>—
+You are receiving this because you were mentioned.
+Reply to this email directly, view it on GitHub<a href="https://github.com/BurntSushi/ripgrep/issues/927#issuecomment-391887752">https://github.com/BurntSushi/ripgrep/issues/927#issuecomment-391887752</a>, or mute the thread<a href="https://github.com/notifications/unsubscribe-auth/AAD5hMhR9P8a2_Wfu9-aIqs1VqAEzK-hks5t1zbogaJpZM4UNBV2">https://github.com/notifications/unsubscribe-auth/AAD5hMhR9P8a2_Wfu9-aIqs1VqAEzK-hks5t1zbogaJpZM4UNBV2</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-05-24 23:09</div>
+            <div class="timeline-body"><p>@ahmedelgabri SGTM! Much appreciated.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:33 UTC
+    </footer>
+</body>
+</html>

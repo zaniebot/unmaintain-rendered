@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Showing multiple matches in a file line separately - BurntSushi/ripgrep #2449</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Showing multiple matches in a file line separately</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2449">#2449</a>
+        opened by <a href="https://github.com/manikantag">@manikantag</a>
+        on 2023-03-11 18:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/manikantag">@manikantag</a></div>
+            <div class="timeline-body"><p>This may be duplicate of https://github.com/BurntSushi/ripgrep/issues/365, or with slightly different experience requirements.</p>
+<p>Is there any flag to <strong>change the output to include separate entry per each match in the line</strong> of a file with some characters before &amp; after. This is particularly useful in displaying matched results in very lengthy lines, like minified js files.</p>
+<p>Simply put: Each match should be displayed in separate output line (if files has total 10 matches, then I want to display in 10 different output lines irrespective of where those 10 matches are)</p>
+<p>Ex:</p>
+<pre><code class="language-javascript">/*3000 chars...;*/ function1(); console.log('ripgrep'); function2(); /*..... 1000 more chars...*/ console.log('ripgrep'); function3(); /*....more chars....*/
+</code></pre>
+<p>Given a file with a line like above, when searching for <code>ripgrep</code> word, I want to show something line below:</p>
+<pre><code>1:3028   ion1(); console.log('ripgrep'); functio
+                              -------
+1:4032   ... console.log('ripgrep'); functio
+                          -------
+</code></pre>
+<p>For example, VSCode, Chrome Devtools display like this.</p>
+<p><img src="https://user-images.githubusercontent.com/317299/224505531-36e9acc8-c8e4-46f5-9fe6-24c977f3f28e.png" alt="image" /></p>
+<p>IMHO, this way it will be better user experience than existing <code>--max-columns</code>  &amp; <code>--max-columns-preview</code> options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-11 18:43</div>
+            <div class="timeline-body"><p>The standard way to do this would be <code>-o/--only-matching</code> coupled with some bounded repeats. So for example, <code>rg -o '.{0,10}TestString.{0,10}</code>. Although ripgrep doesn't do overlapping search, so if another <code>TestString</code> occurs within ten characters of another, then the one occurring second wouldn't be found as a match.</p>
+<p>Otherwise, this looks like a duplicate of #1352.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2023-03-11 18:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-03-11 18:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manikantag">@manikantag</a> on 2023-03-11 18:47</div>
+            <div class="timeline-body"><p>That is pretty quick!</p>
+<p>I tried that too. But then I don't see the match in different color.</p>
+<p><img src="https://user-images.githubusercontent.com/317299/224506228-fad370c9-6e7a-4ed2-88f6-9cb98032c3c9.png" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manikantag">@manikantag</a> on 2023-03-11 18:48</div>
+            <div class="timeline-body"><p>My main requirement is not to display in a console, but to build search UI from ripgrep JSON (using <code>--json</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manikantag">@manikantag</a> on 2023-03-11 18:53</div>
+            <div class="timeline-body"><p>I see <code>--max-columns</code> is not considered when <code>--json</code> is used. I see way more in the JSON.</p>
+<p><img src="https://user-images.githubusercontent.com/317299/224506478-ae878a66-db26-48ec-8796-9916275af848.png" alt="image" /></p>
+<p>Is it the standard behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-11 18:55</div>
+            <div class="timeline-body"><p>Right. The <code>.{0,10}</code> becomes part of the match. But it <em>does</em> give you the surrounding context.</p>
+<blockquote>
+<p>My main requirement is not to display in a console, but to build search UI from ripgrep JSON (using <code>--json</code>)</p>
+</blockquote>
+<p>That's very relevant information. Please definitely include the <em>actual problem</em> you're trying to solve in issues.</p>
+<p>In this case, I don't think you need anything from ripgrep here. ripgrep already gives you the match offsets. So you can pluck them out of the JSON representation and add whatever windowing logic you need. There's no need for ripgrep to do it.</p>
+<blockquote>
+<p>I see <code>--max-columns</code> is not considered when <code>--json</code> is used. I see way more in the JSON.</p>
+</blockquote>
+<p>Yes. As the docs for the <code>--json</code> flag say:</p>
+<blockquote>
+<p>Other flags that control aspects of the standard output such as --only-matching, --heading, --replace, --max-columns, etc., have no effect when --json is set.</p>
+</blockquote>
+<p>Options like <code>--max-columns</code> are <em>output format</em> settings. They don't make sense in the <code>--json</code> context. If you're writing a program to read the JSON, then you have the <em>full espressive power</em> of a programming language to do whatever you want to massage the output into whatever kind of format you need. ripgrep gives you the stuff you can't easily get otherwise, but the rest is up to you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manikantag">@manikantag</a> on 2023-03-11 18:58</div>
+            <div class="timeline-body"><p>Makes perfect sense. Once I saw the <em>almost</em> entire line in JSON, I thought getting required string out of the string and highlight in HTML.</p>
+<p>Thanks</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:38 UTC
+    </footer>
+</body>
+</html>

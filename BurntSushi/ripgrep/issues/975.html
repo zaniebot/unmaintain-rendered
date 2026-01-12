@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System freeze  - BurntSushi/ripgrep #975</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>System freeze</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/975">#975</a>
+        opened by <a href="https://github.com/wagnerand">@wagnerand</a>
+        on 2018-07-10 12:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/wagnerand">@wagnerand</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>$ rg --version
+ripgrep 0.8.1
+-SIMD -AVX
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p><code>brew install ripgrep</code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>macOS 10.13.6</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>I use <code>rg</code> to search on a USB 3.1 SDD drive connected to my Macbook Pro 15&quot; (2017). The SSD contains over 700GB of data, mostly small code files and binaries, like pictures.</p>
+<p>Pretty much any search I issue on this corpus makes the system unresponsive a few minutes after I started it. The system hangs last from a few seconds to several minutes and appear every few minutes, with seemingly increasing frequency over time.
+Sometimes, I just see the mac-like <em>beachball</em>, sometimes I can still switch windows and scroll, but most interactions aren't executed right away, instead it seems they're put into some queue and then executed after the system is unblocked.</p>
+<p>Example search: <code>rg -F files.com -i -uu</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-10 13:06</div>
+            <div class="timeline-body"><p>At a high level, this kind of issue isn't something I can reproduce, so it's unlikely to get fixed without someone who <em>can</em> reproduce it digging into this and debugging it on their own.</p>
+<p>With that said, I have some tips that might help you debug it:</p>
+<ul>
+<li>Do you have your system's swap enabled? From the symptoms you describe, it <em>sounds</em> like your system is churning through memory. That is, if ripgrep (or your system's page cache) is eating up all your memory and stealing it from other applications, then it's possible your application's memory use is spilling over to disk via swap. When you use those applications again, it needs to read memory back from disk, which can be quite slow!</li>
+<li>What kind of memory usage is ripgrep itself using? I don't use macOS, but you'll need to use whatever tooling there helps you discover this kind of information. <code>htop</code> is an easy way of doing this for long lived processes. Look at the <code>RES</code> column (short for &quot;resident&quot; memory). You should also note the <code>SHR</code> column as well, especially if it gets large. The <code>VIRT</code> column is likely uninteresting for this diagnosis.</li>
+<li>Is ripgrep just eating up all of your CPU? This is a banal explanation, but it's possible. Consider forcing ripgrep to only use a single thread with the <code>-j1</code> flag. You should also try this experiment if memory usage is a problem, since the memory usage profile for ripgrep is different between single threaded and multi-threaded mode.</li>
+<li>Another set of flags to try is <code>--no-mmap</code> and <code>--mmap</code>. Namely, try one search with <code>--no-mmap</code> and another with <code>--mmap</code>, and see how that impacts system performance along with memory usage. They should, in theory, have different memory usage profiles. Compare them with <code>-j1</code> and without <code>-j1</code> as well.</li>
+<li>How do other similar tools perform? What happens if you run <code>ggrep -F files.com -i -r</code> instead? (Where <code>ggrep</code> is GNU grep and is available via brew on macOS if I recall correctly.)</li>
+</ul>
+<p>Also, you say that your SSD contains 700GB, but that this includes binary data like pictures. ripgrep should skip most of that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wagnerand">@wagnerand</a> on 2018-07-10 15:03</div>
+            <div class="timeline-body"><p>Thank for your prompt reply!</p>
+<p>System swap is enabled, but that doesn't seem to be the issue. Swap remained small and stable for all cases where I could reproduce the system freeze. (about 350mb, which is fairly low).</p>
+<p>RES memory also doesn't seem to be an issue. I saw it spiking up to 800mb, but usually it's much lower than that, 300-600mb. Neither <code>htop</code> nor Apple's <em>Activity Monitor</em> show SHR.</p>
+<p>ripgrep is eating some CPU, but not all of it. I have a quad-core i7. All, load is distributed more or less evenly across the cores. What I found interesting is that, whenever the system freezes, <em>all</em> processes are going into <em>Paging</em> status (W) and the CPU usage drops, except for Core 0, which is at 100% capacity used solely by the <code>kernel_task</code> process.</p>
+<p>Using <code>--no-mmap</code> was the only thing that seems to avoid the freeze. Maybe <code>-j1</code> too, but I need the parallelism because otherwise searches are taking forever.</p>
+<p>Is <code>--no-mmap</code> significantly slower than <code>--mmap</code> for my use-case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wagnerand">@wagnerand</a> on 2018-07-10 15:08</div>
+            <div class="timeline-body"><p>Uhm, I guess I was too fast. I also freezes when using <code>--no-mmap</code>. Just took a little longer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-10 15:17</div>
+            <div class="timeline-body"><p>Thanks for the detailed response. Based on the information you've given, my best guess is that swap is indeed the problem, or that your system is somehow not coping well with the additional memory usage. You also haven't said how much RAM your machine actually has, which makes it a bit difficult to guess here. Moreover, the <em>amount</em> of swap your system is using isn't really relevant here, what matters is that it's being used, and also, <em>what</em> is using it. Just because only 350MB is being used doesn't mean that isn't where all of your applications' memory has been paged to. If an applications memory is put into swap, then the decrease in CPU usage and overall slugginess is a <em>classic</em> symptom of that.</p>
+<p>Note that memory usage here doesn't just mean what ripgrep uses. It's also about what the OS decides to put into your system's I/O cache, which is getting put through its paces here by searching a large amount of content.</p>
+<blockquote>
+<p>Maybe -j1 too, but I need the parallelism because otherwise searches are taking forever.</p>
+</blockquote>
+<p>I mean, you only have a quad core. At best, you're going to get a 4x speed up (maybe 5x with HT), so I wonder what the difference is between &quot;taking forever&quot; and &quot;taking forever divided by 4.&quot; Moreover, we are trying to <strong>debug</strong> the issue here. Let's not mix trying to find the cause with possible solutions. Could you please try experimenting with <code>-j1</code> and the combinations of <code>--mmap</code> and <code>--no-mmap</code>?</p>
+<blockquote>
+<p>Is <code>--no-mmap</code> significantly slower than <code>--mmap</code> for my use-case?</p>
+</blockquote>
+<p>When searching a directory, <code>--no-mmap</code> is the default. <code>--mmap</code> in theory shouldn't be significantly slower, but it depends.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wagnerand">@wagnerand</a> on 2018-07-10 15:23</div>
+            <div class="timeline-body"><blockquote>
+<p>You also haven't said how much RAM your machine actually has, which makes it a bit difficult to guess here.</p>
+</blockquote>
+<p>Oops, I meant to add that. The system has 16G of RAM, during all testing, usage never exceeded 8G.</p>
+<blockquote>
+<p>If an applications memory is put into swap, then the decrease in CPU usage and overall slugginess is a classic symptom of that.</p>
+</blockquote>
+<p>I know what you are saying but this is different. The system freezes entirely, at some point, the only thing that I can do is moving the mouse around. Applications that get swapped shouldn't freeze the entire system for minutes.</p>
+<blockquote>
+<p>Could you please try experimenting with -j1 and the combinations of --mmap and --no-mmap?</p>
+</blockquote>
+<p>Please see my added comment. It looks like <code>--no-mmap</code> vs <code>--mmap</code> doesn't make much of a difference. I can retry with <code>-j1</code> though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-10 15:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Applications that get swapped shouldn't freeze the entire system for minutes.</p>
+</blockquote>
+<p>The operative word here is &quot;shouldn't.&quot; In my experience, this is not at all what actually happens. I'm speaking from my own experience with using Linux with swap enabled, or even Linux without swap enabled but before the OOM killer can work its magic. &quot;waiting multiple minutes for the system to unclog itself&quot; is <em>exactly</em> what I've experienced.</p>
+<p>In any case, it's pointless to debate this. Please remember what I said in my initial response to you:</p>
+<blockquote>
+<p>At a high level, this kind of issue isn't something I can reproduce, so it's unlikely to get fixed without <strong>someone who can reproduce it digging into this and debugging it on their own.</strong></p>
+</blockquote>
+<p>All I can do is give you my advice and some debugging techniques. You are free to reject my experience. I could in fact be wrong! But I'm telling you what it is I believe based on the data available to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wagnerand">@wagnerand</a> on 2018-07-10 15:30</div>
+            <div class="timeline-body"><p>Got it, thanks! I am happy to dig into this and debug myself, but I guess I would need some guidance for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-10 15:37</div>
+            <div class="timeline-body"><p>I'm not sure there are any specific code changes that need to be made to ripgrep. The next step I would personally try if I were you would be to attempt to refine the swap hypothesis. The most obvious way to do that, IMO, is to disable swap and see what happens. If things work better, then we have pretty compelling evidence that it's swap. If things don't work better, then it's possible that swap isn't the problem, but I think it may be difficult to draw a strong conclusion. At least, I don't feel comfortable doing so because I'm not familiar with how macOS systems behave in those scenarios.</p>
+<p>If things do work better without swap enabled, then the hypothesis there is that your application's memory would never get paged out and as a result, the size of your I/O cache would be more forcefully limited. The I/O cache size is unlikely to impact the performance of ripgrep in this case, since if you are indeed actually searching 700GB (although that isn't actually clear to me, since I don't know what ripgrep is skipping due to binary data detection), then the I/O cache size is unlikely to be a factor since ripgrep is going to be blocked on disk anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wagnerand">@wagnerand</a> on 2018-07-10 17:12</div>
+            <div class="timeline-body"><p>I disabled swapping, and tried with and without memory maps, without any luck. The system freezes shortly after starting rg.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-10 17:18</div>
+            <div class="timeline-body"><p>Sadly, I'm out of ideas. I've tried reproducing this on a very large directory of media files (enabling binary search), and ripgrep behaves as expected: fairly low memory usage and low CPU usage because it's disk bound.</p>
+<p>I doubt there is much more I can do without the ability to reproduce your problem. You're probably on your own.</p>
+<p>Keep in mind that you have still left out important data:</p>
+<ul>
+<li>The impact of using <code>-j1</code>.</li>
+<li>The impact of similar tools such as <code>ag</code> and/or <code>ggrep</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cyrossignol">@cyrossignol</a> on 2018-07-12 00:58</div>
+            <div class="timeline-body"><p>This really sounds like a hardware, kernel module (driver), or power/temperature management issue, possibly related to the specific SSD or its USB driver. I seems very unlikely that ripgrep causes the problem directly.</p>
+<p>As suggested, invoking <code>rg</code> with <code>-j1</code> may help by limiting ripgrep to one core so it generates less heat or concurrent IO (I seem to remember an issue with Macs preemptively throttling all non-system processes under certain conditions to keep the temperature lower).</p>
+<p>Running <code>ag</code> with enough workers to exercise all the cores may help to support this theory if we see the same behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2018-07-12 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-22 13:10</div>
+            <div class="timeline-body"><p>I don't think there's anything actionable on my end here. In theory, there are more debugging steps that could be performed to diagnose this issue, but at this point, it's up to the OP.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-07-22 13:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wagnerand">@wagnerand</a> on 2018-07-23 19:05</div>
+            <div class="timeline-body"><p>Sorry, work has kept me more than busy.</p>
+<p>Running with <code>-j1</code> has similar effects, although much less impactful. The system hangs are usually less than a second.
+I didn't have time to test with <code>ag</code> or <code>ggrep</code> yet.</p>
+<p>Would you like me to keep updating this issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-07-23 19:57</div>
+            <div class="timeline-body"><p>More data is appreciated. If there is anything actionable on my end, I can
+reopen, but I do suspect this debugging task is largely on your hands.</p>
+<p>On Mon, Jul 23, 2018, 15:05 Andreas Wagner <a href="mailto:notifications@github.com">notifications@github.com</a> wrote:</p>
+<blockquote>
+<p>Sorry, work has kept me more than busy.</p>
+<p>Running with -j1 has similar effects, although much less impactful. The
+system hangs are usually less than a second.
+I didn't have time to test with ag or ggrep yet.</p>
+<p>Would you like me to keep updating this issue?</p>
+<p>—
+You are receiving this because you modified the open/close state.
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/BurntSushi/ripgrep/issues/975#issuecomment-407167185">https://github.com/BurntSushi/ripgrep/issues/975#issuecomment-407167185</a>,
+or mute the thread
+<a href="https://github.com/notifications/unsubscribe-auth/AAb34oRHONAqDiD4M39fbjO8FKu1apWNks5uJh6VgaJpZM4VJVP9">https://github.com/notifications/unsubscribe-auth/AAb34oRHONAqDiD4M39fbjO8FKu1apWNks5uJh6VgaJpZM4VJVP9</a>
+.</p>
+</blockquote>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:36 UTC
+    </footer>
+</body>
+</html>

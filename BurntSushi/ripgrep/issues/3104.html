@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect after-context (-A) when using -m 1 and -P on file with multiple matches - BurntSushi/ripgrep #3104</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect after-context (-A) when using -m 1 and -P on file with multiple matches</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3104">#3104</a>
+        opened by <a href="https://github.com/mark-os">@mark-os</a>
+        on 2025-07-18 20:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mark-os">@mark-os</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[x] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>ripgrep 14.1.0</p>
+<p>features:-simd-accel,+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2</p>
+<p>PCRE2 10.42 is available (JIT is available)</p>
+<h3>How did you install ripgrep?</h3>
+<p>cargo</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>wsl ubuntu</p>
+<h3>Describe your bug.</h3>
+<p>When using the PCRE engine (<code>-P</code>) with a match limit (<code>-m 1</code>) and requesting after-context (<code>-A</code>), <code>ripgrep</code> ignores the context limit and prints the next potential match block instead of the specified number of context lines.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<ol>
+<li><p>Create the following test file:</p>
+<pre><code class="language-bash">printf 'function one() {\n  // first block\n}\n\nfunction two() {\n  // second block\n}\n\nfunction three() {\n  // third block\n}\n// final context line 1\n// final context line 2\n' &gt; bug_test_3.js
+</code></pre>
+</li>
+<li><p>Run this <code>ripgrep</code> command:</p>
+<pre><code class="language-bash">rg -P -U -m 1 -A 2 '\w+\s*\([^)]*\)\s*\{([^{}]|(?R))*\}' bug_test_3.js
+</code></pre>
+</li>
+</ol>
+<h3>What is the actual behavior?</h3>
+<pre><code>1:function one() {
+2:  // first block
+3:}
+4-
+5:function two() {
+6:  // second block
+7:}
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>The command should have respected <code>-A 2</code> and stopped after printing line 5.</p>
+<pre><code>1:function one() {
+2:  // first block
+3:}
+4-
+5:function two() {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Galaxy1234-alt">@Galaxy1234-alt</a> on 2025-09-23 13:31</div>
+            <div class="timeline-body"><p>I'm running into an issue with <code>ripgrep</code> on WSL Ubuntu. Here's the setup and the problem:</p>
+<p><strong>Environment:</strong></p>
+<p>Installed through cargo:</p>
+<pre><code class="language-bash">rg --version
+text
+
+ripgrep 14.1.1
+features:+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2
+
+PCRE2 10.45 is available (JIT is available)
+Test command:
+
+bash
+rg -P -U -m 1 -A 2 '\w+\s*\([^)]*\)\s*\{([^{}]|(?R))*\}' bug_test_3.js
+Output on WSL installed via cargo:
+
+text
+1:function one() {
+2:  // first block
+3:}
+4-
+5:function two() {
+6:  // second block
+7:}
+</code></pre>
+<p>Output when built locally from source:</p>
+<p>locally built version</p>
+<pre><code class="language-bash">ananthu@CSAB24-15:~/ripgrep$ ./target/release/rg  --version
+ripgrep 14.1.1 (rev fdea9723ca)
+
+features:+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2
+
+PCRE2 10.45 is available (JIT is available)
+
+bash
+./target/release/rg -P -U -m 1 -A 2 '\w+\s*\([^)]*\)\s*\{([^{}]|(?R))*\}' bug_test_3.js
+text
+
+1:function one() {
+2:  // first block
+3:}
+4-
+5-function two() {
+</code></pre>
+<p>i am new please correct if i am wrong these are just my finding</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-23 13:36</div>
+            <div class="timeline-body"><p>@Galaxy1234-alt That's because this bug is fixed on <code>master</code>, likely in commit a6e0be3c909c5c09e5fb402c907f3beb88cfb4c4.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-09-23 13:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2025-09-23 13:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:57 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support .tfignore - BurntSushi/ripgrep #173</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support .tfignore</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/173">#173</a>
+        opened by <a href="https://github.com/alejandro5042">@alejandro5042</a>
+        on 2016-10-13 00:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alejandro5042">@alejandro5042</a></div>
+            <div class="timeline-body"><p><code>.tfignore</code> files are exactly like <code>.gitignore</code> files but for local workspaces in Team Foundation Version Control (TFVC). TFVC is a centralized VCS from Microsoft supported by their TFS products. <code>ripgrep</code> should support it since it's as easy as applying the same rules as <code>.gitignore</code>.</p>
+<p>For more info: https://www.visualstudio.com/en-us/docs/tfvc/add-files-server#customize-which-files-are-ignored-by-version-control</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-13 01:15</div>
+            <div class="timeline-body"><p>Is there a specification other than that link? If not and if that link is a complete description, then the two file formats are most definitely not the same. For one, the <code>*</code> wildcard isn't escaped in gitignore. For another, gitignore supports more types of globs (recursive wildcards for example) and has more explicitly defined semantics on whether wildcards can match path separators or not.</p>
+<p>How widely used is this version control system? Keep in mind that every ignore file supported requires an additional stat call for every directory searched.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alejandro5042">@alejandro5042</a> on 2016-10-13 01:56</div>
+            <div class="timeline-body"><p>You're right. I was too casual in creating this issue and in my language. Without having a better spec, it's hard to know what the differences are and I cannot find a better one online.</p>
+<p>Having used gitignore and tfignore files for years, I've always just copied the gitignore to tfignore and it has seemed to work. (Granted, I am not a frequent TFS local workspace user.) The one difference I noted was that tfignore treats all slashes the same, for compatibility with gitignore. I believe what you are seeing with <code>\*.txt</code> is treated as <code>/*.txt</code>. So yes, they are not &quot;exactly the same&quot; as I mentioned before.</p>
+<p>TFS is widely used in the Windows ecosystem. For years, it was the only source control system that shipped with Visual Studio. Lately, Microsoft and their ecosystem has been slowly transitioning to Git, but many repos will continue to be in TFS for years. Even though we're trying to transition, it will be some time and we have hundreds of devs who would love to use this tool. I suppose I can copy the .tfignore file to .gitignore for us and check that in.</p>
+<p>There are <a href="https://github.com/search?utf8=%E2%9C%93&amp;q=filename%3A.tfignore+size%3A%3E5&amp;type=Code&amp;ref=searchresults">65 non-trivial tfignore files</a> checked into GitHub--I'm assuming TFS repos that transitioned to Git. Perhaps gleaming over those files can give us more info. (Non-trivial as there are thousands of .tfignore files that just ignore the git directory.)</p>
+<p>I am fine with this issue sitting until further input. I just wanted to bring up that TFS is a major source control system that has a similar ignore file that isn't supported by your [awesome] tool.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alejandro5042">@alejandro5042</a> on 2016-10-13 01:58</div>
+            <div class="timeline-body"><p>Good point on the stat call. I recommend awaiting further input to see if anyone else is affected; the workaround is to simply copy the file, or transition to Git... 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-13 02:26</div>
+            <div class="timeline-body"><p>All right. Thanks for additional information. A good example of a VCS that I would like to support next is Mercurial.</p>
+<p>I'm on mobile, but I'll take a closer look at those tfignore files you linked. I'll also hunt around for a proper specification. (Without that, it will be hard to add correct support.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hefengrren">@hefengrren</a> on 2016-10-13 07:29</div>
+            <div class="timeline-body"><p>One more thing, just to remind: what if there are multiple ignore files?
+Maybe an option defaults to GIT, but could specify one (TFS or HG).</p>
+<p>In my case, I have <code>.gitignore</code> and <code>.tfignore</code>.
+I'd use <code>.gitignore</code>: moved from TFS to GIT and <code>.tfignore</code> is not updated anymore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-13 11:10</div>
+            <div class="timeline-body"><p>If there are multiple ignore files in the same directory, we could just define a precedence and use both.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2016-10-13 11:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-29 00:25</div>
+            <div class="timeline-body"><p>FYI, <a href="https://github.com/vinayakDhar/TicketingService/blob/ac9b61dee147e52079a12e0cd44771a0737985c0/.tfignore">this <code>.tfignore</code> file</a> seems to include a comment with a reasonably well written specification. It is definitely <em>not</em> identical to the <code>gitignore</code> format. That means this needs its own matcher implementation (which isn't that bad, so long as everything can be mapped to standard Unix globs, which looks feasible).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-29 00:25</div>
+            <div class="timeline-body"><p>I'd say I'm personally unlikely to implement something like this (because I feel like it's not widely used), but I'd be happy to accept a PR and maintain it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @BurntSushi on 2016-10-29 00:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-19 14:34</div>
+            <div class="timeline-body"><p>I'm going to close this because I'd like to keep the issue tracker culled to things that are likely to get worked on in a reasonable time frame. I don't think this will get worked on unless someone wants it badly enough to do it. If that happens, we can re-open this issue and assign it to them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-11-19 14:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:49 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Different -w behavior from grep/git-grep - BurntSushi/ripgrep #389</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Different -w behavior from grep/git-grep</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/389">#389</a>
+        opened by <a href="https://github.com/crumblingstatue">@crumblingstatue</a>
+        on 2017-03-01 10:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/crumblingstatue">@crumblingstatue</a></div>
+            <div class="timeline-body"><pre><code>$ echo '-2' | rg -w '\-2' # rg yields no results
+$ echo '-2' | grep -w '\-2' # grep (and git grep) matches
+-2
+</code></pre>
+<p>Not sure if this is intentional or not, but it did surprise me that I didn't find what I was looking for when searching my codebase with ripgrep, and I had to resort to git-grep.</p>
+<p>I used <code>-w</code> because I was specifically looking for the value <code>-2</code>, and not e.g. <code>-24</code>.</p>
+<p>Using <code>ripgrep 0.4.0</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-03-01 13:21</div>
+            <div class="timeline-body"><p>This is highly interesting.</p>
+<p>The relevant passage from <code>man grep</code> (for GNU grep) is:</p>
+<pre><code>-w, --word-regexp
+       Select only those lines containing matches that form whole words. The
+       test is that the matching substring must either be at the beginning of
+       the line, or preceded by a non-word constituent character. Similarly,
+       it must be either at the end of the line or followed by a non-word
+       constituent character. Word-constituent characters are letters, digits,
+       and the underscore. This option has no effect if -x is also specified.
+</code></pre>
+<p>The key part is &quot;... either be <strong>at the beginning of the line</strong>, or preceded by a non-word constituent character.&quot; ripgrep currently implements the <code>-w</code> flag by translating the given <code>pattern</code> to <code>\b(?:pattern)\b</code>, but it looks like grep actually does <code>(?:^|\b)(?:pattern)(?:$|\b)</code>. I guess ripgrep should do that as well.</p>
+<p>If my hypothesis is correct, then <code>echo ' -2' | grep -w -e '-2'</code> should return nothing. This is because neither <code> </code> nor <code>-</code> match <code>\w</code>, and therefore, <code>\b</code> shouldn't match. Interestingly, it does return a match:</p>
+<pre><code>$ echo ' -2' | grep -w -e '-2'
+ -2
+</code></pre>
+<p>While the equivalent ripgrep command does not:</p>
+<pre><code>$ echo ' -2' | rg -e '(^|\b)-2($|\b)'
+</code></pre>
+<p>Interestingly, the same grep command does not either:</p>
+<pre><code>$ echo ' -2' | egrep -e '(^|\b)-2($|\b)'
+</code></pre>
+<p>This has to mean that my interpretation of <code>-w</code> is wrong.</p>
+<p>Re-reading it, it now seems clearer to me that it isn't actually using word boundary assertions, since it says &quot;preceded by a non-word constituent character&quot; but doesn't say anything about the first letter of the match.</p>
+<p>Looking at the source of GNU grep, I spotted this:</p>
+<pre><code>  /* In the match_words and match_lines cases, we use a different pattern
+     for the DFA matcher that will quickly throw out cases that won't work.
+     Then if DFA succeeds we do some hairy stuff using the regex matcher
+     to decide whether the match should really count. */
+  if (match_words || match_lines)
+    {
+      static char const line_beg_no_bk[] = &quot;^(&quot;;
+      static char const line_end_no_bk[] = &quot;)$&quot;;
+      static char const word_beg_no_bk[] = &quot;(^|[^[:alnum:]_])(&quot;;
+      static char const word_end_no_bk[] = &quot;)([^[:alnum:]_]|$)&quot;;
+      static char const line_beg_bk[] = &quot;^\\(&quot;;
+      static char const line_end_bk[] = &quot;\\)$&quot;;
+      static char const word_beg_bk[] = &quot;\\(^\\|[^[:alnum:]_]\\)\\(&quot;;
+      static char const word_end_bk[] = &quot;\\)\\([^[:alnum:]_]\\|$\\)&quot;;
+</code></pre>
+<p>Which is interesting and confirms my suspicion that <code>\b</code> isn't actually being used to implement <code>-w</code>.</p>
+<hr />
+<p>I will need to think on this more to figure out what to do. In the meantime, you could, depending on your use case, work-around this by:</p>
+<pre><code>$ echo ' -2' | rg -e '(^|\W)-2($|\W)'
+1: -2
+</code></pre>
+<p>(This isn't a full solution though, since your colors will be messed up by including the surrounding non-word characters.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-03-01 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Different word boundary behavior from grep/git-grep" to "Different -w behavior from grep/git-grep" by @crumblingstatue on 2017-03-01 13:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/crumblingstatue">@crumblingstatue</a> on 2017-03-01 13:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Re-reading it, it now seems clearer to me that it isn't actually using word boundary assertions, since it says &quot;preceded by a non-word constituent character&quot; <em>but doesn't say anything about the first letter of the match</em>.</p>
+</blockquote>
+<p>I think that's the key point. The match itself can contain both word and non-word characters. It's the surrounding context that matters. That way, you can intuitively match expressions like <code>2 - 2</code>, and it will only match that, and not e.g. <code>42 - 24</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">libripgrep</span> added by @BurntSushi on 2017-03-12 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "libripgrep" by @BurntSushi on 2017-03-12 20:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-06-30 13:49</div>
+            <div class="timeline-body"><p>I have pretty high confidence that this will be fixed in libripgrep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-08-20 11:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:05 UTC
+    </footer>
+</body>
+</html>

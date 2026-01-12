@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inconsistent behavior when replacing newlines - BurntSushi/ripgrep #2473</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Inconsistent behavior when replacing newlines</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2473">#2473</a>
+        opened by <a href="https://github.com/misaki-web">@misaki-web</a>
+        on 2023-03-22 21:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/misaki-web">@misaki-web</a></div>
+            <div class="timeline-body"><p>Using ripgrep 13.0.0 on Ubuntu 22.10, the last line of data is sometimes duplicated in the output when replacing newlines.</p>
+<p>Example 1 (no issue):</p>
+<pre><code class="language-bash">$ echo -en '1\t2\n3\t4' | rg --debug --trace --passthru -U -e '\n|\t' -r '*'
+TRACE|grep_regex::matcher|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/grep-regex-0.1.9/src/matcher.rs:54: final regex: &quot;\n|\t&quot;
+DEBUG|globset|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/globset-0.4.8/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+TRACE|rg::search|crates/core/search.rs:334: &lt;stdin&gt;: binary detection: BinaryDetection(Convert(0))
+TRACE|grep_searcher::searcher|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/grep-searcher-0.1.8/src/searcher/mod.rs:719: generic reader: reading everything to heap for multiline
+TRACE|grep_searcher::searcher|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/grep-searcher-0.1.8/src/searcher/mod.rs:723: generic reader: searching via multiline strategy
+1*2*3*4
+</code></pre>
+<p>Example 2 (issue):</p>
+<pre><code class="language-bash">$ echo -en '1\t2\n3\t4' | rg --debug --trace --passthru -U -e '\n' -r '*'
+TRACE|grep_regex::matcher|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/grep-regex-0.1.9/src/matcher.rs:54: final regex: &quot;\n&quot;
+DEBUG|globset|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/globset-0.4.8/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+TRACE|rg::search|crates/core/search.rs:334: &lt;stdin&gt;: binary detection: BinaryDetection(Convert(0))
+TRACE|grep_searcher::searcher|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/grep-searcher-0.1.8/src/searcher/mod.rs:719: generic reader: reading everything to heap for multiline
+TRACE|grep_searcher::searcher|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/grep-searcher-0.1.8/src/searcher/mod.rs:723: generic reader: searching via multiline strategy
+1	2*3	4
+3	4
+</code></pre>
+<p>The example 2 is solved by removing <code>--passthru</code>:</p>
+<pre><code class="language-bash">$ echo -en '1\t2\n3\t4' | rg --debug --trace -U -e '\n' -r '*'
+TRACE|grep_regex::matcher|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/grep-regex-0.1.9/src/matcher.rs:54: final regex: &quot;\n&quot;
+DEBUG|globset|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/globset-0.4.8/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+TRACE|rg::search|crates/core/search.rs:334: &lt;stdin&gt;: binary detection: BinaryDetection(Convert(0))
+TRACE|grep_searcher::searcher|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/grep-searcher-0.1.8/src/searcher/mod.rs:719: generic reader: reading everything to heap for multiline
+TRACE|grep_searcher::searcher|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/grep-searcher-0.1.8/src/searcher/mod.rs:723: generic reader: searching via multiline strategy
+1	2*3	4
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-03-22 21:56</div>
+            <div class="timeline-body"><p>Duplicate of #2095 and #2208 and #2438. Was fixed in 91afd4214a9ada15e475bba02694f4fb50079cbc, which is on current master but has not yet been released.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-03-22 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2023-03-22 21:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:39 UTC
+    </footer>
+</body>
+</html>

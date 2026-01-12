@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inconsistent behavior with negation pattern in `.gitignore` - BurntSushi/ripgrep #2731</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Inconsistent behavior with negation pattern in <code>.gitignore</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2731">#2731</a>
+        opened by <a href="https://github.com/Nadrieril">@Nadrieril</a>
+        on 2024-02-07 17:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Nadrieril">@Nadrieril</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h3>How did you install ripgrep?</h3>
+<p>Using nix</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>NixOS 23.11</p>
+<h3>Describe your bug.</h3>
+<p>See below. Feels related to https://github.com/BurntSushi/ripgrep/issues/1050 but I think they're different.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>Make a repo with:</p>
+<h4>.gitignore</h4>
+<pre><code class="language-gitignore">build/
+!/some_dir/build/
+</code></pre>
+<h4>some_dir/build/foo</h4>
+<pre><code class="language-txt">string
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<pre><code class="language-shell">&gt; rg -l string
+some_dir/build/foo
+&gt; rg -l string some_dir
+# nothing
+&gt; rg -l string some_dir/build
+some_dir/build/foo
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p><code>rg -l string some_dir</code> should find the file too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Surprising behavior with negation pattern in `.gitignore`" to "Inconsistent behavior with negation pattern in `.gitignore`" by @Nadrieril on 2024-02-07 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-07 18:32</div>
+            <div class="timeline-body"><p>Please try the latest release of ripgrep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nadrieril">@Nadrieril</a> on 2024-02-07 22:08</div>
+            <div class="timeline-body"><p>Oh, sorry, that appears to be fixed in 14.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Nadrieril on 2024-02-07 22:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Nadrieril on 2024-02-07 22:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @Nadrieril on 2024-02-07 22:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nadrieril">@Nadrieril</a> on 2024-02-07 22:15</div>
+            <div class="timeline-body"><p>Ah nope, still a bug but it requires one more level of nesting:</p>
+<pre><code>ripgrep 14.1.0
+
+features:-simd-accel,-pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2
+
+PCRE2 is not available in this build of ripgrep.
+</code></pre>
+<h4>.gitignore</h4>
+<pre><code class="language-gitignore">build/
+!/some_dir/subdir/build/
+</code></pre>
+<h4>some_dir/subdir/build/foo</h4>
+<pre><code class="language-txt">string
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<pre><code class="language-shell">&gt; rg -l string
+some_dir/subdir/build/foo
+&gt; rg -l string some_dir
+# nothing
+&gt; rg -l string some_dir/subdir
+some_dir/subdir/build/foo
+&gt; rg -l string some_dir/subdir/build
+some_dir/subdir/build/foo
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Noratrieb">@Noratrieb</a> on 2024-02-11 20:16</div>
+            <div class="timeline-body"><p>I can reproduce this with the <code>ignore</code> crate directly and</p>
+<pre><code class="language-rust">use ignore::Walk;
+fn main() {
+    for result in Walk::new(&quot;./some_dir&quot;) {
+        match result {
+            Ok(entry) =&gt; println!(&quot;{}&quot;, entry.path().display()),
+            Err(err) =&gt; println!(&quot;ERROR: {}&quot;, err),
+        }
+    }
+}
+</code></pre>
+<p>(with the CWD in the directory with the <code>.gitignore</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2024-02-11 20:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-11 20:21</div>
+            <div class="timeline-body"><p>This is probably a duplicate of an existing bug, but they are difficult to find.</p>
+<p>There are several open issues related to gitignore support that I don't plan on fixing until I've had a chance to rethink the ignore crate from first principles. It <em>might</em> happen within the next year.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ybc37">@ybc37</a> on 2024-02-15 10:08</div>
+            <div class="timeline-body"><p>I found a similar bug when using wildcards in <code>.gitignore</code>. Let me know, if I should open a new issue.</p>
+<p>Script to reproduce the bug:</p>
+<pre><code class="language-sh">#!/usr/bin/env sh
+
+mkdir -p bug/foo/bar &amp;&amp; cd bug
+git init
+echo &quot;baz&quot; &gt; foo/bar/baz.txt
+echo &quot;/foo/bar/baz*.txt&quot; &gt; .gitignore
+
+rg -l baz
+# Output:
+# rg: No files were searched, which means ripgrep probably applied a filter you didn't expect.
+# Running with --debug will show why files are being skipped.
+
+rg -l baz foo/
+# Output:
+# foo/bar/baz.txt
+</code></pre>
+<p>Version:</p>
+<pre><code>ripgrep 14.1.0
+
+features:-simd-accel,+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2
+
+PCRE2 10.42 is available (JIT is available)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ybc37">@ybc37</a> on 2024-02-16 09:40</div>
+            <div class="timeline-body"><p>Actually, I just realized that the wildcard isn't even needed. The bug is reproducible with a <code>.gitignore</code> containing <code>/foo/bar/baz.txt</code> (see script in my previous comment).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RossSmyth">@RossSmyth</a> on 2024-03-22 17:00</div>
+            <div class="timeline-body"><p>It may be worth looking at https://github.com/Byron/gitoxide/tree/main/gix-ignore when refactoring, or somehow pulling in the logic from it as a library.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WalterScottYoung">@WalterScottYoung</a> on 2024-11-15 12:28</div>
+            <div class="timeline-body"><p>i think this is essentially the same bug as https://github.com/BurntSushi/ripgrep/issues/2836, and I tested https://github.com/BurntSushi/ripgrep/pull/2933 is able to fix this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2025-07-06 16:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-09-20 01:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:46 UTC
+    </footer>
+</body>
+</html>

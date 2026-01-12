@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>support global gitignore config - BurntSushi/ripgrep #9</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>support global gitignore config</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/9">#9</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2016-09-21 12:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>e.g., <code>$HOME/.config/git/ignore</code> or <code>$XDG_CONFIG_HOME/git/ignore</code> or whatever file is specified by the configuration variable <code>core.excludesFile</code>. Another source might be <code>$GIT_DIR/info/exclude</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2016-09-21 12:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-22 11:45</div>
+            <div class="timeline-body"><p>While supporting <code>core.excludesFile</code> or a global <code>.gitignore</code> seems easy enough, support <code>$GIT_DIR/info/exclude</code> is actually a little tricky. There are two issues:</p>
+<ol>
+<li>Firstly, it's an additional file to stat for in <em>every</em> directory we descend. That list of files is currently at two (<code>.rgignore</code> and <code>.gitignore</code>), and I know we'd like to bump it to three so we can include <code>.hgignore</code> too. Adding <code>$GIT_DIR/info/exclude</code> would bring this list to 4 entries. Owch.</li>
+<li>A <code>$GIT_DIR/info/exclude</code> file seems to have precedence strictly lower than <em>all</em> .gitignore files in the current directory all the way up to the parent directory. (See <code>man gitignore</code>). This means we need to: 1) Check all <code>.gitignore</code> files, 2) then check all <code>$GIT_DIR/info/exclude</code> files and finally 3) check the global gitignore config.</li>
+</ol>
+<p>We should at least support <code>core.excludesFile</code>. Supporting <code>$GIT_DIR/info/exclude</code> seems like it might cost us too much for little gain. (My impression is that it isn't widely used.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Deewiant">@Deewiant</a> on 2016-09-24 07:41</div>
+            <div class="timeline-body"><p>My 2¢: I've used <code>$GIT_DIR/info/exclude</code> in practically every repo I've worked on for a significant period of time, whereas I've never used <code>core.excludesFile</code>, so for me the priorities there would be exactly reversed.</p>
+<p>One alternative solution might be to have a parameter or separate tool to auto-generate one or more <code>.ignore</code> files based on these sources that are otherwise trickier to handle. The usefulness of this is predicated on people not committing their <code>.ignore</code> files. I'm not sure how likely that is...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vi">@vi</a> on 2016-09-26 01:20</div>
+            <div class="timeline-body"><p>Maybe there should be an option for specifying additional (or replacement) ignore files manually?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-26 01:43</div>
+            <div class="timeline-body"><p>@vi That's always an option, but it's not particularly satisfying.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rjayatilleka">@rjayatilleka</a> on 2016-09-27 23:22</div>
+            <div class="timeline-body"><p>I also think <code>$GIT_DIR/info/exclude</code> would be more useful than <code>core.excludesFile</code>. But if there is a worry about performance, I think the flag for specifying extra ignore files is best. It can always be aliased or put in a short function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Julian">@Julian</a> on 2016-10-10 11:38</div>
+            <div class="timeline-body"><p>(Just for some counterbalance -- I'm certainly in the bucket of people you originally mentioned. <code>$XDG_CONFIG_HOME/git/ignore</code> is way way way more important for me.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/john-kurkowski">@john-kurkowski</a> on 2016-10-10 18:21</div>
+            <div class="timeline-body"><p><code>core.excludesFile</code> for me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rjayatilleka">@rjayatilleka</a> on 2016-10-20 21:51</div>
+            <div class="timeline-body"><p>Actually, changed my mind. <code>core.excludesFile</code> for me too. How high on the priority list is this feature btw?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-25 18:19</div>
+            <div class="timeline-body"><p>It's being worked on.</p>
+<p>On Oct 20, 2016 5:51 PM, &quot;Ramith Jayatilleka&quot; notifications@github.com
+wrote:</p>
+<blockquote>
+<p>Actually, changed my mind. core.excludesFile for me too. How high on the
+priority list is this feature btw?</p>
+<p>—
+You are receiving this because you authored the thread.
+Reply to this email directly, view it on GitHub
+https://github.com/BurntSushi/ripgrep/issues/9#issuecomment-255238570,
+or mute the thread
+https://github.com/notifications/unsubscribe-auth/AAb34puYJ9ir4rQPWTT_kcOTPAHu0mlWks5q1-JegaJpZM4KCvdR
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-10-30 01:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-30 01:21</div>
+            <div class="timeline-body"><p>Fixed in #202.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:35 UTC
+    </footer>
+</body>
+</html>

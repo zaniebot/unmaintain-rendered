@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regexps in configuration file are ignored if no other regexp is present in the command line - BurntSushi/ripgrep #1730</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Regexps in configuration file are ignored if no other regexp is present in the command line</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1730">#1730</a>
+        opened by <a href="https://github.com/cyrus-and">@cyrus-and</a>
+        on 2020-11-15 01:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cyrus-and">@cyrus-and</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 12.1.1
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<pre><code>brew install ripgrep
+</code></pre>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>macOS 11.0.1</p>
+<h4>Describe your bug.</h4>
+<p>If regexps (<code>--regexp</code>) are <strong>exclusively</strong> specified in the configuration file, then they are ignored.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<pre><code>$ cat /tmp/.ripgreprc
+--regexp
+foo
+$ echo 'xxx foo xxx' | RIPGREP_CONFIG_PATH=/tmp/.ripgreprc rg
+</code></pre>
+<h4>What is the actual behavior?</h4>
+<pre><code>$ echo 'xxx foo xxx' | RIPGREP_CONFIG_PATH=/tmp/.ripgreprc rg --debug
+error: The following required arguments were not provided:
+    &lt;PATTERN&gt;
+
+USAGE:
+
+    rg [OPTIONS] PATTERN [PATH ...]
+    rg [OPTIONS] [-e PATTERN ...] [-f PATTERNFILE ...] [PATH ...]
+    rg [OPTIONS] --files [PATH ...]
+    rg [OPTIONS] --type-list
+    command | rg [OPTIONS] PATTERN
+
+For more information try --help
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<pre><code>xxx foo xxx
+</code></pre>
+<p>(With <code>foo</code> being highlighted.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-15 01:37</div>
+            <div class="timeline-body"><p>Could you please explain why you want to do this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cyrus-and">@cyrus-and</a> on 2020-11-15 01:42</div>
+            <div class="timeline-body"><p>I'm using ripgrep as a <em>backend</em> for some script and I'd like to pass all the arguments/configuration in the same way. Using the configuration file seems more elegant than passing individual parameters on the command line which (albeit unlikely nowadays) is subject to limitation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">doc</span> added by @BurntSushi on 2020-11-15 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-11-15 20:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-15 20:05</div>
+            <div class="timeline-body"><p>Thanks for clarifying. Ultimately, this would be difficult to fix and I don't think your use case is worth it. I updated the man page's section on config files to clarify this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cyrus-and">@cyrus-and</a> on 2020-11-15 20:20</div>
+            <div class="timeline-body"><p>I see your point and admittedly I'm not aware of the internals, but still this somewhat smells fishy (no disrespect) for a number of reason, e.g., the fact that the usage hints that <code>rg</code> can run without arguments:</p>
+<pre><code>rg [OPTIONS] [-e PATTERN ...] [-f PATTERNFILE ...] [PATH ...]</code></pre>
+<p>And also that it can be worked around with something like (for the sake of the argument):</p>
+<pre><code class="language-console">$ echo 'xxx foo xxx' | RIPGREP_CONFIG_PATH=/tmp/.ripgreprc rg -e '$x'
+xxx foo xxx
+</code></pre>
+<p>Anyway thanks for such a quick action and for this project!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-15 20:40</div>
+            <div class="timeline-body"><p>Ah, yes, the usage hints in the <code>-h/--help</code> output appear to have gotten out of sync with the man page. The man page has the correct usage hints. I've fixed that.</p>
+<p>The usage hints were also written long before the config file functionality existed. So just running <code>rg</code> with no arguments never really made sense. There wouldn't be anything for <code>rg</code> to do. And even with support for config files, this is a rather extreme edge case. Configuration files were never really intended to be a way to supply 100% of all arguments to ripgrep. They are intended to solve the problem of passing common arguments. The only reason why this sort of thing even looks possible is because of the config file format: it's just CLI flags. If the config format were, say, a Yaml file, there wouldn't be any expectation that this would work I think.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:15 UTC
+    </footer>
+</body>
+</html>

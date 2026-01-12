@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ignore: don't process command line arguments in reverse order - BurntSushi/ripgrep #2849</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ignore: don't process command line arguments in reverse order</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/2849">#2849</a>
+        opened by <a href="https://github.com/th1000s">@th1000s</a>
+        on 2024-07-03 20:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/th1000s">@th1000s</a></div>
+            <div class="timeline-body"><pre><code>When searching in parallel with many more arguments than threads, the
+first arguments are searched last -- unlike in the -j1 case.
+
+This is unexpected for users who know about the parallel nature of rg and
+think they can give the scheduler a hint by positioning larger input files
+(L1, L2, ..) before smaller ones (█, ██). Instead, this can result in
+sub-optimal thread usage and thus longer runtime
+(simplified example with 2 threads):
+
+ T1:  █ ██ █ █ █ █ ██ █ █ █ █ █ ██ ╠═════════════L1════════════╣
+ T2:  █ █ ██ █ █ ██ █ █ █ ██ █ █ ╠═════L2════╣
+
+                                       ┏━━━━┳━━━━┳━━━━┳━━━━┓
+This is caused by assigning work to    ┃ T1 ┃ T2 ┃ T3 ┃ T4 ┃
+ per-thread stacks in a round-robin    ┡━━━━╇━━━━╇━━━━╇━━━━┩
+              manner, starting here  → │ L1 │ L2 │ L3 │ L4 │ ↵
+                                       ├────├────┼────┼────┤
+                                       │ s5 │ s6 │ s7 │ s8 │ ↵
+                                       ├────┼────┼────┼────┤
+                                       ╷ .. ╷ .. ╷ .. ╷ .. ╷
+                                       ├────┼────┼────┼────┤
+                                       │ st │ su │ sv │ sw │ ↵
+                                       ├────┼────┼────┼────┘
+                                       │ sx │ sy │ sz │
+                                       └────┴────┴────┘
+   and then processing them bottom-up:   ↥    ↥    ↥    ↥
+
+                                       ╷ .. ╷ .. ╷ .. ╷ .. ╷
+This patch reverses the input order    ├────┼────┼────┼────┤
+so the two reversals cancel each other │ s7 │ s6 │ s5 │ L4 │ ↵
+out. Now at least the first N          ├────┼────┼────┼────┘
+arguments, N=number-of-threads, are    │ L3 │ L2 │ L1 │
+processed before any others (then      └────┴────┴────┘
+work-stealing may happen):
+
+ T1:  ╠═════════════L1════════════╣ █ ██ █ █ █ █ █ █ ██
+ T2:  ╠═════L2════╣ █ █ ██ █ █ ██ █ █ █ ██ █ █ ██ █ █ █
+
+(With some more shuffling T1 could always be assigned L1 etc., but
+that would mostly be for optics).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2025-07-26 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-09-20 01:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:16 UTC
+    </footer>
+</body>
+</html>

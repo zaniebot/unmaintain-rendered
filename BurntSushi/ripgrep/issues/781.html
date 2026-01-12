@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ripgrep misses a match but succeeds with `-S` and `-i` - BurntSushi/ripgrep #781</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ripgrep misses a match but succeeds with <code>-S</code> and <code>-i</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/781">#781</a>
+        opened by <a href="https://github.com/OliverUv">@OliverUv</a>
+        on 2018-02-08 06:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/OliverUv">@OliverUv</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.7.1
+-AVX -SIMD</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<pre><code>Distributor ID: Ubuntu
+Description:    Ubuntu 17.10
+Release:        17.10
+Codename:       artful
+</code></pre>
+<pre><code>&gt; uname -srvpoi
+Linux 4.13.0-31-generic #34-Ubuntu SMP Fri Jan 19 16:34:46 UTC 2018 x86_64 x86_64 GNU/Linux
+</code></pre>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>Download <a href="https://github.com/BurntSushi/ripgrep/files/1705949/rgbug.tar.gz">rgbug.tar.gz</a>, unpack, enter the contained directory, then search for <code>clone_created</code>.</p>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<p>https://gist.github.com/e1af638724793b341eee4f4f9e902afd</p>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>Following the reproduction instructions will show a result from file <code>one.ts</code>, it should also show a result from <code>two.ts</code>. If used with the <code>-i</code> or <code>-S</code> flags, both results are shown as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lilydjwg">@lilydjwg</a> on 2018-02-08 10:10</div>
+            <div class="timeline-body"><p>I get a similar issue and git bisect reports that 7dd1194a975721c49121f07644ebd0414cddbff5 is the first bad commit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-08 12:34</div>
+            <div class="timeline-body"><p>@lilydjwg Thanks for the bisect! That is indeed the cause of the issue. That commit updated the regex library, which had a new Boyer-Moore optimization. Apparently, the implementation of Boyer-Moore is buggy.</p>
+<p>This should be fixed in the next release.</p>
+<p>(The reason why <code>-i/--ignore-case</code> &quot;fixes&quot; this is because it causes a different optimization to be used instead of Boyer-Moore.)</p>
+<p>Thanks @OliverUv for the great bug report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2018-02-08 12:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-02-08 23:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:25 UTC
+    </footer>
+</body>
+</html>

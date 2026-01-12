@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skip lines in a file - BurntSushi/ripgrep #1653</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Skip lines in a file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1653">#1653</a>
+        opened by <a href="https://github.com/majkinetor">@majkinetor</a>
+        on 2020-08-14 08:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/majkinetor">@majkinetor</a></div>
+            <div class="timeline-body"><p>I use rg to display log errors on log files that can become quite big over time.  I do this in a loop or when log file changes. Is it possible to instruct rg to continue from the line where it finished in previous run ?</p>
+<p>As an example:</p>
+<pre><code>$out = rg &lt;PATTERN&gt; app.log
+$LASTLINE = (get-from-result) OR (get-line-count-if-no-results)
+
+rg --skip-lines $LASTLINE app.log 
+</code></pre>
+<p>I couldn't find anything like that in rg which implies that it must be done via external tool (such tail) which somewhat defeats the performance benefits of rg.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-08-14 11:21</div>
+            <div class="timeline-body"><p>Yes, you must do this with an external tool. I don't quite understand why you think this defeats the performance benefits of ripgrep though. I don't think ripgrep would be able to skip lines any faster than head or tail would.</p>
+<p>The usual way I've done this sort of thing in the past is to do <code>tail -f logfile | rg foo</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/majkinetor">@majkinetor</a> on 2020-08-14 11:25</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think ripgrep would be able to skip lines any faster than head or tail would</p>
+</blockquote>
+<p>It would certainly be  faster as it doesn't require any IPC and external process invocation.
+It also doesn't require any external tool. On Windows for example there is no <code>tail</code> OTB, and <code>Get-Content &lt;file&gt; | Skip -First $lines</code> is noticeable  slow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-08-14 11:46</div>
+            <div class="timeline-body"><blockquote>
+<p>It would certainly be faster as it doesn't require any IPC and external process invocation.</p>
+</blockquote>
+<p>You might be literally correct, but I suppose I should have said, &quot;meaningfully faster.&quot; And I don't agree that it would be.</p>
+<blockquote>
+<p>It also doesn't require any external tool. On Windows for example there is no tail OTB, and <code>Get-Content &lt;file&gt; | Skip -First $lines</code> is noticeable slow.</p>
+</blockquote>
+<p>I don't think it's fair for ripgrep to take on the burden of missing or poor tooling in every environment. With that said, if this is easy to implement and maintain, then I might be inclined to take it on.</p>
+<p>Could you write a detailed specification for the feature you want? Ideally, the specification would correspond to the documentation you'd like to see for this feature in ripgrep's <code>--help</code> output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2020-08-14 11:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2020-08-14 11:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/majkinetor">@majkinetor</a> on 2020-08-14 11:53</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think it's fair for ripgrep to take on the burden of missing or poor tooling in every environment.</p>
+</blockquote>
+<p>Yeah, I agree. And i like 'separation of concerns' I am just not sure if this concern is not part of the rg domain. For example C++ function <code>find</code> has <code>pos</code> argument - <em>The initial position from where the string search is to begin</em>  and that is basically the same in any other language. So if rg is to be used in looping scenarios (like above mentioned function is often used), it should probably have this parameter.</p>
+<blockquote>
+<p>Could you write a detailed specification for the feature you want?</p>
+</blockquote>
+<p>OK, I will do that in the near future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/krobelus">@krobelus</a> on 2020-08-14 18:13</div>
+            <div class="timeline-body"><p>Sounds a bit specific. Using <code>sed</code> or <code>awk</code> to skip those lines before piping into <code>rg</code> should be quite fast.</p>
+<p>If your file gets really big then a <code>rg --skip-lines</code> would also  get slower linearly because it has to parse newlines to know where to start searching. I think GNU grep and ripgrep are so fast because they can skip looking at most characters depending on the pattern. When counting newlines they can't skip a single byte, so that option could even make <code>rg</code> slower.</p>
+<p>If it really matters you can cache the file offset to directly continue where you left off for maximum efficiency:</p>
+<pre><code class="language-perl">perl -e '
+    $offset = -f &quot;app.log.offset&quot; ? `cat &quot;app.log.offset&quot;` : 0; # read cached offset
+    open IN, &quot;&lt;&quot;, &quot;app.log&quot; or die &quot;open: $!&quot;;
+    seek IN, $offset, 0;
+    print while (&lt;IN&gt;);
+    $offset = tell IN;
+    system &quot;echo $offset &gt;app.log.offset&quot; # remember offset for next run
+' | rg PATTERN
+</code></pre>
+<p>I guess there could be a byte-offset option to ripgrep but I don't know if that's worth it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-08-14 18:34</div>
+            <div class="timeline-body"><blockquote>
+<p>I think GNU grep and ripgrep are so fast because they can skip looking at most characters depending on the pattern. When counting newlines they can't skip a single byte, so that option could even make rg slower.</p>
+</blockquote>
+<p>Just a small note that this isn't really true any more. ripgrep is fast at searching primarily because of its vectorized routines. (The same is true of GNU grep.) And indeed, line counting is <a href="https://github.com/llogiq/bytecount">also vectorized</a> and is quite fast. It's <em>probably</em> faster than what sed does to be honest, but I don't know by how much or whether that makes worth re-creating that functionality in ripgrep.</p>
+<p>Presumably if the OP doesn't have head or tail then they probably don't have sed or awk either. So that's part of the problem too I suppose.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/majkinetor">@majkinetor</a> on 2020-08-15 08:00</div>
+            <div class="timeline-body"><blockquote>
+<p>And indeed, line counting is also vectorized and is quite fast.</p>
+</blockquote>
+<p>Ah this is a good read. Thx</p>
+<blockquote>
+<p>rg --skip-lines would also get slower linearly because it has to parse newlines to know where to start searching.</p>
+</blockquote>
+<p>rg already counts lines because it returns line number on each match. It will actually speed up rg in that case as it will not look for the pattern before adequate lines are reached.</p>
+<blockquote>
+<p>Presumably if the OP doesn't have head or tail then they probably don't have sed or awk either. So that's part of the problem too I suppose.</p>
+</blockquote>
+<p>Yeah, if OSes universally came with performant line counting tools then we would probably not having this conversation. Given that main selling point of rg is speed, and that skipping content is more or less expected behavior I don't see it as too specific.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-25 19:05</div>
+            <div class="timeline-body"><p>I don't think I've changed my mind on this in the intervening years and it overall seems like it's out of scope for ripgrep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-25 19:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2023-11-25 19:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jcparkyn">@Jcparkyn</a> on 2024-08-05 01:15</div>
+            <div class="timeline-body"><p>One thing not mentioned here that I've run into is that using <code>tail</code> means the byte offsets reported by ripgrep's <code>-b</code> flag are all relative to the starting point, not the start of the file. This obviously makes sense when reading from stdin, but it'd be much nicer if I could have byte offsets relative to the whole file so that I can use them on subsequent calls to <code>rg</code>. (yes, I can manually add them to the start offset, but it's annoying and error-prone).</p>
+<p>As far as I can tell, this is only really feasible if <code>rg</code> had something like a <code>--skip-bytes</code> flag. This would probably need to disable the line number output for performance.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:13 UTC
+    </footer>
+</body>
+</html>

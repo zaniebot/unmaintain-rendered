@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>.gitignore rule is matched incorrectly while in a subdir - BurntSushi/ripgrep #2778</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>.gitignore rule is matched incorrectly while in a subdir</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2778">#2778</a>
+        opened by <a href="https://github.com/woess">@woess</a>
+        on 2024-04-10 00:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/woess">@woess</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>ripgrep 14.1.0</p>
+<h3>How did you install ripgrep?</h3>
+<p>cargo install</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Linux</p>
+<h3>Describe your bug.</h3>
+<p>.gitignore rule to ignore <code>/dir/*.ext</code> works correctly when running rg from the repo root, but incorrectly ignores <code>*.ext</code> in all subdirs when running from <code>dir</code>.</p>
+<h3>What are the steps to reproduce the behavior? / What is the actual behavior?</h3>
+<pre><code>mkdir /tmp/repro
+cd /tmp/repro
+git init
+mkdir parent
+mkdir parent/subdir
+echo &quot;/parent/*.txt&quot; &gt; .gitignore
+echo &quot;please ignore me&quot; &gt; parent/ignore-me.txt
+echo &quot;please don't ignore me&quot; &gt; parent/subdir/dont-ignore-me.txt
+</code></pre>
+<p>while in git repo root dir (/tmp/repro), everything is working as expected:</p>
+<pre><code>$ rg ignore
+parent/subdir/dont-ignore-me.txt
+1:please don't ignore me
+</code></pre>
+<p>but once you <code>cd</code> into <code>./parent</code>, suddenly the rule is unexpectedly applied to the file in <code>subdir</code>, too, and nothing is found:</p>
+<pre><code>$ cd parent
+$ rg ignore
+rg: No files were searched, which means ripgrep probably applied a filter you didn't expect.
+Running with --debug will show why files are being skipped.
+</code></pre>
+<p>Debug output (argument parsing omitted: &quot;no extra arguments found from configuration file&quot;, &quot;heuristic chose to search ./&quot;):</p>
+<pre><code>/tmp/repro $ rg ignore
+rg: DEBUG|grep_regex::config|/…/grep-regex-0.1.12/src/config.rs:175: assembling HIR from 1 fixed string literals
+rg: DEBUG|globset|/…/globset-0.4.14/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|globset|/…/globset-0.4.14/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 1 required extensions, 0 regexes
+rg: DEBUG|ignore::walk|/…/ignore-0.4.22/src/walk.rs:1799: ignoring ./.git: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|/…/ignore-0.4.22/src/walk.rs:1799: ignoring ./.gitignore: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|/…/ignore-0.4.22/src/walk.rs:1799: ignoring ./parent/ignore-me.txt: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/parent/*.txt&quot;, actual: &quot;parent/*.txt&quot;, is_whitelist: false, is_only_dir: false })))
+test/subdir/ignore-me.txt
+1:please don't ignore me
+
+/tmp/repro/parent $ rg ignore
+rg: DEBUG|grep_regex::config|/…/grep-regex-0.1.12/src/config.rs:175: assembling HIR from 1 fixed string literals
+rg: DEBUG|globset|/…/globset-0.4.14/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|globset|/…/globset-0.4.14/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 1 required extensions, 0 regexes
+rg: DEBUG|ignore::walk|/…/ignore-0.4.22/src/walk.rs:1799: ignoring ./ignore-me.txt: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/tmp/repro/.gitignore&quot;), original: &quot;/parent/*.txt&quot;, actual: &quot;parent/*.txt&quot;, is_whitelist: false, is_only_dir: false })))
+rg: DEBUG|ignore::walk|/…/ignore-0.4.22/src/walk.rs:1799: ignoring ./subdir/dont-ignore-me.txt: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/tmp/repro/.gitignore&quot;), original: &quot;/parent/*.txt&quot;, actual: &quot;parent/*.txt&quot;, is_whitelist: false, is_only_dir: false })))
+rg: No files were searched, which means ripgrep probably applied a filter you didn't expect.
+Running with --debug will show why files are being skipped.
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<pre><code>/tmp/repro/parent $ rg ignore
+subdir/dont-ignore-me.txt
+1:please don't ignore me
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/h4emp3">@h4emp3</a> on 2024-06-28 10:33</div>
+            <div class="timeline-body"><p>I just was pretty confused about the ignore behaviour of ripgrep and I think I observed the same problem described here.</p>
+<hr />
+<p>Minimal repro I could come up with:</p>
+<pre><code class="language-sh">mkdir .git
+echo '/folder/file' &gt; .gitignore
+mkdir -p folder/sub/folder/sub
+echo 'do NOT find me' &gt; folder/file
+echo 'find me' &gt; folder/sub/file
+</code></pre>
+<pre><code># rg --version
+ripgrep 14.1.0
+
+features:-simd-accel,+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2
+
+PCRE2 10.42 is available (JIT is available)
+</code></pre>
+<pre><code># rg --debug 'find me' .
+rg: DEBUG|rg::flags::parse|crates/core/flags/parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1260: found hostname for hyperlink configuration: vermeer
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1270: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 12 thread(s)
+rg: DEBUG|grep_regex::config|/usr/share/cargo/registry/grep-regex-0.1.12/src/config.rs:175: assembling HIR from 1 fixed string literals
+rg: DEBUG|globset|/usr/share/carg
+---o/registry/globset-0.4.14/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|globset|/usr/share/cargo/registry/globset-0.4.14/src/lib.rs:453: built glob set; 1 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|ignore::walk|/usr/share/cargo/registry/ignore-0.4.22/src/walk.rs:1799: ignoring ./.git: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|/usr/share/cargo/registry/ignore-0.4.22/src/walk.rs:1799: ignoring ./.gitignore: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|/usr/share/cargo/registry/ignore-0.4.22/src/walk.rs:1799: ignoring ./folder/file: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;/folder/file&quot;, actual: &quot;folder/file&quot;, is_whitelist: false, is_only_dir: false })))
+./folder/sub/file
+1:find me
+</code></pre>
+<pre><code># rg --debug 'find me' folder
+rg: DEBUG|rg::flags::parse|crates/core/flags/parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1260: found hostname for hyperlink configuration: vermeer
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1270: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 12 thread(s)
+rg: DEBUG|grep_regex::config|/usr/share/cargo/registry/grep-regex-0.1.12/src/config.rs:175: assembling HIR from 1 fixed string literals
+rg: DEBUG|globset|/usr/share/cargo/registry/globset-0.4.14/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|globset|/usr/share/cargo/registry/globset-0.4.14/src/lib.rs:453: built glob set; 1 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|ignore::walk|/usr/share/cargo/registry/ignore-0.4.22/src/walk.rs:1799: ignoring folder/file: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/tmp/rg-glob-test/.gitignore&quot;), original: &quot;/folder/file&quot;, actual: &quot;folder/file&quot;, is_whitelist: false, is_only_dir: false })))
+rg: DEBUG|ignore::walk|/usr/share/cargo/registry/ignore-0.4.22/src/walk.rs:1799: ignoring folder/sub/file: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/tmp/rg-glob-test/.gitignore&quot;), original: &quot;/folder/file&quot;, actual: &quot;folder/file&quot;, is_whitelist: false, is_only_dir: false })))
+</code></pre>
+<p>I expected the second call to rg to also find the file in the subdirectory.</p>
+<p>Perhaps the most notable difference to the original issue description is: You don't actually need to cd into the subdirectory to trigger the error, it is enough to pass the folder as argument to rg.</p>
+<hr />
+<p>Thanks in advance, I really appreciate your work on rg and your comments and writeups on it and other topics!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ttrei">@ttrei</a> on 2024-08-29 16:11</div>
+            <div class="timeline-body"><p>I encountered a similar problem with ignore behavior.</p>
+<pre><code>mkdir repro
+cd repro
+mkdir -p a/b/c
+echo &quot;foo&quot; &gt; a/b/c/foo.txt
+echo &quot;**/b/c&quot; &gt; .rgignore
+</code></pre>
+<pre><code># rg --version
+ripgrep 14.1.0
+
+features:-simd-accel,+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2
+
+PCRE2 10.42 is available (JIT is available)
+</code></pre>
+<pre><code># rg foo ./ --debug
+rg: DEBUG|rg::flags::config|crates/core/flags/config.rs:41: /home/reinis/.ripgreprc: arguments loaded from config file: [&quot;--smart-case&quot;, &quot;--follow&quot;]
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1260: found hostname for hyperlink configuration: mercury
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1264: found wsl_prefix for hyperlink configuration: wsl$/debian-main
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1270: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 12 thread(s)
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 5 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 5 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 5 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 1 literals, 0 basenames, 0 extensions, 0 prefixes, 1 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1799: ignoring ./.rgignore: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1799: ignoring ./a/b/c: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.rgignore&quot;), original: &quot;**/b/c&quot;, actual: &quot;**/b/c&quot;, is_whitelist: false, is_only_dir: false })))
+</code></pre>
+<pre><code># rg foo ./a --debug
+rg: DEBUG|rg::flags::config|crates/core/flags/config.rs:41: /home/reinis/.ripgreprc: arguments loaded from config file: [&quot;--smart-case&quot;, &quot;--follow&quot;]
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1260: found hostname for hyperlink configuration: mercury
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1264: found wsl_prefix for hyperlink configuration: wsl$/debian-main
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1270: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 12 thread(s)
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 5 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 5 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 5 basenames, 1 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 1 literals, 0 basenames, 0 extensions, 0 prefixes, 1 suffixes, 0 required extensions, 0 regexes
+./a/b/c/foo.txt
+1:foo
+</code></pre>
+<p>I expect the second rg invocation to also ignore the b/c subdirectory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/deanqx">@deanqx</a> on 2024-11-02 14:21</div>
+            <div class="timeline-body"><p>same here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ronjakoistinen">@ronjakoistinen</a> on 2025-01-16 17:39</div>
+            <div class="timeline-body"><p>I'm seeing the same behaviour:</p>
+<pre><code class="language-console">$ mkdir /tmp/repro
+$ cd /tmp/repro/
+$ mkdir -p foo/bar
+$ echo &quot;**/bar/*.txt&quot; &gt; .rgignore
+$ echo &quot;ignore me&quot; &gt; foo/bar/ignore.txt
+
+
+$ rg ignore --debug
+rg: DEBUG|rg::flags::parse|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.1/crates/core/flags/parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.1/crates/core/flags/hiargs.rs:1083: number of paths given to search: 0
+rg: DEBUG|rg::flags::hiargs|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.1/crates/core/flags/hiargs.rs:1108: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=false, stdin_consumed=false, mode=Search(Standard))
+rg: DEBUG|rg::flags::hiargs|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.1/crates/core/flags/hiargs.rs:1118: heuristic chose to search ./
+rg: DEBUG|rg::flags::hiargs|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.1/crates/core/flags/hiargs.rs:1269: found hostname for hyperlink configuration: taxus
+rg: DEBUG|rg::flags::hiargs|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.1/crates/core/flags/hiargs.rs:1279: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.1/crates/core/flags/hiargs.rs:174: using 12 thread(s)
+rg: DEBUG|grep_regex::config|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/grep-regex-0.1.13/src/config.rs:175: assembling HIR from 1 fixed string literals
+rg: DEBUG|globset|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/globset-0.4.15/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|ignore::gitignore|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ignore-0.4.23/src/gitignore.rs:393: opened gitignore file: ./.rgignore
+rg: DEBUG|globset|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/globset-0.4.15/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 1 required extensions, 0 regexes
+rg: DEBUG|ignore::walk|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ignore-0.4.23/src/walk.rs:1799: ignoring ./.rgignore: Ignore(IgnoreMatch(Hidden))
+rg: DEBUG|ignore::walk|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ignore-0.4.23/src/walk.rs:1799: ignoring ./foo/bar/ignore.txt: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.rgignore&quot;), original: &quot;**/bar/*.txt&quot;, actual: &quot;**/bar/*.txt&quot;, is_whitelist: false, is_only_dir: false })))
+rg: No files were searched, which means ripgrep probably applied a filter you didn't expect.
+Running with --debug will show why files are being skipped.
+
+
+$ rg ignore foo/ --debug
+rg: DEBUG|rg::flags::parse|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.1/crates/core/flags/parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.1/crates/core/flags/hiargs.rs:1083: number of paths given to search: 1
+rg: DEBUG|rg::flags::hiargs|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.1/crates/core/flags/hiargs.rs:1094: is_one_file? false
+rg: DEBUG|rg::flags::hiargs|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.1/crates/core/flags/hiargs.rs:1269: found hostname for hyperlink configuration: taxus
+rg: DEBUG|rg::flags::hiargs|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.1/crates/core/flags/hiargs.rs:1279: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ripgrep-14.1.1/crates/core/flags/hiargs.rs:174: using 12 thread(s)
+rg: DEBUG|grep_regex::config|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/grep-regex-0.1.13/src/config.rs:175: assembling HIR from 1 fixed string literals
+rg: DEBUG|globset|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/globset-0.4.15/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: DEBUG|ignore::gitignore|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/ignore-0.4.23/src/gitignore.rs:393: opened gitignore file: /tmp/repro/.rgignore
+rg: DEBUG|globset|/home/ronja/.cargo/registry/src/index.crates.io-6f17d22bba15001f/globset-0.4.15/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 1 required extensions, 0 regexes
+foo/bar/ignore.txt
+1:ignore me
+
+
+$ rg --version
+ripgrep 14.1.1
+
+features:-pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2
+
+PCRE2 is not available in this build of ripgrep.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woess">@woess</a> on 2025-02-12 00:47</div>
+            <div class="timeline-body"><p>I've done some digging and it seems this code is responsible for this issue:
+https://github.com/BurntSushi/ripgrep/blob/e2362d4d5185d02fa857bf381e7bd52e66fafc73/crates/ignore/src/dir.rs#L457-L478</p>
+<p>What's happening here is that when we are in cwd <code>/tmp/repro/parent</code> and descend into <code>./subdir</code>:
+<code>abs_parent_path=&quot;/tmp/repro/parent&quot;</code>, <code>dir_path=&quot;./subdir&quot;</code>, and <code>path=&quot;subdir/dont-ignore-me.txt&quot;</code>.</p>
+<ol>
+<li><code>strip_prefix</code> strips <code>&quot;./&quot;</code> from <code>dir_path</code>, so <code>path_prefix=&quot;subdir&quot;</code>.</li>
+<li><code>strip_prefix</code> strips <code>path_prefix</code> from <code>path</code>, i.e. <code>&quot;subdir/dont-ignore-me.txt&quot;</code> =&gt; <code>&quot;/dont-ignore-me.txt&quot;</code>.</li>
+<li><code>strip_prefix</code> strips the leading <code>&quot;/&quot;</code> from that, leaving only <code>p=&quot;dont-ignore-me.txt&quot;</code></li>
+<li><code>abs_parent_path.join(p)</code> results in <code>&quot;/tmp/repro/parent/dont-ignore-me.txt&quot;</code>.</li>
+</ol>
+<p>Note how <code>subdir</code> is missing in the final path.</p>
+<p>Replacing the above code snippet with just:</p>
+<pre><code class="language-rust">    let path = abs_parent_path.join(path);
+</code></pre>
+<p>fixes the problem for me, but is probably not the correct fix.</p>
+<p><strong>Edit</strong>: Found an open PR that fixes this issue as well: https://github.com/BurntSushi/ripgrep/pull/2933</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2025-07-11 16:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2025-07-11 16:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-09-20 01:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:47 UTC
+    </footer>
+</body>
+</html>

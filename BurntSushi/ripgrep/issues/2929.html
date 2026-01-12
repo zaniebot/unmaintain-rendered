@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rg's heuristic is wrong in github actions runner - BurntSushi/ripgrep #2929</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rg's heuristic is wrong in github actions runner</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2929">#2929</a>
+        opened by <a href="https://github.com/tymscar">@tymscar</a>
+        on 2024-11-11 16:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tymscar">@tymscar</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p><code>1.4.1.1</code> and <code>1.3.0.0</code> (both same issue)</p>
+<h3>How did you install ripgrep?</h3>
+<p>APT</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>ubuntu22, but more exactly, this image:
+<code>ghcr.io/actions/actions-runner:2.320.0</code></p>
+<h3>Describe your bug.</h3>
+<p>Ripgrep, when run inside github actions, fails to search local files, even with <code>--ignore</code> or <code>-uuu</code></p>
+<p>It picks the heuristic wrong, and there are no env vars that rewrite those.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>Run the following example in a github actions runner:</p>
+<pre><code class="language-bash">touch testrg.txt
+echo testrg &gt; testrg.txt
+rg --debug -uuu testrg &gt; result
+cat result
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<pre><code class="language-bash">touch testrg.txt
+echo testrg &gt; testrg.txt
+rg --debug -uuu testrg &gt; result
+cat result
+</code></pre>
+<p>output:</p>
+<pre><code class="language-console">rg: DEBUG|rg::flags::parse|crates/core/flags/parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1083: number of paths given to search: 0
+rg: DEBUG|grep_cli|crates/cli/src/lib.rs:209: for heuristic stdin detection on Unix, found that is_file=false, is_fifo=true and is_socket=false, and thus concluded that is_stdin_readable=true
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1108: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=true, stdin_consumed=false, mode=Search(Standard))
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1121: heuristic chose to search stdin
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1269: found hostname for hyperlink configuration: REDACTED
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1279: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 1 thread(s)
+rg: DEBUG|grep_regex::config|/project/crates/regex/src/config.rs:175: assembling HIR from 1 fixed string literals
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+Error: Process completed with exit code 1.
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>expected behaviour (and what I also get on local):</p>
+<pre><code class="language-console">rg: DEBUG|rg::flags::parse|crates/core/flags/parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1083: number of paths given to search: 0
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1108: using heuristics to determine whether to read from stdin or search ./ (is_readable_stdin=false, stdin_consumed=false, mode=Search(Standard))
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1118: heuristic chose to search ./
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1269: found hostname for hyperlink configuration: REDACTED
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1279: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 12 thread(s)
+rg: DEBUG|grep_regex::config|/private/tmp/nix-build-ripgrep-14.1.1.drv-0/source/crates/regex/src/config.rs:175: assembling HIR from 1 fixed string literals
+rg: DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+testrg.txt:testrg
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-11-11 16:11</div>
+            <div class="timeline-body"><p><code>--ignore</code> and <code>-uuu</code> have nothing to do with this. And while ripgrep does use a heuristic here, it can't realistically be changed without regressing something else. Probably GitHub Actions shouldn't be doing something that makes stdin looks readable in the first place, so I'd probably put the blame on Actions. But either way, there just really isn't anything ripgrep can do here.</p>
+<p>ripgrep specifically calls this out in its man page, near the top, and even tells you how to fix it:</p>
+<pre><code>       ripgrep  will  automatically  detect  if stdin exists and search
+       stdin for a regex pattern, e.g. ls | rg foo.  In  some  environ‐
+       ments,  stdin may exist when it shouldn't. To turn off stdin de‐
+       tection, one can explicitly specify  the  directory  to  search,
+       e.g. rg foo ./.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-11-11 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2024-11-11 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tymscar">@tymscar</a> on 2024-11-11 16:14</div>
+            <div class="timeline-body"><p>Hey @BurntSushi, thanks for the quick reply.</p>
+<p>I did read the docs and I have tried to specify the directory too and that did not help.
+The way I &quot;fixed&quot; it, was like this:</p>
+<p><code>rg  'testrg' . &lt;/dev/null</code></p>
+<p>That made me think it's something to do with rg, because as you can see in the debug logs, theres nothing specified in the stdin.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tymscar">@tymscar</a> on 2024-11-11 16:22</div>
+            <div class="timeline-body"><p>Also worth mentioning: grep does not have this issue in the same environment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-11-11 16:23</div>
+            <div class="timeline-body"><p>Please show <code>rg --debug -uuu testrg ./</code>. Because <em>none</em> of your commands in your initial comment include the directory to search.</p>
+<p>And yes, <code>grep</code> doesn't have this problem because it doesn't support this sort of thing in the first place. You can't just run <code>grep test</code>. It will never try to search the current working directory. It will always search <code>stdin</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tymscar">@tymscar</a> on 2024-11-11 16:42</div>
+            <div class="timeline-body"><p>My bad! I have tried again and got this output and I think my eyes just glossed over the output there in the middle.
+Thank you for the help and sorry for the bother.
+I think you are right and the github image just tricks the heuristic, I will raise an issue with them!</p>
+<pre><code class="language-console">+ rg --debug -uuu testrg ./
+DEBUG|grep_regex::literal|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/grep-regex-0.1.9/src/literal.rs:58: literal prefixes detected: Literals { lits: [Complete(testrg)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/globset-0.4.8/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/globset-0.4.8/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/globset-0.4.8/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+./testrg.txt:testrg
+DEBUG|globset|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/globset-0.4.8/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/globset-0.4.8/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/globset-0.4.8/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/globset-0.4.8/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/globset-0.4.8/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/globset-0.4.8/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/globset-0.4.8/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/globset-0.4.8/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/globset-0.4.8/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|/usr/share/cargo/registry/ripgrep-13.0.0/debian/cargo_registry/globset-0.4.8/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-11-11 16:43</div>
+            <div class="timeline-body"><p>Gotya. And yes, in particular, this line:</p>
+<pre><code>rg: DEBUG|grep_cli|crates/cli/src/lib.rs:209: for heuristic stdin detection on Unix, found that is_file=false, is_fifo=true and is_socket=false, and thus concluded that is_stdin_readable=true
+</code></pre>
+<p>That is, ripgrep is seeing a fifo on stdin.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:51 UTC
+    </footer>
+</body>
+</html>

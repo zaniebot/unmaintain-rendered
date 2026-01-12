@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--output like Ack (or: rethink --replace) - BurntSushi/ripgrep #308</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--output like Ack (or: rethink --replace)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/308">#308</a>
+        opened by <a href="https://github.com/mernen">@mernen</a>
+        on 2017-01-08 21:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mernen">@mernen</a></div>
+            <div class="timeline-body"><p>First, a question: what exactly is the use case for <code>--replace</code>? I don't think I've ever seen any other tool offering this option, and I can't think of many uses.</p>
+<p>I do, though, find Ack's <code>--output</code> useful every now and then. It's a similar feature, but it replaces the contents of the entire line rather than only the matched part. When coupled with <code>-h</code> (hiding line numbers and file names), it allows one to pipe the results to other tools to get statistics about the matches in ways I'm not sure how I'd achieve with ripgrep (or other competitors, for that matter).</p>
+<pre><code class="language-sh">$ # what are the std modules in use?
+$ ack '\bstd::\w+' --output '$&amp;' -h | sort | uniq -c | sort -nr
+  29 std::path
+  28 std::io
+  18 std::os
+  16 std::sync
+  14 std::ffi
+  10 std::error
+   9 std::fs
+   9 std::fmt
+   7 std::str
+   6 std::env
+   5 std::cmp
+   4 std::thread
+   4 std::process
+   4 std::mem
+   4 std::collections
+   3 std::borrow
+   2 std::time
+   2 std::result
+   2 std::ops
+   2 std::cell
+   1 std::vec
+   1 std::slice
+   1 std::marker
+   1 std::iter
+   1 std::hash
+   1 std::ascii
+</code></pre>
+<p>(ripgrep's <code>--replace</code> can be fully emulated in Ack using <code>$`</code> and <code>$'</code> in the output expression, but those perlisms are rather cryptic, and also pretty awkward to use on the CLI)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-08 22:02</div>
+            <div class="timeline-body"><p>Ack's <code>--output</code> is isomorphic to ripgrep's <code>--replace</code>. Apparently, it works slightly differently. As you noticed, it enables one to replace <em>each</em> match if they want to. At the same time, it's pretty easy to replace the entire line as well. All you need to do is make the regex match the full line. So <code>\bstd::\w+</code> would be written as <code>^.*\bstd::\w+.*$</code>. To use <code>--replace</code>, you'd then want to create a capturing group as well. So, ripgrep's version of your <code>ack</code> command is:</p>
+<pre><code>$ rg '^.*(\bstd::\w+).*$' --replace '$1' --no-filename | sort | uniq -c | sort -nr
+</code></pre>
+<p>Which has the same output. The <code>--no-filename</code> is like ack's <code>-h</code> flag.</p>
+<blockquote>
+<p>(ripgrep's --replace can be fully emulated in Ack using $` and $' in the output pattern, but those perlisms are rather cryptic, and also pretty awkward to use on the CLI)</p>
+</blockquote>
+<p>Hmm, yes, I'm actually not familiar with those perlisms. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mernen">@mernen</a> on 2017-01-08 22:20</div>
+            <div class="timeline-body"><p>Huh, indeed, it didn't occur to me at all to use <code>^.*</code> and <code>.*$</code> to replace the full line.</p>
+<p>Since they are fully isomorphic, if there's no intention to change how <code>--replace</code> works, I suppose this issue should be closed — even though I still find <code>--output</code> more useful (i.e. simpler on the more common use case), I don't think it's a good idea to have both, and I can certainly live just with <code>--replace</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-08 23:24</div>
+            <div class="timeline-body"><p>Yeah, I can see how --output might be more convenient. Tricky issue.</p>
+<p>I think we can at least improve the docs of --replace to include an example that replaces the entire line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">doc</span> added by @BurntSushi on 2017-01-09 00:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mernen">@mernen</a> on 2017-01-09 00:14</div>
+            <div class="timeline-body"><p>Just saw #34, about the grep feature <code>--only-matching</code>. I think it'd be the best of all worlds:</p>
+<ul>
+<li>As far as I can see, <code>-or</code> would be equivalent to Ack's <code>--output</code></li>
+<li>The alternative use case (today's <code>--replace</code>) would still be available, and significantly less cryptic and annoying to type than Ack's <code>--output '$`expr'&quot;$'&quot;</code></li>
+<li><code>-o</code> is a grep standard and works with other matches. I did consider adding a flag, but it seemed quite ridiculous to have one just for <code>--replace</code>. It didn't occur to me this same flag could have other (natural) uses.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-09 00:26</div>
+            <div class="timeline-body"><p>@mernen Good point. It actually didn't occur to me that <code>--only-matching</code> would be combined with <code>--replace</code> like that, but it makes perfect sense!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-01-10 21:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:00 UTC
+    </footer>
+</body>
+</html>

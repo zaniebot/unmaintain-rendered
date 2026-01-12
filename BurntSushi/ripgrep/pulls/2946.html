@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make `Glob.literal()` a public function - BurntSushi/ripgrep #2946</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make <code>Glob.literal()</code> a public function</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/2946">#2946</a>
+        opened by <a href="https://github.com/orf">@orf</a>
+        on 2024-12-09 16:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/orf">@orf</a></div>
+            <div class="timeline-body"><p>Being able to detect if a given string is a glob expression or a literal string is very handy in some contexts.</p>
+<p>As on example, we have a list of default AWS regions that we allow the user to specify a glob expression to match. However, the user may want to include another custom string as a region.</p>
+<p>Detecting if the user has passed a glob expression or a literal string is currently not possible with this crate, which is a real shame. If <code>literal()</code> was public then the implementation above would be as simple as:</p>
+<pre><code class="language-rust">let globs: &amp;[Glob] = ...;
+let glob_set = GlobSet::builder().add(...);
+let literal_regions = globs.iter().filter_map(|g| g.literal());
+let matched_regions = DEFAULT_REGIONS.iter().filter(|region| glob_set.is_match(region));
+
+return literal_regions.chain(matched_regions).collect();
+</code></pre>
+<p>I think that exposing the full AST or any specific internals is a bad idea, but being able to tell if a glob is a literal string is non-invasive (and simple!) enough to warrant exposing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @orf on 2025-01-24 18:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:18 UTC
+    </footer>
+</body>
+</html>

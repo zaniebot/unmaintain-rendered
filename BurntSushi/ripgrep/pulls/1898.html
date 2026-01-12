@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Draft] Windows: Add `longPathAware` manifest file - BurntSushi/ripgrep #1898</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Draft] Windows: Add <code>longPathAware</code> manifest file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/1898">#1898</a>
+        opened by <a href="https://github.com/ChrisDenton">@ChrisDenton</a>
+        on 2021-06-16 09:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ChrisDenton">@ChrisDenton</a></div>
+            <div class="timeline-body"><p>This adds a manifest file which enables support for long paths, without needing any special handling in the application's code.</p>
+<p>Building with this manifest requires the following black magic (and an MSVC compatible linker):</p>
+<pre><code>cargo rustc --release -- -C link-arg=&quot;/MANIFEST:EMBED&quot; -C link-arg=&quot;/MANIFESTINPUT:WinManifest.xml&quot;
+</code></pre>
+<p>The PR is a draft because:</p>
+<ul>
+<li>I'm uncertain how to nicely integrate this with the cargo build system without needing to type the correct commands each time. I guess it isn't too bad if copy/pasting from the readme? Or a script might be better?</li>
+<li>Either way, it'd also be good to integrate it with the ci but I'm unsure how best to do that.</li>
+</ul>
+<h1>Limitations</h1>
+<p>This still requires the ripgrep user to also enable long path support. See: <a href="https://docs.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=cmd#enable-long-paths-in-windows-10-version-1607-and-later">Enable Long Paths in Windows 10, Version 1607, and Later</a>.</p>
+<p>As far as I know, the commands must be typed on the command line because <code>.cargo/config.toml</code> and the <code>rustflags</code> environment variable pass link args to all linker invocation. There's no way to apply them only for a particular binary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-06-16 14:06</div>
+            <div class="timeline-body"><p>cc @ehuss Do you have any thoughts on how to do this better? Or is <code>cargo rustc</code> required here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>WinManifest.xml</code>:39 on 2021-06-16 14:06</div>
+            <div class="timeline-body"><p>Is this stanza necessary? What happens if we don't include it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>WinManifest.xml</code>:15 on 2021-06-16 14:07</div>
+            <div class="timeline-body"><p>Could you add a comment explaining how to update this stanza when a new version of Windows comes out?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>WinManifest.xml</code>:28 on 2021-06-16 14:07</div>
+            <div class="timeline-body"><p>Will this have any harmful effects for versions of Windows older than Windows 10 v 1607?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>WinManifest.xml</code>:7 on 2021-06-16 14:08</div>
+            <div class="timeline-body"><p>Is this required? I try not to put the version number in too many places. Right now, it's in exactly two places, and in the most recent release, I forgot to update one of them.</p>
+<p>If it's unavoidable, then I think adding a step to <code>RELEASE-CHECKLIST.md</code> would be the right thing to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> requested changes on 2021-06-16 14:16</div>
+            <div class="timeline-body"><p>Amaaazing! I've been hoping someone with more Windows knowledge than myself would put something like this together. If <code>cargo rustc</code> is indeed the best we can do, then I definitely think this is still worth doing and adding a note in the README for it. Ideally, we could provide some nicer way of building without requiring the user to pass linker arguments.</p>
+<p>I would also request that we create a new top-level directory called <code>windows</code> and drop this file there, instead of putting it at the top-level itself. Putting a README in that directory explaining the files would be bonus points. :-)</p>
+<blockquote>
+<p>This still requires the ripgrep user to also enable long path support.</p>
+</blockquote>
+<p>I think we will want to include these instructions in the README. The fact that a user has to edit their registry for this seems absolutely bonkers to me though.</p>
+<blockquote>
+<p>Either way, it'd also be good to integrate it with the ci but I'm unsure how best to do that.</p>
+</blockquote>
+<p>I think we want it in both the normal build workflow and the release workflow. For the release workflow for example, I think you'll want to add a <code>if: matrix.os != 'windows-2019'</code> to <a href="https://github.com/BurntSushi/ripgrep/blob/e33d6e73f57d498c65abf83b7fa74ee35f835bcf/.github/workflows/release.yml#L136-L137">this block</a>, and then add another block with <code>if: matrix.os == 'windows-2019'</code> that uses <code>cargo rustc</code> instead. Modifying the <code>ci</code> workflow will be more tedious, but I think it's the same idea. Maybe splitting the build command to an env var (<code>cargo build</code> by default, <code>cargo rustc</code> for Windows MSVC) would be better. Similarly for the release workflow. (And maybe my suggestion above is wrong, because it would try to use this manifest with the GNU builds too.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ChrisDenton">@ChrisDenton</a> reviewed on 2021-06-16 14:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ChrisDenton">@ChrisDenton</a> on <code>WinManifest.xml</code>:39 on 2021-06-16 14:37</div>
+            <div class="timeline-body"><p>Sure, we can exclude it. The linker will add it back anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ChrisDenton">@ChrisDenton</a> reviewed on 2021-06-16 14:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ChrisDenton">@ChrisDenton</a> on <code>WinManifest.xml</code>:28 on 2021-06-16 14:37</div>
+            <div class="timeline-body"><p>In that case it will be unrecognised so it should be ignored. I will test on a Windows 7 VM to double check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ChrisDenton">@ChrisDenton</a> reviewed on 2021-06-16 14:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ChrisDenton">@ChrisDenton</a> on <code>WinManifest.xml</code>:7 on 2021-06-16 14:38</div>
+            <div class="timeline-body"><p>Hmm, I'm actually unsure here. <a href="https://docs.microsoft.com/en-us/windows/win32/sbscs/application-manifests">The docs</a> list it as &quot;required&quot; but excluding <code>assemblyIdentity</code> entirely still seems to work. I was just a bit nervous about breaking with the docs.</p>
+<p>EDIT: In any case, I don't think the version actually has to be accurate or meaningful. It could just be set to <code>0.0.0.0</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lespea">@lespea</a> on 2021-06-16 15:02</div>
+            <div class="timeline-body"><p>Couldn't you use something like https://crates.io/crates/embed-resource to avoid the explicit flag requirement?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChrisDenton">@ChrisDenton</a> on 2021-06-16 15:08</div>
+            <div class="timeline-body"><p>Yeah, that might be easier! It would save having to mess about with the linker. I'll try it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-06-16 15:08</div>
+            <div class="timeline-body"><p>@lespea I personally don't know anything about this, so &quot;couldn't you use&quot; is kind of framing this in the wrong direction. I don't know what we can and can't use. I'm not an expert here.</p>
+<p>With that said, looking at <code>embed-resource</code> and its transitive dependencies does not inspire confidence. And it looks like it pulls in C code? I'd rather not do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lespea">@lespea</a> on 2021-06-16 15:10</div>
+            <div class="timeline-body"><p>@BurntSushi oh sorry that was mostly directed at Chris.  I haven't used embed-resource personally I just remember coming across it and kept it in the back of my mind for the future.  Afaik it should only be used during build and wouldn't add anything to the binary itself, but I'm no expert in the matter... I was just trying to make the builds smoother for windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-06-16 15:14</div>
+            <div class="timeline-body"><p>Yeah, I'd rather not use it. The whole thing is built on something written by someone I do not trust. I'm not going to say anything more on that matter publicly. (And the README specifically warns about <a href="https://github.com/nabijaczleweli/rust-embed-resource/issues/20#issuecomment-686496753">memory corruptions</a>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>WinManifest.xml</code>:7 on 2021-06-16 15:24</div>
+            <div class="timeline-body"><p>Let's go with <code>0.0.0.0</code> for now until someone complains with a good reason to change what we're doing. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2021-06-16 15:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2021-06-16 15:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>WinManifest.xml</code>:39 on 2021-06-16 15:25</div>
+            <div class="timeline-body"><p>Great. General philosophy here is to just keep this file as small as possible so that it does the absolute minimum thing required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChrisDenton">@ChrisDenton</a> on 2021-06-16 19:08</div>
+            <div class="timeline-body"><p>Ok, second draft. I've added the command to <code>release.yml</code> using explicit test for <code>win-msvc</code> or <code>win32-msvc</code> so as to avoid breaking when using gnu. Not sure if that's the best choice though. The <code>ci.yml</code> is trickier because it builds everything in the workspace but <code>cargo rustc</code> is used to build only one thing.</p>
+<p>I've started writing some documentation but it could probably use some more work. I've also tentatively added some small utility files to make things a bit easier for users.</p>
+<ul>
+<li><code>build.bat</code> can be used to do the <code>cargo rustc</code> magic.</li>
+<li><code>LongPathsEnabled.reg</code> provides an easier way for users to enable long path support for their machine (just double-click the file in the Windows file explorer).</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ehuss">@ehuss</a> on 2021-06-16 19:58</div>
+            <div class="timeline-body"><blockquote>
+<p>cc @ehuss Do you have any thoughts on how to do this better? Or is <code>cargo rustc</code> required here?</p>
+</blockquote>
+<p>I'm not too familiar with embedding Windows manifests.  Long-file path can be tricky (for example, AFAIK Rust's <code>Command</code> does not support it, even with this change), and if you have any C libraries, they need to be audited.</p>
+<p>You can try using <a href="https://doc.rust-lang.org/nightly/cargo/reference/config.html#buildrustflags">RUSTFLAGS</a> (either the environment variable or config file), but that can have issues.</p>
+<p>There is an unstable feature for setting flags like these. It is described <a href="https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#rustc-link-arg-bin">here</a>, and essentially you have a build.rs script that prints <code>cargo:rustc-link-arg-bin=rg=linker flag here</code>.  Hopefully it will get stabilized soonish.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChrisDenton">@ChrisDenton</a> on 2021-06-16 20:13</div>
+            <div class="timeline-body"><blockquote>
+<p>AFAIK Rust's <code>Command</code> does not support it, even with this change</p>
+</blockquote>
+<p>Imho, that's an issue with Rust's current implementation. It can be fixed, although doing so isn't as trivial as I'd like,</p>
+<blockquote>
+<p>There is an unstable feature for setting flags like these...</p>
+</blockquote>
+<p>That would be ideal! It would greatly simplify things when stabilized. @BurntSushi would it be worth pausing this PR until that feature is ready?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-06-16 22:47</div>
+            <div class="timeline-body"><p>@ChrisDenton Yeah, let's post-pone this until we have a better path here. This has been a long-standing bug, so I think we can wait a bit longer.</p>
+<p>With respect to the <code>ci</code> workflow, if it's easier to just add a separate job for only Windows/MSVC that builds with <code>cargo rustc</code>, then that would be OK. But then again, if we're pausing this PR, then we shouldn't need to bother with <code>cargo rustc</code> at all.</p>
+<p>So I guess I'll close this for now. I am now also subscribed to https://github.com/rust-lang/cargo/issues/9426, which appears to be the issue tracking the stabilization of passing link arguments through <code>build.rs</code>. Thanks for the tip @ehuss!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-06-16 22:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-02 01:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:02 UTC
+    </footer>
+</body>
+</html>

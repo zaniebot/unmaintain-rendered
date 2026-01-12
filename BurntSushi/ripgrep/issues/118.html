@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rg --type-add not working - BurntSushi/ripgrep #118</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rg --type-add not working</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/118">#118</a>
+        opened by <a href="https://github.com/Kerruba">@Kerruba</a>
+        on 2016-09-27 22:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Kerruba">@Kerruba</a></div>
+            <div class="timeline-body"><p>Even tried to copy your example (ie rg --type-add 'foo:*.{foo,foobar}'), not adding the type to type-list.</p>
+<p>Mac - El Capitain 10.11.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-27 22:05</div>
+            <div class="timeline-body"><p>Could you please provide the entire command you're running, its output and the output you expected? Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kerruba">@Kerruba</a> on 2016-09-27 22:09</div>
+            <div class="timeline-body"><p>typing <code>rg --type-add 'vue:*.vue'</code> is returning <code>Invalid argument</code></p>
+<p>See picture attached
+<img src="https://cloud.githubusercontent.com/assets/2854782/18893745/02fce0a6-8507-11e6-9bd8-b0d121c26aef.png" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-27 22:25</div>
+            <div class="timeline-body"><p>That looks like expected behavior to me. Check out the docs for <code>--type-add</code>:</p>
+<pre><code>    --type-add ARG ...
+        Add a new glob for a particular file type. Only one glob can be added
+        at a time. Multiple type-add flags can be provided. Unless type-clear
+        is used, globs are added to any existing globs inside of ripgrep. Note
+        that this must be passed to every invocation of rg.
+
+        Example: `--type-add html:*.html`
+</code></pre>
+<p>So you need to do <code>rg --type-add 'vue:*.{vue}' -tvue PATTERN</code>.</p>
+<p>Perhaps we need more concrete examples. I think that's #76.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-09-27 22:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kerruba">@Kerruba</a> on 2016-09-27 22:30</div>
+            <div class="timeline-body"><p>Sorry, but is not exactly what I understand from the <a href="http://blog.burntsushi.net/ripgrep/#whirlwind-tour">&quot;tour&quot;</a></p>
+<p><img src="https://cloud.githubusercontent.com/assets/2854782/18894308/11451d2e-850a-11e6-9343-2311bc53bbbf.png" alt="image" /></p>
+<p>Reading that I would suppose that typing <code>rg --type-add 'foo:*.{foo,foobar}'</code> would return a message like &quot;New type added&quot; and that <code>rg --type-list</code> would list that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @BurntSushi on 2016-09-27 22:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-27 22:34</div>
+            <div class="timeline-body"><p>You're right. Thank you for catching that. The tour is sadly wrong. Fixing now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-09-27 22:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-27 22:35</div>
+            <div class="timeline-body"><p>All set. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kerruba">@Kerruba</a> on 2016-09-27 22:47</div>
+            <div class="timeline-body"><p>I'm sorry, don't want to seem pedant, is what I described before as &quot;expected behaviour&quot; for <code>rg --type-add ...</code> actually the behaviour?</p>
+<p>Because this is what I get following the new instructions:
+<img src="https://cloud.githubusercontent.com/assets/2854782/18894726/809343a2-850c-11e6-9b3d-2aca5af0737f.png" alt="image" />
+this is definitely not what I'm expecting from this setting</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-27 22:58</div>
+            <div class="timeline-body"><p>I put this note in the <code>README</code>:</p>
+<blockquote>
+<p><code>rg</code> won't persist your type settings</p>
+</blockquote>
+<p>Let me be very clear: <code>--type-add</code> must always be present. <code>rg</code> has no config file, it does not persist any of the options. If you want to configure it to always be present, use an alias. e.g., <code>alias rg=&quot;rg --type-add 'foo:*.{foo,foobar}'</code>.</p>
+<p>(We may grow a config file or something at some point.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kerruba">@Kerruba</a> on 2016-09-27 23:09</div>
+            <div class="timeline-body"><p>Ok so why should I write such a long line when I can do this?
+<code>rg bar -g &quot;*.{foo,foobar}&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-27 23:14</div>
+            <div class="timeline-body"><p><code>--type-add</code> is probably most useful in an alias.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:44 UTC
+    </footer>
+</body>
+</html>

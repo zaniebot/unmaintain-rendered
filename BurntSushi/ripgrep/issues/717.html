@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--smart-case detection of upper-case characters is unintuitive - BurntSushi/ripgrep #717</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--smart-case detection of upper-case characters is unintuitive</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/717">#717</a>
+        opened by <a href="https://github.com/okdana">@okdana</a>
+        on 2017-12-17 22:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/okdana">@okdana</a></div>
+            <div class="timeline-body"><p>The <code>--smart-case</code> option doesn't behave the way i expect in terms of determining whether the pattern contains upper-case characters. Specifically, a search like the following will fail:</p>
+<pre><code>rg -S 'foo\w' &lt;&lt;&lt; FOOBAR
+</code></pre>
+<p>This is because it expands the class <code>\w</code> and discovers that it contains the range of upper-case characters <code>A-Z</code>.</p>
+<p><code>ag</code> uses a different metric: It simply checks the input pattern byte by byte to see if there's an upper-case character in the ASCII range. This works out in the <code>foo\w</code> case, but it will fail in the similarly obvious case of <code>foo\S</code> (which <code>rg</code> happens to get right) — not to mention multi-byte stuff like <code>É</code> and <code>ß</code>.</p>
+<p>There are also more complicated cases where they both fail in different ways, like this:</p>
+<pre><code>rg -S '\p{Ll}' &lt;&lt;&lt; FOOBAR
+</code></pre>
+<p><code>rg</code> returns a match here, because <code>\p{Ll}</code> expands to only lower-case characters. But i think this should be treated as an 'explicit' range, like <code>[A-Z]</code> would be.</p>
+<p>At the very least, though, i feel like something as basic as <code>foo\w</code> should probably work as expected with smart case.</p>
+<p>Is there any way to determine through the AST the actual input that produced a class? Or would that be easy to add? I'm not sure i'm at the level yet where i should be messing with the <code>regex</code> crate, but that seems like it'd be a convenient way to sort it.</p>
+<p>The easiest 'good enough' alternative that comes to mind would be to do a semi-naïve scan of the pattern that's just smart enough to ignore stuff like short-hand classes, but that feels kind of dumb (especially since i get the impression that you don't really care for this feature in the first place...).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-12-18 12:11</div>
+            <div class="timeline-body"><blockquote>
+<p>(especially since i get the impression that you don't really care for this feature in the first place...)</p>
+</blockquote>
+<p>Haha yeah I am not a fan of it, but recognize that others like it. It should definitely work intuitively, and I basically agree with your analysis here.</p>
+<p>I think you are on the right track with respect to fixing this. The problem is that the regex &quot;AST&quot; isn't a true faithful AST. The parser itself does various transformations that cannot be reversed, so there is no way to &quot;see&quot; that a <code>\w</code> was actually written as a <code>\w</code> instead of a <code>[...]</code>.</p>
+<p>I have been working on a rewrite of the parser for quite some time now, and with it, a <a href="https://github.com/rust-lang/regex/blob/869d0067fe70e535607d02b7474eb0ed6c83c43c/regex-syntax-2/src/ast.rs">proper AST</a>. Once that is active (I'm not sure when that will be), then we can scan the AST and apply this heuristic with as much precision as we care to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2017-12-18 12:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-12-18 12:12</div>
+            <div class="timeline-body"><blockquote>
+<p>The easiest 'good enough' alternative that comes to mind would be to do a semi-naïve scan of the pattern that's just smart enough to ignore stuff like short-hand classes</p>
+</blockquote>
+<p>@okdana If you wanted to do this in the shorter term to get at least some simple cases right, then I'd be in favor of this. I believe the check is done in the <code>grep</code> crate in this repo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-12-18 22:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-03-10 04:01</div>
+            <div class="timeline-body"><p>@okdana With the new AST coming in soon, what do you think about this set of rules for smart case?</p>
+<p>When the <code>--smart-case</code> flag is given, ripgrep chooses to match case insensitively if and only if there is at least one literal character in the pattern and that all such literals are not considered as uppercase. If the pattern contains no literals or at least one uppercase literal character, then normal case sensitive search is used.</p>
+<p>Examples: <code>abc</code>, <code>[a-z]</code>, <code>abc\w</code> and <code>abc\p{Ll}</code> are all searched case insensitively while <code>aBc</code>, <code>[A-Z]</code>, <code>aBc\w</code> and <code>\p{Ll}</code> are searched case sensitively.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-03-10 05:11</div>
+            <div class="timeline-body"><p>Hmm. I can't think of any case where that wouldn't make sense. Yeah, sounds cool.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:23 UTC
+    </footer>
+</body>
+</html>

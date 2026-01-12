@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ripgrep not working in OneDrive folders using Files On Demand - BurntSushi/ripgrep #705</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ripgrep not working in OneDrive folders using Files On Demand</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/705">#705</a>
+        opened by <a href="https://github.com/roblourens">@roblourens</a>
+        on 2017-12-04 02:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/roblourens">@roblourens</a></div>
+            <div class="timeline-body"><p>Ref: https://github.com/Microsoft/vscode/issues/35433</p>
+<p>Files On Demand is a new OneDrive feature that only downloads files to the local disk when needed. It has caused some issues in Node/Electron land - https://github.com/nodejs/node/issues/12737, https://github.com/Microsoft/vscode/issues/27285.</p>
+<p>When running ripgrep in a folder with this feature enabled, I just get <code>Access is denied. (os error 5)</code> immediately. Running with <code>--debug</code> doesn't produce any clues. I will investigate if you can point me in the right place to start looking?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-12-04 03:04</div>
+            <div class="timeline-body"><p>I'm on mobile and headed to bed at the moment, but the first thing that
+springs to mind is memory maps. If you run rg with --no-mmap (--mmap does
+the opposite) then it will avoid using memory maps and instead use standard
+file APIs. Linux, for example, has an issue where virtual files can't be
+memory mapped. ripgrep detects this by looking at file size. If the size is
+zero (which is what virtual files like /proc/cpuinfo report), then it
+forcefully disables use of memory maps and everything works.</p>
+<p>If memory maps are indeed the problem, and if there is a way to tell that
+memory maps won't work with a stat call or similar then we can change
+ripgrep's heuristics on Windows.</p>
+<p>If this isn't the problem, then I personally would probably try to
+reproduce the problem using a minimal Rust program, and then start
+diagnosing from there. If it comes to that, how easy would it be for me to
+reproduce the bug on my own Windows machine?</p>
+<p>On Dec 3, 2017 9:58 PM, &quot;Rob Lourens&quot; <a href="mailto:notifications@github.com">notifications@github.com</a> wrote:</p>
+<blockquote>
+<p>Ref: Microsoft/vscode#35433
+<a href="https://github.com/Microsoft/vscode/issues/35433">https://github.com/Microsoft/vscode/issues/35433</a></p>
+<p>Files On Demand is a new OneDrive feature that only downloads files to the
+local disk when needed. It has caused some issues in Node/Electron land -
+nodejs/node#12737 <a href="https://github.com/nodejs/node/issues/12737">https://github.com/nodejs/node/issues/12737</a>,
+Microsoft/vscode#27285 <a href="https://github.com/Microsoft/vscode/issues/27285">https://github.com/Microsoft/vscode/issues/27285</a>.</p>
+<p>When running ripgrep in a folder with this feature enabled, I just get Access
+is denied. (os error 5) immediately. Running with --debug doesn't produce
+any clues. I will investigate if you can point me in the right place to
+start looking?</p>
+<p>—
+You are receiving this because you are subscribed to this thread.
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/BurntSushi/ripgrep/issues/705">https://github.com/BurntSushi/ripgrep/issues/705</a>, or mute the thread
+<a href="https://github.com/notifications/unsubscribe-auth/AAb34oBLIpawThhCJmvauqV1SEgWmK2Uks5s81_BgaJpZM4Q0C1B">https://github.com/notifications/unsubscribe-auth/AAb34oBLIpawThhCJmvauqV1SEgWmK2Uks5s81_BgaJpZM4Q0C1B</a>
+.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/roblourens">@roblourens</a> on 2017-12-04 03:14</div>
+            <div class="timeline-body"><p>I get the same error with <code>--no-mmap</code>. Here is a fix in libuv for this onedrive feature: https://github.com/libuv/libuv/pull/1522/files, if this is a similar problem, it's probably in Rust's <code>fs</code>.</p>
+<p>Repro steps are basically</p>
+<ul>
+<li>Install the latest updates for Windows and OneDrive</li>
+<li>Open OneDrive settings, enable &quot;Files On-Demand&quot;</li>
+<li>Wait a couple minutes for OneDrive to do it's thing</li>
+<li>Invoke ripgrep in a OneDrive folder</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-12-04 03:32</div>
+            <div class="timeline-body"><p>Thanks!</p>
+<p>cc @retep998 Do you have any insight on this with respect to std?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/roblourens">@roblourens</a> on 2017-12-04 06:05</div>
+            <div class="timeline-body"><p>Filed https://github.com/rust-lang/rust/issues/46484</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/roblourens">@roblourens</a> on 2018-01-22 02:47</div>
+            <div class="timeline-body"><p>Since there isn't much progress on the upstream issue, I'm trying to work around it in the ripgrep build for vscode. Would you be interested in a PR? The workaround is fairly simple, just need to check the <code>file_attributes</code> of a directory for the reparse point and directory flags: https://msdn.microsoft.com/en-us/library/windows/desktop/gg258117.aspx. And it needs to be done in a few places in the walkdir and ripgrep repos.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-01-29 18:58</div>
+            <div class="timeline-body"><p>@roblourens Sorry for the late response, but yes, I would definitely be interested in a patch to ripgrep proper. If I had more Windows expertise, then I'd be happy to push this through upstream too, but I just don't have the bandwidth at the moment, so I'm happy to work around it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-02 01:00</div>
+            <div class="timeline-body"><p>@roblourens I am working on a fix to this in <code>walkdir</code> and <code>ignore</code>. I may have convinced someone to fix it in <code>std</code> as well, but even if the latter were fixed and merged tonight, ripgrep wouldn't see it for months.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/roblourens">@roblourens</a> on 2018-02-02 01:02</div>
+            <div class="timeline-body"><p>Awesome! Sorry I never delivered on my drive-by PR offer, it's been on my list but I was too busy in January.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-02 01:08</div>
+            <div class="timeline-body"><p>@roblourens No worries! The Windows side of things is pretty straight-forward, but fixing the code itself is a little gnarly!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-02-02 02:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-02-02 02:16</div>
+            <div class="timeline-body"><p>Got it! I manually tested the fix. I can search directories on OneDrive using ripgrep master.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/roblourens">@roblourens</a> on 2018-02-06 05:12</div>
+            <div class="timeline-body"><p>This works great. Thanks! Will update in vscode ASAP.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:23 UTC
+    </footer>
+</body>
+</html>

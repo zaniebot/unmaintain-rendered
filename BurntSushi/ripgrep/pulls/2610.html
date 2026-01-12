@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add hyperlink support - BurntSushi/ripgrep #2610</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>add hyperlink support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/2610">#2610</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2023-09-21 17:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>This is based on #2483 and keeps its general structure, but rejiggers some details. The biggest change is probably lifting the <code>gethostname</code> call from the <code>grep-printer</code> crate all the way up into ripgrep's core. We also add a <code>--hostname-bin</code> flag that allows the end user to provide an executable program that prints the hostname ripgrep should use.</p>
+<p>Closes #665</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-09-22 21:21</div>
+            <div class="timeline-body"><p>I know this is a WIP but I took a quick glance and thought I'd mention it just in case: you removed the <code>OnceCell</code> which I put there so that only matching files would get their paths canonicalized.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-22 21:49</div>
+            <div class="timeline-body"><p>Oh, hmmm. The point about a non-match is a good one. I'll take a closer look. Thank you for catching that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-23 12:08</div>
+            <div class="timeline-body"><p>Yes, I see, that's a good catch. Arguably other stuff in a <code>PrinterPath</code> should be behind <code>OnceCell</code> too. Good call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2023-09-25 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-09-25 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-25 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-09-26 20:49</div>
+            <div class="timeline-body"><p>May I bother you with a little question I was wondering about?</p>
+<p>I initially used <code>write!</code> to format numbers into a buffer, (for instance: <code>Part::Line =&gt; write!(output, &quot;{}&quot;, values.line)</code>). From what I could gather, this is the standard way of doing it, and it apparently doesn't allocate.</p>
+<p>You replaced those with explicit <code>to_string()</code> calls, such as:</p>
+<pre><code class="language-rust">let line = values.line.unwrap_or(1).to_string();
+dest.extend_from_slice(line.as_bytes());
+</code></pre>
+<p>I was wondering why? Is the optimizer able to remove the heap allocation, or does it simply not matter in this context and you prefer that code style?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-09-26 20:59</div>
+            <div class="timeline-body"><p>Great question! And feel free to ask more like it.</p>
+<p>I replaced them because I have a faint recollection that <code>write!</code> goes through the formatting machinery. I can't remember whether it allocates or not, but my recollection is that the formatting machinery had more cost than just doing <code>n.to_string()</code>. I note, for example, that <code>n.to_string()</code> is how line numbers (and column numbers and byte offsets) have been written for a while. So I deferred to past experience and copied that technique.</p>
+<p>It's funny you bring it up, because I actually have a TODO (before the next release) to try and more carefully benchmark this choice. I wanted to bake off four different choices:</p>
+<ol>
+<li>Status quo.</li>
+<li><code>write!(&quot;{}&quot;, n)</code>.</li>
+<li>The <a href="https://docs.rs/itoa/latest/itoa/"><code>itoa</code></a> crate.</li>
+<li>A simple hand-rolled version that doesn't allocate or use <code>unsafe</code>.</li>
+</ol>
+<p>In particular, I want to run benchmarks both with the system allocator (glibc on my system) and with musl's allocator, which has been a bit slower in my experience.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2023-09-26 21:13</div>
+            <div class="timeline-body"><p>Thanks! 🙂</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:10 UTC
+    </footer>
+</body>
+</html>

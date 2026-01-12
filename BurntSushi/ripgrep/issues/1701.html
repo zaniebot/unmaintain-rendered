@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;was provided more than once&quot; when combining RIPGREP_CONFIG_PATH with command-lines using condensed short option syntax - BurntSushi/ripgrep #1701</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;was provided more than once&quot; when combining RIPGREP_CONFIG_PATH with command-lines using condensed short option syntax</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1701">#1701</a>
+        opened by <a href="https://github.com/ssokolow">@ssokolow</a>
+        on 2020-10-10 03:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ssokolow">@ssokolow</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 12.1.1
++SIMD -AVX (compiled)
+-SIMD -AVX (runtime)</code></pre>
+<h4>How did you install ripgrep?</h4>
+<pre><code>RUSTFLAGS=&quot;-C target-cpu=native&quot; cargo +nightly install ripgrep --features 'simd-accel'</code></pre>
+<h4>What operating system are you using ripgrep on?</h4>
+<pre><code>$ lsb_release -a                                                                             
+No LSB modules are available.
+Distributor ID: Ubuntu
+Description:    Ubuntu 16.04.7 LTS
+Release:        16.04
+Codename:       xenial
+</code></pre>
+<h4>Describe your bug.</h4>
+<p>ripgrep exits with the following error...</p>
+<pre><code>error: The argument '--pretty' was provided more than once, but cannot be used multiple times</code></pre>
+<p>...if <code>-p</code> or <code>--pretty</code> is in the configuration file and condensed short option syntax is used on the command line.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<ol>
+<li>Set up <code>RIPGREP_CONFIG_PATH</code> and a configuration file containing <code>-p</code> or <code>--pretty</code></li>
+<li>Run <code>ripgrep</code> with <code>-p -z</code> or <code>--pretty -z</code> at the command line.</li>
+<li>Notice that it works as expected, as it should for use in scripts.</li>
+<li>Run <code>ripgrep</code> with <code>-p -z -p</code> at the command line</li>
+<li>Notice that it works in an <code>alias</code>-compatible way as it should.</li>
+<li>Run <code>ripgrep</code> with <code>-pz</code> at the command line.</li>
+<li>Get an error message.</li>
+</ol>
+<h4>What is the actual behavior?</h4>
+<pre><code>$ rg -pz foo /usr/share/doc 
+error: The argument '--pretty' was provided more than once, but cannot be used multiple times
+
+USAGE:
+    
+    rg [OPTIONS] PATTERN [PATH ...]
+    rg [OPTIONS] [-e PATTERN ...] [-f PATTERNFILE ...] [PATH ...]
+    rg [OPTIONS] --files [PATH ...]
+    rg [OPTIONS] --type-list
+    command | rg [OPTIONS] PATTERN
+
+For more information try --help
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>It shouldn't matter what form it takes.</p>
+<h4>What do you think ripgrep should have done?</h4>
+<p><code>-pz</code> should behave identically to <code>-p -z</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2020-10-10 04:00</div>
+            <div class="timeline-body"><p>I think the config file is a red herring. I get the same issue with just the command line. The option-stacking thing does seem relevant though</p>
+<p>These fail:</p>
+<pre><code>% RIPGREP_CONFIG_PATH= \rg -p -pz x &lt;&lt;&lt; xyz
+% RIPGREP_CONFIG_PATH= \rg -ppz x &lt;&lt;&lt; xyz
+</code></pre>
+<p>But these are OK:</p>
+<pre><code>% RIPGREP_CONFIG_PATH= \rg -pz -p x &lt;&lt;&lt; xyz
+% RIPGREP_CONFIG_PATH= \rg -pzp x &lt;&lt;&lt; xyz
+% RIPGREP_CONFIG_PATH= \rg -zpp x &lt;&lt;&lt; xyz
+% RIPGREP_CONFIG_PATH= \rg -pp -z x &lt;&lt;&lt; xyz
+% RIPGREP_CONFIG_PATH= \rg -p -p -z x &lt;&lt;&lt; xyz
+</code></pre>
+<p>It does it with all other options i tried, too, not just <code>--pretty</code>. I assume it's a Clap bug...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2020-10-10 04:17</div>
+            <div class="timeline-body"><p>Yeah, i think so, since <code>fd</code> also does it:</p>
+<pre><code>% fd -1 -pp -L README
+README.md
+
+% fd -1 -ppL README
+error: The argument '--full-path' was provided more than once, but cannot be used multiple times ...
+</code></pre>
+<p>I couldn't find a related issue in the <a href="https://github.com/clap-rs/clap/">clap repo</a>, i guess it needs reported there</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssokolow">@ssokolow</a> on 2020-10-10 04:24</div>
+            <div class="timeline-body"><p>OK. I'll try to find time to put together a minimal reproducer tomorrow.</p>
+<p><strong>EDIT:</strong> The day didn't go well. Tomorrow maybe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssokolow">@ssokolow</a> on 2020-10-12 06:15</div>
+            <div class="timeline-body"><p>I've tried to put together a reproducer, but I can't remember what the proper way is to ask clap for that <code>alias</code>-compatible behaviour where you can specify an argument multiple times but the additional copies have no semantic significance within the program.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-10-12 12:04</div>
+            <div class="timeline-body"><p>@ssokolow Thanks for looking into this! I believe the setting you're looking for is <a href="https://docs.rs/clap/2.33.3/clap/enum.AppSettings.html#variant.AllArgsOverrideSelf"><code>clap::AppSettings::AllArgsOverrideSelf</code></a>. ripgrep sets it <a href="https://github.com/BurntSushi/ripgrep/blob/def993bad1a9275cdc249f04048e5b2065b79f05/crates/core/app.rs#L62">here</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2020-10-12 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssokolow">@ssokolow</a> on 2020-10-12 13:43</div>
+            <div class="timeline-body"><p>Thanks. I've now got a reproducer:</p>
+<pre><code class="language-rust">use clap::{Arg, App, AppSettings};
+
+fn main() {
+    let schema = App::new(&quot;ripgrep#1701 reproducer&quot;)
+        .setting(AppSettings::AllArgsOverrideSelf)
+        .arg(Arg::with_name(&quot;pretty&quot;)
+            .short(&quot;p&quot;)
+            .long(&quot;pretty&quot;))
+        .arg(Arg::with_name(&quot;search_zip&quot;)
+            .short(&quot;z&quot;)
+            .long(&quot;search-zip&quot;));
+
+    let test_args = &amp;[
+       vec![&quot;reproducer&quot;, &quot;-pz&quot;, &quot;-p&quot;],
+       vec![&quot;reproducer&quot;, &quot;-pzp&quot;],
+       vec![&quot;reproducer&quot;, &quot;-zpp&quot;],
+       vec![&quot;reproducer&quot;, &quot;-pp&quot;, &quot;-z&quot;],
+       vec![&quot;reproducer&quot;, &quot;-p&quot;, &quot;-p&quot;, &quot;-z&quot;],
+
+       vec![&quot;reproducer&quot;, &quot;-p&quot;, &quot;-pz&quot;],
+       vec![&quot;reproducer&quot;, &quot;-ppz&quot;],
+    ];
+
+
+    for argv in test_args {
+        let matches = schema.clone().get_matches_from_safe(argv);
+        match matches {
+            Ok(_) =&gt; println!(&quot; OK: {:?}&quot;, argv),
+            Err(e) =&gt; println!(&quot;ERR: {:?} ({:?})&quot;, argv, e.kind),
+        }
+    }
+}
+</code></pre>
+<pre><code> OK: [&quot;reproducer&quot;, &quot;-pz&quot;, &quot;-p&quot;]
+ OK: [&quot;reproducer&quot;, &quot;-pzp&quot;]
+ OK: [&quot;reproducer&quot;, &quot;-zpp&quot;]
+ OK: [&quot;reproducer&quot;, &quot;-pp&quot;, &quot;-z&quot;]
+ OK: [&quot;reproducer&quot;, &quot;-p&quot;, &quot;-p&quot;, &quot;-z&quot;]
+ERR: [&quot;reproducer&quot;, &quot;-p&quot;, &quot;-pz&quot;] (UnexpectedMultipleUsage)
+ERR: [&quot;reproducer&quot;, &quot;-ppz&quot;] (UnexpectedMultipleUsage)
+</code></pre>
+<p>I'm not feeling motivated to open a bug right now but I'll do it later if someone else doesn't beat me to it. (It's near the end of my day and anything which introduces a new social component feels tiring.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssokolow">@ssokolow</a> on 2020-10-13 10:53</div>
+            <div class="timeline-body"><p>Reported as clap-rs/clap#2171</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-11-21 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-11-21 04:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>--only-matching will only show the shortest match for the input  - BurntSushi/ripgrep #1873</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>--only-matching will only show the shortest match for the input</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1873">#1873</a>
+        opened by <a href="https://github.com/lpetre">@lpetre</a>
+        on 2021-05-26 11:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/lpetre">@lpetre</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 12.1.1
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</p>
+<h4>How did you install ripgrep?</h4>
+<p>Via the latest nix package</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<blockquote>
+<p>uname -a
+Linux c126593d20c7 5.4.0-1043-gcp #46-Ubuntu SMP Mon Apr 19 19:17:04 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux</p>
+</blockquote>
+<h4>Describe your bug.</h4>
+<p>If I ask ripgrep to find two strings, where the first string is a substring of the other, and use --only-matching, only the shorter string is printed.</p>
+<p>If you pass the longer string first, you get the expected output.</p>
+<p>See a simple repo here: https://replit.com/@lpetre/ripgrep-issue</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<pre><code>lpetre@localhost:rg-bug $ cat input.txt 
+this.is.a.string
+this.is.a.string.too
+lpetre@localhost:rg-bug $ rg -f input.txt -o input.txt 
+1:this.is.a.string
+2:this.is.a.string
+lpetre@localhost:rg-bug $ grep -f input.txt -o input.txt 
+this.is.a.string
+this.is.a.string.too
+lpetre@localhost:rg-bug $ rg -e this.is.a.string.too -e this.is.a.string -o input.txt 
+1:this.is.a.string
+2:this.is.a.string.too
+</code></pre>
+<h4>What is the actual behavior?</h4>
+<pre><code>lpetre@localhost:rg-bug $ rg -e this.is.a.string.too -e this.is.a.string -o input.txt  --debug
+DEBUG|grep_regex::literal|grep-regex/src/literal.rs:115: required literal found: &quot;this&quot;
+DEBUG|globset|globset/src/lib.rs:435: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+1:this.is.a.string
+2:this.is.a.string.too
+</code></pre>
+<pre><code>lpetre@localhost:rg-bug $ rg -f input.txt -o input.txt --debug
+DEBUG|grep_regex::literal|grep-regex/src/literal.rs:115: required literal found: &quot;this&quot;
+DEBUG|globset|globset/src/lib.rs:435: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+1:this.is.a.string
+2:this.is.a.string
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>I think ripgrep should show the longer result regardless of the order of the input.</p>
+<pre><code>lpetre@localhost:rg-bug $ grep -f input.txt -o input.txt 
+this.is.a.string
+this.is.a.string.too
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-05-26 12:50</div>
+            <div class="timeline-body"><p>This result here correct behavior and intended, although your description of it is incorrect. ripgrep does not print the shortest match. It prints the <em>first</em> match. In contrast, POSIX grep will always show the longest match. ripgrep implements leftmost-first or &quot;preference order&quot; matching, which corresponds to how backtracking regex engines report matches. If you flip the order of your patterns, you can see how preference order works:</p>
+<pre><code>$ cat /tmp/input.txt
+this.is.a.string.too
+this.is.a.string
+$ rg -f /tmp/input.txt -o /tmp/input.txt
+1:this.is.a.string.too
+2:this.is.a.string
+</code></pre>
+<p>Indeed, given patterns p1 and p2, where p1 comes before p2 in the pattern list and where p1 is a prefix of p2, it follows that p2 will <em>never</em> be reported as a match.</p>
+<p>Because of this property, if your patterns are simple literals, and if you sort them in descending order by length, then it will report precisely the same results as POSIX grep.</p>
+<p>It is plausible that ripgrep will gain &quot;proper&quot; support for POSIX leftmost-longest semantics in the future, but it's likely years away from happening.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-05-26 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2021-05-26 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Locked by @ghost on 2021-05-26 12:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:22 UTC
+    </footer>
+</body>
+</html>

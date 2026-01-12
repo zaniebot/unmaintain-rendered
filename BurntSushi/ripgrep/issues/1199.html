@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>crlf tests fail on Fedora - BurntSushi/ripgrep #1199</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>crlf tests fail on Fedora</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1199">#1199</a>
+        opened by <a href="https://github.com/igor-raits">@igor-raits</a>
+        on 2019-02-12 14:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/igor-raits">@igor-raits</a></div>
+            <div class="timeline-body"><pre><code>---- feature::f416_crlf_only_matching stdout ----
+thread 'feature::f416_crlf_only_matching' panicked at '
+printed outputs differ!
+expected:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Sherlock
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+got:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Sherlock
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+', tests/feature.rs:455:5
+note: Run with `RUST_BACKTRACE=1` for a backtrace.
+---- json::crlf stdout ----
+thread 'json::crlf' panicked at 'assertion failed: `(left == right)`
+  left: `SubMatch { m: Text { text: &quot;Sherlock\r&quot; }, start: 56, end: 65 }`,
+ right: `SubMatch { m: Text { text: &quot;Sherlock&quot; }, start: 56, end: 64 }`', tests/json.rs:298:5
+failures:
+    feature::f416_crlf_only_matching
+    json::crlf
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-02-12 14:42</div>
+            <div class="timeline-body"><p>The Debian folks ran into the same test failures. The issue is that a new version of the <code>grep-searcher</code> crate was released, which includes a CRLF related fix. But in order for it to work correctly with ripgrep on master, it also needs a corresponding fix in <code>grep-regex</code>, which I haven't released yet.</p>
+<p>With that said, ripgrep 0.10.0, which is the latest release, should be working fine. Are you trying to use ripgrep master with only the latest releases of crates? I'm not sure that's always guaranteed to work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2019-02-12 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/igor-raits">@igor-raits</a> on 2019-02-12 15:56</div>
+            <div class="timeline-body"><blockquote>
+<p>With that said, ripgrep 0.10.0, which is the latest release, should be working fine. Are you trying to use ripgrep master with only the latest releases of crates? I'm not sure that's always guaranteed to work.</p>
+</blockquote>
+<p>In Fedora we always use latest crates. Which means that it picked up latest grep-searcher.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-02-12 15:59</div>
+            <div class="timeline-body"><p>@ignatenkobrain I <em>think</em> I can release a new version of <code>grep-regex</code> and it might fix it this time, but I don't know if I can provide that guarantee in all cases. Otherwise, it requires the pace of ripgrep releases to be on par with the pace of crate releases, and I'm just never going to do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/igor-raits">@igor-raits</a> on 2019-02-12 16:00</div>
+            <div class="timeline-body"><p>@BurntSushi but doesn't that mean when you changed handling of crlf in grep-searcher it should have been a breaking change? Since that changes semantics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-02-12 16:56</div>
+            <div class="timeline-body"><p>No. It's a bug fix. It changes errant behavior, not semantics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/igor-raits">@igor-raits</a> on 2019-02-12 17:18</div>
+            <div class="timeline-body"><p>Then I guess the best way forward would be to publish new version of grep-regex.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-02-16 14:40</div>
+            <div class="timeline-body"><p><code>grep-regex 0.1.2</code> is now on crates.io.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-02-16 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2019-02-16 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @BurntSushi on 2019-02-16 14:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:50 UTC
+    </footer>
+</body>
+</html>

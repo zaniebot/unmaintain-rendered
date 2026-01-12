@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>globset (and thus ripgrep) interpret braces ({}) as alternative (&quot;a or b&quot;) whereas git doesn't - BurntSushi/ripgrep #1221</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>globset (and thus ripgrep) interpret braces ({}) as alternative (&quot;a or b&quot;) whereas git doesn't</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1221">#1221</a>
+        opened by <a href="https://github.com/anntzer">@anntzer</a>
+        on 2019-03-13 15:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/anntzer">@anntzer</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.9.0
+-SIMD -AVX</p>
+<h4>How did you install ripgrep?</h4>
+<p>Fedora 29 distro package.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Fedora 29.</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>globset (and thus ripgrep) interpret braces (<code>{}</code>) as alternative (&quot;a or b&quot;) whereas git doesn't, causing a different interpretation of entries containing braces in .gitignore.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<pre><code>git init foo &amp;&amp; cd foo
+touch 'test.txt' 'test.txt{}'
+echo '*.txt{}' &gt;.gitignore
+git status
+rg --files --debug
+</code></pre>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<pre><code>$ git status
+On branch master
+
+No commits yet
+
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+
+        .gitignore
+        foo.txt
+
+nothing added to commit but untracked files present (use &quot;git add&quot; to track)
+
+$ rg --files --debug
+DEBUG/grep::search//usr/share/cargo/registry/grep-0.1.9/src/search.rs:195: original regex HIR pattern:
+(?:[Zz]{0})*
+DEBUG/grep::search//usr/share/cargo/registry/grep-0.1.9/src/search.rs:197: transformed regex HIR pattern:
+(?:[Zz]{0})*
+DEBUG/globset//usr/share/cargo/registry/globset-0.4.1/src/lib.rs:429: built glob set; 0 literals, 1 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG/globset//usr/share/cargo/registry/globset-0.4.1/src/lib.rs:424: glob converted to regex: Glob { glob: &quot;**/*.txt{}&quot;, re: &quot;(?-u)^(?:/?|.*/).*\\.txt$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false, backslash_escape: true }, tokens: Tokens([RecursivePrefix, ZeroOrMore, Literal('.'), Literal('t'), Literal('x'), Literal('t'), Alternates([Tokens([])])]) }
+DEBUG/globset//usr/share/cargo/registry/globset-0.4.1/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
+DEBUG/ignore::walk//usr/share/cargo/registry/ignore-0.4.3/src/walk.rs:1414: ignoring ./foo.txt: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*.txt{}&quot;, actual: &quot;**/*.txt{}&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG/ignore::walk//usr/share/cargo/registry/ignore-0.4.3/src/walk.rs:1414: ignoring ./.git: Ignore(IgnoreMatch(Override(Glob(Matched(Glob { from: None, original: &quot;!.git&quot;, actual: &quot;**/.git&quot;, is_whitelist: true, is_only_dir: false })))))
+.gitignore
+foo.txt{}
+</code></pre>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p><code>rg --files</code> should list <code>foo.txt</code> and ignore <code>foo.txt{}</code> (matching git's behavior), not the opposite.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2019-03-13 16:16</div>
+            <div class="timeline-body"><p>IMO, one thing that ripgrep probably <em>should</em> do, regardless of whether it disables brace expansion in <code>.gitignore</code> files (which i suppose would require a setting to toggle, communication of that setting, &amp;c.), is let brace sets without alternates just fall through. This is how bash and zsh both behave:</p>
+<pre><code>% print -r {}
+{}
+% print -r {foo}
+{foo}
+% print -r {foo,bar}
+foo bar
+</code></pre>
+<p>It still wouldn't match Git's behaviour exactly, but i imagine it'd be a lot harder to trigger the difference in practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yroyon">@yroyon</a> on 2019-03-31 21:12</div>
+            <div class="timeline-body"><p>I was about to open a new issue, but my problem is the same as this one.</p>
+<p>Reproducer:</p>
+<pre><code>$ ls -A
+.gitignore
+$ cat .gitignore
+{{a}}
+$ rg whatevs
+./.gitignore: line 1: error parsing glob '{{a}}': nested alternate groups are not allowed
+$ rg --version
+ripgrep 0.10.0 (rev 0913972104)
+</code></pre>
+<p>Note that <code>{{something}}</code> is a legal filename.  There are tools out there, data shippers for Elasticsearch, that use dirnames like <code>{{cookiecutter.beat}}</code>.  I'm getting boatloads of error messages whenever I use ripgrep near those guys.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-04-03 13:11</div>
+            <div class="timeline-body"><p>This ticket is a duplicate of #1183, but since this one has more activity, I'm going to close #1183.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2019-04-12 11:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gofri">@gofri</a> on 2023-04-18 07:36</div>
+            <div class="timeline-body"><p>@BurntSushi</p>
+<p>This one raises an issue for my application of ripgrep, so I'm willing to work on a PR for it if the following sounds ok to you:</p>
+<ol>
+<li>Adding <code>literal_alternates : bool</code> to GlobOptions. Parsing the <code>Alternates</code> token with respect to this option.</li>
+<li>For explicit globs add <code>--glob-literal-alternates</code> and <code>--pre-glob-literal-alternates</code> to ripgrep and set in the GlobOptions.</li>
+<li>For ignore files auto discovery, add <code>--ignore-file-literal-alternates</code> and a corresponding <code>literal_alternates</code> to  <code>GitignoreBuilder</code> (similar to case_sensitive).</li>
+</ol>
+<p>Please let me know if that'd be potentially merged.
+Also, if it does, let me know if I missed use cases.</p>
+<hr />
+<p>The main issue I see is <code>create_gitignore()</code> which wraps the functionality for directories and would need to be modified to also accept this new flag. That is a breaking change, so I guess that would have to go to the next semver (I can add a new function and replace the calls in <code>ignore/src/dir.rs</code> without breaking APIs, but that'd make the code a bit messy, so let me know what you think about that specifically)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:51 UTC
+    </footer>
+</body>
+</html>

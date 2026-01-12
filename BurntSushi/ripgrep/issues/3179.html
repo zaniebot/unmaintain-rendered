@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ignore::WalkBuilder.git_global(true) does not behave correctly with rooted files - BurntSushi/ripgrep #3179</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ignore::WalkBuilder.git_global(true) does not behave correctly with rooted files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3179">#3179</a>
+        opened by <a href="https://github.com/Yutsuten">@Yutsuten</a>
+        on 2025-10-12 10:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Yutsuten">@Yutsuten</a></div>
+            <div class="timeline-body"><p>This bug was originally reported in the helix repository: https://github.com/helix-editor/helix/issues/12604</p>
+<p>I was doing a bit of a research in that issue, and I found that helix <a href="https://github.com/helix-editor/helix/blob/5b0563419eeeaf0595c848865c46be4abad246a7/helix-term/Cargo.toml#L73">is using the package <code>ignore</code></a>, and we can see instances of <code>WalkBuilder</code> in the file picker function <a href="https://github.com/helix-editor/helix/blob/5b0563419eeeaf0595c848865c46be4abad246a7/helix-term/src/ui/mod.rs#L234">here</a>.</p>
+<p>The full explanation of the bug can be read there, but the TLDR is: if the global <code>.gitignore</code>, specified in git's config <code>core.excludesfile</code> option contains a rooted pattern, for example <code>/.venv</code>, it is <strong>not</strong> ignored as expected.</p>
+<p>I looked for similar issues to see if anyone have reported it already, but I was unable to find any.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-12 10:56</div>
+            <div class="timeline-body"><p>Please provide an MRE.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Yutsuten">@Yutsuten</a> on 2025-10-12 14:22</div>
+            <div class="timeline-body"><p>I was able to reproduce the issue with the code bellow:</p>
+<pre><code class="language-rust">use ignore::WalkBuilder;
+use std::env;
+
+fn main() {
+    let root = env::current_dir().unwrap();
+    println!(&quot;Root is {:?}&quot;, root);
+    let mut walk_builder = WalkBuilder::new(root);
+    let walk = walk_builder
+        .hidden(false)
+        .git_ignore(true)
+        .git_global(true)
+        .build();
+    for dir_entry in walk {
+        println!(&quot;{:?}&quot;, dir_entry.unwrap().path());
+    }
+}
+</code></pre>
+<p>And created a dummy <code>.venv</code> folder with two files:</p>
+<pre><code class="language-shell">mkdir .venv
+touch .venv/foo
+touch .venv/bar
+</code></pre>
+<p>With <code>/.venv</code> ignored in the global ignore file, <code>.venv</code> entries are printed:</p>
+<pre><code class="language-txt">&quot;/home/mateus/Projects/ripgrep-issue/.venv&quot;
+&quot;/home/mateus/Projects/ripgrep-issue/.venv/bar&quot;
+&quot;/home/mateus/Projects/ripgrep-issue/.venv/foo&quot;
+</code></pre>
+<p>If I copy/move the <code>/.venv</code> entry from the global ignore to my project's <code>.gitignore</code> (in my case, <code>~/Projects/ripgrep-issue/.gitignore</code>) and run again, <code>.venv</code> is properly ignored and not printed.</p>
+<p>At the beginning I was using <code>let root = &quot;.&quot;;</code> and was unable to reproduce the issue. I think this is an important clue, because it seems that the bug is only triggered when using a full path as a root.</p>
+<p>Now, if this behavior is intended or not in <code>ripgrep</code>, why Helix needs to use the full path as root, I don't know.
+If this is intended, could you tell me if there is any function/option we could enable to make global gitignore work even when using full path root?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2025-10-15 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-15 22:17</div>
+            <div class="timeline-body"><p>Thanks for reporting this! This was gnarly to fix. And this bug appeared in ripgrep as well. Moreover, the bug occurs with <code>WalkBuilder::add_ignore</code>. I have a fix in #3189.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-10-15 23:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:59 UTC
+    </footer>
+</body>
+</html>

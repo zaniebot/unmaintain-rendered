@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ripgrep should stop .gitignore search once repo root directory is found - BurntSushi/ripgrep #290</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ripgrep should stop .gitignore search once repo root directory is found</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/290">#290</a>
+        opened by <a href="https://github.com/stephenh">@stephenh</a>
+        on 2016-12-23 19:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/stephenh">@stephenh</a></div>
+            <div class="timeline-body"><p>It looks like when rg searches for <code>.gitignore</code> files, it keeps recursing up the directory tree, even outside of the git repository itself.</p>
+<p>I admittedly have a somewhat-non-kosher git setup, where both my home directory is a git repository, as well as my regular projects, e.g. something like:</p>
+<pre><code>~/.gitignore
+~/.git &lt;-- my homedir.git repo
+~/code/projecta/.git &lt;-- project repo
+~/code/projecta/.gitignore
+</code></pre>
+<p>My <code>~/.gitignore</code> has <code>*</code> in it, which means ignore all of the myriad things except those that I explicitly <code>git add -f .bashrc</code> or what not.</p>
+<p>However, if I'm in <code>~/code/projecta</code> and run <code>rg</code>, it finds both <code>.gitignore</code>s, applies <code>*</code>, and then says &quot;nope, didn't find anything&quot;, so I end up always having to use <code>rg -u</code>.</p>
+<p>So, long explanation, but ideally <code>rg</code> would stop searching for <code>.gitignore</code> files once it hit a directory with <code>.git</code> in it, e.g. signaling we've reached the top-level directory of this repo, and so don't need to continue looking for more <code>.gitignore</code> files up the tree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-23 20:27</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks like when rg searches for .gitignore files, it keeps recursing up the directory tree, even outside of the git repository itself.</p>
+</blockquote>
+<p>This is a known case and there is actually a test for it: https://github.com/BurntSushi/ripgrep/blob/bb70f967437279e49fb87df23ae567c276e4cc33/tests/tests.rs#L481</p>
+<blockquote>
+<p>I admittedly have a somewhat-non-kosher git setup, where both my home directory is a git repository, as well as my regular projects</p>
+</blockquote>
+<p>I have the same setup. :-)</p>
+<blockquote>
+<p>My ~/.gitignore has * in it</p>
+</blockquote>
+<p>Same!</p>
+<pre><code>$ cat $HOME/.gitignore | head -n1
+*
+</code></pre>
+<blockquote>
+<p>However, if I'm in ~/code/projecta and run rg, it finds both .gitignores, applies *, and then says &quot;nope, didn't find anything&quot;, so I end up always having to use rg -u.</p>
+</blockquote>
+<p>Hmm, if that's true, then that's definitely a bug. However, given that we have the same exact setup, I would notice this particular bug almost immediately. :-) That leads me to believe something else is going on. Can we try to reproduce this bug in a more controlled environment? Let's try this:</p>
+<pre><code>$ cd /tmp
+$ mkdir -p code/projecta/.git
+$ mkdir .git
+$ echo '*' &gt; .gitignore
+$ echo 'test' &gt; code/projecta/foo
+$ rg test
+No files were searched, which means ripgrep probably applied a filter you didn't expect. Try running again with --debug.
+$ cd code/projecta/
+$ rg test
+foo
+1:test
+</code></pre>
+<p>And now with the <code>--debug</code> flag:</p>
+<pre><code>$ cd /tmp/ripgrep-290
+$ rg test --debug
+DEBUG:grep::search: regex ast:
+Literal {
+    chars: [
+        't',
+        'e',
+        's',
+        't'
+    ],
+    casei: false
+}
+DEBUG:grep::literals: literal prefixes detected: Literals { lits: [Complete(test)], limit_size: 250, limit_class: 10 }
+DEBUG:globset: glob converted to regex: Glob { glob: &quot;**/*&quot;, re: &quot;(?-u)^(?:/?|.*/).*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false }, tokens: Tokens([RecursivePrefix, ZeroOrMore]) }
+DEBUG:globset: built glob set; 0 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
+DEBUG:ignore::walk: ignoring ./.gitignore: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG:ignore::walk: ignoring ./.git: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+DEBUG:ignore::walk: ignoring ./code: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;./.gitignore&quot;), original: &quot;*&quot;, actual: &quot;**/*&quot;, is_whitelist: false, is_only_dir: false })))
+No files were searched, which means ripgrep probably applied a filter you didn't expect. Try running again with --debug.
+$ cd code/projecta/
+$ rg test --debug
+DEBUG:grep::search: regex ast:
+Literal {
+    chars: [
+        't',
+        'e',
+        's',
+        't'
+    ],
+    casei: false
+}
+DEBUG:grep::literals: literal prefixes detected: Literals { lits: [Complete(test)], limit_size: 250, limit_class: 10 }
+DEBUG:globset: glob converted to regex: Glob { glob: &quot;**/*&quot;, re: &quot;(?-u)^(?:/?|.*/).*$&quot;, opts: GlobOptions { case_insensitive: false, literal_separator: false }, tokens: Tokens([RecursivePrefix, ZeroOrMore]) }
+DEBUG:globset: built glob set; 0 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 1 regexes
+foo
+1:test
+DEBUG:ignore::walk: ignoring ./.git: Ignore(IgnoreMatch(Hidden))
+</code></pre>
+<p>I wonder if you are perhaps running <code>rg</code> from your <code>~</code> or <code>~/code</code> directories? If so, <em>that</em> will indeed respect your <code>~/.gitignore</code> rules. If you don't want that behavior, then you can do:</p>
+<pre><code>$ echo '!*' &gt; ~/.ignore
+</code></pre>
+<p>Which basically says, &quot;tell ripgrep to whitelist everything in <code>~</code> without telling <code>git</code> to whitelist the same stuff.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2016-12-23 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stephenh">@stephenh</a> on 2016-12-27 18:10</div>
+            <div class="timeline-body"><p>Thanks for the quick response! Apologies for the delay; got sidetracked with the holidays.</p>
+<p>...and you are exactly right, this already works great/as expected.</p>
+<p>After seeing it work (in my setup, on the first try), I had to stop for a few minutes to think why I had thought this was broken...it turns out I use a dual laptop/tower setup, e.g. edit files on the laptop, run the server on the tower, and forgot that when I mirror files between the two machines, I don't copy .git directories around.</p>
+<p>So, on my laptop, rg (or any other tool) can't tell my &quot;projecta&quot; is a git repo. But it works great on the tower. Of course. Sorry about that. :-)</p>
+<p>Thanks again for the response and your work on rg in general; it's great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @stephenh on 2016-12-27 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-12-27 18:20</div>
+            <div class="timeline-body"><p>@stephenh Awesome! The best bugs are the ones that fix themselves. :-)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:59 UTC
+    </footer>
+</body>
+</html>

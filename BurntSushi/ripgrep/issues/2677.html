@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inline flag (?x) with comment doesn't work due to automatic wrapping of patterns inside non-capturing group - BurntSushi/ripgrep #2677</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Inline flag (?x) with comment doesn't work due to automatic wrapping of patterns inside non-capturing group</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2677">#2677</a>
+        opened by <a href="https://github.com/learnbyexample">@learnbyexample</a>
+        on 2023-12-06 10:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/learnbyexample">@learnbyexample</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>ripgrep 14.0.3</p>
+<h3>How did you install ripgrep?</h3>
+<p>Using ripgrep_14.0.3-1_amd64.deb</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Ubuntu 20.04</p>
+<h3>Describe your bug.</h3>
+<p>Using <code>(?x)</code> to add comments isn't working due to automatic wrapping of the supplied pattern within <code>(?:)</code>.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>Any pattern which uses <code>(?x)</code> and a comment.</p>
+<h3>What is the actual behavior?</h3>
+<pre><code class="language-bash">$ echo 'fig a#b 123' | rg -o '(?x)\d+ #extract digits'
+regex parse error:
+    (?:(?x)\d+ #extract digits)
+    ^
+error: unclosed group
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>I think automatic wrapping of patterns inside non-capturing group was introducted for this issue: https://github.com/BurntSushi/ripgrep/issues/2480. If possible, don't modify the pattern when there's a comment. Or may be add a note in the documentation for this corner case.</p>
+<p>FWIW, <code>GNU grep</code> doesn't support multiple patterns via <code>-e</code> or <code>-f</code> for PCRE:</p>
+<pre><code class="language-bash">$ echo 'fig a#b 123' | grep -oP '(?x)\d+ #extract digits'
+123
+
+$ echo 'MyText' | grep -P -e '(?i)notintext' -e 'text'
+grep: the -P option only supports a single pattern
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2023-12-06 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-06 13:08</div>
+            <div class="timeline-body"><p>There's really no way to get this completely right without individually validating each regex. I very specifically wanted to avoid doing that because of the extra cost it would add. With that said, now that I'm thinking about it more, it might be possible to do that with a fast path that skips the check in most cases. (For example, if a pattern doesn't contain a meta character anywhere, then you know it's valid. That would help when searching large dictionaries of literals.)</p>
+<p>But yeah, when I added a fix for #2480, I knew it wouldn't work in all cases. Another example of this is <code>rg ')('</code>. That should be invalid, but it actually works.</p>
+<p>With that said, one thing I realized here is that by adding the group around the regex, that group (which the user did not type) now appears in error messages. That's bad juju and I'll need to revert that for that reason alone. When I do that, I'll look into validating each pattern manually.</p>
+<p>For PCRE2, we'll probably just need to accept a <code>wontfix</code> bug there. I don't see a good reason to completely disable multi-pattern matching there just for this reason.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:44 UTC
+    </footer>
+</body>
+</html>

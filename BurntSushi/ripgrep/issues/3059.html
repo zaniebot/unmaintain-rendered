@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ignoring folders included by .gitignore after global ignore - BurntSushi/ripgrep #3059</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ignoring folders included by .gitignore after global ignore</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3059">#3059</a>
+        opened by <a href="https://github.com/Mehuge">@Mehuge</a>
+        on 2025-05-30 09:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Mehuge">@Mehuge</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[x] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>14.1.0 (rev e50df40a19)</p>
+<h3>How did you install ripgrep?</h3>
+<p>chocolatey</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Windows 11</p>
+<h3>Describe your bug.</h3>
+<p>When .gitignore ignores things, then explicitly includes subthings, rg does not search the subthings.</p>
+<p>e.g.</p>
+<pre><code class="language-.gitignore">*
+!searchme
+</code></pre>
+<p>The searchme folder won't be searched.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<p>Run the following bash script</p>
+<pre><code class="language-bash">#!/bin/bash
+mkdir /tmp/rgtest
+cd /tmp/rgtest
+echo -e &quot;*\nsearchme&quot; &gt; .gitignore
+git init
+mkdir searchme
+echo hello &gt; searchme/hello.txt
+rg hello
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<p>Nothing is searched.</p>
+<h3>What is the expected behavior?</h3>
+<p>searchme folder should be searched</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-05-30 12:25</div>
+            <div class="timeline-body"><p>Your repo omits the leading <code>!</code>, so in that case, <code>searchme</code> is never whitelisted.</p>
+<p>But the problem here is that while <code>searchme</code> itself is whitelisted and ripgrep <em>does</em> descend into it (confirmed by running with <code>--debug</code>), the <code>*</code> rule still applies to things within <code>searchme</code>. That is, whitelisting <code>searchme</code> doesn't automatically negate every previous ignore pattern for everything within <code>searchme</code>. That would be undesirable in most cases, even though it is pretty weird in this case.</p>
+<p>The solution is to <em>also</em> add <code>!searchme/**</code> for your specific case. That will forcefully override previous ignore patterns.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-05-30 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2025-05-30 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-05-30 12:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:55 UTC
+    </footer>
+</body>
+</html>

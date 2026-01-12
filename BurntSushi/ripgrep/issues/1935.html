@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress bar for search - BurntSushi/ripgrep #1935</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Progress bar for search</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1935">#1935</a>
+        opened by <a href="https://github.com/elazarl">@elazarl</a>
+        on 2021-07-13 18:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/elazarl">@elazarl</a></div>
+            <div class="timeline-body"><h4>View progress when searching large files</h4>
+<p>When searching a large file, one would like to view the progress of the search, to estimate when it is done.</p>
+<p>For example</p>
+<pre><code>rg --progress needle haystacks/*.txt &gt;results
+[===&gt;             ] 32/64 files, 5G/50G Worked for: 3:00min ETA: 5:00min
+</code></pre>
+<p>This is sort-of achieavable with something like</p>
+<pre><code>pv haystacks/*.txt | rg needle
+</code></pre>
+<p>However, you lose file names, line numbers, and also lose the ability to <code>mmap</code> the file. Also, I assume the piping of the data can hurt performance in some cases (e.g. tmpfs), but I'm not entirely sure.</p>
+<p>While this is a nice feature for ripgrep, it's even more essential for <code>libripgrep</code>, where progress might be essential for correctness. So adding, e.g., progress report to <code>Sink</code> would be even more beneficial.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-07-13 18:23</div>
+            <div class="timeline-body"><p>This isn't really a practical thing to do unfortunately. A progress bar implies some notion of when or after how much work the search will complete. But this is very specifically not ever known, because ripgrep processes files in an incremental fashion as it descends the directories provided to it to search. Your progress bar doesn't stop there either. It doesn't just want the number of files, but also the amount of disk space searched. That also requires a stat call for every single file, which has non-trivial overhead.</p>
+<p>Overall, ripgrep just is not designed in a way that makes it easy to accrue all search candidates in advance, and <em>then</em> search them. It isn't designed that way because that isn't the fastest way to execute a search. Therefore, adding a progress bar would require adding that design <em>in addition</em> to what ripgrep currently does to avoid a performance regression for all searches. That makes this feature quite complex and a maintenance burden for me in particular.</p>
+<blockquote>
+<p>While this is a nice feature for ripgrep, it's even more essential for <code>libripgrep</code>, where progress might be essential for correctness.</p>
+</blockquote>
+<p>Can you unpack this? It isn't clear to me what you mean here, particularly with respect to the phrase &quot;essential for correctness.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2021-07-13 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-07-13 18:27</div>
+            <div class="timeline-body"><blockquote>
+<p>While this is a nice feature for ripgrep, it's even more essential for <code>libripgrep</code>, where progress might be essential for correctness. So adding, e.g., progress report to <code>Sink</code> would be even more beneficial.</p>
+</blockquote>
+<p>Also, this is a categorically different request than the first half of the issue. The progress bar you showed as an example has a granularity at the file level, but this request is asking for a granularity of the bytes inside of each file. This is also not going to happen, because the only robust way to implement it is to hook into the regex engine, and ripgrep does not have its own bespoke regex engine. And no general purpose regex engine is going to provide said hook.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-07-13 18:31</div>
+            <div class="timeline-body"><p>If you have a UI on top of ripgrep (e.g., in a text editor), it is in theory possible to build a progress bar at the granularity of a file on top of ripgrep. ripgrep would need to expose a flag for <a href="https://docs.rs/grep-printer/0.1.6/grep_printer/struct.JSONBuilder.html#method.always_begin_end">enabling an option to emit JSON <code>begin</code>/<code>end</code> messages for each file even when there are no matches in that file</a>. But once available, ripgrep will print something after every file it searches, which would give you a way to update the progress bar. Of course, the UI would first need to figure out how many files (and possibly how much disk storage) ripgrep would search, which probably means running <code>rg --files &lt;args&gt;</code> first. So... a lot of work, but possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elazarl">@elazarl</a> on 2021-07-13 18:55</div>
+            <div class="timeline-body"><p>Re possibility. Can't you descent and search for all relevant files before starting to work, in case user asks for progress bar? Sometimes user is willing to pay with throughput to see progress and get ETA (e.g., overall search would take one minute longer, for displaying progress through the one hour of search)</p>
+<p>Maybe I'm missing something, but if all files are known in advance, and their sizes are known, wouldn't knowing <code>bytes scanned/total bytes to scan</code> give as a coarse grain evaluation of how much work is left?</p>
+<p>Re hook for regex engine. Let's say we won't provide that functionality for multiline. Can't we get bytes processed estimation from the line iterator?</p>
+<p>I might be entirely missing something here, but please do enlighten me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elazarl">@elazarl</a> on 2021-07-13 18:58</div>
+            <div class="timeline-body"><p>Re correctness, I'm sometimes required to stop, serialize my state, and continue later. This can be possible if <code>Sink</code> is getting some coarse grained file seek information from time to time. Maybe I was exaggerating with &quot;correctness&quot;, but that's an example for more essential feature than &quot;just&quot; a nicer UI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-07-13 18:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Can't you descent and search for all relevant files before starting to work, in case user asks for progress bar?</p>
+</blockquote>
+<p>That's exactly what I considered in my comment.</p>
+<blockquote>
+<p>Maybe I'm missing something, but if all files are known in advance, and their sizes are known, wouldn't knowing bytes scanned/total bytes to scan give as a coarse grain evaluation of how much work is left?</p>
+</blockquote>
+<p>Again, I addressed this.</p>
+<blockquote>
+<p>Re hook for regex engine. Let's say we won't provide that functionality for multiline. Can't we get bytes processed estimation from the line iterator?</p>
+</blockquote>
+<p>I don't want to &quot;not provide it&quot; for multi-line. And the line iterator is the slow approach for searching.</p>
+<blockquote>
+<p>Re correctness, I'm sometimes required to stop, serialize my state, and continue later. This can be possible if Sink is getting some coarse grained file seek information from time to time. Maybe I was exaggerating with &quot;correctness&quot;, but that's an example for more essential feature than &quot;just&quot; a nicer UI.</p>
+</blockquote>
+<p>Yeah, that's not a good fit for ripgrep. This implies a total redesign of how libripgrep works. You're better off building something bespoke if you need this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-07-13 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @BurntSushi on 2021-07-13 19:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2021-07-13 19:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elazarl">@elazarl</a> on 2021-07-15 11:25</div>
+            <div class="timeline-body"><p>Sorry to bother, but another idea popped to my mind:</p>
+<p>The <code>Sink</code> API would expose reading method to the sink. Which could be file descriptor, or mmap address.</p>
+<p>Then, with a different OS specific package, the Sink could trace the progress of the search regardless of the implementation. In Linux this can be done by tracing major PF in the mmap'ed file via /proc/self/smap, or, watching the file descriptor progress in the given file.</p>
+<p>This is a minor change that doesn't seem to break anything.</p>
+<p>What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-07-15 11:42</div>
+            <div class="timeline-body"><p>The caller is responsible for creating the <code>Sink</code> and is <em>also</em> responsible for handing the input to the searcher. For example, there is a <a href="https://docs.rs/grep-searcher/0.1.8/grep_searcher/struct.Searcher.html#method.search_file"><code>Searcher::search_file</code></a> API. So you should be able to provide the file descriptor at least to your <code>Sink</code> impl. Getting the mmap address is a little trickier, but could be exposed as a method on <code>Searcher</code>. (Every <code>Sink</code> method gets a <code>&amp;Searcher</code> provided to it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elazarl">@elazarl</a> on 2021-07-15 12:04</div>
+            <div class="timeline-body"><p>@BurntSushi however, the searcher can (and I want him) to choose the strategy automatically, it'd also mmap the file for me, which is also desirable.</p>
+<p>The searcher is the domain expert, I don't want to decide for him how to handle the search. I just want him to let me know how he decided to search.</p>
+<p>Isn't that a relatively small and undistruptive change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-07-15 12:15</div>
+            <div class="timeline-body"><blockquote>
+<p>however, the searcher can (and I want him) to choose the strategy automatically, it'd also mmap the file for me, which is also desirable.</p>
+</blockquote>
+<p>That's what <code>search_file</code> does.</p>
+<blockquote>
+<p>Isn't that a relatively small and undistruptive change?</p>
+</blockquote>
+<p>Can you stop saying this please? It's a leading question. And you repeating this in a variety of different forms comes across as <em>really</em> pushy. More to the point, you've only described your API addition as an idea. You haven't actually written down what specific concrete API you want. On top of all of that, I did suggest adding something to the <code>Searcher</code> API, but you seem to have ignored that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elazarl">@elazarl</a> on 2021-07-15 12:37</div>
+            <div class="timeline-body"><p>@BurntSushi I apologize, I probably misunderstood you.</p>
+<p>I thought you were suggesting the caller would provide either a file descriptor or an mmap file, but not a path like he can do today.</p>
+<p>To which I said the functionality of choosing the right strategy automatically is a feature of the library the user might still want to use, even if he wants to measure progress.</p>
+<p>I reread what you wrote but still didn't understand your suggested solution.
+Can you please elaborate on your suggestion? I really did try not to ignore what you said.</p>
+<p>I didn't write an API yet, since I thought to discuss the high level details beforehands. If you think that'd make things clearer - I'll try to write a concrete API.</p>
+<p>And I apologize for my question.
+I was genuinely trying to understand if there's something complicated in the suggested approach (e.g., I was expecting an answer like &quot;no, actually it's complicated b/c of X Y Z&quot;, and I apologize if I sounded offensive. Didn't mean to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elazarl">@elazarl</a> on 2021-07-15 12:40</div>
+            <div class="timeline-body"><p>(And on personal note, I really enjoy <code>libripgrep</code> and <code>ripgrep</code>, I marvel at the engineering and effort. And this is actually part of my motivation to try and contribute. I really try not to offend and to discuss changes respectfully, I might have failed doing that, and I apologize if that was the case)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-07-15 12:53</div>
+            <div class="timeline-body"><p>Thanks.</p>
+<blockquote>
+<p>I reread what you wrote but still didn't understand your suggested solution.
+Can you please elaborate on your suggestion? I really did try not to ignore what you said.</p>
+</blockquote>
+<p>From your comment above, you asked to make the file descriptor or the mmap address available to <code>Sink</code>. The file descriptor part of this request is already resolved today. Because you can create a <code>File</code> and hand that off to a <code>Searcher</code>. The searcher may still use mmap in this case though, so with the current API, you cannot tell whether the <code>File</code> is being used with standard <code>read</code> syscalls or if it was used to back a mmap.</p>
+<p>What I suggested was possibly adding a method to the <code>Searcher</code> API that returns the mmap address. e.g., <code>fn mmap_raw(&amp;self) -&gt; Option&lt;*const u8&gt;</code>. If that returns a <code>Some</code>, then you know the searcher is using a memory map. I hope that helps you understand my idea better.</p>
+<p>Note that I just realized that this isn't quite enough. A <code>Searcher</code> has three ways of searching: 1) incrementally using <code>read</code> syscalls, 2) via memory map or 3) by reading the entire file on to the heap. So your idea covers (1) and (2), but not (3).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elazarl">@elazarl</a> on 2021-07-15 13:17</div>
+            <div class="timeline-body"><p>The API you suggested is more or less what I had in mind, it's just that IMHO instead of &quot;hardcoding&quot; a specific method, a clearer API would be <code>raw_read_method</code> that returns an enum of possible methods.</p>
+<p>This would allow using <code>path</code> to start the search, and still have access to the file descriptor chosen without explicitly opening it, and would allow adding other strategies later.</p>
+<p>But that's not a really big difference.</p>
+<p>Regarding 3, this is indeed trickier, but can you please elaborate on what exactly happens in (3):</p>
+<ol>
+<li>Do you start searching while reading the entire file?</li>
+<li>What is the heuristic used to decide on using (3) can it happen for really large files?</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-07-15 13:25</div>
+            <div class="timeline-body"><blockquote>
+<pre><code>1. Do you start searching while reading the entire file?</code></pre>
+</blockquote>
+<p>The entire contents of the file is put on to the heap. Only then is the data searched. I don't see any way to measure progress of that search at the OS level.</p>
+<blockquote>
+<p>What is the heuristic used to decide on using (3) can it happen for really large files?</p>
+</blockquote>
+<p>The most precise way of saying it is: &quot;when neither (1) nor (2) can be used.&quot; It's a catch-all.</p>
+<p>Memory maps have plenty of cases where they can't or won't be used.</p>
+<p>In general, incremental reading can always be used. But, it can't when multi-line mode is enabled. So if memory maps can't be used for one of a number of reasons and multi-line search is enabled, then the whole file is read on to the heap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elazarl">@elazarl</a> on 2021-07-15 14:13</div>
+            <div class="timeline-body"><ol>
+<li>If that is the case, I <em>think</em> you can get a pretty good progress estimation with CPU performance counters, in linux this can be achieved with <code>perf_event_open</code>, which can measure RAM throughput which should be dominated by data, if the file is pretty long.</li>
+</ol>
+<p>An alternative approach which does not require perf counters, is putting a trap pages checkpoint every few MBs, handling the segfault by mprotecting and continuing. While this might give a very small (and tunable) throughput hit, it's a pretty good measure.</p>
+<p>(For very short files, measurement is probably not worth the effort anyhow).</p>
+<p>This is probably relevant for multigigabyte files which are read to the heap, but I'm not sure how common this case is.</p>
+<p>How does ripgrep know if it has enough memory to read the entire file to the heap?</p>
+<p>I think I'll start tackling files by measuring how much time does it take to search a large file that fits the heap on a typical system, and then we can understand how relevant this case is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elazarl">@elazarl</a> on 2021-07-15 14:15</div>
+            <div class="timeline-body"><p>I think that a reasonable design rational for enabling this feature is:</p>
+<ol>
+<li>libripgrep will <em>not</em> provide any hooks or change its internal implementation.</li>
+<li>If possible libripgrep will provide low level information to assist user with measuring the search. This could be the mmap'd range, the file descriptor or the memory range to which the file was read entirely.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-07-15 14:19</div>
+            <div class="timeline-body"><blockquote>
+<p>How does ripgrep know if it has enough memory to read the entire file to the heap?</p>
+</blockquote>
+<p>It doesn't. Just like it doesn't know if it has enough memory to fit any single line on the heap. GNU grep has the same limitation. If either tool doesn't have enough memory, then at least on Linux, the OOM killer comes into play.</p>
+<blockquote>
+<pre><code>2\. If possible libripgrep will provide low level information to assist user with measuring the search. This could be the mmap'd range, the file descriptor or the memory range to which the file was read entirely.</code></pre>
+</blockquote>
+<p>This seems plausible to me. I would want to better understand (and possibly document) how this information can be used to measure progress.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elazarl">@elazarl</a> on 2021-07-15 14:49</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>How does ripgrep know if it has enough memory to read the entire file to the heap?</p>
+</blockquote>
+<p>It doesn't. Just like it doesn't know if it has enough memory to fit any single line on the heap. GNU grep has the same limitation. If either tool doesn't have enough memory, then at least on Linux, the OOM killer comes into play.</p>
+</blockquote>
+<p>What would happen if someone tries to grep a 40gb file, which cannot be mmap'd?</p>
+<p>Would <code>ripgrep</code> prefer copy-to-heap than reading fd, since it enables multiline, and then would try to read the entire file and fail? I <em>think</em> I'm misunderstanding something here.</p>
+<blockquote>
+<p>This seems plausible to me. I would want to better understand (and possibly document) how this information can be used to measure progress.</p>
+</blockquote>
+<p>Here's what I suggest as a way forward, I'll open an RFP PR with implementation of measuring progress with mmap, say, as an example code, and you'll have a look and let me know if it seems plausible. If it looks OK I'll move forward implementing it with file descriptor. I'll try to ask a friend to help with similar implementation for Windows to make sure we're not too Linux centric.</p>
+<p>Does that make sense?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-07-15 15:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Would <code>ripgrep</code> prefer copy-to-heap than reading fd, since it enables multiline, and then would try to read the entire file and fail?</p>
+</blockquote>
+<p>Correct. It's either that, or don't do mulit-line search correctly.</p>
+<blockquote>
+<p>Here's what I suggest as a way forward, I'll open an RFP PR with implementation of measuring progress with mmap, say, as an example code, and you'll have a look and let me know if it seems plausible. If it looks OK I'll move forward implementing it with file descriptor. I'll try to ask a friend to help with similar implementation for Windows to make sure we're not too Linux centric.</p>
+</blockquote>
+<p>I think so.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:25 UTC
+    </footer>
+</body>
+</html>

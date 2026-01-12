@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`--pre` doesn't work on Windows (CMD, MSYS2 bash, Powershell) - BurntSushi/ripgrep #2798</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>--pre</code> doesn't work on Windows (CMD, MSYS2 bash, Powershell)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2798">#2798</a>
+        opened by <a href="https://github.com/chansey97">@chansey97</a>
+        on 2024-05-06 12:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chansey97">@chansey97</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>ripgrep 14.1.0 (rev e50df40a19)</p>
+<h3>How did you install ripgrep?</h3>
+<p>Download <a href="https://github.com/BurntSushi/ripgrep/releases/download/14.1.0/ripgrep-14.1.0-x86_64-pc-windows-msvc.zip">ripgrep-14.1.0-x86_64-pc-windows-msvc.zip</a> from GitHub release page, unzip, add PATH.</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Windows 10</p>
+<h3>Describe your bug.</h3>
+<p>Read and run examples of <a href="https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md">GUIDE </a> from top to bottom, everything is OK until the preprocess example: <code>$ rg --pre ./preprocess 'The Commentz-Walter algorithm' 1995-watson.pdf</code>.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<ol>
+<li>Download ripgrep-14.1.0-x86_64-pc-windows-msvc.zip from GitHub release page, unzip, add PATH.</li>
+<li>Download poppler-windows from https://github.com/oschwartz10612/poppler-windows/releases/, unzip, add PATH.</li>
+<li>Copy <a href="https://burntsushi.net/stuff/1995-watson.pdf">1995-watson.pdf</a> to C:/work2/rg-test-dir</li>
+<li>Following <a href="https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#preprocessor">GUIDE</a>, create <code>preprocess</code> file in C:/work2/rg-test-dir<pre><code>#!/bin/sh
+exec pdftotext - -
+</code></pre>
+</li>
+<li>Launch MSYS2 (no matter via mintty, windows legacy console or windows terminal)</li>
+<li>Ensure <code>$PATH</code> include<pre><code> /c/work2/rg-test-dir:/c/env/ripgrep/ripgrep-14.1.0-x86_64-pc-windows-msvc:/c/env/poppler/poppler-24.02.0/Library/bin
+</code></pre>
+</li>
+<li><code>cd /c/work2/rg-test-dir</code></li>
+<li>Run <code>rg --pre ./preprocess 'The Commentz-Walter algorithm' 1995-watson.pdf</code><pre><code>$ rg --pre ./preprocess 'The Commentz-Walter algorithm' 1995-watson.pdf
+rg: 1995-watson.pdf: preprocessor command could not start: '&quot;C:\\work2\\rg-test-dir\\./preprocess&quot; &quot;
+1995-watson.pdf&quot;': %1 is not a valid Win32 application. (os error 193)
+</code></pre>
+</li>
+</ol>
+<h3>What is the actual behavior?</h3>
+<ul>
+<li>Run <code>rg --pre ./preprocess 'The Commentz-Walter algorithm' 1995-watson.pdf</code><pre><code>$ rg --pre ./preprocess 'The Commentz-Walter algorithm' 1995-watson.pdf
+rg: 1995-watson.pdf: preprocessor command could not start: '&quot;C:\\work2\\rg-test-dir\\./preprocess&quot; &quot;
+1995-watson.pdf&quot;': %1 is not a valid Win32 application. (os error 193)
+</code></pre>
+</li>
+<li>Run <code>rg --pre ./preprocess 'The Commentz-Walter algorithm' 1995-watson.pdf --debug</code><pre><code>$ rg --pre ./preprocess 'The Commentz-Walter algorithm' 1995-watson.pdf --debug
+rg: DEBUG|rg::flags::parse|crates/core\flags\parse.rs:97: no extra arguments found from configuration file
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:1260: found hostname for hyperlink configuration: DESKTOP-OM1MD9D
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:1270: hyperlink format: &quot;&quot;
+rg: DEBUG|rg::flags::hiargs|crates/core\flags\hiargs.rs:174: using 1 thread(s)
+rg: DEBUG|grep_cli::decompress|crates\cli\src\decompress.rs:502: lz4: could not find executable in PATH
+rg: DEBUG|globset|crates\globset\src\lib.rs:453: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+rg: 1995-watson.pdf: preprocessor command could not start: '&quot;C:\\work2\\rg-test-dir\\./preprocess&quot; &quot;1995-watson.pdf&quot;': %1 is not a valid Win32 application. (os error 193)
+</code></pre>
+</li>
+</ul>
+<p>P.S.</p>
+<ol>
+<li><p>If I do not set the working directory <code>/c/work2/rg-test-dir</code>, it will report</p>
+<pre><code> rg: ./preprocess: could not find executable in PATH
+</code></pre>
+<p>This is a bit weird, although GUIDE says <code>preprocess</code> must be put in PATH.</p>
+</li>
+<li><p>I also tried CMD and Powershell by the following preprocess scripts, none of them works (and with the same error).</p>
+<p>preprocess.cmd</p>
+<pre><code>@echo off
+pdftotext %1 -
+</code></pre>
+<p>preprocess.ps1</p>
+<pre><code>$PSDefaultParameterValues['*:Encoding'] = 'utf8'
+Start-Process -NoNewWindow -Wait -FilePath &quot;pdftotext.exe&quot; -ArgumentList $Args[0], &quot;-&quot;
+</code></pre>
+</li>
+</ol>
+<p>Thanks.</p>
+<h3>What is the expected behavior?</h3>
+<p>No error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-06 12:44</div>
+            <div class="timeline-body"><p>This doesn't seem like a ripgrep problem, e.g., https://stackoverflow.com/questions/185042/how-do-i-resolve-1-is-not-a-valid-win32-application</p>
+<p>I'm not a Windows users so I cannot be of much more help. But all ripgrep is doing is executing the argument given to <code>--pre</code> as a process. That's it. I notice, for example, that you don't seem to have tested your <code>preprocess</code> script directly. You should make sure it works on its own without ripgrep at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-05-06 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2024-05-06 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chansey97">@chansey97</a> on 2024-05-06 13:47</div>
+            <div class="timeline-body"><blockquote>
+<p>I notice, for example, that you don't seem to have tested your preprocess script directly. You should make sure it works on its own without ripgrep at all.</p>
+</blockquote>
+<p>I tested, see below.</p>
+<p>From https://github.com/BurntSushi/ripgrep/pull/989, you said that</p>
+<blockquote>
+<p>The preprocessor flag accepts a command program and executes this program for every input file that is searched. Instead of searching the file directly, ripgrep will instead search the stdout contents of the program.</p>
+</blockquote>
+<p>and</p>
+<blockquote>
+<p>rg -h
+--pre=COMMAND                   Search output of COMMAND for each PATH.</p>
+</blockquote>
+<p>I assume &quot;the command program&quot;, i.e. <code>preprocess</code> receives a filename as an argument and prints the data to standard output. Correct me, if I am wrong.</p>
+<p>For example,</p>
+<p>if I run <code>preprocess.cmd</code> in command line, the result is</p>
+<pre><code>C:\work2\rg-test-dir&gt;set PATH=C:/env/ripgrep/ripgrep-14.1.0-x86_64-pc-windows-msvc;%PATH%;
+C:\work2\rg-test-dir&gt;set PATH=C:/env/poppler/poppler-24.02.0/Library/bin;%PATH%;
+C:\work2\rg-test-dir&gt;preprocess.cmd 1995-watson.pdf
+Taxonomies and Toolkits of
+Regular Language Algorithms
+
+Bruce William Watson
+Eindhoven University of Technology
+Department of Mathematics and Computing Science
+....
+</code></pre>
+<p>if I run <code>preprocess.ps1</code> in powershell, the result is</p>
+<pre><code>PS C:\work2\rg-test-dir&gt; Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted
+PS C:\work2\rg-test-dir&gt; $env:PATH = &quot;C:/env/ripgrep/ripgrep-14.1.0-x86_64-pc-windows-msvc;$env:PATH&quot;
+PS C:\work2\rg-test-dir&gt; $env:PATH = &quot;C:/env/poppler/poppler-24.02.0/Library/bin;$env:PATH&quot;
+PS C:\work2\rg-test-dir&gt; ./preprocess 1995-watson.pdf
+1995-watson.pdf
+Taxonomies and Toolkits of
+Regular Language Algorithms
+
+Bruce William Watson
+Eindhoven University of Technology
+Department of Mathematics and Computing Science
+...
+</code></pre>
+<p>So it seems no problem with these <code>preprocess</code> scripts.</p>
+<p>But when it runs with ripgrep --pre option, something goes wrong.</p>
+<p>Using Powershell as an example:</p>
+<pre><code>PS C:\work2\rg-test-dir&gt; rg --pre ./preprocess.ps1 'The Commentz-Walter algorithm' 1995-watson.pdf
+rg: ./preprocess.ps1: could not find executable in PATH
+</code></pre>
+<p>This error message is a little weird as I said before, because preprocess.ps1 is exactly in the current working directory... Anyway, if I force the working directory to be added to PATH, then</p>
+<pre><code>PS C:\work2\rg-test-dir&gt; $env:PATH = &quot;C:/work2/rg-test-dir;$env:PATH&quot;
+PS C:\work2\rg-test-dir&gt; rg --pre ./preprocess.ps1 'The Commentz-Walter algorithm' 1995-watson.pdf
+rg: 1995-watson.pdf: preprocessor command could not start: '&quot;C:/work2/rg-test-dir\\./preprocess.ps1&quot; &quot;1995-watson.pdf&quot;': %1 is not a valid Win32 application. (os error 193)
+PS C:\work2\rg-test-dir&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-06 13:52</div>
+            <div class="timeline-body"><p>I don't know. Sorry. I'd suggest asking on a general help forum for Windows users. Maybe there is something wrong with <code>C:/work2/rg-test-dir\\./preprocess.ps1</code>? Why not try and debug this a bit more and use an absolute path? e.g., <code>rg --pre C:/work2/rg-test-dir/preprocess.ps1</code>.</p>
+<p>Otherwise, I'd suggest focusing on the error message you're getting. The &quot;%1 is not a valid Win32 application&quot; message suggests something is wrong with your setup somewhere.</p>
+<p>Once again, I need to clarify here that I am not a Windows users. I have very little practical experience with it. It is too expensive for me to be doing end user support and diagnosing issues like this for operating systems I'm not familiar with.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chansey97">@chansey97</a> on 2024-05-06 13:59</div>
+            <div class="timeline-body"><p>For '&quot;C:/work2/rg-test-dir\./preprocess.ps1&quot;, it seems to be related to path separator, but not&quot;</p>
+<p>Use absolute path:</p>
+<pre><code>PS C:\work2\rg-test-dir&gt; rg --pre C:\works2\rg-test-dir\preprocess.ps1 'The Commentz-Walter algorithm' 1995-watson.pdf
+rg: 1995-watson.pdf: preprocessor command could not start: '&quot;C:\\works2\\rg-test-dir\\preprocess.ps1&quot; &quot;1995-watson.pdf&quot;': The system cannot find the path specified. (os error 3)
+
+PS C:\work2\rg-test-dir&gt; rg --pre C:/works2/rg-test-dir/preprocess.ps1 'The Commentz-Walter algorithm' 1995-watson.pdf
+rg: 1995-watson.pdf: preprocessor command could not start: '&quot;C:/works2/rg-test-dir/preprocess.ps1&quot; &quot;1995-watson.pdf&quot;': The system cannot find the path specified. (os error 3)
+</code></pre>
+<p>The error message is not &quot;%1 is not a valid Win32 application&quot; though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chansey97">@chansey97</a> on 2024-05-06 14:04</div>
+            <div class="timeline-body"><p>Another possibility is that the <code>preprocess.ps1</code> is not a win32 executable, so ripgrep can not run it directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-06 14:05</div>
+            <div class="timeline-body"><p>Yes. It needs to be executable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chansey97">@chansey97</a> on 2024-05-06 14:19</div>
+            <div class="timeline-body"><p>From https://doc.rust-lang.org/std/process/struct.Command.html, <code>process::Command::new</code> seems to require different handling based on OS.</p>
+<p>Comparing with https://github.com/BurntSushi/ripgrep/blob/bb8601b2bafb5e68181cbbb84e6ffa4f7a72bf16/crates/core/search.rs#L303</p>
+<p>I'm not familiar with Rust though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-06 14:40</div>
+            <div class="timeline-body"><p>No, it doesn't. I don't know how else to explain it, but the argument to <code>--pre</code> needs to itself be executable. The <code>sh -c</code> and <code>cmd /C</code> in your doc link is just an example of executing a shell script. The point there is that <code>cmd</code> and <code>sh</code> are themselves executable.</p>
+<p>Please please please, you'll need to find a more general help forum specific to Windows users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chansey97">@chansey97</a> on 2024-05-06 15:01</div>
+            <div class="timeline-body"><p>I just converted the <code>preprocess.ps1</code> to <code>preprocess.exe</code> via <a href="https://www.powershellgallery.com/packages/ps2exe/">ps2exe</a>, then works fine 😃.</p>
+<p>Might be necessary to document it?</p>
+<hr />
+<blockquote>
+<p>the argument to --pre needs to itself be executable</p>
+</blockquote>
+<p>But in <a href="https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#preprocessor">your preprocessor example</a>, <code>preprocess</code> is a bash script. I haven't tried on Linux, but on windows (include MSYS2 and Cygwin), script file (e.g. .cmd, .bat, .ps1) doesn't seem to work. It has to be an .exe file!</p>
+<p>I don't know how to make Windows automatically treat a script as an executable, except convert it to .exe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-06 15:07</div>
+            <div class="timeline-body"><p>If a Windows expert wants to chime in that this is the only way to make <code>--pre</code> work on Windows, then I'd be open to adding something like this to the docs. But I suspect there is something else you're missing. Either way, I'm glad you got it working.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chansey97">@chansey97</a> on 2024-05-06 15:10</div>
+            <div class="timeline-body"><blockquote>
+<p>The point there is that cmd and sh are themselves executable.</p>
+</blockquote>
+<p>Yeah. I mean it would be nice if <code>--pre</code> supports script. For example, execute <code>cmd.exe</code> with a script. e.g. <code>cmd.exe /c preprocess.cmd 1995-watson.pdf</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-06 15:17</div>
+            <div class="timeline-body"><p>It will never do that. Because then you have to worry about quoting and probably other things. The whole point of <code>--pre</code> is that it presents an extremely simple interface: you provide an executable and ripgrep runs it. That's the standard cross platform interface for running programs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2024-05-06 16:36</div>
+            <div class="timeline-body"><p>Ok maybe I could help a bit 🙂</p>
+<p>Windows has essentially two functions to start processes: <a href="https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw"><code>CreateProcess</code></a> and <a href="https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shellexecuteexw"><code>ShellExecuteEx</code></a>.</p>
+<p>The first one is the low-level API which can &quot;only&quot; run .exe and .bat files, while the second one is the higher-level shell API which is able to map file extensions such as .ps1 to their executables such as powershell.exe. Their behvior can be very different depending on what you're trying to do, but Rust uses <code>CreateProcess</code>.</p>
+<p>The following has been added recently to the <a href="https://github.com/rust-lang/rust/blob/25e3949aa1b24b3f62a72c1f713830aa1d1efcd4/library/std/src/process.rs">Rust <code>process</code> module docs</a>:</p>
+<pre><code>//! On Windows, `Command` uses the Windows API function [`CreateProcessW`] to
+//! spawn new processes. An undocumented feature of this function is that,
+//! when given a `.bat` file as the application to run, it will automatically
+//! convert that into running `cmd.exe /c` with the bat file as the next argument.
+//!
+//! For historical reasons Rust currently preserves this behaviour when using
+//! [`Command::new`], and escapes the arguments according to `cmd.exe` rules.
+//! Due to the complexity of `cmd.exe` argument handling, it might not be
+//! possible to safely escape some special chars, and using them will result
+//! in an error being returned at process spawn. The set of unescapeable
+//! special chars might change between releases.
+//!
+//! Also note that running `.bat` scripts in this way may be removed in the
+//! future and so should not be relied upon.
+</code></pre>
+<p>I tested it quickly, and ripgrep is able to run a .bat file with <code>--pre</code> but not a .ps1 script (as that would require <code>ShellExecuteEx</code>, which in any case doesn't support output redirecting so it's a no-go).</p>
+<p>Here's <code>C:\Temp\test.bat</code>:</p>
+<pre><code class="language-batch">@echo off
+echo Hello, world!
+</code></pre>
+<p>Here's <code>C:\Temp\test.ps1</code>:</p>
+<pre><code class="language-powershell">Write-Output &quot;Hello, world!&quot;
+</code></pre>
+<p>And there's also an empty file in <code>C:\Temp\empty.txt</code>, just to show that the searched file content is irrelevent.</p>
+<p>Here are the results:</p>
+<pre><code class="language-batch">rg --no-config --pre C:\Temp\test.bat Hello C:\Temp\empty.txt
+1:Hello, world!
+
+rg --no-config --pre C:\Temp\test.ps1 Hello C:\Temp\empty.txt
+rg: C:\Temp\empty.txt: preprocessor command could not start: '&quot;C:\\Temp\\test.ps1&quot; &quot;C:\\Temp\\empty.txt&quot;': %1 is not a valid Win32 application. (os error 193)
+</code></pre>
+<p>So you should be able to get the output from a .bat file just fine. In case it's relevant, I compiled my ripgrep with Rust 1.78.0, which includes <a href="https://blog.rust-lang.org/2024/04/09/cve-2024-24576.html">changes</a> to <code>Command</code> under Windows, so that may play a role in the results.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-05-06 16:53</div>
+            <div class="timeline-body"><p>@ltrzesniewski Thank you!!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chansey97">@chansey97</a> on 2024-05-07 02:07</div>
+            <div class="timeline-body"><p>I tested it again today and found that the current ripgrep can run .bat or .cmd file in <code>--pre</code> actually.</p>
+<p>preprocess.cmd</p>
+<pre><code>@echo off
+pdftotext %1 -
+</code></pre>
+<p>but Command Prompt must use double quotes <code>&quot;The Commentz-Walter algorithm&quot;</code> instead of single quotes <code>'The Commentz-Walter algorithm'</code> (PowerShell supports single quotes though).</p>
+<pre><code>C:\work2\rg-test-dir&gt;rg --pre preprocess.cmd &quot;The Commentz-Walter algorithm&quot; 1995-watson.pdf
+231:The Commentz-Walter algorithms : : : : : : : : : : : : : : : : : : : : : : : 82
+4636:4.4 The Commentz-Walter algorithms
+7509:in input string S , we obtain the Boyer-Moore algorithm. The Commentz-Walter algorithm
+</code></pre>
+<p>.ps1 doesn't work as @ltrzesniewski said.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chansey97">@chansey97</a> on 2024-05-07 02:44</div>
+            <div class="timeline-body"><p>Just a memo.</p>
+<p>The <code>--pre preprocess.sh</code> doesn't work in MSYS2/Cygwin (except using MSYS2/Cygwin build of ripgrep, but that is another story), because Rust Command is not aware of underlying MSYS2 bash. So if some one utilizes MSYS2 bash as a shell on Windows, use</p>
+<pre><code>$ rg --pre /c/work2/rg-test-dir/preprocess.bat 'The Commentz-Walter algorithm' 1995-watson.pdf
+</code></pre>
+<p>instead of</p>
+<pre><code>$ rg --pre /c/work2/rg-test-dir/preprocess.sh 'The Commentz-Walter algorithm' 1995-watson.pdf
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:48 UTC
+    </footer>
+</body>
+</html>

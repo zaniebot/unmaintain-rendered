@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>using '^' (or '\A') with multi-line search doesn't always produce expected result - BurntSushi/ripgrep #1878</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>using '^' (or '\A') with multi-line search doesn't always produce expected result</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1878">#1878</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2021-05-29 11:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>Initially found on HN: https://news.ycombinator.com/item?id=27324265</p>
+<p>Specifically, while this output is correct (since <code>^</code> is set to be in regex multi-line mode always):</p>
+<pre><code>$ printf 'a\nbaz\nabc\n' | rg -U '^b'
+baz
+</code></pre>
+<p>It should be the case that using <code>(?-m)^b</code> or <code>\Ab</code> would <em>not</em> print <code>baz</code> as a match. But that's not the case here:</p>
+<pre><code>$ printf 'a\nbaz\nabc\n' | rg -U '(?-m)^b'
+baz
+$ printf 'a\nbaz\nabc\n' | rg -U '\Ab'
+baz
+</code></pre>
+<p>The issue here is that in this case, ripgrep isn't memory mapping the input. In that case, ripgrep tries to be &quot;smart&quot; and not actually read the entire contents on to the heap if it knows the pattern can't match through a line terminator. But in this case, we can't quite make that assumption since anchors can match line terminators as look-around.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2021-05-29 11:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:22 UTC
+    </footer>
+</body>
+</html>

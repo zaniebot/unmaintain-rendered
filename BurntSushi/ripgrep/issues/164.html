@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segmentation fault on Sierra - BurntSushi/ripgrep #164</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Segmentation fault on Sierra</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/164">#164</a>
+        opened by <a href="https://github.com/elmart">@elmart</a>
+        on 2016-10-11 12:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/elmart">@elmart</a></div>
+            <div class="timeline-body"><p>I just installed release 0.2.2 on Sierra, and have a segfault when running <code>rg anything</code>.
+Core dump attached.
+<a href="https://github.com/BurntSushi/ripgrep/files/521767/rg_2016-10-11-142243_Eliseos-MacBook-Pro.txt">rg_2016-10-11-142243_Eliseos-MacBook-Pro.txt</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 12:26</div>
+            <div class="timeline-body"><p>Does the same happen with <code>0.2.1</code>?</p>
+<p>How did you install <code>ripgrep</code>?</p>
+<p>Can you run <code>rg --help</code>?</p>
+<p>What if you run <code>rg -j1 anything</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elmart">@elmart</a> on 2016-10-11 15:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Does the same happen with 0.2.1?</p>
+</blockquote>
+<p>No. 0.2.1 works right.</p>
+<blockquote>
+<p>How did you install ripgrep?</p>
+</blockquote>
+<p>Manually. I downloaded the x86_64 darwign package, and copied <code>rg</code>to <code>/usr/local/bin</code> and <code>rg.1</code> to <code>/usr/local/share/man/man1</code>.</p>
+<blockquote>
+<p>Can you run rg --help?</p>
+</blockquote>
+<p>Yes.</p>
+<blockquote>
+<p>What if you run rg -j1 anything?</p>
+</blockquote>
+<p>Same. Segfault.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2016-10-11 21:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 21:07</div>
+            <div class="timeline-body"><p>I can reproduce this on Yosemite:</p>
+<pre><code>mac:ripgrep andrew$ system_profiler SPSoftwareDataType
+Software:
+
+    System Software Overview:
+
+      System Version: OS X 10.10.5 (14F1808)
+      Kernel Version: Darwin 14.5.0
+      Boot Volume: Macintosh HD
+      Boot Mode: Normal
+      Computer Name: mac
+      User Name: Andrew Gallant (andrew)
+      Secure Virtual Memory: Enabled
+      Time since boot: 35 days 22:43
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 21:22</div>
+            <div class="timeline-body"><p>This looks like the specific point of failure:</p>
+<pre><code>==40663== Process terminating with default action of signal 11 (SIGSEGV)
+==40663==  General Protection Fault
+==40663==    at 0x100017A7B: rg::gitignore::Gitignore::matched_stripped::hdea6753d4bbf5227 (mem.rs:452)
+==40663==    by 0x10001AADA: rg::ignore::IgnoreDir::matched::hac186e75072c724e (gitignore.rs:131)
+==40663==    by 0x100031FFD: rg::run::h729464c93a862527 (ignore.rs:233)
+==40663==    by 0x10002C95B: rg::main::h4d3f7b1f43247509 (result.rs:601)
+==40663==    by 0x10010AFBA: __rust_maybe_catch_panic (in ./target/release/rg)
+==40663==    by 0x100109566: std::rt::lang_start::h14cbded5fe3cd915 (in ./target/release/rg)
+==40663==    by 0x1003605C8: start (in /usr/lib/system/libdyld.dylib)
+==40663==    by 0x1: ???
+==40663==    by 0x104A24D0E: ???
+==40663==    by 0x104A24D22: ???
+</code></pre>
+<p>This points back into the implementation of <code>std::mem::swap</code>, which doesn't make a lot of sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 21:25</div>
+            <div class="timeline-body"><p>I can reproduce this when compiling from source, but only on Mac, not Linux.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 21:30</div>
+            <div class="timeline-body"><p>A debug build does not segfault.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 21:35</div>
+            <div class="timeline-body"><p><em>sigh</em> It looks like this is happening because of thread locals. I don't believe I'm misusing them, but if I remove the thread local, things work again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 21:40</div>
+            <div class="timeline-body"><p>To clarify, I changed this code:</p>
+<pre><code class="language-rust">    pub fn matched_stripped(&amp;self, path: &amp;Path, is_dir: bool) -&gt; Match {
+        thread_local! {
+            static MATCHES: RefCell&lt;Vec&lt;usize&gt;&gt; = {
+                RefCell::new(vec![])
+            }
+        };
+        MATCHES.with(|matches| {
+            let mut matches = matches.borrow_mut();
+            let candidate = Candidate::new(path);
+            self.set.matches_candidate_into(&amp;candidate, &amp;mut *matches);
+            for &amp;i in matches.iter().rev() {
+                let pat = &amp;self.patterns[i];
+                if !pat.only_dir || is_dir {
+                    return if pat.whitelist {
+                        Match::Whitelist(pat)
+                    } else {
+                        Match::Ignored(pat)
+                    };
+                }
+            }
+            Match::None
+        })
+    }
+</code></pre>
+<p>to this:</p>
+<pre><code class="language-rust">    pub fn matched_stripped(&amp;self, path: &amp;Path, is_dir: bool) -&gt; Match {
+        let mut matches = vec![];
+        let candidate = Candidate::new(path);
+        self.set.matches_candidate_into(&amp;candidate, &amp;mut matches);
+        for &amp;i in matches.iter().rev() {
+            let pat = &amp;self.patterns[i];
+            if !pat.only_dir || is_dir {
+                return if pat.whitelist {
+                    Match::Whitelist(pat)
+                } else {
+                    Match::Ignored(pat)
+                };
+            }
+        }
+        Match::None
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 21:48</div>
+            <div class="timeline-body"><p>Compiling with Rust stable works. Compiling with Rust beta or nightly yields the sigsegv above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elmart">@elmart</a> on 2016-10-11 21:48</div>
+            <div class="timeline-body"><p>Not sure if (still) relevant, but I found this.
+https://bugzilla.mozilla.org/show_bug.cgi?id=1164109</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 21:49</div>
+            <div class="timeline-body"><p>@elmart Hmm that looks related to OS X 10.6 or older.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 21:54</div>
+            <div class="timeline-body"><p>I can't seem to come up with a minimally reproducible example. Trying this works fine on Rust beta/nightly on Mac:</p>
+<pre><code class="language-rust">use std::cell::RefCell;
+
+fn foo(n: usize) -&gt; bool {
+    thread_local! {
+        static MATCHES: RefCell&lt;Vec&lt;usize&gt;&gt; = {
+            RefCell::new(vec![])
+        }
+    };
+    MATCHES.with(|matches| {
+        let mut matches = matches.borrow_mut();
+        matches.clear();
+        for i in 0..n {
+            matches.push(i);
+        }
+        for &amp;i in matches.iter().rev() {
+            if i &gt; 0 &amp;&amp; i % 7 == 0 {
+                return true;
+            }
+        }
+        false
+    })
+}
+
+fn main() {
+    println!(&quot;{}&quot;, foo(::std::env::args().count()));
+    println!(&quot;{}&quot;, foo(::std::env::args().count() * 2));
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 21:55</div>
+            <div class="timeline-body"><p>cc @alexcrichton Do you have any ideas about this? TL;DR - I'm seeing a segfault on macos (not Linux) from using thread locals on current Rust beta/nightly, but <em>not</em> on current Rust stable. Efforts to repro a small example have failed. :-(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexcrichton">@alexcrichton</a> on 2016-10-11 22:10</div>
+            <div class="timeline-body"><p>Oh dear, sounds quite suspicious! The only funkiness I know of with OSX and thread locals has to do with destructors <em>maybe</em>, but there's no interesting destructors here.</p>
+<p>@BurntSushi what's the current reproduction? (large or small).</p>
+<p>This is quite worrisome!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 22:21</div>
+            <div class="timeline-body"><p>@alexcrichton This should do it:</p>
+<pre><code>$ git clone git://github.com/BurntSushi/ripgrep
+$ cd ripgrep
+$ git checkout 0.2.2
+$ cargo build --release
+$ ./target/release/rg cpu
+Segmentation fault: 11
+</code></pre>
+<p>(I'm about to commit a work around that stops using thread locals, so this issue is hopefully going to get closed, but it's not because I've figured out the underlying problem. :-))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-10-11 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 22:27</div>
+            <div class="timeline-body"><p>I've fixed this on master and will put out a <code>0.2.3</code> tonight.</p>
+<p>(The fix was to switch to the <code>thread_local</code> crate.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexcrichton">@alexcrichton</a> on 2016-10-11 22:38</div>
+            <div class="timeline-body"><p>The plot thickens! I can't seem to reproduce...</p>
+<pre><code>$ system_profiler SPSoftwareDataType
+Software:
+
+    System Software Overview:
+
+      System Version: macOS 10.12 (16A323)
+      Kernel Version: Darwin 16.0.0
+      Boot Volume: Macintosh HD
+      Boot Mode: Normal
+      Computer Name: e95b3ef3e8a3ef74
+      User Name: Alexander Crichton (acrichton)
+      Secure Virtual Memory: Enabled
+      System Integrity Protection: Enabled
+      Time since boot: 15 days 18:28
+
+$ git rev-parse HEAD
+4981991a6e4d1808d54c8d20fc4d93fcf0c1abfe
+$ rustc +nightly -vV
+rustc 1.14.0-nightly (a3bc191b5 2016-10-10)                
+binary: rustc                                              
+commit-hash: a3bc191b5f41df5143cc65084b13999896411817      
+commit-date: 2016-10-10                                    
+host: x86_64-apple-darwin                                  
+release: 1.14.0-nightly                                    
+$ cargo +nightly build --release
+...
+$ ./target/release/rg cpu
+...
+</code></pre>
+<p>(no segfaults)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-11 23:46</div>
+            <div class="timeline-body"><p>ripgrep <code>0.2.3</code> should be out momentarily. Thanks for reporting this @elmart!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/elmart">@elmart</a> on 2016-10-12 07:59</div>
+            <div class="timeline-body"><p>You're welcome. Thx for fixing it so quickly.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:48 UTC
+    </footer>
+</body>
+</html>

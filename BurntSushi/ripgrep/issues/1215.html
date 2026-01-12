@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>search tokens are ignored, if file contains blob dumps - BurntSushi/ripgrep #1215</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>search tokens are ignored, if file contains blob dumps</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1215">#1215</a>
+        opened by <a href="https://github.com/vbauerster">@vbauerster</a>
+        on 2019-03-09 17:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/vbauerster">@vbauerster</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 0.10.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>homebrew</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>macOS Mojave</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>I noticed that <code>rg</code> keeps skipping search token, if a <a href="https://github.com/vbauerster/tmp/raw/master/d.txt.gz">file</a> contains some blob dumps.
+Consider following command:</p>
+<pre><code>$ cat d.txt | rg -F 'p#05'
+[p#05] [03] 2019/03/09 11:13:15 total written: 0
+[p#05] [03] 2019/03/09 11:13:15 (*getparty.Part)(0xc00025e0e0)({
+ name: (string) (len=4) &quot;p#05&quot;,
+  prefix: (string) (len=12) &quot;[p#05] [03] &quot;,
+   00000000  5b 70 23 30 35 5d 20 5b  30 33 5d 20 32 30 31 39  |[p#05] [03] 2019|
+      msg: (string) (len=5) &quot;p#05:&quot;,
+</code></pre>
+<p>There are more <code>p#05</code> entries at the end, but <code>rg</code> skipped everything after dump lines.</p>
+<p>In contrast, <code>ag</code> handles same file as expected:</p>
+<pre><code>$ cat d.txt | ag -F 'p#05'
+[p#05] [03] 2019/03/09 11:13:15 total written: 0
+[p#05] [03] 2019/03/09 11:13:15 (*getparty.Part)(0xc00025e0e0)({
+ name: (string) (len=4) &quot;p#05&quot;,
+  prefix: (string) (len=12) &quot;[p#05] [03] &quot;,
+   00000000  5b 70 23 30 35 5d 20 5b  30 33 5d 20 32 30 31 39  |[p#05] [03] 2019|
+      msg: (string) (len=5) &quot;p#05:&quot;,
+[p#05] [03] 2019/03/09 11:13:15 ctx timeout: 25s
+[p#05] [03] 2019/03/09 11:13:15 quit: download: p#05: unexpected status: 416 Requested Range Not Satisfiable
+download: p#05
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2019-03-09 23:05</div>
+            <div class="timeline-body"><p>The file has <code>NUL</code> bytes in it that cause ripgrep to stop searching on standard input. (If you searched it by argument, as in <code>rg -F 'p#05' d.txt</code>, it wouldn't print any results at all.) You can use <code>-a</code> to tell it to search binary files.</p>
+<p>See also #1212, #1188, #1129, #1117, ... and especially #306</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2019-03-10 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-03-10 12:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:50 UTC
+    </footer>
+</body>
+</html>

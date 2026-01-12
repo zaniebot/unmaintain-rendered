@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question about vimgrep - BurntSushi/ripgrep #1274</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Question about vimgrep</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1274">#1274</a>
+        opened by <a href="https://github.com/slmjkdbtl">@slmjkdbtl</a>
+        on 2019-05-05 01:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/slmjkdbtl">@slmjkdbtl</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 11.0.1</p>
+<h4>How did you install ripgrep?</h4>
+<p>homebrew</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>macOS Mojave 10.14.5</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>When using with vim's quickfix list and <code>vimgrep</code>, the entries provided by <code>getqflist()</code> doesn't have <code>.col</code> property, instead the column number is in the <code>.text</code> field (my rg and vim setup is pretty much like https://github.com/jremmen/vim-ripgrep)
+So the entries I got are like</p>
+<pre><code>line: 16
+col: 0
+vcol: 0 
+text: '8:struct export_config {'
+</code></pre>
+<p>Haven't worked with vimgrep and quickfix list before, is this how it's supposed to be?</p>
+<p>neovim v0.3.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-05-05 02:06</div>
+            <div class="timeline-body"><p>Sorry, but this bug report isn't actionable. There aren't enough details for me to reproduce the issue you're having. Please clarify exactly which command you're running, its input, its actual output and its expected output <strong>separate from any particular text editor</strong>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/slmjkdbtl">@slmjkdbtl</a> on 2019-05-05 03:00</div>
+            <div class="timeline-body"><p>Ok, here's more detail:</p>
+<p>directory:</p>
+<pre><code>.
+└── test.txt
+</code></pre>
+<p>test.txt:</p>
+<pre><code>1yo1
+yo11
+</code></pre>
+<p>running ripgrep</p>
+<pre><code>$ rg &quot;yo&quot; --vimgrep
+test.txt:1:2:1yo1
+test.txt:2:1:yo11
+</code></pre>
+<p>trying to work with vimgrep:</p>
+<pre><code class="language-viml">let &amp;grepprg = 'rg --vimgrep'
+grep! 'yo'
+for d in getqflist()
+    echom d.lnum ':' d.col '   ' d.text
+endfor
+</code></pre>
+<p>expected behavior (output correct column and text):</p>
+<pre><code>1 : 1     1yo1
+1 : 4     1yo1
+2 : 3     yo11
+2 : 4     yo11
+</code></pre>
+<p>actual behavior (the column number is inside text):</p>
+<pre><code>1 : 0     1:1yo1
+1 : 0     4:1yo1
+2 : 0     3:yo11
+2 : 0     4:yo11
+</code></pre>
+<p>not sure if it's a vim parsing problem</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-05-05 13:42</div>
+            <div class="timeline-body"><p>This isn't a ripgrep problem. You linked to this repo https://github.com/jremmen/vim-ripgrep, and near the top of the README, it tells you what to use for <code>grepformat</code>.</p>
+<p>For example:</p>
+<pre><code class="language-vim">let &amp;grepprg = 'rg --vimgrep'
+let &amp;grepformat = '%f:%l:%c:%m'
+grep! 'yo'
+for d in getqflist()
+    echom d.lnum ':' d.col '   ' d.text
+endfor
+</code></pre>
+<p>In general, if you can't reproduce the problem inside a shell <em>outside of a text editor</em>, then the issue probably doesn't belong here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-05-05 13:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:54 UTC
+    </footer>
+</body>
+</html>

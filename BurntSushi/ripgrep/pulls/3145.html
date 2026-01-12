@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>globalset : Add literal_unclosed_class option to treat unclosed class as Literals - BurntSushi/ripgrep #3145</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>globalset : Add literal_unclosed_class option to treat unclosed class as Literals</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/3145">#3145</a>
+        opened by <a href="https://github.com/mostafa630">@mostafa630</a>
+        on 2025-09-12 20:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mostafa630">@mostafa630</a></div>
+            <div class="timeline-body"><h2>Changes</h2>
+<ul>
+<li>Added <code>literal_unclosed_class: bool</code> to <code>GlobOptions</code> (defaults to <code>false</code>)</li>
+<li>Added <code>literal_unclosed_class()</code> method to <code>GlobBuilder</code></li>
+<li>Modified <code>parse_class()</code> to save parser state and rollback on <code>UnclosedClass</code> errors when option is enabled</li>
+<li>Added comprehensive tests for patterns like <code>[abc</code>, <code>[]</code>, <code>[!]</code>, <code>[!</code></li>
+</ul>
+<h2>Behavior</h2>
+<p>When enabled, patterns that would throw <code>ErrorKind::UnclosedClass</code> are treated as literal characters instead:</p>
+<ul>
+<li><code>[abc</code>  : matches literal <code>[abc</code></li>
+<li><code>[]</code>  : matches literal <code>[]</code></li>
+<li><code>[!]</code> :  matches literal <code>[!]</code></li>
+<li><code>[!</code> : matches literal <code>[!</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-09-19 21:01</div>
+            <div class="timeline-body"><p>This needed a fair bit more work:</p>
+<ol>
+<li>Your approach to parsing is quadratic. I fixed this by observing that if EOF is hit without finding a <code>]</code>, then there can never be another character class in the pattern. So when this happens, a toggle is set and prevents the parser from ever calling <code>parse_class</code> again.</li>
+<li>This didn't wire the change up to <code>ignore</code>, which was a bit subtle. Namely, <code>Gitignore</code> now enables this by default but <code>Override</code> does not.</li>
+<li>I added more tests.</li>
+<li>I cleaned up the docs.</li>
+<li>I renamed this to <code>allow_unclosed_class</code>.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2025-09-19 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mostafa630">@mostafa630</a> on 2025-09-19 21:53</div>
+            <div class="timeline-body"><p>Thanks a lot for including this in the rollup,
+and I really appreciate the detailed feedback you shared</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-09-20 01:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:23 UTC
+    </footer>
+</body>
+</html>

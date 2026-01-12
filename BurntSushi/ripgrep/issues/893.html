@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don’t use .gitignore of a different git repository - BurntSushi/ripgrep #893</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don’t use .gitignore of a different git repository</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/893">#893</a>
+        opened by <a href="https://github.com/SimonSapin">@SimonSapin</a>
+        on 2018-04-22 15:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SimonSapin">@SimonSapin</a></div>
+            <div class="timeline-body"><p>In a clone of https://github.com/rust-lang/rust with git submodules checked out, in the <code>src/llvm</code> submodule, ripgrep 0.8.1 seems to &quot;miss&quot; several results that are found by GNU grep or git-grep:</p>
+<pre><code class="language-sh">~/rust/src/llvm% rg __powisf2                   
+lib/Target/WebAssembly/WebAssemblyRuntimeLibcallSignatures.cpp
+643:/* POWI_F32 */ &quot;__powisf2&quot;,
+</code></pre>
+<pre><code class="language-sh">~/rust/src/llvm% grep -R __powisf2            
+include/llvm/CodeGen/RuntimeLibcalls.def:HANDLE_LIBCALL(POWI_F32, &quot;__powisf2&quot;)
+test/CodeGen/Mips/msa/f16-llvm-ir.ll:; MIPS32-DAG:     lw $25, %call16(__powisf2)($gp)
+test/CodeGen/Mips/msa/f16-llvm-ir.ll:; MIPS64-N32-DAG: lw $25, %call16(__powisf2)($gp)
+test/CodeGen/Mips/msa/f16-llvm-ir.ll:; MIPS64-N64-DAG: ld $25, %call16(__powisf2)($gp)
+test/CodeGen/Mips/pr36061.ll:; MIPSN64-NEXT:    jal __powisf2
+test/CodeGen/Mips/pr36061.ll:; MIPSN32-NEXT:    jal __powisf2
+test/CodeGen/AArch64/illegal-float-ops.ll:; CHECK: bl __powisf2
+test/CodeGen/AArch64/f16-instructions.ll:; CHECK-COMMON-NEXT: bl {{_?}}__powisf2
+test/CodeGen/AArch64/arm64-illegal-float-ops.ll:; CHECK: bl __powisf2
+test/CodeGen/SystemZ/fp-libcall.ll:; CHECK: brasl %r14, __powisf2@PLT
+test/CodeGen/Thumb2/intrinsics-cc.ll:; CHECK: b __powisf2
+test/CodeGen/Thumb2/float-intrinsics-float.ll:; SOFT: bl __powisf2
+test/CodeGen/Thumb2/float-intrinsics-float.ll:; HARD: b __powisf2
+test/CodeGen/ARM/Windows/powi.ll:; CHECK-NOT: __powisf2
+test/CodeGen/ARM/Windows/powi.ll:; CHECK-NOT: __powisf2
+test/CodeGen/ARM/Windows/powi.ll:; CHECK-NOT: bl __powisf2
+test/CodeGen/ARM/fp16-promote.ll:; CHECK-FP16: bl __powisf2
+test/CodeGen/ARM/fp16-promote.ll:; CHECK-LIBCALL: bl __powisf2
+test/CodeGen/XCore/float-intrinsics.ll:; CHECK: bl __powisf2
+lib/Target/WebAssembly/WebAssemblyRuntimeLibcallSignatures.cpp:/* POWI_F32 */ &quot;__powisf2&quot;,
+</code></pre>
+<p>This turns out to be because of the <code>.gitignore</code> file at the root of the Rust repository. Running with <code>--no-ignore-parent</code> makes it find those extra results.</p>
+<p>These files are not ignored by git. If I modify <code>~/rust/src/llvm/include/llvm/CodeGen/RuntimeLibcalls.def</code> for example, <code>git status</code> will show it as modified. My understanding is that <code>~/rust/.gitignore</code> is not relevant to <code>RuntimeLibcalls.def</code> because it belongs to a different repository. This is detected by the presence of a <code>.git</code> directory (<a href="https://git-scm.com/docs/git-worktree">or file</a>) at <code>~/rust/src/llvm/.git</code>.</p>
+<p>When going up the parent/ancestor directories, ripgrep should probably stop considering <code>.gitignore</code> files after it goes beyond the root of a git repository (as indicated by <code>.git</code>). Conversely, when descending into a directory that contains <code>.git</code>, it should maybe stop considering <code>.gitignore</code> files that are &quot;above&quot; this directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-04-22 15:51</div>
+            <div class="timeline-body"><p>Ah this is a great bug! ripgrep does actually know to stop respecting parent <code>.gitignore</code> once it crosses a repository boundary. The problem is that it's looking for a <code>.git</code> <em>directory</em>:</p>
+<p>https://github.com/BurntSushi/ripgrep/blob/6b15ce2342d76ceccc16fad7614eada218a663da/ignore/src/dir.rs#L257</p>
+<p>But it looks like <code>.git</code> can also be a file, which ripgrep should obviously respect. I think fixing that should completely fix this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2018-04-22 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/SimonSapin">@SimonSapin</a> on 2018-04-22 16:29</div>
+            <div class="timeline-body"><p>Indeed, it looks like <code>.git</code> is a file for submodules too. I hadn’t realized that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-04-23 22:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:31 UTC
+    </footer>
+</body>
+</html>

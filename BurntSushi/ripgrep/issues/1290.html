@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nothing found = error?! - BurntSushi/ripgrep #1290</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Nothing found = error?!</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1290">#1290</a>
+        opened by <a href="https://github.com/fbruetting">@fbruetting</a>
+        on 2019-05-31 00:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/fbruetting">@fbruetting</a></div>
+            <div class="timeline-body"><p>Why does <code>rg</code> acutally return an exit status of 1 when nothing was found? Exit status 1 means “error”, but when <code>rg</code> just found nothing, this is no error at all! That also makes it hard to script… -.-</p>
+<p>When nothing is found, <code>rg</code> should therefore return an exit status of 0, which is WAY more correct and logical.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-05-31 00:22</div>
+            <div class="timeline-body"><p>This is standard grep behavior, and makes scripting easier. For example, you can write things like this:</p>
+<pre><code>if rg -q foo file; then
+  echo matched
+fi
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-05-31 00:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fbruetting">@fbruetting</a> on 2019-05-31 00:25</div>
+            <div class="timeline-body"><p>So there is no distinction made between “error” and “nothing found”?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-05-31 02:28</div>
+            <div class="timeline-body"><p>There is. Read the man page. The exit status is documented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mohkale">@mohkale</a> on 2021-01-15 19:56</div>
+            <div class="timeline-body"><p>@BurntSushi</p>
+<p>Perhaps this should be in a new issue, but there doesn't appear to be a distinction between &quot;error&quot; and &quot;nothing found&quot;.  There's <code>--quiet</code> but that disables showing any search results altogether. For the situations in which we're embedding ripgrep in external tools (eg. emacs to grep through a project) the lack of any results shouldn't be treated as an error and results should still be shown. This is because we're incrementally building up a pattern to search and expect for it to not match anything until we're finished. Labelling it as an error implies there's a fault in the syntax or command line arguments, rather than just a general lack of matches. I'd appreciate at least a flag to disable this behaviour.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-01-15 20:04</div>
+            <div class="timeline-body"><blockquote>
+<p>but there doesn't appear to be a distinction between &quot;error&quot; and &quot;nothing found&quot;</p>
+</blockquote>
+<p>There is. And as I mentioned above, it's documented in the man page. Here's a simple example demonstrating it:</p>
+<pre><code>$ pwd
+/home/andrew/rust/ripgrep
+$ rg NOTFOUND
+$ echo $?
+1
+$ rg 'badregex{'
+regex parse error:
+    badregex{
+            ^
+error: unclosed counted repetition
+$ echo $?
+2
+</code></pre>
+<blockquote>
+<p>the lack of any results shouldn't be treated as an error and results should still be shown. This is because we're incrementally building up a pattern to search and expect for it to not match anything until we're finished. Labelling it as an error implies there's a fault in the syntax or command line arguments, rather than just a general lack of matches. I'd appreciate at least a flag to disable this behaviour.</p>
+</blockquote>
+<p>Whatever you're using to spawn a ripgrep process should easily enable you to implement this functionality by inspecting the exit status. I see no reason for a flag in ripgrep for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mohkale">@mohkale</a> on 2021-01-15 20:10</div>
+            <div class="timeline-body"><blockquote>
+<p>There is. And as I mentioned above, it's documented in the man page. Here's a simple example demonstrating it</p>
+</blockquote>
+<p>Oh sorry, I meant there doesn't seem to be a flag that differentiates <code>errors</code> from <code>nothing found</code>, or to put it another way disregards &quot;nothing found&quot; while keeping the current error behaviour.</p>
+<blockquote>
+<p>Whatever you're using to spawn a ripgrep process should easily enable you to implement this functionality by inspecting the exit status. I see no reason for a flag in ripgrep for this.</p>
+</blockquote>
+<p>Yes, but in my use-case it requires specific workarounds for this. I'm using an external package which groups together a bunch of commands including ripgrep, git-grep, grep, etc. Adding specific logic to say don't consider 1 an error, but treat every other none-zero exit code as one feels out of scope there. I'll try to just use a subshell and check the exit code doesn't equal 1 as you suggest. I didn't initially want to cause it'd require an extra process call and escaping for something that could just as well take a single flag, but better than nothing I suppose :smile:.</p>
+<p>Thanks for your help.</p>
+<p>EDIT:</p>
+<p>I'll also have to add platform specific logic for <code>cmd</code> on windows compared to <code>sh</code> everywhere else :cry:.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-01-15 20:28</div>
+            <div class="timeline-body"><p>This is standard behavior for grep tools. GNU grep should have the same behavior. And it looks like <code>git grep</code> does as well. ripgrep's behavior was literally modelled after how GNU grep behaves.</p>
+<p>I don't understand why an additional process call is required here. But it is not inherently required. Anything that spawns a process should give you some kind of API to inspect the exit status. If you're using some package that wraps these tools and that package doesn't understand how these tools use the exit status, then that's probably missing functionality in that external package. (Or perhaps even a bug.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mohkale">@mohkale</a> on 2021-01-15 21:23</div>
+            <div class="timeline-body"><p>@BurntSushi</p>
+<blockquote>
+<p>This is standard behavior for grep tools. GNU grep should have the same behavior. And it looks like git grep does as well. ripgrep's behavior was literally modelled after how GNU grep behaves.</p>
+</blockquote>
+<p>Yes, I'm aware, thanks for pointing that out. From what I understand that behaviour makes scripting easier which is why it's like that. The justification for an option like originally asked for in this issue to disable this is for when you're plugging ripgrep, grep, git-grep in external tools. In these situations a lack of any output is equivalent to having no matches so a dedicated exit code felels redundant. Although I totally understand why it behaves like this and your reluctance to add an option to disable this behaviour.</p>
+<p>For example detecting no matches would get really ugly without a failed exit code:</p>
+<pre><code class="language-sh">out=$(grep -q foo file)
+if [ &quot;$?&quot; -ne 0 ] &amp;&amp; [ -z &quot;$out&quot; ]; then
+  echo &quot;No matches friend&quot;
+elif [ &quot;$?&quot; -ne 0 ]; then
+  echo &quot;Error friend&quot;
+else
+  echo &quot;Found some results&quot;
+fi
+</code></pre>
+<p>S.N. I didn't notice git-grep was also like this, but truth be told I rarely use either grep or git-grep when ripgrep is an option just cause I find ripgrep to be the best :smile:.</p>
+<blockquote>
+<p>I don't understand why an additional process call is required here.</p>
+</blockquote>
+<p>It's something to the affect of multiple layers of abstraction wrapping around a common interface. The interface prompts users for an input and it populates a command template (eg. <code>&quot;ripgrep -e %s&quot;</code>) which it then runs and presents the output for selection from the user.</p>
+<p>This is a gross oversimplification but hopefully you get the high level idea. In this case the procedure that runs the command isn't the same as the one that provides it (if that makes any sense). And so we could probably add a hook argument to the interface function which the ripgrep and other grep variants can fail gracefully on a 1 exit code. But rather than adding an API changing parameter, I feel a subshell is a better option.</p>
+<p>Of course all of this is completely irrelevent to ripgrep, just thought I'd explain myself fully :smile:.</p>
+<p>Incidentally I've changed the command for ripgrep from</p>
+<pre><code class="language-lisp"> '(&quot;rg&quot; &quot;--null&quot; &quot;--line-buffered&quot; &quot;--color=always&quot; &quot;--max-columns=500&quot; &quot;--no-heading&quot; &quot;--line-number&quot; &quot;.&quot; &quot;-e&quot;)
+</code></pre>
+<p>to</p>
+<pre><code class="language-lisp">'(&quot;sh&quot; &quot;-c&quot;
+  &quot;rg --null --line-buffered --color=always --max-columns=500 --no-heading --line-number . -e \&quot;$@\&quot;
+               if [ $? -eq 0 ] || [ $? -eq 1 ]; then
+                 exit 0
+               else
+                 exit $?
+               fi&quot; &quot;rg&quot;)
+</code></pre>
+<p>so you can probably guess why I'd have preferred an option :rofl:.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-01-15 21:32</div>
+            <div class="timeline-body"><p>Thanks for explaining. I understand now. Yes, some kind of sub-shell is probably the best option.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:55 UTC
+    </footer>
+</body>
+</html>

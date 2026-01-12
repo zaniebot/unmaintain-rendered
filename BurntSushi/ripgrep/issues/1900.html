@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replacement across multiple lines results in excess output - BurntSushi/ripgrep #1900</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Replacement across multiple lines results in excess output</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1900">#1900</a>
+        opened by <a href="https://github.com/learnbyexample">@learnbyexample</a>
+        on 2021-06-17 12:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/learnbyexample">@learnbyexample</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code class="language-bash">$ rg --version
+ripgrep 13.0.0 (rev 7ec2fd51ba)
+-SIMD -AVX (compiled)
++SIMD -AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>Using the <code>deb</code> file.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Ubuntu 20.04.2 LTS</p>
+<h4>Describe your bug.</h4>
+<p>Replacement across multiple lines isn't working as expected if there is input content after the matched group of lines.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<pre><code class="language-bash">$ s='foo\nhi there\nhave a nice day\nbye\n123\n456\n'
+
+$ printf '%b' &quot;$s&quot; | rg -U '(?s)the.*ice' -r 'ZZZ'
+hi ZZZ day
+bye
+123
+456
+
+$ printf '%b' &quot;$s&quot; | rg -U --passthru '(?s)the.*ice' -r 'ZZZ'
+foo
+hi ZZZ day
+bye
+123
+456
+bye
+123
+456
+
+# multiple replacement example
+$ printf '%b' &quot;$s&quot; | rg -U '(?s)oo.*the|ye.*2' -r 'XYZ'
+fXYZre
+have a nice day
+bXYZ3
+456
+bXYZ3
+456
+$ printf '%b' &quot;$s&quot; | rg -U '(?s)oo.*the|ye.*2' -r 'XYZ' --passthru
+fXYZre
+have a nice day
+bXYZ3
+456
+have a nice day
+bXYZ3
+456
+456
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<ul>
+<li>Without <code>--passthru</code> I do not expect remaining input lines to be part of the output or have some of the lines repeated</li>
+<li>With <code>--passthru</code> I do not expect output to have some of the lines repeated</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/learnbyexample">@learnbyexample</a> on 2023-12-11 06:29</div>
+            <div class="timeline-body"><p>Just checked with <code>14.0.3</code> version and these are working as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @learnbyexample on 2023-12-11 06:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:23 UTC
+    </footer>
+</body>
+</html>

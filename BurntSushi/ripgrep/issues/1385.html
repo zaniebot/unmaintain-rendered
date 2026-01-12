@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WalkDir error loop - BurntSushi/ripgrep #1385</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>WalkDir error loop</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1385">#1385</a>
+        opened by <a href="https://github.com/forensicmatt">@forensicmatt</a>
+        on 2019-09-23 17:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/forensicmatt">@forensicmatt</a></div>
+            <div class="timeline-body"><p>I have found a scenario where both WalkBuilder and WalkParallel get stuck on an error message and fall into an infinite loop, but using the std::fs::read_dir is able to move past the error:</p>
+<p>Here is example code I am using for WalkBuilder.</p>
+<pre><code class="language-rust">let builder = WalkBuilder::new( 
+    &amp;source_location
+)   .follow_links(true)
+    .hidden(false)
+    .ignore(false)
+    .parents(false)
+    .git_ignore(false)
+    .git_exclude(false)
+    .build();
+
+for entry_result in builder {
+    let dir_entry = match entry_result {
+        Ok(entry) =&gt; entry,
+        Err(e) =&gt; {
+            eprintln!(&quot;{:?}&quot;, e);
+            continue;
+        }
+    };
+
+    match dir_entry.file_type() {
+        Some(type_info) =&gt; {
+            if !type_info.is_file() {
+                continue;
+            }
+        },
+        None =&gt; {continue}
+    };
+
+    let file_path_str = match dir_entry.path().to_str(){
+        Some(s) =&gt; s,
+        None =&gt; {continue}
+    };
+
+    println!(&quot;{}&quot;, file_path_str);
+}
+</code></pre>
+<p>When I run a tool that uses the example snippit it gets stuck in an infinite loop:</p>
+<pre><code>&gt; .\target\release\examples\iter_dir_ignore_single.exe -s D:\Windows\System32\winevt\Logs
+D:\Windows\System32\winevt\Logs\Application.evtx
+...
+D:\Windows\System32\winevt\Logs\Microsoft-Windows-WindowsUpdateClient%4Operational.evtx
+D:\Windows\System32\winevt\Logs\Microsoft-Windows-WinINet-Config%4ProxyConfigChanged.evtx
+Io(Custom { kind: Other, error: Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } } })
+Io(Custom { kind: Other, error: Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } } })
+Io(Custom { kind: Other, error: Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } } })
+Io(Custom { kind: Other, error: Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } } })
+Io(Custom { kind: Other, error: Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } } })
+Io(Custom { kind: Other, error: Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } } })
+Io(Custom { kind: Other, error: Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } } })
+...
+</code></pre>
+<p>However, if I use the std::fs::read_dir, I still get the error, but it does not get stuck in an infinite loop. I know its very difficult to pin point without having a way to reproduce. <strong>Any idea where this could be happening within <em>ignore</em>?</strong></p>
+<p>Here is an example function I am using to iterate files with fs::read_dir:</p>
+<pre><code class="language-rust">fn handle_directory(directory_path: &amp;str) {
+    for dir_reader in fs::read_dir(directory_path) {
+        for entry_result in dir_reader {
+            match entry_result {
+                Ok(entry) =&gt; {
+                    let path = entry.path();
+                    if path.is_file() {
+                        let path_string = path.into_os_string().into_string().unwrap();
+                        println!(&quot;{}&quot;, &amp;path_string);
+                    } else if path.is_dir(){
+                        let path_string = path.into_os_string().into_string().unwrap();
+                        handle_directory(
+                            &amp;path_string
+                        );
+                    }
+                },
+                Err(error) =&gt; {
+                    eprintln!(&quot;Error reading {} [{:?}]&quot;, directory_path, error);
+                    break;
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<p>With the resulting error being:</p>
+<pre><code>&gt; .\target\release\examples\iter_dir_std.exe -s D:\Windows\System32\winevt\Logs
+D:\Windows\System32\winevt\Logs\Application.evtx
+...
+D:\Windows\System32\winevt\Logs\Microsoft-Windows-WindowsUpdateClient%4Operational.evtx
+D:\Windows\System32\winevt\Logs\Microsoft-Windows-WinINet-Config%4ProxyConfigChanged.evtx
+Error reading D:\Windows\System32\winevt\Logs [Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; }]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "WalkBuilder error loop" to "WalkDir error loop" by @forensicmatt on 2019-09-23 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/forensicmatt">@forensicmatt</a> on 2019-09-23 19:47</div>
+            <div class="timeline-body"><p>This appears to be an issue with WalkDir. The following example infinitely loops on me as well.</p>
+<pre><code class="language-rust">let walk_iter = WalkDir::new(source_location).into_iter();
+
+for entry_result in walk_iter {
+    let entry = match entry_result {
+        Ok(entry) =&gt; entry,
+        Err(e) =&gt; {
+            eprintln!(&quot;{:?}&quot;, e);
+            continue;
+        }
+    };
+
+    println!(&quot;{}&quot;, entry.path().display());
+}
+</code></pre>
+<pre><code>&gt; .\target\release\examples\iter_dir_walkdir.exe -s D:\Windows\System32\winevt\Logs
+D:\Windows\System32\winevt\Logs
+D:\Windows\System32\winevt\Logs\Application.evtx
+D:\Windows\System32\winevt\Logs\HardwareEvents.evtx
+D:\Windows\System32\winevt\Logs\Microsoft-Windows-WindowsUpdateClient%4Operational.evtx
+D:\Windows\System32\winevt\Logs\Microsoft-Windows-WinINet-Config%4ProxyConfigChanged.evtx
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+Error { depth: 1, inner: Io { path: None, err: Os { code: 1392, kind: Other, message: &quot;The file or directory is corrupted and unreadable.&quot; } } }
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-09-23 19:54</div>
+            <div class="timeline-body"><p>walkdir and ignore correspond to two distinct recursive directory traversals, so they could both be suffering from the same bug.</p>
+<p>Indeed, this is hard to do anything about without a reproduction. Perhaps you could investigate what's wrong with the directory and/or debug it from inside of walkdir.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/forensicmatt">@forensicmatt</a> on 2019-09-23 19:59</div>
+            <div class="timeline-body"><p>Moving this to https://github.com/BurntSushi/walkdir/issues/128.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @forensicmatt on 2019-09-23 19:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:01 UTC
+    </footer>
+</body>
+</html>

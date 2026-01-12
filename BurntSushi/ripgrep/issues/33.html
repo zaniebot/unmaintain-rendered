@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>benchmark time on very small corpora - BurntSushi/ripgrep #33</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>benchmark time on very small corpora</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/33">#33</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2016-09-23 19:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>An <a href="https://lobste.rs/c/ffpppl">end user reports</a> that <code>rg</code> isn't as fast on <code>ag</code> on very small repositories. While it seems trivial, if this is because of startup time, then it's worth investigating and fixing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @BurntSushi on 2016-09-23 19:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 14:07</div>
+            <div class="timeline-body"><p>#77 is another report of <code>grep</code> beating <code>rg</code> on a single file because of startup time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-26 11:36</div>
+            <div class="timeline-body"><p>Someone <a href="https://www.reddit.com/r/rust/comments/544hnk/ripgrep_is_faster_than_grep_ag_git_grep_ucg_pt/d82ch6i">ran micobenchmarks</a> on infinitesimally sized input. <code>grep</code> is twice as fast.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-11-20 19:09</div>
+            <div class="timeline-body"><p>OK, I think I can call this one done. I think a variety of small improvements have mostly fixed this:</p>
+<ul>
+<li>Switch from Docopt to clap (probably the biggest contributor).</li>
+<li>Permit ignore handling/parsing to reuse previous results when applicable.</li>
+<li>Use a parallel recursive directory iterator.</li>
+</ul>
+<p>In particular, on the previously linked microbenchmark:</p>
+<pre><code>$ python -m timeit -n 1 -r 10 -v -s 'import os' 'os.system(&quot;cat /etc/group | grep 1000 &gt; /dev/null&quot;)'
+raw times: 0.0115 0.0104 0.0103 0.0104 0.00902 0.00929 0.00842 0.00919 0.00792 0.00861
+1 loops, best of 10: 7.92 msec per loop
+$ python -m timeit -n 1 -r 10 -v -s 'import os' 'os.system(&quot;cat /etc/group | rg 1000 &gt; /dev/null&quot;)'
+raw times: 0.0103 0.0103 0.00946 0.00881 0.00871 0.00809 0.00802 0.00764 0.00722 0.00714
+1 loops, best of 10: 7.14 msec per loop
+</code></pre>
+<p>Compare this with ripgrep 0.2.6:</p>
+<pre><code>python -m timeit -n 1 -r 10 -v -s 'import os' 'os.system(&quot;cat /etc/group | rg-0.2.6 1000 &gt; /dev/null&quot;)'
+raw times: 0.0261 0.0251 0.0257 0.0217 0.0234 0.0239 0.0237 0.0235 0.022 0.0245
+1 loops, best of 10: 21.7 msec per loop
+</code></pre>
+<p>I've also done some testing on small repos. This repo qualifies as quite small. There is a <em>ton</em> of variance. The following were ran in succession:</p>
+<pre><code>[andrew@Cheetah ripgrep] time rg ripgrep | wc -l
+305
+
+real    0m0.033s
+user    0m0.257s
+sys     0m0.007s
+[andrew@Cheetah ripgrep] time rg ripgrep | wc -l
+305
+
+real    0m0.025s
+user    0m0.157s
+sys     0m0.023s
+[andrew@Cheetah ripgrep] time rg ripgrep | wc -l
+305
+
+real    0m0.013s
+user    0m0.017s
+sys     0m0.030s
+[andrew@Cheetah ripgrep] time rg ripgrep | wc -l
+305
+
+real    0m0.040s
+user    0m0.270s
+sys     0m0.007s
+</code></pre>
+<p><code>ag</code> seems to have slightly less variance:</p>
+<pre><code>[andrew@Cheetah ripgrep] time ag ripgrep | wc -l
+306
+
+real    0m0.029s
+user    0m0.007s
+sys     0m0.010s
+[andrew@Cheetah ripgrep] time ag ripgrep | wc -l
+306
+
+real    0m0.022s
+user    0m0.007s
+sys     0m0.010s
+[andrew@Cheetah ripgrep] time ag ripgrep | wc -l
+306
+
+real    0m0.023s
+user    0m0.020s
+sys     0m0.003s
+[andrew@Cheetah ripgrep] time ag ripgrep | wc -l
+306
+
+real    0m0.016s
+user    0m0.013s
+sys     0m0.003s
+</code></pre>
+<p>But, if we fix both programs to use a single thread, then variance becomes almost non-existent:</p>
+<pre><code>[andrew@Cheetah ripgrep] time rg -j1 ripgrep | wc -l
+305
+
+real    0m0.011s
+user    0m0.003s
+sys     0m0.007s
+[andrew@Cheetah ripgrep] time rg -j1 ripgrep | wc -l
+305
+
+real    0m0.011s
+user    0m0.007s
+sys     0m0.007s
+[andrew@Cheetah ripgrep] time rg -j1 ripgrep | wc -l
+305
+
+real    0m0.011s
+user    0m0.000s
+sys     0m0.010s
+[andrew@Cheetah ripgrep] time rg -j1 ripgrep | wc -l
+305
+
+real    0m0.010s
+user    0m0.003s
+sys     0m0.003s
+</code></pre>
+<p>and <code>ag</code>:</p>
+<pre><code>[andrew@Cheetah ripgrep] time ag --workers 1 ripgrep | wc -l
+306
+
+real    0m0.018s
+user    0m0.010s
+sys     0m0.000s
+[andrew@Cheetah ripgrep] time ag --workers 1 ripgrep | wc -l
+306
+
+real    0m0.018s
+user    0m0.010s
+sys     0m0.000s
+[andrew@Cheetah ripgrep] time ag --workers 1 ripgrep | wc -l
+306
+
+real    0m0.018s
+user    0m0.010s
+sys     0m0.003s
+[andrew@Cheetah ripgrep] time ag --workers 1 ripgrep | wc -l
+306
+
+real    0m0.021s
+user    0m0.007s
+sys     0m0.003s
+</code></pre>
+<p>In other words, on small corpora, ripgrep (and, to a lesser extent, <code>ag</code>) seem to be quite susceptible to the overhead of creating threads, which also seems to introduce large variance.</p>
+<p>I'm not sure there's anything we can really do about it. The difference in this particular example, at least, is nominal. From a user's perspective, we don't really care about the difference between 10ms and 30ms. However, the place where this can hurt us is if folks use ripgrep like it was grep, for example, in an <code>xargs</code> pipeline:</p>
+<pre><code>$ time find ./ -name '*.[ch]' -print0 | xargs -0 -P8 grep PM_RESUME | wc -l
+10
+
+real    0m0.213s
+user    0m0.423s
+sys     0m0.330s
+$ time find ./ -name '*.[ch]' -print0 | xargs -0 -P8 rg PM_RESUME | wc -l
+10
+
+real    0m0.402s
+user    0m4.750s
+sys     0m0.460s
+</code></pre>
+<p>The overhead of ripgrep launching threads ends up making it twice as slow. Of course, in this case, ripgrep launching threads doesn't really make much sense since <code>xargs</code> is doing it for us. But this isn't something that a user will <em>obviously</em> know. Of course, forcing ripgrep to use a single thread brings it back down to grep speeds:</p>
+<pre><code>time find ./ -name '*.[ch]' -print0 | xargs -0 -P8 rg -j1 PM_RESUME | wc -l
+10
+
+real    0m0.206s
+user    0m0.507s
+sys     0m0.487s
+</code></pre>
+<p>The other case to consider is using <code>xargs</code> without <code>-P</code> and having ripgrep handle parallelism:</p>
+<pre><code>time find ./ -name '*.[ch]' -print0 | xargs -0 rg PM_RESUME | wc -l
+10
+
+real    0m0.463s
+user    0m1.297s
+sys     0m0.597s
+</code></pre>
+<p>While worse than using <code>xargs -P</code>, compare with grep:</p>
+<pre><code>time find ./ -name '*.[ch]' -print0 | xargs -0 grep PM_RESUME | wc -l
+10
+
+real    0m0.655s
+user    0m0.477s
+sys     0m0.347s
+</code></pre>
+<p>I'm not sure there's really too much we can do here. An end user <em>can</em> use ripgrep in an <code>xargs</code> pipeline optimally, but it definitely requires a bit of intuition on the user's behalf to realize that ripgrep is already multithreaded where as grep is not.</p>
+<p>(This is yet another example proving that benchmarking these tools is ridiculously hard.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-11-20 19:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:38 UTC
+    </footer>
+</body>
+</html>

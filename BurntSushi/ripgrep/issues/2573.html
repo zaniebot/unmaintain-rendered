@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add column end number for vimgrep - BurntSushi/ripgrep #2573</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add column end number for vimgrep</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2573">#2573</a>
+        opened by <a href="https://github.com/0keke">@0keke</a>
+        on 2023-07-30 05:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/0keke">@0keke</a></div>
+            <div class="timeline-body"><h2>In-short</h2>
+<p>&quot;vimgrep&quot;, which is built-in grep command in vim shows both column start number and column end number, while ripgrep only shows column start number. Ripgrep should also show column end number.</p>
+<h3>as-is</h3>
+<p><code>ripgrep --vimgrep</code> only shows column start number.
+<img width="588" alt="スクリーンショット 2023-07-30 14 27 32" src="https://github.com/BurntSushi/ripgrep/assets/61049444/a34278de-db1d-49d0-8246-fbfaa6cdd243">
+<img width="398" alt="スクリーンショット 2023-07-30 14 28 30" src="https://github.com/BurntSushi/ripgrep/assets/61049444/4263064a-10cd-4a3a-ab5c-57e9b719ab0c"></p>
+<h3>to-be</h3>
+<p>~~<code>ripgrep --vimgrep</code>~~ <code>ripgrep --vimgre---new-option</code>  shows both column start number and column end number.
+<img width="504" alt="スクリーンショット 2023-07-30 14 29 37" src="https://github.com/BurntSushi/ripgrep/assets/61049444/baaa4b57-8643-4037-ad8d-1ac15f66d8cc"></p>
+<h3>motivation</h3>
+<p>Vim can highlight the matched words using column number information, but currently we cannot get correct result for lacking column end number.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-30 10:03</div>
+            <div class="timeline-body"><p>Where is the vimgrep specification documenting the format supported?</p>
+<p>And in particular, why have you not considered the impact of what is ostensibly a breaking change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0keke">@0keke</a> on 2023-07-30 14:14</div>
+            <div class="timeline-body"><blockquote>
+<p>Where is the vimgrep specification documenting the format supported?</p>
+</blockquote>
+<p>I am sorry; my writing might have confused you. I fixed my first comment.</p>
+<blockquote>
+<p>Where is the vimgrep specification documenting the format supported?</p>
+</blockquote>
+<p>You can check vimgrep specification in vim <a href="https://github.com/vim/vim/blob/4c0089d696b8d1d5dc40568f25ea5738fa5bbffb/runtime/doc/quickfix.txt#L1033">help</a>, but it's not helpful to solve this problem IMO.
+Vim treats std output from grep-tool using options such as <code>goreformat</code>, <code>errorformat</code> as you can see below.</p>
+<hr />
+<h3>NOTE</h3>
+<h4>as-is</h4>
+<p><code>rg &lt;target word&gt; --vimgrep</code>
+output</p>
+<pre><code>&lt;filename&gt;:&lt;line number&gt;:&lt;column number&gt;:&lt;error message&gt;
+</code></pre>
+<p>→ <code>set grepformat=%f:%l:%c:%m</code></p>
+<p><code>:grep &lt;target word&gt;</code></p>
+<h4>to-be(for example)</h4>
+<p><code>rg &lt;target word&gt; --vimgrep --some-option</code>
+output</p>
+<pre><code>&lt;filename&gt;:&lt;line number&gt;:&lt;column number&gt;:&lt;end colmun number&gt;:&lt;error message&gt;
+</code></pre>
+<p>→ <code>set grepformat=%f:%l:%c:%k:%m</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0keke">@0keke</a> on 2023-07-30 14:18</div>
+            <div class="timeline-body"><p>Thanks to <a href="https://github.com/thinca">thinca</a> in vim-jp, I have solved the problem.
+We don't have to add new option to ripgrep, using <code>jq</code> command.</p>
+<p>Thx for your reply. I'll close this request.</p>
+<p><a href="https://github.com/thinca/config/blob/14be02dea5aab1bb5eaa667c9a86de595bba7bba/dotfiles/dot.vim/vimrc#L601-L604">config example</a></p>
+<pre><code class="language-vim">if executable('rg') &amp;&amp; executable('jq')
+    let &amp;grepprg = 'rg --json $* \| jq -r ''select(.type==&quot;match&quot;)\|.data as $data\|$data.submatches[]\|&quot;\($data.path.text):\($data.line_number):\(.start+1):\(.end+1):\($data.lines.text//&quot;&quot;\|sub(&quot;\n$&quot;;&quot;&quot;))&quot;'''
+    set grepformat=%f:%l:%c:%k:%m
+endif
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-07-30 15:55</div>
+            <div class="timeline-body"><p>Sounds good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-07-30 15:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2023-07-30 15:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:42 UTC
+    </footer>
+</body>
+</html>

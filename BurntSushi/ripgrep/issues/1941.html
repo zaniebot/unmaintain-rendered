@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>result and error output mixing up - BurntSushi/ripgrep #1941</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>result and error output mixing up</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1941">#1941</a>
+        opened by <a href="https://github.com/kpcyrd">@kpcyrd</a>
+        on 2021-07-20 10:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kpcyrd">@kpcyrd</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>% rg --version
+ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>Arch Linux</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Arch Linux</p>
+<h4>Describe your bug.</h4>
+<p>Searching in a folder that contains files/folders that I don't have permissions to causes the errors to mix up with the results.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>You need to search in a folder with some files that you can't access (like /etc), that also contains some files that match your search.</p>
+<h4>What is the actual behavior?</h4>
+<pre><code>% rg pcp /etc 
+/etc/shadow: Permission denied (os error 13)
+/etc/gshadow: Permission denied (os error /etc/passwd
+39:pcp:x:959:959:Performance Co-Pilot:/var/lib/pcp:/usr/bin/nologin
+13)
+
+/etc/shadow-/etc/group
+72:pcp:x:959:
+: Permission denied (os error 13)
+/etc/gshadow-: Permission denied (os error 13)
+/etc/named.conf: Permission denied (os error 13)
+/etc/libaudit.conf: Permission denied (os error 13)
+/etc/sudoers.pacnew: Permission denied (os error 13)
+/etc/shadow.pacnew: Permission denied (os error 13)
+/etc/crypttab: Permission denied (os error 13)
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>errors should likely be sent to the main thread for printing so they are in-order:</p>
+<pre><code>% rg pcp /etc 
+/etc/shadow: Permission denied (os error 13)
+/etc/gshadow: Permission denied (os error 13)
+/etc/passwd
+39:pcp:x:959:959:Performance Co-Pilot:/var/lib/pcp:/usr/bin/nologin
+
+/etc/group
+72:pcp:x:959:
+/etc/shadow-: Permission denied (os error 13)
+/etc/gshadow-: Permission denied (os error 13)
+/etc/named.conf: Permission denied (os error 13)
+/etc/libaudit.conf: Permission denied (os error 13)
+/etc/sudoers.pacnew: Permission denied (os error 13)
+/etc/shadow.pacnew: Permission denied (os error 13)
+/etc/crypttab: Permission denied (os error 13)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-07-20 13:37</div>
+            <div class="timeline-body"><p>Hmmm yes, I can indeed reproduce this. A quick work-around is to disable parallelism with <code>-j1</code>.</p>
+<p>In terms of fixing this, it isn't quite as simple as &quot;send errors to the main thread.&quot; Errors are (or should be) already bubbled up to the top-level routines in <code>crates/core/main.rs</code> and printed with <code>err_message!</code>. The main problem here is that we prevent interleaving on stdout by acquiring the std's stdout lock at a fairly low layer of abstraction (down inside of <code>termcolor</code>). That is, printing is itself done on different threads. Printing isn't done by the main thread. We might be able to &quot;fake&quot; it by just acquiring that same lock in <code>main.rs</code> when printing an error message. It's a bit weird because it's a glorious violation of abstraction, but I just tried it and it does appear to resolve the issue. I'll noodle on this a little bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2021-07-20 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2023-07-08 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-07-08 22:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:25 UTC
+    </footer>
+</body>
+</html>

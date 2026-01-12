@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixed string search (-F) is ignored for pattern files (-f) - BurntSushi/ripgrep #1751</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fixed string search (-F) is ignored for pattern files (-f)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1751">#1751</a>
+        opened by <a href="https://github.com/jonashaag">@jonashaag</a>
+        on 2020-11-29 17:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jonashaag">@jonashaag</a></div>
+            <div class="timeline-body"><p>Refs #1750</p>
+<h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 12.1.1
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>Manjaro packages</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Manjaro Linux (x86_64, 5.8.6-1-MANJARO)</p>
+<h4>Describe your bug.</h4>
+<p><code>-F</code> is ignored when using <code>-f</code>, causing ripgrep to stop because of excessive regex size.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<pre><code>seq 1000000 &gt; data1
+seq 1000000 | shuf &gt; data2
+rg -F -f data1 data2 &gt;/dev/null
+Compiled regex exceeds size limit of 104857600 bytes.
+</code></pre>
+<h4>What is the actual behavior?</h4>
+<pre><code>rg -F -f data1 data2 --debug
+DEBUG|rg::config|crates/core/config.rs:40: /home/jo/.config/ripgreprc: arguments loaded from config file: [&quot;--max-columns=150&quot;, &quot;--max-columns-preview&quot;, &quot;--smart-case&quot;]
+DEBUG|rg::args|crates/core/args.rs:543: final argv: [&quot;rg&quot;, &quot;--max-columns=150&quot;, &quot;--max-columns-preview&quot;, &quot;--smart-case&quot;, &quot;--smart-case&quot;, &quot;-F&quot;, &quot;-f&quot;, &quot;data1&quot;, &quot;data2&quot;, &quot;--debug&quot;]
+Compiled regex exceeds size limit of 104857600 bytes.
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>Should work like grep (best case: faster)</p>
+<pre><code>time grep -f data1 data2 &gt;/dev/null
+
+Executed in  242,64 millis
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-29 17:44</div>
+            <div class="timeline-body"><blockquote>
+<p><code>-F</code> is ignored when using <code>-f</code>, causing ripgrep to stop because of excessive regex size.</p>
+</blockquote>
+<p>It's not: https://github.com/BurntSushi/ripgrep/blob/a6d05475fb353c756e88f605fd5366a67943e591/crates/core/args.rs#L691-L695</p>
+<p>And also:</p>
+<pre><code>[andrew@krusty ripgrep-1751]$ time rg -f data1 data2 | wc -l
+1000000
+
+real    3.327
+user    2.514
+sys     0.809
+maxmem  2943 MB
+faults  0
+
+$ time rg -F -f data1 data2 | wc -l
+1000000
+
+real    0.240
+user    0.199
+sys     0.040
+maxmem  80 MB
+faults  0
+</code></pre>
+<p>... which also means that I can't reproduce your problem. Ah, but you have <code>--smart-case</code> in your ripgrep config file, and that seems to be applicable here:</p>
+<pre><code>$ time rg -S -F -f data1 data2 | wc -l
+Compiled regex exceeds size limit of 104857600 bytes.
+0
+
+real    5.531
+user    4.540
+sys     0.985
+maxmem  3552 MB
+faults  0
+</code></pre>
+<p>Remember, smart case turns only when none of the patterns provided contains an uppercase character. Which is the case in your example. You can either remove <code>--smart-case</code> from your config file or pass the <code>-s/--case-sensitive</code> flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2020-11-29 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jonashaag">@jonashaag</a> on 2020-11-29 18:12</div>
+            <div class="timeline-body"><p>Aha, thanks! I agree that this a user error. Probably a naive question, but could smart case be implemented without regex so it ~does not disable~ has the speed you're used to from using <code>-F</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2020-11-29 18:14</div>
+            <div class="timeline-body"><p><em>Could</em> it be? Sure. Will it be? Probably not. In terms of implementation, it's much simpler to let the regex engine handle it.</p>
+<p>One possible corner case that could be done without the regex engine is if ASCII case insensitivity is good enough. But ripgrep enables Unicode by default, so that would require passing <code>--no-unicode</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-11-29 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @BurntSushi on 2020-11-29 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2020-11-29 18:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:17 UTC
+    </footer>
+</body>
+</html>

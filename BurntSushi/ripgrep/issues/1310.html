@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Libripgrep return list instead of outputting to terminal or returning JSON - BurntSushi/ripgrep #1310</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Libripgrep return list instead of outputting to terminal or returning JSON</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1310">#1310</a>
+        opened by <a href="https://github.com/mrageh">@mrageh</a>
+        on 2019-06-22 13:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mrageh">@mrageh</a></div>
+            <div class="timeline-body"><p>Thanks for creating ripgrep and extracting libripgrep.</p>
+<h4>What version of ripgrep are you using?</h4>
+<p>https://github.com/mrageh/simplegrep</p>
+<h4>How did you install ripgrep?</h4>
+<p>I'm using libripgrep</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Mac</p>
+<h4>Question</h4>
+<p>I'm new to Rust and I'm trying to build a toy project that searches through directories and then instead of outputting the result to the terminal or returning JSON. It gives me back a simple list
+that matches my certain criteria, where I can continue modifying it in Rust.</p>
+<p>https://github.com/mrageh/simplegrep/blob/master/src/main.rs#L55</p>
+<p>The <code>SummaryBuilder</code> returns the exact results I want but then when I call <code>build</code> on it and pass it the <code>cli::stdout</code> it prints to the terminal. Which is expected behavior.
+But I'm wondering if I could pass something else to <code>build</code> like a vector and return a populated list from the <code>SummaryBuilder</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-06-24 11:19</div>
+            <div class="timeline-body"><p>@mrageh <a href="https://docs.rs/grep-printer/0.1.2/grep_printer/struct.SummaryBuilder.html#method.build"><code>SummaryBuilder::build</code></a> requires a <code>WriteColor</code>. You can't pass something else to it. Indeed, the entire point of the <code>grep-printer</code> crate is specifically to craft an output format that is readable by end users in a style they are familiar with. If you want to handle matches as structured data, then the <code>grep-printer</code> crate is the wrong tool for that.</p>
+<p>You are on the right track with respect to &quot;giving something else&quot; to <code>build</code>. That is, this is the code you'll want to change: https://github.com/mrageh/simplegrep/blob/223bf40a3507785b90529180d0846367a08cba77/src/main.rs#L71-L75</p>
+<p>In particular, that corresponds to <a href="https://docs.rs/grep-searcher/0.1.4/grep_searcher/struct.Searcher.html#method.search_path"><code>Searcher::search_path</code></a>, which a matcher, a file path to search and <a href="https://docs.rs/grep-searcher/0.1.4/grep_searcher/trait.Sink.html">something that implements <code>Sink</code></a>. So all you need to do is create a new type and implement the <code>Sink</code> trait. Then pass a value of that type to <code>search_path</code> and get rid of <code>grep_printer</code> entirely.</p>
+<p>Note that there are some pre-built types that implement <code>Sink</code> for you, which you might find convenient instead of defining your own types: https://docs.rs/grep-searcher/0.1.4/grep_searcher/sinks/index.html</p>
+<p>There's a short example using the <code>sinks::UTF8</code> sink here: https://docs.rs/grep-searcher/0.1.4/grep_searcher/index.html#example</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2019-06-24 11:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/swr1bm86">@swr1bm86</a> on 2019-09-29 05:41</div>
+            <div class="timeline-body"><p>@BurntSushi your comment here really saved my day!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2020-05-08 11:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:56 UTC
+    </footer>
+</body>
+</html>

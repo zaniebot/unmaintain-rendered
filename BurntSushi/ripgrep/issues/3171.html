@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`foo**/bar` interpreted differently between the ignore crate and Git - BurntSushi/ripgrep #3171</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>foo**/bar</code> interpreted differently between the ignore crate and Git</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/3171">#3171</a>
+        opened by <a href="https://github.com/tomokinakamaru">@tomokinakamaru</a>
+        on 2025-10-08 02:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tomokinakamaru">@tomokinakamaru</a></div>
+            <div class="timeline-body"><p>(I chose the blank issue template because I was not sure if this is a bug or not.)</p>
+<p>I've noticed that the gitignore pattern <code>foo**/bar</code> is interpreted differently between the ignore crate and Git. When <code>.gitignore</code> contains <code>foo**/bar</code>,</p>
+<ul>
+<li>Git ignores a file named <code>foobar</code>, while</li>
+<li>the ignore crate does <strong>not</strong> ignore <code>foobar</code>.[^test]</li>
+</ul>
+<p>Git's interpretation is unintuitive, but given the wide use of the ignore crate, I wanted to report this difference for clarification. I would be happy if the ignore crate follows Git perfectly, but I understand if it behaves differently against this edge case.</p>
+<p>Is this difference expected or a known issue?</p>
+<p>[^test]: https://github.com/tomokinakamaru/ripgrep/blob/71c409aab31132d726ed2b98402eeaf1f3118df3/crates/ignore/tests/gitignore_matched_path_or_any_parents_tests.gitignore#L218 and https://github.com/tomokinakamaru/ripgrep/blob/71c409aab31132d726ed2b98402eeaf1f3118df3/crates/ignore/tests/gitignore_matched_path_or_any_parents_tests.rs#L25-L31</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-08 11:14</div>
+            <div class="timeline-body"><p>Please provide an MRE.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`foo**/bar` interpreted between the ignore crate and Git" to "`foo**/bar` interpreted differently between the ignore crate and Git" by @tomokinakamaru on 2025-10-10 06:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tomokinakamaru">@tomokinakamaru</a> on 2025-10-10 06:48</div>
+            <div class="timeline-body"><p>Sorry for not providing an MRE earlier. I've attached a tar.gz file to help reproduce the issue. The archive includes the following files and directories:</p>
+<ul>
+<li><code>mre-3171</code></li>
+<li><code>mre-3171/foobar</code></li>
+<li><code>mre-3171/.gitignore</code></li>
+<li><code>mre-3171/.git/</code></li>
+</ul>
+<p>To reproduce the issue,</p>
+<ol>
+<li>Unarchive the tar.gz file.</li>
+<li>Move to the directory <code>mre-3171</code></li>
+<li>Run <code>git status -uall -s</code> to list Git-tracked files. This will print only <code>?? .gitignore</code>.</li>
+<li>Run <code>rg --files</code> to list search targets. This will print <code>foobar</code>, which is ignored by Git.</li>
+</ol>
+<p><a href="https://github.com/user-attachments/files/22840683/mre-3171.tar.gz">mre-3171.tar.gz</a></p>
+<p>If you're uncomfortable downloading and opening the tar.gz file for security reasons, you can use the following commands instead.</p>
+<pre><code class="language-sh">mkdir mre-3171
+cd mre-3171
+git init
+echo 'foo**/bar' &gt; .gitignore
+touch foobar
+git status -uall -s  # prints &quot;?? .gitignore&quot;
+rg --files  # prints &quot;foobar&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-11 00:36</div>
+            <div class="timeline-body"><p>Thanks for the MRE! The tar archive isn't necessary. The shell commands are perfect. :-)</p>
+<p>From what I can tell, this is a bug in <code>git</code>, not in ripgrep. It's either in git's behavior or in its docs, as they seem inconsistent for this particular pattern. From <code>man gitignore</code>:</p>
+<pre><code>       Two consecutive asterisks (&quot;**&quot;) in patterns matched against full pathname may have special meaning:
+
+       •   A leading &quot;**&quot; followed by a slash means match in all directories. For example, &quot;**/foo&quot; matches file or directory &quot;foo&quot; anywhere, the same as pattern &quot;foo&quot;. &quot;**/foo/bar&quot; matches file or directory &quot;bar&quot; anywhere that is
+           directly under directory &quot;foo&quot;.
+
+       •   A trailing &quot;/**&quot; matches everything inside. For example, &quot;abc/**&quot; matches all files inside directory &quot;abc&quot;, relative to the location of the .gitignore file, with infinite depth.
+
+       •   A slash followed by two consecutive asterisks then a slash matches zero or more directories. For example, &quot;a/**/b&quot; matches &quot;a/b&quot;, &quot;a/x/b&quot;, &quot;a/x/y/b&quot; and so on.
+
+       •   Other consecutive asterisks are considered regular asterisks and will match according to the previous rules.
+</code></pre>
+<p>So my interpretation here is that <code>foo**/bar</code> falls into the fourth bullet point above. And thus referencing the meaning of <code>*</code>:</p>
+<pre><code>       •   An asterisk &quot;*&quot; matches anything except a slash. The character &quot;?&quot; matches any one character except &quot;/&quot;. The range notation, e.g. [a-zA-Z], can be used to match one of the characters in a range. See fnmatch(3) and the
+           FNM_PATHNAME flag for a more detailed description.
+</code></pre>
+<p>I really don't get how <code>foo**/bar</code> could match <code>foobar</code> to be honest. I think it either has to be interpreted as <code>foo/**/bar</code> or <code>foo*/bar</code>. And neither of those (according to git) match <code>foobar</code>.</p>
+<p>So this might be worth filing with <code>git</code>. Feel free to re-open this if they fix this on their end and it requires a change in ripgrep.</p>
+<p>(I do generally want to match git's behavior and there are some cases where we don't today. This is one of them, but I can't tell if git's behavior is intentional here or not.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-10-11 00:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2025-10-11 00:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tomokinakamaru">@tomokinakamaru</a> on 2025-10-11 02:50</div>
+            <div class="timeline-body"><p>Thank you for taking the time to investigate them! I agree with your assessment. The patterns should be interpreted as you described. (I thought I should at least report and discuss them with the maintainer just in case, which is why I opened this issue.)</p>
+<p>Thanks again for your time!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:59 UTC
+    </footer>
+</body>
+</html>

@@ -22,7 +22,7 @@
 
     <div class="timeline">
         <div class="timeline-entry">
-            <div class="timeline-header">Pull request opened by <a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> on 2024-05-01 18:24</div>
+            <div class="timeline-header"><a href="https://github.com/tusharsadhwani">@tusharsadhwani</a></div>
             <div class="timeline-body"><h2>Summary</h2>
 <p>Implements <code>Y059</code> from <code>flake8-pyi</code>: <code>typing.Generic[]</code> should be the last base in a class' bases list.</p>
 <p>If Multiple <code>Generic[]</code> classes are found, we don't generate a fix for it.</p>
@@ -30,10 +30,542 @@
 <p><code>cargo test</code> and <code>cargo insta review</code>.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @tusharsadhwani on 2024-05-01 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> on 2024-05-01 18:26</div>
+            <div class="timeline-body"><p>Is it okay to add the autofix in the same PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-01 18:28</div>
+            <div class="timeline-body"><p>Just wondering, what happens if a class has two <code>Generic[]</code> bases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-01 18:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it okay to add the autofix in the same PR?</p>
+</blockquote>
+<p>Yep!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> on 2024-05-01 18:29</div>
+            <div class="timeline-body"><blockquote>
+<p>what happens if a class has two Generic[] bases?</p>
+</blockquote>
+<p>It's a runtime error:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; import typing
+&gt;&gt;&gt; T = typing.TypeVar('T')
+&gt;&gt;&gt; U = typing.TypeVar('U')
+&gt;&gt;&gt; class C(typing.Generic[T], typing.Generic[U]):
+...   ...
+...
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/opt/homebrew/Cellar/python@3.12/3.12.2_1/Frameworks/Python.framework/Versions/3.12/lib/python3.12/typing.py&quot;, line 1102, in _generic_init_subclass
+    raise TypeError(
+TypeError: Cannot inherit from Generic[...] multiple times.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-01 18:34</div>
+            <div class="timeline-body"><p>Good to know. We should make sure the rule doesn't behave poorly on that case regardless, i.e. it could cause an infinite fix loop.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-05-01 18:37</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+2 -0 violations, +0 -0 fixes in 1 projects; 43 projects unchanged)</p>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/rotki/rotki/blob/085fec977e000c511ca2a60a761c94b0989cc125/rotkehlchen/db/filtering.py#L577'>rotkehlchen/db/filtering.py:577:25:</a> PYI059 [*] `Generic[]` should always be the last base class
++ <a href='https://github.com/rotki/rotki/blob/085fec977e000c511ca2a60a761c94b0989cc125/rotkehlchen/types.py#L977'>rotkehlchen/types.py:977:34:</a> PYI059 [*] `Generic[]` should always be the last base class
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PYI059 | 2 | 2 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> on 2024-05-01 18:39</div>
+            <div class="timeline-body"><blockquote>
+<p>We should make sure the rule doesn't behave poorly on that case regardless</p>
+</blockquote>
+<p>Should multiple <code>Generic[]</code> case not raise the issue at all then?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:12 on 2024-05-03 10:37</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// Checks for classes inheriting from `typing.Generic[]` where `Generic[]` is
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:19 on 2024-05-03 10:38</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// The rule is also applied to stub files, but, unlike at runtime,
+/// in stubs it is purely enforced for stylistic consistency.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:34 on 2024-05-03 10:39</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// Use instead:
+/// ```python
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:63 on 2024-05-03 10:40</div>
+            <div class="timeline-body"><p>The <code>fix_title()</code> messages show up as &quot;quick fix&quot; options in VSCode when you right-click on a violation and the violation has an autofix, so it's good to keep these as short as possible</p>
+<pre><code class="language-suggestion">        Some(&quot;Move `Generic[]` to the end&quot;.to_string())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:72 on 2024-05-03 10:42</div>
+            <div class="timeline-body"><p>nit: for new rules, we generally prefer to keep these signatures as short and consistent as possible. Here we'd probably go for a signature like this:</p>
+<pre><code class="language-suggestion">pub(crate) fn generic_not_last_base_class(
+    checker: &amp;mut Checker,
+    class_def: &amp;StmtClassDef,
+) {
+</code></pre>
+<p>since you can easily extract the <code>bases</code> from the <code>StmtClassDef</code> in the body of the rule</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:111 on 2024-05-03 10:57</div>
+            <div class="timeline-body"><p>I might do something like this, to make it clear that both branches here end up pushing a new diagnostic:</p>
+<pre><code class="language-suggestion">    let diagnostic = {
+	    if generic_base_indices.len() == 1 {
+	        let base_index = generic_base_indices[0];
+	        if base_index == bases.args.len() - 1 {
+	            // Don't raise issue for the last base.
+	            return;
+	        }
+	
+	        Diagnostic::new(GenericNotLastBaseClass, class_def.identifier())
+	            .with_fix(generate_fix(bases, base_index, checker.locator()))
+	    } else {
+	        // No fix if multiple generics are seen in the class bases.
+	        Diagnostic::new(
+	            GenericNotLastBaseClass,
+	            class_def.identifier(),
+	        )
+	    }
+	};
+	
+	checker.diagnostics.push(diagnostic);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:118 on 2024-05-03 10:59</div>
+            <div class="timeline-body"><p>I think this should be the very first thing we check in the <code>generic_not_last_base_class</code> function. It's a very cheap check, and it allows us to short-circuit the whole rule if the user hasn't imported <code>typing</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:122 on 2024-05-03 11:03</div>
+            <div class="timeline-body"><p>We have a helper function for this kind of thing, and I was about to suggest that you use it:</p>
+<p>https://github.com/astral-sh/ruff/blob/349a4cf8cea9cfa5bfdd78e94c40220886008b7a/crates/ruff_python_ast/src/helpers.rs#L662-L673</p>
+<p><em>But</em> if you did use that helper function, it would do a slightly different thing here to the PR's current behaviour: it would <em>also</em> flag places where bare <code>typing.Generic</code> (unsubscripted with any type parameters) was used as a base class. That always causes an exception at runtime... but maybe it should be flagged by this rule anyway? I can't think of a good reason to <em>exclude</em> bare <code>typing.Generic</code> from this check, even if it's going to cause other problems as well. Anyway, I don't feel too strongly on this point, but whichever way you decide to go -- it would be great to add a test that shows the current behaviour if bare <code>typing.Generic</code> appears in the bases tuple.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:127 on 2024-05-03 11:05</div>
+            <div class="timeline-body"><p>This can be written more simply as the following (which does exactly the same thing as your current logic under the hood):</p>
+<pre><code class="language-suggestion">    semantic.match_typing_expr(value, &quot;Generic&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:130 on 2024-05-03 11:05</div>
+            <div class="timeline-body"><p>What's with all the commented-out code here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-03 11:05</div>
+            <div class="timeline-body"><p>Nice, thank you! Overall this looks good. Left some inline comments below :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> reviewed on 2024-05-03 11:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:111 on 2024-05-03 11:08</div>
+            <div class="timeline-body"><p>makes sense! and <code>.with_fix()</code> is very clean.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:130 on 2024-05-03 11:09</div>
+            <div class="timeline-body"><p>my bad, it's leftover testing code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> reviewed on 2024-05-03 11:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-05-03 11:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Should multiple <code>Generic[]</code> case not raise the issue at all then?</p>
+</blockquote>
+<p>I'd say <em>probably</em> not. The <a href="https://github.com/PyCQA/flake8-pyi/blob/f60d7e3cdc833dd358b493d2ca80fd187cc38cfb/pyi.py#L1762-L1764">behaviour we implemented at flake8-pyi</a> is to ignore this rule if <code>Generic[]</code> appeared multiple times in the bases tuple, and I think it makes sense to do the same thing here. If you have something like <code>class Foo(int, Generic[T], Generic[S]): pass</code>, I think it's honestly just confusing for a user if they get a message about <code>Generic[]</code> &quot;not being the last base class&quot;. There's a much more significant issue in their code (you can't have more than one <code>Generic[]</code> in the bases tuple), and if they solve the more significant issue, then <code>Generic[]</code> not being the last base class would be naturally solved as a side effect of that.</p>
+<p>(We shouldn't flag multiple <code>Generic[]</code>s in this check; that could possibly be a separate check.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-03 11:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:130 on 2024-05-03 11:13</div>
+            <div class="timeline-body"><p>no worries!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> reviewed on 2024-05-03 11:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:122 on 2024-05-03 11:28</div>
+            <div class="timeline-body"><p>I was thinking maybe one can subclass <code>Generic</code> by itself to do some metaprogramming type stuff, but since that's straight up <code>TypeError</code>, it'll probably be okay to go with your suggestion. Thanks for pointint it out!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:122 on 2024-05-03 11:33</div>
+            <div class="timeline-body"><p>inheriting from plain <code>Generic</code> is specifically allowed if the name of the subclass is &quot;Protocol&quot; FYI:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from typing import Generic
+&gt;&gt;&gt; class Protocol(Generic): pass
+... 
+&gt;&gt;&gt; 
+</code></pre>
+<p>but I didn't tell you that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-03 11:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:74 on 2024-05-03 11:39</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    let Some(bases) = class_def.arguments.as_deref() else {
+        return;
+    };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/snapshots/ruff_linter__rules__flake8_pyi__tests__PYI059_PYI059.py.snap</code>:9 on 2024-05-03 11:41</div>
+            <div class="timeline-body"><p>I think it would be better if the carets underlined the bases tuple here, rather than the name of the class, since that's where the error is. That means we need to pass the range of the bases tuple in as the second argument of <code>Diagnostic::new()</code> rather than <code>class_def.identifier()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:120 on 2024-05-03 11:42</div>
+            <div class="timeline-body"><p>possibly this could function could just be inlined at this point?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-03 11:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-03 11:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:139 on 2024-05-03 11:48</div>
+            <div class="timeline-body"><p>what happens for pathological cases like</p>
+<pre><code class="language-py">class Foo(  # comment about the bracket
+    # Part 1 of multiline comment 1
+    # Part 2 of multiline comment 1
+    Generic[T]  # comment about Generic[T]
+    # another comment?
+    ,  # comment about the comma?
+    # part 1 of multiline comment 2
+    # part 2 of multiline comment 2
+    int,  # comment about int
+    # yet another comment?
+):  # and another one for good measure
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> reviewed on 2024-05-03 11:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:139 on 2024-05-03 11:52</div>
+            <div class="timeline-body"><p>It will technically work, but comments before int and after <code>Generic[T]</code> get eaten up. That is <em>fixable</em>, but the fix is subjective.</p>
+<p>What's ruff's general stance in such cases? I know <code>libcst</code> has capabilities to try and identify which comment groups belong to which expression. But the easier thing would be to avoid moving comments at all, and just preserve comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:139 on 2024-05-03 11:59</div>
+            <div class="timeline-body"><p>Different rules take different stances; we don't have a unified policy yet. Several of our autofixes will currently happily delete your comments (e.g. https://github.com/astral-sh/ruff/issues/9779); I think we all agree that this is bad, but we haven't yet decided <em>how</em> bad it is (see #9790). Other rules approach comments with a perhaps-excessive level of caution, either using the raw token stream for their autofix (RUF022, RUF023), or using libcst. Both are much slower than simple text replacements, I think libcst especially.</p>
+<blockquote>
+<p>the fix is subjective.</p>
+</blockquote>
+<p>absolutely! But I think that's always the case for something like this. I don't mind that much if some comments end up in the &quot;wrong place&quot;, but I <em>do</em> think we should try to avoid <em>deleting</em> any comments if it's not too hard or costly to do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-03 11:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> reviewed on 2024-05-03 13:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:139 on 2024-05-03 13:18</div>
+            <div class="timeline-body"><p>Trying to figure out how to get the start and end ranges of the comma after the Generic base. Tried using libcst to obtain the Comma itself, but does it have position information?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-05-03 13:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:139 on 2024-05-03 13:24</div>
+            <div class="timeline-body"><p>I would probably just read one character at a time after the end of the generic base until you see a comma — does that make sense here? I'd avoid LibCST unless it's absolutely necessary (it's slow).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-03 13:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:139 on 2024-05-03 13:38</div>
+            <div class="timeline-body"><blockquote>
+<p>I would probably just read one character at a time after the end of the generic base until you see a comma — does that make sense here? I'd avoid LibCST unless it's absolutely necessary (it's slow).</p>
+</blockquote>
+<p>Agree -- <code>memchr</code> is probably the best tool for that (you can grep in the <code>crates/ruff_linter</code> directory for existing uses). Other possibilities are using libCST (but as Zanie says, it's really slow), or using the raw tokens (also can be slow, and probably more complicated here than using <code>memchr</code>).</p>
+<p>If you look at https://play.ruff.rs/b2b834e8-0247-47fe-995a-c0ade0e6b240, with the following snippet:</p>
+<pre><code class="language-py">class Foo(int, str): pass
+</code></pre>
+<p>On the AST tab on the right, we can see:</p>
+<ul>
+<li>The <code>ExprName</code> node for the <code>int</code> base has range <code>10..13</code></li>
+<li>The <code>ExprName</code> node for the <code>str</code> base has range <code>15..18</code></li>
+</ul>
+<p>On the tokens tab on the right, we can see that:</p>
+<ul>
+<li>The comma in between the two nodes has range <code>13..14</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> reviewed on 2024-05-03 14:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:139 on 2024-05-03 14:29</div>
+            <div class="timeline-body"><p>First try at this, I've used <code>.find()</code> (which I suppose can be swapped with <code>memchr</code>)  and <code>.position()</code> (which I'm not sure if it can be replaced)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-03 15:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:111 on 2024-05-03 15:51</div>
+            <div class="timeline-body"><p>There's quite a lot of <code>unwrap()</code> and <code>expect()</code> calls in the <code>generate_fix()</code> function currently. I think we could retrieve the node for the <code>Generic</code> base and the node for the last base in a more type-safe way, and get rid of some of those calls. That would mean that we'd be using the type system to our advantage rather than &quot;fighting against it&quot;. You could maybe do something like this:</p>
+<pre><code class="language-rs">    let Some(last_base) = bases.args.last() else {
+        return;
+    };
+
+    // Now we know both that the bases tuple is non-empty
+    // and we've retrieved the node for the last base
+
+    let mut generic_base_iter = bases
+        .args
+        .iter()
+        .find(|node| semantic.match_typing_expr(map_subscript(node), &quot;Generic&quot;));
+
+    // grab the first `Generic[]` base in the bases tuple, if there is one
+    let Some(generic_base) = generic_base_iter.next() else {
+        return;
+    }
+
+    // AKA they are the same node
+    if generic_base.range() == last_base.range() {
+        return;
+    }
+
+    let multiple_generic_bases = generic_base_iter.next().is_some();
+</code></pre>
+<p>You'd then have all the information you need to determine whether it's fixable or not (whether or not there are multiple <code>Generic[]</code> bases -- though I'm still not <em>sure</em> we should emit the lint at <em>all</em> if there are); and you'd have extracted the two nodes you need for the autofix (the <code>Generic[]</code> base and the last base).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> reviewed on 2024-05-03 16:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:111 on 2024-05-03 16:30</div>
+            <div class="timeline-body"><p>The <code>.find()</code> should be <code>.filter()</code>, but impressively the rest of the code was pretty much spot on. Updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:108 on 2024-05-03 16:36</div>
+            <div class="timeline-body"><p>or maybe:</p>
+<pre><code class="language-suggestion">    let mut diagnostic = Diagnostic::new(GenericNotLastBaseClass, bases.range());
+
+    // No fix if multiple generics are seen in the class bases.
+    if generic_base_iter.next().is_none() {
+        diagnostic.set_fix(generate_fix(
+            generic_base, last_base, checker.locator(),
+        ));
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-03 16:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:117 on 2024-05-06 20:05</div>
+            <div class="timeline-body"><p>I don't really understand what's going on here, I'm afraid :(</p>
+<p>Is this the best name for this variable? Would you mind adding some comments to this function to explain how it works (preferably with some examples)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-06 20:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> reviewed on 2024-05-06 20:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:117 on 2024-05-06 20:09</div>
+            <div class="timeline-body"><p>I'm trying to find the first index in the source code after <code>Generic[...],</code>, which doesn't contain a whitespace.</p>
+<p>Basically, deleting just <code>Generic[T]</code> and the comma after it would leave a trailing whitespace around (usually a space).</p>
+<p>Without the whitespace detection, this code:</p>
+<pre><code class="language-python">class Foo(Generic[T], Bar):
+</code></pre>
+<p>would be autofixed into:</p>
+<pre><code class="language-python">class Foo( Bar, Generic[T]):
+</code></pre>
+<p>i.e. The space before <code>Bar</code> was not deleted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> reviewed on 2024-05-06 20:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:117 on 2024-05-06 20:11</div>
+            <div class="timeline-body"><p>I'm honestly not sure if this is the best way to write this, please feel free to refactor or comment on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-05-06 20:13</div>
+            <div class="timeline-body"><p>(Everything looks great to me now except the autofix code, which I'm still not <em>quite</em> sure about -- both in terms of code readability and in terms of the number of <code>.expect()</code> and <code>.unwrap()</code> calls in it :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-05-06 20:47</div>
+            <div class="timeline-body"><p>@tusharsadhwani, I've just pushed https://github.com/astral-sh/ruff/pull/11233/commits/6fce0fd868344efb7e3d4e1336e252fd8f622f35, which gets rid of the remaining <code>.expect()</code> and <code>.unwrap()</code> calls from <code>generate_fix()</code>. Instead, the errors are bubbled up by returning an <code>anyhow::Result&lt;Fix&gt;</code> from <code>generate_fix()</code>. In combination with the <code>Diagnostic::try_set_fix()</code> method, that means that, rather than panicking, we'll gracefully log the error and move on if we fail to construct a <code>Fix</code>. That's usually preferable for this kind of thing, since it's not 100% essential that a <code>Fix</code> is constructed, but panicking would be pretty bad.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> reviewed on 2024-05-06 20:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:117 on 2024-05-06 20:50</div>
+            <div class="timeline-body"><p>I think deleting a positional argument from a function call during autofix is common enough that once we finalize on the way it should be done this can be lifted to make a helper instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-06 20:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:117 on 2024-05-06 20:52</div>
+            <div class="timeline-body"><p>Ah... in fact... https://github.com/astral-sh/ruff/blob/12b5c3a54c0a34bae9dfcfeaf27961f4432d5623/crates/ruff_linter/src/fix/edits.rs#L155-L237</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2024-05-06 20:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:117 on 2024-05-06 20:53</div>
+            <div class="timeline-body"><p>I'm so sorry, I completely forgot that we had those helpers!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> reviewed on 2024-05-06 20:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:117 on 2024-05-06 20:54</div>
+            <div class="timeline-body"><p>I also didn't find them, so partly on me :P it uses the Tokenizer which is pretty clever</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> reviewed on 2024-05-06 20:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/generic_not_last_base_class.rs</code>:117 on 2024-05-06 20:57</div>
+            <div class="timeline-body"><p>I'll go ahead and refactor it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> on 2024-05-06 21:15</div>
+            <div class="timeline-body"><p>Okay, this is much cleaner.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2024-05-07 10:00</div>
+            <div class="timeline-body"><p>Thanks! :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[flake8-pyi] Implement PYI059" to "[`flake8-pyi`] Implement `PYI059` (`generic-not-last-base-class`)" by @AlexWaygood on 2024-05-07 10:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2024-05-07 10:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-05-07 10:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-05-07 18:30</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-10 22:05:57 UTC
+        Synced at 2026-01-12 17:04:07 UTC
     </footer>
 </body>
 </html>

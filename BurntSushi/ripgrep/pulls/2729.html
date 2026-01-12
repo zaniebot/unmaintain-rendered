@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simplify replace_bytes in line_buffer - BurntSushi/ripgrep #2729</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Simplify replace_bytes in line_buffer</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/2729">#2729</a>
+        opened by <a href="https://github.com/riquito">@riquito</a>
+        on 2024-02-04 09:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/riquito">@riquito</a></div>
+            <div class="timeline-body"><p>This PR removes an unnecessary loop from replace_bytes in line_buffer.</p>
+<p>I also added tests for some cases not covered (empty string, same byte replaced, nothing found in a non-empty string).</p>
+<p>Unless it's  an optimization that I fail to grasp, it should be an oversight from last refactoring
+https://github.com/BurntSushi/ripgrep/commit/f7ff34fdf9d2853f9763aceb28f5dcb014728045</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-04 13:36</div>
+            <div class="timeline-body"><p>https://github.com/BurntSushi/ripgrep/commit/f7ff34fdf9d2853f9763aceb28f5dcb014728045 did not introduce the loop though.</p>
+<p>I was curious, so I went back through the history, and this inner loop has been present since it was written initially in 2016:</p>
+<p>https://github.com/BurntSushi/ripgrep/blob/812cdb13c63441e2eddcaccdf632fdfb7c806a95/src/search.rs#L555-L569</p>
+<p>To be clear, it wasn't an oversight. That inner loop is indeed an optimization. It works well because binary data tends to have long runs of NUL terminators, and it is slower to stop and start <code>memchr</code> for every byte in a sequence. Its latency is worse than just comparing one-byte-at-a-time.</p>
+<p>The extra tests are nice. And you're right that from a correctness perspective, the extra loop is superfluous. So that means a comment saying why it's there would be great to add. Would you like to do that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/riquito">@riquito</a> on 2024-02-04 17:57</div>
+            <div class="timeline-body"><p>Thanks, I learned something</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2025-07-11 19:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-09-20 01:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:14 UTC
+    </footer>
+</body>
+</html>

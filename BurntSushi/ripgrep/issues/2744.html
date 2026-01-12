@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Include ---no-ignore-files in --unrestricted option? - BurntSushi/ripgrep #2744</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Include ---no-ignore-files in --unrestricted option?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2744">#2744</a>
+        opened by <a href="https://github.com/rieje">@rieje</a>
+        on 2024-03-01 21:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rieje">@rieje</a></div>
+            <div class="timeline-body"><p>I thought <code>-uuu</code> would essentially search through everything ignoring all ignores, but it did not get that behavior until I realized I have the following in my rg config:</p>
+<pre><code>--ignore-file
+/home/rieje/.config/rg/general.rgignore</code></pre>
+<p>I was hoping for an easy-to-remember one-argument to exclude all filters including ignore files (especially with all the <code>--no-ignore-*</code> options and multiple <code>-u</code> options). It seems currently <code>-uuu --no-ignore-files</code> should do that, but would it make sense to have a <code>-uuuu</code> to do the equivalent or a <code>--no-ignore-all</code>? That feels more intuitive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-03-02 01:18</div>
+            <div class="timeline-body"><p>The man documents <code>-u</code> as being equivalent to <code>--no-ignore</code>, and also from the man page:</p>
+<pre><code>       --no-ignore
+           When set, ignore files such as .gitignore, .ignore and .rgignore
+           will  not  be  respected. This implies --no-ignore-dot, --no-ig‐
+           nore-exclude, --no-ignore-global, --no-ignore-parent  and  --no-
+           ignore-vcs.
+
+           This  does  not  imply --no-ignore-files, since --ignore-file is
+           specified explicitly as a command line argument.
+
+           When given only once, the -u/--unrestricted flag is identical in
+           behavior to this flag and can be considered an  alias.  However,
+           subsequent -u/--unrestricted flags have additional effects.
+
+           This flag can be disabled with --ignore.
+</code></pre>
+<p>So basically, <code>--no-ignore</code> disables all ignore files except for <code>--ignore-file</code>. The thinking there is <code>--ignore-file</code> is being explicitly specified on the CLI (or config in this case), and so it shouldn't be overridden.</p>
+<p>Unfortunately I don't think I'm willing to add a fourth <code>-u</code> or a <code>--no-ignore-all</code>. Both of those things seem like pretty incredible complications. There are already way too many <code>--no-ignore-*</code> flags, and having both <code>--no-ignore</code> and <code>--no-ignore-all</code> just seems pretty whacky to me unfortunately.</p>
+<p>I'm not quite sure how to address your use case unfortunately. I'm tempted to make <code>--no-ignore</code> imply <code>--no-ignore-files</code> (or at least, to any such <code>--ignore-file</code> flags that come before <code>--no-ignore</code>), but I'm worried about that being a compatibility hazard for folks that rely on <code>--no-ignore</code> <em>not</em> disabling <code>--ignore-file</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2024-03-02 01:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-10-11 01:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @BurntSushi on 2025-10-11 01:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2025-10-11 01:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:46 UTC
+    </footer>
+</body>
+</html>

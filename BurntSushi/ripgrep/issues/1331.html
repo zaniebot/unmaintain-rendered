@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hang when greping /sys/kernel/security/apparmor/{policy,revision} - BurntSushi/ripgrep #1331</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>hang when greping /sys/kernel/security/apparmor/{policy,revision}</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1331">#1331</a>
+        opened by <a href="https://github.com/hongxuchen">@hongxuchen</a>
+        on 2019-07-28 16:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hongxuchen">@hongxuchen</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 11.0.1 (rev 08ae4da2b7)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p><code>cargo build --release</code> against github repo, HEAD version</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p><code>Linux H5 5.0.0-13-generic #14-Ubuntu SMP Mon Apr 15 14:59:14 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux</code>, Ubuntu 19.04</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>run <code>rg power /sys/kernel/security/apparmor/policy</code> or <code>rg power /sys/kernel/security/apparmor/revision</code> (or explicitly with <code>--no-follow</code>), it hangs there.</p>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<pre><code>$ rg --no-follow power /sys/kernel/security/apparmor/revision --debug
+DEBUG|grep_regex::literal|grep-regex/src/literal.rs:59: literal prefixes detected: Literals { lits: [Complete(power)], limit_size: 250, limit_class: 10 }
+DEBUG|globset|globset/src/lib.rs:435: built glob set; 0 literals, 0 basenames, 11 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|grep_searcher::searcher::mmap|grep-searcher/src/searcher/mmap.rs:86: /sys/kernel/security/apparmor/revision: failed to open memory map: memory map must have a non-zero length
+# hang there
+</code></pre>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>I expect that <code>rg</code> would exit soon (especially for <code>/sys/kernel/security/apparmor/revision</code>; but <code>grep</code> would also hang on this zero-length file) or at least behave like <code>grep</code> for <code>/sys/kernel/security/apparmor/policy</code>:</p>
+<pre><code>$ grep power -r /sys/kernel/security/apparmor/policy
+# exit soon
+
+$ grep power -R /sys/kernel/security/apparmor/policy
+# hang
+</code></pre>
+<p>Other information:</p>
+<pre><code>$ ls -l /sys/kernel/security/apparmor/
+total 0
+drwxr-xr-x  2 root root 0 Jul 27 19:54 attr/
+drwxr-xr-x 15 root root 0 Jul 27 19:54 features/
+lr--r--r--  1 root root 0 Jul 27 19:54 policy -&gt; 'apparmorfs:[12192]'
+-r--r--r--  1 root root 0 Jul 27 19:54 profiles
+-r--r--r--  1 root root 0 Jul 27 19:54 revision
+</code></pre>
+<h4>What do you think ripgrep should have done?</h4>
+<p>This seems to be specific to <code>apparmor</code> and I've no idea what is going on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-07-28 18:46</div>
+            <div class="timeline-body"><p><code>grep</code> hangs when running</p>
+<pre><code>$ grep power /sys/kernel/security/apparmor/revision
+</code></pre>
+<p>Indeed, <code>cat</code> hangs too:</p>
+<pre><code>$ cat /sys/kernel/security/apparmor/revision
+</code></pre>
+<p>As such, this isn't a problem with ripgrep. <code>strace</code> (in all instances) indicates that the process hangs in the <code>read</code> call.</p>
+<p>A little googling <a href="https://gitlab.com/apparmor/apparmor/wikis/AppArmorInterfaces#syskernelsecurityapparmorrevision">demystifies this</a>:</p>
+<blockquote>
+<p>The revisions file behaves like a pipe with the current revision
+available to read when the file is opened. Subsequent reads will
+sleep the reading task until the next revision is available.</p>
+</blockquote>
+<p>So this seems like intended behavior. In general, you shouldn't be arbitrarily searching the <code>/sys</code>, <code>/proc</code> and <code>/dev</code> directories. Other issues have come up on this, since folks seem to assume that these directories are normal file hierarchies. But they aren't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2019-07-28 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2019-07-28 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hongxuchen">@hongxuchen</a> on 2019-07-28 18:55</div>
+            <div class="timeline-body"><p>Yes, I noticed that <code>grep</code> (as well as <code>cat</code>) hangs on the revision file. Is there any way to avoid hangs when greping recursively, such as what <code>grep -r</code> does? I met several scenarios to search inside special directories in Linux.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2019-07-28 19:07</div>
+            <div class="timeline-body"><p>I don't know. Someone will need to dig into what <code>grep</code> does and figure out what its case analysis looks like. I don't have any plans to do that myself. If someone wants to do that research and post it back here, then I can consider re-opening this.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:57 UTC
+    </footer>
+</body>
+</html>

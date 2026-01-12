@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The same `LineTerminator` is being used for searching and printing - BurntSushi/ripgrep #2795</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>The same <code>LineTerminator</code> is being used for searching and printing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2795">#2795</a>
+        opened by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a>
+        on 2024-05-01 16:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ltrzesniewski">@ltrzesniewski</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>ripgrep 14.1.0</p>
+<p>features:-simd-accel,+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2</p>
+<p>PCRE2 10.43 is available (JIT is available)</p>
+<h3>How did you install ripgrep?</h3>
+<p><code>cargo install ripgrep --features pcre2</code></p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Ubuntu 22.04.4 LTS on WSL</p>
+<h3>Describe your bug.</h3>
+<p>I noticed that ripgrep could insert CR characters into its output on Linux, which I didn't expect.</p>
+<p>I took a quick look out of curiosity, and saw that the same <code>LineTerminator</code> is being used for searching <em>and</em> for printing, which I thought could be an oversight, so I figured I'd report it just in case. I don't think this has a real impact on anything though, so feel free to simply close this issue if that's ok for you.</p>
+<p>I tracked down the culprit to this function: https://github.com/BurntSushi/ripgrep/blob/bb8601b2bafb5e68181cbbb84e6ffa4f7a72bf16/crates/printer/src/standard.rs#L1493-L1495</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<pre><code class="language-bash">$ echo hello | rg hello --no-config --count --no-crlf | xxd
+00000000: 310a                                     1.
+
+$ echo hello | rg hello --no-config --count --crlf | xxd
+00000000: 310d 0a                                  1..
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<p>The output changes between <code>--crlf</code> and <code>--no-crlf</code>.</p>
+<p>Even on Linux, a CRLF end-of-line (<code>0d 0a</code>) is emitted when <code>--crlf</code> is used. I used <code>--count</code> to force <code>write_line_term()</code> to be called, but other flags such as <code>--pretty</code> work just as well.</p>
+<h3>What is the expected behavior?</h3>
+<p>I expected the outputs of the two commands to be the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-12 15:38</div>
+            <div class="timeline-body"><p>This was definitely intentional as written. The issue of line terminators is quite a tricky one. But there are cases where you have to <em>choose</em> the line terminator. The summary printer is one such example. Another example is adding a line terminator at the end of output that doesn't otherwise contain a line terminator. Or when <code>-o</code> is used.</p>
+<p>So how do you make the choice? There's no guarantee that the input uses line terminators consistently. So ripgrep has an internal notion of what the line terminator &quot;ought&quot; to be. When you use <code>--null-data</code>, that's <code>\x00</code>. When you use <code>--crlf</code>, that's <code>\r\n</code>.</p>
+<p>Maybe there is a better way to handle this, but I don't think it should be attacked piecemeal.</p>
+<p>I'm going to close this for now because I don't see many (if any) reports of actual issues folks are running into with how ripgrep does things now. I remember spending significant time mulling over this when building out <code>grep-printer</code>. I don't remember all of the corners, but I'd rather not change things here without something more compelling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-07-12 15:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2025-07-12 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2025-10-13 20:05</div>
+            <div class="timeline-body"><p>@BurntSushi I actually got bitten by this yesterday because I had <code>--crlf</code> in my config, so I thought I'd give you a real example.</p>
+<p>I wanted to rename a bunch of files, and used ripgrep for generating the script:</p>
+<pre><code class="language-bash">$ touch foo.utf16.c bar.utf8.c
+
+$ ls
+bar.utf8.c  foo.utf16.c
+
+$ ls | rg '(^.*).utf(\d+).c' -r 'mv $0 $1.${2}bit.c' --no-config --crlf
+mv bar.utf8.c bar.8bit.c
+mv foo.utf16.c foo.16bit.c
+
+$ ls | rg '(^.*).utf(\d+).c' -r 'mv $0 $1.${2}bit.c' --no-config --crlf | sh
+
+$ ls
+'bar.8bit.c'$'\r'  'foo.16bit.c'$'\r'
+
+$ ls --zero | xxd
+00000000: 6261 722e 3862 6974 2e63 0d00 666f 6f2e  bar.8bit.c..foo.
+00000010: 3136 6269 742e 630d 00                   16bit.c..
+</code></pre>
+<p><sup>(of course, I didn't type <code>--no-config --crlf</code>, that's just for reproducibility)</sup></p>
+<p>I ended up with files with a CR in their name! Oops.</p>
+<hr />
+<p>The <code>--help</code> for <code>--crlf</code> starts with the following:</p>
+<blockquote>
+<p>When enabled, ripgrep will treat CRLF (\r\n) as a line terminator instead of just \n.</p>
+</blockquote>
+<p>It's unclear to me if this means the <em>output</em> will end with CRLF, but given the text that follows, I understood it to mean the behavior of <em>regex matching</em> is impacted. I didn't think it would impact the output, especially only of those lines generated by ripgrep itself (headings, replaces, etc). You can still get a mixed LF/CRLF output depending on the matched lines terminators and what ripgrep adds on top.</p>
+<p>Because of this, I'd suggest always using either LF or NUL in the <em>standard printer</em> (just drop CRLF), especially since LF is used even on Windows by default. I had written <a href="https://github.com/ltrzesniewski/ripgrep/commit/cdfe0854ac21c22f8d86a383744bfec2a5aa4195#diff-9edc643fe15c729d9ad9528b23556005eb27db181e25f5f260962e5ed468b9dd">this change</a> back when I sent #2805, I can double-check and turn it into a PR if you'd like. In any case, thank you for considering it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-13 20:31</div>
+            <div class="timeline-body"><p>The problem IMO is that you are in a context where you specifically want LF terminators. But what if you want CRLF terminators? I grant that <code>--crlf</code> is coupling both search time understanding of line terminators and printing, but I don't really see a better way (and I don't want to add more flags for this, which I think will be difficult to understand and use correctly).</p>
+<p>You can technically, I believe, get search time CRLF support without changing the printer's notion of the line terminator. You can do that by adding <code>(?R)</code> to the beginning of your regex pattern.</p>
+<p>And yes, you can 100% get mixed line terminators. I don't know how to avoid that without forcefully normalizing all line terminators in the output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2025-10-13 21:17</div>
+            <div class="timeline-body"><blockquote>
+<p>But what if you want CRLF terminators?</p>
+</blockquote>
+<p>That seems like a strange requirement to me, even on Windows (where most of the tools support LF, even Notepad). But you can get normalized CRLF output by piping the ripgrep output to the <code>unix2dos</code> tool if you have it installed, or to <code>sed -E 's/\r?$/\r/'</code> otherwise.</p>
+<blockquote>
+<p>You can do that by adding <code>(?R)</code> to the beginning of your regex pattern.</p>
+</blockquote>
+<p>That's cumbersome to be honest. I prefer having <code>--crlf</code> in the config, so that matching <code>\r</code> is implicit by default.</p>
+<blockquote>
+<p>I don't know how to avoid that without forcefully normalizing all line terminators in the output.</p>
+</blockquote>
+<p>I'd say that's OK, maybe even preferable. I'm merely suggesting the decoupling of searching and printing, especially since ripgrep uses LF by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-13 21:25</div>
+            <div class="timeline-body"><blockquote>
+<p>That seems like a strange requirement to me</p>
+</blockquote>
+<p>I'm not a Windows user, but I imagine I'd be annoyed if my file had CRLF line terminators and ripgrep printed it out with LF line terminators.</p>
+<p>I fairly strongly disagree with the idea of line terminator normalization because it's changing the contents of the file. Wherever possible, ripgrep should not change any byte in the file in the output. Even if you don't use the <code>--crlf</code> flag, ripgrep will preserve CRLF line terminators:</p>
+<pre><code>$ printf 'foo\r\n' | rg '\w' | xxd
+00000000: 666f 6f0d 0a                             foo..
+</code></pre>
+<blockquote>
+<p>I'm merely suggesting the decoupling of searching and printing</p>
+</blockquote>
+<p>Right. That's why I mentioned <code>(?R)</code>. But I don't want to add a new flag for this. It's too subtle and too niche IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2025-10-13 21:37</div>
+            <div class="timeline-body"><blockquote>
+<p>I fairly strongly disagree with the idea of line terminator normalization because it's changing the contents of the file.</p>
+</blockquote>
+<p>Oh, looks like I was unclear, sorry. I'm absolutely not asking for it. I think it's preferable to use the file content as-is, just like ripgrep does today.</p>
+<p>If you need normalization, you can use <code>unix2dos</code>/<code>dos2unix</code> by yourself to do it easily outside of ripgrep.</p>
+<blockquote>
+<p>But I don't want to add a new flag for this.</p>
+</blockquote>
+<p>I didn't ask for this either.</p>
+<p>I basically just suggested to always use LF instead of CRLF in <code>write_line_term</code> (see the <a href="https://github.com/ltrzesniewski/ripgrep/commit/cdfe0854ac21c22f8d86a383744bfec2a5aa4195">commit I mentioned</a>), so that additional lines added by ripgrep (such as replacement results in this case) end with LF or NUL and are independent of <code>--crlf</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-13 21:56</div>
+            <div class="timeline-body"><p>Yeah I get that. But that just goes back to my earlier concern about users <em>wanting</em> CRLF and not LF. So if <code>--crlf</code> only twiddles the search time line terminator, then users who want CRLF are left without an option. Hence discussion of line terminator normalization and new flags.</p>
+<p>I honestly don't really know how to evaluate what the right choice is here. My sense is just that if you're using <code>--crlf</code>, then you're probably searching data with CRLF line terminators and thus want to stick with CRLF line terminators. But I grant that assumption isn't always true, as in your case. For me, I don't use <code>--crlf</code> unless I know I specifically need it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-13 21:57</div>
+            <div class="timeline-body"><p>I believe it's also possible for <code>--crlf</code> to inhibit at least some optimizations. But I'd need to check that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2025-10-13 22:23</div>
+            <div class="timeline-body"><p>I think I put <code>--crlf</code> by default because I work with both CRLF and LF files, and wanted the regexes to behave the same for both. I simply don't want to care about the EOLs. That may not have been the best choice as I don't use <code>$</code> very often, but when I do, I'd easily forget I'd need to add <code>--crlf</code> or write <code>\r?$</code> instead of <code>$</code>.</p>
+<p>I'll stop bothering you about this now, thanks for your time. 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2025-10-16 09:20</div>
+            <div class="timeline-body"><p>Well, #3100 actually fixed the issue I had with <code>-r</code>. 🙂</p>
+<p>(thanks @IsaacOscar, and of course thanks @BurntSushi for ripgrep v15)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-16 11:37</div>
+            <div class="timeline-body"><p>Oh, cool! w00t.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:48 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compile error with cargo +nightly and features - BurntSushi/ripgrep #2516</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Compile error with cargo +nightly and features</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2516">#2516</a>
+        opened by <a href="https://github.com/gcflymoto">@gcflymoto</a>
+        on 2023-05-13 20:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gcflymoto">@gcflymoto</a></div>
+            <div class="timeline-body"><p>This is an FYI since this issue is with the grep crate.</p>
+<h4>What version of ripgrep are you using?</h4>
+<p>13.0.0
+Replace this text with the output of <code>rg --version</code>.
+Cannot compile it</p>
+<h4>How did you install ripgrep?</h4>
+<p>cargo +nightly install ripgrep --features 'pcre2 simd-accel' --git https://github.com/BurntSushi/ripgrep</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>SUSE12 linux</p>
+<h4>Describe your bug.</h4>
+<p>cannot compile</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>cargo +nightly install ripgrep --features 'pcre2 simd-accel' --git https://github.com/BurntSushi/ripgrep</p>
+<h4>What is the actual behavior?</h4>
+<p>compile error</p>
+<p>If the output is small, put it in code fences:</p>
+<pre><code>error: missing documentation for an extern crate
+  --&gt; crates/grep/src/lib.rs:17:1
+   |
+17 | pub extern crate grep_cli as cli;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+note: the lint level is defined here
+  --&gt; crates/grep/src/lib.rs:15:9
+   |
+15 | #![deny(missing_docs)]
+   |         ^^^^^^^^^^^^
+
+error: missing documentation for an extern crate
+  --&gt; crates/grep/src/lib.rs:18:1
+   |
+18 | pub extern crate grep_matcher as matcher;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: missing documentation for an extern crate
+  --&gt; crates/grep/src/lib.rs:20:1
+   |
+20 | pub extern crate grep_pcre2 as pcre2;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: missing documentation for an extern crate
+  --&gt; crates/grep/src/lib.rs:21:1
+   |
+21 | pub extern crate grep_printer as printer;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: missing documentation for an extern crate
+  --&gt; crates/grep/src/lib.rs:22:1
+   |
+22 | pub extern crate grep_regex as regex;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: missing documentation for an extern crate
+  --&gt; crates/grep/src/lib.rs:23:1
+   |
+23 | pub extern crate grep_searcher as searcher;
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: could not compile `grep` (lib) due to 6 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: failed to compile `ripgrep v13.0.0 (https://github.com/BurntSushi/ripgrep#04154485)`, intermediate artifacts can be found at `/tmp/cargo-installQNU2vs`
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>compile
+What do you think ripgrep should have done?
+suggesting github actions to test compile</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-05-16 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-05-16 17:17</div>
+            <div class="timeline-body"><p>Interesting, thanks for the report! It looks like a newer version of Rust does a better job of enforcing the <code>missing_docs</code> lint. In this case, I just decided to remove the lint, since <code>grep</code> is just a facade that re-exports other crates.</p>
+<p>I've published <code>grep 0.2.12</code> to crates.io and also updated the lock file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gcflymoto">@gcflymoto</a> on 2023-05-16 18:35</div>
+            <div class="timeline-body"><p>Thanks it's fixed!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gcflymoto">@gcflymoto</a> on 2023-10-29 01:42</div>
+            <div class="timeline-body"><p>BTW. With recent builds, pcre2-sys may not compile:</p>
+<p>warning: pcre2-sys@0.2.6: upstream/src/pcre2_compile.c: In function 342200230compile_branch342200231:
+warning: pcre2-sys@0.2.6: upstream/src/pcre2_compile.c:5859:13: error: 342200230for342200231 loop initial declarations are only allowed in C99 mode
+warning: pcre2-sys@0.2.6:              for (int i = 0; i &lt; 32; i++) pbits[i] |= cbits[(int)i + taboffset];
+warning: pcre2-sys@0.2.6:              ^
+..
+error: failed to run custom build command for <code>pcre2-sys v0.2.6</code></p>
+<p>I forced rust to use clang 16.x version for 'cc' and that resolved it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:41 UTC
+    </footer>
+</body>
+</html>

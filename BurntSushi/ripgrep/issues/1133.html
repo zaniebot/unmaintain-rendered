@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot exclude vim undo (.un~) files - BurntSushi/ripgrep #1133</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot exclude vim undo (.un~) files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1133">#1133</a>
+        opened by <a href="https://github.com/kleinjm">@kleinjm</a>
+        on 2018-12-07 16:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/kleinjm">@kleinjm</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 0.10.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>brew</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p><img src="https://user-images.githubusercontent.com/2565158/49660361-64122200-fa14-11e8-8b90-518bbe7efa1f.png" alt="image" /></p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>It seems that I cannot exclude <code>.un~</code> files.</p>
+<p>I'm trying to do so for fzf with this config.</p>
+<pre><code>export FZF_DEFAULT_COMMAND='/usr/local/bin/rg --files --no-ignore --hidden --follow --glob &quot;!{.git,node_modules,*.un~,*~}/*&quot; 2&gt; /dev/null'
+</code></pre>
+<p>Here is the line in my <a href="https://github.com/kleinjm/dotfiles/blob/d66adde672a449632f7fea100043007106c03818/mac/zsh/fzf_config.zsh#L29">dotfiles</a></p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>Not sure how to reproduce outside of vim. I'm getting this</p>
+<pre><code>  2.5.0 dotfiles git:(master) /usr/local/bin/rg --files --no-ignore --hidden --follow --glob \&quot;!{.git,node_modules,*.un~,*~}/*\&quot; 2&gt; /dev/null
+zsh: event not found: .git,node_modules,
+</code></pre>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<p><img src="https://user-images.githubusercontent.com/2565158/49660736-57da9480-fa15-11e8-9c62-f4ef0730f51a.png" alt="image" /></p>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>Not show any files with the <code>*.un~</code> extension in the output above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-12-07 17:00</div>
+            <div class="timeline-body"><p>The zsh error is because of the <code>!</code>, which is a history-expansion character. You just need to use single-quotes around it, or escape it like <code>\!</code>. Also, if you actually escaped the double-quotes (<code>\&quot;</code>) in the shell that would cause problems too</p>
+<p>I assume your original issue is that <code>*.un~</code> are files, but your pattern is equivalent to <code>*.un~/*</code>, which only matches files under directories with that extension. The <code>/*</code> here seems superfluous anyway, so you can probably just remove it</p>
+<p>Edit: Actually, sorry, i guess you might want <code>!{.git/,node_modules/,*.un~,*~}</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-12-07 17:06</div>
+            <div class="timeline-body"><p>Er, the <code>*</code> is superfluous, but the <code>/</code> isn't for matching the two directories. Corrected my previous comment, sry</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-12-07 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2018-12-07 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kleinjm">@kleinjm</a> on 2018-12-07 17:49</div>
+            <div class="timeline-body"><p>This seems to have worked <code>&quot;!{.git/*,node_modules/*,**/*.un~}&quot; </code>. Just <code>*.un~</code> was only working for files in the base dir. Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:46 UTC
+    </footer>
+</body>
+</html>

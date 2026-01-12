@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>output string have garbled if fileencoding is not utf-8 - BurntSushi/ripgrep #1011</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>output string have garbled if fileencoding is not utf-8</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1011">#1011</a>
+        opened by <a href="https://github.com/fcying">@fcying</a>
+        on 2018-08-12 07:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/fcying">@fcying</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<p>ripgrep 0.9.0 (rev 6afdf15d85)</p>
+<h4>How did you install ripgrep?</h4>
+<p>cargo build</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Debian</p>
+<h4>Describe your question, feature request, or bug.</h4>
+<p>I have a txt file, fileencoding is <code>CP936</code>, I search some string in this file, the output string have garbled,
+If I modify the fileencoding to <code>UTF-8</code>, it work fine.</p>
+<h4>If this is a bug, what are the steps to reproduce the behavior?</h4>
+<p>readme_cp936.txt, have garbled
+fileencoding <code>cp936</code> in vim</p>
+<pre><code>file readme_cp936.txt 
+readme_cp936.txt: ISO-8859 text, with CRLF line terminators
+
+rg CONFIG_START readme_cp936.txt
+1:	2¡¢ў¸Üproject.mk£ºʨ׃ǰʼµٖ·CONFIG_STARTºʹ𐠃ONFIG_SIZE¡£
+2:	3iproject.mk£ºCONFIG_START
+</code></pre>
+<p>readme_utf8.txt, work fine.
+fileencoding <code>utf-8</code> in vim,  work fine.</p>
+<pre><code>file readme_utf8.txt 
+readme_utf8.txt: UTF-8 Unicode text, with CRLF line terminators
+
+rg CONFIG_START readme_utf8.txt 
+1:	2、修改\project.mk：设置起始地址CONFIG_START和大小CONFIG_SIZE。
+2:	3iproject.mk：CONFIG_START
+</code></pre>
+<p><a href="https://github.com/BurntSushi/ripgrep/files/2280781/readme_utf8.txt">readme_utf8.txt</a>
+<a href="https://github.com/BurntSushi/ripgrep/files/2280782/readme_cp936.txt">readme_cp936.txt</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "can't display correct text if fileencoding is not utf-8" to "output string have garbled if fileencoding is not utf-8" by @fcying on 2018-08-12 07:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2018-08-12 07:10</div>
+            <div class="timeline-body"><p>There's a bit in the <a href="https://github.com/BurntSushi/ripgrep/blob/master/GUIDE.md#file-encoding">guide</a> about this</p>
+<p>The <a href="https://encoding.spec.whatwg.org/#concept-encoding-get">WHATWG encoding standard</a> doesn't mention CP936 specifically, but i think it's covered under 'GBK' — that seems to work for me, anyway:</p>
+<pre><code>rg -Egbk CONFIG_START readme_utf8.txt
+1:	2、修改\project.mk：设置起始地址CONFIG_START和大小CONFIG_SIZE。
+2:	3iproject.mk：CONFIG_START
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fcying">@fcying</a> on 2018-08-12 07:19</div>
+            <div class="timeline-body"><p>@okdana  you are right, use <code>-Egpk</code>, can work fine.
+<code>CP936</code> is what I saw in vim, if use <code>file</code>, it is <code>readme_cp936.txt: ISO-8859 text, with CRLF line terminators</code></p>
+<pre><code>rg -Egbk CONFIG_START readme_cp936.txt
+1:	2、修改\project.mk：设置起始地址CONFIG_START和大小CONFIG_SIZE。
+2:	3iproject.mk：CONFIG_START
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-14 13:15</div>
+            <div class="timeline-body"><p>Yeah, I mean, I don't really understand what it is you want ripgrep to do here. How the text is shown to you is dependent on your terminal emulator. If you have your terminal emulator set to UTF-8 and you're searching non-UTF-8 contents without transcoding it, then you're going to have a bad time. There's nothing ripgrep can do about that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-08-14 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">invalid</span> added by @BurntSushi on 2018-08-14 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fcying">@fcying</a> on 2018-08-15 05:17</div>
+            <div class="timeline-body"><p>@BurntSushi<br />
+Can it recognize the file encoding and then automatically set encoding(ex, auto set <code>-Egbk</code>)?  Or it can set some file encoding  in ripgreprc for check?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-15 10:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Can it recognize the file encoding and then automatically set encoding(ex, auto set -Egbk)?</p>
+</blockquote>
+<p>No.</p>
+<blockquote>
+<p>Or it can set some file encoding in ripgreprc for check?</p>
+</blockquote>
+<p>You can set any flag, including <code>-E/--encoding</code>, in your config file. But it will impact all searches.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fcying">@fcying</a> on 2018-08-16 02:31</div>
+            <div class="timeline-body"><p>Now <code>-E</code> can only set one type of encoding, I try <code>-Egbk -Eutf8</code>, it only effect by last <code>-Eutf8</code>.
+This will still be garbled when searching many files with multi encoding.
+Can it support for set multi encoding? (ex <code>-E=utf-8,gbk,euc-jp</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-16 09:37</div>
+            <div class="timeline-body"><p>No.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:39 UTC
+    </footer>
+</body>
+</html>

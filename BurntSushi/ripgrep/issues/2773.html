@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>unicode uppercase - BurntSushi/ripgrep #2773</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>unicode uppercase</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2773">#2773</a>
+        opened by <a href="https://github.com/thjbdvlt">@thjbdvlt</a>
+        on 2024-04-01 10:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thjbdvlt">@thjbdvlt</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<p>14.0.3</p>
+<h3>How did you install ripgrep?</h3>
+<p>release from github (.deb)</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Debian 11</p>
+<h3>Describe your bug.</h3>
+<p>unlike <code>grep -E</code> or <code>bash</code> regex or <code>python3</code> <code>re</code> library,  pattern <code>[A-ZÀ-Ÿ]</code> matches lowercase accentuated letters, such as à, ê, é.</p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<pre><code class="language-bash">pattern=&quot;^[A-ZÀ-Ÿ]&quot;
+
+words=&quot;
+étais
+être
+etais
+ETAIS
+ÉTAIS
+Être
+&quot;
+</code></pre>
+<p>grep:</p>
+<pre><code class="language-bash">grep -E $pattern &lt;&lt;&lt; $words
+</code></pre>
+<p>output:</p>
+<pre><code>ETAIS
+ÉTAIS
+Être
+</code></pre>
+<p>ripgrep:</p>
+<pre><code class="language-bash">rg $pattern &lt;&lt;&lt; $words
+</code></pre>
+<p>output:</p>
+<pre><code>étais
+être
+ETAIS
+ÉTAIS
+Être
+</code></pre>
+<h3>What is the actual behavior?</h3>
+<pre><code class="language-bash">rg --debug $pattern &lt;&lt;&lt; $words
+</code></pre>
+<p>output:</p>
+<pre><code>DEBUG|rg::flags::parse|crates/core/flags/parse.rs:97: no extra argumen
+ts found from configuration file
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1099: using heuris
+tics to determine whether to read from stdin or search ./ (is_readable
+_stdin=true, stdin_consumed=false, mode=Search(Standard))
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1112: heuristic ch
+ose to search stdin
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1260: found hostna
+me for hyperlink configuration: debian
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:1270: hyperlink fo
+rmat: &quot;&quot;
+DEBUG|rg::flags::hiargs|crates/core/flags/hiargs.rs:174: using 1 threa
+d(s)
+DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literal
+s, 2 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required exten
+sions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:453: built glob set; 0 literal
+s, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required exte
+nsions, 0 regexes
+étais
+être
+ETAIS
+ÉTAIS
+Être
+</code></pre>
+<h3>What is the expected behavior?</h3>
+<p>should have returned only uppercase letters</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-04-01 12:13</div>
+            <div class="timeline-body"><p>This is a POSIX locale feature and it isn't something that ripgrep supports. This is a feature request, not a bug. <a href="https://github.com/BurntSushi/ripgrep/blob/master/FAQ.md#posix4ever">ripgrep is intentionally not POSIX compatible.</a> Character classes work as a sequence of Unicode codepoint ranges, and adopting a feature like this significantly complicates that both in terms of the implementation and the conceptual model.</p>
+<p>In this case, the issue is that <code>À</code> corresponds to <code>U+00C0</code> and <code>Ÿ</code> corresponds to <code>U+0178</code>. And given something like <code>é</code>, it  matches because its codepoint, <code>U+00E9</code>, falls within that range. But there are other strange things that can result here too:</p>
+<pre><code>$ echo '×' | grep -E '^[A-ZÀ-Ÿ]'
+$ echo '×' | rg '^[A-ZÀ-Ÿ]'
+×
+</code></pre>
+<p>But it doesn't stop there. Consider this example too:</p>
+<pre><code>$ echo '×' | grep -E '^[A-Z\u00C0-\u0178]'
+grep: Invalid range end
+$ echo '×' | rg '^[A-Z\u00C0-\u0178]'
+×
+</code></pre>
+<p>grep doesn't support Unicode escape sequences while ripgrep does. Writing out <code>\u00C0-\u0178</code> is semantically identical to <code>À-Ÿ</code>. In the former case, you could make an argument that <code>×</code> shouldn't match, but in the latter case, it should. That is a fairly significant complication.</p>
+<p>Finally, <a href="https://unicode.org/reports/tr18/">UTS#18</a> doesn't seem to mention this at all? I wonder if the now retracted level 3 support had it.</p>
+<p>In any case, I think the standard way to do what you want here is to use other features of UTS#18 that grep doesn't support at all and are ultimately quite a bit more powerful than what greps typically provide:</p>
+<pre><code>$ cat haystack
+étais
+être
+etais
+ETAIS
+ÉTAIS
+Être
+$ rg '^[\p{Uppercase}&amp;&amp;[A-ZÀ-Ÿ]]' haystack
+4:ETAIS
+5:ÉTAIS
+6:Être
+$ echo '×' | rg '^[\p{Uppercase}&amp;&amp;[A-ZÀ-Ÿ]]'
+$
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @BurntSushi on 2024-04-01 12:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-04-01 12:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-04-01 12:16</div>
+            <div class="timeline-body"><p>In theory I would be open to supporting something like this, but I think the instructions for doing so need to come from the Unicode consortium, not POSIX. I don't really trust anything in POSIX to get Unicode handling correct even though it does seem to make some cases here more intuitive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thjbdvlt">@thjbdvlt</a> on 2024-04-01 19:34</div>
+            <div class="timeline-body"><p>@BurntSushi
+hello! sorry for the wrong &quot;bug&quot; label, and thank you for this very complete answer!! i hate using the [À-Ÿ] thing because the Ÿ is unreachable in my keyboard; so i prefer a lot the solution you just gave me. thank you again. i use ripgrep a lot and it's absolutely wonderful, i really enjoy it :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:47 UTC
+    </footer>
+</body>
+</html>

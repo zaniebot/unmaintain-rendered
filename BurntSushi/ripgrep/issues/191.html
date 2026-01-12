@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>~/.gitignore with 'tags' does not work - BurntSushi/ripgrep #191</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>~/.gitignore with 'tags' does not work</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/191">#191</a>
+        opened by <a href="https://github.com/sumonto">@sumonto</a>
+        on 2016-10-21 20:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sumonto">@sumonto</a></div>
+            <div class="timeline-body"><p>~/.gitignore with 'tags' does not work</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-21 20:49</div>
+            <div class="timeline-body"><p>This ticket doesn't have enough detail for me to reproduce your problem. Could you please provide a minimal reproducible example?</p>
+<p>For example, this works:</p>
+<pre><code>[andrew@Cheetah 191] echo foo &gt; tags
+[andrew@Cheetah 191] rg foo
+tags
+1:foo
+[andrew@Cheetah 191] echo tags &gt; .gitignore
+[andrew@Cheetah 191] rg foo
+No files were searched, which means ripgrep probably applied a filter you didn't expect. Try running again with --debug.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2016-10-21 20:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sumonto">@sumonto</a> on 2016-10-21 21:04</div>
+            <div class="timeline-body"><p>OS: Mac OSx</p>
+<pre><code>rg --version
+0.2.1
+
+$ cat ~/createtags.sh
+#!/bin/bash
+echo &quot;Creating ctags files ...&quot;
+ctags -R .
+
+------------------------------------------------------
+cat ~/.gitconfig
+....
+[core]
+    excludesfile = /Users/Sumonto/.gitignore_global
+    excludesfile = /Users/Sumonto/.gitignore
+....
+
+------------------------------------------------------
+$ cat ~/.gitignore
+# List of excluded files
+tags
+------------------------------------------------------
+
+Search for any function name
+rg -p getPath
+
+The tags file is listed and one the files.
+
+
+
+..
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-21 21:09</div>
+            <div class="timeline-body"><p>It's really hard for me to understand your reproduction. It sounds like what you're telling me is that your <em>global</em> <code>.gitignore</code> file (as specified in your <code>~/.gitconfig</code>, namely, <code>~/.gitignore</code> isn't intrinsically meaningful) isn't being respected, but without more information about which directories you're running <code>rg</code> in, it's impossible to tell what your actual problem is.</p>
+<p>If you're saying that your global <code>.gitignore</code> isn't respected, then that's because ripgrep doesn't support it yet, which would make this a dupe of #9. (I'm in the process of working on ironing out a variety of ignore related problems/features, and this is one of them.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sumonto">@sumonto</a> on 2016-10-21 21:30</div>
+            <div class="timeline-body"><p>Ok, I thought ~/.gitignore is supported? (.gitignore is in the home directory)
+The tags file is on the root folder of a git clone.
+So how do I ignore the 'tags' file?</p>
+<p>thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-10-21 22:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Ok, I thought ~/.gitignore is supported?</p>
+</blockquote>
+<p>Please see #9, which is about adding support for <strong>global gitignore configuration</strong>. Your <code>~/.gitignore</code> isn't automatically used by <code>git</code>. You had to tell it to use it in your <code>~/.gitconfig</code>. Please see <code>man gitignore</code> for the details.</p>
+<blockquote>
+<p>So how do I ignore the 'tags' file?</p>
+</blockquote>
+<p>Put it in an <code>.ignore</code> file that is in a parent directory of your clones (presumably, <code>~/.ignore</code> would work).</p>
+<p>When #9 is done, then your current setup should work out of the box.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-10-21 22:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:50 UTC
+    </footer>
+</body>
+</html>

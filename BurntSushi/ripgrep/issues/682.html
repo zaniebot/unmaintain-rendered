@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Different handling of .gitignore in comparison to git - BurntSushi/ripgrep #682</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Different handling of .gitignore in comparison to git</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/682">#682</a>
+        opened by <a href="https://github.com/nmoehrle">@nmoehrle</a>
+        on 2017-11-16 13:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nmoehrle">@nmoehrle</a></div>
+            <div class="timeline-body"><p>I stumbled over a case where ripgrep ignores files that are not ignored by git. I am unsure if this is actually an issue of ripgreps interpretation of the .gitignore file, something that cannot be realized without further information about the repository or even a issue of git itself. I think this is best explained by a minimal example:</p>
+<pre><code>$ tree
+.
+├── a.txt
+└── sub
+    ├── b.txt
+    ├── c.txt
+    └── d.md
+
+1 directory, 4 files
+</code></pre>
+<pre><code>$ rg -u test
+sub/d.md
+1:test
+
+sub/c.txt
+1:test
+
+sub/b.txt
+1:test
+
+a.txt
+1:test
+</code></pre>
+<pre><code>$ rg test
+a.txt
+1:test
+</code></pre>
+<pre><code>$ cat .gitignore
+# Ignore everything
+*
+# Exceptions for txt files
+!*.txt
+# Apply above to subfolders
+!**/
+</code></pre>
+<pre><code>$ git status
+On branch master
+
+Initial commit
+
+Changes to be committed:
+  (use &quot;git rm --cached &lt;file&gt;...&quot; to unstage)
+
+	new file:   sub/b.txt
+
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+
+	a.txt
+	sub/c.txt
+</code></pre>
+<p>The files <em>b.txt</em> and <em>c.txt</em> are ignored by ripgrep even tough they are not ignored by git. Since <em>b.txt</em> is staged it is clear that it cannot be ignored by git, but git also does not ignore c.txt which suggests to me that the 6th line of the <em>.gitignore</em> does what the comment says. Note that <em>d.md</em> is correctly ignored by both ripgreg and git.</p>
+<p>I absolutely love ripgrep and use it everyday to quickly navigate foreign code bases --- or my own --- its often faster than waiting for the (re)indexing to complete. Thank you for sharing the project!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/okdana">@okdana</a> on 2017-11-16 13:34</div>
+            <div class="timeline-body"><p>I think this was fixed by PR #652</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-11-16 13:45</div>
+            <div class="timeline-body"><p>@nmoehrle Thanks so much for the awesome bug report! I can indeed confirm that this is fixed on master by #652. Yay!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2017-11-16 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nmoehrle">@nmoehrle</a> on 2017-11-16 17:05</div>
+            <div class="timeline-body"><p>Wow you guys are quick --- should have looked into the commit history :-D Next release then --- thanks!
+Also shout-out to @lambda nice catch :-)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:21 UTC
+    </footer>
+</body>
+</html>

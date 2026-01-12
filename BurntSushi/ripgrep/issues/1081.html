@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do not find erroneus literals when there is a capture group and a character class of five or more - BurntSushi/ripgrep #1081</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Do not find erroneus literals when there is a capture group and a character class of five or more</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1081">#1081</a>
+        opened by <a href="https://github.com/PeterSP">@PeterSP</a>
+        on 2018-10-08 19:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PeterSP">@PeterSP</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 0.10.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>I used <code>cargo install</code></p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p><code>Darwin C02TM0LHG8WL 17.7.0 Darwin Kernel Version 17.7.0: Thu Jun 21 22:53:14 PDT 2018; root:xnu-4570.71.2~1/RELEASE_X86_64 x86_64</code></p>
+<h4>If this is a bug, what is the actual behavior?</h4>
+<pre><code>$ echo &quot; a_&quot; | rg ' ([abcde]+_)' --debug
+DEBUG|grep_regex::literal|${HOME}/.cargo/registry/src/github.com-1ecc6299db9ec823/grep-regex-0.1.1/src/literal.rs:110: required literal found: &quot; _&quot;
+DEBUG|globset|${HOME}/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.2/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+$ echo &quot; a_&quot; | rg ' ([abcd]+_)' --debug
+DEBUG|grep_regex::literal|${HOME}/.cargo/registry/src/github.com-1ecc6299db9ec823/grep-regex-0.1.1/src/literal.rs:100: required literals found: [Cut( a), Cut( b), Cut( c), Cut( d), Complete( _)]
+DEBUG|globset|${HOME}/.cargo/registry/src/github.com-1ecc6299db9ec823/globset-0.4.2/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+ a_
+</code></pre>
+<p>Or, without all that noise:</p>
+<pre><code>$ echo &quot; a_&quot; | rg ' ([abcde]+_)'
+$ echo &quot; a_&quot; | rg ' ([abcd]+_)'
+ a_
+</code></pre>
+<h4>If this is a bug, what is the expected behavior?</h4>
+<p>What do you think ripgrep should have done?</p>
+<ol>
+<li>Not find <code>&quot; _&quot;</code> as a literal which neither matches all nor any of the strings the pattern desired matches.</li>
+<li>Find <code>&quot; a_&quot;</code> as a match.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lespea">@lespea</a> on 2018-10-08 19:20</div>
+            <div class="timeline-body"><p>Looks like the same issues as https://github.com/BurntSushi/ripgrep/issues/1081.  I tested the version of ripgrep with this fixed and it appears to work as expected.</p>
+<pre><code>$  echo &quot; a_&quot; | rg ' ([abcde]+_)'; echo &quot; a_&quot; | rg ' ([abcd]+_)'
+a_
+a_</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PeterSP">@PeterSP</a> on 2018-10-08 19:23</div>
+            <div class="timeline-body"><p>It appears that this is a dupe of #1064 (in that it's fixed by the associated change).</p>
+<pre><code>$ cargo uninstall ripgrep
+$ cargo install ripgrep --git git@github.com:BurntSushi/ripgrep.git
+...
+$ echo &quot;abg&quot; | rg 'a([bcdef]+g)' --debug
+DEBUG|grep_regex::literal|grep-regex/src/literal.rs:110: required literal found: &quot;a&quot;
+DEBUG|globset|globset/src/lib.rs:429: built glob set; 0 literals, 0 basenames, 8 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+abg
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @PeterSP on 2018-10-08 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PeterSP">@PeterSP</a> on 2018-10-08 19:58</div>
+            <div class="timeline-body"><p>I can still add a regression test for this, but I suspect it's not worth it (as it's nearly identical to the regression test for #1064).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-10-08 20:12</div>
+            <div class="timeline-body"><p>Yeah, I think we are all set here. Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">duplicate</span> added by @BurntSushi on 2018-10-08 20:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:43 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>consider permitting `.` to match invalid UTF-8 bytes - BurntSushi/ripgrep #317</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>consider permitting <code>.</code> to match invalid UTF-8 bytes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/317">#317</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2017-01-12 18:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a></div>
+            <div class="timeline-body"><p>See this discussion on reddit: https://www.reddit.com/r/linux/comments/5nea8b/grep_r_lover_here_im_dumping_grep_r_for_ripgrep/dcbrvap/</p>
+<p>The TL;DR is that I think this could be done by replacing occurrences of <code>.</code> with <code>(?:(?u:.)|(?-u:.))</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @BurntSushi on 2017-01-12 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-12 18:34</div>
+            <div class="timeline-body"><p>What are the downsides of a change like this? Performance should be unaffected. Does this change matching semantics in a way that is undesirable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-12 18:44</div>
+            <div class="timeline-body"><p>What about constructions like <code>[^a]</code>? Should that match &quot;every Unicode scalar value except <code>a</code>&quot;? Or  should it match &quot;every byte except for <code>\x61</code>&quot;? I think both are wrong, and instead, <code>[^a]</code> needs to be translated to <code>(?:(?u:[^a])|(?-u:[^a]))</code>, so that it matches either, but prefers Unicode scalar values.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2017-01-20 12:36</div>
+            <div class="timeline-body"><p>I was thinking about this the other day and one tricky problem we'd face today is that the AST exposed by <code>regex-syntax</code> isn't really expressive enough to do this transformation in a way that's fine grained enough. For example, in the AST, there is no direct expression of <code>[^a]</code>, as it is simply translated directly to a character class containing every codepoint (or byte) sans <code>a</code>. Similarly, there's no direct expression of <code>(?-u:.)</code> or <code>(?u:.)</code>. Instead, it's translated directly to <code>AnyChar</code> or <code>AnyByte</code>. This information is important because while we might want to transform <code>.</code> to <code>(?:(?u:.)|(?-u:.))</code> we <em>wouldn't</em> want to transform <code>(?u:.)</code> since that would be quite surprising to the user.</p>
+<p>To summarize, this issue is blocked on two things:</p>
+<ol>
+<li>Introducing a more faithful AST of regex syntax in the <code>regex-syntax</code> crate. (This is a border-line rewrite of the parser, but there are more reasons to do this other than this issue, for example, better error reporting.)</li>
+<li>Figuring out the UX of exactly when such a translation occurs.</li>
+</ol>
+<p>I think this means that this particular issue isn't going to be resolved for quite some time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">icebox</span> added by @BurntSushi on 2017-01-20 12:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-19 14:10</div>
+            <div class="timeline-body"><p>I'm going to close this, absent any feedback to the contrary. I'm still open to changing this, but I've honestly never needed or wanted this behavior, so this might be good to document as a &quot;trick&quot; in the FAQ or something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2018-08-19 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssokolow">@ssokolow</a> on 2018-08-19 14:27</div>
+            <div class="timeline-body"><p>Sorry. Somehow, I thought I'd already responded to this.</p>
+<p>Having at least an option for <code>.</code> to match invalid UTF-8 would be useful for matching within generated files containing filesystem paths, since POSIX paths are sequences of bytes and filenames can contain any byte except <code>/</code> or <code>\0</code>.</p>
+<p>(A common source of invalid UTF-8 paths in my experience is mojibake on filesystems like ext2/3/4 which don't store any kind of in-band encoding metadata. I have some on my own filesystem, where files got written into a directory on a system using latin1 for the filesystem encoding, and then that disk got connected to a system using UTF-8 for the filesystem encoding and the directory tree was recursively copied off. I didn't even realize those particular filenames had been mojibake'd until they panicked serde_json when I was trying to use it with the ignore crate to generate a log of files omitted from an automated incremental backup so they could be manually restored from DVD+R or re-downloaded if necessary.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2018-08-19 14:55</div>
+            <div class="timeline-body"><p>@ssokolow Maybe I'm misunderstanding your comment, but this issue is really about changing what <code>.</code> means <em>by default</em>. You can of course always opt into &quot;every byte is a character&quot; by disabling Unicode. e.g., <code>(?-u:.)</code> will match the literal byte <code>\xFF</code> but <code>(?u:.)</code> (and also <code>.</code>, since Unicode is the default) will not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssokolow">@ssokolow</a> on 2018-08-19 14:59</div>
+            <div class="timeline-body"><p>Ahh. Now that you mention that, I do remember that.</p>
+<p>Clearly, I once again got so into what I was working on that I let myself get too tired to be posting without noticing. Sorry about that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ssokolow">@ssokolow</a> on 2018-08-19 15:03</div>
+            <div class="timeline-body"><p>...though I do agree that it should be mentioned in the FAQ.</p>
+<p>In my experience, expecting POSIX paths to be valid UTF-8 is sort of like writing C code... Lots of people do it and it seems to work until it breaks at the worst possible time because nobody tested with the right input.</p>
+<p>In ripgrep's case, that'd be false negatives which could be pretty problematic, depending on why you're doing the search.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:42:00 UTC
+    </footer>
+</body>
+</html>

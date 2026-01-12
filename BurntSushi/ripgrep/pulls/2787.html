@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set up ripgrep for compilation on non-unix, non-windows platforms - BurntSushi/ripgrep #2787</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Set up ripgrep for compilation on non-unix, non-windows platforms</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/pull/2787">#2787</a>
+        opened by <a href="https://github.com/holzschu">@holzschu</a>
+        on 2024-04-23 09:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/holzschu">@holzschu</a></div>
+            <div class="timeline-body"><p>The code of ripgrep compiles on almost any kind of architecture, including WebAssembly, except in two tiny places related to hyperlinks:</p>
+<ul>
+<li>when it searches for the local hostname in <code>hostname.rs</code>,</li>
+<li>when it does path canonalization in <code>hyperlink.rs</code>.</li>
+</ul>
+<p>In both cases, there is a path with <code>#[cfg(unix)]</code> and a path with <code>#[cfg(windows)]</code>. WebAssembly being neither unix nor windows, compilation fails. This PR adds a third path:</p>
+<ul>
+<li>for localhost, it returns &quot;localhost&quot; instead of calling <code>gethostname()</code>, for all environments that are neither unix nor windows.</li>
+<li>for path canonalization, it uses <code>std::os::wasi::ffi::OsStrExt</code> instead of <code>std::os::unix::ffi::OsStrExt</code>, which is not available; this part is specific for wasm32-wasi. It could be possible to deactivate path canonalization entirely for architectures that are neither unix nor windows, but I aimed for the smallest working change.</li>
+</ul>
+<p>With these two changes, it's possible to compile ripgrep with <code>cargo build --target wasm32-wasi</code> (and, more importantly, it works in wasm32-wasi environments).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ltrzesniewski">@ltrzesniewski</a> on 2024-04-23 09:39</div>
+            <div class="timeline-body"><blockquote>
+<p>It could be possible to deactivate path canonalization entirely for architectures that are neither unix nor windows</p>
+</blockquote>
+<p><code>std::path::absolute</code> <a href="https://github.com/rust-lang/rust/issues/92750">should be stabilized soon</a>, and I suppose it will replace canonicalization in ripgrep, which will both simplify and optimize this part of the code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blyxxyz">@blyxxyz</a> reviewed on 2024-04-23 10:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blyxxyz">@blyxxyz</a> on <code>crates/printer/src/hyperlink.rs</code>:857 on 2024-04-23 10:28</div>
+            <div class="timeline-body"><p>The <a href="https://github.com/WebAssembly/wasi-filesystem/blob/174dbd7fa134672e594fd38dba9acfb53afaf312/imports.md#import-interface-wasifilesystemtypes020">WASI spec</a> seems to ban absolute paths and the <a href="https://github.com/rust-lang/rust/blob/c67277301c896857d0534f2bb7431680796833fb/library/std/src/sys/pal/wasi/fs.rs#L655">stdlib</a> doesn't implement <code>canonicalize</code>. I don't know how black-and-white this is (especially in the long term) but right now this might as well be stubbed out with <code>None</code>.</p>
+<p>When running on top of Windows I imagine you'd want to return a Windows path here, even though WASI is more Unix-like internally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/printer/src/hyperlink.rs</code>:857 on 2024-04-23 12:05</div>
+            <div class="timeline-body"><p>I'm curious how <code>std::path::absolute</code> will work here. It seems to depend on what <code>std::env::current_dir</code> will return, and that does seem to have an implementation on WASI: https://github.com/rust-lang/rust/blob/eff958c59e8c07ba0515e164b825c9001b242294/library/std/src/sys/pal/wasi/os.rs#L71-L95</p>
+<p>But I agree, for now, this should just always return <code>None</code> and emit a DEBUG log that hyperlinks aren't supported on WASI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/cli/src/hostname.rs</code>:29 on 2024-04-23 12:06</div>
+            <div class="timeline-body"><p>I'm not a huge fan of giving wrong answers like this. And it seems like WASI can't really support hyperlinks anyway, due to the ban on absolute paths. So I think this change should probably be reverted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> requested changes on 2024-04-23 12:08</div>
+            <div class="timeline-body"><p>I think the idea here seems good, but as I mentioned in the comments, it seems like hyperlinks and WASI are fundamentally incompatible.</p>
+<p>Also, can we add CI support WASI so that we don't regress here? You should be able to lift this nearly directly: https://github.com/BurntSushi/memchr/blob/20ef11fa92d8b393735f10906c436a8ce6e792a4/.github/workflows/ci.yml#L133-L163</p>
+<p>If tests don't work, that's okay. But at least having a <code>cargo build --verbose</code> in CI would be nice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blyxxyz">@blyxxyz</a> reviewed on 2024-04-23 13:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blyxxyz">@blyxxyz</a> on <code>crates/printer/src/hyperlink.rs</code>:857 on 2024-04-23 13:30</div>
+            <div class="timeline-body"><p>AFAICT it works like this:</p>
+<ul>
+<li>WASI syscalls take a directory descriptor and a path relative to that directory descriptor.</li>
+<li>The WASI runtime gives the WASM binary a list of directory descriptors plus their actual original paths (<a href="https://github.com/WebAssembly/wasi-filesystem/blob/e79b05803e9ffd3b0cfdc0a8af20ac743abbe36a/imports.md#import-interface-wasifilesystempreopens020">preopens</a>). So the runtime grants selective access. It could easily pretend the filesystem is smaller than it really is, chroot-style, but it doesn't have to: it can grant a <code>/home/user</code> descriptor with the <code>/home/user</code> path.</li>
+<li>wasi-libc takes absolute paths and <a href="https://github.com/WebAssembly/wasi-libc/blob/9e8c542319242a5e536e14e6046de5968d298038/libc-bottom-half/sources/preopens.c#L182">resolves</a> them to a directory descriptor + relative path based on the longest matching prefix from the preopens, if any. (This is inspired by <a href="https://github.com/musec/libpreopen">libpreopen</a>.)</li>
+<li>wasi-libc also <a href="https://github.com/WebAssembly/wasi-libc/blob/9e8c542319242a5e536e14e6046de5968d298038/libc-bottom-half/sources/getcwd.c">emulates</a> a working directory in WASM-space.</li>
+</ul>
+<p>So it's not as bad as I thought. Thanks to the emulation absolute paths should for the most part just work as long as access to that part of the filesystem is granted, particularly on Unix. (Except for missing syscalls I guess.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-04-23 14:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/printer/src/hyperlink.rs</code>:857 on 2024-04-23 14:11</div>
+            <div class="timeline-body"><p>Interesting. So <code>std::env::current_dir()</code> works, and thus <code>std::path::absolute</code> might in turn work here as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/holzschu">@holzschu</a> reviewed on 2024-04-23 14:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/holzschu">@holzschu</a> on <code>crates/cli/src/hostname.rs</code>:29 on 2024-04-23 14:12</div>
+            <div class="timeline-body"><p>The problem I was trying to fix here, and that's also a question I have about setting up CI, is that the current version of the code causes a compilation error:</p>
+<pre><code>Compiling grep-cli v0.1.10 (/Users/holzschu/src/Xcode_iPad/ripgrep_clone/crates/cli)
+error[E0308]: mismatched types
+  --&gt; crates/cli/src/hostname.rs:28:9
+   |
+16 |   pub fn hostname() -&gt; io::Result&lt;OsString&gt; {
+   |                        -------------------- expected `Result&lt;OsString, std::io::Error&gt;` because of return type
+...
+28 | /         io::Error::new(
+29 | |             io::ErrorKind::Other,
+30 | |             &quot;hostname could not be found on unsupported platform&quot;,
+31 | |         )
+   | |_________^ expected `Result&lt;OsString, Error&gt;`, found `Error`
+   |
+   = note: expected enum `Result&lt;OsString, std::io::Error&gt;`
+            found struct `std::io::Error`
+help: try wrapping the expression in `Err`
+   |
+28 ~         Err(io::Error::new(
+29 |             io::ErrorKind::Other,
+30 |             &quot;hostname could not be found on unsupported platform&quot;,
+31 ~         ))
+   |
+
+For more information about this error, try `rustc --explain E0308`.
+</code></pre>
+<p>So if the goal of setting up CI is to get the same result after the PR as before, that's not going to happen.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-04-23 14:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/cli/src/hostname.rs</code>:29 on 2024-04-23 14:20</div>
+            <div class="timeline-body"><p>Oh I see. I think you just want <code>Err(io::Error::new(...))</code>, as suggested in the error message you're showing. This particular code path is probably entirely untested in CI at present, and thus the fact that it is wrong now and has always been wrong was never noticed.</p>
+<p>My main objection was to silently using a potentially incorrect value. I'm open to doing that in the future to get hyperlinks working in WASI after we've considered the possible alternatives. But since <code>std::fs::canonicalize</code> isn't going to work on WASI right now anyway, we should just avoid changing the semantic intent of this code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/holzschu">@holzschu</a> on <code>crates/cli/src/hostname.rs</code>:29 on 2024-04-23 16:18</div>
+            <div class="timeline-body"><p>I've done the changes for <code>hostname.rs</code>. But then, for symmetry, I think I should have a branch  <code>#[cfg(not(any(windows, unix)))]</code>  instead of <code>#[cfg(target_os = &quot;wasi&quot;)]</code> in <code>hyperlink.rs</code>. But what should <code>from_path()</code> return in that case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/holzschu">@holzschu</a> reviewed on 2024-04-23 16:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-04-23 16:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/cli/src/hostname.rs</code>:29 on 2024-04-23 16:21</div>
+            <div class="timeline-body"><p><code>None</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-04-23 16:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/cli/src/hostname.rs</code>:29 on 2024-04-23 16:21</div>
+            <div class="timeline-body"><p>With a DEBUG log message. Mentioned here: https://github.com/BurntSushi/ripgrep/pull/2787#discussion_r1576137687</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Set up ripgrep for compilation on WebAssembly (wasm32-wasi)" to "Set up ripgrep for compilation on non-unix, non-windows platforms" by @holzschu on 2024-04-23 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/holzschu">@holzschu</a> on 2024-04-23 16:31</div>
+            <div class="timeline-body"><p>I've changed the files and the title of the PR.
+Now, the goal is for ripgrep to compile without error on platforms that are neither unix nor windows (that includes WebAssembly, but there might be other platforms as well.</p>
+<p>It will emit an error in <code>hostname.rs</code> and a debug message in <code>hyperlinks.rs</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>.github/workflows/ci.yml</code>:205 on 2024-04-23 16:34</div>
+            <div class="timeline-body"><p>Did running tests via <code>wasmtime</code> fail? If so this is fine, but if they worked, then we should just include them here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/printer/src/hyperlink.rs</code>:860 on 2024-04-23 16:35</div>
+            <div class="timeline-body"><p>To be consistent with other log messages, could you please use &quot;hyperlinks&quot; instead of &quot;Hyperlinks&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/printer/src/hyperlink.rs</code>:857 on 2024-04-23 16:35</div>
+            <div class="timeline-body"><p>This should be using <code>///</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/printer/src/hyperlink.rs</code>:857 on 2024-04-23 16:35</div>
+            <div class="timeline-body"><p>And please move this to be directly below the other <code>from_path</code> constructors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> requested changes on 2024-04-23 16:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/holzschu">@holzschu</a> reviewed on 2024-04-23 16:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/holzschu">@holzschu</a> on <code>.github/workflows/ci.yml</code>:205 on 2024-04-23 16:53</div>
+            <div class="timeline-body"><p>Indeed, running tests via <code>wasmtime</code> does fail (but compilation works):</p>
+<pre><code>error[E0433]: failed to resolve: could not find `unix` in `os`
+   --&gt; tests/util.rs:197:22
+    |
+197 |         use std::os::unix::fs::symlink;
+    |                      ^^^^ could not find `unix` in `os`
+    |
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/holzschu">@holzschu</a> reviewed on 2024-04-23 16:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/holzschu">@holzschu</a> on <code>crates/printer/src/hyperlink.rs</code>:860 on 2024-04-23 16:55</div>
+            <div class="timeline-body"><p>This is done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/holzschu">@holzschu</a> reviewed on 2024-04-23 16:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/holzschu">@holzschu</a> on <code>crates/printer/src/hyperlink.rs</code>:857 on 2024-04-23 16:55</div>
+            <div class="timeline-body"><p>These changes have been incorporated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-04-23 17:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>.github/workflows/ci.yml</code>:205 on 2024-04-23 17:10</div>
+            <div class="timeline-body"><p>Ah fair enough. We can save that for another day.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-04-23 17:10</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/holzschu">@holzschu</a> on 2024-04-23 17:11</div>
+            <div class="timeline-body"><p>Thank <em>you</em> for your patience and pedagogy!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-04-23 17:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-04-23 17:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:44:15 UTC
+    </footer>
+</body>
+</html>

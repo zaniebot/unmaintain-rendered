@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rg doesn't stop after first match when -q is used - BurntSushi/ripgrep #77</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rg doesn't stop after first match when -q is used</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/77">#77</a>
+        opened by <a href="https://github.com/0xmohit">@0xmohit</a>
+        on 2016-09-25 08:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/0xmohit">@0xmohit</a></div>
+            <div class="timeline-body"><p>Example:</p>
+<pre><code>$ seq 100000 &gt; t
+$ time grep -q 1 t
+
+real    0m0.003s
+user    0m0.000s
+sys     0m0.000s
+$ time rg -q 1 t
+
+real    0m0.139s
+user    0m0.124s
+sys     0m0.012s
+$ time grep -q a t
+
+real    0m0.003s
+user    0m0.000s
+sys     0m0.004s
+$ rg -q a t
+
+real    0m0.017s
+user    0m0.008s
+sys     0m0.008s
+</code></pre>
+<p>The same was observed while searching in real world code:</p>
+<pre><code>~/go/src/cmd/compile/internal/gc$ time grep OLITERAL sinit.go 
+        case OLITERAL:
+                        if e.Expr.Op == OLITERAL {
+        case OLITERAL:
+                if l.Class == PEXTERN &amp;&amp; r.Left.Op == OLITERAL {
+                        if e.Expr.Op == OLITERAL {
+        return n.Op == OLITERAL &amp;&amp; n.Val().Ctype() != CTNIL
+                        if n.Op == OARRAYLIT &amp;&amp; index.Op != OLITERAL {
+        case OLITERAL:
+        case OLITERAL:
+        case OLITERAL:
+
+real    0m0.004s
+user    0m0.004s
+sys     0m0.000s
+~/go/src/cmd/compile/internal/gc$ time rg OLITERAL sinit.go 
+302:    case OLITERAL:
+345:                    if e.Expr.Op == OLITERAL {
+381:    case OLITERAL:
+416:            if l.Class == PEXTERN &amp;&amp; r.Left.Op == OLITERAL {
+450:                    if e.Expr.Op == OLITERAL {
+583:    return n.Op == OLITERAL &amp;&amp; n.Val().Ctype() != CTNIL
+645:                    if n.Op == OARRAYLIT &amp;&amp; index.Op != OLITERAL {
+654:    case OLITERAL:
+1278:   case OLITERAL:
+1391:   case OLITERAL:
+
+real    0m0.028s
+user    0m0.028s
+sys     0m0.000s
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 13:05</div>
+            <div class="timeline-body"><p>Your first case is pretty pathological, but interesting. The problem is that you're searching for a single byte in a file where that byte is extremely common. It's worth optimizing, but pretty low proirity.</p>
+<p>Your second case looks like it's on a tiny sample. There's another issue for looking at making startup time faster, since that's almost assuredly what you're observing.</p>
+<p>Certainly, I don't see any relationship in terms of performance between your examples.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0xmohit">@0xmohit</a> on 2016-09-25 13:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Certainly, I don't see any relationship in terms of performance between your examples.</p>
+</blockquote>
+<p>The intent was to illustrate the performance issue when searching in a single file; those were intended to be different.</p>
+<p>Moreover, the first one specified <code>-q</code>; the only byte being searched for was the first one in the input.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 13:44</div>
+            <div class="timeline-body"><p>@0xmohit Oh! I missed the <code>-q</code> flag and jumped straight to unrelated things. :-) Thanks for pointing that out. I don't think <code>rg</code> is quitting after it finds the first match.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 14:07</div>
+            <div class="timeline-body"><p>But yeah, in the second case, the issue is definitely startup time. I was able to reproduce it.I'm going to lump that part of your issue in with #33, and change the first part to &quot;fix the <code>-q</code> flag.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "rg is slow when operating on a single file" to "rg doesn't stop after first match when -q is used" by @BurntSushi on 2016-09-25 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 14:11</div>
+            <div class="timeline-body"><p>For reference, if we remove the bug from the benchmark, <code>rg</code> does beat <code>grep</code>:</p>
+<pre><code>$ seq 100000000 &gt; t
+$ ls -lh
+total 848M
+-rw-r--r-- 1 andrew users 848M Sep 25 10:09 t
+$ time rg 1 t | wc -l
+56953280
+
+real    0m3.381s
+user    0m3.790s
+sys     0m0.370s
+$ time grep 1 t | wc -l
+56953280
+
+real    0m4.011s
+user    0m4.293s
+sys     0m0.707s
+</code></pre>
+<p>This suggests <code>rg</code> isn't actually suffering pathological behavior, and this is just a plain ol' bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2016-09-25 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-25 14:14</div>
+            <div class="timeline-body"><p>Clarification, <code>grep</code> in ASCII mode is roughly the same as <code>rg</code> in Unicode mode:</p>
+<pre><code>$ time LC_ALL=C grep 1 t | wc -l
+56953280
+
+real    0m3.514s
+user    0m3.547s
+sys     0m0.633s
+$ time LC_ALL=en_US.UTF-8 grep 1 t | wc -l
+56953280
+
+real    0m3.942s
+user    0m3.997s
+sys     0m0.627s
+</code></pre>
+<p>Benchmarks are hard. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0xmohit">@0xmohit</a> on 2016-09-25 14:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Benchmarks are hard. :-)</p>
+</blockquote>
+<p>Oh, yes!  Quoting <a href="https://en.wikipedia.org/wiki/Benchmark_%28computing%29#Challenges">Benchmark_(computing)#Challenges</a>:</p>
+<blockquote>
+<p>Benchmarking is not easy and often involves several iterative rounds in order to arrive at predictable, useful conclusions. Interpretation of benchmarking data is also extraordinarily difficult.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2016-09-25 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0xmohit">@0xmohit</a> on 2016-09-27 11:50</div>
+            <div class="timeline-body"><p>It seems that this would only stop searching a file after a matched; when searching in a directory, it'll probably still scan all files.</p>
+<hr />
+<p>Edit: To elaborate:</p>
+<pre><code>rg -q . dir_with_lots_of_files
+</code></pre>
+<p>should probably exit almost immediately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2016-09-27 11:55</div>
+            <div class="timeline-body"><p>@0xmohit Oh... Nice! That should be an easy one to fix. I created #116. Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:41:41 UTC
+    </footer>
+</body>
+</html>

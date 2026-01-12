@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rg skips one of the files when using glob - BurntSushi/ripgrep #1837</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rg skips one of the files when using glob</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/1837">#1837</a>
+        opened by <a href="https://github.com/igorsol">@igorsol</a>
+        on 2021-03-30 13:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/igorsol">@igorsol</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 12.1.1 (rev 7cb211378a)
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)</code></pre>
+<h4>How did you install ripgrep?</h4>
+<pre><code>curl -LO https://github.com/BurntSushi/ripgrep/releases/download/12.1.1/ripgrep_12.1.1_amd64.deb
+sudo dpkg -i ripgrep_12.1.1_amd64.deb</code></pre>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>Ubuntu 16.04</p>
+<h4>Describe your bug.</h4>
+<p>I have several log files. I want to count number of occurrences of word 'recovery' in each file. It seems rg completely ignores the first file matching the glob pattern.</p>
+<h4>What are the steps to reproduce the behavior?</h4>
+<p>For example content of the start1.log is like this (but I think this bug is not related to files content):</p>
+<pre><code>....
+recovery
+,,,,,
+word recovery end
+--- recovery
+</code></pre>
+<p>If I provide file name without special glob characters then word 'recovery' is found in each file:</p>
+<pre><code>$ rg recovery -u -i -g restore-test/shard01/start1.log --count-matches
+restore-test/shard01/start1.log:3
+$ rg recovery -u -i -g restore-test/shard01/start2.log --count-matches
+restore-test/shard01/start2.log:1373
+$ rg recovery -u -i -g restore-test/shard01/start3.log --count-matches
+restore-test/shard01/start3.log:126
+$ rg recovery -u -i -g restore-test/shard01/start4.log --count-matches
+restore-test/shard01/start4.log:20</code></pre>
+<p>But if I try to use '?' glob character then rg does not print anything about the 'start1.log':</p>
+<pre><code>$ rg recovery -u -i -g restore-test/shard01/start?.log --count-matches
+restore-test/shard01/start4.log:20
+restore-test/shard01/start3.log:126
+restore-test/shard01/start2.log:1373</code></pre>
+<h4>What is the actual behavior?</h4>
+<p>With <code>--debug</code> parameter output is like this:</p>
+<pre><code>$ rg recovery -u -i -g restore-test/shard01/start?.log --count-matches --debug
+DEBUG|grep_regex::literal|crates/regex/src/literal.rs:109: required literals found: [Cut(RECOV), Cut(rECOV), Cut(ReCOV), Cut(reCOV), Cut(REcOV), Cut(rEcOV), Cut(RecOV), Cut(recOV), Cut(RECoV), Cut(rECoV), Cut(ReCoV), Cut(reCoV), Cut(REcoV), Cut(rEcoV), Cut(RecoV), Cut(recoV), Cut(RECOv), Cut(rECOv), Cut(ReCOv), Cut(reCOv), Cut(REcOv), Cut(rEcOv), Cut(RecOv), Cut(recOv), Cut(RECov), Cut(rECov), Cut(ReCov), Cut(reCov), Cut(REcov), Cut(rEcov), Cut(Recov), Cut(recov)]
+DEBUG|grep_regex::matcher|crates/regex/src/matcher.rs:50: extracted fast line regex: (?-u:RECOV|rECOV|ReCOV|reCOV|REcOV|rEcOV|RecOV|recOV|RECoV|rECoV|ReCoV|reCoV|REcoV|rEcoV|RecoV|recoV|RECOv|rECOv|ReCOv|reCOv|REcOv|rEcOv|RecOv|recOv|RECov|rECov|ReCov|reCov|REcov|rEcov|Recov|recov)
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 1 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|restore-test/shard01/start4.log:20
+globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+restore-test/shard01/start3.log:126
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+restore-test/shard01/start2.log:1373
+DEBUG|globset|crates/globset/src/lib.rs:431: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+</code></pre>
+<p>The <code>echo</code> command prints all file names:</p>
+<pre><code>$ echo restore-test/shard01/start?.log
+restore-test/shard01/start1.log restore-test/shard01/start2.log restore-test/shard01/start3.log restore-test/shard01/start4.log
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>I think ripgrep's output should be like this:</p>
+<pre><code>$ rg recovery -u -i -g restore-test/shard01/start?.log --count-matches
+restore-test/shard01/start4.log:20
+restore-test/shard01/start3.log:126
+restore-test/shard01/start2.log:1373
+restore-test/shard01/start1.log:3</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-30 13:10</div>
+            <div class="timeline-body"><p>Is that the full debug output?</p>
+<p>Do you have a ripgrep config file in use?</p>
+<p>Otherwise, please see about providing a minimal reproduction that others can try.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2021-03-30 13:15</div>
+            <div class="timeline-body"><p>Also, why isn't your glob in quotes? Without quoting it, it will be interpreted by your shell.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/igorsol">@igorsol</a> on 2021-03-30 14:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Is that the full debug output?</p>
+</blockquote>
+<p>Yes, that is the full debug output</p>
+<blockquote>
+<p>Do you have a ripgrep config file in use?</p>
+</blockquote>
+<p>No</p>
+<blockquote>
+<p>Also, why isn't your glob in quotes? Without quoting it, it will be interpreted by your shell.</p>
+</blockquote>
+<p>That was my fault. With quoted glob everything works as expected.
+Thank you.
+Closing the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @igorsol on 2021-03-30 14:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:20 UTC
+    </footer>
+</body>
+</html>

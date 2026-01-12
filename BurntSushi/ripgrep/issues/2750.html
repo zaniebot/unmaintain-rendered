@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rg allocates too much memory with: `rg --files --ignore-file ~/.ultimate-gitignore` - BurntSushi/ripgrep #2750</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rg allocates too much memory with: <code>rg --files --ignore-file ~/.ultimate-gitignore</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2750">#2750</a>
+        opened by <a href="https://github.com/wis">@wis</a>
+        on 2024-03-07 23:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/wis">@wis</a></div>
+            <div class="timeline-body"><h3>Please tick this box to confirm you have reviewed the above.</h3>
+<ul>
+<li>[X] I have a different issue.</li>
+</ul>
+<h3>What version of ripgrep are you using?</h3>
+<pre><code>ripgrep 14.1.0
+
+features:-simd-accel,+pcre2
+simd(compile):+SSE2,-SSSE3,-AVX2
+simd(runtime):+SSE2,+SSSE3,+AVX2
+
+PCRE2 10.42 is available (JIT is available)
+</code></pre>
+<h3>How did you install ripgrep?</h3>
+<p><code>sudo pacman -S ripgrep</code> (Arch Linux package manager)</p>
+<h3>What operating system are you using ripgrep on?</h3>
+<p>Arch Linux on WSL2</p>
+<pre><code>sh uname -a
+Linux my-hostname 5.15.146.1-microsoft-standard-WSL2 #1 SMP Thu Jan 11 04:09:03 UTC 2024 x86_64 GNU/Linux
+</code></pre>
+<h3>Describe your bug.</h3>
+<p>ripgrep process uses 7.1 Gibibytes of memory and is <em>really</em> slow (before getting killed by OS for allocating too much RAM),
+when you run <code>rg --files --ignore-file ~/.ultimate-gitignore</code>, and <code>.ultimate-gitignore</code>  being a big/huge .<a href="https://github.com/BurntSushi/ripgrep/files/14531210/default.ultimate-gitignore.txt">gitignore file</a>, with 16332 lines (304KB), 9298 entries (or lines <a href="https://github.com/BurntSushi/ripgrep/files/14531205/default.ultimate-gitignore-entries-only.txt">with empty lines and comments are removed</a>)</p>
+<p>this &quot;Ultimate .gitignore&quot; file is created by running <code>cat * &gt; .ultimate-gitignore</code> in this directory <a href="https://github.com/toptal/gitignore/tree/0a7fb01801c62ca53ab2dcd73ab96185e159e864/templates">github.com/toptal/gitignore/templates</a></p>
+<h3>What are the steps to reproduce the behavior?</h3>
+<blockquote>
+<p>If the corpus is too big and you cannot decrease its size, file the bug anyway and the ripgrep maintainers will help figure out next steps.</p>
+</blockquote>
+<p>Nope, the corpus is not too big, it is only 2 files and a .git directory, I made sure to test it on a small corpus but my original use case was to use this command anywhere on disk, e.g. the <code>$HOME</code> directory</p>
+<p>You can download these 2 files and .git directory by cloning this repo: <a href="https://github.com/wis/killall-for-Windows/tree/92e3296b1292731cc17c62005e651024f47662ba/">wis/killall-for-Windows</a></p>
+<p>and again, the command is: <code>rg --files --ignore-file ~/.ultimate-gitignore</code></p>
+<h3>What is the actual behavior?</h3>
+<p>command:</p>
+<pre><code>rg --files --ignore-file ~/.ultimate-gitignore
+</code></pre>
+<p>output:</p>
+<pre><code>killall.c
+zsh: killed     rg --files --ignore-file ~/.gitignore
+</code></pre>
+<p>The command runs for 10 seconds and the process allocates 7.1 Gibibytes and has on average 50% CPU usage/utilization.</p>
+<h3>What is the expected behavior?</h3>
+<p>List all the files in the current directory, excluding the ones that match the patterns in the <code>.ultimate-gitignore</code> file</p>
+<p>EDIT: I tried using <code>fd</code>, as Andrew <a href="https://github.com/BurntSushi/ripgrep/issues/2314#issuecomment-1261317817">recommends here</a>:</p>
+<blockquote>
+<p>You could also use a purpose driven tool specifically for searching by file name: https://github.com/sharkdp/fd/</p>
+</blockquote>
+<p>but it also suffers from the same issue, the process allocates too much memory and gets killed by the OS.</p>
+<p>I am starting to think this issue is fundamentally unfixable, given the nature of ripgrep's (and fd's) implementation,
+I don't think you can &quot;load&quot; and compile this much patterns into memory and have this grantee by the regex crate:</p>
+<blockquote>
+<p>This implementation uses finite automata and guarantees linear time matching on all inputs.</p>
+</blockquote>
+<p>It's either ripgrep uses, or keeps using this fast regex implementation, which seems to me to trade off memory for speed,
+or it's either ripgrep would be able to run this command, or a command that has this many patterns.
+It's like:</p>
+<ol>
+<li>fast ripgrep (pattern matching)</li>
+<li>able to run this command
+—pick one</li>
+</ol>
+<p>EDIT2: I read the section on memory in the manpage, as recommended by Andrew <a href="https://github.com/BurntSushi/ripgrep/issues/1553#issuecomment-615189031">in this comment here</a>:</p>
+<blockquote>
+<p>There are cases where ripgrep may use a lot of memory. They are documented in the man page. Please consult those to see if they match your use case.</p>
+</blockquote>
+<p>...and I then ran the command above with the <code>-j1</code> flag, as recommended in the manpage,
+the command worked, it finished and exited sucessfully, but it was <em>quite</em> slow, even on a directory as small as the one mentioned above, with 2 files and 1 directory in it.
+the command took 0.9 seconds to finish, on average, whereas <code>rg --files</code> takes 0.025 seconds (25 milliseconds) to finish, on average.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "rg process uses 7.1GiB and gets killed by OS when running `rg --files --ignore-file ~/.ultimate-gitignore`" to "rg allocates too much memory with: `rg --files --ignore-file ~/.ultimate-gitignore`" by @wis on 2024-03-07 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2024-03-08 01:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-03-08 01:01</div>
+            <div class="timeline-body"><p>This appears to be a regression from ripgrep 13:</p>
+<pre><code>[andrew@duff i2750]$ time rg-13.0.0 --ignore-file .ultimate-gitignore /dev/null
+
+real    0.143
+user    0.173
+sys     0.017
+maxmem  49 MB
+faults  0
+[andrew@duff i2750]$ time rg-14.1.0 --ignore-file .ultimate-gitignore /dev/null
+
+real    1.445
+user    0.810
+sys     4.252
+maxmem  14238 MB
+faults  52
+</code></pre>
+<p>My bet is that it's related to https://github.com/rust-lang/regex/issues/1116.</p>
+<p>And that in turn is probably related to the regex engine rewrite that landed in ripgrep 14.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wis">@wis</a> on 2024-03-08 01:27</div>
+            <div class="timeline-body"><p>Ah, Thanks Andrew. It may be worth it for me to note and for you to know that:</p>
+<p>Repeat runs of: <code>cd &quot;$HOME&quot; &amp;&amp; time rg -j6 --files --ignore-file ~/.ultimate-gitignore.txt</code>
+take 10.5 seconds on average (of few runs). and btw with <code>-j6</code> finishes but with <code>-j7</code> uses too much memory, gets killed and fails.</p>
+<p>But repeat runs of:  <code>cd &quot;$HOME&quot; &amp;&amp; time rg -j1 --files --ignore-file ~/.ultimate-gitignore.txt</code> (with <code>-j1</code>, not <code>-j6</code>)
+take 2.1 seconds on average (of few runs), pretty fast, but the first run out of the bunch of repeat runs is slow, as slow as with <code>-j6</code>: 10.5 seconds</p>
+<p>That is odd. both <code>-j6</code> being slower, not faster than <code>-j1</code>, and repeat runs with <code>-j1</code> being faster than first run, (but this is not the case for repeat runs with <code>-j6</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Biosias">@Biosias</a> on 2025-07-16 12:23</div>
+            <div class="timeline-body"><p>Hello, just want to report that this issue is still relevant.</p>
+<p>I'm using ripgrep-14.1.1-r1</p>
+<p>while using</p>
+<pre><code>rg -sz Clear /var/log/mail/*.zst
+</code></pre>
+<p>ripgrep fills up memory and gets killed by the OS.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-10-07 01:52</div>
+            <div class="timeline-body"><p>I can confirm that this is fixed by https://github.com/rust-lang/regex/pull/1302. Memory usage returns to about what it was in ripgrep 13.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rollup</span> added by @BurntSushi on 2025-10-07 02:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-10-11 00:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:46 UTC
+    </footer>
+</body>
+</html>

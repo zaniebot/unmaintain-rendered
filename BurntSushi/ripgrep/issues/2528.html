@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>\K does not appear to work with --multiline - BurntSushi/ripgrep #2528</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>\K does not appear to work with --multiline</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/BurntSushi/ripgrep/issues/2528">#2528</a>
+        opened by <a href="https://github.com/jtojnar">@jtojnar</a>
+        on 2023-06-06 19:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtojnar">@jtojnar</a></div>
+            <div class="timeline-body"><h4>What version of ripgrep are you using?</h4>
+<pre><code>ripgrep 13.0.0
+-SIMD -AVX (compiled)
++SIMD +AVX (runtime)
+</code></pre>
+<h4>How did you install ripgrep?</h4>
+<p>NixOS package.</p>
+<h4>What operating system are you using ripgrep on?</h4>
+<p>NixOS unstable</p>
+<h4>Describe your bug.</h4>
+<p>When I use PCRE 2 regex with <code>\K</code> in multiline mode, it will print the whole line instead only the part after <code>\K</code>.</p>
+<h4>What are the steps to reproduce the behaviour?</h4>
+<p>Run</p>
+<pre><code>printf &quot;foo\nbar&quot; | rg --multiline --pcre2 'foo\nb\K(a)'
+</code></pre>
+<h4>What is the actual behaviour?</h4>
+<pre><code class="language-ShellSession">$ printf &quot;foo\nbar&quot; | rg --debug --multiline --pcre2 'foo\nb\K(a)'
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 0 basenames, 12 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+DEBUG|globset|crates/globset/src/lib.rs:421: built glob set; 0 literals, 1 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+bar
+</code></pre>
+<h4>What is the expected behavior?</h4>
+<p>It should print just <code>ar</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtojnar">@jtojnar</a> on 2023-06-06 19:26</div>
+            <div class="timeline-body"><p>If I add <code>--only-matching </code>, it will even preserve the part after the expression (<code>ar</code> instead of just <code>a</code>):</p>
+<pre><code class="language-ShellSession">$ printf &quot;foo\nbar&quot; | rg --multiline --pcre2 --only-matching 'foo\nb\K(a)'
+bar
+</code></pre>
+<p><code>--only-matching </code> does work if I remove <code>\K</code> but then it will also include the extra context (<code>foo\nb</code>):</p>
+<pre><code class="language-ShellSession">$ printf &quot;foo\nbar&quot; | rg --multiline --pcre2 --only-matching 'foo\nb(a)'
+foo
+ba
+</code></pre>
+<p>In some cases it could be worked around with negative look-behind but not always – in my full code I am getting:</p>
+<p>“lookbehind assertion is not fixed length”</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtojnar">@jtojnar</a> on 2023-06-06 19:28</div>
+            <div class="timeline-body"><p>Looks like <code>\K</code> also breaks another workaround using <code>--replace</code>:</p>
+<pre><code class="language-ShellSession">$ printf &quot;foo\nbar&quot; | rg --multiline --pcre2 'foo\nb\K(a)' --replace '$1'
+bar
+</code></pre>
+<p>Fortunately, here I can just drop <code>\K</code> and use <code>--replace</code> in addition <code>--only-matching</code>:</p>
+<pre><code class="language-ShellSession">$ printf &quot;foo\nbar&quot; | rg --multiline --pcre2 --only-matching 'foo\nb(a)' --replace '$1'
+a
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-06-06 21:14</div>
+            <div class="timeline-body"><p>So at a high level, for this specific case, the <code>-r/--replace</code> flag is really what you ought to be using here IMO. And in your example, you don't even need PCRE2:</p>
+<pre><code>$ printf &quot;foo\nbar&quot; | rg -Uor '$1' 'foo\nb(a)'
+a
+</code></pre>
+<p>Otherwise, <code>\K</code> really messes with things. Your very first example is correct and intended behavior:</p>
+<pre><code>$ printf &quot;foo\nbar&quot; | rg --multiline --pcre2 'foo\nb\K(a)'
+bar
+</code></pre>
+<p>Unless you give ripgrep a flag to tell it to do otherwise, it always prints matching lines. <code>bar</code> is a matching line, so the whole line is printed. <code>\K</code> does and shouldn't have any impact on that.</p>
+<p>But the output of <code>--only-matching</code> is wrong:</p>
+<pre><code>$ printf &quot;foo\nbar&quot; | rg --multiline --pcre2 --only-matching 'foo\nb\K(a)'
+bar
+</code></pre>
+<p>That really should just print <code>a</code>.</p>
+<p>The problem here is that <code>\K</code> breaks an invariant that ripgrep assumes to be true about regexes: that the regex engine can be re-run (roughly) starting at the beginning of a match and reproduce the matches found. But because of look-behind (which is basically what <code>\K</code> is), you actually need to make the contents (potentially all of them) before the match available for the regex engine to see, otherwise the regex may not match because of look-around. This has led to kludges like this in ripgrep:</p>
+<p>https://github.com/BurntSushi/ripgrep/blob/4fcb1b2202b97c5a21894672232700225223a138/crates/printer/src/util.rs#L387-L442</p>
+<p>At a more fundamental level, I fucked up the abstraction boundary between printing and searching, which makes this hard to fix properly. That abstraction boundary basically needs to go through a re-think.</p>
+<p>That means I'll classify this as a bug, but don't hold your breath for it getting fixed any time soon.</p>
+<p>The bug with <code>--replace</code> not working correctly with <code>\K</code> is &quot;just&quot; a downstream effect of this.</p>
+<blockquote>
+<p>“lookbehind assertion is not fixed length”</p>
+</blockquote>
+<p>This is a PCRE2 limitation. Nothing I can do about that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2023-06-06 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtojnar">@jtojnar</a> on 2023-06-06 21:35</div>
+            <div class="timeline-body"><blockquote>
+<p>Otherwise, <code>\K</code> really messes with things. Your very first example is correct and intended behavior:</p>
+<pre><code>$ printf &quot;foo\nbar&quot; | rg --multiline --pcre2 'foo\nb\K(a)'
+bar
+</code></pre>
+</blockquote>
+<p>You are right. The issue here is actually that the match is not highlighted.</p>
+<p>I started with <code>--only-matching</code> but then noticed that it does not also do any match highlighting without <code>--only-matching</code> and forgot to mention that and did not update the expectations accordingly. Normally, the matched part would be highlighted in bold red.</p>
+<p>Thanks for the informative response. Will use <code>--only-matching --replace</code> without <code>\K</code> since it works okay.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-06-06 21:41</div>
+            <div class="timeline-body"><p>Ah yeah, the lack of highlights are indeed caused by the same underlying problem plaguing <code>--only-matching</code> and <code>--replace</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 16:43:41 UTC
+    </footer>
+</body>
+</html>
