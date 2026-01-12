@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2025-09-18T14:05:37Z
-updated_at: 2026-01-12T06:05:09Z
+updated_at: 2026-01-12T11:29:55Z
 url: https://github.com/astral-sh/uv/issues/15933
-synced_at: 2026-01-12T06:55:09Z
+synced_at: 2026-01-12T11:55:20Z
 ```
 
 # Interrupted self update will result in incomplete binary file
@@ -70,5 +70,13 @@ Check the spelling of the name, or if a path was included, verify that the path 
 ```
 
 I found that `uv.exe` in the installation directory was renamed to `uv.exe.previous.exe`, and because of network issues, I used Ctrl+C to terminate the download program, which may have resulted in `uv.exe.previous.exe` not being restored to `uv.exe`. I think this update logic violates common sense. It seems more reasonable to first download the new file completely, and then move it to overwrite the old file.
+
+---
+
+_Comment by @konstin on 2026-01-12 11:29_
+
+> Do we want to keep the fix in-tree, or should we report it upstream?
+
+I'd try reporting in axoupdater first.
 
 ---

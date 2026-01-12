@@ -5,12 +5,12 @@ type: issue
 state: open
 author: colobas
 labels:
-  - question
+  - bug
 assignees: []
 created_at: 2026-01-10T00:30:58Z
-updated_at: 2026-01-10T01:37:54Z
+updated_at: 2026-01-12T11:34:57Z
 url: https://github.com/astral-sh/uv/issues/17399
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T11:55:21Z
 ```
 
 # How to avoid environment creation race conditions?
@@ -52,5 +52,13 @@ _Comment by @zanieb on 2026-01-10 01:37_
 I'd expect us to handle this race condition.
 
 We should probably lock the directory while creating and mutating it.
+
+---
+
+_Label `question` removed by @konstin on 2026-01-12 11:34_
+
+---
+
+_Label `bug` added by @konstin on 2026-01-12 11:34_
 
 ---

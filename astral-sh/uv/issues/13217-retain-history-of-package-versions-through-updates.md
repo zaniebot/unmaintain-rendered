@@ -9,9 +9,9 @@ labels:
   - wish
 assignees: []
 created_at: 2025-04-30T08:33:11Z
-updated_at: 2025-05-04T12:50:47Z
+updated_at: 2026-01-12T11:49:05Z
 url: https://github.com/astral-sh/uv/issues/13217
-synced_at: 2026-01-10T01:57:30Z
+synced_at: 2026-01-12T11:55:20Z
 ```
 
 # Retain history of package versions through updates
@@ -41,5 +41,89 @@ _Label `enhancement` added by @juhaszp95 on 2025-04-30 08:33_
 ---
 
 _Label `wish` added by @charliermarsh on 2025-05-04 12:50_
+
+---
+
+_Comment by @CarliJoy on 2026-01-12 11:23_
+
+Realted to #16975 
+
+I created a small wrapper around `uv` to do this and published it as https://pypi.org/project/uvrev/.
+
+Implementing this in `uv` would be still very welcome.
+
+I drafted a help text for documentation driven design:
+```
+--lock-vcs <none|git>
+    Integrate lockfile updates with your VCS.
+
+    When enabled (git), uv will record dependency-state transitions in Git whenever uv.lock is
+    updated by a uv command. The recorded state includes:
+      - pyproject.toml
+      - uv.lock
+      - uv.toml (if present)
+
+    Behavior (git):
+      - Creates a Git commit that stages only the files listed above.
+      - Tags the created commit as: uv-lock-rev-<number>
+        where <number> is a monotonically increasing revision number for the repository.
+        This tag enables fast identification and restoration of prior lock states.
+      - Uses a commit message that includes a dependency changelog describing what changed
+        since the previous lock revision, e.g. which dependencies were:
+          - added
+          - removed
+          - updated (including old → new versions where available)
+
+    Notes:
+      - If uv.lock is not modified, uv does not create a commit or tag.
+      - If the current directory is not a Git repository, or Git is unavailable, uv fails with
+        an error when --lock-vcs git is specified.
+
+    Examples:
+
+      Enable VCS integration (config):
+        [tool.uv]
+        lock-vcs = "git"
+
+      Show all lock revisions:
+        git log --decorate --format='%h %d%n%B%n---' --tags='uv-lock-rev-*'
+
+      Restore a prior dependency state (example: revision 12) and resync the environment:
+        git checkout uv-lock-rev-12 -- pyproject.toml uv.lock uv.toml
+        uv sync
+```
+
+If uv implements the tracking of change in git, the restoring and listing of version can be left to the user using aliases/small scripts. I don't think we need to implement subcommands for this in `uv`.
+
+In the end restoring/list is done much less then actually changing the lock file.
+
+---
+
+_Comment by @CarliJoy on 2026-01-12 11:36_
+
+Would a PR that implements and documents the suggested option be accepted?
+Or do you think this is outside the scope of `uv`  or want to make some changes (i.e. name of the option, workflow...)?
+
+---
+
+_Comment by @konstin on 2026-01-12 11:39_
+
+That seems better suited in a service such as dependabot or renovate, which do this though a PR workflow that also runs CI, displays changelogs, etc. uv currently doesn't make any git commits, and doing so is a big increase in scope.
+
+---
+
+_Comment by @CarliJoy on 2026-01-12 11:47_
+
+This feature requests comes from people migrating from conda, which has `conda list --revisions`/`conda install --revision`, wanting a similar experience with uv.
+So using Depabot or renovate are no solution for their use case, as they care about tracking changes locally.
+
+This feature is used for deployment installation, to keep track and rollback not working changes.
+Also it used by users experimenting during develop, common in the science community, who don't want to commit every time they try a new package.
+
+I can understand if this you think this is out of scope for uv.
+
+In this case please close both issues as not planned.
+
+(Even so I would be happy about this feature)
 
 ---

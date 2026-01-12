@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-07-31T13:14:40Z
-updated_at: 2026-01-06T16:54:19Z
+updated_at: 2026-01-12T10:55:45Z
 url: https://github.com/astral-sh/uv/issues/14992
-synced_at: 2026-01-10T03:11:34Z
+synced_at: 2026-01-12T11:55:20Z
 ```
 
 # Allow relative `exclude-newer` values like "one week ago"
@@ -247,5 +247,16 @@ _Closed by @woodruffw on 2025-12-26 16:14_
 _Comment by @GeoVizNow on 2026-01-06 16:54_
 
 Thanks a lot for implementing this!!
+
+---
+
+_Comment by @christianplatta1012 on 2026-01-12 10:55_
+
+Great feature!
+One question though, what is the intended way to upgrade a single package explicitly that is newer than the cooldown period (e.g. to get a security fix).
+The only way I found is this:
+` uv sync --upgrade-package urllib3  --resolution highest --exclude-newer-package urllib3="0 days"`
+
+
 
 ---

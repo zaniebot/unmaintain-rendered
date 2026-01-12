@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: narrow-right-comparison-op
 created_at: 2026-01-11T23:56:30Z
-updated_at: 2026-01-12T08:28:25Z
+updated_at: 2026-01-12T11:46:39Z
 url: https://github.com/astral-sh/ruff/pull/22511
-synced_at: 2026-01-12T08:53:00Z
+synced_at: 2026-01-12T11:55:15Z
 ```
 
 # [ty] narrow right comparison op
@@ -285,5 +285,94 @@ _Comment by @astral-sh-bot[bot] on 2026-01-12 08:28_
 **[Full report with detailed diff](https://80a6afa2.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://80a6afa2.ty-ecosystem-ext.pages.dev/timing))
 
 
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/narrow.rs`:1204 on 2026-01-12 11:45_
+
+Why do we exclude call expressions specifically? Is it just so that it doesn't "clobber" the `ast::Expr::Call()` branch immediately below this one? If so, maybe this branch could just go below that one?
+
+No tests fail if I make this change to your PR branch locally:
+
+```diff
+diff --git a/crates/ty_python_semantic/src/types/narrow.rs b/crates/ty_python_semantic/src/types/narrow.rs
+index 927f0f6943..c1ff380a84 100644
+--- a/crates/ty_python_semantic/src/types/narrow.rs
++++ b/crates/ty_python_semantic/src/types/narrow.rs
+@@ -1196,33 +1196,6 @@ impl<'db, 'ast> NarrowingConstraintsBuilder<'db, 'ast> {
+                         constraints.insert(place, NarrowingConstraint::regular(ty));
+                     }
+                 }
+-                // If left is not a narrowable target and not a Call expression try to narrow the
+-                // right operand instead. For symmetric operators (==, !=, is, is not), we can swap
+-                // the operands.
+-                //
+-                // E.g., `None != x` should narrow `x` the same way as `x != None`.
+-                _ if !matches!(left, ast::Expr::Call(_))
+-                    && matches!(
+-                        op,
+-                        ast::CmpOp::Eq | ast::CmpOp::NotEq | ast::CmpOp::Is | ast::CmpOp::IsNot
+-                    )
+-                    && matches!(
+-                        right,
+-                        ast::Expr::Name(_)
+-                            | ast::Expr::Attribute(_)
+-                            | ast::Expr::Subscript(_)
+-                            | ast::Expr::Named(_)
+-                    ) =>
+-                {
+-                    if let Some(right_place) = place_expr(right)
+-                        // Swap lhs_ty and rhs_ty since we're narrowing the right operand
+-                        && let Some(ty) =
+-                            self.evaluate_expr_compare_op(rhs_ty, lhs_ty, *op, is_positive)
+-                    {
+-                        let place = self.expect_place(&right_place);
+-                        constraints.insert(place, NarrowingConstraint::regular(ty));
+-                    }
+-                }
+                 ast::Expr::Call(ast::ExprCall {
+                     range: _,
+                     node_index: _,
+@@ -1275,6 +1248,31 @@ impl<'db, 'ast> NarrowingConstraintsBuilder<'db, 'ast> {
+                         );
+                     }
+                 }
++                // If left is not a narrowable target and not a Call expression try to narrow the
++                // right operand instead. For symmetric operators (==, !=, is, is not), we can swap
++                // the operands.
++                //
++                // E.g., `None != x` should narrow `x` the same way as `x != None`.
++                _ if matches!(
++                    op,
++                    ast::CmpOp::Eq | ast::CmpOp::NotEq | ast::CmpOp::Is | ast::CmpOp::IsNot
++                ) && matches!(
++                    right,
++                    ast::Expr::Name(_)
++                        | ast::Expr::Attribute(_)
++                        | ast::Expr::Subscript(_)
++                        | ast::Expr::Named(_)
++                ) =>
++                {
++                    if let Some(right_place) = place_expr(right)
++                        // Swap lhs_ty and rhs_ty since we're narrowing the right operand
++                        && let Some(ty) =
++                            self.evaluate_expr_compare_op(rhs_ty, lhs_ty, *op, is_positive)
++                    {
++                        let place = self.expect_place(&right_place);
++                        constraints.insert(place, NarrowingConstraint::regular(ty));
++                    }
++                }
+                 _ => {}
+             }
+         }
+```
+
+I was also a bit confused about why you had the `matches!(op, ast::CmpOp::Eq | ast::CmpOp::NotEq | ast::CmpOp::Is | ast::CmpOp::IsNot)` check in there before calling `self.evaluate_expr_compare_op()`, since `self.evaluate_expr_compare_op()` does its own check to see whether the `op` is valid. After staring at it a bit, I think it's because (unlike narrowing for the left-hand side) narrowing the right-hand side is only valid if `op` is a _symmetric_ operator, and `in`/`not in` are not symmetric operators? But it would be great to add a test that would fail without that check -- no tests currently fail if I get rid of it.
+
+---
+
+_@AlexWaygood reviewed on 2026-01-12 11:46_
+
+Thanks, this is great!!
 
 ---

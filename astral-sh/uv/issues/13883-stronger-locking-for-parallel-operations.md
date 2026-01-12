@@ -9,9 +9,9 @@ labels:
   - internal
 assignees: []
 created_at: 2025-06-06T11:58:13Z
-updated_at: 2025-11-27T22:35:32Z
+updated_at: 2026-01-12T11:35:26Z
 url: https://github.com/astral-sh/uv/issues/13883
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-12T11:55:20Z
 ```
 
 # Stronger locking for parallel operations
@@ -48,6 +48,7 @@ An exception is the cache, where we use symlinks for atomic operations to allow 
     The use case here is that these operations may be started by an IDE/LSP while another operation is e.g. still in its sync phase and/or may roll back in the end.
     We can likely test this by having a build we control in the sync phase.
 - [ ] `uv add` and `uv remove` should not lock a global interpreter path when they're not actually going to sync anything (e.g. inline script metadata without an existing cached or locked venv)
+- [ ] https://github.com/astral-sh/uv/issues/17399
 
 ### Nice to have
 - [ ] Are there portable filesystem read-write locks to allow e.g. blocking `uv pip list` from reading while `uv sync` is editing?

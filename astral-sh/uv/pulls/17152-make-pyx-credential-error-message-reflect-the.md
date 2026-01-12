@@ -4,14 +4,16 @@ title: Make pyx credential error message reflect the realm
 type: pull_request
 state: open
 author: zsol
-labels: []
+labels:
+  - enhancement
+  - error messages
 assignees: []
 base: main
 head: zsol/jj-zmwropzqtzxm
 created_at: 2025-12-16T19:24:42Z
-updated_at: 2026-01-12T10:16:09Z
+updated_at: 2026-01-12T11:46:17Z
 url: https://github.com/astral-sh/uv/pull/17152
-synced_at: 2026-01-12T11:01:31Z
+synced_at: 2026-01-12T11:55:28Z
 ```
 
 # Make pyx credential error message reflect the realm
@@ -50,5 +52,27 @@ _Review requested from @charliermarsh by @zsol on 2026-01-12 10:15_
 ---
 
 _Review requested from @zanieb by @zsol on 2026-01-12 10:15_
+
+---
+
+_Comment by @konstin on 2026-01-12 11:33_
+
+The env var syntax doesn't work on Windows, can we use a CLI parameter instead?
+
+---
+
+_Label `enhancement` added by @konstin on 2026-01-12 11:34_
+
+---
+
+_Label `error messages` added by @konstin on 2026-01-12 11:34_
+
+---
+
+_Comment by @zsol on 2026-01-12 11:46_
+
+> The env var syntax doesn't work on Windows, can we use a CLI parameter instead?
+
+I don't think there's a CLI parameter for this unfortunately. If you'd like, I can add OS-specific error messages (with the understanding that the message will be less helpful than it could be on Windows+cygwin or git bash)
 
 ---

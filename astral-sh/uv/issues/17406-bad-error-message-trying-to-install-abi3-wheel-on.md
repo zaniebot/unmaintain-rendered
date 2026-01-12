@@ -9,9 +9,9 @@ labels:
   - error messages
 assignees: []
 created_at: 2026-01-11T22:37:21Z
-updated_at: 2026-01-12T10:37:27Z
+updated_at: 2026-01-12T11:32:30Z
 url: https://github.com/astral-sh/uv/issues/17406
-synced_at: 2026-01-12T11:01:24Z
+synced_at: 2026-01-12T11:55:21Z
 ```
 
 # Bad error message trying to install abi3 wheel on a free threaded venv
@@ -84,5 +84,11 @@ _Renamed from "Improve the error message for trying to install a CPython GIL whe
 _Comment by @konstin on 2026-01-12 10:37_
 
 That's a really bad error message, we should fix that
+
+---
+
+_Comment by @nooscraft on 2026-01-12 11:13_
+
+I'm going to take this one
 
 ---

@@ -10,9 +10,9 @@ draft: true
 base: main
 head: zsol/jj-uqkrrrxxkqvw
 created_at: 2026-01-12T10:51:14Z
-updated_at: 2026-01-12T10:51:14Z
+updated_at: 2026-01-12T11:50:32Z
 url: https://github.com/astral-sh/uv/pull/17414
-synced_at: 2026-01-12T11:01:31Z
+synced_at: 2026-01-12T11:55:28Z
 ```
 
 # Re-enable pyx integration tests
@@ -21,6 +21,10 @@ synced_at: 2026-01-12T11:01:31Z
 
 _Pull request opened by @zsol on 2026-01-12 10:51_
 
-_No description provided._
+Re-enables the recently-disabled pyx integration tests, and moves them to a more stable environment.
+
+## Test plan
+
+the publishing tests attached to this PR should be green, and they should publish to the new location in pyx.
 
 ---
