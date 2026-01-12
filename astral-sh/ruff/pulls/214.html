@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix find_project_root with relative paths - astral-sh/ruff #214</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix find_project_root with relative paths</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/214">#214</a>
+        opened by <a href="https://github.com/andersk">@andersk</a>
+        on 2022-09-16 22:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/andersk">@andersk</a> on 2022-09-16 22:59</div>
+            <div class="timeline-body"><p>The <code>common_path</code> crate doesn’t work correctly with relative paths: <code>common_path(&quot;a/b&quot;, &quot;c/d&quot;) = None</code>. (I would have reported this upstream to <code>common_path</code>, but its <a href="https://gitlab.com/pwoolcoc/common-path">repository</a> doesn’t exist anymore.)</p>
+<p>Additionally, we want to be able to find a parent of the current directory, but <code>.ancestors()</code> will not ascend past <code>&quot;.&quot;</code>.</p>
+<p>Work around both problems by converting paths to absolute.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Stranger6667">@Stranger6667</a> on <code>src/pyproject.rs</code>:75 on 2022-09-16 23:11</div>
+            <div class="timeline-body"><p>Nit: <code>Vec</code> allocation is not necessary, as <code>common_path_all</code> accepts an iterator. I suggest merging <code>map</code> calls:</p>
+<pre><code class="language-rust">sources.iter().map(|source| cwd.join(source).as_path())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Stranger6667">@Stranger6667</a> reviewed on 2022-09-16 23:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a> reviewed on 2022-09-16 23:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>src/pyproject.rs</code>:75 on 2022-09-16 23:13</div>
+            <div class="timeline-body"><p><code>common_path_all</code> accepts an iterator of <code>Path</code> references. Your suggestion doesn’t compile as the temporary <code>PathBuf</code> isn’t in scope long enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Stranger6667">@Stranger6667</a> reviewed on 2022-09-16 23:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Stranger6667">@Stranger6667</a> on <code>src/pyproject.rs</code>:75 on 2022-09-16 23:18</div>
+            <div class="timeline-body"><p>Oh indeed, I missed that. Sorry!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-16 23:39</div>
+            <div class="timeline-body"><p>Nice, this looks reasonable. Do you know what problems this was causing in practice?</p>
+<p>(Also, in the given example of <code>common_path(&quot;a/b&quot;, &quot;c/d&quot;) = None</code> -- what's the &quot;correct&quot; return value there? &quot;.&quot;?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2022-09-17 00:02</div>
+            <div class="timeline-body"><p>If you have a project with <code>pyproject.toml</code>, <code>a/b.py</code>, <code>c/d.py</code>, then previously</p>
+<ul>
+<li><code>ruff a/b.py c/d.py</code> failed to respect any of the settings in <code>pyproject.toml</code>;</li>
+<li><code>cd a; ruff b.py</code> failed to respect any of the settings in <code>pyproject.toml</code>.</li>
+</ul>
+<p><code>common_path(&quot;a/b&quot;, &quot;c/d&quot;) = Some(&quot;.&quot;)</code> seems like it’d be more correct, and would have fixed the first of these points but not the second.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-17 00:04</div>
+            <div class="timeline-body"><p>This makes sense, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-09-17 00:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-09-17 00:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2022-09-17 00:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:50:51 UTC
+    </footer>
+</body>
+</html>

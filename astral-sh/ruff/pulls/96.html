@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix false positive for `IfTuple` - astral-sh/ruff #96</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix false positive for <code>IfTuple</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/96">#96</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2022-09-04 01:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/harupy">@harupy</a> on 2022-09-04 01:34</div>
+            <div class="timeline-body"><p>This PR fixes a false positive for <code>IfTuple</code> when a tuple has no elements:</p>
+<pre><code class="language-bash">&gt; cat resources/test/fixtures/F634.py
+if (1, 2):
+    pass
+
+for _ in range(5):
+    if True:
+        pass
+    elif (3, 4):
+        pass
+    elif ():
+        pass
+
+
+# BEFORE
+&gt; cargo run resources/test/fixtures/F634.py
+    Finished dev [unoptimized + debuginfo] target(s) in 0.06s
+     Running `target/debug/ruff resources/test/fixtures/F634.py`
+Found 3 error(s).
+
+resources/test/fixtures/F634.py:1:1: F634 If test is a tuple, which is always `True`
+resources/test/fixtures/F634.py:7:5: F634 If test is a tuple, which is always `True`
+# false positive - empty tuple is falsy
+resources/test/fixtures/F634.py:9:5: F634 If test is a tuple, which is always `True`
+
+# AFTER
+&gt; cargo run resources/test/fixtures/F634.py
+   Compiling ruff v0.0.25 (/home/haru/Desktop/repositories/ruff)
+    Finished dev [unoptimized + debuginfo] target(s) in 2.77s
+     Running `target/debug/ruff resources/test/fixtures/F634.py`
+Found 2 error(s).
+
+resources/test/fixtures/F634.py:1:1: F634 If test is a tuple, which is always `True`
+resources/test/fixtures/F634.py:7:5: F634 If test is a tuple, which is always `True`
+</code></pre>
+<p><code>IfTuple</code> implementation in <code>pyflakes</code>:</p>
+<p>https://github.com/PyCQA/pyflakes/blob/7d6479e46f8f3e9607c9ef7975cc892db023d413/pyflakes/checker.py#L1912-L1915</p>
+<pre><code class="language-python">    def IF(self, node):
+        if isinstance(node.test, ast.Tuple) and node.test.elts != []:
+            self.report(messages.IfTuple, node)
+        self.handleChildren(node)
+</code></pre>
+<p>Tuple emptiness is checked as well (<code>node.test.elts != []</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2022-09-04 02:39</div>
+            <div class="timeline-body"><p>Great PR, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-09-04 02:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-09-04 02:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2022-09-04 02:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:50:49 UTC
+    </footer>
+</body>
+</html>

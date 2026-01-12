@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature/per file ignores - astral-sh/ruff #261</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature/per file ignores</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/261">#261</a>
+        opened by <a href="https://github.com/Seamooo">@Seamooo</a>
+        on 2022-09-23 12:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Seamooo">@Seamooo</a> on 2022-09-23 12:17</div>
+            <div class="timeline-body"><p>resolves #241</p>
+<p>This PR implements per-file-ignores as a per-path built filter for the output of <code>crate::linter::check_path</code>.
+The goal is feature parity.</p>
+<h2>Caveats</h2>
+<p>There is definitely room for optimisation here. Currently filtering the output by removing checks to ignore, after they've been checked leaves the obvious improvement of not executing the check in the first place. This is fairly intrusive on the current approach to the Checker as <code>settings.selected</code> is used ubiquitously as the source for code checking.</p>
+<p>Additionally, all pairs are matched against each entry to generate the set of ignores to filter against. It's possible to use a better representation of these patterns such that iterating over the each match is possible (although this still has a worst case of O(n)).</p>
+<p>Errors for incorrect <code>pattern:code</code> pairs currently fail silently in config, and fail with the corresponding anyhow message dumped to stdout. This behaviour is potentially debatable and feedback would be appreciated.</p>
+<h2>Description</h2>
+<p>Per file ignores is available from both the cli via <code>--per-file-ignores=&lt;stuff&gt;</code> and in the pyproject.toml under <code>tool.ruff.per-file-ignores</code>. Additionally the cache-key is generated using per-file-ignores, as changes to the setting leads to a different output that  couldn't be represented by the previous cache-key generation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Stranger6667">@Stranger6667</a> reviewed on 2022-09-23 12:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Stranger6667">@Stranger6667</a> on <code>src/fs.rs</code>:127 on 2022-09-23 12:24</div>
+            <div class="timeline-body"><p>nit: Would it be possible to use <code>.collect()</code> instead of manually creating <code>rv</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-23 12:28</div>
+            <div class="timeline-body"><p>Awesome! Excited to review. Thanks for putting this together.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-09-23 21:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/linter.rs</code>:65 on 2022-09-23 21:30</div>
+            <div class="timeline-body"><p>Can we omit the entire <code>into_iter</code>, <code>filter</code>, and <code>collect</code> if <code>ignores</code> is none / empty?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-09-23 21:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/fs.rs</code>:138 on 2022-09-23 21:32</div>
+            <div class="timeline-body"><p>I think I'd prefer to just return <code>Result&lt;BTreeSet&lt;CheckCode&gt;&gt;</code> and have the client check <code>.is_empty</code>. Using <code>None</code> to represent the empty state creates ambiguity in the typing (though I know you commented on it above).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/fs.rs</code>:128 on 2022-09-23 21:34</div>
+            <div class="timeline-body"><p>Can we try changing <code>is_excluded</code> to take <code>exclude: &amp;[&amp;FilePattern]</code>, and avoid this clone?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-09-23 21:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-09-23 21:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/fs.rs</code>:123 on 2022-09-23 21:34</div>
+            <div class="timeline-body"><p>Also wondering if this can return <code>Result&lt;BTreeSet&lt;&amp;CheckCode&gt;&gt;</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-09-23 21:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/fs.rs</code>:138 on 2022-09-23 21:34</div>
+            <div class="timeline-body"><p>(That also lets you get rid of <code>code_set</code> entirely and just return <code>rv</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-09-23 21:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/main.rs</code>:259 on 2022-09-23 21:35</div>
+            <div class="timeline-body"><p>I think we should just error hard if they provide a failing pattern or non-existent error code here. That's what we do with ignores and selects. Do you mind rewriting to fail-on-error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/settings.rs</code>:164 on 2022-09-23 21:36</div>
+            <div class="timeline-body"><p>Can we rename <code>x</code> to <code>ignore_string</code>? (Like the singular of <code>ignore_strings</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-09-23 21:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-09-23 21:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/fs.rs</code>:128 on 2022-09-23 21:38</div>
+            <div class="timeline-body"><p>(Maybe we even want a version of <code>is_excluded</code> that takes a single pattern, since passing a slice here is a little awkward, but not a big deal.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-23 21:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Currently filtering the output by removing checks to ignore, after they've been checked leaves the obvious improvement of not executing the check in the first place. This is fairly intrusive on the current approach to the Checker as settings.selected is used ubiquitously as the source for code checking.</p>
+</blockquote>
+<p>Yeah, I think the approach you took is good. We should likely be filtering checks at the end regardless. The fact that we avoid including erroneous checks by checking <code>Settings</code> everywhere should be viewed more as an optimization (though the code currently relies on it).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-23 21:39</div>
+            <div class="timeline-body"><p>This is great! Thank you. I left a variety of comments. If you're able to address them, it'd be much appreciated. If you'd rather not, I'd understand and can also take over, adjust, and merge -- totally up to you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Seamooo">@Seamooo</a> reviewed on 2022-09-24 04:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Seamooo">@Seamooo</a> on <code>src/fs.rs</code>:128 on 2022-09-24 04:02</div>
+            <div class="timeline-body"><p>changed <code>is_excluded</code> to take an iterator of refs, that way a slice ref can call <code>iter</code> and a slice of refs can call <code>into_iter()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Seamooo">@Seamooo</a> reviewed on 2022-09-24 04:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Seamooo">@Seamooo</a> on <code>src/main.rs</code>:259 on 2022-09-24 04:04</div>
+            <div class="timeline-body"><p>There now exists a type <code>crate::pyproject::StrCheckCodePair</code> with FromStr and Deserialize implemented such that errors can be caught in cli parsing and pyproject deserializing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Seamooo">@Seamooo</a> on 2022-09-24 07:15</div>
+            <div class="timeline-body"><p>Resolved the comments, I suspect there may be areas still to clean up for semantic purposes (e.g. struct locations), feel free to edit as needed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-24 14:43</div>
+            <div class="timeline-body"><p>Awesome, thank you, will review and merge today!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-24 14:46</div>
+            <div class="timeline-body"><p>Once this is merged, I'll cut 0.0.46.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-09-24 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-09-24 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amotl">@amotl</a> on 2022-09-26 15:15</div>
+            <div class="timeline-body"><p>The improvement works excellently. Thanks a stack!</p>
+<ul>
+<li>https://github.com/earthobservations/wetterdienst/pull/729</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:50:52 UTC
+    </footer>
+</body>
+</html>

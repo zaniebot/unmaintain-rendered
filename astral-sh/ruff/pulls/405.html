@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement --fix with stdin - astral-sh/ruff #405</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement --fix with stdin</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/405">#405</a>
+        opened by <a href="https://github.com/fsouza">@fsouza</a>
+        on 2022-10-12 04:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/fsouza">@fsouza</a> on 2022-10-12 04:18</div>
+            <div class="timeline-body"><p>This is a follow-up to #387 where we also support <code>--fix</code> with stdin.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fsouza">@fsouza</a> on 2022-10-12 04:20</div>
+            <div class="timeline-body"><p>@harupy @charliermarsh let me know what you think! :)</p>
+<p>Also, I know that <code>--autoformat</code> is a secret flag right now, but I imagine that when that is properly implemented we'll want to support stdin too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/fsouza">@fsouza</a> on <code>src/autofix/fixer.rs</code>:30 on 2022-10-12 06:52</div>
+            <div class="timeline-body"><p>this is probably a bad idea 🤔 Like maybe we want to special case stdout here and only print if it's stdout, otherwise <code>--fix</code> will always rewrite all files. I'll revisit this tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/fsouza">@fsouza</a> reviewed on 2022-10-12 06:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-10-12 12:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/autofix/fixer.rs</code>:30 on 2022-10-12 12:56</div>
+            <div class="timeline-body"><p>Can we add an entirely separate <code>fix_contents</code> function that has the same logic and returns <code>Result&lt;Option&lt;String&gt;&gt;</code> with the fixed contents (if changed)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-10-12 12:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/main.rs</code>:375 on 2022-10-12 12:57</div>
+            <div class="timeline-body"><p>I think we only want to <em>not</em> print here if it came from <code>stdin</code> (since in that case, the contents went to <code>stdout</code>). Should we move this check + block into the <code>if</code> and <code>else</code> cases above?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-12 12:58</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>I think you're right regarding <code>--autoformat</code>, but it's safe to just ignore that flag for now :) When full autoformat support gets merged, it's very likely that we'll want to put that behind a separate subcommand anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/fsouza">@fsouza</a> reviewed on 2022-10-12 18:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/fsouza">@fsouza</a> on <code>src/main.rs</code>:375 on 2022-10-12 18:27</div>
+            <div class="timeline-body"><p>Oh I don't even know how I missed this lol Will address this and the other feedback later today!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-10-12 18:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/main.rs</code>:375 on 2022-10-12 18:36</div>
+            <div class="timeline-body"><p>Awesome, thanks! No rush of course :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/fsouza">@fsouza</a> reviewed on 2022-10-12 22:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/fsouza">@fsouza</a> on <code>src/autofix/fixer.rs</code>:30 on 2022-10-12 22:47</div>
+            <div class="timeline-body"><p>Ended-up returning just <code>Option&lt;string&gt;</code> now that we're not writing the file, there is no error possible :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fsouza">@fsouza</a> on 2022-10-12 22:47</div>
+            <div class="timeline-body"><p>@charliermarsh thank you very much for the feedback! Please take another look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-13 02:30</div>
+            <div class="timeline-body"><p>This looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-13 02:31</div>
+            <div class="timeline-body"><p>Ran checks locally, merging :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-10-13 02:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-10-13 02:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2022-10-13 02:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:50:54 UTC
+    </footer>
+</body>
+</html>

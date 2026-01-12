@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Only scan checks once in check_lines - astral-sh/ruff #679</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Only scan checks once in check_lines</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/679">#679</a>
+        opened by <a href="https://github.com/andersk">@andersk</a>
+        on 2022-11-11 06:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/andersk">@andersk</a> on 2022-11-11 06:15</div>
+            <div class="timeline-body"><p>Avoids a quadratic slowdown when there are many checks. For example, <code>yes | head -n 100000 | ruff -</code> goes from 25s to 0.2s. Fixes #483.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Stranger6667">@Stranger6667</a> on <code>src/check_lines.rs</code>:97 on 2022-11-11 12:13</div>
+            <div class="timeline-body"><p>Should this condition be merged with the one below? I.e:</p>
+<pre><code class="language-rust">checks_iter.next_if(|(_index, check)| check.location.row() == lineno + 1)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Stranger6667">@Stranger6667</a> reviewed on 2022-11-11 12:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/check_lines.rs</code>:97 on 2022-11-11 16:20</div>
+            <div class="timeline-body"><p>Yeah I think you're right -- do you agree @andersk?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-11 16:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a> reviewed on 2022-11-11 17:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>src/check_lines.rs</code>:97 on 2022-11-11 17:51</div>
+            <div class="timeline-body"><p>Is there still a possibility of a check on line 0? If so, it would prevent that merged condition from ever succeeding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-11 17:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/check_lines.rs</code>:97 on 2022-11-11 17:54</div>
+            <div class="timeline-body"><p>I don't think so, the rows are always 1-indexed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a> reviewed on 2022-11-11 18:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>src/check_lines.rs</code>:97 on 2022-11-11 18:08</div>
+            <div class="timeline-body"><p>I’m thinking specifically of #237, before which there were errors like</p>
+<pre><code>test.py:0:0: E999 SyntaxError: unexpected EOF while parsing at line 3 column 7
+</code></pre>
+<p>This happened because <code>Location::default()</code> is 0:0. We still use <code>Location::default()</code> when reporting <code>IOError</code>. Is that definitely going to be the only case?</p>
+<p>I guess we can add an assertion for this at the top of the loop.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-11-11 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-11 18:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:50:58 UTC
+    </footer>
+</body>
+</html>

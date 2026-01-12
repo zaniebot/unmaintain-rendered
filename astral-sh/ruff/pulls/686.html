@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: no unnecessary encode utf8 - astral-sh/ruff #686</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: no unnecessary encode utf8</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/686">#686</a>
+        opened by <a href="https://github.com/martinlehoux">@martinlehoux</a>
+        on 2022-11-11 18:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/martinlehoux">@martinlehoux</a> on 2022-11-11 18:45</div>
+            <div class="timeline-body"><ul>
+<li>Mentions https://github.com/charliermarsh/ruff/issues/641</li>
+<li>I have a doubt about replacing multiline strings like in the test</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>resources/test/fixtures/U012.py</code>:6 on 2022-11-11 18:55</div>
+            <div class="timeline-body"><p>pyupgrade does not rewrite this: <a href="https://github.com/asottile/pyupgrade/issues/138#issuecomment-496044965">rationale</a>, <a href="https://github.com/asottile/pyupgrade/blob/v3.2.0/pyupgrade/_plugins/default_encoding.py">source</a>, <a href="https://github.com/asottile/pyupgrade/blob/v3.2.0/tests/features/default_encoding_test.py">tests</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>resources/test/fixtures/U012.py</code>:13 on 2022-11-11 18:56</div>
+            <div class="timeline-body"><p>pyupgrade would preserve the triple quotes with <code>b&quot;&quot;&quot;…&quot;&quot;&quot;</code>, which seems nicer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>resources/test/fixtures/U012.py</code>:18 on 2022-11-11 18:57</div>
+            <div class="timeline-body"><p>pyupgrade would preserve the raw string with <code>br&quot;fo\o&quot;</code>, which seems nicer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a> reviewed on 2022-11-11 18:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on <code>resources/test/fixtures/U012.py</code>:6 on 2022-11-11 19:54</div>
+            <div class="timeline-body"><p>ok i misunderstood this one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/martinlehoux">@martinlehoux</a> reviewed on 2022-11-11 19:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/martinlehoux">@martinlehoux</a> reviewed on 2022-11-11 20:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on <code>resources/test/fixtures/U012.py</code>:18 on 2022-11-11 20:19</div>
+            <div class="timeline-body"><p>I don't really know how to achieve this, because what the AST gives me is already a &quot;bytes&quot; version of the string.
+e.g., if I run this code on a <code>r&quot;fo\o&quot;</code>, which should replace it by itself</p>
+<pre><code class="language-rust">generator.unparse_expr(constant, 0)
+if let Ok(content) = generator.generate() {
+    check.amend(Fix::replacement(
+        content,
+        expr.location,
+        expr.end_location.unwrap(),
+    ))
+}
+</code></pre>
+<p>I get <code>'fo\\o'</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-11 20:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>resources/test/fixtures/U012.py</code>:18 on 2022-11-11 20:45</div>
+            <div class="timeline-body"><p>We may have to use LibCST to achieve that, since it looks like RustPython evaluates the raw string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a> reviewed on 2022-11-11 20:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>resources/test/fixtures/U012.py</code>:18 on 2022-11-11 20:45</div>
+            <div class="timeline-body"><p>I think this can be achieved with a similar method as W605?</p>
+<p>https://github.com/charliermarsh/ruff/blob/bf7bf7aa17b7c864268d8ada1559f0ffe297427c/src/pycodestyle/checks.rs#L266-L272</p>
+<p>Edit: Yeah, or LibCST.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-11 20:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>resources/test/fixtures/U012.py</code>:18 on 2022-11-11 20:47</div>
+            <div class="timeline-body"><p>Oh yeah, that could work too, and might be easier?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/martinlehoux">@martinlehoux</a> reviewed on 2022-11-11 21:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on <code>resources/test/fixtures/U012.py</code>:18 on 2022-11-11 21:13</div>
+            <div class="timeline-body"><p>Yeah it works great, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/martinlehoux">@martinlehoux</a> reviewed on 2022-11-11 21:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on <code>resources/test/fixtures/U012.py</code>:13 on 2022-11-11 21:14</div>
+            <div class="timeline-body"><p>Fixed with below comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on 2022-11-11 21:43</div>
+            <div class="timeline-body"><p>@charliermarsh do you have any comment on the code, name or message of the error ?
+I also had to trouble to understand what &quot;regenerating files&quot; meant</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-11 21:50</div>
+            <div class="timeline-body"><p>@martinlehoux - I think the name and error message etc. all look good! Code looks good too! Gonna spend a bit of time with it before merging to make sure I understand all the cases.</p>
+<p>By &quot;regenerating files&quot;, I mean running these two commands from the root directory:</p>
+<ul>
+<li><code>cargo dev generate-rules-table</code></li>
+<li><code>cargo dev generate-check-code-prefix</code></li>
+</ul>
+<p>...and then checking in the changed files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/plugins/unnecessary_encode_utf8.rs</code>:84 on 2022-11-11 21:54</div>
+            <div class="timeline-body"><p>Can you add a comment to each of these branches to make it clear which cases they're handling? E.g.:</p>
+<pre><code>// Ex) `&quot;foo&quot;.encode(&quot;...&quot;)`
+if literal.is_ascii() {
+  ...
+</code></pre>
+<p>...or whatever's appropriate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/check_ast.rs</code>:1055 on 2022-11-11 21:56</div>
+            <div class="timeline-body"><p>I think this is missing an argument (<code>locator</code>), but maybe it should just be omitted, and then you can access <code>checker.locator</code> in <code>unnecessary_encode_utf8</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/plugins/unnecessary_encode_utf8.rs</code>:56 on 2022-11-11 21:57</div>
+            <div class="timeline-body"><p>Is there any case where we'd have a <code>u</code>, but it's not the first character? Like <code>ru&quot;&quot;&quot;abc&quot;&quot;&quot;</code>? (Separately, isn't <code>U</code> also a valid prefix?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/plugins/unnecessary_encode_utf8.rs</code>:83 on 2022-11-11 21:58</div>
+            <div class="timeline-body"><p>Should we be verifying that <code>args.len() == 1</code>, not just that it has at least one argument?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/plugins/unnecessary_encode_utf8.rs</code>:11 on 2022-11-11 21:58</div>
+            <div class="timeline-body"><p>Can you run Clippy, and fix any warnings?</p>
+<p>E.g.:</p>
+<pre><code> cargo +nightly clippy --all
+    Checking ruff v0.0.108 (/Users/crmarsh/workspace/ruff)
+warning: constants have by default a `'static` lifetime
+  --&gt; src/pyupgrade/plugins/unnecessary_encode_utf8.rs:11:23
+   |
+11 | const UTF8_LITERALS: &amp;'static [&amp;'static str] = &amp;[&quot;utf-8&quot;, &quot;utf8&quot;, &quot;utf_8&quot;, &quot;u8&quot;, &quot;utf&quot;, &quot;cp65001&quot;];
+   |                      -^^^^^^^--------------- help: consider removing `'static`: `&amp;[&amp;'static str]`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#redundant_static_lifetimes
+   = note: `#[warn(clippy::redundant_static_lifetimes)]` on by default
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/plugins/unnecessary_encode_utf8.rs</code>:13 on 2022-11-11 21:59</div>
+            <div class="timeline-body"><p>I think this can just be <code>Option&lt;&amp;'a Expr&gt;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-11 21:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-11 22:00</div>
+            <div class="timeline-body"><p>Thanks for this! Let me know what you're up for addressing, or if any of the comments feel &quot;out of scope&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on <code>src/check_ast.rs</code>:1055 on 2022-11-12 01:48</div>
+            <div class="timeline-body"><p>yep i forgot to commit this part alongside</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/martinlehoux">@martinlehoux</a> reviewed on 2022-11-12 01:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/check_ast.rs</code>:1055 on 2022-11-12 01:55</div>
+            <div class="timeline-body"><p>All good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-12 01:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on <code>src/pyupgrade/plugins/unnecessary_encode_utf8.rs</code>:56 on 2022-11-12 09:41</div>
+            <div class="timeline-body"><p>I don't know for sure, but it doesn't seem so. Is there an easy ay to be sure about it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/martinlehoux">@martinlehoux</a> reviewed on 2022-11-12 09:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on 2022-11-12 14:14</div>
+            <div class="timeline-body"><p>@charliermarsh Thanks for the review, I fixed whatever I could and tried to make the code clearer</p>
+<p>Don't hesitate if you need me to do something else</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-12 14:17</div>
+            <div class="timeline-body"><p>@martinlehoux - Awesome, thank you! I'll try to merge today :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-11-12 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-12 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-12 16:54</div>
+            <div class="timeline-body"><p>Thanks @martinlehoux!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:50:58 UTC
+    </footer>
+</body>
+</html>

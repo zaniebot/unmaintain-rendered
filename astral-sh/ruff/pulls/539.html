@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make columns indices 1-based in the text output format - astral-sh/ruff #539</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make columns indices 1-based in the text output format</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/539">#539</a>
+        opened by <a href="https://github.com/fsouza">@fsouza</a>
+        on 2022-11-01 22:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/fsouza">@fsouza</a> on 2022-11-01 22:10</div>
+            <div class="timeline-body"><p>Not changing the column in JSON errors. Not sure if we want to change that too.</p>
+<p>Closes #537.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-01 22:15</div>
+            <div class="timeline-body"><p>I think it'd make sense to change it in the JSON printer too if you're up for it. Should we even consider changing it when we convert from <code>Check</code> to <code>Message</code>, so that <code>Message</code> is always one-indexed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fsouza">@fsouza</a> on 2022-11-01 22:17</div>
+            <div class="timeline-body"><p>@charliermarsh good call! Let me make that change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fsouza">@fsouza</a> on 2022-11-01 22:48</div>
+            <div class="timeline-body"><p>@charliermarsh how does this look? I originally tried to make a copy of the <code>Location</code> directly, but the fields are private, so I ended-up copying it and then mutating with <code>go_right()</code>.</p>
+<p>My Rust-fu is a bit limited here, let me know if I'm wasting your time 😁</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/fsouza">@fsouza</a> on <code>src/message.rs</code>:26 on 2022-11-01 22:52</div>
+            <div class="timeline-body"><p>this doesn't feel right 🙈</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/fsouza">@fsouza</a> reviewed on 2022-11-01 22:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/message.rs</code>:26 on 2022-11-01 23:01</div>
+            <div class="timeline-body"><p>I think you can use Location::new and location.row() methods to create a new location here! (On subway so low-fidelity message…)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-01 23:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/fsouza">@fsouza</a> reviewed on 2022-11-01 23:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/fsouza">@fsouza</a> on <code>src/message.rs</code>:26 on 2022-11-01 23:03</div>
+            <div class="timeline-body"><p>Ohh that makes more sense hah I was too influenced by Go in my first attempt. Pushed a fix!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-11-01 23:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-01 23:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-01 23:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/message.rs</code>:26 on 2022-11-01 23:06</div>
+            <div class="timeline-body"><p>Woo, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2022-11-01 23:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-02 13:45</div>
+            <div class="timeline-body"><p>\cc @Seamooo - we changed <code>Message</code> back to one-based indexing for columns. (<code>Check</code> still uses zero-based indexing, so if <code>ruffd</code> uses <code>Check</code> now as planned, it will be unaffected.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Seamooo">@Seamooo</a> on 2022-11-03 02:00</div>
+            <div class="timeline-body"><p>Awesome, ruffd also now uses location and end_location in <code>Patch</code> and this also appears unaffected</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:50:56 UTC
+    </footer>
+</body>
+</html>

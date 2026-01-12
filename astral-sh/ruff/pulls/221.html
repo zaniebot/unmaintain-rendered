@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement F402 - astral-sh/ruff #221</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement F402</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/221">#221</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2022-09-18 04:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/harupy">@harupy</a> on 2022-09-18 04:39</div>
+            <div class="timeline-body"><p>#170</p>
+<pre><code>&gt; flake8 resources/test/fixtures/F402.py
+resources/test/fixtures/F402.py:5:5: F402 import 'os' from line 1 shadowed by loop variable
+resources/test/fixtures/F402.py:8:5: F402 import 'path' from line 2 shadowed by loop variable
+
+&gt; cargo run -- --no-cache resources/test/fixtures/F402.py
+./resources/test/fixtures/F402.py:5:5: F402 import 'os' from line 1 shadowed by loop variable
+./resources/test/fixtures/F402.py:8:5: F402 import 'path' from line 2 shadowed by loop variable
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-09-19 19:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>resources/test/fixtures/F402.py</code>:9 on 2022-09-19 19:17</div>
+            <div class="timeline-body"><p>Flake8 has this check for <code>self.differentForks(node, existing.source)</code>, which I <em>think</em> enables them to avoid flagging errors in cases like this:</p>
+<pre><code class="language-py">if False:
+    import typing
+else:
+    for typing in range(3):
+        pass
+</code></pre>
+<p>(<code>ruff</code> raises F402 here, but Flake8 doesn't.)</p>
+<p>It might be okay to have false positives for this rule in particular, but it seems like something we'll have to solve to support <code>RedefinedWhileUnused</code> and some others. <code>differentForks</code> requires that we store the parent stack for every binding, and then implement the <code>differentForks</code> logic.</p>
+<p>Do you think that's worth doing here, as part of this PR? Or would you rather merge w/ these limitations?</p>
+<p>(Either way, can we add an example using the <code>if</code>/<code>else</code> to <code>F402.py</code>, even if it has a TODO saying that we shouldn't be flagging that line?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>resources/test/fixtures/F402.py</code>:9 on 2022-09-20 02:26</div>
+            <div class="timeline-body"><p>I guess pylint doesn't really do this, so maybe we should just not worry about it for now.</p>
+<p>For example, pylint has a rule (<code>W0621</code>) around using a variable name that shadows a variable in the outer scope, and it does get triggered here:</p>
+<pre><code class="language-py">if True:
+    typing = 1
+else:
+    def f(typing):
+        pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-09-20 02:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-09-21 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-09-21 15:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:50:51 UTC
+    </footer>
+</body>
+</html>

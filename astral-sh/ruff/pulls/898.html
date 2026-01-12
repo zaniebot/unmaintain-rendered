@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement F521 - astral-sh/ruff #898</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement F521</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/898">#898</a>
+        opened by <a href="https://github.com/olliemath">@olliemath</a>
+        on 2022-11-24 12:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/olliemath">@olliemath</a> on 2022-11-24 12:04</div>
+            <div class="timeline-body"><p>Part of https://github.com/charliermarsh/ruff/issues/891</p>
+<p>A little rough around the edges, but functional. I've added:</p>
+<ul>
+<li>Vendored code to <code>vendored/format.rs</code> (to make it easy to pull in updates from rustpython, I decided to not alter this in any way except to delete dead code)</li>
+<li>Small helpers and wrappers in <code>pyflakes/format.rs</code> (possibly also the place for extra tests of the vendored code)</li>
+<li>Logic for detecting a <code>&quot;...&quot;.format(...)</code> call in <code>check_ast.rs</code></li>
+<li>Actual checks in <code>pyflakes</code> directory</li>
+</ul>
+<p>The main check_ast logic feels a bit clunky - we're looking for a function call which is the &quot;format&quot; attribute of a string constant. Also, I'm not keen on the long names of the checks (<code>StringDotFormatInvalidFormat</code>) - they're just the pyflakes names so we could change them.</p>
+<p>Keen to know your thoughts on the initial approach before I crack on with F522-F525.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olliemath">@olliemath</a> on 2022-11-24 12:53</div>
+            <div class="timeline-body"><p>Since it's just copy-pasta, I should probably look into rustpython's license to do the vendoring properly - we may need to add a rustpython copyright notice.</p>
+<p><strong>Edit:</strong> done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/check_ast.rs</code>:1252 on 2022-11-24 14:52</div>
+            <div class="timeline-body"><p>We can probably move this to the top of the block, like line 1244?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyflakes/plugins/string_dot_format.rs</code>:12 on 2022-11-24 14:53</div>
+            <div class="timeline-body"><p>You could also choose to put this in <code>pyflakes/checks.rs</code> directly if it just returns an <code>Option&lt;Check&gt;</code>. (The undocumented convention is that <code>plugins</code> take <code>&amp;mut Checker</code> while <code>checks</code> are pure functions that return checks.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/vendored/format.rs</code>:1 on 2022-11-24 14:54</div>
+            <div class="timeline-body"><p>Do you mind updating this link to include the Git hash of the commit, and the full path to the file? (That is, the permalink to <code>format.rs</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-24 14:55</div>
+            <div class="timeline-body"><p>This looks great to me! I think what you have in <code>check_ast.rs</code> is very reasonable. Just a couple small comments but would be happy to merge without any major changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-24 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/olliemath">@olliemath</a> reviewed on 2022-11-24 15:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/olliemath">@olliemath</a> on <code>src/check_ast.rs</code>:1252 on 2022-11-24 15:20</div>
+            <div class="timeline-body"><p>This is mostly pre-emptive laziness on my part - once we add the 5 checks I was going to write it like:</p>
+<pre><code class="language-rust">if string_dot_format_call {
+    if F521_enabled {...}
+    if F522_enabled {...}
+    if F523_enabled {...}
+    if F524_enabled {...}
+    if F525_enabled {...}
+}
+</code></pre>
+<p>rather than</p>
+<pre><code class="language-rust">if F521_enabled {
+    if string_dot_format_call { ... }
+}
+if F522_enabled {
+    if string_dot_format_call { ... }
+}
+...
+</code></pre>
+<p>I'm OK doing it the second way if you think that's better (would just place the repeated logic in a helper function)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/olliemath">@olliemath</a> reviewed on 2022-11-24 15:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/olliemath">@olliemath</a> on <code>src/pyflakes/plugins/string_dot_format.rs</code>:12 on 2022-11-24 15:21</div>
+            <div class="timeline-body"><p>Nice, will move them to the right place</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-24 15:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/check_ast.rs</code>:1252 on 2022-11-24 15:23</div>
+            <div class="timeline-body"><p>Oh, yes, the pattern you were intending makes sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/olliemath">@olliemath</a> reviewed on 2022-11-24 18:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/olliemath">@olliemath</a> on <code>src/pyflakes/plugins/string_dot_format.rs</code>:12 on 2022-11-24 18:33</div>
+            <div class="timeline-body"><p>Assume you meant I can put this logic in <code>check_ast.rs</code> directly - moved it there. Let me know if that's not what you meant (couldn't find another example of <code>checker.add_check</code> in one of the <code>checks.rs</code> files).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olliemath">@olliemath</a> on 2022-11-24 18:35</div>
+            <div class="timeline-body"><p>I think this is basically good to go. Unfortunately the vendored code fails the clippy checks. I had hoped to include it essentially unmodified (just with deletions), but I guess can give it a small tweak to pass.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Draft: implement F521" to "Implement F521" by @olliemath on 2022-11-24 18:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-24 21:23</div>
+            <div class="timeline-body"><p>Awesome. Will look to review and merge this tonight or tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-11-24 23:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-24 23:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:51:01 UTC
+    </footer>
+</body>
+</html>

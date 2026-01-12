@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement `flake8-super` check - astral-sh/ruff #291</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement <code>flake8-super</code> check</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/291">#291</a>
+        opened by <a href="https://github.com/sobolevn">@sobolevn</a>
+        on 2022-09-30 09:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sobolevn">@sobolevn</a> on 2022-09-30 09:12</div>
+            <div class="timeline-body"><p>Here's my attempt at implementing this rule.</p>
+<p>Some feedback.</p>
+<p>Right now implementing autofix seems very hard. Why?
+Because <code>Location</code> does not have <code>.end()</code> method.</p>
+<p>We need to fix:</p>
+<pre><code class="language-python">super(
+   SuperClass,
+   self
+).method()
+</code></pre>
+<p>How can we do that?</p>
+<ol>
+<li>Get the second argument, assume it is <code>self</code>, take <code>4</code> as length: this will backfire in cases when non-<code>self</code> name is used</li>
+<li>Convert the last argument to string to get its length? No idea how can we do that. Python has <code>ast.unparse</code> or <code>astor</code></li>
+<li>Manually go through different types of nodes and find their length: seems to complex</li>
+</ol>
+<p>It would also be rather hard to find these cases:</p>
+<pre><code class="language-python">super(
+   SuperClass,
+   self)
+
+# vs
+
+super(
+   SuperClass,
+   self
+)
+</code></pre>
+<p>This is my code for the fix that I've decided not to include into this PR.</p>
+<pre><code class="language-rust">           if matches!(autofix, fixer::Mode::Generate | fixer::Mode::Apply) {
+                // It looks like this:
+                // super(some, args).some_attr
+                // ^               ^
+                // start           end
+                // It can also be multiline.
+                let last_arg = args.last().unwrap();
+                check.amend(Fix {
+                    content: &quot;super()&quot;.to_string(),
+                    start: Location::new(expr.location.row(), expr.location.column()),
+                    end: Location::new(  // TODO: find end location
+                        last_arg.location.row(),
+                        last_arg.location.column() + 2,
+                    ),
+                    applied: false,
+                });
+            }
+</code></pre>
+<p>I propose to use libcst instead for fixes. It just works.</p>
+<p>Refs #273</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sobolevn on 2022-09-30 09:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sobolevn">@sobolevn</a> on 2022-09-30 09:39</div>
+            <div class="timeline-body"><p>Reference inplementation: https://github.com/asottile/pyupgrade/blob/7f79d5a5d08ed8873fd047eedbca0d3637b8d07e/pyupgrade/_plugins/legacy.py#L129</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-30 13:03</div>
+            <div class="timeline-body"><p>Agreed. The fix API is too manual right now. Are you interested in exploring the use of LibCST for autofix specifically? (E.g., given an autofix snippet, parse it with LibCST and generate the patch.)</p>
+<p>FWIW, the way I'd implement this right now is by iterating over the token stream starting with the class definition, looking for a left paren and then a balanced right paren. We do a similar thing for <code>class Foo(object)</code>, though that case is more complex given that <code>object</code> can be preceded or followed by other symbols.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-09-30 13:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/check_ast.rs</code>:700 on 2022-09-30 13:05</div>
+            <div class="timeline-body"><p>Should we validate that the current scope stack is function, then class?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sobolevn">@sobolevn</a> on 2022-09-30 13:07</div>
+            <div class="timeline-body"><p>@charliermarsh I can, but I don't have reliable access to <code>rust</code> binary right now.
+Since I am traveling right now and only have a machine from work. I cannot install <code>rust</code> here.</p>
+<p>So, probably only after a week :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-30 13:08</div>
+            <div class="timeline-body"><p>@sobolevn - No worries. I may find time between now and then, but have a few other things to explore. If you get to it, just let me know :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-09-30 13:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/check_ast.rs</code>:700 on 2022-09-30 13:08</div>
+            <div class="timeline-body"><p>Eh, maybe non-critical.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sobolevn">@sobolevn</a> on <code>src/check_ast.rs</code>:700 on 2022-09-30 13:10</div>
+            <div class="timeline-body"><p>This is debatable. <code>flake8-super</code> does not that. But, <code>pyugrade</code> does.</p>
+<p>In my opinion, it is not required. Because <code>super</code> cannot be redefined due to <code>flake8-builtins</code> rule. I also don't know any real-life use-cases where <code>super</code> is calledd somewhere outside of methods.</p>
+<p>So, probably it is up to you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sobolevn">@sobolevn</a> reviewed on 2022-09-30 13:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-09-30 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-09-30 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sobolevn">@sobolevn</a> on 2022-09-30 13:15</div>
+            <div class="timeline-body"><p>🎉 Thanks for review and merge!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-30 13:16</div>
+            <div class="timeline-body"><p>Thank <em>you</em>! Your contributions have been 💯 and really appreciate your perspective on API etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-30 15:28</div>
+            <div class="timeline-body"><p>Also relevant: I've started working on AST-to-source code generation in #292. It's based on a mix of some code from RustPython and Astor.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:50:52 UTC
+    </footer>
+</body>
+</html>

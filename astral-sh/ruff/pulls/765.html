@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement C901 (mccabe) - astral-sh/ruff #765</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement C901 (mccabe)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/765">#765</a>
+        opened by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a>
+        on 2022-11-16 07:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2022-11-16 07:34</div>
+            <div class="timeline-body"><p>Closes https://github.com/charliermarsh/ruff/issues/491</p>
+<ul>
+<li>Implement C901 (mccabe)</li>
+<li>Update contributing guide with settings hashing and flake8-to-ruff guidance</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/cli.rs</code>:96 on 2022-11-16 14:34</div>
+            <div class="timeline-body"><p>Could we make this <code>usize</code> everywhere?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/mccabe/settings.rs</code>:26 on 2022-11-16 14:35</div>
+            <div class="timeline-body"><p>I think we should default this to 10 or whatever Flake8's default is, and then use the check enablement to drive toggling on and off (rather than relying on both check enablement <em>and</em> complexity value).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>flake8_to_ruff/src/converter.rs</code>:196 on 2022-11-16 14:36</div>
+            <div class="timeline-body"><p>(Can you also add this to <code>flake8_to_ruff/src/plugin.rs</code>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>CONTRIBUTING.md</code>:106 on 2022-11-16 14:36</div>
+            <div class="timeline-body"><p>Awesome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/check_ast.rs</code>:353 on 2022-11-16 14:37</div>
+            <div class="timeline-body"><p>I'd vote to nix this &quot;or&quot;, and just drive based on <code>self.settings.enabled</code>. Wdyt?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/checks_gen.rs</code>:88 on 2022-11-16 14:37</div>
+            <div class="timeline-body"><p>It's confusing that both <code>flake8-comprehensions</code> and <code>mccabe</code> are now enabled by <code>--select C</code>, but I guess that's already true in Flake8?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/mccabe/checks.rs</code>:7 on 2022-11-16 14:39</div>
+            <div class="timeline-body"><p>I wonder if we should memoize this? E.g., in theory, for nested functions, we're going to first run this check for the outer function (which will include computing complexity for the inner function), then we're going to run it again when we hit the outer function in the AST visitor. For deeply nested functions, that could really add up. Can we reduce the number of re-iterations?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/mccabe/checks.rs</code>:61 on 2022-11-16 14:39</div>
+            <div class="timeline-body"><p>Nit: I think we could omit <code>checker</code> and return <code>Option&lt;Check&gt;</code> (and pass in <code>max_complexity</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-16 14:39</div>
+            <div class="timeline-body"><p>This is great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> reviewed on 2022-11-17 18:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on <code>src/cli.rs</code>:96 on 2022-11-17 18:28</div>
+            <div class="timeline-body"><p>Sure, my hesitance for that came from the default in <code>mccabe</code> being <code>-1</code>. If we default to something else (e.g. <code>10</code>) then <code>usize</code> is good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> reviewed on 2022-11-17 18:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on <code>src/mccabe/settings.rs</code>:26 on 2022-11-17 18:32</div>
+            <div class="timeline-body"><p>flake8' has a similar behavior. Just selecting <code>C901</code> doesn't actually trigger the check, <code>max-complexity</code> still needs to be set to greater than <code>-1</code>:</p>
+<pre><code class="language-console">$ flake8 resources/test/fixtures/C901.py --max-complexity=2 --ignore=F
+resources/test/fixtures/C901.py:15:1: C901 'if_elif_else_dead_path' is too complex (3)
+resources/test/fixtures/C901.py:24:1: C901 'nested_ifs' is too complex (3)
+resources/test/fixtures/C901.py:53:1: C901 'nested_functions' is too complex (3)
+resources/test/fixtures/C901.py:61:1: C901 'try_else' is too complex (4)
+resources/test/fixtures/C901.py:72:1: C901 'nested_try_finally' is too complex (3)
+resources/test/fixtures/C901.py:82:1: C901 'foobar' is too complex (3)
+
+$ flake8 resources/test/fixtures/C901.py --select=C901
+</code></pre>
+<p>but I'm all for whatever makes the most sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> reviewed on 2022-11-17 18:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on <code>src/checks_gen.rs</code>:88 on 2022-11-17 18:42</div>
+            <div class="timeline-body"><p>@charliermarsh yeah, this is true in flake8. We could use a different letter too. I know bandit uses <code>B</code> but <code>flake8-bandit</code> uses <code>S</code> to avoid collisions with flake8-bugbear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> reviewed on 2022-11-17 18:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on <code>flake8_to_ruff/src/converter.rs</code>:196 on 2022-11-17 18:48</div>
+            <div class="timeline-body"><p>Done 7289688</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-17 19:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/mccabe/settings.rs</code>:26 on 2022-11-17 19:11</div>
+            <div class="timeline-body"><p>Hmm yeah, I generally want to be compatible with existing tools but I do feel ok deviating on configuration settings. I think it's confusing that <code>--select=C901</code> doesn't <em>actually</em> enable the check. I'd vote to use some kind of default and drive enablement purely through <code>select</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-17 19:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/checks_gen.rs</code>:88 on 2022-11-17 19:11</div>
+            <div class="timeline-body"><p>I think it's ok, I'd rather be compatible than try to rename check codes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-17 19:47</div>
+            <div class="timeline-body"><p>@edgarrmondragon - Should I change that <code>&gt; -1</code> check and merge?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2022-11-17 19:54</div>
+            <div class="timeline-body"><blockquote>
+<p>@edgarrmondragon - Should I change that <code>&gt; -1</code> check and merge?</p>
+</blockquote>
+<p>@charliermarsh I'll set the max complexity default to 10, use <code>usize</code> and remove the &quot;or&quot;. Should I still look into memoizing <code>get_complexity_number</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Stranger6667">@Stranger6667</a> on <code>src/mccabe/checks.rs</code>:42 on 2022-11-17 20:45</div>
+            <div class="timeline-body"><p>Would this be clearer?</p>
+<pre><code class="language-rust">let ExcepthandlerKind::ExceptHandler { body, .. } = &amp;handler.node;
+complexity += get_complexity_number(body);
+</code></pre>
+<p>P.S. I didn't try to compile it though, but as this enum has only one variant, it is an irrefutable pattern (as far as I know), so it should work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Stranger6667">@Stranger6667</a> reviewed on 2022-11-17 20:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-17 21:15</div>
+            <div class="timeline-body"><p>@edgarrmondragon - I think we should try memoizing, but it can come in a separate PR. I'm also happy to take a look at it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on <code>src/mccabe/checks.rs</code>:42 on 2022-11-17 22:30</div>
+            <div class="timeline-body"><p>@Stranger6667 let me try that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> reviewed on 2022-11-17 22:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on <code>src/mccabe/checks.rs</code>:42 on 2022-11-17 22:33</div>
+            <div class="timeline-body"><p>That worked 🙂 f5e8e91b648c56c881d415a0c9a5e0421ed5e41e</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> reviewed on 2022-11-17 22:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-11-17 22:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-17 22:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-17 22:41</div>
+            <div class="timeline-body"><p>Sweet! Thanks @edgarrmondragon!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-17 22:41</div>
+            <div class="timeline-body"><p>(I pushed a tweak at the end just to annotate that examples with the expected complexity.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Stranger6667">@Stranger6667</a> reviewed on 2022-11-17 22:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Stranger6667">@Stranger6667</a> on <code>src/mccabe/checks.rs</code>:42 on 2022-11-17 22:41</div>
+            <div class="timeline-body"><p>Awesome! :tada:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2022-11-17 22:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tgross35">@tgross35</a> on 2022-11-18 00:17</div>
+            <div class="timeline-body"><p>Amazing work!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:51:00 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add flake8-boolean-trap - astral-sh/ruff #790</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add flake8-boolean-trap</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/790">#790</a>
+        opened by <a href="https://github.com/pwoolvett">@pwoolvett</a>
+        on 2022-11-17 16:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/pwoolvett">@pwoolvett</a> on 2022-11-17 16:28</div>
+            <div class="timeline-body"><p>Disclaimer: I have no rust experience whatsoever.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-17 17:10</div>
+            <div class="timeline-body"><p>Nice! Impressive work especially if you don't have any Rust experience. Will give this a full review shortly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Stranger6667">@Stranger6667</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:44 on 2022-11-17 22:05</div>
+            <div class="timeline-body"><p>Would <code>.contains(&amp;hint)</code> work here instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Stranger6667">@Stranger6667</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:44 on 2022-11-17 22:06</div>
+            <div class="timeline-body"><p>Though, this would be faster</p>
+<pre><code class="language-rust">&amp;hint == &quot;bool&quot; || &amp;hint == &quot;'bool'&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Stranger6667">@Stranger6667</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:44 on 2022-11-17 22:11</div>
+            <div class="timeline-body"><p>See the comment below - maybe this approach is not needed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Stranger6667">@Stranger6667</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:34 on 2022-11-17 22:13</div>
+            <div class="timeline-body"><p>maybe <code>to_string</code> could be avoided altogether. E.g. <code>hint</code> could be a boolean that stores whether the annotation is <code>bool</code> / <code>&quot;bool&quot;</code>.</p>
+<p>Here we can compare <code>&amp;id</code> to <code>&quot;bool&quot;</code> and in the &quot;Constant&quot; branch we can match on <code>Constant::Str</code> similarly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Stranger6667">@Stranger6667</a> reviewed on 2022-11-17 22:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:8 on 2022-11-17 22:20</div>
+            <div class="timeline-body"><p>Nit: Should be able to use <code>arg: &amp;Expr</code> here (and elsewhere in this file).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:54 on 2022-11-17 22:21</div>
+            <div class="timeline-body"><p>Do you need to check <code>kw_defaults</code> here too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:34 on 2022-11-17 22:24</div>
+            <div class="timeline-body"><p>Yeah that'd be preferable, I think.</p>
+<p>Like:</p>
+<pre><code class="language-rust">let hint = match &amp;expr.node {
+  ExprKind::Name { id, .. } =&gt; id == &quot;bool&quot;,
+  ExprKind::Constant { value, .. } =&gt; ..
+  _ =&gt; false,
+};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-17 22:24</div>
+            <div class="timeline-body"><p>Generally looks good! A couple small comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pwoolvett">@pwoolvett</a> reviewed on 2022-11-18 12:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/pwoolvett">@pwoolvett</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:54 on 2022-11-18 12:24</div>
+            <div class="timeline-body"><p>kw_defaults are fine as booleans (in fact that would be a valid ast fix in an upcoming release), as they do not allow positional calls. MWE:</p>
+<pre><code class="language-py">def fun(a, *, b=True):
+  ...
+fun(4, True) # raises TypeError
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pwoolvett">@pwoolvett</a> reviewed on 2022-11-18 13:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/pwoolvett">@pwoolvett</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:34 on 2022-11-18 13:22</div>
+            <div class="timeline-body"><p>corrected, please advise (tests passing, no lint suggestions)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pwoolvett">@pwoolvett</a> reviewed on 2022-11-18 13:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/pwoolvett">@pwoolvett</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:44 on 2022-11-18 13:23</div>
+            <div class="timeline-body"><p>adressed with charlie's suggestion</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Stranger6667">@Stranger6667</a> reviewed on 2022-11-18 13:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Stranger6667">@Stranger6667</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:26 on 2022-11-18 13:39</div>
+            <div class="timeline-body"><p>This line seems outdated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/pwoolvett">@pwoolvett</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:26 on 2022-11-18 13:41</div>
+            <div class="timeline-body"><p>you mean just the comment, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pwoolvett">@pwoolvett</a> reviewed on 2022-11-18 13:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Stranger6667">@Stranger6667</a> reviewed on 2022-11-18 13:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Stranger6667">@Stranger6667</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:26 on 2022-11-18 13:42</div>
+            <div class="timeline-body"><p>Yes, I guess it could be removed :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/pwoolvett">@pwoolvett</a> reviewed on 2022-11-18 13:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/pwoolvett">@pwoolvett</a> on <code>src/flake8_boolean_trap/plugins.rs</code>:26 on 2022-11-18 13:44</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-18 15:11</div>
+            <div class="timeline-body"><p>Looks great! I'll merge this later today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-11-18 17:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-18 17:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:51:00 UTC
+    </footer>
+</body>
+</html>

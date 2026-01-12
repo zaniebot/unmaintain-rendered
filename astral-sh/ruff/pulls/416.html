@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add initial wasm32-wasi support - astral-sh/ruff #416</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add initial wasm32-wasi support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/416">#416</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2022-10-13 11:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2022-10-13 11:51</div>
+            <div class="timeline-body"><p>I'm currently experimenting whether it's feasible to make wasm32-wasi wheels. This is also the groundwork needed to make a web version of ruff, which might the more interesting use case.</p>
+<p>Debug fails in wasmtime with &quot;too many locals: locals exceed maximum&quot;, so release only atm.</p>
+<p>Usage:</p>
+<p>Either</p>
+<pre><code>cargo build --target wasm32-wasi --release --no-default-features
+wasmtime run --dir . ~/ruff/target/wasm32-wasi/release/ruff.wasm .
+</code></pre>
+<p>or with latest main maturin</p>
+<pre><code>maturin build --target wasm32-wasi --release --strip --no-default-features
+pip install target/wheels/ruff-0.0.69-py3-none-any.whl
+ruff . # Currenly limit to . due to wasi isolation
+</code></pre>
+<p>I hope that https://github.com/magiclen/path-absolutize/pull/12 lands soon so i can switch back to crates.io path-absolutize before this gets merged</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-13 13:19</div>
+            <div class="timeline-body"><p>This is awesome. I did basic <code>wasm32-wasi</code> compilation on a few branches (<code>charlie/wasm</code> plus some local vendor-specific branches like <code>charlie/workers</code>) to power some of my Wasm explorations, but this is light-years better. Will review in-full + test when I get home later today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-10-13 13:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/cache.rs</code>:1 on 2022-10-13 13:28</div>
+            <div class="timeline-body"><p>Could we instead (or in addition) avoid calling into <code>cache</code> at all when <code>target_family = &quot;wasm&quot;</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-10-13 13:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>Cargo.toml</code>:26 on 2022-10-13 13:28</div>
+            <div class="timeline-body"><p>👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>src/cache.rs</code>:1 on 2022-10-14 17:43</div>
+            <div class="timeline-body"><p>done; i'd keep compiling cache.rs on wasm though because caching there should be possible (either in cwd like pytest or to some extent in local storage), it's just cacache that is inactive and hasn't completed tokio support (https://github.com/zkat/cacache-rs/pull/29)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2022-10-14 17:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2022-10-14 17:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>Cargo.toml</code>:26 on 2022-10-14 17:44</div>
+            <div class="timeline-body"><p>updated to crates.io release version</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2022-10-14 17:44</div>
+            <div class="timeline-body"><p>The <code>charlie/wasm</code> looks good already, i'd definitely keep the whole frontend setup. i've also added cargo settings so that <code>cargo check --target wasm32-unknown-unknown</code> passes, but i haven't checked with wasm-pack.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-10-15 00:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-10-15 00:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2022-10-15 08:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:50:54 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support linting input from stdin - astral-sh/ruff #387</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support linting input from stdin</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/387">#387</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2022-10-10 13:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/harupy">@harupy</a> on 2022-10-10 13:46</div>
+            <div class="timeline-body"><p>Resolve #249</p>
+<p>Test:</p>
+<p>https://user-images.githubusercontent.com/17039389/194880579-70cb418c-142a-4bfe-b331-1e1a51e23e68.mov</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-10 14:04</div>
+            <div class="timeline-body"><p>Wooo!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-10 21:24</div>
+            <div class="timeline-body"><p>@harupy - Is this ready for review?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @harupy on 2022-10-10 23:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-10-10 23:18</div>
+            <div class="timeline-body"><p>@charliermarsh Yes!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-10-11 12:31</div>
+            <div class="timeline-body"><p>@charliermarsh Do you think we need tests?</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    use std::str;
+
+    use anyhow::Result;
+    use assert_cmd::Command;
+
+    #[test]
+    fn test_stdin_success() -&gt; Result&lt;()&gt; {
+        let mut cmd = Command::cargo_bin(&quot;ruff&quot;)?;
+        cmd.args(&amp;[&quot;-&quot;]).write_stdin(&quot;&quot;).assert().success();
+        Ok(())
+    }
+
+    #[test]
+    fn test_stdin_error() -&gt; Result&lt;()&gt; {
+        let mut cmd = Command::cargo_bin(&quot;ruff&quot;)?;
+        let output = cmd
+            .args(&amp;[&quot;-&quot;])
+            .write_stdin(&quot;import os\n&quot;)
+            .assert()
+            .failure();
+        assert!(str::from_utf8(&amp;output.get_output().stdout)?.contains(&quot;-:1:1: F401&quot;));
+        Ok(())
+    }
+
+    #[test]
+    fn test_stdin_error_filename() -&gt; Result&lt;()&gt; {
+        let mut cmd = Command::cargo_bin(&quot;ruff&quot;)?;
+        let output = cmd
+            .args(&amp;[&quot;-&quot;, &quot;--stdin-filename&quot;, &quot;F401.py&quot;])
+            .write_stdin(&quot;import os\n&quot;)
+            .assert()
+            .failure();
+        assert!(str::from_utf8(&amp;output.get_output().stdout)?.contains(&quot;F401.py:1:1: F401&quot;));
+        Ok(())
+    }
+
+    #[test]
+    fn test_stdin_autofix() -&gt; Result&lt;()&gt; {
+        let mut cmd = Command::cargo_bin(&quot;ruff&quot;)?;
+        let output = cmd
+            .args(&amp;[&quot;-&quot;, &quot;--fix&quot;])
+            .write_stdin(&quot;import os\n&quot;)
+            .assert()
+            .success();
+        assert!(str::from_utf8(&amp;output.get_output().stdout)?.contains(&quot;Found 0 error(s) (1 fixed)&quot;));
+        Ok(())
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-11 13:04</div>
+            <div class="timeline-body"><p>@harupy - Yeah let's include those. Do they rely on <code>ruff</code> already having been built and installed locally as a binary? Or do they work &quot;from scratch&quot;?</p>
+<p>If the former, let's put them under a separate feature, like:</p>
+<pre><code class="language-toml">[features]
+integration_test = []
+</code></pre>
+<p>And then:</p>
+<pre><code class="language-rust">#[cfg(all(test, feature = &quot;integration_test&quot;))]
+...
+</code></pre>
+<p>What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-10-11 13:37</div>
+            <div class="timeline-body"><p>@charliermarsh I'm looking at https://doc.rust-lang.org/cargo/reference/cargo-targets.html#integration-tests which says:</p>
+<blockquote>
+<p>Binary targets are automatically built if there is an integration test. This allows an integration test to execute the binary to exercise and test its behavior. The CARGO_BIN_EXE_<name> <a href="https://doc.rust-lang.org/cargo/reference/environment-variables.html#environment-variables-cargo-sets-for-crates">environment variable</a> is set when the integration test is built so that it can use the <a href="https://doc.rust-lang.org/std/macro.env.html">env macro</a> to locate the executable.</p>
+</blockquote>
+<p><code>assert_cmd</code> uses <code>CARGO_BIN_EXE_&lt;name&gt;</code>:</p>
+<p>https://github.com/assert-rs/assert_cmd/blob/295731db56a3887dbc1cfe6601436b42e4646a2e/src/cargo.rs#L204</p>
+<p>I think they work &quot;from scratch&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-11 13:41</div>
+            <div class="timeline-body"><p>This looks great! Going to make one small API tweak to <code>fixer.rs</code> then merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-11 13:54</div>
+            <div class="timeline-body"><p>@harupy - I ended up disabling autofix, since it's a little confusing to say that errors are &quot;fixed&quot; when we're not actually writing <em>back</em> in any way. Let me know if you disagree though!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-10-11 13:55</div>
+            <div class="timeline-body"><p>@charliermarsh Makes sense!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-10-11 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-10-11 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-11 13:56</div>
+            <div class="timeline-body"><p>Thank you for this, great change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fsouza">@fsouza</a> on 2022-10-11 15:02</div>
+            <div class="timeline-body"><p>@charliermarsh one way that <code>--autofix</code> could work is by writing the fixed code to stdout. What do you think?</p>
+<p>This would enable editor integration (like usually the editor sends the source to stdin and read it back from stdout)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-11 15:04</div>
+            <div class="timeline-body"><p>Yeah that's doable! Is there any example of another tool that does this? Wondering about things like: Would we only write the fixed code to stdout when <code>--fix</code> is passed in? Would we write back the fixed code if <code>--fix</code> is passed in but no changes are needed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fsouza">@fsouza</a> on 2022-10-11 15:27</div>
+            <div class="timeline-body"><p>@charliermarsh yeah, in general that's what tools do. Some examples of tools that do that include gofmt, autoflake and black:</p>
+<pre><code class="language-shell"># gofmt with code that needs fixing
+％ echo &quot;package               main\n\n\n&quot; | gofmt
+package main
+</code></pre>
+<pre><code class="language-shell"># gofmt with code that doesn't need fixing
+％ echo &quot;package main&quot; | gofmt
+package main
+</code></pre>
+<pre><code class="language-shell"># autoflake with code that needs fixing
+％ echo &quot;import os\nprint('hi')&quot; | autoflake --remove-all-unused-imports -
+print('hi')
+</code></pre>
+<pre><code class="language-shell"># autoflake with code that doesn't need fixing
+％ echo &quot;import os\nprint(os.linesep)&quot; | autoflake --remove-all-unused-imports -
+import os
+print(os.linesep)
+</code></pre>
+<pre><code class="language-shell"># black with code that needs fixing
+％ echo &quot;import os\nprint(         os.linesep)&quot; | black --quiet -
+import os
+
+print(os.linesep)
+</code></pre>
+<pre><code class="language-shell"># black with code that doesn't need fixing
+％ echo &quot;import os\n\nprint(os.linesep)&quot; | black --quiet -
+import os
+
+print(os.linesep)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-11 15:28</div>
+            <div class="timeline-body"><p>Thank you for this, really helpful!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2022-10-11 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-10-11 15:53</div>
+            <div class="timeline-body"><p>Tweaked the source code to write the fixed code to stdout and tested it with VSCode:</p>
+<p>https://user-images.githubusercontent.com/17039389/195140097-824c403a-20a4-459d-8674-b36c7860cf18.mov</p>
+<p>Worked like a charm!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-11 16:00</div>
+            <div class="timeline-body"><p>Extremely cool. Maybe we write to <code>stdout</code> if <code>--fix</code> is passed in, but otherwise write back the errors...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-11 16:01</div>
+            <div class="timeline-body"><p>Or maybe we move that behind an entirely separate subcommand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fsouza">@fsouza</a> on 2022-10-11 16:02</div>
+            <div class="timeline-body"><p>I like the idea of reusing <code>--fix</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-10-11 16:03</div>
+            <div class="timeline-body"><p>+1 to reusing <code>--fix</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fsouza">@fsouza</a> on 2022-10-11 17:28</div>
+            <div class="timeline-body"><p>@harupy I love your demo. Do you plan on sending a PR for that? If not I can send a PR.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:50:54 UTC
+    </footer>
+</body>
+</html>

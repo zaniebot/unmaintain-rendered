@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use a platform-appropriate location for user configuration - astral-sh/ruff #215</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use a platform-appropriate location for user configuration</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/215">#215</a>
+        opened by <a href="https://github.com/andersk">@andersk</a>
+        on 2022-09-16 23:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/andersk">@andersk</a> on 2022-09-16 23:48</div>
+            <div class="timeline-body"><p>See https://docs.rs/dirs/4.0.0/dirs/fn.config_dir.html.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-09-17 00:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyproject.rs</code>:68 on 2022-09-17 00:02</div>
+            <div class="timeline-body"><p>Do you think it's more typical for users to write to the config dir than the home dir? To me the config dir paths seem more like internal than user-facing config (e.g., <code>/Users/Alice/Library/Application Support</code>).</p>
+<p>I think the ideal IMO is to mimic Black's behavior:</p>
+<img width="750" alt="Screen Shot 2022-09-16 at 5 59 47 PM" src="https://user-images.githubusercontent.com/1309177/190831916-f0467973-1753-4734-bbfd-8cc225af592b.png">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyproject.rs</code>:68 on 2022-09-17 00:03</div>
+            <div class="timeline-body"><p>(I would also be comfortable getting rid of the global config and only supporting local <code>pyproject.toml</code>, if this is causing problems.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-09-17 00:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a> reviewed on 2022-09-17 00:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>src/pyproject.rs</code>:68 on 2022-09-17 00:17</div>
+            <div class="timeline-body"><p>I did some investigation into Black’s behavior. psf/black#1899 says it was inherited from pycodestyle. PyCQA/pycodestyle@b1ada24d5d6f837ebaa226a57fce20621048a199 says it fixed a <code>TypeError</code> on Windows (PyCQA/pycodestyle#95)—but the part that actually fixed the <code>TypeError</code> was switching from <code>os.getenv(&quot;HOME&quot;)</code> to <code>os.expanduser('~')</code>, so that doesn’t explain the point of using <code>~\.pep8</code> on Windows.</p>
+<p>I can say as a Linux user that an <a href="https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html">XDG</a> path <code>$XDG_CONFIG_HOME/foo</code> or <code>~/.config/foo</code> is more idiomatic for modern tools than <code>~/.foo</code>. Windows users don’t expect to use dotfiles at all—they aren’t hidden and they’re awkward to deal with in the UI, so <code>~\.foo</code> seems like a very weird choice. I’m not sure what macOS users expect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>src/pyproject.rs</code>:68 on 2022-09-17 00:41</div>
+            <div class="timeline-body"><p>If we want <code>~/.config/ruff</code> on all platforms, we could use <code>xdg::BaseDirectories::new().ok().and_then(|dirs| dirs.find_config_file(&quot;ruff&quot;))</code> from the <a href="https://docs.rs/xdg/2.4.1/xdg/struct.BaseDirectories.html#method.find_config_file"><code>xdg</code> crate</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a> reviewed on 2022-09-17 00:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-09-17 03:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyproject.rs</code>:68 on 2022-09-17 03:38</div>
+            <div class="timeline-body"><p>I think for macOS I'd expect <code>~/.ruff</code>, so if we can do that and then <code>~/.config/ruff</code> for Linux (and then <code>~/ruff</code> or whatever you like for Windows), that would be awesome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a> reviewed on 2022-09-17 05:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>src/pyproject.rs</code>:68 on 2022-09-17 05:11</div>
+            <div class="timeline-body"><p>Locations preferred by other modern Python tools:</p>
+<p>Tool | Linux | macOS | Windows
+--- | --- | --- | ---
+<a href="https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#where-black-looks-for-the-file">Black</a> | XDG <code>~/.config</code> | XDG <code>~/.config</code> | <code>~</code>
+<a href="https://conda.io/projects/conda/en/latest/user-guide/configuration/use-condarc.html">conda</a> | XDG <code>~/.config</code> | XDG <code>~/.config</code> | XDG <code>~/.config</code>
+<a href="https://flake8.pycqa.org/en/latest/release-notes/4.0.0.html#backwards-incompatible-changes">Flake8</a> | <em>removed</em> | <em>removed</em> | <em>removed</em>
+<a href="https://hatch.pypa.io/latest/config/hatch/">Hatch</a> | XDG <code>~/.config</code> | <code>~/Library/Preferences</code> | <code>%APPDATA%</code>
+<a href="https://mypy.readthedocs.io/en/stable/config_file.html">mypy</a> | XDG <code>~/.config</code> | XDG <code>~/.config</code> | XDG <code>~/.config</code>
+<a href="https://pdm.fming.dev/latest/usage/project/#configure-the-project">PDM</a> | XDG <code>~/.config</code> | <code>~/Library/Preferences</code> | <code>%APPDATA%</code>
+<a href="https://pip.pypa.io/en/stable/topics/configuration/#location">pip</a> | XDG <code>~/.config</code> | <code>~/Library/Application Support</code> | <code>%APPDATA%</code>
+<a href="https://python-poetry.org/docs/configuration/">Poetry</a> | XDG <code>~/.config</code> | <code>~/Library/Preferences</code> | <code>%APPDATA%</code>
+<a href="https://virtualenv.pypa.io/en/latest/cli_interface.html">virtualenv</a> | XDG <code>~/.config</code> | <code>~/Library/Preferences</code> | <code>%APPDATA%</code>
+<a href="https://github.com/google/yapf">YAPF</a> | XDG <code>~/.config</code> | XDG <code>~/.config</code> | XDG <code>~/.config</code></p>
+<p>Many of these tools now delegate this question to the <a href="https://platformdirs.readthedocs.io/">platformdirs</a> module, whose <a href="https://github.com/platformdirs/platformdirs/issues">issues</a> have some relevant discussion. But just about everyone seems to agree that storing configuration directly in <code>~</code> is at best a legacy option these days.</p>
+<p>🤷</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-09-17 15:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyproject.rs</code>:68 on 2022-09-17 15:30</div>
+            <div class="timeline-body"><p>Wow great collation! Thanks for doing that. It seems like in each case, they're storing a configuration file <em>within</em> those directories rather than as a dotfile? I.e., there's a <code>config.toml</code> or <code>config.ini</code> or whatever within the directory. So maybe we do this?</p>
+<ul>
+<li>Linux: <code>XDG ~/.config/ruff/pyproject.toml</code>? (Would be nice if this was called <code>config.toml</code> I guess in the global case but I don't feel strongly.)</li>
+<li>macOS: <code>~/Library/Application Support/ruff/pyproject.toml</code>? (I'd prefer <code>~/Library/Preferences</code> but I don't feel strongly enough to workaround the <code>dirs</code> module.)</li>
+<li>Windows: <code>%APPDATA%\ruff\pyproject.toml</code>?</li>
+</ul>
+<p>What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a> reviewed on 2022-09-17 19:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>src/pyproject.rs</code>:68 on 2022-09-17 19:27</div>
+            <div class="timeline-body"><p>Sounds good to me. Updated.</p>
+<p>An advantage of the <code>pyproject.toml</code> name is that it makes it obvious that the format is the same (e.g. a <code>[tool.ruff]</code> section is still expected).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-09-17 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-09-17 19:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2022-09-17 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-09-17 19:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyproject.rs</code>:68 on 2022-09-17 19:31</div>
+            <div class="timeline-body"><p>Agreed!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-09-17 19:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyproject.rs</code>:68 on 2022-09-17 19:31</div>
+            <div class="timeline-body"><p>And portable (can copy into projects if needed).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a> reviewed on 2022-09-17 19:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>src/pyproject.rs</code>:68 on 2022-09-17 19:38</div>
+            <div class="timeline-body"><p>By the way, I noticed that <code>virtualenv --help</code> prints its config file location, which is a nice discoverability touch. I tried to do this with clap’s <code>after_help</code>, but it seems you can only use an owned <code>String</code> there in the Git version of clap with the <code>string</code> feature, so we should revisit that when clap 4 is released.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:50:51 UTC
+    </footer>
+</body>
+</html>

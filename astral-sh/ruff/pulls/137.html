@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement E741 - astral-sh/ruff #137</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement E741</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/137">#137</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2022-09-10 06:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/harupy">@harupy</a> on 2022-09-10 06:15</div>
+            <div class="timeline-body"><p>Test:</p>
+<pre><code class="language-bash">&gt; flake8 --version
+5.0.4 (mccabe: 0.7.0, pycodestyle: 2.9.1, pyflakes: 2.5.0) CPython 3.8.5 on Linux
+
+&gt; flake8 --select E741 resources/test/fixtures/E741.py
+resources/test/fixtures/E741.py:3:1: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:4:1: E741 ambiguous variable name 'I'
+resources/test/fixtures/E741.py:5:1: E741 ambiguous variable name 'O'
+resources/test/fixtures/E741.py:8:4: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:10:5: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:11:5: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:16:5: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:25:12: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:26:5: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:30:5: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:33:18: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:34:9: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:40:8: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:49:16: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:63:22: E741 ambiguous variable name 'l'
+
+&gt; cargo run -- --select=E741 resources/test/fixtures/E741.py
+    Finished dev [unoptimized + debuginfo] target(s) in 0.07s
+     Running `target/debug/ruff --select=E741 resources/test/fixtures/E741.py`
+resources/test/fixtures/E741.py:3:1: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:4:1: E741 ambiguous variable name 'I'
+resources/test/fixtures/E741.py:5:1: E741 ambiguous variable name 'O'
+resources/test/fixtures/E741.py:6:1: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:8:4: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:9:5: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:10:5: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:11:5: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:16:5: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:20:8: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:25:5: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:26:5: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:30:5: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:33:9: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:34:9: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:40:8: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:49:16: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:58:20: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:63:1: E741 ambiguous variable name 'l'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2022-09-10 07:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>resources/test/fixtures/E741.py</code>:14 on 2022-09-10 07:43</div>
+            <div class="timeline-body"><p>https://github.com/PyCQA/pycodestyle/blob/10a4427c75740717b43448339fcf71f11bc33d1a/pycodestyle.py#L1482</p>
+<pre><code>@register_check
+def ambiguous_identifier(logical_line, tokens):
+    r&quot;&quot;&quot;Never use the characters 'l', 'O', or 'I' as variable names.
+
+    In some fonts, these characters are indistinguishable from the
+    numerals one and zero. When tempted to use 'l', use 'L' instead.
+
+    Okay: L = 0
+    Okay: o = 123
+    Okay: i = 42
+    E741: l = 0
+    E741: O = 123
+    E741: I = 42
+
+    Variables can be bound in several other contexts, including class
+    and function definitions, 'global' and 'nonlocal' statements,
+    exception handlers, and 'with' and 'for' statements.
+    In addition, we have a special handling for function parameters.
+
+    Okay: except AttributeError as o:
+    Okay: with lock as L:
+    Okay: foo(l=12)
+    Okay: for a in foo(l=12):
+    E741: except AttributeError as O:
+    E741: with lock as l:
+    E741: global I
+    E741: nonlocal l
+    E741: def foo(l):
+    E741: def foo(l=12):
+    E741: l = foo(l=12)
+    E741: for l in range(10):
+    E742: class I(object):
+    E743: def l(x):
+    &quot;&quot;&quot;
+</code></pre>
+<p>Looks like I need to add more test cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-09-10 16:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/message.rs</code>:23 on 2022-09-10 16:41</div>
+            <div class="timeline-body"><p>Oof, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-09-10 16:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/check_ast.rs</code>:408 on 2022-09-10 16:43</div>
+            <div class="timeline-body"><p>Do you have a sense for how many of these would be caught by instead hooking into <code>handle_node_store</code>? Could it help reduce the number of cases we have to handle?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2022-09-11 05:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>src/message.rs</code>:23 on 2022-09-11 05:30</div>
+            <div class="timeline-body"><p>@charliermarsh I opened https://github.com/charliermarsh/ruff/pull/152 to fix this line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2022-09-11 12:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>src/check_ast.rs</code>:408 on 2022-09-11 12:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you have a sense for how many of these would be caught by instead hooking into handle_node_store?</p>
+</blockquote>
+<p>@charliermarsh Thanks for the comment. By <code>hooking into handle_node_store</code>, you meant something like below?</p>
+<pre><code class="language-rust">    fn handle_node_store(&amp;mut self, expr: &amp;Expr, parent: Option&lt;&amp;Stmt&gt;) {
+        if let ExprKind::Name { id, .. } = &amp;expr.node {
+            ...
+
+            if self.settings.select.contains(&amp;CheckCode::E741)
+                &amp;&amp; checks::is_ambiguous_name(id)
+            {
+                self.checks.push(Check::new(
+                    CheckKind::AmbiguousVariableName(id.to_string()),
+                    expr.location,
+                ));
+            }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-09-11 13:59</div>
+            <div class="timeline-body"><pre><code>&gt; cargo run --select=E741, resources/test/fixtures/E741.py
+    Finished dev [unoptimized + debuginfo] target(s) in 0.07s
+     Running `target/debug/ruff resources/test/fixtures/E741.py`
+resources/test/fixtures/E741.py:3:1: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:4:1: E741 ambiguous variable name 'I'
+resources/test/fixtures/E741.py:5:1: E741 ambiguous variable name 'O'
+resources/test/fixtures/E741.py:6:1: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:8:4: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:9:5: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:10:5: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:11:5: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:16:5: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:20:8: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:25:5: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:26:5: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:30:5: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:33:9: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:34:9: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:40:8: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:40:14: E741 ambiguous variable name 'I'
+resources/test/fixtures/E741.py:44:8: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:44:16: E741 ambiguous variable name 'I'
+resources/test/fixtures/E741.py:48:9: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:48:14: E741 ambiguous variable name 'I'
+resources/test/fixtures/E741.py:57:16: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:66:20: E741 ambiguous variable name 'l'
+resources/test/fixtures/E741.py:71:1: E741 ambiguous variable name 'l'  &lt;---
+resources/test/fixtures/E741.py:71:1: E741 ambiguous variable name 'l'  &lt;---
+</code></pre>
+<p>It looks like <code>handle_node_store</code> is called twice on the same except handler alias:</p>
+<pre><code class="language-python"># resources/test/fixtures/E741.py
+
+...
+
+try:
+    pass
+except ValueError as l:
+    #                ^ this
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-09-11 14:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/check_ast.rs</code>:408 on 2022-09-11 14:19</div>
+            <div class="timeline-body"><p>Yeah that's roughly what I was suggesting!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-11 14:22</div>
+            <div class="timeline-body"><p>Hmm yeah, it is... if you look at <code>visit_excepthandler</code>, we do call it twice. That was based on the PyFlakes logic <a href="https://github.com/PyCQA/pyflakes/blob/master/pyflakes/checker.py#L2227">here</a>. Perhaps we can just get rid of the second <code>handle_node_store</code>. The current version, at least, is buggy in that <code>let definition = scope.values.get(name).cloned();</code> should be removing the name from the scope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-11 14:22</div>
+            <div class="timeline-body"><p>What if we instead put the lint rule logic in the <code>ExprContext::Store</code> block here?</p>
+<pre><code>ExprKind::Name { ctx, .. } =&gt; match ctx {
+    ExprContext::Load =&gt; self.handle_node_load(expr),
+    ExprContext::Store =&gt; {
+        let parent =
+            self.parents[*(self.parent_stack.last().expect(&quot;No parent found.&quot;))];
+        self.handle_node_store(expr, Some(parent));
+    }
+    ExprContext::Del =&gt; self.handle_node_delete(expr),
+},
+</code></pre>
+<p>...instead of in the <code>handle_node_store</code> function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2022-09-11 16:30</div>
+            <div class="timeline-body"><p>Great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-09-11 16:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-09-11 16:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:50:50 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement F522-F525 - astral-sh/ruff #899</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement F522-F525</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/899">#899</a>
+        opened by <a href="https://github.com/olliemath">@olliemath</a>
+        on 2022-11-25 00:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/olliemath">@olliemath</a> on 2022-11-25 00:40</div>
+            <div class="timeline-body"><p>Adds checks for F522 through F525. Closes https://github.com/charliermarsh/ruff/issues/891</p>
+<p>All of the new checks return <code>None</code> if the format string is invalid (i.e. if F521 fails) - essentially I'm treating it like a syntax error and not processing further. I don't know if there's a neater way to do this, which works even if F521 is disabled.</p>
+<p>Most of the logic here is in the helper function <code>FormatSummary::try_from</code>, which extracts all the keywords and indexes from the format string. Taking into account nested format strings like &quot;{spam:{eggs}}&quot; is what makes it a bit involved, so I've added some tests.</p>
+<p>The use of <code>HashSet</code> in the summary keeps everything O(n) - for most typical python code, I'd speculate that a <code>Vec</code> would actually be quicker, however I can imagine somebody somewhere has a format function with 1000s of arguments for their own personal reasons and I wouldn't want that to come back to bite us. Use of <code>HashSet</code> means that for F524 the missing placeholders may not be returned in the order they appear in the string literal - I don't know if that's enough of a big deal to warrant implementing something more complicated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyflakes/checks.rs</code>:106 on 2022-11-25 01:28</div>
+            <div class="timeline-body"><p>I'd generally prefer to make <code>CheckKind::StringDotFormatExtraPositionalArguments</code> take a <code>Vec&lt;String&gt;</code>, and do the joining in <code>body</code> (rather than joining here and passing the formatted strings to <code>CheckKind::StringDotFormatExtraPositionalArguments</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyflakes/checks.rs</code>:123 on 2022-11-25 01:28</div>
+            <div class="timeline-body"><p>Generally prefer to use <code>FxHashSet</code>, which is faster for this kind of data.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyflakes/checks.rs</code>:125 on 2022-11-25 01:29</div>
+            <div class="timeline-body"><p>Are there any clones that can be avoided (here or elsewhere)? E.g., can this be <code>FxHashMap&lt;&amp;str&gt;</code>, rather than <code>FxHashMap&lt;String&gt;</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyflakes/checks.rs</code>:63 on 2022-11-25 01:35</div>
+            <div class="timeline-body"><p>Maybe instead we have these all take <code>FormatSummary</code>, and in the checker, we have something like:</p>
+<pre><code class="language-rust">if let Ok(summary) = FormatSummary::try_from(literal) {
+    if self.settings.enabled.contains(&amp;CheckCode::F524) {
+        if let Some(check) =
+            pyflakes::checks::string_dot_format_missing_argument(
+                value, args, keywords, location,
+            )
+        {
+            self.add_check(check);
+        }
+    }
+    ...
+}
+</code></pre>
+<p>We could even gate that behind <code>self.settings.enabled.contains(&amp;CheckCode::F524) | ...</code> to only compute it if at least one of those checks is enabled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/checks.rs</code>:59 on 2022-11-25 01:36</div>
+            <div class="timeline-body"><p>Can you run <code>cargo dev generate-rules-table</code>? It'll add these to the README automatically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-25 01:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/olliemath">@olliemath</a> reviewed on 2022-11-25 09:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/olliemath">@olliemath</a> on <code>src/pyflakes/checks.rs</code>:106 on 2022-11-25 09:48</div>
+            <div class="timeline-body"><p>Makes sense - I'll change that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/olliemath">@olliemath</a> on <code>src/pyflakes/checks.rs</code>:125 on 2022-11-25 09:50</div>
+            <div class="timeline-body"><p>I'll spend some time over the weekend dialling in the perf aspect</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/olliemath">@olliemath</a> reviewed on 2022-11-25 09:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/olliemath">@olliemath</a> reviewed on 2022-11-25 10:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/olliemath">@olliemath</a> on <code>src/pyflakes/checks.rs</code>:63 on 2022-11-25 10:10</div>
+            <div class="timeline-body"><p>Yeah, that sounds good. Gate the parsing/building and do it once.</p>
+<p>The happy path is that <code>F521</code> and some of <code>F522-F525</code> are enabled together and it will be very rare that <strong>only</strong> F521 is enabled - so a little more performant in the default case to go with something like:</p>
+<pre><code class="language-rust">match FormatSummary::try_from(literal) {
+    Err(e) =&gt; ..., // Add an F521 check if it's enabled
+    Ok(summary) =&gt; {
+        // Call the other enabled checks using the summary
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Implement F522-F525" to "Draft: Implement F522-F525" by @olliemath on 2022-11-25 11:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olliemath">@olliemath</a> on 2022-11-25 12:56</div>
+            <div class="timeline-body"><p>I've pulled out the construction of <code>FormatSummary</code>, so we build it at most once, and minimised the number of clones.</p>
+<p>I can't see a way to avoid cloning when building the failure messages, but that should hopefully be rare.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-25 14:51</div>
+            <div class="timeline-body"><p>This looks great! Thank you. (And yeah, we always clone when building checks and failure messages.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-25 14:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyflakes/format.rs</code>:32 on 2022-11-25 14:52</div>
+            <div class="timeline-body"><p>I'll likely change these to <code>FxHashSet</code> too, unless they're intentionally not using that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-25 14:52</div>
+            <div class="timeline-body"><p>I assume this is good to go? Anything else from your perspective @olliemath?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/olliemath">@olliemath</a> reviewed on 2022-11-25 15:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/olliemath">@olliemath</a> on <code>src/pyflakes/format.rs</code>:32 on 2022-11-25 15:26</div>
+            <div class="timeline-body"><p>Not intentional, just that I was unsure about the benchmarks for various data types, and the initial review pointed to the stringy sets. Fixed now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Draft: Implement F522-F525" to "Implement F522-F525" by @olliemath on 2022-11-25 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olliemath">@olliemath</a> on 2022-11-25 15:27</div>
+            <div class="timeline-body"><blockquote>
+<p>I assume this is good to go? Anything else from your perspective @olliemath?</p>
+</blockquote>
+<p>Yup should be good to merge assuming the pipeline passes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olliemath">@olliemath</a> on 2022-11-25 16:02</div>
+            <div class="timeline-body"><p>By the way, I've been using interactive rebase to keep my commit history tidy - it looks like your general strategy is to squash+merge? In which case in future contributions I might abandon that approach and be a bit more liberal with my commits</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-25 18:14</div>
+            <div class="timeline-body"><p>@olliemath - Yeah, happy to elaborate but I tend towards squashing such that the Git history corresponds to &quot;one commit per PR&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-11-25 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-25 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-25 18:14</div>
+            <div class="timeline-body"><p>Awesome, thanks tons for this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/olliemath">@olliemath</a> on 2022-11-25 19:07</div>
+            <div class="timeline-body"><p>Happy to help - esp as I'm super excited about using ruff myself</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:51:01 UTC
+    </footer>
+</body>
+</html>

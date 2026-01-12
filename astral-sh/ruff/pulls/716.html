@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement U013: Unnecessary TypedDict syntactic form - astral-sh/ruff #716</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement U013: Unnecessary TypedDict syntactic form</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/716">#716</a>
+        opened by <a href="https://github.com/martinlehoux">@martinlehoux</a>
+        on 2022-11-13 09:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/martinlehoux">@martinlehoux</a> on 2022-11-13 09:14</div>
+            <div class="timeline-body"><ul>
+<li>https://github.com/charliermarsh/ruff/issues/351</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "feat: U013 Rewrite TypedDict Assign" to "Implement U013: Unnecessary TypedDict syntactic form" by @martinlehoux on 2022-11-13 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on 2022-11-13 21:34</div>
+            <div class="timeline-body"><p>@charliermarsh I think I'm almost done here, might be interesting to have your feedback.</p>
+<p>I also have to implement: Do not convert when keys are not valid identifiers
+// MyType9 = TypedDict('MyType9', {'in': int, 'x-y': int})</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-13 21:36</div>
+            <div class="timeline-body"><p>(We have <code>IDENTIFIER_REGEX</code> in <code>src/flake8_bugbear/constants.rs</code> that I <em>think</em> can help with that.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a> reviewed on 2022-11-13 21:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>src/checks.rs</code>:1659 on 2022-11-13 21:44</div>
+            <div class="timeline-body"><p>“Unnecessary” implies that something could be deleted; both forms are “syntactic”.</p>
+<p>I suggest something like <code>Convert `TypedDict` functional syntax to class syntax</code>.</p>
+<p>Also, this should all apply equally to <code>NamedTuple</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/checks.rs</code>:1659 on 2022-11-15 21:21</div>
+            <div class="timeline-body"><p>Yeah agreed, nice suggestion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/plugins/unnecessary_typed_dict_syntactic_form.rs</code>:27 on 2022-11-15 21:27</div>
+            <div class="timeline-body"><p>I think you can avoid some clones by returning references here:</p>
+<pre><code class="language-rust">--- a/src/pyupgrade/plugins/unnecessary_typed_dict_syntactic_form.rs
++++ b/src/pyupgrade/plugins/unnecessary_typed_dict_syntactic_form.rs
+@@ -10,10 +10,10 @@ use crate::{
+ };
+
+ // Returns (class_name, args, keywords)
+-fn match_typed_dict_assign(
+-    targets: &amp;[Expr],
+-    value: &amp;Expr,
+-) -&gt; Option&lt;(String, Vec&lt;Expr&gt;, Vec&lt;Keyword&gt;)&gt; {
++fn match_typed_dict_assign&lt;'a&gt;(
++    targets: &amp;'a [Expr],
++    value: &amp;'a Expr,
++) -&gt; Option&lt;(&amp;'a str, &amp;'a [Expr], &amp;'a [Keyword])&gt; {
+     if let Some(target) = targets.get(0) {
+         if let ExprKind::Name { id: class_name, .. } = &amp;target.node {
+             if let ExprKind::Call {
+@@ -24,7 +24,7 @@ fn match_typed_dict_assign(
+             {
+                 if let ExprKind::Name { id: func_name, .. } = &amp;func.node {
+                     if func_name == &quot;TypedDict&quot; {
+-                        return Some((class_name.clone(), args.clone(), keywords.clone()));
++                        return Some((class_name, args, keywords));
+                     }
+                 }
+             }
+@@ -61,7 +61,7 @@ fn create_pass_stmt() -&gt; Stmt {
+     Stmt::new(Default::default(), Default::default(), StmtKind::Pass)
+ }
+
+-fn create_classdef_stmt(class_name: &amp;String, body: Vec&lt;Stmt&gt;, total: Option&lt;KeywordData&gt;) -&gt; Stmt {
++fn create_classdef_stmt(class_name: &amp;str, body: Vec&lt;Stmt&gt;, total: Option&lt;KeywordData&gt;) -&gt; Stmt {
+     let keywords = match total {
+         Some(keyword) =&gt; vec![Keyword::new(
+             Default::default(),
+@@ -139,9 +139,9 @@ fn get_properties_from_keywords(keywords: &amp;[Keyword]) -&gt; Result&lt;Vec&lt;Stmt&gt;&gt; {
+ fn try_to_fix(
+     check: &amp;mut Check,
+     stmt: &amp;Stmt,
+-    class_name: &amp;String,
++    class_name: &amp;str,
+     args: &amp;[Expr],
+-    keywords: &amp;Vec&lt;Keyword&gt;,
++    keywords: &amp;[Keyword],
+ ) -&gt; Result&lt;()&gt; {
+     let mut total: Option&lt;KeywordData&gt; = None;
+     let body = if let Some(dict) = args.get(1) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/plugins/unnecessary_typed_dict_syntactic_form.rs</code>:190 on 2022-11-15 21:29</div>
+            <div class="timeline-body"><p>I think it would be clearer to have <code>try_to_fix</code> return <code>Result&lt;Fix&gt;</code>, then do something like:</p>
+<pre><code class="language-rust">match try_to_fix(stmt, &amp;class_name, &amp;args, &amp;keywords) {
+    Ok(fix) =&gt; {
+        check.amend(fix)
+    }
+    Err(e) =&gt; {
+        error!(&quot;Failed to convert TypedDict: {}&quot;, e);
+    }
+}
+</code></pre>
+<p>That also removes the dependency on <code>check</code> in <code>try_to_fix</code>, <em>and</em> we'd no longer be silently dropping the error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/plugins/unnecessary_typed_dict_syntactic_form.rs</code>:148 on 2022-11-15 21:31</div>
+            <div class="timeline-body"><p>Can we pull this assignment into a separate series of <code>if</code> statements, or return a tuple from these branches? I think it'd be a bit clearer than using this branch to assign to <code>total</code> as a side-effect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/plugins/unnecessary_typed_dict_syntactic_form.rs</code>:160 on 2022-11-15 21:34</div>
+            <div class="timeline-body"><p>Can we add a comment noting that the following is illegal?</p>
+<pre><code class="language-py">MyType = TypedDict('MyType', {'a': int, 'b': str}, a=int, b=str)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-15 21:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/martinlehoux">@martinlehoux</a> reviewed on 2022-11-16 08:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on <code>src/pyupgrade/plugins/unnecessary_typed_dict_syntactic_form.rs</code>:190 on 2022-11-16 08:24</div>
+            <div class="timeline-body"><p>Ok, I guess I didn't really know how ruff would handle errors like that</p>
+<p>What does <code>error!(...)</code> do?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/martinlehoux">@martinlehoux</a> reviewed on 2022-11-16 08:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on <code>src/pyupgrade/plugins/unnecessary_typed_dict_syntactic_form.rs</code>:148 on 2022-11-16 08:26</div>
+            <div class="timeline-body"><p>Yes you're right I didn't think of tuples. I think I did this to avoid double checking conditions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/plugins/unnecessary_typed_dict_syntactic_form.rs</code>:190 on 2022-11-16 17:03</div>
+            <div class="timeline-body"><p><code>error!(...)</code> is just a logging macro -- so it doesn't return anything, it just logs that at &quot;error&quot; level.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-16 17:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on 2022-11-16 18:02</div>
+            <div class="timeline-body"><p>Two question:</p>
+<ol>
+<li>Where should I locate <code>IDENTIFIER_REGEX</code>? Seems wrong to import from flake8</li>
+<li>When there is one non valid identifier, we must not return any check, because it is a valid reason to use the functional form. Do you have an idea on how to structure that? It seems to me complicated to juggle between fix errors (meaning we failed to fix something fixable) and check errors (meaning that there is no check to raise). Of course I can duplicate the parsing in each phase, but it seems like a waste</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-17 16:50</div>
+            <div class="timeline-body"><p>Let's put <code>IDENTIFIER_REGEX</code> in... <code>src/python/identifiers.rs</code> for now.</p>
+<p>I think we should <em>just</em> do that validation when we run the check, and in the fix, <em>assume</em> that each string is a valid identifier. That's generally the pattern we've followed elsewhere: the check is responsible for all validation, and then the fix can make assumptions about the input. Does that make sense?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @martinlehoux on 2022-11-18 08:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on 2022-11-18 08:18</div>
+            <div class="timeline-body"><p>I think this one is OK now. I guess I'll be quicker to do <code>NamedTuple</code> with this experience</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/martinlehoux">@martinlehoux</a> on <code>src/pyupgrade/plugins/convert_typed_dict_functional_to_class.rs</code>:195 on 2022-11-18 08:20</div>
+            <div class="timeline-body"><p>This should be moved at L169</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/martinlehoux">@martinlehoux</a> reviewed on 2022-11-18 08:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-18 14:55</div>
+            <div class="timeline-body"><p>Great! I'll try to get this merged today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-11-18 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-18 17:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:50:59 UTC
+    </footer>
+</body>
+</html>

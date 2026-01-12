@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid allocations for binding values - astral-sh/ruff #764</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid allocations for binding values</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/764">#764</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2022-11-16 05:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-16 05:17</div>
+            <div class="timeline-body"><p>This achieves a 1-1.5% performance improvement on the benchmark (shrug).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2022-11-16 05:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Stranger6667">@Stranger6667</a> reviewed on 2022-11-16 10:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Stranger6667">@Stranger6667</a> on <code>src/ast/helpers.rs</code>:233 on 2022-11-16 10:28</div>
+            <div class="timeline-body"><p>I think that this clone could be avoided as well. E.g. if the string is constructed manually with a series of “push_str” and “push” calls</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/messense">@messense</a> reviewed on 2022-11-16 11:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/messense">@messense</a> on <code>src/ast/helpers.rs</code>:229 on 2022-11-16 11:02</div>
+            <div class="timeline-body"><p>From Rust API point of view, I think it's kinda odd to pass around <code>&amp;Option&lt;T&gt;</code>, <code>Option&lt;&amp;T&gt;</code> is much more natural. You can get a <code>Option&lt;&amp;T&gt;</code> via <a href="https://doc.rust-lang.org/std/option/enum.Option.html#method.as_ref"><code>Option::as_ref()</code></a>.</p>
+<p>And to get a <code>Option&lt;&amp;str&gt;</code> from a <code>&amp;Option&lt;String&gt;</code> you can use <a href="https://doc.rust-lang.org/std/option/enum.Option.html#method.as_deref">Option::as_deref()</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Stranger6667">@Stranger6667</a> reviewed on 2022-11-16 12:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Stranger6667">@Stranger6667</a> on <code>src/ast/helpers.rs</code>:233 on 2022-11-16 12:00</div>
+            <div class="timeline-body"><p>To compare these approaches I benched the following:</p>
+<pre><code class="language-rust">pub fn original(level: &amp;Option&lt;usize&gt;, module: &amp;Option&lt;String&gt;) -&gt; String {
+    format!(
+        &quot;{}{}&quot;,
+        &quot;.&quot;.repeat(level.unwrap_or_default()),
+        module.clone().unwrap_or_default()
+    )
+}
+
+pub fn second(level: &amp;Option&lt;usize&gt;, module: &amp;Option&lt;String&gt;) -&gt; String {
+    let mut out = String::new();
+    for _ in 0..level.unwrap_or_default() {
+        out.push('.');
+    }
+    if let Some(m) = module {
+        out.push_str(m.as_str());
+    }
+    out
+}
+
+pub fn third(level: Option&lt;usize&gt;, module: Option&lt;&amp;str&gt;) -&gt; String {
+    let mut out = String::with_capacity(16);
+    for _ in 0..level.unwrap_or_default() {
+        out.push('.');
+    }
+    if let Some(m) = module {
+        out.push_str(m);
+    }
+    out
+}
+
+fn simple(c: &amp;mut Criterion) {
+    let level = black_box(3);
+    let module = black_box(&quot;foobarbaz&quot;.to_string());
+    let module_str = black_box(&quot;foobarbaz&quot;);
+    c.bench_function(&quot;original&quot;, |b| b.iter(|| original(&amp;Some(level), &amp;Some(module.clone()))));
+    c.bench_function(&quot;second&quot;, |b| b.iter(|| second(&amp;Some(level), &amp;Some(module.clone()))));
+    c.bench_function(&quot;third&quot;, |b| b.iter(|| {
+        // All benches make a String clone
+        let _ = module.clone();
+        third(Some(level), Some(module_str))
+    }));
+}
+</code></pre>
+<p>And here are the results:</p>
+<pre><code>original                time:   [97.946 ns 98.351 ns 98.802 ns]                     
+                        change: [-0.6825% -0.2181% +0.3228%] (p = 0.45 &gt; 0.05)
+                        No change in performance detected.
+Found 13 outliers among 100 measurements (13.00%)
+  1 (1.00%) low mild
+  8 (8.00%) high mild
+  4 (4.00%) high severe
+
+second                  time:   [50.236 ns 50.383 ns 50.532 ns]                    
+                        change: [+1.7089% +2.0963% +2.5148%] (p = 0.00 &lt; 0.05)
+                        Performance has regressed.
+Found 4 outliers among 100 measurements (4.00%)
+  2 (2.00%) low mild
+  2 (2.00%) high mild
+
+third                   time:   [29.787 ns 29.853 ns 29.922 ns]                   
+                        change: [-0.7170% -0.2109% +0.3007%] (p = 0.42 &gt; 0.05)
+                        No change in performance detected.
+Found 6 outliers among 100 measurements (6.00%)
+  2 (2.00%) high mild
+  4 (4.00%) high severe
+</code></pre>
+<p>It is absolutely not exhaustive, but I think it gives some intuition on what takes how much. The string capacity is somewhat arbitrary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/ast/helpers.rs</code>:229 on 2022-11-16 13:53</div>
+            <div class="timeline-body"><p>Oh, thank you! That's really helpful feedback. I'm gonna fix this everywhere in a follow-up PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-16 13:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-16 13:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/ast/helpers.rs</code>:233 on 2022-11-16 13:53</div>
+            <div class="timeline-body"><p>This is great, thanks! Always appreciate a benchmark :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-11-16 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-16 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2022-11-16 13:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:51:00 UTC
+    </footer>
+</body>
+</html>

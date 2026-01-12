@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Automatically remove redundant open modes #640 - astral-sh/ruff #843</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Automatically remove redundant open modes #640</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/843">#843</a>
+        opened by <a href="https://github.com/andribergs">@andribergs</a>
+        on 2022-11-21 00:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/andribergs">@andribergs</a> on 2022-11-21 00:09</div>
+            <div class="timeline-body"><p>Working on #640. This PR should cover both the detection and fixing of redundant open modes.</p>
+<p>@charliermarsh  please review, let me know what you think!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/plugins/redundant_open_modes.rs</code>:88 on 2022-11-21 00:30</div>
+            <div class="timeline-body"><p>Nit: better to use <code>Expr</code> everywhere as a drop-in replacement for <code>Located&lt;ExprKind&gt;</code> (and same for <code>Stmt</code> vs. <code>Located&lt;StmtKind&gt;</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/plugins/redundant_open_modes.rs</code>:62 on 2022-11-21 00:31</div>
+            <div class="timeline-body"><p>Can you add a TODO to validate that <code>open</code> is still bound to the built-in <code>open</code>? I.e., that it hasn't been assigned to some other function or variable? (We need to solve this in a general way, for some other rules too, so doesn't have to happen here.)</p>
+<p>It can formatted like:</p>
+<pre><code>TODO(andberger): Verify that &quot;open&quot; is still bound to the built-in function.
+</code></pre>
+<p>(That doesn't mean you're responsible for fixing the TODO, just that you're the author and so have context on it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/plugins/redundant_open_modes.rs</code>:38 on 2022-11-21 00:32</div>
+            <div class="timeline-body"><p>Maybe <code>-&gt; Option&lt;String&gt;</code> and return <code>None</code> instead of the empty string?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/plugins/redundant_open_modes.rs</code>:25 on 2022-11-21 00:33</div>
+            <div class="timeline-body"><p>Can you instead implement the <code>FromStr</code> trait here?</p>
+<p><code>DocstringConvention</code>, in our codebase, has an example of that:</p>
+<pre><code class="language-rust">impl FromStr for DocstringConvention {
+    type Err = anyhow::Error;
+
+    fn from_str(string: &amp;str) -&gt; Result&lt;Self, Self::Err&gt; {
+        match string {
+            &quot;all&quot; =&gt; Ok(DocstringConvention::All),
+            &quot;pep8&quot; =&gt; Ok(DocstringConvention::PEP8),
+            &quot;numpy&quot; =&gt; Ok(DocstringConvention::NumPy),
+            &quot;google&quot; =&gt; Ok(DocstringConvention::Google),
+            _ =&gt; Err(anyhow!(&quot;Unknown docstring convention: {}&quot;, string)),
+        }
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/plugins/redundant_open_modes.rs</code>:118 on 2022-11-21 00:36</div>
+            <div class="timeline-body"><p>I admittedly haven't tested it, but would this not fail for cases like:</p>
+<pre><code class="language-py">open([1, 2, 3], &quot;U&quot;)
+</code></pre>
+<p>I know that's not a valid <code>open</code> call, but maybe more realistically:</p>
+<pre><code class="language-py">open(f(a, b, c), &quot;U&quot;)
+</code></pre>
+<p>Or more generally: any case in which there's a comma <em>within</em> the first argument. Should it instead be structured as: find the last comma <em>before</em> <code>mode_param.location</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-21 00:37</div>
+            <div class="timeline-body"><p>This looks great! Some comments inline. Feel free to reply with questions or correct me on anything I got wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/pyupgrade/plugins/redundant_open_modes.rs</code>:62 on 2022-11-21 00:38</div>
+            <div class="timeline-body"><p>(\cc @JonathanPlasse - another case in which we need to validate a built-in.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-21 00:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andribergs">@andribergs</a> on <code>src/pyupgrade/plugins/redundant_open_modes.rs</code>:88 on 2022-11-21 17:22</div>
+            <div class="timeline-body"><p>Sounds good, added this 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andribergs">@andribergs</a> reviewed on 2022-11-21 17:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andribergs">@andribergs</a> reviewed on 2022-11-21 17:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andribergs">@andribergs</a> on <code>src/pyupgrade/plugins/redundant_open_modes.rs</code>:62 on 2022-11-21 17:22</div>
+            <div class="timeline-body"><p>Added the TODO 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andribergs">@andribergs</a> on <code>src/pyupgrade/plugins/redundant_open_modes.rs</code>:38 on 2022-11-21 17:23</div>
+            <div class="timeline-body"><p>Yeah for sure, changed this 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andribergs">@andribergs</a> reviewed on 2022-11-21 17:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andribergs">@andribergs</a> on <code>src/pyupgrade/plugins/redundant_open_modes.rs</code>:25 on 2022-11-21 17:24</div>
+            <div class="timeline-body"><p>Ah my bad, of course, implemented <code>FromStr</code> 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andribergs">@andribergs</a> reviewed on 2022-11-21 17:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andribergs">@andribergs</a> reviewed on 2022-11-21 17:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andribergs">@andribergs</a> on <code>src/pyupgrade/plugins/redundant_open_modes.rs</code>:118 on 2022-11-21 17:28</div>
+            <div class="timeline-body"><p>You're absolutely right, I didn't consider the case where there were commas in the first argument.</p>
+<p>I've modified the logic here so we now find the last comma before <code>mode_param</code>, and added corresponding test cases 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andribergs">@andribergs</a> on 2022-11-21 17:31</div>
+            <div class="timeline-body"><p>@charliermarsh Thanks for the review, I've addressed all comments and pushed a commit accordingly. Let me know what you think!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @andribergs on 2022-11-21 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-21 17:53</div>
+            <div class="timeline-body"><p>@andberger - Awesome, thank you! Will get this merged today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andribergs">@andribergs</a> on <code>src/pyupgrade/plugins/redundant_open_modes.rs</code>:25 on 2022-11-21 18:05</div>
+            <div class="timeline-body"><p>I do have one question regarding how I implemented the <code>FromStr</code> trait , would love to hear your take.
+This is the <code>FromStr</code> trait implementation for <code>OpenMode</code>:</p>
+<pre><code class="language-rust">impl FromStr for OpenMode {
+    type Err = anyhow::Error;
+
+    fn from_str(string: &amp;str) -&gt; Result&lt;Self, Self::Err&gt; {
+        match string {
+            &quot;U&quot; =&gt; Ok(OpenMode::U),
+            &quot;Ur&quot; =&gt; Ok(OpenMode::Ur),
+            &quot;Ub&quot; =&gt; Ok(OpenMode::Ub),
+            &quot;rUb&quot; =&gt; Ok(OpenMode::RUb),
+            &quot;r&quot; =&gt; Ok(OpenMode::R),
+            &quot;rt&quot; =&gt; Ok(OpenMode::Rt),
+            &quot;wt&quot; =&gt; Ok(OpenMode::Wt),
+            _ =&gt; Err(anyhow!(&quot;Unknown open mode: {}&quot;, string)),
+        }
+    }
+}
+</code></pre>
+<p>So, when I match on this I have an empty match arm for the error case:</p>
+<pre><code class="language-rust">            match OpenMode::from_str(mode_param_value.as_str()) {
+                Ok(mode) =&gt; {
+                    checker.add_check(create_check(
+                        expr,
+                        mode_param,
+                        mode.replacement_value(),
+                        checker.locator,
+                        checker.patch(&amp;CheckCode::U015),
+                    ));
+                }
+                Err(_) =&gt; {}
+            }
+</code></pre>
+<p>Since I don't really need to do anything if I don't get an <code>Ok</code> from <code>from_str</code>, I just kept it as empty. But I didn't want to log with <code>eprintln!</code> though since I could have an open mode (like <code>&quot;a&quot;</code> for example) that doesn't need handling here.</p>
+<p>I guess I'm wondering if an empty match arm for an error case is considered bad practice or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andribergs">@andribergs</a> reviewed on 2022-11-21 18:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2022-11-21 18:08</div>
+            <div class="timeline-body"><p>This doesn’t catch <code>mode</code> as a keyword argument like pyupgrade does:</p>
+<pre><code class="language-python">open(&quot;foo&quot;, mode=&quot;U&quot;)
+open(name=&quot;foo&quot;, mode=&quot;U&quot;)
+open(mode=&quot;U&quot;, name=&quot;foo&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andribergs">@andribergs</a> reviewed on 2022-11-21 18:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andribergs">@andribergs</a> on <code>src/pyupgrade/plugins/redundant_open_modes.rs</code>:25 on 2022-11-21 18:09</div>
+            <div class="timeline-body"><p>Of course, <code>clippy</code> had the answers, used <code>if let</code> instead 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-21 18:34</div>
+            <div class="timeline-body"><p>@andberger - Do you wanna add keyword argument handling to this PR? Or TODO it and handle in a separate PR later?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andribergs">@andribergs</a> on 2022-11-21 19:18</div>
+            <div class="timeline-body"><p>@andersk @charliermarsh Ah my bad, wasn't aware of this case.</p>
+<p>I'd love to try my hand at adding this, maybe we just TODO it and I'll implement this in a separate PR then (probably tonight or tomorrow). Sounds good?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-11-21 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-21 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-21 21:06</div>
+            <div class="timeline-body"><p>@andberger - Sounds good! Thanks for the contribution :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:51:00 UTC
+    </footer>
+</body>
+</html>

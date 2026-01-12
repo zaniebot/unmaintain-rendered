@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement B904 - astral-sh/ruff #892</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement B904</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/892">#892</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2022-11-23 14:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/harupy">@harupy</a> on 2022-11-23 14:04</div>
+            <div class="timeline-body"><p>#389</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-23 14:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/check_ast.rs</code>:2024 on 2022-11-23 14:52</div>
+            <div class="timeline-body"><p>I'd prefer to find a way to implement this that doesn't require introducing a new scope, since the scope semantics are kinda tricky. I'd even prefer adding an <code>in_excepthandler: bool</code> to the <code>Checker</code> if that's easiest :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2022-11-23 15:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>src/check_ast.rs</code>:2024 on 2022-11-23 15:28</div>
+            <div class="timeline-body"><p>Got it. How about implementing a visitor that looks like this?</p>
+<pre><code class="language-rust">impl&lt;'a&gt; Visitor&lt;'a&gt; for RaiseVisitor {
+    fn visit_stmt(&amp;mut self, stmt: &amp;'a Stmt) {
+        match &amp;stmt.node {
+            StmtKind::Raise { exc, cause } =&gt; {
+                if cause.is_none() {
+                    if let Some(exc) = exc {
+                        match &amp;exc.node {
+                            ExprKind::Name { id, .. } if is_lower(id) =&gt; {}
+                            _ =&gt; {
+                                self.checks.push(Check::new(
+                                    CheckKind::RaiseWithoutFromInsideExcept,
+                                    Range::from_located(stmt),
+                                ));
+                            }
+                        }
+                    }
+                }
+            }
+            StmtKind::FunctionDef { .. }
+            | StmtKind::AsyncFunctionDef { .. }
+            | StmtKind::ClassDef { .. } =&gt; {}
+            StmtKind::Try { .. } =&gt; {}
+            StmtKind::If { body, .. }
+            | StmtKind::With { body, .. }
+            | StmtKind::AsyncWith { body, .. }
+            | StmtKind::For { body, .. }
+            | StmtKind::AsyncFor { body, .. }
+            | StmtKind::While { body, .. } =&gt; {
+                for stmt in body {
+                    self.visit_stmt(stmt);
+                }
+            }
+            _ =&gt; {}
+        }
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2022-11-23 15:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>src/check_ast.rs</code>:2024 on 2022-11-23 15:45</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd even prefer adding an in_excepthandler: bool to the Checker if that's easiest :</p>
+</blockquote>
+<p>Can you elaborate on this approach?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-23 16:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/check_ast.rs</code>:2024 on 2022-11-23 16:44</div>
+            <div class="timeline-body"><p>Yeah that looks reasonable to me.</p>
+<p>What I was suggesting was something like:</p>
+<pre><code class="language-rust">fn visit_excepthandler(&amp;mut self, excepthandler: &amp;'b Excepthandler) {
+    prev_in_excepthandler = self.in_excepthandler;
+    self.in_excepthandler = true;
+    ...
+    self.in_excepthandler = prev_in_excepthandler;
+}
+</code></pre>
+<p>Then here, you could check <code>if self.in_excepthandler</code>. It's kind of a mess because we have to do that separate bookkeeping, but it does mean to can avoid multiple passes over the AST as would be required with the visitor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2022-11-24 02:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>src/check_ast.rs</code>:2024 on 2022-11-24 02:42</div>
+            <div class="timeline-body"><p>Does this approach work when a raise statement is in a function?</p>
+<pre><code class="language-python">except:
+   def foo():
+       raise Exception  # this is ok
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-24 03:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/check_ast.rs</code>:2024 on 2022-11-24 03:05</div>
+            <div class="timeline-body"><p>Probably not, no!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-24 04:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/check_ast.rs</code>:2024 on 2022-11-24 04:25</div>
+            <div class="timeline-body"><p>(So I think the visitor you outlined above is probably a better choice.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harupy">@harupy</a> reviewed on 2022-11-24 05:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harupy">@harupy</a> on <code>src/check_ast.rs</code>:2024 on 2022-11-24 05:44</div>
+            <div class="timeline-body"><p>Got it :) I'll push the code tonight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-11-24 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-24 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2022-11-24 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/check_ast.rs</code>:2024 on 2022-11-24 14:50</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 05:51:01 UTC
+    </footer>
+</body>
+</html>
