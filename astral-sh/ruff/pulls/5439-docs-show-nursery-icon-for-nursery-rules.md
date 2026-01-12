@@ -1,0 +1,124 @@
+```yaml
+number: 5439
+title: "docs: show nursery icon for nursery rules"
+type: pull_request
+state: merged
+author: akx
+labels:
+  - documentation
+assignees: []
+merged: true
+base: main
+head: docs-nursery-icon
+created_at: 2023-06-29T13:40:51Z
+updated_at: 2023-07-10T02:24:58Z
+url: https://github.com/astral-sh/ruff/pull/5439
+synced_at: 2026-01-12T03:36:55Z
+```
+
+# docs: show nursery icon for nursery rules
+
+---
+
+_Pull request opened by @akx on 2023-06-29 13:40_
+
+## Summary
+
+This changes the docs to show a nursery icon (🌅) for rules in the nursery.
+
+It currently doesn't do that for the rules that are in sub-categories (Pylint, Pycodestyle) because there is no `all_rules()` for the `RuleCodePrefix` that's returned by `UpstreamCategory` iteration (and as mentioned on Discord, I think `UpstreamCategory` maybe shouldn't be a thing). (That would be enabled by #5591.)
+
+## Test Plan
+
+Generated docs to see new icons (with the caveat above).
+
+
+---
+
+_Comment by @github-actions[bot] on 2023-06-29 14:14_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      8.3±0.02ms     4.9 MB/sec    1.00      8.3±0.04ms     4.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1777.9±4.36µs     9.4 MB/sec    1.00   1772.4±4.21µs     9.4 MB/sec
+formatter/numpy/globals.py                 1.00    194.7±0.53µs    15.2 MB/sec    1.00    195.4±2.03µs    15.1 MB/sec
+formatter/pydantic/types.py                1.02      4.0±0.01ms     6.4 MB/sec    1.00      3.9±0.01ms     6.5 MB/sec
+linter/all-rules/large/dataset.py          1.00     14.9±0.03ms     2.7 MB/sec    1.01     15.1±0.11ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.7±0.00ms     4.5 MB/sec    1.00      3.7±0.00ms     4.5 MB/sec
+linter/all-rules/numpy/globals.py          1.02    385.5±1.17µs     7.7 MB/sec    1.00    378.2±0.83µs     7.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.5±0.01ms     3.9 MB/sec    1.01      6.6±0.03ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.1±0.15ms     5.0 MB/sec    1.02      8.2±0.01ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1625.3±1.89µs    10.2 MB/sec    1.01   1639.2±2.13µs    10.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    169.6±0.29µs    17.4 MB/sec    1.01    171.2±0.53µs    17.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.5±0.01ms     7.3 MB/sec    1.02      3.6±0.01ms     7.1 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.02      9.4±0.07ms     4.3 MB/sec    1.00      9.2±0.08ms     4.4 MB/sec
+formatter/numpy/ctypeslib.py               1.01      2.0±0.05ms     8.1 MB/sec    1.00      2.0±0.04ms     8.2 MB/sec
+formatter/numpy/globals.py                 1.00    233.3±6.58µs    12.6 MB/sec    1.01   235.8±16.78µs    12.5 MB/sec
+formatter/pydantic/types.py                1.00      4.5±0.06ms     5.7 MB/sec    1.00      4.4±0.06ms     5.7 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.6±0.09ms     2.6 MB/sec    1.00     15.6±0.11ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.1±0.04ms     4.1 MB/sec    1.01      4.1±0.05ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    499.7±5.03µs     5.9 MB/sec    1.01    504.3±6.64µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.9±0.06ms     3.7 MB/sec    1.00      6.9±0.07ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.9±0.04ms     5.1 MB/sec    1.00      8.0±0.06ms     5.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1697.9±12.22µs     9.8 MB/sec    1.01  1714.6±17.32µs     9.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00    199.5±8.54µs    14.8 MB/sec    1.00    199.9±2.21µs    14.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.04ms     7.1 MB/sec    1.01      3.6±0.05ms     7.1 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Comment by @charliermarsh on 2023-06-30 02:45_
+
+Bad reviewer hygiene as I haven't looked through the code at all, but I only have a minute tonight so want to chime in to say, it probably _is_ important that we support this for the pycodestyle rules, since we have a bunch of nursery rules in there that I'd love to get in the docs.
+
+---
+
+_Comment by @akx on 2023-06-30 07:09_
+
+> Bad reviewer hygiene as I haven't looked through the code at all, but I only have a minute tonight so want to chime in to say, it probably _is_ important that we support this for the pycodestyle rules, since we have a bunch of nursery rules in there that I'd love to get in the docs.
+
+Absolutely! (Those are the ones I'm interested in tbh.) I'm just not perfectly sure how to best do that, since I don't know how to add `all_rules()` from #5436 into `RuleCodePrefix` (as returned by the `UpstreamCategory` iteration), and that led me to thinking whether the whole `UpstreamCategory` thing should just be replaced by rules having optional `RuleCategory`s...
+
+---
+
+_Comment by @charliermarsh on 2023-07-07 02:42_
+
+I took another look at this to try and get the pycodestyle rules to show, and it's just really tough to work with the proc macro code.
+
+---
+
+_Marked ready for review by @akx on 2023-07-07 09:19_
+
+---
+
+_Comment by @akx on 2023-07-07 11:43_
+
+@charliermarsh See #5591 – it's not quite perfect but does the trick here 😅 
+
+---
+
+_Label `documentation` added by @charliermarsh on 2023-07-10 02:24_
+
+---
+
+_Merged by @charliermarsh on 2023-07-10 02:24_
+
+---
+
+_Closed by @charliermarsh on 2023-07-10 02:24_
+
+---

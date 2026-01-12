@@ -1,0 +1,94 @@
+```yaml
+number: 5637
+title: Add a link to the nursery; tweak icons
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - documentation
+assignees: []
+merged: true
+base: main
+head: charlie/nursery-docs
+created_at: 2023-07-10T02:46:30Z
+updated_at: 2023-07-10T03:28:47Z
+url: https://github.com/astral-sh/ruff/pull/5637
+synced_at: 2026-01-12T03:36:55Z
+```
+
+# Add a link to the nursery; tweak icons
+
+---
+
+_Pull request opened by @charliermarsh on 2023-07-10 02:46_
+
+## Summary
+
+We now always render the icons, but very faintly if inactive, and always right-align. This ensures consistent alignment as you scroll down the page:
+
+<img width="1792" alt="Screen Shot 2023-07-09 at 10 45 50 PM" src="https://github.com/astral-sh/ruff/assets/1309177/da47ac0e-d646-49e1-bbe1-9f43adf94bb4">
+
+
+---
+
+_Label `documentation` added by @charliermarsh on 2023-07-10 02:46_
+
+---
+
+_Merged by @charliermarsh on 2023-07-10 03:09_
+
+---
+
+_Closed by @charliermarsh on 2023-07-10 03:09_
+
+---
+
+_Branch deleted on 2023-07-10 03:09_
+
+---
+
+_Comment by @github-actions[bot] on 2023-07-10 03:13_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.13      9.4±0.02ms     4.3 MB/sec    1.00      8.3±0.01ms     4.9 MB/sec
+formatter/numpy/ctypeslib.py               1.10   1948.6±2.54µs     8.5 MB/sec    1.00   1769.7±3.52µs     9.4 MB/sec
+formatter/numpy/globals.py                 1.06    207.3±0.39µs    14.2 MB/sec    1.00    194.9±0.21µs    15.1 MB/sec
+formatter/pydantic/types.py                1.12      4.4±0.01ms     5.7 MB/sec    1.00      4.0±0.02ms     6.4 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.8±0.03ms     2.9 MB/sec    1.01     13.9±0.03ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.01ms     4.8 MB/sec    1.00      3.5±0.01ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    361.0±1.31µs     8.2 MB/sec    1.00    362.2±1.55µs     8.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.1±0.01ms     4.2 MB/sec    1.01      6.2±0.01ms     4.1 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.1±0.01ms     5.8 MB/sec    1.01      7.2±0.01ms     5.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1458.8±3.98µs    11.4 MB/sec    1.01   1468.4±2.87µs    11.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    155.5±0.30µs    19.0 MB/sec    1.01    156.5±0.28µs    18.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.01ms     8.1 MB/sec    1.01      3.2±0.01ms     8.0 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     12.5±0.49ms     3.2 MB/sec    1.02     12.8±0.55ms     3.2 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.6±0.11ms     6.3 MB/sec    1.03      2.7±0.12ms     6.1 MB/sec
+formatter/numpy/globals.py                 1.00   303.0±17.75µs     9.7 MB/sec    1.04   315.2±29.03µs     9.4 MB/sec
+formatter/pydantic/types.py                1.00      5.9±0.19ms     4.3 MB/sec    1.02      6.0±0.21ms     4.3 MB/sec
+linter/all-rules/large/dataset.py          1.00     20.3±0.61ms     2.0 MB/sec    1.04     21.2±0.86ms  1965.0 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.4±0.21ms     3.1 MB/sec    1.01      5.4±0.21ms     3.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00   641.8±27.22µs     4.6 MB/sec    1.03   662.7±24.90µs     4.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      9.2±0.37ms     2.8 MB/sec    1.03      9.4±0.36ms     2.7 MB/sec
+linter/default-rules/large/dataset.py      1.00     10.5±0.32ms     3.9 MB/sec    1.03     10.8±0.37ms     3.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.2±0.10ms     7.5 MB/sec    1.01      2.2±0.09ms     7.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00   266.2±19.10µs    11.1 MB/sec    1.03   275.0±11.38µs    10.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.7±0.19ms     5.5 MB/sec    1.04      4.9±0.16ms     5.3 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---

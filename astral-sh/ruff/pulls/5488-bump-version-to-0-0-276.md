@@ -1,0 +1,634 @@
+```yaml
+number: 5488
+title: Bump version to 0.0.276
+type: pull_request
+state: merged
+author: charliermarsh
+labels: []
+assignees: []
+merged: true
+base: main
+head: charlie/bump
+created_at: 2023-07-03T17:33:43Z
+updated_at: 2023-07-03T18:17:00Z
+url: https://github.com/astral-sh/ruff/pull/5488
+synced_at: 2026-01-12T03:36:55Z
+```
+
+# Bump version to 0.0.276
+
+---
+
+_Pull request opened by @charliermarsh on 2023-07-03 17:33_
+
+_No description provided._
+
+---
+
+_Merged by @charliermarsh on 2023-07-03 18:02_
+
+---
+
+_Closed by @charliermarsh on 2023-07-03 18:02_
+
+---
+
+_Branch deleted on 2023-07-03 18:02_
+
+---
+
+_Comment by @github-actions[bot] on 2023-07-03 18:09_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+289, -236, 0 error(s))
+
+<details><summary>airflow (+117, -93)</summary>
+<p>
+
+```diff
+- airflow/api/common/experimental/get_dag_runs.py:44:9: PERF401 Use a list comprehension to create a transformed list
++ airflow/api/common/experimental/get_dag_runs.py:44:9: PERF402 Use `list` or `list.copy` to create a copy of a list
++ airflow/cli/commands/cheat_sheet_command.py:44:17: PERF401 Use a list comprehension to create a new filtered list
++ airflow/cli/commands/connection_command.py:146:13: PERF401 Use a list comprehension to create a new filtered list
+- airflow/cli/commands/connection_command.py:146:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/cli/commands/connection_command.py:233:17: PERF401 Use a list comprehension to create a new filtered list
+- airflow/cli/commands/connection_command.py:233:17: PERF401 Use a list comprehension to create a transformed list
+- airflow/cli/commands/dag_command.py:380:9: PERF401 Use a list comprehension to create a transformed list
++ airflow/cli/commands/dag_command.py:380:9: PERF402 Use `list` or `list.copy` to create a copy of a list
++ airflow/cli/commands/pool_command.py:116:13: PERF401 Use a list comprehension to create a new filtered list
+- airflow/cli/commands/role_command.py:50:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/cli/commands/role_command.py:50:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/cli/commands/standalone_command.py:297:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/cli/commands/standalone_command.py:297:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/cli/commands/user_command.py:220:21: PERF401 Use a list comprehension to create a transformed list
++ airflow/cli/commands/user_command.py:220:21: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/dag_processing/manager.py:865:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/dag_processing/manager.py:865:13: PERF402 Use `list` or `list.copy` to create a copy of a list
++ airflow/dag_processing/processor.py:510:21: PERF401 Use a list comprehension to create a new filtered list
++ airflow/decorators/base.py:220:17: PERF401 Use a list comprehension to create a new filtered list
+- airflow/decorators/base.py:220:17: PERF401 Use a list comprehension to create a transformed list
++ airflow/decorators/base.py:239:21: PERF401 Use a list comprehension to create a new filtered list
+- airflow/decorators/base.py:239:21: PERF401 Use a list comprehension to create a transformed list
++ airflow/decorators/setup_teardown.py:66:17: PERF401 Use a list comprehension to create a new filtered list
++ airflow/example_dags/example_params_trigger_ui.py:72:17: PERF401 Use a list comprehension to create a new filtered list
+- airflow/example_dags/example_params_trigger_ui.py:72:17: PERF401 Use a list comprehension to create a transformed list
+- airflow/executors/kubernetes_executor.py:838:17: PERF401 Use a list comprehension to create a transformed list
++ airflow/executors/kubernetes_executor.py:838:17: PERF402 Use `list` or `list.copy` to create a copy of a list
++ airflow/jobs/triggerer_job_runner.py:225:13: PERF401 Use a list comprehension to create a new filtered list
+- airflow/kubernetes/pod_generator_deprecated.py:174:21: PERF401 Use a list comprehension to create a transformed list
++ airflow/kubernetes/pod_generator_deprecated.py:174:21: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/kubernetes/pod_generator_deprecated.py:181:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/kubernetes/pod_generator_deprecated.py:181:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/kubernetes/pod_generator_deprecated.py:214:17: PERF401 Use a list comprehension to create a transformed list
++ airflow/kubernetes/pod_generator_deprecated.py:214:17: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/migrations/utils.py:49:9: PERF401 Use a list comprehension to create a transformed list
++ airflow/migrations/utils.py:49:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/models/dag.py:1420:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/models/dag.py:1420:13: PERF402 Use `list` or `list.copy` to create a copy of a list
++ airflow/models/dag.py:1521:17: PERF401 Use a list comprehension to create a new filtered list
+- airflow/models/dag.py:1707:17: PERF401 Use a list comprehension to create a transformed list
++ airflow/models/dag.py:1707:17: PERF402 Use `list` or `list.copy` to create a copy of a list
++ airflow/models/dag.py:2999:21: PERF401 Use a list comprehension to create a new filtered list
++ airflow/models/dagrun.py:1341:17: PERF401 Use a list comprehension to create a new filtered list
+- airflow/models/dataset.py:153:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/models/dataset.py:153:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/models/dataset.py:201:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/models/dataset.py:201:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/models/dataset.py:241:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/models/dataset.py:241:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/models/dataset.py:337:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/models/dataset.py:337:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/models/taskinstance.py:2647:25: PERF401 Use a list comprehension to create a transformed list
++ airflow/models/taskinstance.py:2647:25: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/models/taskinstance.py:2657:25: PERF401 Use a list comprehension to create a transformed list
++ airflow/models/taskinstance.py:2657:25: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/providers/amazon/aws/hooks/batch_client.py:499:17: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/amazon/aws/hooks/batch_client.py:499:17: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/providers/amazon/aws/hooks/s3.py:460:21: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/amazon/aws/hooks/s3.py:460:21: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/providers/amazon/aws/hooks/s3.py:620:21: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/amazon/aws/hooks/s3.py:620:21: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/providers/amazon/aws/log/s3_task_handler.py:128:17: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/amazon/aws/log/s3_task_handler.py:128:17: PERF402 Use `list` or `list.copy` to create a copy of a list
++ airflow/providers/amazon/aws/sensors/sqs.py:207:17: PERF401 Use a list comprehension to create a new filtered list
+- airflow/providers/amazon/aws/sensors/sqs.py:207:17: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/amazon/aws/sensors/sqs.py:225:21: PERF401 Use a list comprehension to create a new filtered list
++ airflow/providers/apache/beam/hooks/beam.py:76:13: PERF401 Use a list comprehension to create a new filtered list
+- airflow/providers/cncf/kubernetes/backcompat/backwards_compat_converters.py:77:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/cncf/kubernetes/backcompat/backwards_compat_converters.py:77:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/providers/common/sql/hooks/sql.py:465:25: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/common/sql/hooks/sql.py:465:25: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/providers/dbt/cloud/operators/dbt.py:322:17: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/dbt/cloud/operators/dbt.py:322:17: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/providers/exasol/hooks/exasol.py:147:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/exasol/hooks/exasol.py:147:13: PERF402 Use `list` or `list.copy` to create a copy of a list
++ airflow/providers/google/cloud/hooks/bigtable.py:162:21: PERF401 Use a list comprehension to create a new filtered list
+- airflow/providers/google/cloud/hooks/bigtable.py:162:21: PERF401 Use a list comprehension to create a transformed list
+- airflow/providers/google/cloud/hooks/gcs.py:810:17: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/google/cloud/hooks/gcs.py:810:17: PERF402 Use `list` or `list.copy` to create a copy of a list
++ airflow/providers/google/cloud/hooks/gcs.py:927:21: PERF401 Use a list comprehension to create a new filtered list
+- airflow/providers/google/cloud/hooks/gcs.py:927:21: PERF401 Use a list comprehension to create a transformed list
+- airflow/providers/google/cloud/hooks/stackdriver.py:256:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/google/cloud/hooks/stackdriver.py:256:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/providers/google/cloud/hooks/stackdriver.py:258:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/google/cloud/hooks/stackdriver.py:258:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/providers/google/cloud/hooks/stackdriver.py:530:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/google/cloud/hooks/stackdriver.py:530:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/providers/google/cloud/log/stackdriver_task_handler.py:255:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/google/cloud/log/stackdriver_task_handler.py:255:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/providers/google/cloud/log/stackdriver_task_handler.py:258:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/google/cloud/log/stackdriver_task_handler.py:258:13: PERF402 Use `list` or `list.copy` to create a copy of a list
++ airflow/providers/google/cloud/log/stackdriver_task_handler.py:320:17: PERF401 Use a list comprehension to create a new filtered list
++ airflow/providers/google/cloud/transfers/azure_fileshare_to_gcs.py:135:21: PERF401 Use a list comprehension to create a new filtered list
+- airflow/providers/google/cloud/transfers/cassandra_to_gcs.py:234:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/google/cloud/transfers/cassandra_to_gcs.py:234:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/providers/google/cloud/transfers/cassandra_to_gcs.py:322:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/google/cloud/transfers/cassandra_to_gcs.py:322:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/providers/google/cloud/transfers/sql_to_gcs.py:226:17: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/google/cloud/transfers/sql_to_gcs.py:226:17: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/providers/microsoft/azure/hooks/cosmos.py:276:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/microsoft/azure/hooks/cosmos.py:276:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/providers/microsoft/azure/hooks/data_lake.py:468:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/microsoft/azure/hooks/data_lake.py:468:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/providers/microsoft/azure/hooks/data_lake.py:487:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/microsoft/azure/hooks/data_lake.py:487:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/providers/microsoft/azure/hooks/wasb.py:292:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/microsoft/azure/hooks/wasb.py:292:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/providers/microsoft/azure/hooks/wasb.py:664:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/microsoft/azure/hooks/wasb.py:664:13: PERF402 Use `list` or `list.copy` to create a copy of a list
++ airflow/providers/openlineage/utils/utils.py:197:17: PERF401 Use a list comprehension to create a new filtered list
++ airflow/providers/oracle/hooks/oracle.py:298:21: PERF401 Use a list comprehension to create a new filtered list
++ airflow/providers/sftp/hooks/sftp.py:398:17: PERF401 Use a list comprehension to create a new filtered list
+- airflow/providers/sftp/hooks/sftp.py:398:17: PERF401 Use a list comprehension to create a transformed list
++ airflow/providers/slack/hooks/slack_webhook.py:197:17: PERF401 Use a list comprehension to create a new filtered list
++ airflow/providers/slack/operators/slack_webhook.py:126:17: PERF401 Use a list comprehension to create a new filtered list
++ airflow/serialization/serialized_objects.py:709:17: PERF401 Use a list comprehension to create a new filtered list
+- airflow/serialization/serialized_objects.py:709:17: PERF401 Use a list comprehension to create a transformed list
++ airflow/utils/edgemodifier.py:71:17: PERF401 Use a list comprehension to create a new filtered list
+- airflow/utils/entry_points.py:40:17: PERF401 Use a list comprehension to create a transformed list
++ airflow/utils/entry_points.py:40:17: PERF402 Use `list` or `list.copy` to create a copy of a list
+- airflow/utils/log/file_task_handler.py:496:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/utils/log/file_task_handler.py:496:13: PERF402 Use `list` or `list.copy` to create a copy of a list
++ airflow/www/api/experimental/endpoints.py:329:13: PERF401 Use a list comprehension to create a new filtered list
+- airflow/www/api/experimental/endpoints.py:329:13: PERF401 Use a list comprehension to create a transformed list
++ airflow/www/decorators.py:52:13: PERF401 Use a list comprehension to create a new filtered list
++ airflow/www/extensions/init_appbuilder.py:670:25: PERF401 Use a list comprehension to create a new filtered list
+- airflow/www/extensions/init_appbuilder.py:670:25: PERF401 Use a list comprehension to create a transformed list
+- dev/breeze/src/airflow_breeze/commands/ci_commands.py:357:25: PERF401 Use a list comprehension to create a transformed list
++ dev/breeze/src/airflow_breeze/commands/ci_commands.py:357:25: PERF402 Use `list` or `list.copy` to create a copy of a list
++ dev/breeze/src/airflow_breeze/commands/release_management_commands.py:654:25: PERF401 Use a list comprehension to create a new filtered list
+- dev/breeze/src/airflow_breeze/commands/release_management_commands.py:654:25: PERF401 Use a list comprehension to create a transformed list
+- dev/breeze/src/airflow_breeze/commands/setup_commands.py:285:21: PERF401 Use a list comprehension to create a transformed list
++ dev/breeze/src/airflow_breeze/commands/setup_commands.py:285:21: PERF402 Use `list` or `list.copy` to create a copy of a list
++ dev/breeze/src/airflow_breeze/commands/setup_commands.py:447:17: PERF401 Use a list comprehension to create a new filtered list
+- dev/breeze/src/airflow_breeze/params/common_build_params.py:105:17: PERF401 Use a list comprehension to create a transformed list
++ dev/breeze/src/airflow_breeze/params/common_build_params.py:105:17: PERF402 Use `list` or `list.copy` to create a copy of a list
+- dev/breeze/src/airflow_breeze/params/shell_params.py:264:17: PERF401 Use a list comprehension to create a transformed list
++ dev/breeze/src/airflow_breeze/params/shell_params.py:264:17: PERF402 Use `list` or `list.copy` to create a copy of a list
+- dev/breeze/src/airflow_breeze/utils/exclude_from_matrix.py:30:9: PERF401 Use a list comprehension to create a transformed list
++ dev/breeze/src/airflow_breeze/utils/exclude_from_matrix.py:30:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- dev/breeze/src/airflow_breeze/utils/exclude_from_matrix.py:46:13: PERF401 Use a list comprehension to create a transformed list
++ dev/breeze/src/airflow_breeze/utils/exclude_from_matrix.py:46:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- dev/breeze/src/airflow_breeze/utils/parallel.py:247:17: PERF401 Use a list comprehension to create a transformed list
++ dev/breeze/src/airflow_breeze/utils/parallel.py:247:17: PERF402 Use `list` or `list.copy` to create a copy of a list
++ dev/breeze/src/airflow_breeze/utils/selective_checks.py:478:21: PERF401 Use a list comprehension to create a new filtered list
+- dev/breeze/src/airflow_breeze/utils/selective_checks.py:738:17: PERF401 Use a list comprehension to create a transformed list
++ dev/breeze/src/airflow_breeze/utils/selective_checks.py:738:17: PERF402 Use `list` or `list.copy` to create a copy of a list
++ dev/provider_packages/prepare_provider_packages.py:1927:13: PERF401 Use a list comprehension to create a new filtered list
++ docs/conf.py:264:13: PERF401 Use a list comprehension to create a new filtered list
+- docs/conf.py:264:13: PERF401 Use a list comprehension to create a transformed list
++ docs/conf.py:268:13: PERF401 Use a list comprehension to create a new filtered list
+- docs/conf.py:268:13: PERF401 Use a list comprehension to create a transformed list
+- docs/exts/docs_build/fetch_inventories.py:103:9: PERF401 Use a list comprehension to create a transformed list
++ docs/exts/docs_build/fetch_inventories.py:103:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- docs/exts/docs_build/fetch_inventories.py:111:9: PERF401 Use a list comprehension to create a transformed list
++ docs/exts/docs_build/fetch_inventories.py:111:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- docs/exts/docs_build/fetch_inventories.py:119:9: PERF401 Use a list comprehension to create a transformed list
++ docs/exts/docs_build/fetch_inventories.py:119:9: PERF402 Use `list` or `list.copy` to create a copy of a list
++ scripts/ci/pre_commit/pre_commit_check_order_dockerfile_extras.py:85:13: PERF401 Use a list comprehension to create a new filtered list
+- scripts/ci/pre_commit/pre_commit_check_order_dockerfile_extras.py:90:17: PERF401 Use a list comprehension to create a transformed list
++ scripts/ci/pre_commit/pre_commit_check_order_dockerfile_extras.py:90:17: PERF402 Use `list` or `list.copy` to create a copy of a list
++ scripts/ci/pre_commit/pre_commit_sort_in_the_wild.py:47:13: PERF401 Use a list comprehension to create a new filtered list
++ scripts/in_container/remove_arm_packages.py:41:17: PERF401 Use a list comprehension to create a new filtered list
+- scripts/in_container/remove_arm_packages.py:41:17: PERF401 Use a list comprehension to create a transformed list
+- scripts/in_container/run_migration_reference.py:123:9: PERF401 Use a list comprehension to create a transformed list
++ scripts/in_container/run_migration_reference.py:123:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- scripts/in_container/run_provider_yaml_files_check.py:157:17: PERF401 Use a list comprehension to create a transformed list
++ scripts/in_container/run_provider_yaml_files_check.py:157:17: PERF402 Use `list` or `list.copy` to create a copy of a list
+- scripts/in_container/run_provider_yaml_files_check.py:161:17: PERF401 Use a list comprehension to create a transformed list
++ scripts/in_container/run_provider_yaml_files_check.py:161:17: PERF402 Use `list` or `list.copy` to create a copy of a list
++ scripts/in_container/run_provider_yaml_files_check.py:267:21: PERF401 Use a list comprehension to create a new filtered list
+- scripts/in_container/run_provider_yaml_files_check.py:267:21: PERF401 Use a list comprehension to create a transformed list
++ scripts/in_container/run_provider_yaml_files_check.py:352:21: PERF401 Use a list comprehension to create a new filtered list
+- scripts/in_container/run_provider_yaml_files_check.py:352:21: PERF401 Use a list comprehension to create a transformed list
++ scripts/in_container/run_provider_yaml_files_check.py:485:17: PERF401 Use a list comprehension to create a new filtered list
+- scripts/in_container/run_provider_yaml_files_check.py:485:17: PERF401 Use a list comprehension to create a transformed list
++ scripts/in_container/update_quarantined_test_status.py:81:13: PERF401 Use a list comprehension to create a new filtered list
+- scripts/in_container/update_quarantined_test_status.py:81:13: PERF401 Use a list comprehension to create a transformed list
++ scripts/in_container/verify_providers.py:265:17: PERF401 Use a list comprehension to create a new filtered list
++ tests/dag_processing/test_job_runner.py:1299:17: PERF401 Use a list comprehension to create a new filtered list
+- tests/dag_processing/test_job_runner.py:1299:17: PERF401 Use a list comprehension to create a transformed list
+- tests/jobs/test_scheduler_job.py:619:13: PERF401 Use a list comprehension to create a transformed list
++ tests/jobs/test_scheduler_job.py:619:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- tests/models/test_dag.py:895:13: PERF401 Use a list comprehension to create a transformed list
++ tests/models/test_dag.py:895:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- tests/providers/amazon/aws/sensors/test_sqs.py:169:17: PERF401 Use a list comprehension to create a transformed list
++ tests/providers/amazon/aws/sensors/test_sqs.py:169:17: PERF402 Use `list` or `list.copy` to create a copy of a list
+- tests/providers/amazon/aws/sensors/test_sqs.py:215:17: PERF401 Use a list comprehension to create a transformed list
++ tests/providers/amazon/aws/sensors/test_sqs.py:215:17: PERF402 Use `list` or `list.copy` to create a copy of a list
+- tests/providers/amazon/aws/sensors/test_sqs.py:262:17: PERF401 Use a list comprehension to create a transformed list
++ tests/providers/amazon/aws/sensors/test_sqs.py:262:17: PERF402 Use `list` or `list.copy` to create a copy of a list
+- tests/providers/amazon/aws/transfers/test_dynamodb_to_s3.py:57:17: PERF401 Use a list comprehension to create a transformed list
++ tests/providers/amazon/aws/transfers/test_dynamodb_to_s3.py:57:17: PERF402 Use `list` or `list.copy` to create a copy of a list
+- tests/providers/amazon/aws/transfers/test_sql_to_s3.py:208:13: PERF401 Use a list comprehension to create a transformed list
++ tests/providers/amazon/aws/transfers/test_sql_to_s3.py:208:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- tests/providers/amazon/aws/transfers/test_sql_to_s3.py:259:13: PERF401 Use a list comprehension to create a transformed list
++ tests/providers/amazon/aws/transfers/test_sql_to_s3.py:259:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- tests/providers/cncf/kubernetes/utils/test_pod_manager.py:444:13: PERF401 Use a list comprehension to create a transformed list
++ tests/providers/cncf/kubernetes/utils/test_pod_manager.py:444:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- tests/providers/cncf/kubernetes/utils/test_pod_manager.py:446:13: PERF401 Use a list comprehension to create a transformed list
++ tests/providers/cncf/kubernetes/utils/test_pod_manager.py:446:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- tests/providers/google/cloud/hooks/test_pubsub.py:395:13: PERF401 Use a list comprehension to create a transformed list
++ tests/providers/google/cloud/hooks/test_pubsub.py:395:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- tests/providers/google/cloud/transfers/test_sql_to_gcs.py:144:13: PERF401 Use a list comprehension to create a transformed list
++ tests/providers/google/cloud/transfers/test_sql_to_gcs.py:144:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- tests/utils/test_log_handlers.py:562:9: PERF401 Use a list comprehension to create a transformed list
++ tests/utils/test_log_handlers.py:562:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- tests/utils/test_task_group.py:213:13: PERF401 Use a list comprehension to create a transformed list
++ tests/utils/test_task_group.py:213:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+```
+
+</p>
+</details>
+<details><summary>bokeh (+45, -35)</summary>
+<p>
+
+```diff
+- examples/topics/pie/donut.py:53:5: PERF401 Use a list comprehension to create a transformed list
++ examples/topics/pie/donut.py:53:5: PERF402 Use `list` or `list.copy` to create a copy of a list
++ setup.py:68:13: PERF401 Use a list comprehension to create a new filtered list
+- src/bokeh/core/has_props.py:806:9: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/core/has_props.py:806:9: PERF402 Use `list` or `list.copy` to create a copy of a list
++ src/bokeh/core/property/container.py:101:21: PERF401 Use a list comprehension to create a new filtered list
+- src/bokeh/core/property/container.py:101:21: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/document/callbacks.py:304:17: PERF401 Use a list comprehension to create a new filtered list
++ src/bokeh/embed/bundle.py:206:21: PERF401 Use a list comprehension to create a new filtered list
+- src/bokeh/embed/util.py:334:9: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/embed/util.py:334:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- src/bokeh/layouts.py:417:25: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/layouts.py:417:25: PERF402 Use `list` or `list.copy` to create a copy of a list
+- src/bokeh/layouts.py:436:25: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/layouts.py:436:25: PERF402 Use `list` or `list.copy` to create a copy of a list
++ src/bokeh/layouts.py:449:17: PERF401 Use a list comprehension to create a new filtered list
+- src/bokeh/layouts.py:449:17: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/layouts.py:521:13: PERF401 Use a list comprehension to create a new filtered list
++ src/bokeh/layouts.py:541:21: PERF401 Use a list comprehension to create a new filtered list
++ src/bokeh/layouts.py:591:13: PERF401 Use a list comprehension to create a new filtered list
++ src/bokeh/model/model.py:315:17: PERF401 Use a list comprehension to create a new filtered list
+- src/bokeh/model/model.py:315:17: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/models/layouts.py:492:17: PERF401 Use a list comprehension to create a new filtered list
+- src/bokeh/models/layouts.py:492:17: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/models/plots.py:470:21: PERF401 Use a list comprehension to create a new filtered list
++ src/bokeh/models/plots.py:477:21: PERF401 Use a list comprehension to create a new filtered list
++ src/bokeh/models/renderers/glyph_renderer.py:166:17: PERF401 Use a list comprehension to create a new filtered list
+- src/bokeh/models/renderers/glyph_renderer.py:166:17: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/models/tools.py:1582:17: PERF401 Use a list comprehension to create a new filtered list
+- src/bokeh/models/tools.py:1582:17: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/models/tools.py:1647:17: PERF401 Use a list comprehension to create a new filtered list
+- src/bokeh/models/tools.py:1647:17: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/models/tools.py:1708:17: PERF401 Use a list comprehension to create a new filtered list
+- src/bokeh/models/tools.py:1708:17: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/models/tools.py:1753:17: PERF401 Use a list comprehension to create a new filtered list
+- src/bokeh/models/tools.py:1753:17: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/models/tools.py:1800:17: PERF401 Use a list comprehension to create a new filtered list
+- src/bokeh/models/tools.py:1800:17: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/models/tools.py:1859:17: PERF401 Use a list comprehension to create a new filtered list
+- src/bokeh/models/tools.py:1859:17: PERF401 Use a list comprehension to create a transformed list
+- src/bokeh/plotting/_figure.py:385:13: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/plotting/_figure.py:385:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- src/bokeh/plotting/_figure.py:426:13: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/plotting/_figure.py:426:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- src/bokeh/plotting/_figure.py:476:17: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/plotting/_figure.py:476:17: PERF402 Use `list` or `list.copy` to create a copy of a list
+- src/bokeh/plotting/_figure.py:482:17: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/plotting/_figure.py:482:17: PERF402 Use `list` or `list.copy` to create a copy of a list
+- src/bokeh/plotting/_figure.py:565:13: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/plotting/_figure.py:565:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- src/bokeh/plotting/_figure.py:607:13: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/plotting/_figure.py:607:13: PERF402 Use `list` or `list.copy` to create a copy of a list
++ src/bokeh/plotting/_tools.py:179:17: PERF401 Use a list comprehension to create a new filtered list
++ src/bokeh/resources.py:470:25: PERF401 Use a list comprehension to create a new filtered list
+- src/bokeh/resources.py:470:25: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/server/contexts.py:310:17: PERF401 Use a list comprehension to create a new filtered list
+- src/bokeh/server/contexts.py:310:17: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/settings.py:756:21: PERF401 Use a list comprehension to create a new filtered list
+- src/bokeh/settings.py:756:21: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/settings.py:767:21: PERF401 Use a list comprehension to create a new filtered list
+- src/bokeh/settings.py:767:21: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/sphinxext/bokeh_directive.py:67:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- src/bokeh/sphinxext/bokeh_plot.py:272:21: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/sphinxext/bokeh_plot.py:272:21: PERF402 Use `list` or `list.copy` to create a copy of a list
++ src/bokeh/sphinxext/bokeh_sampledata_xref.py:134:17: PERF401 Use a list comprehension to create a new filtered list
+- src/bokeh/sphinxext/bokeh_sampledata_xref.py:134:17: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/sphinxext/bokeh_sampledata_xref.py:202:17: PERF401 Use a list comprehension to create a new filtered list
+- src/bokeh/sphinxext/bokeh_sampledata_xref.py:202:17: PERF401 Use a list comprehension to create a transformed list
++ src/bokeh/util/functions.py:66:13: PERF401 Use a list comprehension to create a new filtered list
+- src/bokeh/util/functions.py:66:13: PERF401 Use a list comprehension to create a transformed list
++ tests/codebase/test_no_request_host.py:48:17: PERF401 Use a list comprehension to create a new filtered list
+- tests/codebase/test_no_request_host.py:48:17: PERF401 Use a list comprehension to create a transformed list
++ tests/codebase/test_windows_reserved_filenames.py:43:17: PERF401 Use a list comprehension to create a new filtered list
+- tests/codebase/test_windows_reserved_filenames.py:43:17: PERF401 Use a list comprehension to create a transformed list
+- tests/unit/bokeh/document/test_document.py:715:13: PERF401 Use a list comprehension to create a transformed list
++ tests/unit/bokeh/document/test_document.py:715:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- tests/unit/bokeh/protocol/messages/test_patch_doc.py:103:13: PERF401 Use a list comprehension to create a transformed list
++ tests/unit/bokeh/protocol/messages/test_patch_doc.py:103:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- tests/unit/bokeh/protocol/messages/test_patch_doc.py:90:13: PERF401 Use a list comprehension to create a transformed list
++ tests/unit/bokeh/protocol/messages/test_patch_doc.py:90:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+```
+
+</p>
+</details>
+<details><summary>zulip (+127, -108)</summary>
+<p>
+
+```diff
+- analytics/lib/fixtures.py:68:9: PERF401 Use a list comprehension to create a transformed list
++ analytics/lib/fixtures.py:68:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- analytics/views/installation_activity.py:612:9: PERF401 Use a list comprehension to create a transformed list
++ analytics/views/installation_activity.py:612:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- corporate/views/upgrade.py:382:17: PERF401 Use a list comprehension to create a transformed list
++ corporate/views/upgrade.py:382:17: PERF402 Use `list` or `list.copy` to create a copy of a list
+- manage.py:99:21: PERF401 Use a list comprehension to create a transformed list
++ manage.py:99:21: PERF402 Use `list` or `list.copy` to create a copy of a list
+- scripts/lib/check_rabbitmq_queue.py:173:9: PERF401 Use a list comprehension to create a transformed list
++ scripts/lib/check_rabbitmq_queue.py:173:9: PERF402 Use `list` or `list.copy` to create a copy of a list
++ tools/lib/capitalization.py:232:13: PERF401 Use a list comprehension to create a new filtered list
+- tools/lib/html_branches.py:97:17: PERF401 Use a list comprehension to create a transformed list
++ tools/lib/html_branches.py:97:17: PERF402 Use `list` or `list.copy` to create a copy of a list
++ zerver/actions/create_user.py:197:17: PERF401 Use a list comprehension to create a new filtered list
+- zerver/actions/create_user.py:197:17: PERF401 Use a list comprehension to create a transformed list
++ zerver/actions/create_user.py:292:13: PERF401 Use a list comprehension to create a new filtered list
++ zerver/actions/message_edit.py:818:17: PERF401 Use a list comprehension to create a new filtered list
+- zerver/actions/message_flags.py:239:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/actions/message_flags.py:239:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/actions/streams.py:329:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/actions/streams.py:329:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/actions/streams.py:341:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/actions/streams.py:341:9: PERF402 Use `list` or `list.copy` to create a copy of a list
++ zerver/data_import/gitter.py:125:13: PERF401 Use a list comprehension to create a new filtered list
++ zerver/data_import/gitter.py:161:13: PERF401 Use a list comprehension to create a new filtered list
++ zerver/data_import/gitter.py:330:17: PERF401 Use a list comprehension to create a new filtered list
++ zerver/data_import/mattermost.py:254:13: PERF401 Use a list comprehension to create a new filtered list
+- zerver/data_import/rocketchat.py:281:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/data_import/rocketchat.py:281:9: PERF402 Use `list` or `list.copy` to create a copy of a list
++ zerver/data_import/slack.py:387:13: PERF401 Use a list comprehension to create a new filtered list
++ zerver/data_import/slack.py:806:17: PERF401 Use a list comprehension to create a new filtered list
+- zerver/data_import/slack.py:806:17: PERF401 Use a list comprehension to create a transformed list
++ zerver/lib/bulk_create.py:226:13: PERF401 Use a list comprehension to create a new filtered list
+- zerver/lib/bulk_create.py:226:13: PERF401 Use a list comprehension to create a transformed list
+- zerver/lib/cache.py:547:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/lib/cache.py:547:13: PERF402 Use `list` or `list.copy` to create a copy of a list
++ zerver/lib/display_recipient.py:169:17: PERF401 Use a list comprehension to create a new filtered list
++ zerver/lib/email_notifications.py:648:13: PERF401 Use a list comprehension to create a new filtered list
++ zerver/lib/events.py:1147:21: PERF401 Use a list comprehension to create a new filtered list
+- zerver/lib/events.py:496:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/lib/events.py:496:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/lib/events.py:506:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/lib/events.py:506:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/lib/fix_unreads.py:105:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/lib/fix_unreads.py:105:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/lib/fix_unreads.py:65:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/lib/fix_unreads.py:65:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/lib/generate_test_data.py:28:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/lib/generate_test_data.py:28:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/lib/generate_test_data.py:33:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/lib/generate_test_data.py:33:9: PERF402 Use `list` or `list.copy` to create a copy of a list
++ zerver/lib/generate_test_data.py:52:13: PERF401 Use a list comprehension to create a new filtered list
+- zerver/lib/home.py:58:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/lib/home.py:58:9: PERF402 Use `list` or `list.copy` to create a copy of a list
++ zerver/lib/import_realm.py:273:13: PERF401 Use a list comprehension to create a new filtered list
++ zerver/lib/import_realm.py:284:13: PERF401 Use a list comprehension to create a new filtered list
+- zerver/lib/import_realm.py:284:13: PERF401 Use a list comprehension to create a transformed list
+- zerver/lib/import_realm.py:397:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/lib/import_realm.py:397:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/lib/markdown/__init__.py:1922:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/lib/markdown/__init__.py:1922:9: PERF402 Use `list` or `list.copy` to create a copy of a list
++ zerver/lib/markdown/__init__.py:2411:13: PERF401 Use a list comprehension to create a new filtered list
+- zerver/lib/markdown/__init__.py:2411:13: PERF401 Use a list comprehension to create a transformed list
+- zerver/lib/markdown/__init__.py:852:17: PERF401 Use a list comprehension to create a transformed list
++ zerver/lib/markdown/__init__.py:852:17: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/lib/markdown/__init__.py:866:17: PERF401 Use a list comprehension to create a transformed list
++ zerver/lib/markdown/__init__.py:866:17: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/lib/markdown/__init__.py:880:17: PERF401 Use a list comprehension to create a transformed list
++ zerver/lib/markdown/__init__.py:880:17: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/lib/message.py:1598:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/lib/message.py:1598:9: PERF402 Use `list` or `list.copy` to create a copy of a list
++ zerver/lib/narrow.py:964:13: PERF401 Use a list comprehension to create a new filtered list
++ zerver/lib/request.py:358:13: PERF401 Use a list comprehension to create a new filtered list
++ zerver/lib/soft_deactivation.py:353:13: PERF401 Use a list comprehension to create a new filtered list
+- zerver/lib/soft_deactivation.py:353:13: PERF401 Use a list comprehension to create a transformed list
+- zerver/lib/topic.py:216:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/lib/topic.py:216:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/lib/user_groups.py:118:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/lib/user_groups.py:118:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/lib/user_groups.py:124:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/lib/user_groups.py:124:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/lib/users.py:339:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/lib/users.py:339:9: PERF402 Use `list` or `list.copy` to create a copy of a list
++ zerver/lib/users.py:663:13: PERF401 Use a list comprehension to create a new filtered list
+- zerver/lib/users.py:663:13: PERF401 Use a list comprehension to create a transformed list
+- zerver/lib/webhooks/git.py:84:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/lib/webhooks/git.py:84:13: PERF402 Use `list` or `list.copy` to create a copy of a list
++ zerver/migrations/0236_remove_illegal_characters_email_full.py:18:17: PERF401 Use a list comprehension to create a new filtered list
+- zerver/migrations/0236_remove_illegal_characters_email_full.py:18:17: PERF401 Use a list comprehension to create a transformed list
+- zerver/migrations/0434_create_nobody_system_group.py:18:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/migrations/0434_create_nobody_system_group.py:18:9: PERF402 Use `list` or `list.copy` to create a copy of a list
++ zerver/migrations/0436_realmauthenticationmethods.py:18:17: PERF401 Use a list comprehension to create a new filtered list
+- zerver/migrations/0436_realmauthenticationmethods.py:18:17: PERF401 Use a list comprehension to create a transformed list
+- zerver/models.py:1361:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/models.py:1361:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/models.py:1427:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/models.py:1427:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/openapi/curl_param_value_generators.py:147:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/openapi/curl_param_value_generators.py:147:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/openapi/markdown_extension.py:159:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/openapi/markdown_extension.py:159:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/openapi/markdown_extension.py:198:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/openapi/markdown_extension.py:198:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/openapi/markdown_extension.py:347:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/openapi/markdown_extension.py:347:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/openapi/python_examples.py:1167:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/openapi/python_examples.py:1167:9: PERF402 Use `list` or `list.copy` to create a copy of a list
++ zerver/openapi/test_curl_examples.py:58:25: PERF401 Use a list comprehension to create a new filtered list
+- zerver/openapi/test_curl_examples.py:58:25: PERF401 Use a list comprehension to create a transformed list
+- zerver/tests/test_auth_backends.py:5037:17: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_auth_backends.py:5037:17: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_auth_backends.py:5099:17: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_auth_backends.py:5099:17: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_events.py:1452:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_events.py:1452:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_events.py:1499:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_events.py:1499:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_events.py:845:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_events.py:845:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_events.py:863:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_events.py:863:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_events.py:899:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_events.py:899:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_events.py:921:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_events.py:921:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_events.py:944:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_events.py:944:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_home.py:1214:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_home.py:1214:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_invite.py:104:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_invite.py:104:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_invite.py:1401:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_invite.py:1401:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_invite.py:1631:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_invite.py:1631:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_invite.py:1687:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_invite.py:1687:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_invite.py:1741:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_invite.py:1741:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_markdown.py:677:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_markdown.py:677:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_message_fetch.py:2092:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_message_fetch.py:2092:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_message_fetch.py:2369:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_message_fetch.py:2369:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_message_fetch.py:2712:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_message_fetch.py:2712:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_message_fetch.py:3062:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_message_fetch.py:3062:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_message_fetch.py:4278:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_message_fetch.py:4278:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_message_fetch.py:4290:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_message_fetch.py:4290:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_message_fetch.py:4343:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_message_fetch.py:4343:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_message_send.py:1361:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_message_send.py:1361:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_message_send.py:1370:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_message_send.py:1370:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_message_send.py:1382:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_message_send.py:1382:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_message_send.py:1387:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_message_send.py:1387:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_message_send.py:1923:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_message_send.py:1923:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_message_send.py:1930:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_message_send.py:1930:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_message_send.py:1951:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_message_send.py:1951:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_message_send.py:1958:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_message_send.py:1958:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_migrations.py:70:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_migrations.py:70:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_queue_worker.py:800:17: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_queue_worker.py:800:17: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_realm_export.py:283:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_realm_export.py:283:13: PERF402 Use `list` or `list.copy` to create a copy of a list
++ zerver/tests/test_retention.py:938:17: PERF401 Use a list comprehension to create a new filtered list
+- zerver/tests/test_soft_deactivation.py:123:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_soft_deactivation.py:123:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_soft_deactivation.py:138:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_soft_deactivation.py:138:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_soft_deactivation.py:186:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_soft_deactivation.py:186:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_soft_deactivation.py:248:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_soft_deactivation.py:248:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/tests/test_soft_deactivation.py:67:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/tests/test_soft_deactivation.py:67:13: PERF402 Use `list` or `list.copy` to create a copy of a list
++ zerver/tests/test_subs.py:2379:17: PERF401 Use a list comprehension to create a new filtered list
++ zerver/tests/test_subs.py:5005:17: PERF401 Use a list comprehension to create a new filtered list
+- zerver/tests/test_subs.py:5005:17: PERF401 Use a list comprehension to create a transformed list
++ zerver/views/message_fetch.py:150:17: PERF401 Use a list comprehension to create a new filtered list
+- zerver/views/streams.py:498:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/views/streams.py:498:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/views/streams.py:523:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/views/streams.py:523:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/views/streams.py:525:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/views/streams.py:525:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/webhooks/azuredevops/view.py:77:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/webhooks/azuredevops/view.py:77:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/webhooks/beanstalk/view.py:41:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/webhooks/beanstalk/view.py:41:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/webhooks/freshstatus/view.py:134:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/webhooks/freshstatus/view.py:134:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/webhooks/freshstatus/view.py:152:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/webhooks/freshstatus/view.py:152:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/webhooks/github/view.py:567:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/webhooks/github/view.py:567:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/webhooks/github/view.py:575:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/webhooks/github/view.py:575:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/webhooks/gogs/view.py:51:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/webhooks/gogs/view.py:51:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/webhooks/lidarr/view.py:105:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/webhooks/lidarr/view.py:105:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/webhooks/lidarr/view.py:118:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/webhooks/lidarr/view.py:118:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/webhooks/rhodecode/view.py:19:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/webhooks/rhodecode/view.py:19:9: PERF402 Use `list` or `list.copy` to create a copy of a list
++ zerver/webhooks/slack_incoming/view.py:212:17: PERF401 Use a list comprehension to create a new filtered list
+- zerver/webhooks/slack_incoming/view.py:222:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/webhooks/slack_incoming/view.py:222:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/webhooks/slack_incoming/view.py:64:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/webhooks/slack_incoming/view.py:64:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/webhooks/slack_incoming/view.py:68:13: PERF401 Use a list comprehension to create a transformed list
++ zerver/webhooks/slack_incoming/view.py:68:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zerver/webhooks/taiga/view.py:34:9: PERF401 Use a list comprehension to create a transformed list
++ zerver/webhooks/taiga/view.py:34:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zilencer/management/commands/populate_db.py:1179:9: PERF401 Use a list comprehension to create a transformed list
++ zilencer/management/commands/populate_db.py:1179:9: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zilencer/management/commands/populate_db.py:187:13: PERF401 Use a list comprehension to create a transformed list
++ zilencer/management/commands/populate_db.py:187:13: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zilencer/management/commands/populate_db.py:550:17: PERF401 Use a list comprehension to create a transformed list
++ zilencer/management/commands/populate_db.py:550:17: PERF402 Use `list` or `list.copy` to create a copy of a list
+- zproject/urls.py:690:5: PERF401 Use a list comprehension to create a transformed list
++ zproject/urls.py:690:5: PERF402 Use `list` or `list.copy` to create a copy of a list
+```
+
+</p>
+</details>
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.10     11.6±0.43ms     3.5 MB/sec    1.00     10.6±0.32ms     3.9 MB/sec
+formatter/numpy/ctypeslib.py               1.06      2.4±0.10ms     6.8 MB/sec    1.00      2.3±0.07ms     7.3 MB/sec
+formatter/numpy/globals.py                 1.05   268.4±18.74µs    11.0 MB/sec    1.00   254.8±13.00µs    11.6 MB/sec
+formatter/pydantic/types.py                1.06      5.4±0.19ms     4.7 MB/sec    1.00      5.1±0.28ms     5.0 MB/sec
+linter/all-rules/large/dataset.py          1.01     16.4±0.76ms     2.5 MB/sec    1.00     16.2±0.50ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.9±0.17ms     4.2 MB/sec    1.03      4.1±0.12ms     4.1 MB/sec
+linter/all-rules/numpy/globals.py          1.01   516.8±25.36µs     5.7 MB/sec    1.00   510.3±16.03µs     5.8 MB/sec
+linter/all-rules/pydantic/types.py         1.06      7.4±0.23ms     3.5 MB/sec    1.00      6.9±0.18ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.0±0.34ms     5.1 MB/sec    1.01      8.1±0.40ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1716.6±75.87µs     9.7 MB/sec    1.03  1774.6±99.85µs     9.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    201.0±9.90µs    14.7 MB/sec    1.03   207.1±11.04µs    14.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.19ms     7.0 MB/sec    1.00      3.7±0.12ms     6.9 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     11.5±0.55ms     3.6 MB/sec    1.28     14.6±1.42ms     2.8 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.5±0.22ms     6.7 MB/sec    1.18      3.0±0.31ms     5.6 MB/sec
+formatter/numpy/globals.py                 1.00   285.0±16.80µs    10.4 MB/sec    1.23   350.0±53.77µs     8.4 MB/sec
+formatter/pydantic/types.py                1.00      5.6±0.27ms     4.5 MB/sec    1.19      6.7±0.84ms     3.8 MB/sec
+linter/all-rules/large/dataset.py          1.00     18.8±0.83ms     2.2 MB/sec    1.05     19.8±1.71ms     2.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.0±0.25ms     3.3 MB/sec    1.11      5.6±0.54ms     3.0 MB/sec
+linter/all-rules/numpy/globals.py          1.06   632.1±29.57µs     4.7 MB/sec    1.00   595.9±42.66µs     5.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.5±0.30ms     3.0 MB/sec    1.02      8.6±0.81ms     3.0 MB/sec
+linter/default-rules/large/dataset.py      1.00     10.3±0.44ms     3.9 MB/sec    1.24     12.8±1.72ms     3.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.1±0.08ms     7.9 MB/sec    1.24      2.6±0.28ms     6.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00   259.1±15.04µs    11.4 MB/sec    1.24   322.2±42.86µs     9.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.7±0.25ms     5.4 MB/sec    1.21      5.7±0.40ms     4.5 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---

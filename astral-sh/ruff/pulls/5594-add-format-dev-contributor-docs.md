@@ -1,0 +1,128 @@
+```yaml
+number: 5594
+title: Add format-dev contributor docs
+type: pull_request
+state: merged
+author: konstin
+labels: []
+assignees: []
+merged: true
+base: main
+head: format_dev_contributor_docs
+created_at: 2023-07-07T15:24:17Z
+updated_at: 2023-07-07T17:18:48Z
+url: https://github.com/astral-sh/ruff/pull/5594
+synced_at: 2026-01-12T03:36:55Z
+```
+
+# Add format-dev contributor docs
+
+---
+
+_Pull request opened by @konstin on 2023-07-07 15:24_
+
+## Summary
+
+This adds markdown-level docs for #5492
+
+## Test Plan
+
+n/A
+
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_python_formatter/README.md`:254 on 2023-07-07 15:31_
+
+```suggestion
+There are three common problems with the formatter: The second formatting pass looks different than
+```
+
+---
+
+_@MichaReiser approved on 2023-07-07 15:32_
+
+---
+
+_Comment by @github-actions[bot] on 2023-07-07 15:58_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+3, -0, 0 error(s))
+
+<details><summary>airflow (+2, -0)</summary>
+<p>
+
+```diff
++ airflow/cli/commands/task_command.py:72:21: PYI030 Multiple literal members in a union. Use a single literal, e.g. `Literal[False, "db", "memory"]`
++ airflow/models/mappedoperator.py:80:20: PYI030 Multiple literal members in a union. Use a single literal, e.g. `Literal["expand", "partial"]`
+```
+
+</p>
+</details>
+<details><summary>bokeh (+1, -0)</summary>
+<p>
+
+```diff
++ src/bokeh/core/serialization.py:148:25: PYI030 Multiple literal members in a union. Use a single literal, e.g. `Literal["bool", "object"]`
+```
+
+</p>
+</details>
+Rules changed: 1
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| PYI030 | 3 | 3 | 0 |
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      9.5±0.04ms     4.3 MB/sec    1.00      9.4±0.03ms     4.3 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.1±0.00ms     7.9 MB/sec    1.00      2.1±0.01ms     8.0 MB/sec
+formatter/numpy/globals.py                 1.00    236.1±0.70µs    12.5 MB/sec    1.00    235.1±1.57µs    12.5 MB/sec
+formatter/pydantic/types.py                1.00      4.6±0.01ms     5.6 MB/sec    1.00      4.6±0.01ms     5.6 MB/sec
+linter/all-rules/large/dataset.py          1.01     16.2±0.08ms     2.5 MB/sec    1.00     16.0±0.07ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.1±0.01ms     4.1 MB/sec    1.00      4.0±0.02ms     4.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00    518.4±2.66µs     5.7 MB/sec    1.01    521.2±1.35µs     5.7 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.1±0.03ms     3.6 MB/sec    1.00      7.1±0.03ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.0±0.04ms     5.1 MB/sec    1.00      8.1±0.03ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1750.7±4.65µs     9.5 MB/sec    1.01   1766.5±7.16µs     9.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    200.2±0.62µs    14.7 MB/sec    1.02    203.4±1.44µs    14.5 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.02ms     7.0 MB/sec    1.01      3.6±0.01ms     7.0 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.02      9.0±0.17ms     4.5 MB/sec    1.00      8.8±0.25ms     4.6 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1885.0±31.85µs     8.8 MB/sec    1.00  1879.3±35.62µs     8.9 MB/sec
+formatter/numpy/globals.py                 1.00    210.5±5.96µs    14.0 MB/sec    1.03    216.6±7.59µs    13.6 MB/sec
+formatter/pydantic/types.py                1.00      4.1±0.07ms     6.2 MB/sec    1.02      4.2±0.11ms     6.1 MB/sec
+linter/all-rules/large/dataset.py          1.00     14.5±0.31ms     2.8 MB/sec    1.02     14.8±0.26ms     2.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.7±0.05ms     4.4 MB/sec    1.02      3.8±0.05ms     4.4 MB/sec
+linter/all-rules/numpy/globals.py          1.00    454.4±8.69µs     6.5 MB/sec    1.04   471.6±10.43µs     6.3 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.4±0.11ms     4.0 MB/sec    1.04      6.6±0.14ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.3±0.09ms     5.5 MB/sec    1.02      7.5±0.13ms     5.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1557.8±27.03µs    10.7 MB/sec    1.01  1570.7±29.77µs    10.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00    185.7±7.20µs    15.9 MB/sec    1.00    185.0±3.97µs    16.0 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.4±0.05ms     7.6 MB/sec    1.00      3.3±0.06ms     7.7 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Merged by @konstin on 2023-07-07 16:52_
+
+---
+
+_Closed by @konstin on 2023-07-07 16:52_
+
+---
+
+_Branch deleted on 2023-07-07 16:52_
+
+---

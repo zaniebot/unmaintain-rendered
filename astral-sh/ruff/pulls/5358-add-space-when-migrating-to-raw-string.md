@@ -1,0 +1,86 @@
+```yaml
+number: 5358
+title: Add space when migrating to raw string
+type: pull_request
+state: merged
+author: charliermarsh
+labels: []
+assignees: []
+merged: true
+base: main
+head: charlie/w
+created_at: 2023-06-25T22:02:59Z
+updated_at: 2023-06-25T22:35:15Z
+url: https://github.com/astral-sh/ruff/pull/5358
+synced_at: 2026-01-12T03:36:55Z
+```
+
+# Add space when migrating to raw string
+
+---
+
+_Pull request opened by @charliermarsh on 2023-06-25 22:02_
+
+## Summary
+
+We had to do this for f-strings too -- if we add a prefix to `"foo"` in `return"foo"`, we also need to add a leading space.
+
+---
+
+_Merged by @charliermarsh on 2023-06-25 22:10_
+
+---
+
+_Closed by @charliermarsh on 2023-06-25 22:10_
+
+---
+
+_Branch deleted on 2023-06-25 22:10_
+
+---
+
+_Comment by @github-actions[bot] on 2023-06-25 22:12_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.16      9.8±0.54ms     4.2 MB/sec    1.00      8.4±0.47ms     4.8 MB/sec
+formatter/numpy/ctypeslib.py               1.18      2.3±0.13ms     7.3 MB/sec    1.00  1937.4±101.85µs     8.6 MB/sec
+formatter/numpy/globals.py                 1.05   245.7±14.16µs    12.0 MB/sec    1.00    233.1±9.75µs    12.7 MB/sec
+formatter/pydantic/types.py                1.10      4.7±0.18ms     5.4 MB/sec    1.00      4.2±0.19ms     6.0 MB/sec
+linter/all-rules/large/dataset.py          1.02     16.4±0.52ms     2.5 MB/sec    1.00     16.1±0.33ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.0±0.12ms     4.1 MB/sec    1.01      4.1±0.15ms     4.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00   528.4±17.94µs     5.6 MB/sec    1.01   533.3±29.58µs     5.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.2±0.19ms     3.5 MB/sec    1.00      7.2±0.30ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.01      8.2±0.24ms     5.0 MB/sec    1.00      8.1±0.26ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.04  1835.5±82.76µs     9.1 MB/sec    1.00  1766.3±68.10µs     9.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    205.4±7.29µs    14.4 MB/sec    1.07   219.6±18.45µs    13.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.13ms     6.9 MB/sec    1.02      3.8±0.13ms     6.7 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.04      9.9±0.44ms     4.1 MB/sec    1.00      9.6±0.36ms     4.2 MB/sec
+formatter/numpy/ctypeslib.py               1.04      2.3±0.14ms     7.2 MB/sec    1.00      2.2±0.09ms     7.5 MB/sec
+formatter/numpy/globals.py                 1.01   274.9±17.93µs    10.7 MB/sec    1.00   271.6±20.96µs    10.9 MB/sec
+formatter/pydantic/types.py                1.00      5.0±0.24ms     5.1 MB/sec    1.00      4.9±0.18ms     5.2 MB/sec
+linter/all-rules/large/dataset.py          1.01     19.4±0.66ms     2.1 MB/sec    1.00     19.2±0.57ms     2.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.1±0.18ms     3.3 MB/sec    1.01      5.1±0.22ms     3.3 MB/sec
+linter/all-rules/numpy/globals.py          1.00   628.4±29.20µs     4.7 MB/sec    1.00   627.5±34.55µs     4.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.5±0.28ms     3.0 MB/sec    1.00      8.5±0.35ms     3.0 MB/sec
+linter/default-rules/large/dataset.py      1.01     10.1±0.53ms     4.0 MB/sec    1.00     10.0±0.36ms     4.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01      2.2±0.10ms     7.6 MB/sec    1.00      2.2±0.14ms     7.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00   253.2±13.34µs    11.7 MB/sec    1.00   252.0±14.40µs    11.7 MB/sec
+linter/default-rules/pydantic/types.py     1.04      4.6±0.19ms     5.5 MB/sec    1.00      4.4±0.16ms     5.7 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---

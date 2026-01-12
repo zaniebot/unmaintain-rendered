@@ -1,0 +1,321 @@
+```yaml
+number: 5444
+title: "Allow parentheses for function calls for `RSE102`"
+type: pull_request
+state: closed
+author: qdegraaf
+labels: []
+assignees: []
+draft: true
+base: main
+head: bugfix/RSE102
+created_at: 2023-06-29T17:51:17Z
+updated_at: 2023-07-06T17:34:24Z
+url: https://github.com/astral-sh/ruff/pull/5444
+synced_at: 2026-01-12T03:36:55Z
+```
+
+# Allow parentheses for function calls for `RSE102`
+
+---
+
+_Pull request opened by @qdegraaf on 2023-06-29 17:51_
+
+## Summary
+
+Edit RSE102 to allow empty parentheses if the call is a function that raises an error (and not e.g. a Class instantiation) so that we allow scenarios like:
+
+```python
+def return_error():
+    return ValueError("Something")
+
+raise return_error()
+```
+
+and we don't break the code during autofix into:
+
+```python
+def return_error():
+    return ValueError("Something")
+
+raise return_error
+```
+
+## Test Plan
+
+Added an extra case to the existing fixture
+
+## Issue link:
+
+Closes: https://github.com/astral-sh/ruff/issues/5416 
+
+
+---
+
+_Renamed from "Allow parentheses for function calls for RSE102" to "Allow parentheses for function calls for `RSE102`" by @qdegraaf on 2023-06-29 17:55_
+
+---
+
+_@MichaReiser approved on 2023-06-30 08:25_
+
+---
+
+_Comment by @github-actions[bot] on 2023-06-30 09:14_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      8.3±0.03ms     4.9 MB/sec    1.00      8.3±0.03ms     4.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1770.4±1.98µs     9.4 MB/sec    1.00   1762.1±6.75µs     9.4 MB/sec
+formatter/numpy/globals.py                 1.00    193.8±1.04µs    15.2 MB/sec    1.00    193.6±1.60µs    15.2 MB/sec
+formatter/pydantic/types.py                1.01      4.0±0.01ms     6.4 MB/sec    1.00      3.9±0.01ms     6.5 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.8±0.04ms     2.9 MB/sec    1.11     15.3±0.30ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.00ms     4.8 MB/sec    1.07      3.7±0.01ms     4.5 MB/sec
+linter/all-rules/numpy/globals.py          1.00   381.9±11.18µs     7.7 MB/sec    1.00    383.8±1.87µs     7.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.1±0.03ms     4.2 MB/sec    1.09      6.6±0.02ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.2±0.13ms     5.7 MB/sec    1.19      8.6±0.01ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1485.4±3.74µs    11.2 MB/sec    1.15   1705.5±1.82µs     9.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00    160.1±0.25µs    18.4 MB/sec    1.10    175.5±0.27µs    16.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.01ms     7.9 MB/sec    1.15      3.7±0.01ms     6.9 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.12     10.4±0.10ms     3.9 MB/sec    1.00      9.3±0.08ms     4.4 MB/sec
+formatter/numpy/ctypeslib.py               1.07      2.2±0.03ms     7.7 MB/sec    1.00      2.0±0.03ms     8.3 MB/sec
+formatter/numpy/globals.py                 1.01    239.0±4.60µs    12.3 MB/sec    1.00   236.2±21.98µs    12.5 MB/sec
+formatter/pydantic/types.py                1.07      4.8±0.06ms     5.4 MB/sec    1.00      4.4±0.06ms     5.7 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.5±0.14ms     2.6 MB/sec    1.01     15.5±0.15ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.1±0.06ms     4.1 MB/sec    1.00      4.1±0.04ms     4.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00    505.9±7.96µs     5.8 MB/sec    1.01    509.3±4.84µs     5.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.9±0.07ms     3.7 MB/sec    1.00      6.9±0.06ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.01      8.2±0.36ms     5.0 MB/sec    1.00      8.1±0.06ms     5.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1731.0±16.76µs     9.6 MB/sec    1.00  1718.0±17.30µs     9.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00    204.1±4.29µs    14.5 MB/sec    1.00    203.2±3.32µs    14.5 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.03ms     7.0 MB/sec    1.00      3.6±0.04ms     7.0 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_@charliermarsh reviewed on 2023-07-01 02:35_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff/src/rules/flake8_raise/rules/unnecessary_paren_on_raise_exception.rs`:57 on 2023-07-01 02:35_
+
+I think we need to allow arbitrary expressions here -- this would false-negative on anything accessed through an attribute:
+
+```py
+raise module.Error()
+```
+
+---
+
+_@charliermarsh reviewed on 2023-07-01 02:38_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff/src/rules/flake8_raise/rules/unnecessary_paren_on_raise_exception.rs`:65 on 2023-07-01 02:38_
+
+I'm not opposed to adding this, since it seems like an improvement over what we're doing now, but it's worth noting that it will miss a lot of cases, including the case from the linked issue, where they had a method within a class:
+
+```py
+class CustomError(Exception):
+    def __init__(self, msg: str):
+        self.msg = msg
+
+    @staticmethod
+    def timeout():
+        return CustomError("Operation timed out!")
+
+raise CustomError.timeout()
+```
+
+
+---
+
+_@qdegraaf reviewed on 2023-07-01 09:51_
+
+---
+
+_Review comment by @qdegraaf on `crates/ruff/src/rules/flake8_raise/rules/unnecessary_paren_on_raise_exception.rs`:65 on 2023-07-01 09:51_
+
+I might have misunderstood, but wasn't the point of the issue that we wanted to not flag the above snippet? Or do we want to flag it as a violation but just not autofix it? If the latter, do we have precedent for conditional fixing? Or would it be better to just keep flagging broadly but make the autofix `suggested` or `manual`?
+
+---
+
+_Review comment by @qdegraaf on `crates/ruff/src/rules/flake8_raise/rules/unnecessary_paren_on_raise_exception.rs`:57 on 2023-07-01 10:00_
+
+What would be the best way to go about this, style and performance wise? Pattern matching against all possible expressions or locate the call by range and get the `id` from the string representation of that? 
+
+---
+
+_@qdegraaf reviewed on 2023-07-01 10:00_
+
+---
+
+_@charliermarsh reviewed on 2023-07-01 21:00_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff/src/rules/flake8_raise/rules/unnecessary_paren_on_raise_exception.rs`:57 on 2023-07-01 21:00_
+
+I'd probably do like:
+
+```rust
+if let Expr::Name(ast::ExprName { id, .. }) = func.as_ref() {
+    if let Some(binding_id) = checker.semantic().lookup(id) {
+        let binding = checker.semantic().binding(binding_id);
+        if binding.kind.is_function_definition() {
+            return;
+        }
+    }
+}
+```
+
+---
+
+_@charliermarsh reviewed on 2023-07-01 21:00_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff/src/rules/flake8_raise/rules/unnecessary_paren_on_raise_exception.rs`:65 on 2023-07-01 21:00_
+
+That's right -- we _don't_ want to flag the above. But, I think the fix you have here would work for the wrong reason, which is that it's now avoiding flagging attribute accesses (`a.b()`).
+
+---
+
+_Review comment by @qdegraaf on `crates/ruff/src/rules/flake8_raise/rules/unnecessary_paren_on_raise_exception.rs`:57 on 2023-07-01 21:10_
+
+Ah check. I see what you mean now. That snippet complains about:
+```
+error[E0596]: cannot borrow data in a `&` reference as mutable
+  --> crates/ruff/src/rules/flake8_raise/rules/unnecessary_paren_on_raise_exception.rs:56:39
+   |
+56 |             if let Some(binding_id) = checker.semantic().lookup(id) {
+   |                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ cannot borrow as mutable
+```
+
+But I'll fix that and push changes. Thanks!
+
+---
+
+_@qdegraaf reviewed on 2023-07-01 21:10_
+
+---
+
+_@qdegraaf reviewed on 2023-07-01 21:17_
+
+---
+
+_Review comment by @qdegraaf on `crates/ruff/src/rules/flake8_raise/rules/unnecessary_paren_on_raise_exception.rs`:57 on 2023-07-01 21:17_
+
+Hmm that's in `fn lookup(&mut self, symbol: &str)` by the looks of it. And it's implementation can't be taken over cause `global()` is private. I'll keep the structure but use the previous logic for now. Let me know if there's a better fix for the above
+
+---
+
+_@qdegraaf reviewed on 2023-07-01 21:58_
+
+---
+
+_Review comment by @qdegraaf on `crates/ruff/src/rules/flake8_raise/rules/unnecessary_paren_on_raise_exception.rs`:65 on 2023-07-01 21:58_
+
+Clear, thanks for clarifying. Been trying to implement logic, which should only flag class method calls and not other attributes with the following:
+
+```rust
+match func.as_ref() {
+    // Exclude function calls
+    Expr::Name(ast::ExprName { id, .. }) => {
+        let scope = checker.semantic().scope();
+        if id_is_function_definition(checker, scope, id) {
+            return;
+        }
+    }
+    // Exclude Class method calls
+    Expr::Attribute(ast::ExprAttribute { attr, value, .. }) => {
+        if let Expr::Name(ast::ExprName { id, .. }) = value.as_ref() {
+            if let Some((scope_id, _)) = checker.semantic().nonlocal(id) {
+                let scope = &checker.semantic().scopes[scope_id];
+                if id_is_function_definition(checker, scope, attr.as_str()) {
+                    return;
+                }
+            }
+        }
+    }
+    _ => (),
+};
+
+...
+
+fn id_is_function_definition(checker: &Checker, scope: &Scope, id: &str) -> bool {
+    if let Some(binding_id) = scope.get(id) {
+        let binding = checker.semantic().binding(binding_id);
+        return binding.kind.is_function_definition();
+    }
+    false
+}
+```
+
+But that's still flagging the scenario where: 
+
+```python
+class CustomError(Exception):
+    def __init__(self, msg: str):
+        self.msg = msg
+
+    @staticmethod
+    def timeout():
+        return CustomError("Operation timed out!")
+
+raise CustomError.timeout()
+```
+
+I'm guessing my estimation of how the scopes work is off. Any input on the most efficient/clear way to check whether the `Expr::Attribute` relates to a method call or a different attribute? 
+
+
+---
+
+_Converted to draft by @qdegraaf on 2023-07-03 16:35_
+
+---
+
+_@qdegraaf reviewed on 2023-07-03 19:55_
+
+---
+
+_Review comment by @qdegraaf on `crates/ruff/src/rules/flake8_raise/rules/unnecessary_paren_on_raise_exception.rs`:65 on 2023-07-03 19:55_
+
+Blocked by https://github.com/astral-sh/ruff/issues/5487 
+
+---
+
+_Comment by @charliermarsh on 2023-07-05 18:53_
+
+@qdegraaf - Unfortunately I had to fold this fix into #5536 -- I needed a way to test it, and this felt like the most straightforward. Sorry to step on your toes.
+
+---
+
+_Closed by @charliermarsh on 2023-07-05 18:53_
+
+---
+
+_Comment by @qdegraaf on 2023-07-05 20:44_
+
+> @qdegraaf - Unfortunately I had to fold this fix into #5536 -- I needed a way to test it, and this felt like the most straightforward. Sorry to step on your toes.
+
+No worries at all. If I'd known about the semantic model limits and the Attribute vs Method niggle beforehand, I probably would not have committed myself as quick anyway. Lots learned and happy to see an elegant fix for the issue through your PR. 
+
+---
+
+_Branch deleted on 2023-07-06 17:34_
+
+---

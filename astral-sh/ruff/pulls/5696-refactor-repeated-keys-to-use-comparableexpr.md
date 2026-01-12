@@ -1,0 +1,125 @@
+```yaml
+number: 5696
+title: "Refactor `repeated_keys()` to use `ComparableExpr`"
+type: pull_request
+state: merged
+author: qdegraaf
+labels: []
+assignees: []
+merged: true
+base: main
+head: fix/f601
+created_at: 2023-07-11T22:48:34Z
+updated_at: 2023-07-12T08:11:41Z
+url: https://github.com/astral-sh/ruff/pull/5696
+synced_at: 2026-01-12T03:36:55Z
+```
+
+# Refactor `repeated_keys()` to use `ComparableExpr`
+
+---
+
+_Pull request opened by @qdegraaf on 2023-07-11 22:48_
+
+## Summary
+
+Replaces `DictionaryKey` enum with the more general `ComparableExpr` when checking for duplicate keys
+
+## Test Plan
+
+Added test fixture from issue. Can potentially be expanded further depending on what exactly we want to flag (e.g. do we also want to check for unhashable types?) and which `ComparableExpr::XYZ` types we consider literals.
+
+## Issue link
+
+Closes: https://github.com/astral-sh/ruff/issues/5691 
+
+
+---
+
+_Review comment by @qdegraaf on `crates/ruff/src/rules/pyflakes/rules/repeated_keys.rs`:145 on 2023-07-11 22:53_
+
+Not a complete list of everything that could be considered a literal, could add more to this perhaps. Depends on what we want to do with hashable vs unhashable types and if we want to keep the `_` default and say everything that isn't a literal must be a variable. 
+
+---
+
+_@qdegraaf reviewed on 2023-07-11 22:53_
+
+---
+
+_Comment by @github-actions[bot] on 2023-07-11 22:58_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.8±0.30ms     4.2 MB/sec    1.01      9.9±0.31ms     4.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.3±0.13ms     7.2 MB/sec    1.00      2.3±0.25ms     7.2 MB/sec
+formatter/numpy/globals.py                 1.00   261.7±14.36µs    11.3 MB/sec    1.00   262.4±15.85µs    11.2 MB/sec
+formatter/pydantic/types.py                1.01      5.1±0.28ms     5.0 MB/sec    1.00      5.1±0.30ms     5.0 MB/sec
+linter/all-rules/large/dataset.py          1.01     17.4±0.51ms     2.3 MB/sec    1.00     17.3±0.52ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.3±0.19ms     3.9 MB/sec    1.01      4.3±0.21ms     3.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00   549.8±18.02µs     5.4 MB/sec    1.00   551.0±28.27µs     5.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.6±0.27ms     3.3 MB/sec    1.01      7.7±0.26ms     3.3 MB/sec
+linter/default-rules/large/dataset.py      1.03      8.6±0.21ms     4.7 MB/sec    1.00      8.4±0.21ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1840.2±66.64µs     9.0 MB/sec    1.00  1826.6±70.42µs     9.1 MB/sec
+linter/default-rules/numpy/globals.py      1.00    220.5±9.63µs    13.4 MB/sec    1.00    221.0±9.95µs    13.4 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.8±0.13ms     6.6 MB/sec    1.00      3.8±0.12ms     6.7 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.05     11.0±0.31ms     3.7 MB/sec    1.00     10.5±0.39ms     3.9 MB/sec
+formatter/numpy/ctypeslib.py               1.04      2.5±0.17ms     6.6 MB/sec    1.00      2.4±0.12ms     6.9 MB/sec
+formatter/numpy/globals.py                 1.02   285.3±17.56µs    10.3 MB/sec    1.00   280.3±21.37µs    10.5 MB/sec
+formatter/pydantic/types.py                1.02      5.5±0.19ms     4.6 MB/sec    1.00      5.4±0.25ms     4.7 MB/sec
+linter/all-rules/large/dataset.py          1.01     19.3±0.45ms     2.1 MB/sec    1.00     19.2±0.35ms     2.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.9±0.33ms     3.4 MB/sec    1.02      5.0±0.15ms     3.3 MB/sec
+linter/all-rules/numpy/globals.py          1.00   595.9±20.07µs     5.0 MB/sec    1.06   628.7±44.40µs     4.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.5±0.24ms     3.0 MB/sec    1.00      8.5±0.22ms     3.0 MB/sec
+linter/default-rules/large/dataset.py      1.02      9.5±0.20ms     4.3 MB/sec    1.00      9.3±0.42ms     4.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.07      2.1±0.07ms     8.1 MB/sec    1.00  1925.4±70.81µs     8.6 MB/sec
+linter/default-rules/numpy/globals.py      1.03   239.4±18.56µs    12.3 MB/sec    1.00   232.0±13.00µs    12.7 MB/sec
+linter/default-rules/pydantic/types.py     1.06      4.3±0.16ms     5.9 MB/sec    1.00      4.1±0.18ms     6.2 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_@zanieb reviewed on 2023-07-11 23:34_
+
+---
+
+_Review comment by @zanieb on `crates/ruff/src/rules/pyflakes/rules/repeated_keys.rs`:145 on 2023-07-11 23:34_
+
+Maybe this would be a good use case for `CheckableExprType` from https://github.com/astral-sh/ruff/pull/5602/files#diff-6dec723af30a5832377f43b03388b4c4fc4cd3897ef2e03e5511a17f7d3d1d09R146-R163 
+
+---
+
+_@charliermarsh reviewed on 2023-07-12 03:38_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff/src/rules/pyflakes/rules/repeated_keys.rs`:145 on 2023-07-12 03:38_
+
+I think enumerating here is ok -- only a small number of types are known to be hashable literals (e.g., you can't use a set here anyway), so I think it's fine to just enumerate constants and tuples.
+
+---
+
+_Merged by @charliermarsh on 2023-07-12 03:46_
+
+---
+
+_Closed by @charliermarsh on 2023-07-12 03:46_
+
+---
+
+_Branch deleted on 2023-07-12 08:11_
+
+---

@@ -1,0 +1,96 @@
+```yaml
+number: 5366
+title: "Add documentation for `flake8-2020`"
+type: pull_request
+state: merged
+author: tjkuson
+labels:
+  - documentation
+assignees: []
+merged: true
+base: main
+head: flake8-2020
+created_at: 2023-06-26T10:22:33Z
+updated_at: 2023-07-10T09:55:06Z
+url: https://github.com/astral-sh/ruff/pull/5366
+synced_at: 2026-01-12T03:36:55Z
+```
+
+# Add documentation for `flake8-2020`
+
+---
+
+_Pull request opened by @tjkuson on 2023-06-26 10:22_
+
+## Summary
+
+Completes the documentation for the `flake8-2020` ruleset. Related to #2646 .
+
+## Test Plan
+
+`python scripts/check_docs_formatted.py`
+
+
+---
+
+_Comment by @github-actions[bot] on 2023-06-26 10:31_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      8.0±0.23ms     5.1 MB/sec    1.00      8.0±0.26ms     5.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1829.5±59.78µs     9.1 MB/sec    1.06  1942.5±82.88µs     8.6 MB/sec
+formatter/numpy/globals.py                 1.00    231.7±9.81µs    12.7 MB/sec    1.03   238.1±16.21µs    12.4 MB/sec
+formatter/pydantic/types.py                1.00      4.1±0.13ms     6.2 MB/sec    1.10      4.5±0.18ms     5.7 MB/sec
+linter/all-rules/large/dataset.py          1.00     16.9±0.46ms     2.4 MB/sec    1.00     16.8±0.72ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.1±0.13ms     4.0 MB/sec    1.01      4.2±0.24ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.03   545.0±18.05µs     5.4 MB/sec    1.00   528.5±20.18µs     5.6 MB/sec
+linter/all-rules/pydantic/types.py         1.05      7.4±0.19ms     3.4 MB/sec    1.00      7.0±0.20ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.01      8.2±0.28ms     5.0 MB/sec    1.00      8.1±0.18ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1790.1±84.37µs     9.3 MB/sec    1.04  1866.8±133.45µs     8.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    205.2±9.38µs    14.4 MB/sec    1.00   205.5±10.04µs    14.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.09ms     7.0 MB/sec    1.06      3.9±0.15ms     6.6 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      7.0±0.09ms     5.8 MB/sec    1.02      7.2±0.16ms     5.7 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1567.8±34.22µs    10.6 MB/sec    1.03  1610.3±30.49µs    10.3 MB/sec
+formatter/numpy/globals.py                 1.00    186.8±5.99µs    15.8 MB/sec    1.05    195.5±9.91µs    15.1 MB/sec
+formatter/pydantic/types.py                1.00      3.5±0.05ms     7.2 MB/sec    1.04      3.7±0.07ms     6.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.4±0.19ms     3.0 MB/sec    1.02     13.7±0.31ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.05ms     4.6 MB/sec    1.00      3.6±0.04ms     4.6 MB/sec
+linter/all-rules/numpy/globals.py          1.00    444.3±9.77µs     6.6 MB/sec    1.03   455.9±13.54µs     6.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.0±0.08ms     4.2 MB/sec    1.08      6.5±0.29ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.0±0.09ms     5.8 MB/sec    1.02      7.1±0.18ms     5.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1508.9±21.28µs    11.0 MB/sec    1.02  1534.8±34.50µs    10.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00    175.6±3.84µs    16.8 MB/sec    1.03    180.4±4.98µs    16.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.04ms     8.0 MB/sec    1.04      3.3±0.10ms     7.8 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Label `documentation` added by @charliermarsh on 2023-06-26 15:18_
+
+---
+
+_Merged by @charliermarsh on 2023-06-26 15:24_
+
+---
+
+_Closed by @charliermarsh on 2023-06-26 15:24_
+
+---
+
+_Branch deleted on 2023-07-10 09:55_
+
+---

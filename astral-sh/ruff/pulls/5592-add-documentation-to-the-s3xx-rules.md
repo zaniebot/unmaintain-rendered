@@ -1,0 +1,127 @@
+```yaml
+number: 5592
+title: "Add documentation to the `S3XX` rules"
+type: pull_request
+state: merged
+author: tjkuson
+labels: []
+assignees: []
+merged: true
+base: main
+head: s3-docs
+created_at: 2023-07-07T12:47:52Z
+updated_at: 2023-07-12T08:44:02Z
+url: https://github.com/astral-sh/ruff/pull/5592
+synced_at: 2026-01-12T03:36:55Z
+```
+
+# Add documentation to the `S3XX` rules
+
+---
+
+_Pull request opened by @tjkuson on 2023-07-07 12:47_
+
+## Summary
+
+Add documentation to the `S3XX` rules (the `flake8-bandit` ['blacklists'](https://bandit.readthedocs.io/en/latest/plugins/index.html#plugin-id-groupings) rule group). Related to #2646 .
+
+Changed the `lxml`-based message to reflect that [`defusedxml` doesn't support `lxml`](https://github.com/tiran/defusedxml/issues/31).
+
+## Test Plan
+
+`python scripts/check_docs_formatted.py && mkdocs serve`
+
+
+---
+
+_Renamed from "S3 docs" to "Add documentation to the `S1XX` rules" by @tjkuson on 2023-07-07 12:48_
+
+---
+
+_Renamed from "Add documentation to the `S1XX` rules" to "Add documentation to the `S3XX` rules" by @tjkuson on 2023-07-07 12:49_
+
+---
+
+_Comment by @github-actions[bot] on 2023-07-07 13:01_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+1, -1, 0 error(s))
+
+<details><summary>airflow (+1, -1)</summary>
+<p>
+
+```diff
++ airflow/providers/amazon/aws/hooks/base_aws.py:350:15: S320 Using `lxml` to parse untrusted data is known to be vulnerable to XML attacks
+- airflow/providers/amazon/aws/hooks/base_aws.py:350:15: S320 Using `xml` to parse untrusted data is known to be vulnerable to XML attacks; use `defusedxml` equivalents
+```
+
+</p>
+</details>
+Rules changed: 1
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| S320 | 2 | 1 | 1 |
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      8.3±0.04ms     4.9 MB/sec    1.04      8.6±0.05ms     4.7 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1764.5±2.96µs     9.4 MB/sec    1.03   1816.9±1.73µs     9.2 MB/sec
+formatter/numpy/globals.py                 1.00    193.3±0.34µs    15.3 MB/sec    1.03    199.1±0.77µs    14.8 MB/sec
+formatter/pydantic/types.py                1.00      4.0±0.01ms     6.4 MB/sec    1.02      4.0±0.00ms     6.3 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.9±0.04ms     2.9 MB/sec    1.00     13.9±0.04ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.01ms     4.7 MB/sec    1.00      3.5±0.01ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.01    367.0±1.75µs     8.0 MB/sec    1.00    364.4±2.07µs     8.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.1±0.02ms     4.2 MB/sec    1.00      6.1±0.01ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.1±0.02ms     5.7 MB/sec    1.00      7.1±0.01ms     5.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1465.7±1.90µs    11.4 MB/sec    1.01   1474.0±2.16µs    11.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    158.2±0.22µs    18.6 MB/sec    1.01    159.5±0.53µs    18.5 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.01ms     8.0 MB/sec    1.00      3.2±0.01ms     8.0 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     11.9±0.40ms     3.4 MB/sec    1.00     11.9±0.28ms     3.4 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.5±0.08ms     6.7 MB/sec    1.02      2.6±0.10ms     6.5 MB/sec
+formatter/numpy/globals.py                 1.00   284.8±15.19µs    10.4 MB/sec    1.02   289.9±18.01µs    10.2 MB/sec
+formatter/pydantic/types.py                1.00      5.5±0.21ms     4.6 MB/sec    1.02      5.6±0.19ms     4.5 MB/sec
+linter/all-rules/large/dataset.py          1.02     20.6±0.65ms  2018.3 KB/sec    1.00     20.2±0.65ms     2.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.03      5.4±0.20ms     3.1 MB/sec    1.00      5.2±0.15ms     3.2 MB/sec
+linter/all-rules/numpy/globals.py          1.00   622.9±16.59µs     4.7 MB/sec    1.00   620.2±19.46µs     4.8 MB/sec
+linter/all-rules/pydantic/types.py         1.03      9.1±0.29ms     2.8 MB/sec    1.00      8.9±0.30ms     2.9 MB/sec
+linter/default-rules/large/dataset.py      1.03     10.4±0.28ms     3.9 MB/sec    1.00     10.0±0.19ms     4.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02      2.2±0.05ms     7.7 MB/sec    1.00      2.1±0.04ms     7.9 MB/sec
+linter/default-rules/numpy/globals.py      1.02   252.9±11.57µs    11.7 MB/sec    1.00   248.0±11.31µs    11.9 MB/sec
+linter/default-rules/pydantic/types.py     1.04      4.6±0.13ms     5.5 MB/sec    1.00      4.5±0.09ms     5.7 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_@zanieb approved on 2023-07-11 23:56_
+
+---
+
+_Comment by @zanieb on 2023-07-11 23:56_
+
+Thanks!
+
+---
+
+_Merged by @zanieb on 2023-07-11 23:56_
+
+---
+
+_Closed by @zanieb on 2023-07-11 23:56_
+
+---
+
+_Branch deleted on 2023-07-12 08:44_
+
+---

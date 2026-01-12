@@ -1,0 +1,86 @@
+```yaml
+number: 5636
+title: Render full-width tables in rules reference
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - documentation
+assignees: []
+merged: true
+base: main
+head: charlie/full-width
+created_at: 2023-07-10T02:27:39Z
+updated_at: 2023-07-10T03:00:21Z
+url: https://github.com/astral-sh/ruff/pull/5636
+synced_at: 2026-01-12T03:36:55Z
+```
+
+# Render full-width tables in rules reference
+
+---
+
+_Pull request opened by @charliermarsh on 2023-07-10 02:27_
+
+_No description provided._
+
+---
+
+_Label `documentation` added by @charliermarsh on 2023-07-10 02:27_
+
+---
+
+_Merged by @charliermarsh on 2023-07-10 02:39_
+
+---
+
+_Closed by @charliermarsh on 2023-07-10 02:39_
+
+---
+
+_Branch deleted on 2023-07-10 02:39_
+
+---
+
+_Comment by @github-actions[bot] on 2023-07-10 03:00_
+
+## PR Check Results
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.4±0.02ms     4.3 MB/sec    1.00      9.4±0.03ms     4.3 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.1±0.00ms     8.0 MB/sec    1.00      2.1±0.00ms     8.0 MB/sec
+formatter/numpy/globals.py                 1.05   246.4±10.92µs    12.0 MB/sec    1.00    234.4±1.28µs    12.6 MB/sec
+formatter/pydantic/types.py                1.02      4.6±0.01ms     5.5 MB/sec    1.00      4.5±0.02ms     5.6 MB/sec
+linter/all-rules/large/dataset.py          1.00     16.1±0.08ms     2.5 MB/sec    1.01     16.2±0.10ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.0±0.00ms     4.1 MB/sec    1.00      4.1±0.01ms     4.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00    518.8±0.49µs     5.7 MB/sec    1.09   564.6±27.65µs     5.2 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.1±0.02ms     3.6 MB/sec    1.01      7.2±0.05ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.0±0.02ms     5.1 MB/sec    1.05      8.4±0.30ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1760.5±5.67µs     9.5 MB/sec    1.00   1767.2±2.55µs     9.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    201.6±0.62µs    14.6 MB/sec    1.11   223.8±13.80µs    13.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.02ms     7.0 MB/sec    1.05      3.8±0.15ms     6.7 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.4±0.10ms     4.3 MB/sec    1.12     10.5±0.20ms     3.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.0±0.04ms     8.1 MB/sec    1.08      2.2±0.03ms     7.5 MB/sec
+formatter/numpy/globals.py                 1.00    231.2±3.51µs    12.8 MB/sec    1.08   249.5±23.97µs    11.8 MB/sec
+formatter/pydantic/types.py                1.00      4.5±0.07ms     5.6 MB/sec    1.09      4.9±0.08ms     5.2 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.9±0.17ms     2.6 MB/sec    1.00     15.9±0.21ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.2±0.05ms     4.0 MB/sec    1.00      4.2±0.06ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.01    510.9±8.18µs     5.8 MB/sec    1.00    506.9±7.24µs     5.8 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.1±0.09ms     3.6 MB/sec    1.00      7.0±0.10ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.01      8.1±0.08ms     5.0 MB/sec    1.00      8.0±0.06ms     5.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1742.3±18.88µs     9.6 MB/sec    1.00  1723.2±16.01µs     9.7 MB/sec
+linter/default-rules/numpy/globals.py      1.01    206.6±2.92µs    14.3 MB/sec    1.00    204.7±3.47µs    14.4 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.7±0.03ms     6.9 MB/sec    1.00      3.7±0.04ms     7.0 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---

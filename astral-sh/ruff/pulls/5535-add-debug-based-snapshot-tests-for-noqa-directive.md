@@ -1,0 +1,91 @@
+```yaml
+number: 5535
+title: Add debug-based snapshot tests for noqa directive parsing
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - internal
+assignees: []
+merged: true
+base: main
+head: charlie/noqa-snapshot
+created_at: 2023-07-05T17:10:37Z
+updated_at: 2023-07-05T22:05:42Z
+url: https://github.com/astral-sh/ruff/pull/5535
+synced_at: 2026-01-12T03:36:55Z
+```
+
+# Add debug-based snapshot tests for noqa directive parsing
+
+---
+
+_Pull request opened by @charliermarsh on 2023-07-05 17:10_
+
+## Summary
+
+Better tests, helpful for future refactors.
+
+---
+
+_Comment by @github-actions[bot] on 2023-07-05 17:20_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      8.3±0.02ms     4.9 MB/sec    1.00      8.3±0.01ms     4.9 MB/sec
+formatter/numpy/ctypeslib.py               1.01   1785.2±1.89µs     9.3 MB/sec    1.00  1775.0±13.85µs     9.4 MB/sec
+formatter/numpy/globals.py                 1.00    195.2±2.46µs    15.1 MB/sec    1.00    195.1±1.78µs    15.1 MB/sec
+formatter/pydantic/types.py                1.02      4.0±0.01ms     6.4 MB/sec    1.00      3.9±0.01ms     6.5 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.8±0.08ms     3.0 MB/sec    1.00     13.8±0.03ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.03ms     4.8 MB/sec    1.00      3.5±0.02ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00    366.7±1.25µs     8.0 MB/sec    1.00    365.3±0.61µs     8.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.1±0.01ms     4.2 MB/sec    1.00      6.1±0.04ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.1±0.01ms     5.7 MB/sec    1.00      7.1±0.02ms     5.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1467.0±6.28µs    11.4 MB/sec    1.00   1459.7±5.30µs    11.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    156.2±0.23µs    18.9 MB/sec    1.00    155.7±0.25µs    19.0 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.2±0.01ms     8.0 MB/sec    1.00      3.2±0.01ms     8.1 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     11.0±0.23ms     3.7 MB/sec    1.07     11.8±0.93ms     3.4 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.4±0.08ms     6.9 MB/sec    1.00      2.4±0.09ms     6.9 MB/sec
+formatter/numpy/globals.py                 1.00   275.2±12.38µs    10.7 MB/sec    1.00   276.4±11.26µs    10.7 MB/sec
+formatter/pydantic/types.py                1.00      5.2±0.15ms     4.9 MB/sec    1.01      5.3±0.16ms     4.8 MB/sec
+linter/all-rules/large/dataset.py          1.04     19.5±0.63ms     2.1 MB/sec    1.00     18.8±0.36ms     2.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      5.0±0.12ms     3.3 MB/sec    1.00      4.9±0.09ms     3.4 MB/sec
+linter/all-rules/numpy/globals.py          1.00   609.2±19.93µs     4.8 MB/sec    1.00   607.2±19.41µs     4.9 MB/sec
+linter/all-rules/pydantic/types.py         1.01      8.4±0.21ms     3.0 MB/sec    1.00      8.3±0.18ms     3.1 MB/sec
+linter/default-rules/large/dataset.py      1.00      9.7±0.17ms     4.2 MB/sec    1.00      9.7±0.17ms     4.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.1±0.05ms     8.1 MB/sec    1.00      2.1±0.04ms     8.1 MB/sec
+linter/default-rules/numpy/globals.py      1.00    244.7±8.55µs    12.1 MB/sec    1.07   262.0±31.92µs    11.3 MB/sec
+linter/default-rules/pydantic/types.py     1.01      4.4±0.14ms     5.9 MB/sec    1.00      4.3±0.11ms     5.9 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Label `internal` added by @charliermarsh on 2023-07-05 21:43_
+
+---
+
+_Merged by @charliermarsh on 2023-07-05 21:49_
+
+---
+
+_Closed by @charliermarsh on 2023-07-05 21:49_
+
+---
+
+_Branch deleted on 2023-07-05 21:49_
+
+---

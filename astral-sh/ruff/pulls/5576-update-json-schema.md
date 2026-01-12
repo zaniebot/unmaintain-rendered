@@ -1,0 +1,90 @@
+```yaml
+number: 5576
+title: Update JSON schema
+type: pull_request
+state: merged
+author: charliermarsh
+labels: []
+assignees: []
+merged: true
+base: main
+head: charlie/schema
+created_at: 2023-07-07T02:26:44Z
+updated_at: 2023-07-07T05:20:19Z
+url: https://github.com/astral-sh/ruff/pull/5576
+synced_at: 2026-01-12T03:36:55Z
+```
+
+# Update JSON schema
+
+---
+
+_Pull request opened by @charliermarsh on 2023-07-07 02:26_
+
+Confused as to how this got merged, but... oh well.
+
+---
+
+_Comment by @github-actions[bot] on 2023-07-07 02:36_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      8.3±0.03ms     4.9 MB/sec    1.01      8.3±0.01ms     4.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1775.9±2.67µs     9.4 MB/sec    1.01   1791.9±5.73µs     9.3 MB/sec
+formatter/numpy/globals.py                 1.00    194.7±0.91µs    15.2 MB/sec    1.00    195.6±0.96µs    15.1 MB/sec
+formatter/pydantic/types.py                1.00      4.0±0.02ms     6.4 MB/sec    1.00      4.0±0.01ms     6.4 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.9±0.02ms     2.9 MB/sec    1.00     14.0±0.07ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.01ms     4.7 MB/sec    1.00      3.5±0.01ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    369.8±1.06µs     8.0 MB/sec    1.00   371.5±13.24µs     7.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.2±0.01ms     4.1 MB/sec    1.00      6.1±0.01ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.2±0.03ms     5.7 MB/sec    1.00      7.1±0.03ms     5.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1471.2±3.11µs    11.3 MB/sec    1.00  1469.5±12.74µs    11.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    157.0±0.30µs    18.8 MB/sec    1.00    157.6±0.72µs    18.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.01ms     8.0 MB/sec    1.00      3.2±0.04ms     8.0 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.13     10.4±0.10ms     3.9 MB/sec    1.00      9.2±0.07ms     4.4 MB/sec
+formatter/numpy/ctypeslib.py               1.08      2.2±0.03ms     7.6 MB/sec    1.00      2.0±0.03ms     8.2 MB/sec
+formatter/numpy/globals.py                 1.03    242.2±3.34µs    12.2 MB/sec    1.00    234.6±7.57µs    12.6 MB/sec
+formatter/pydantic/types.py                1.08      4.8±0.05ms     5.3 MB/sec    1.00      4.4±0.05ms     5.7 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.4±0.10ms     2.6 MB/sec    1.00     15.4±0.12ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.1±0.04ms     4.1 MB/sec    1.00      4.1±0.04ms     4.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00    500.7±7.49µs     5.9 MB/sec    1.00    501.0±5.12µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.8±0.07ms     3.7 MB/sec    1.00      6.8±0.06ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.01      7.9±0.04ms     5.1 MB/sec    1.00      7.9±0.04ms     5.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1686.8±16.10µs     9.9 MB/sec    1.00  1689.5±14.88µs     9.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    198.0±2.79µs    14.9 MB/sec    1.00    198.5±2.84µs    14.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.03ms     7.2 MB/sec    1.00      3.6±0.04ms     7.2 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Merged by @charliermarsh on 2023-07-07 02:38_
+
+---
+
+_Closed by @charliermarsh on 2023-07-07 02:38_
+
+---
+
+_Branch deleted on 2023-07-07 02:38_
+
+---
+
+_Comment by @konstin on 2023-07-07 05:20_
+
+is our cargo test CI broken? because i also managed to merge something for the formatter with broken fixtures 
+
+---
