@@ -5,13 +5,12 @@ type: issue
 state: open
 author: mosc9575
 labels:
-  - bug
-  - rule
+  - question
 assignees: []
 created_at: 2026-01-12T15:50:21Z
-updated_at: 2026-01-12T17:18:13Z
+updated_at: 2026-01-12T18:56:10Z
 url: https://github.com/astral-sh/ruff/issues/22534
-synced_at: 2026-01-12T18:23:23Z
+synced_at: 2026-01-12T19:26:13Z
 ```
 
 # Why are the PERF rules not evaluated?
@@ -91,5 +90,33 @@ _Label `bug` added by @ntBre on 2026-01-12 17:02_
 ---
 
 _Label `rule` added by @MichaReiser on 2026-01-12 17:18_
+
+---
+
+_Comment by @dylwil3 on 2026-01-12 18:52_
+
+The rule does not trigger when neither the key nor value is actually used. The assignment `k = 1` in your example does not actually use the binding created in `for k, v in d.items()`, it just shadows the name.
+
+When neither key nor value is used, it's not clear what we should be suggesting to use instead - `dict.keys()` doesn't seem quite right either.
+
+Note that [redefined-loop-name (PLW2901)](https://docs.astral.sh/ruff/rules/redefined-loop-name/#redefined-loop-name-plw2901) will trigger in your example since the `k` is redefined before use.
+
+---
+
+_Label `bug` removed by @MichaReiser on 2026-01-12 18:54_
+
+---
+
+_Label `rule` removed by @MichaReiser on 2026-01-12 18:54_
+
+---
+
+_Label `question` added by @MichaReiser on 2026-01-12 18:54_
+
+---
+
+_Comment by @MichaReiser on 2026-01-12 18:55_
+
+[Playground](https://play.ruff.rs/6fe10380-245f-459d-8a64-edbb8da2a8ed) showing that it works when using `k` in the loop body
 
 ---

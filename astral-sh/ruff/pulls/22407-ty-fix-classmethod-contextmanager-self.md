@@ -11,9 +11,9 @@ draft: true
 base: main
 head: classmethod-contextmanager-self-fix
 created_at: 2026-01-05T19:01:18Z
-updated_at: 2026-01-11T09:11:30Z
+updated_at: 2026-01-12T19:02:19Z
 url: https://github.com/astral-sh/ruff/pull/22407
-synced_at: 2026-01-12T15:57:49Z
+synced_at: 2026-01-12T19:26:24Z
 ```
 
 # [ty] Fix classmethod + contextmanager + Self
@@ -289,5 +289,15 @@ Thanks a lot for such a detailed review. I'll make the changes tomorrow.
 ---
 
 _Converted to draft by @eclbg on 2026-01-11 09:11_
+
+---
+
+_@eclbg reviewed on 2026-01-12 19:02_
+
+---
+
+_Review comment by @eclbg on `crates/ty_python_semantic/resources/mdtest/call/methods.md`:485 on 2026-01-12 19:02_
+
+I've added a few more `reveal_type`s
 
 ---

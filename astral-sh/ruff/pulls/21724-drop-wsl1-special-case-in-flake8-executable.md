@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: wsl1-is-very-dead
 created_at: 2025-12-01T11:31:17Z
-updated_at: 2026-01-12T08:17:20Z
+updated_at: 2026-01-12T18:52:24Z
 url: https://github.com/astral-sh/ruff/pull/21724
-synced_at: 2026-01-12T15:57:31Z
+synced_at: 2026-01-12T19:26:23Z
 ```
 
 # Drop WSL1 special case in flake8-executable
@@ -468,12 +468,6 @@ Could you confirm the below table matches your experience and I'll update the is
 | Status Quo | :exclamation: (disabled) | :exclamation: (disabled) | :x: | :exclamation: (disabled) |
 | #17548 | :white_check_mark: | :white_check_mark: | :exclamation: (disabled) | :exclamation: (disabled) |
 | #21724 | :white_check_mark: | :white_check_mark: | :x: | :x: |
-
----
-
-_Comment by @K900 on 2026-01-12 08:17_
-
-This seems accurate yeah. I hate how the table just keeps growing... 
 
 ---
 
