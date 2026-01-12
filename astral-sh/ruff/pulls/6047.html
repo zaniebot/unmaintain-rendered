@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cache name resolutions in the semantic model - astral-sh/ruff #6047</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cache name resolutions in the semantic model</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6047">#6047</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-07-24 22:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-24 22:34</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR stores the mapping from <code>ExprName</code> node to resolved <code>BindingId</code>, which lets us skip scope lookups in <code>resolve_call_path</code>. It's enabled by #6045, since that PR ensures that when we analyze a node (and thus call <code>resolve_call_path</code>), we'll have already visited its <code>ExprName</code> elements.</p>
+<p>In more detail: imagine that we're traversing over <code>foo.bar()</code>. When we read <code>foo</code>, it will be an <code>ExprName</code>, which we'll then resolve to a binding via <code>handle_node_load</code>. With this change, we then store that binding in a map. Later, if we call <code>collect_call_path</code> on <code>foo.bar</code>, we'll identify <code>foo</code> (the &quot;head&quot; of the attribute) and grab the resolved binding in that map. <em>Almost</em> all names are now resolved in advance, though it's not a strict requirement, and some rules break that pattern (e.g., if we're analyzing arguments, and they need to inspect their annotations, which are visited in a deferred manner).</p>
+<p>This improves performance by 4-6% on the all-rules benchmark. It looks like it hurts performance (1-2% drop) in the default-rules benchmark, presumedly because those rules don't call <code>resolve_call_path</code> nearly as much, and so we're paying for these extra writes.</p>
+<p>Here's the benchmark data:</p>
+<pre><code>linter/default-rules/numpy/globals.py
+                        time:   [67.270 µs 67.380 µs 67.489 µs]
+                        thrpt:  [43.720 MiB/s 43.792 MiB/s 43.863 MiB/s]
+                 change:
+                        time:   [+0.4747% +0.7752% +1.0626%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-1.0514% -0.7693% -0.4724%]
+                        Change within noise threshold.
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high severe
+linter/default-rules/pydantic/types.py
+                        time:   [1.4067 ms 1.4105 ms 1.4146 ms]
+                        thrpt:  [18.028 MiB/s 18.081 MiB/s 18.129 MiB/s]
+                 change:
+                        time:   [+1.3152% +1.6953% +2.0414%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-2.0006% -1.6671% -1.2981%]
+                        Performance has regressed.
+linter/default-rules/numpy/ctypeslib.py
+                        time:   [637.67 µs 638.96 µs 640.28 µs]
+                        thrpt:  [26.006 MiB/s 26.060 MiB/s 26.113 MiB/s]
+                 change:
+                        time:   [+1.5859% +1.8109% +2.0353%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-1.9947% -1.7787% -1.5611%]
+                        Performance has regressed.
+linter/default-rules/large/dataset.py
+                        time:   [3.2289 ms 3.2336 ms 3.2383 ms]
+                        thrpt:  [12.563 MiB/s 12.581 MiB/s 12.599 MiB/s]
+                 change:
+                        time:   [+0.8029% +0.9898% +1.1740%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-1.1604% -0.9801% -0.7965%]
+                        Change within noise threshold.
+
+linter/all-rules/numpy/globals.py
+                        time:   [134.05 µs 134.15 µs 134.26 µs]
+                        thrpt:  [21.977 MiB/s 21.995 MiB/s 22.012 MiB/s]
+                 change:
+                        time:   [-4.4571% -4.1175% -3.8268%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+3.9791% +4.2943% +4.6651%]
+                        Performance has improved.
+Found 8 outliers among 100 measurements (8.00%)
+  2 (2.00%) low mild
+  3 (3.00%) high mild
+  3 (3.00%) high severe
+linter/all-rules/pydantic/types.py
+                        time:   [2.5627 ms 2.5669 ms 2.5720 ms]
+                        thrpt:  [9.9158 MiB/s 9.9354 MiB/s 9.9516 MiB/s]
+                 change:
+                        time:   [-5.8304% -5.6374% -5.4452%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+5.7587% +5.9742% +6.1914%]
+                        Performance has improved.
+Found 7 outliers among 100 measurements (7.00%)
+  6 (6.00%) high mild
+  1 (1.00%) high severe
+linter/all-rules/numpy/ctypeslib.py
+                        time:   [1.3949 ms 1.3956 ms 1.3964 ms]
+                        thrpt:  [11.925 MiB/s 11.931 MiB/s 11.937 MiB/s]
+                 change:
+                        time:   [-6.2496% -6.0856% -5.9293%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+6.3030% +6.4799% +6.6662%]
+                        Performance has improved.
+Found 7 outliers among 100 measurements (7.00%)
+  3 (3.00%) high mild
+  4 (4.00%) high severe
+linter/all-rules/large/dataset.py
+                        time:   [5.5951 ms 5.6019 ms 5.6093 ms]
+                        thrpt:  [7.2527 MiB/s 7.2623 MiB/s 7.2711 MiB/s]
+                 change:
+                        time:   [-5.1781% -4.9783% -4.8070%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+5.0497% +5.2391% +5.4608%]
+                        Performance has improved.
+</code></pre>
+<p>Still playing with this (the concepts need better names, documentation, etc.), but opening up for feedback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-24 22:44</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-07-25 00:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-25 01:40</div>
+            <div class="timeline-body"><p>After this, it seems like pretty much all of <code>resolve_call_path</code> is spent in the <code>extend_from_slice</code> calls... I'm trying to figure out how to avoid those allocations. We're always concatenating two call paths to create a single call path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-25 01:43</div>
+            <div class="timeline-body"><p>For context, <code>resolve_call_path</code> is 9.3% of execution time for Airflow (all-rules), <code>extend_from_slice</code> is 4.4%. So &quot;pretty much all&quot; is an exaggeration, but it's a lot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-25 01:43</div>
+            <div class="timeline-body"><p>Oh, maybe that's time spent in <code>from_unqualified_name</code> actually. I might be misreading Instruments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-07-26 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-26 01:22</div>
+            <div class="timeline-body"><p>Ready for review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2023-07-26 01:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2023-07-26 01:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:1550 on 2023-07-26 06:58</div>
+            <div class="timeline-body"><p>Could this be handled inside <code>resolve_load</code>, since the caching is also handled in the semantic model?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-07-26 07:01</div>
+            <div class="timeline-body"><p>Looks reasonable to me. What's the impact on memory consumption?</p>
+<p>Is there any locality involved when working with call paths? E.g. can we assume that rules mainly query call paths of the currently visited node? If so, it may be an opportunity to only store a very few nodes (in a <code>Vec</code>?) rather than all ever seen call paths.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-07-26 09:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-26 20:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:1550 on 2023-07-26 20:11</div>
+            <div class="timeline-body"><p>Yeah, it can.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-27 13:23</div>
+            <div class="timeline-body"><p>In the hyperfine benchmarks, this improves Airflow's all-rules performance by ~3.68%, with no degradation on the default ruleset.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-07-27 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-27 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-07-27 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-27 17:02</div>
+            <div class="timeline-body"><p>I can't figure out a reliable way to benchmark the memory consumption, because even repeated runs on main are giving me some variation in total allocations. It shouldn't be prohibitively expensive though, since we're just saving an extra u32 for every &quot;load&quot; Name node...</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:24:31 UTC
+    </footer>
+</body>
+</html>

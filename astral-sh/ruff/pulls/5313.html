@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`perflint`] Add `PERF403` - astral-sh/ruff #5313</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>perflint</code>] Add <code>PERF403</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5313">#5313</a>
+        opened by <a href="https://github.com/qdegraaf">@qdegraaf</a>
+        on 2023-06-22 19:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-06-22 19:32</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Adds <code>PERF403</code> mirroring <code>W8403</code> from https://github.com/tonybaloney/perflint</p>
+<p>Implementation is similar to <a href="https://github.com/tonybaloney/perflint/blob/c07391c17671c3c9d5a7fd69120d1f570e268d58/perflint/comprehension_checker.py">original/upstream implementation</a>, with the exception of not yet checking whether the <code>ExprSubscript</code> value is a dictionary type value. I tried adding this but ended up doing a lot of</p>
+<pre><code class="language-rust">let scope = checker.semantic().scope();
+if let Some(binding_id) = scope.get(subscript_value_id) {
+    let binding = &amp;checker.semantic().bindings[binding_id];
+    if binding.kind.is_assignment() || binding.kind.is_named_expr_assignment() {
+        if let Some(parent_id) = binding.source {
+        etc....
+</code></pre>
+<p>again for what felt like very little added value.</p>
+<p>Open to any feedback/input to do this more efficiently. If there is no more efficient way to do this, also let me know and I'll see if I can make some kind of helper or util for this, as I've bumped into this a few times now with various rules.</p>
+<p>I've set the violation to only flag the first append call in a long <code>if-else</code> statement. Happy to change this to some other location or make it multiple violations if that makes more sense.</p>
+<h2>Test Plan</h2>
+<p>Fixtures were added based on perflint tests</p>
+<h2>Issue Links</h2>
+<p>Refers: https://github.com/astral-sh/ruff/issues/4789</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-22 19:49</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>ℹ️ ecosystem check <strong>detected changes</strong>. (+21, -0, 0 error(s))</p>
+<details><summary>airflow (+13, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/9d7c2246815251727af6d9119d7ef7660338e8c8/airflow/dag_processing/manager.py#L997'>airflow/dag_processing/manager.py:997:17:</a> PERF403 Use a dictionary comprehension instead of a for-loop
++ <a href='https://github.com/apache/airflow/blob/9d7c2246815251727af6d9119d7ef7660338e8c8/airflow/executors/kubernetes_executor_utils.py#L137'>airflow/executors/kubernetes_executor_utils.py:137:17:</a> PERF403 Use a dictionary comprehension instead of a for-loop
++ <a href='https://github.com/apache/airflow/blob/9d7c2246815251727af6d9119d7ef7660338e8c8/airflow/providers/exasol/hooks/exasol.py#L66'>airflow/providers/exasol/hooks/exasol.py:66:17:</a> PERF403 Use a dictionary comprehension instead of a for-loop
++ <a href='https://github.com/apache/airflow/blob/9d7c2246815251727af6d9119d7ef7660338e8c8/airflow/providers/google/cloud/hooks/bigquery.py#L3063'>airflow/providers/google/cloud/hooks/bigquery.py:3063:13:</a> PERF403 Use a dictionary comprehension instead of a for-loop
++ <a href='https://github.com/apache/airflow/blob/9d7c2246815251727af6d9119d7ef7660338e8c8/airflow/providers/google/cloud/transfers/gcs_to_bigquery.py#L708'>airflow/providers/google/cloud/transfers/gcs_to_bigquery.py:708:17:</a> PERF403 Use a dictionary comprehension instead of a for-loop
++ <a href='https://github.com/apache/airflow/blob/9d7c2246815251727af6d9119d7ef7660338e8c8/airflow/providers/mysql/hooks/mysql.py#L163'>airflow/providers/mysql/hooks/mysql.py:163:17:</a> PERF403 Use a dictionary comprehension instead of a for-loop
++ <a href='https://github.com/apache/airflow/blob/9d7c2246815251727af6d9119d7ef7660338e8c8/airflow/providers/postgres/hooks/postgres.py#L149'>airflow/providers/postgres/hooks/postgres.py:149:17:</a> PERF403 Use a dictionary comprehension instead of a for-loop
++ <a href='https://github.com/apache/airflow/blob/9d7c2246815251727af6d9119d7ef7660338e8c8/airflow/providers/smtp/hooks/smtp.py#L282'>airflow/providers/smtp/hooks/smtp.py:282:17:</a> PERF403 Use a dictionary comprehension instead of a for-loop
++ <a href='https://github.com/apache/airflow/blob/9d7c2246815251727af6d9119d7ef7660338e8c8/airflow/utils/email.py#L215'>airflow/utils/email.py:215:13:</a> PERF403 Use a dictionary comprehension instead of a for-loop
++ <a href='https://github.com/apache/airflow/blob/9d7c2246815251727af6d9119d7ef7660338e8c8/dev/breeze/src/airflow_breeze/utils/run_utils.py#L185'>dev/breeze/src/airflow_breeze/utils/run_utils.py:185:13:</a> PERF403 Use a dictionary comprehension instead of a for-loop
++ <a href='https://github.com/apache/airflow/blob/9d7c2246815251727af6d9119d7ef7660338e8c8/setup.py#L524'>setup.py:524:9:</a> PERF403 Use a dictionary comprehension instead of a for-loop
++ <a href='https://github.com/apache/airflow/blob/9d7c2246815251727af6d9119d7ef7660338e8c8/tests/test_utils/config.py#L57'>tests/test_utils/config.py:57:13:</a> PERF403 Use a dictionary comprehension instead of a for-loop
++ <a href='https://github.com/apache/airflow/blob/9d7c2246815251727af6d9119d7ef7660338e8c8/tests/test_utils/config.py#L82'>tests/test_utils/config.py:82:13:</a> PERF403 Use a dictionary comprehension instead of a for-loop
+</pre>
+
+</p>
+</details>
+<details><summary>bokeh (+3, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/core/has_props.py#L128'>src/bokeh/core/has_props.py:128:13:</a> PERF403 Use a dictionary comprehension instead of a for-loop
++ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/core/property/wrappers.py#L517'>src/bokeh/core/property/wrappers.py:517:21:</a> PERF403 Use a dictionary comprehension instead of a for-loop
++ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/models/sources.py#L283'>src/bokeh/models/sources.py:283:13:</a> PERF403 Use a dictionary comprehension instead of a for-loop
+</pre>
+
+</p>
+</details>
+<details><summary>zulip (+5, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/b7fcce305e5175f3d613d1e5c8371a834d22a609/analytics/views/stats.py#L456'>analytics/views/stats.py:456:9:</a> PERF403 Use a dictionary comprehension instead of a for-loop
++ <a href='https://github.com/zulip/zulip/blob/b7fcce305e5175f3d613d1e5c8371a834d22a609/analytics/views/stats.py#L531'>analytics/views/stats.py:531:9:</a> PERF403 Use a dictionary comprehension instead of a for-loop
++ <a href='https://github.com/zulip/zulip/blob/b7fcce305e5175f3d613d1e5c8371a834d22a609/zerver/lib/response.py#L128'>zerver/lib/response.py:128:9:</a> PERF403 Use a dictionary comprehension instead of a for-loop
++ <a href='https://github.com/zulip/zulip/blob/b7fcce305e5175f3d613d1e5c8371a834d22a609/zerver/views/auth.py#L371'>zerver/views/auth.py:371:13:</a> PERF403 Use a dictionary comprehension instead of a for-loop
++ <a href='https://github.com/zulip/zulip/blob/b7fcce305e5175f3d613d1e5c8371a834d22a609/zerver/views/development/registration.py#L28'>zerver/views/development/registration.py:28:9:</a> PERF403 Use a dictionary comprehension instead of a for-loop
+</pre>
+
+</p>
+</details>
+Rules changed: 1
+
+<p>| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| PERF403 | 21 | 21 | 0 |</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     11.0±0.02ms     3.7 MB/sec    1.02     11.2±0.04ms     3.6 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.2±0.00ms     7.5 MB/sec    1.00      2.2±0.00ms     7.5 MB/sec
+formatter/numpy/globals.py                 1.00    247.0±0.31µs    11.9 MB/sec    1.07   264.3±12.88µs    11.2 MB/sec
+formatter/pydantic/types.py                1.00      4.8±0.01ms     5.4 MB/sec    1.02      4.8±0.01ms     5.3 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.2±0.03ms     2.7 MB/sec    1.02     15.5±0.02ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.9±0.00ms     4.3 MB/sec    1.01      3.9±0.01ms     4.2 MB/sec
+linter/all-rules/numpy/globals.py          1.00    510.7±0.68µs     5.8 MB/sec    1.01    516.2±3.26µs     5.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.9±0.03ms     3.7 MB/sec    1.01      7.0±0.01ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.8±0.02ms     5.2 MB/sec    1.00      7.8±0.02ms     5.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1676.4±6.23µs     9.9 MB/sec    1.00   1665.9±2.47µs    10.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00    187.1±0.29µs    15.8 MB/sec    1.00    187.1±2.36µs    15.8 MB/sec
+linter/default-rules/pydantic/types.py     1.02      3.6±0.01ms     7.2 MB/sec    1.00      3.5±0.00ms     7.3 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.8±0.08ms     3.8 MB/sec    1.01     10.9±0.07ms     3.7 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.2±0.03ms     7.7 MB/sec    1.00      2.2±0.04ms     7.7 MB/sec
+formatter/numpy/globals.py                 1.00    242.9±4.10µs    12.1 MB/sec    1.02   248.8±11.57µs    11.9 MB/sec
+formatter/pydantic/types.py                1.00      4.7±0.06ms     5.5 MB/sec    1.01      4.7±0.05ms     5.4 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.2±0.09ms     2.7 MB/sec    1.00     15.2±0.21ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.0±0.04ms     4.2 MB/sec    1.00      4.0±0.04ms     4.2 MB/sec
+linter/all-rules/numpy/globals.py          1.00    482.5±7.00µs     6.1 MB/sec    1.01    486.3±6.21µs     6.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.9±0.05ms     3.7 MB/sec    1.00      6.9±0.10ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.9±0.05ms     5.1 MB/sec    1.00      7.9±0.09ms     5.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1654.6±21.59µs    10.1 MB/sec    1.00  1654.6±14.50µs    10.1 MB/sec
+linter/default-rules/numpy/globals.py      1.00    187.9±2.47µs    15.7 MB/sec    1.01    189.6±3.71µs    15.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.5±0.03ms     7.2 MB/sec    1.00      3.5±0.03ms     7.2 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/perflint/rules/slow_dict_creation.rs</code>:69 on 2023-06-23 06:05</div>
+            <div class="timeline-body"><p>Nit: the name <code>if_stmt</code> confused me because I assumed it is an <code>if_stmt</code>. But what it really is is any statement in the if body. Maybe just call it <code>stmt</code> (as you do in the <code>check_for_slow_dict_creation</code> method).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/perflint/rules/slow_dict_creation.rs</code>:59 on 2023-06-23 06:06</div>
+            <div class="timeline-body"><p>Nit: We could early return if <code>names.is_empty</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/perflint/rules/slow_dict_creation.rs</code>:42 on 2023-06-23 06:10</div>
+            <div class="timeline-body"><p>Nit. I believe you can merge the <code>if body.len() != 1</code> and <code>let stmt = &amp;body[0]</code> by doing</p>
+<pre><code class="language-suggestion">	let [stmt] = body else {
+		return;
+	}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/perflint/rules/slow_dict_creation.rs</code>:69 on 2023-06-23 06:12</div>
+            <div class="timeline-body"><p>Nit. You can move the loop into the if instead of doing another early return</p>
+<pre><code class="language-suggestion">    if let Stmt::If(ast::StmtIf { body: if_body, .. }) = stmt {
+	    for if_stmt in if_body {
+	        check_for_slow_dict_creation(checker, names.as_slice(), if_stmt);
+	    }
+    };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/perflint/rules/slow_dict_creation.rs</code>:75 on 2023-06-23 06:12</div>
+            <div class="timeline-body"><p>The formatting of all <code>else</code> branches is off (rustfmt doesn't yet support let else chains</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/perflint/rules/slow_dict_creation.rs</code>:83 on 2023-06-23 06:13</div>
+            <div class="timeline-body"><p>Nit: I believe this works</p>
+<pre><code class="language-suggestion">    let [Expr::Subscript(ast::ExprSubscript { slice, .. })] = targets.as_slice() else {
+            return 
+     };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-06-23 06:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2023-06-29 01:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/rules/perflint/rules/manual_dict_comprehension.rs</code>:73 on 2023-07-11 16:34</div>
+            <div class="timeline-body"><p>Similar to <code>PERF401</code>, we should ignore this rule if the dictionary assignment variable is being used inside the conditional test: https://github.com/astral-sh/ruff/blob/30bec3fcfa01c044ea232aae9d3c69b59f422d30/crates/ruff/src/rules/perflint/rules/manual_list_comprehension.rs#L129-L152</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/resources/test/fixtures/perflint/PERF403.py</code>:5 on 2023-07-11 16:40</div>
+            <div class="timeline-body"><p>(I wonder similar to <code>PERF402</code> why there isn't the separation for dictionary, I'm assuming the corresponding rule for dictionary doesn't exists upstream as well).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/rules/perflint/rules/manual_dict_comprehension.rs</code>:66 on 2023-07-11 16:45</div>
+            <div class="timeline-body"><p>We could simplify this using:</p>
+<pre><code class="language-rust">elt.as_name_expr().map_or(None, |name| Some(name.as_str()))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/rules/perflint/rules/manual_dict_comprehension.rs</code>:112 on 2023-07-11 16:48</div>
+            <div class="timeline-body"><p>Maybe we could use <code>.as_named_expr</code> here as well with something like this:</p>
+<pre><code class="language-rust">if Some(key) = slice.as_named_expr() {
+	if Some(value) = value.as_named_expr() {
+		...
+	}
+}
+</code></pre>
+<p>Or, just using the <code>match</code> expression:</p>
+<pre><code class="language-rust">match (slice.as_named_expr(), value.as_named_expr()) {
+	(Some(key), Some(value)) =&gt; ...,
+	_ =&gt; return;
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2023-07-11 16:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on <code>crates/ruff/src/rules/perflint/rules/manual_dict_comprehension.rs</code>:73 on 2023-07-11 18:16</div>
+            <div class="timeline-body"><p>I think this is deviating from upstream plugin, and there's no autofix yet, but I do agree it's a good check to have. Added some extra tests (and some of previous are now invalid) and made a helper func out of the check. Got a Clippy warning about borrowing a Box there though I didn't have time to dig into, so let me know if that's not OK to allow and what I could do better there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/qdegraaf">@qdegraaf</a> reviewed on 2023-07-11 18:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on <code>crates/ruff/resources/test/fixtures/perflint/PERF403.py</code>:5 on 2023-07-11 18:19</div>
+            <div class="timeline-body"><p>Yeah don't know why it's split into <code>copy()</code> and <code>comprehension</code> for lists but only one for dicts. My implementation was just a straight copy from https://github.com/tonybaloney/perflint/blob/main/perflint/comprehension_checker.py</p>
+<p>As we are already deviating with the if conditional checks, we could add a separate rule <code>PERF404</code> if that has value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/qdegraaf">@qdegraaf</a> reviewed on 2023-07-11 18:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-12 03:48</div>
+            <div class="timeline-body"><p>The delay on this one is that I'm worried about false positives. Most of the examples surfaced in the ecosystem CI checks seem to be false positives. I don't think we have a great way to solve this right now. The best we can do, probably, is check if the variable to which we're assigning was assigned the empty dictionary immediately prior to the loop. That's probably a necessary precondition to merging here just based on what I see in the ecosystem CI -- wdyt, @qdegraaf?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-07-12 08:10</div>
+            <div class="timeline-body"><blockquote>
+<p>The delay on this one is that I'm worried about false positives. Most of the examples surfaced in the ecosystem CI checks seem to be false positives. I don't think we have a great way to solve this right now. The best we can do, probably, is check if the variable to which we're assigning was assigned the empty dictionary immediately prior to the loop. That's probably a necessary precondition to merging here just based on what I see in the ecosystem CI -- wdyt, @qdegraaf?</p>
+</blockquote>
+<p>@charliermarsh it's been on my TODO list to look at this one again since I got wind of PERF401 and PERF402 being quite false positive heavy as well, wanted to pick it up after the Dlint/ReDoS thing but will prioritise this over that now. I am away until after the weekend but plan after that is to:</p>
+<ul>
+<li>Double check upstream implementation, and run that against the false positive snippets from the ecosystem CI to see if I missed an implementation detail</li>
+<li>Add false positives from the ecosystem CI to fixtures</li>
+<li>Expand checks (agree that best heuristic is probably to check if dict assignment happens right before the loop) until false positives don't flag</li>
+</ul>
+<p>Happy to wait on merging until that's sorted and we are satisfied with the precision. If we can't get it to perform like we want I'll check in again then to see what we want to do with it. I'll set the PR to draft until I get further.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @qdegraaf on 2023-07-12 08:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-07-19 19:58</div>
+            <div class="timeline-body"><p>@charliermarsh
+Had a look at the upstream implementation and it appears <code>perflint</code> lets anything more complex than a simple <code>if/else</code> slide, but does not check anything with regards to the contents of the dict. It works similarly for PERF401 and PERF402, I can open a separate PR to address that if we want, however:</p>
+<p>For false positives based on whether the dictionary is empty. <code>perflint</code> flags:</p>
+<pre><code class="language-python">def foo():
+    result = {&quot;a&quot;: 1, &quot;b&quot;: 2}
+    fruit = [&quot;apple&quot;, &quot;pear&quot;, &quot;orange&quot;]
+    for idx, name in enumerate(fruit):
+        if idx % 2:
+            result[idx] = name
+</code></pre>
+<p>as</p>
+<pre><code>************* Module scratch
+scratch.py:4:4: W8403: Use a dictionary comprehension instead of a for-loop (use-dict-comprehension)
+scratch.py:3:12: W8301: Use tuple instead of list for a non-mutated sequence (use-tuple-over-list)
+
+------------------------------------------------------------------
+Your code has been rated at 6.67/10 (previous run: 8.46/10, -1.79)
+</code></pre>
+<p>We can add the heuristic. But checking other <code>PERF4XX</code> we actually have similar issues, e.g.:</p>
+<pre><code class="language-python">def f():
+    items = [1, 2, 3, 4]
+    result = [5, 6]
+    for i in items:
+        result.append(i * i) 
+</code></pre>
+<p>flags:</p>
+<pre><code>************* Module scratch
+scratch.py:4:4: W8402: Use a list copy instead of a for-loop (use-list-copy)
+scratch.py:2:12: W8301: Use tuple instead of list for a non-mutated sequence (use-tuple-over-list)
+
+------------------------------------------------------------------
+Your code has been rated at 6.00/10 (previous run: 6.67/10, -0.67)
+</code></pre>
+<p>So we'd have to add the heuristic to all <code>4XX</code> rules and I wouldn't exactly call it a clean fix ready to spread to multiple rules. If we don't have a way to efficiently determine whether a given <code>list</code> or <code>dict</code> is empty when checking the violation , and considering the upstream implementation is more false-positive heavy than we maybe initially thought, is it worth considering not porting the <code>4XX</code> rules at all? I should have checked the coverage of the original plug-in a bit more thoroughly before implementing. Happy to add the heuristic and fix up the three rules but just want to check if it's worth the effort to add a rough heuristic in order to patch up an already rough rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-21 03:25</div>
+            <div class="timeline-body"><p>I think this is okay to flag:</p>
+<pre><code class="language-python">def f():
+    items = [1, 2, 3, 4]
+    result = [5, 6]
+    for i in items:
+        result.append(i * i) 
+</code></pre>
+<p>Because it can be expressed as <code>result.extend(i * i for i in items)</code>.</p>
+<p>What if the heuristic was: check if the variable was assigned to a dictionary literal prior to the loop?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-07-21 07:28</div>
+            <div class="timeline-body"><p>Ah yeah, of course, check. Lot of context switches muddying up the mind recently.</p>
+<p>I'll implement that heuristic. Two questions:</p>
+<ul>
+<li>Shall I also still open a PR to exclude <code>if/elif/else</code> statements from <code>PERF401</code>/<code>PERF402</code> (and exclude them here of course) to match <a href="https://github.com/tonybaloney/perflint/blob/c07391c17671c3c9d5a7fd69120d1f570e268d58/tests/test_comprehension_checker.py#L25-L39">upstream</a>?</li>
+<li>Do we still want the heuristic to be in the line before the for-loop to avoid potential weirdness like:</li>
+</ul>
+<pre><code class="language-python">d = {}
+d[1] = 2
+for x in some_other_list:
+    d[x] = x
+</code></pre>
+<p>?</p>
+<p>If so, is there an example of a rule where we do something similar, I can take inspiration from? I assume it involves scanning the parent scope for the binding and then checking that assignment. But unsure what the most efficient way is to get the relative position of that assignment (resolving the range to line number somehow?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @qdegraaf on 2023-07-27 15:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:24:31 UTC
+    </footer>
+</body>
+</html>
