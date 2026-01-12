@@ -4,14 +4,15 @@ title: "[ty] Fix contravariant type variable bound checking in specialization in
 type: pull_request
 state: open
 author: bxff
-labels: []
+labels:
+  - ty
 assignees: []
 base: main
 head: fix-ty-2427
 created_at: 2026-01-10T06:56:32Z
-updated_at: 2026-01-10T11:36:33Z
+updated_at: 2026-01-12T08:25:19Z
 url: https://github.com/astral-sh/ruff/pull/22488
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T08:53:00Z
 ```
 
 # [ty] Fix contravariant type variable bound checking in specialization inference
@@ -148,5 +149,9 @@ _Review requested from @ibraheemdev by @AlexWaygood on 2026-01-10 11:36_
 ---
 
 _Review request for @AlexWaygood removed by @AlexWaygood on 2026-01-10 11:36_
+
+---
+
+_Label `ty` added by @AlexWaygood on 2026-01-12 08:25_
 
 ---

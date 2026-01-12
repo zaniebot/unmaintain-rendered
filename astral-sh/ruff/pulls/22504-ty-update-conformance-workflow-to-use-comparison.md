@@ -4,14 +4,16 @@ title: "[ty] Update conformance workflow to use comparison script"
 type: pull_request
 state: open
 author: WillDuke
-labels: []
+labels:
+  - ci
+  - ty
 assignees: []
 base: main
 head: wld/update-conformance-workflow
 created_at: 2026-01-11T17:55:59Z
-updated_at: 2026-01-11T18:42:06Z
+updated_at: 2026-01-12T08:25:49Z
 url: https://github.com/astral-sh/ruff/pull/22504
-synced_at: 2026-01-12T02:26:21Z
+synced_at: 2026-01-12T08:53:00Z
 ```
 
 # [ty] Update conformance workflow to use comparison script
@@ -70,5 +72,13 @@ _Comment by @astral-sh-bot[bot] on 2026-01-11 18:07_
 
 
 
+
+---
+
+_Label `ci` added by @AlexWaygood on 2026-01-12 08:25_
+
+---
+
+_Label `ty` added by @AlexWaygood on 2026-01-12 08:25_
 
 ---

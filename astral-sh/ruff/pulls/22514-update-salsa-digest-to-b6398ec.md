@@ -2,7 +2,7 @@
 number: 22514
 title: Update salsa digest to b6398ec
 type: pull_request
-state: open
+state: closed
 author: renovate
 labels:
   - internal
@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: renovate/salsa-digest
 created_at: 2026-01-12T00:45:35Z
-updated_at: 2026-01-12T00:55:20Z
+updated_at: 2026-01-12T07:53:13Z
 url: https://github.com/astral-sh/ruff/pull/22514
-synced_at: 2026-01-12T02:26:21Z
+synced_at: 2026-01-12T08:53:00Z
 ```
 
 # Update salsa digest to b6398ec
@@ -133,5 +133,29 @@ _Comment by @astral-sh-bot[bot] on 2026-01-12 00:55_
 
 
 
+
+---
+
+_Comment by @MichaReiser on 2026-01-12 07:51_
+
+This was a documentation fix only
+
+---
+
+_Closed by @MichaReiser on 2026-01-12 07:51_
+
+---
+
+_Comment by @renovate[bot] on 2026-01-12 07:53_
+
+### Renovate Ignore Notification
+
+Because you closed this PR without merging, Renovate will ignore this update. You will not get PRs for the `salsa` `b6398ec` update again.
+
+If you accidentally closed this PR, or if you changed your mind: rename this PR to get a fresh replacement PR.
+
+---
+
+_Branch deleted on 2026-01-12 07:53_
 
 ---

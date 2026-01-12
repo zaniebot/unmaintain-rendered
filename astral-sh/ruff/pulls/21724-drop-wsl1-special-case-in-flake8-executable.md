@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: wsl1-is-very-dead
 created_at: 2025-12-01T11:31:17Z
-updated_at: 2026-01-11T14:31:51Z
+updated_at: 2026-01-12T08:17:20Z
 url: https://github.com/astral-sh/ruff/pull/21724
-synced_at: 2026-01-12T02:26:21Z
+synced_at: 2026-01-12T08:52:59Z
 ```
 
 # Drop WSL1 special case in flake8-executable
@@ -454,5 +454,31 @@ To be clear, this is not my actual setup that I actually use, it's a setup that 
 My normal usage of Ruff doesn't actually trigger this bug - I've run into it because I occasionally build NixOS from source on my WSL systems, and Ruff fails _in its own tests_ because those are not designed to run under WSL.
 
 Also, Git knows nothing about the NTFS Unix-permission xattrs, so it never writes or updates them for any reason, meaning newly added files (if pulled from Windows) will be 0755, and any updated files will keep their existing permissions (unless moved, possibly?). Teaching Git about these xattrs is another thing that could probably improve things a lot, but not my can and not my worms.
+
+---
+
+_Comment by @MusicalNinjaDad on 2026-01-12 08:04_
+
+Thanks. Yeah, no heuristic will be perfect for this. I'd see the "WSL user, metadata enabled, cloned on Win" as an unusual edge case which requires someone to actively adjust settings from defaults AND work against recommended practices, with consequences far beyond these lints - so reasonable to assume "they know what they're doing".
+
+Could you confirm the below table matches your experience and I'll update the issue to reflect it:
+
+| | WSL user, WSL FS (official MS recommendation) (#10084) | WSL user, NTFS metadata enabled (e.g. NixOs) [see #21724](https://github.com/astral-sh/ruff/pull/21724#issuecomment-3734350142) | Linux user exFAT USB stick (#12941) | WSL user, Win FS (#3110, #5445) |
+| -- | -- | -- | -- | -- |
+| Status Quo | :exclamation: (disabled) | :exclamation: (disabled) | :x: | :exclamation: (disabled) |
+| #17548 | :white_check_mark: | :white_check_mark: | :exclamation: (disabled) | :exclamation: (disabled) |
+| #21724 | :white_check_mark: | :white_check_mark: | :x: | :x: |
+
+---
+
+_Comment by @K900 on 2026-01-12 08:17_
+
+This seems accurate yeah. I hate how the table just keeps growing... 
+
+---
+
+_Comment by @K900 on 2026-01-12 08:17_
+
+This seems accurate yeah. I hate how the table just keeps growing... 
 
 ---

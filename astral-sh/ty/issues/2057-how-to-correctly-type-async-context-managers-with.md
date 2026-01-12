@@ -10,9 +10,9 @@ labels:
   - overloads
 assignees: []
 created_at: 2025-12-18T10:12:53Z
-updated_at: 2026-01-08T19:32:21Z
+updated_at: 2026-01-12T08:29:55Z
 url: https://github.com/astral-sh/ty/issues/2057
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T08:52:44Z
 ```
 
 # How to correctly type async context managers with overloads
@@ -321,5 +321,9 @@ It looks like we are treating the overload implementation function as overloaded
 _Comment by @carljm on 2026-01-08 19:32_
 
 Probably the same issue as #2278?
+
+---
+
+_Assigned to @dhruvmanila by @dhruvmanila on 2026-01-12 08:29_
 
 ---

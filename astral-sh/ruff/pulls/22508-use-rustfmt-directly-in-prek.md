@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: charlie/rustfmt
 created_at: 2026-01-11T19:44:36Z
-updated_at: 2026-01-12T07:35:25Z
+updated_at: 2026-01-12T08:07:23Z
 url: https://github.com/astral-sh/ruff/pull/22508
-synced_at: 2026-01-12T07:59:41Z
+synced_at: 2026-01-12T08:53:00Z
 ```
 
 # Use rustfmt directly in prek
@@ -85,5 +85,15 @@ _Label `internal` added by @charliermarsh on 2026-01-12 00:39_
 _Comment by @AlexWaygood on 2026-01-12 07:35_
 
 Should we also update the command that we actually do run in CI, so that that invokes rustfmt directly? https://github.com/astral-sh/ruff/blob/09ff3e705639e4773f185994744390fdeb518e8e/.github/workflows/ci.yaml#L241
+
+---
+
+_@MichaReiser reviewed on 2026-01-12 08:07_
+
+---
+
+_Review comment by @MichaReiser on `.github/workflows/ci.yaml`:797 on 2026-01-12 08:07_
+
+Can we remove the `rust-cache` step?
 
 ---

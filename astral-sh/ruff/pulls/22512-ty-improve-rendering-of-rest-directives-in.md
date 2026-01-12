@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: feat/improve-rest-directive-rendering
 created_at: 2026-01-12T00:10:54Z
-updated_at: 2026-01-12T00:12:03Z
+updated_at: 2026-01-12T08:24:52Z
 url: https://github.com/astral-sh/ruff/pull/22512
-synced_at: 2026-01-12T02:26:21Z
+synced_at: 2026-01-12T08:53:00Z
 ```
 
 # [ty] Improve rendering of ReST directives in docstrings
@@ -80,5 +80,13 @@ _Label `server` added by @AlexWaygood on 2026-01-12 00:12_
 ---
 
 _Label `ty` added by @AlexWaygood on 2026-01-12 00:12_
+
+---
+
+_Assigned to @Gankra by @MichaReiser on 2026-01-12 08:16_
+
+---
+
+_Review request for @AlexWaygood removed by @AlexWaygood on 2026-01-12 08:24_
 
 ---

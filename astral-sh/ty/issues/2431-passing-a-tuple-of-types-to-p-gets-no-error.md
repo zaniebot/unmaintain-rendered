@@ -6,12 +6,11 @@ state: closed
 author: hyperkai
 labels:
   - diagnostics
-  - overloads
 assignees: []
 created_at: 2026-01-10T00:19:36Z
-updated_at: 2026-01-10T00:40:29Z
+updated_at: 2026-01-12T08:16:56Z
 url: https://github.com/astral-sh/ty/issues/2431
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T08:52:44Z
 ```
 
 # Passing a tuple of types to `**P` gets no error against error message
@@ -118,5 +117,9 @@ I don't think we should attempt to fully explain the special case for single-par
 ---
 
 _Closed by @carljm on 2026-01-10 00:40_
+
+---
+
+_Label `overloads` removed by @dhruvmanila on 2026-01-12 08:16_
 
 ---

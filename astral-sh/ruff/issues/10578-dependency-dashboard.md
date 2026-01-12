@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-12T07:48:28Z
+updated_at: 2026-01-12T08:27:19Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-12T07:59:30Z
+synced_at: 2026-01-12T08:52:48Z
 ```
 
 # Dependency Dashboard
@@ -56,14 +56,15 @@ Packages are marked as abandoned when they exceed the [`abandonmentThreshold`](h
 Unlike deprecated packages with official notices, abandonment is detected by release inactivity.
 
 
-## Rate-Limited
+## Awaiting Schedule
 
-The following updates are currently rate-limited. To force their creation now, click on a checkbox below.
+The following updates are awaiting their schedule. To get an update now, click on a checkbox below.
 
- - [ ] <!-- unlimit-branch=renovate/rust-wasm-bindgen-monorepo -->Update rust-wasm-bindgen monorepo (`js-sys`, `wasm-bindgen`, `wasm-bindgen-test`)
- - [ ] <!-- unlimit-branch=renovate/codspeed-criterion-compat-4.x-lockfile -->Update Rust crate codspeed-criterion-compat to v4.2.0
- - [ ] <!-- unlimit-branch=renovate/divan-4.x-lockfile -->Update Rust crate divan to v4.2.0
- - [ ] <!-- create-all-rate-limited-prs -->🔐 **Create all rate-limited PRs at once** 🔐
+ - [ ] <!-- unschedule-branch=renovate/rust-wasm-bindgen-monorepo -->Update rust-wasm-bindgen monorepo (`js-sys`, `wasm-bindgen`, `wasm-bindgen-test`)
+ - [ ] <!-- unschedule-branch=renovate/prek-dependencies -->Update pre-commit hook mdformat-mkdocs to v5.1.1
+ - [ ] <!-- unschedule-branch=renovate/codspeed-criterion-compat-4.x-lockfile -->Update Rust crate codspeed-criterion-compat to v4.2.0
+ - [ ] <!-- unschedule-branch=renovate/divan-4.x-lockfile -->Update Rust crate divan to v4.2.0
+ - [ ] <!-- create-all-awaiting-schedule-prs -->🔐 **Create all awaiting schedule PRs at once** 🔐
 
 ## Pending Status Checks
 
@@ -72,6 +73,7 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/mdformat-mkdocs-5.x -->Update dependency mdformat-mkdocs to v5.1.2
  - [ ] <!-- approvePr-branch=renovate/pyright-1.x-lockfile -->Update dependency pyright to v1.1.408
  - [ ] <!-- approvePr-branch=renovate/jiff-0.x-lockfile -->Update Rust crate jiff to v0.2.18
+ - [ ] <!-- approvePr-branch=renovate/libc-0.x-lockfile -->Update Rust crate libc to v0.2.180
  - [ ] <!-- approvePr-branch=renovate/proc-macro2-1.x-lockfile -->Update Rust crate proc-macro2 to v1.0.105
  - [ ] <!-- approvePr-branch=renovate/quote-1.x-lockfile -->Update Rust crate quote to v1.0.43
  - [ ] <!-- approvePr-branch=renovate/serde_json-1.x-lockfile -->Update Rust crate serde_json to v1.0.149
@@ -80,27 +82,16 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/toml-0.x-lockfile -->Update Rust crate toml to v0.9.11
  - [ ] <!-- approvePr-branch=renovate/url-2.x-lockfile -->Update Rust crate url to v2.5.8
  - [ ] <!-- approvePr-branch=renovate/tomli-2.x -->Update dependency tomli to v2.4.0
+ - [ ] <!-- approvePr-branch=renovate/npm-development-dependencies -->Update NPM Development dependencies (`@cloudflare/workers-types`, `@types/react`, `miniflare`, `typescript-eslint`, `vite`, `wrangler`)
  - [ ] <!-- approvePr-branch=renovate/indexmap-2.x-lockfile -->Update Rust crate indexmap to v2.13.0
  - [ ] <!-- approvePr-branch=renovate/ordermap-1.x-lockfile -->Update Rust crate ordermap to v1.1.0
+ - [ ] <!-- approvePr-branch=renovate/taiki-e-install-action-2.x -->Update taiki-e/install-action action to v2.66.1
 
 ## Open
 
 The following updates have all been created. To force a retry/rebase of any, click on a checkbox below.
 
- - [ ] <!-- rebase-branch=renovate/actions-checkout-digest -->[Update actions/checkout digest to 0c366fd](../pull/22513)
- - [ ] <!-- rebase-branch=renovate/salsa-digest -->[Update salsa digest to b6398ec](../pull/22514)
- - [ ] <!-- rebase-branch=renovate/codspeedhq-action-4.x -->[Update CodSpeedHQ/action action to v4.5.2](../pull/22516)
- - [ ] <!-- rebase-branch=renovate/ruff-0.x -->[Update dependency ruff to v0.14.11](../pull/22517)
- - [ ] <!-- rebase-branch=renovate/clap-4.x-lockfile -->[Update Rust crate clap to v4.5.54](../pull/22518)
- - [ ] <!-- rebase-branch=renovate/imperative-1.x-lockfile -->[Update Rust crate imperative to v1.0.7](../pull/22519)
- - [ ] <!-- rebase-branch=renovate/libc-0.x-lockfile -->[Update Rust crate libc to v0.2.179](../pull/22520)
  - [ ] <!-- rebase-branch=renovate/unicode-normalization-0.x-lockfile -->[Update Rust crate unicode-normalization to v0.1.25](../pull/21229)
- - [ ] <!-- rebase-branch=renovate/taiki-e-install-action-2.x -->[Update taiki-e/install-action action to v2.65.13](../pull/22522)
- - [ ] <!-- rebase-branch=renovate/astral-sh-setup-uv-7.x -->[Update astral-sh/setup-uv action to v7.2.0](../pull/22523)
- - [ ] <!-- rebase-branch=renovate/mkdocs-llmstxt-0.x -->[Update dependency mkdocs-llmstxt to v0.5.0](../pull/22524)
- - [ ] <!-- rebase-branch=renovate/npm-development-dependencies -->[Update NPM Development dependencies](../pull/22525) (`@cloudflare/workers-types`, `typescript-eslint`)
- - [ ] <!-- rebase-branch=renovate/prek-dependencies -->[Update prek dependencies](../pull/22526) (`crate-ci/typos`, `mdformat-mkdocs`, `rhysd/actionlint`)
- - [ ] <!-- rebase-branch=renovate/insta-1.x-lockfile -->[Update Rust crate insta to v1.46.0](../pull/22527)
  - [ ] <!-- rebase-branch=renovate/unicode_names2-2.x -->[Update Rust crate unicode_names2 to v2](../pull/19172)
  - [ ] <!-- rebase-all-open-prs -->**Click on this checkbox to rebase all open PRs at once**
 
@@ -108,7 +99,10 @@ The following updates have all been created. To force a retry/rebase of any, cli
 
 The following updates are blocked by an existing closed PR. To recreate the PR, click on a checkbox below.
 
+ - [ ] <!-- recreate-branch=renovate/actions-checkout-digest -->[Update actions/checkout digest to 0c366fd](../pull/22513)
  - [ ] <!-- recreate-branch=renovate/lsp-types-digest -->[Update lsp-types digest to ddc7dc8](../pull/20618)
+ - [ ] <!-- recreate-branch=renovate/salsa-digest -->[Update salsa digest to b6398ec](../pull/22514)
+ - [ ] <!-- recreate-branch=renovate/mkdocs-llmstxt-0.x -->[Update dependency mkdocs-llmstxt to v0.5.0](../pull/22524)
  - [ ] <!-- recreate-branch=renovate/python-3.x -->[Update dependency python to 3.14](../pull/21237)
  - [ ] <!-- recreate-branch=renovate/imara-diff-0.x -->[Update Rust crate imara-diff to 0.2.0](../pull/19039)
  - [ ] <!-- recreate-branch=renovate/bincode-3.x -->[Update Rust crate bincode to v3](../pull/22282)
@@ -133,7 +127,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `bstr 1.9.1`
  - `cachedir 0.3.1`
  - `camino 1.1.7`
- - `clap 4.5.3` → [Updates: `4.5.3`]
+ - `clap 4.5.3`
  - `clap_complete_command 0.6.0`
  - `clearscreen 4.0.0`
  - `codspeed-criterion-compat 4.0.4` → [Updates: `4.0.4`]
@@ -162,11 +156,11 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `heck 0.5.0`
  - `ignore 0.4.24`
  - `imara-diff 0.1.5` → [Updates: `0.2.0`]
- - `imperative 1.0.4` → [Updates: `1.0.4`]
+ - `imperative 1.0.4`
  - `indexmap 2.6.0` → [Updates: `2.6.0`]
  - `indicatif 0.18.0`
  - `indoc 2.0.4`
- - `insta 1.35.1` → [Updates: `1.35.1`]
+ - `insta 1.35.1`
  - `insta-cmd 0.6.0`
  - `is-macro 0.3.5`
  - `is-wsl 0.4.0`
@@ -571,18 +565,18 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `rui314/setup-mold v1@725a8794d15fc7563f59595bd9556495c0564878`
- - `taiki-e/install-action v2.65.6@28a9d316db64b78a951f3f8587a5d08cc97ad8eb` → [Updates: `v2.65.13`]
- - `taiki-e/install-action v2.65.6@28a9d316db64b78a951f3f8587a5d08cc97ad8eb` → [Updates: `v2.65.13`]
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.1`]
+ - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.1`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `rui314/setup-mold v1@725a8794d15fc7563f59595bd9556495c0564878`
- - `taiki-e/install-action v2.65.6@28a9d316db64b78a951f3f8587a5d08cc97ad8eb` → [Updates: `v2.65.13`]
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.1`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `taiki-e/install-action v2.65.6@28a9d316db64b78a951f3f8587a5d08cc97ad8eb` → [Updates: `v2.65.13`]
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.1`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `actions/setup-node v6.1.0@395ad3262231945c25e8478fd5baf05154b1d79f`
@@ -596,25 +590,25 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `rui314/setup-mold v1@725a8794d15fc7563f59595bd9556495c0564878`
  - `cargo-bins/cargo-binstall v1.16.6@80aaafe04903087c333980fa2686259ddd34b2d9`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `rui314/setup-mold v1@725a8794d15fc7563f59595bd9556495c0564878`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `actions/upload-artifact v6.0.0@b7c566a772e6b6bfb58ed0dc250532a479d7789f`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `rui314/setup-mold v1@725a8794d15fc7563f59595bd9556495c0564878`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `cargo-bins/cargo-binstall v1.16.6@80aaafe04903087c333980fa2686259ddd34b2d9`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `rui314/setup-mold v1@725a8794d15fc7563f59595bd9556495c0564878`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
@@ -622,13 +616,13 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `actions/setup-node v6.1.0@395ad3262231945c25e8478fd5baf05154b1d79f`
  - `actions/cache v5.0.1@9255dc7a253b0ccc959486e2bca901246202afeb`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `extractions/setup-just v3.0.0@e33e0265a09d6d736e2ee1e0eb685ef1de4669ff`
@@ -642,28 +636,28 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `jetli/wasm-bindgen-action v0.2.0@20b33e20595891ab1a0ed73145d8a21fc96e7c29`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
- - `taiki-e/install-action v2.65.6@28a9d316db64b78a951f3f8587a5d08cc97ad8eb` → [Updates: `v2.65.13`]
- - `CodSpeedHQ/action v4.5.1@972e3437949c89e1357ebd1a2dbc852fcbc57245` → [Updates: `v4.5.2`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
+ - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.1`]
+ - `CodSpeedHQ/action v4.5.2@dbda7111f8ac363564b0c51b992d4ce76bb89f2f`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `taiki-e/install-action v2.65.6@28a9d316db64b78a951f3f8587a5d08cc97ad8eb` → [Updates: `v2.65.13`]
+ - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.1`]
  - `actions/upload-artifact v6.0.0@b7c566a772e6b6bfb58ed0dc250532a479d7789f`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
- - `taiki-e/install-action v2.65.6@28a9d316db64b78a951f3f8587a5d08cc97ad8eb` → [Updates: `v2.65.13`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
+ - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.1`]
  - `actions/download-artifact v7.0.0@37930b1c2abaa49bbe596cd826c3c89aef350131`
- - `CodSpeedHQ/action v4.5.1@972e3437949c89e1357ebd1a2dbc852fcbc57245` → [Updates: `v4.5.2`]
+ - `CodSpeedHQ/action v4.5.2@dbda7111f8ac363564b0c51b992d4ce76bb89f2f`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
- - `taiki-e/install-action v2.65.6@28a9d316db64b78a951f3f8587a5d08cc97ad8eb` → [Updates: `v2.65.13`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
+ - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.1`]
  - `actions/upload-artifact v6.0.0@b7c566a772e6b6bfb58ed0dc250532a479d7789f`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
- - `taiki-e/install-action v2.65.6@28a9d316db64b78a951f3f8587a5d08cc97ad8eb` → [Updates: `v2.65.13`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
+ - `taiki-e/install-action v2.65.13@0e76c5c569f13f7eb21e8e5b26fe710062b57b62` → [Updates: `v2.66.1`]
  - `actions/download-artifact v7.0.0@37930b1c2abaa49bbe596cd826c3c89aef350131`
- - `CodSpeedHQ/action v4.5.1@972e3437949c89e1357ebd1a2dbc852fcbc57245` → [Updates: `v4.5.2`]
+ - `CodSpeedHQ/action v4.5.2@dbda7111f8ac363564b0c51b992d4ce76bb89f2f`
  - `node 24`
  - `node 24`
  - `python 3.12` → [Updates: `3.14`]
@@ -674,7 +668,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 <details><summary>.github/workflows/daily_fuzz.yaml (5)</summary>
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `rui314/setup-mold v1@725a8794d15fc7563f59595bd9556495c0564878`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `actions/github-script v8.0.0@ed597411d8f924073f98dfc5c65a23a2325f34cd`
@@ -684,15 +678,15 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 <details><summary>.github/workflows/mypy_primer.yaml (11)</summary>
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `actions/upload-artifact v6.0.0@b7c566a772e6b6bfb58ed0dc250532a479d7789f`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `actions/upload-artifact v6.0.0@b7c566a772e6b6bfb58ed0dc250532a479d7789f`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
 
 </details>
@@ -724,7 +718,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
 <details><summary>.github/workflows/publish-pypi.yml (2)</summary>
 
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `actions/download-artifact v7.0.0@37930b1c2abaa49bbe596cd826c3c89aef350131`
 
 </details>
@@ -769,11 +763,11 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `actions/github-script v8.0.0@ed597411d8f924073f98dfc5c65a23a2325f34cd`
 
 </details>
@@ -781,7 +775,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 <details><summary>.github/workflows/ty-ecosystem-analyzer.yaml (7)</summary>
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `actions/upload-artifact v6.0.0@b7c566a772e6b6bfb58ed0dc250532a479d7789f`
  - `actions/upload-artifact v6.0.0@b7c566a772e6b6bfb58ed0dc250532a479d7789f`
@@ -793,7 +787,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 <details><summary>.github/workflows/ty-ecosystem-report.yaml (4)</summary>
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `actions/upload-artifact v6.0.0@b7c566a772e6b6bfb58ed0dc250532a479d7789f`
 
@@ -1113,7 +1107,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 <details><summary>docs/requirements.txt (8)</summary>
 
  - `PyYAML ==6.0.3`
- - `ruff ==0.14.10` → [Updates: `==0.14.11`]
+ - `ruff ==0.14.11`
  - `mkdocs ==1.6.1`
  - `mkdocs-material ==9.7.1`
  - `mkdocs-redirects ==1.2.2`
@@ -1133,7 +1127,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
  - `pre-commit/pre-commit-hooks v6.0.0`
  - `abravalheri/validate-pyproject v0.24.1`
- - `crate-ci/typos v1.40.0` → [Updates: `v1.41.0`]
+ - `crate-ci/typos v1.41.0` → [Updates: `v1.42.0`]
  - `rbubley/mirrors-prettier v3.7.4`
  - `zizmorcore/zizmor-pre-commit v1.19.0` → [Updates: `v1.20.0`]
  - `python-jsonschema/check-jsonschema 0.36.0`
@@ -1145,7 +1139,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `igorshubovych/markdownlint-cli v0.47.0`
  - `black ==25.12.0`
  - `adamchainz/blacken-docs 1.20.0`
- - `rhysd/actionlint v1.7.9` → [Updates: `v1.7.10`]
+ - `rhysd/actionlint v1.7.10`
 
 </details>
 

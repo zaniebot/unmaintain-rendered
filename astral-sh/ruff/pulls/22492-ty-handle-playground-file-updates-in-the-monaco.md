@@ -6,13 +6,14 @@ state: open
 author: RasmusNygren
 labels:
   - playground
+  - ty
 assignees: []
 base: main
 head: fix-playground-completions
 created_at: 2026-01-10T13:37:09Z
-updated_at: 2026-01-10T14:36:25Z
+updated_at: 2026-01-12T08:26:25Z
 url: https://github.com/astral-sh/ruff/pull/22492
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T08:53:00Z
 ```
 
 # [ty] Handle playground file updates in the monaco editor onChange
@@ -71,5 +72,9 @@ sure!
 _Comment by @AlexWaygood on 2026-01-10 14:36_
 
 Yup, this fixes the bug for me! I can't review the typescript though 😆
+
+---
+
+_Label `ty` added by @AlexWaygood on 2026-01-12 08:26_
 
 ---

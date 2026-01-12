@@ -9,9 +9,9 @@ labels:
   - callables
 assignees: []
 created_at: 2026-01-07T22:06:46Z
-updated_at: 2026-01-08T19:35:26Z
+updated_at: 2026-01-12T08:29:21Z
 url: https://github.com/astral-sh/ty/issues/2383
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T08:52:44Z
 ```
 
 # Overload resolution fails to match through `ThreadPoolExecutor.submit()`
@@ -76,5 +76,9 @@ _Label `overloads` added by @carljm on 2026-01-07 23:19_
 _Comment by @carljm on 2026-01-08 19:35_
 
 Likely overloads + ParamSpec
+
+---
+
+_Assigned to @dhruvmanila by @dhruvmanila on 2026-01-12 08:29_
 
 ---

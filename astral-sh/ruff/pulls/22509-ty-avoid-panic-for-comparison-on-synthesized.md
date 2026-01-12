@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/pan
 created_at: 2026-01-11T22:23:59Z
-updated_at: 2026-01-12T00:38:10Z
+updated_at: 2026-01-12T08:01:39Z
 url: https://github.com/astral-sh/ruff/pull/22509
-synced_at: 2026-01-12T02:26:21Z
+synced_at: 2026-01-12T08:53:00Z
 ```
 
 # [ty] Avoid panic for comparison on synthesized variants
@@ -127,5 +127,21 @@ _Review requested from @sharkdp by @charliermarsh on 2026-01-12 00:38_
 ---
 
 _Review requested from @dcreager by @charliermarsh on 2026-01-12 00:38_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/typed_dict.rs`:884 on 2026-01-12 08:01_
+
+Can you add a note to the doc-comment like this one?
+
+https://github.com/astral-sh/ruff/blob/f92a818fdd73295be5995adc829bf9e175ec5176/crates/ty_python_semantic/src/types.rs#L492
+
+Same for `TypedDictType` above 
+
+---
+
+_@AlexWaygood approved on 2026-01-12 08:01_
+
+Nice, thanks!
 
 ---

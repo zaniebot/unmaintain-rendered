@@ -10,9 +10,9 @@ labels:
   - overloads
 assignees: []
 created_at: 2025-05-01T20:36:33Z
-updated_at: 2026-01-08T15:48:47Z
+updated_at: 2026-01-12T08:34:43Z
 url: https://github.com/astral-sh/ty/issues/102
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T08:52:43Z
 ```
 
 # Display of overloaded definitions
@@ -280,5 +280,13 @@ _Comment by @asukaminato0721 on 2026-01-08 15:48_
 
 for hover popup, pyrefly only show the matched overload, zuban current show all of them.
 
+
+---
+
+_Comment by @dhruvmanila on 2026-01-12 08:34_
+
+> for hover popup, pyrefly only show the matched overload, zuban current show all of them.
+
+ty does the same: https://play.ty.dev/2269ac45-edf2-45fe-88a3-7674e502b83d
 
 ---

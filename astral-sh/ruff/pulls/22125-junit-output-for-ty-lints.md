@@ -11,9 +11,9 @@ draft: true
 base: main
 head: cetanu/junit_for_ty
 created_at: 2025-12-21T04:49:52Z
-updated_at: 2026-01-05T05:20:35Z
+updated_at: 2026-01-12T08:27:17Z
 url: https://github.com/astral-sh/ruff/pull/22125
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T08:52:59Z
 ```
 
 # JUnit output for `ty` lints
@@ -206,5 +206,11 @@ _@cetanu reviewed on 2026-01-05 05:20_
 _Review comment by @cetanu on `crates/ruff_db/src/diagnostic/render/junit.rs`:52 on 2026-01-05 05:20_
 
 No worries, I don't feel strongly about it's addition, the motivation was mostly to help myself to see changes in the produced XML; I'll take this out
+
+---
+
+_Comment by @MichaReiser on 2026-01-12 08:27_
+
+Is this PR ready for review ?
 
 ---

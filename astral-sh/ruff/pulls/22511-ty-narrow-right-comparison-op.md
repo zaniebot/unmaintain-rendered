@@ -6,13 +6,14 @@ state: open
 author: drbh
 labels:
   - ty
+  - ecosystem-analyzer
 assignees: []
 base: main
 head: narrow-right-comparison-op
 created_at: 2026-01-11T23:56:30Z
-updated_at: 2026-01-12T00:03:26Z
+updated_at: 2026-01-12T08:28:25Z
 url: https://github.com/astral-sh/ruff/pull/22511
-synced_at: 2026-01-12T02:26:21Z
+synced_at: 2026-01-12T08:53:00Z
 ```
 
 # [ty] narrow right comparison op
@@ -255,6 +256,33 @@ pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
 
 
 No memory usage changes detected ✅
+
+
+
+---
+
+_Label `ecosystem-analyzer` added by @MichaReiser on 2026-01-12 08:18_
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-12 08:28_
+
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `unsupported-operator` | 0 | 28 | 0 |
+| `invalid-return-type` | 0 | 1 | 5 |
+| `invalid-argument-type` | 0 | 1 | 0 |
+| **Total** | **0** | **30** | **5** |
+
+
+**[Full report with detailed diff](https://80a6afa2.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://80a6afa2.ty-ecosystem-ext.pages.dev/timing))
 
 
 

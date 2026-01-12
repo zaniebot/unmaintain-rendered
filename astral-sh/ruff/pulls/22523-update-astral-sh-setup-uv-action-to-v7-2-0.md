@@ -2,17 +2,18 @@
 number: 22523
 title: Update astral-sh/setup-uv action to v7.2.0
 type: pull_request
-state: open
+state: merged
 author: renovate
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: renovate/astral-sh-setup-uv-7.x
 created_at: 2026-01-12T07:40:31Z
-updated_at: 2026-01-12T07:43:54Z
+updated_at: 2026-01-12T08:07:17Z
 url: https://github.com/astral-sh/ruff/pull/22523
-synced_at: 2026-01-12T07:59:41Z
+synced_at: 2026-01-12T08:53:00Z
 ```
 
 # Update astral-sh/setup-uv action to v7.2.0
@@ -200,5 +201,43 @@ static-frame (https://github.com/static-frame/static-frame)
 No memory usage changes detected ✅
 
 
+
+---
+
+_Comment by @astral-sh-bot[bot] on 2026-01-12 08:01_
+
+
+<!-- generated-comment ecosystem -->
+
+
+## `ruff-ecosystem` results
+
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+### Formatter (stable)
+✅ ecosystem check detected no format changes.
+
+### Formatter (preview)
+✅ ecosystem check detected no format changes.
+
+
+
+
+
+---
+
+_Merged by @AlexWaygood on 2026-01-12 08:07_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-12 08:07_
+
+---
+
+_Branch deleted on 2026-01-12 08:07_
 
 ---
