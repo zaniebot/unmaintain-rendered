@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: wld/improve-conformance-suite
 created_at: 2025-12-28T01:15:26Z
-updated_at: 2026-01-12T18:04:20Z
+updated_at: 2026-01-12T20:12:38Z
 url: https://github.com/astral-sh/ruff/pull/22231
-synced_at: 2026-01-12T18:23:35Z
+synced_at: 2026-01-12T20:26:27Z
 ```
 
 # [ty] Add a conformance script to compare ty diagnostics with expected errors
@@ -424,7 +424,7 @@ Sure thing. I've updated this PR to include only the script change, and I've ope
 
 ---
 
-_Review comment by @AlexWaygood on `scripts/conformance.py`:18 on 2026-01-11 18:15_
+_Review comment by @AlexWaygood on `scripts/conformance.py`:22 on 2026-01-11 18:15_
 
 Could you add a module docstring to the top here that describes what this script does and (briefly) how it works?
 
@@ -610,7 +610,7 @@ That's a great tip, thanks!
 
 ---
 
-_Review comment by @AlexWaygood on `scripts/conformance.py`:396 on 2026-01-12 14:58_
+_Review comment by @AlexWaygood on `scripts/conformance.py`:411 on 2026-01-12 14:58_
 
 What do the terms "precision" and "recall" mean in this context? Also, I'd again prefer it if we spelled out "False positives", "Ture positives" and "False negatives" here
 
@@ -636,7 +636,7 @@ _Review comment by @AlexWaygood on `scripts/conformance.py`:381 on 2026-01-12 15
 
 ---
 
-_Review comment by @AlexWaygood on `scripts/conformance.py`:355 on 2026-01-12 15:19_
+_Review comment by @AlexWaygood on `scripts/conformance.py`:370 on 2026-01-12 15:19_
 
 I ran this script locally to compare the results on https://github.com/astral-sh/ruff/pull/22317 with the results on `main`, and found the "True negatives" heading a bit confusing here:
 
@@ -666,7 +666,7 @@ _@WillDuke reviewed on 2026-01-12 16:47_
 
 ---
 
-_Review comment by @WillDuke on `scripts/conformance.py`:396 on 2026-01-12 16:47_
+_Review comment by @WillDuke on `scripts/conformance.py`:411 on 2026-01-12 16:47_
 
 More jargon! Precision is the fraction of diagnostics which are true errors (the number of true positives divided by the total number of diagnostics), while recall is the fraction of true errors for which ty raises a diagnostic. My goal was to give you a sense of how accurate ty is when it raises a diagnostic (precision) and how comprehensive its ability to detect errors is (recall).
 
@@ -678,7 +678,7 @@ _@WillDuke reviewed on 2026-01-12 16:49_
 
 ---
 
-_Review comment by @WillDuke on `scripts/conformance.py`:396 on 2026-01-12 16:49_
+_Review comment by @WillDuke on `scripts/conformance.py`:411 on 2026-01-12 16:49_
 
 If you'd like to keep these stats, I could include a sentence explaining what they mean in the output. 
 
@@ -688,7 +688,7 @@ _@AlexWaygood reviewed on 2026-01-12 17:00_
 
 ---
 
-_Review comment by @AlexWaygood on `scripts/conformance.py`:396 on 2026-01-12 17:00_
+_Review comment by @AlexWaygood on `scripts/conformance.py`:411 on 2026-01-12 17:00_
 
 Yeah, these seem like useful statistics for sure! But rather than including them in the table, I think I'd prefer it if the script wrote out a descriptive sentence below the table: "The percentage of diagnostic emitted that were true positives increased from 49% to 51%", "The percentage of diagnostics emitted that were true positives held steady at 63%" or "The percentage of diagnostics emitted that were true positives fell from 78% to 74%", etc.
 
@@ -716,7 +716,7 @@ Maybe just `--tests-path`?
 
 ---
 
-_Review comment by @MichaReiser on `scripts/conformance.py`:396 on 2026-01-12 17:14_
+_Review comment by @MichaReiser on `scripts/conformance.py`:411 on 2026-01-12 17:14_
 
 I find sentences much harder to parse. It's what I like about codspeed. I can just look at the last column to see the result. 
 
@@ -734,7 +734,7 @@ _@AlexWaygood reviewed on 2026-01-12 17:39_
 
 ---
 
-_Review comment by @AlexWaygood on `scripts/conformance.py`:396 on 2026-01-12 17:39_
+_Review comment by @AlexWaygood on `scripts/conformance.py`:411 on 2026-01-12 17:39_
 
 I'm fine with a jargony table and some documentation below it that explains the jargon :-)
 
@@ -746,7 +746,7 @@ _@AlexWaygood reviewed on 2026-01-12 17:40_
 
 ---
 
-_Review comment by @AlexWaygood on `scripts/conformance.py`:396 on 2026-01-12 17:40_
+_Review comment by @AlexWaygood on `scripts/conformance.py`:411 on 2026-01-12 17:40_
 
 > I'm fine with a jargony table and some documentation below it that explains the jargon :-)
 
@@ -758,10 +758,20 @@ _@MichaReiser reviewed on 2026-01-12 18:04_
 
 ---
 
-_Review comment by @MichaReiser on `scripts/conformance.py`:396 on 2026-01-12 18:04_
+_Review comment by @MichaReiser on `scripts/conformance.py`:411 on 2026-01-12 18:04_
 
 This is what biomejs does https://github.com/biomejs/biome/pull/8361#issuecomment-3613423566
 
 and it does add nice emoji's for every row based on the change https://github.com/biomejs/biome/blob/f2445269b6a7bff5d81ee08a6a321bc229b61b50/xtask/coverage/src/results.rs#L37-L72
+
+---
+
+_@WillDuke reviewed on 2026-01-12 20:03_
+
+---
+
+_Review comment by @WillDuke on `scripts/conformance.py`:370 on 2026-01-12 20:03_
+
+Along with those changes, I've also added a fourth category for new false negatives which are now rendered as "True positives removed 🫤"
 
 ---

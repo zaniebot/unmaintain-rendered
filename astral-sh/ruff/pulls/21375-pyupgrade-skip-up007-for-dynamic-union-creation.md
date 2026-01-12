@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: fix-21347
 created_at: 2025-11-11T04:47:49Z
-updated_at: 2025-11-11T22:32:09Z
+updated_at: 2026-01-12T19:53:11Z
 url: https://github.com/astral-sh/ruff/pull/21375
-synced_at: 2026-01-12T15:57:22Z
+synced_at: 2026-01-12T20:26:27Z
 ```
 
 # [`pyupgrade`] Skip UP007 for dynamic Union creation (`UP007`)
@@ -192,5 +192,9 @@ _Comment by @danparizher on 2025-11-11 22:26_
 Thanks for the feedback @dylwil3, I'll write the PR descriptions myself going forward and be more attentive to the code changes that AI generates.
 
 Regarding this PR, I caught myself up in the linked issue and made a few changes following the discussion. Let me know if this revision is on the right track!
+
+---
+
+_Review requested from @dylwil3 by @ntBre on 2026-01-12 19:53_
 
 ---

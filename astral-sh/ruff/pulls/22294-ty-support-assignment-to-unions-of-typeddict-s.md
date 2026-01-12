@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ibraheem/type-dict-union
 created_at: 2025-12-29T23:42:26Z
-updated_at: 2026-01-12T17:51:39Z
+updated_at: 2026-01-12T19:32:41Z
 url: https://github.com/astral-sh/ruff/pull/22294
-synced_at: 2026-01-12T18:23:35Z
+synced_at: 2026-01-12T20:26:27Z
 ```
 
 # [ty] Support assignment to unions of `TypedDict`s
@@ -271,5 +271,17 @@ _@AlexWaygood reviewed on 2026-01-12 17:51_
 _Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/typed_dict.md`:356 on 2026-01-12 17:51_
 
 I think it was a stack overflow on pydantic rather than a perf regression 🙃
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer/builder.rs`:7916 on 2026-01-12 19:31_
+
+The LSP (and all its sub-expressions) would have no hover type in the LSP.
+
+---
+
+_@carljm approved on 2026-01-12 19:32_
+
+LGTM
 
 ---

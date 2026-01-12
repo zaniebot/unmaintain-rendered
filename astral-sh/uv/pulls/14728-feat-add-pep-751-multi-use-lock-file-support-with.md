@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: toml-extra
 created_at: 2025-07-18T15:20:55Z
-updated_at: 2026-01-12T19:09:37Z
+updated_at: 2026-01-12T19:59:54Z
 url: https://github.com/astral-sh/uv/pull/14728
-synced_at: 2026-01-12T19:14:21Z
+synced_at: 2026-01-12T20:26:40Z
 ```
 
 # feat: Add PEP 751 multi-use lock file support with extras and dependency groups markers
@@ -238,5 +238,19 @@ _Review comment by @konstin on `crates/uv/tests/it/export.rs`:3881 on 2026-01-12
 Here, we need to use `extra ==`: That is not provided by the lockfile, but by flask.
 
 Can you add a test case specifically for having conflicting dependencies and transitives extras?
+
+---
+
+_Review comment by @gaborbernat on `crates/uv/tests/it/export.rs`:3881 on 2026-01-12 19:16_
+
+Done now I believe 🤔 
+
+---
+
+_@gaborbernat reviewed on 2026-01-12 19:16_
+
+---
+
+_Review requested from @konstin by @gaborbernat on 2026-01-12 19:59_
 
 ---

@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: fix/21648-perf401-unpacking
 created_at: 2026-01-08T02:13:07Z
-updated_at: 2026-01-10T00:42:03Z
+updated_at: 2026-01-12T20:05:58Z
 url: https://github.com/astral-sh/ruff/pull/22450
-synced_at: 2026-01-12T15:57:50Z
+synced_at: 2026-01-12T20:26:27Z
 ```
 
 # perflint: support tuple unpacking in PERF401
@@ -516,5 +516,19 @@ https://github.com/apache/airflow/blob/7d6f0c2cc67cb0ef2bfcc1993fcfa8978c81f3a4/
 https://github.com/latchbio/latch/blob/dc91e5b22db76d1dcab1acf91c3afbcc597c0c3a/src/latch/ldata/_transfer/upload.py#L169
 
 https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/container.py#L101
+
+---
+
+_Comment by @ntBre on 2026-01-12 20:03_
+
+Is this ready for another review? Should we add a couple of test cases based on the ecosystem results?
+
+Based on the ecosystem impact, I'm thinking this should probably also be a preview change.
+
+---
+
+_Comment by @Jkhall81 on 2026-01-12 20:05_
+
+I worked it over a few times.  If it still needs improvement, I need a shove in the right direction.  But yes, it's ready for another review.
 
 ---

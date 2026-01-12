@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: fix-19610
 created_at: 2025-08-01T23:28:54Z
-updated_at: 2025-10-24T04:16:58Z
+updated_at: 2026-01-12T19:53:55Z
 url: https://github.com/astral-sh/ruff/pull/19702
-synced_at: 2026-01-12T15:56:45Z
+synced_at: 2026-01-12T20:26:26Z
 ```
 
 # [`flake8-simplify`] Fix `SIM905` to avoid syntax errors with r-string unescapable characters
@@ -142,5 +142,9 @@ This might be from the merge, but would you mind moving these back to the end of
 _@ntBre reviewed on 2025-10-21 20:29_
 
 Thanks! This looks reasonable to me. I just had a few small suggestions, and there are some new merge conflicts. It might be good for @dylwil3 to take a look too since he worked on `replace_flags` in #19591.
+
+---
+
+_Review requested from @dylwil3 by @ntBre on 2026-01-12 19:53_
 
 ---

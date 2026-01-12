@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/dyn
 created_at: 2025-12-29T21:45:15Z
-updated_at: 2026-01-12T17:53:12Z
+updated_at: 2026-01-12T20:14:02Z
 url: https://github.com/astral-sh/ruff/pull/22291
-synced_at: 2026-01-12T18:23:35Z
+synced_at: 2026-01-12T20:26:27Z
 ```
 
 # [ty] Add support for dynamic `type()` classes
@@ -83,11 +83,6 @@ _Comment by @astral-sh-bot[bot] on 2025-12-29 21:48_
 <summary>Changes were detected when running on open source projects</summary>
 
 ```diff
-zipp (https://github.com/jaraco/zipp)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 5 diagnostics
-+ Found 4 diagnostics
-
 pyp (https://github.com/hauntsaninja/pyp)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 6 diagnostics
@@ -97,30 +92,40 @@ bidict (https://github.com/jab/bidict)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 + bidict/_base.py:147:47: warning[unsupported-dynamic-base] Unsupported class base: Has type `type[BT@_make_inv_cls]`
 
-git-revise (https://github.com/mystor/git-revise)
+more-itertools (https://github.com/more-itertools/more-itertools)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 2 diagnostics
-+ Found 1 diagnostic
+- Found 36 diagnostics
++ Found 35 diagnostics
+
+zipp (https://github.com/jaraco/zipp)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 5 diagnostics
++ Found 4 diagnostics
 
 mypy_primer (https://github.com/hauntsaninja/mypy_primer)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 4 diagnostics
 + Found 3 diagnostics
 
-more-itertools (https://github.com/more-itertools/more-itertools)
+git-revise (https://github.com/mystor/git-revise)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 36 diagnostics
-+ Found 35 diagnostics
+- Found 2 diagnostics
++ Found 1 diagnostic
+
+attrs (https://github.com/python-attrs/attrs)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 628 diagnostics
++ Found 627 diagnostics
 
 pegen (https://github.com/we-like-parsers/pegen)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 49 diagnostics
 + Found 48 diagnostics
 
-attrs (https://github.com/python-attrs/attrs)
+dacite (https://github.com/konradhalas/dacite)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 628 diagnostics
-+ Found 627 diagnostics
+- Found 23 diagnostics
++ Found 22 diagnostics
 
 aioredis (https://github.com/aio-libs/aioredis)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
@@ -132,10 +137,10 @@ packaging (https://github.com/pypa/packaging)
 - Found 24 diagnostics
 + Found 23 diagnostics
 
-dacite (https://github.com/konradhalas/dacite)
+janus (https://github.com/aio-libs/janus)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 23 diagnostics
-+ Found 22 diagnostics
+- Found 4 diagnostics
++ Found 3 diagnostics
 
 anyio (https://github.com/agronholm/anyio)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
@@ -151,11 +156,6 @@ parso (https://github.com/davidhalter/parso)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 200 diagnostics
 + Found 199 diagnostics
-
-janus (https://github.com/aio-libs/janus)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 4 diagnostics
-+ Found 3 diagnostics
 
 paroxython (https://github.com/laowantong/paroxython)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
@@ -188,6 +188,31 @@ pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
 - Found 173 diagnostics
 + Found 172 diagnostics
 
+async-utils (https://github.com/mikeshardmind/async-utils)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 10 diagnostics
++ Found 9 diagnostics
+
+python-sop (https://gitlab.com/dkg/python-sop)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 2 diagnostics
++ Found 1 diagnostic
+
+DateType (https://github.com/glyph/DateType)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 9 diagnostics
++ Found 8 diagnostics
+
+itsdangerous (https://github.com/pallets/itsdangerous)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 3 diagnostics
++ Found 2 diagnostics
+
+pip (https://github.com/pypa/pip)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 604 diagnostics
++ Found 603 diagnostics
+
 spack (https://github.com/spack/spack)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 + lib/spack/spack/builder.py:134:17: warning[unsupported-dynamic-base] Unsupported class base: Has type `type[Self@__init__]`
@@ -195,25 +220,15 @@ spack (https://github.com/spack/spack)
 - Found 4319 diagnostics
 + Found 4318 diagnostics
 
-python-sop (https://gitlab.com/dkg/python-sop)
+asynq (https://github.com/quora/asynq)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 2 diagnostics
-+ Found 1 diagnostic
+- Found 218 diagnostics
++ Found 217 diagnostics
 
-async-utils (https://github.com/mikeshardmind/async-utils)
+yarl (https://github.com/aio-libs/yarl)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 10 diagnostics
-+ Found 9 diagnostics
-
-pip (https://github.com/pypa/pip)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 604 diagnostics
-+ Found 603 diagnostics
-
-itsdangerous (https://github.com/pallets/itsdangerous)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 3 diagnostics
-+ Found 2 diagnostics
+- Found 47 diagnostics
++ Found 46 diagnostics
 
 bandersnatch (https://github.com/pypa/bandersnatch)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
@@ -225,23 +240,6 @@ stone (https://github.com/dropbox/stone)
 - Found 253 diagnostics
 + Found 252 diagnostics
 
-isort (https://github.com/pycqa/isort)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 36 diagnostics
-+ Found 35 diagnostics
-
-werkzeug (https://github.com/pallets/werkzeug)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- src/werkzeug/test.py:815:32: error[invalid-assignment] Object of type `type` is not assignable to `type[Response] | None`
-+ src/werkzeug/test.py:817:32: warning[unsupported-dynamic-base] Unsupported class base: Has type `type[Response] & ~type[TestResponse]`
-- Found 387 diagnostics
-+ Found 386 diagnostics
-
-asynq (https://github.com/quora/asynq)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 218 diagnostics
-+ Found 217 diagnostics
-
 websockets (https://github.com/aaugustin/websockets)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 35 diagnostics
@@ -252,45 +250,42 @@ jinja (https://github.com/pallets/jinja)
 - Found 181 diagnostics
 + Found 180 diagnostics
 
+werkzeug (https://github.com/pallets/werkzeug)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- src/werkzeug/test.py:815:32: error[invalid-assignment] Object of type `type` is not assignable to `type[Response] | None`
++ src/werkzeug/test.py:817:32: warning[unsupported-dynamic-base] Unsupported class base: Has type `type[Response] & ~type[TestResponse]`
+- Found 387 diagnostics
++ Found 386 diagnostics
+
 paasta (https://github.com/yelp/paasta)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 1103 diagnostics
 + Found 1102 diagnostics
 
-yarl (https://github.com/aio-libs/yarl)
+isort (https://github.com/pycqa/isort)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 47 diagnostics
-+ Found 46 diagnostics
+- Found 36 diagnostics
++ Found 35 diagnostics
 
 twine (https://github.com/pypa/twine)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 10 diagnostics
 + Found 9 diagnostics
 
-aiortc (https://github.com/aiortc/aiortc)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 195 diagnostics
-+ Found 194 diagnostics
-
-graphql-core (https://github.com/graphql-python/graphql-core)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 641 diagnostics
-+ Found 640 diagnostics
-
-boostedblob (https://github.com/hauntsaninja/boostedblob)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 22 diagnostics
-+ Found 21 diagnostics
-
 black (https://github.com/psf/black)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 55 diagnostics
 + Found 54 diagnostics
 
-pylint (https://github.com/pycqa/pylint)
+python-htmlgen (https://github.com/srittau/python-htmlgen)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 217 diagnostics
-+ Found 216 diagnostics
+- Found 26 diagnostics
++ Found 25 diagnostics
+
+boostedblob (https://github.com/hauntsaninja/boostedblob)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 22 diagnostics
++ Found 21 diagnostics
 
 pytest (https://github.com/pytest-dev/pytest)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
@@ -299,120 +294,130 @@ pytest (https://github.com/pytest-dev/pytest)
 - Found 426 diagnostics
 + Found 423 diagnostics
 
-DateType (https://github.com/glyph/DateType)
+aiortc (https://github.com/aiortc/aiortc)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 9 diagnostics
-+ Found 8 diagnostics
-
-scrapy (https://github.com/scrapy/scrapy)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 1786 diagnostics
-+ Found 1785 diagnostics
-
-beartype (https://github.com/beartype/beartype)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 498 diagnostics
-+ Found 497 diagnostics
-
-python-htmlgen (https://github.com/srittau/python-htmlgen)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 26 diagnostics
-+ Found 25 diagnostics
+- Found 195 diagnostics
++ Found 194 diagnostics
 
 pyjwt (https://github.com/jpadilla/pyjwt)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 38 diagnostics
 + Found 37 diagnostics
 
-starlette (https://github.com/encode/starlette)
+pylint (https://github.com/pycqa/pylint)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 217 diagnostics
 + Found 216 diagnostics
-
-alerta (https://github.com/alerta/alerta)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 556 diagnostics
-+ Found 555 diagnostics
 
 kopf (https://github.com/nolar/kopf)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 268 diagnostics
 + Found 267 diagnostics
 
-downforeveryone (https://github.com/rpdelaney/downforeveryone)
+dulwich (https://github.com/dulwich/dulwich)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 6 diagnostics
-+ Found 5 diagnostics
+- Found 232 diagnostics
++ Found 231 diagnostics
 
-mypy-protobuf (https://github.com/dropbox/mypy-protobuf)
+starlette (https://github.com/encode/starlette)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 449 diagnostics
-+ Found 448 diagnostics
+- Found 217 diagnostics
++ Found 216 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 641 diagnostics
++ Found 640 diagnostics
+
+beartype (https://github.com/beartype/beartype)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 498 diagnostics
++ Found 497 diagnostics
 
 ignite (https://github.com/pytorch/ignite)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 2037 diagnostics
 + Found 2036 diagnostics
 
+scrapy (https://github.com/scrapy/scrapy)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 1786 diagnostics
++ Found 1785 diagnostics
+
+downforeveryone (https://github.com/rpdelaney/downforeveryone)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 6 diagnostics
++ Found 5 diagnostics
+
 httpx-caching (https://github.com/johtso/httpx-caching)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 28 diagnostics
 + Found 27 diagnostics
 
-sockeye (https://github.com/awslabs/sockeye)
+mypy-protobuf (https://github.com/dropbox/mypy-protobuf)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 417 diagnostics
-+ Found 416 diagnostics
-
-porcupine (https://github.com/Akuli/porcupine)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 19 diagnostics
-+ Found 18 diagnostics
-
-dulwich (https://github.com/dulwich/dulwich)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 232 diagnostics
-+ Found 231 diagnostics
+- Found 449 diagnostics
++ Found 448 diagnostics
 
 flake8-pyi (https://github.com/PyCQA/flake8-pyi)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 3 diagnostics
 + Found 2 diagnostics
 
-PyGithub (https://github.com/PyGithub/PyGithub)
+alerta (https://github.com/alerta/alerta)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 300 diagnostics
-+ Found 299 diagnostics
+- Found 556 diagnostics
++ Found 555 diagnostics
 
 rich (https://github.com/Textualize/rich)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 346 diagnostics
 + Found 345 diagnostics
 
-pybind11 (https://github.com/pybind/pybind11)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 217 diagnostics
-+ Found 216 diagnostics
-
 dedupe (https://github.com/dedupeio/dedupe)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 53 diagnostics
 + Found 52 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 417 diagnostics
++ Found 416 diagnostics
+
+check-jsonschema (https://github.com/python-jsonschema/check-jsonschema)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 28 diagnostics
++ Found 27 diagnostics
 
 pylox (https://github.com/sco1/pylox)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 49 diagnostics
 + Found 48 diagnostics
 
-ppb-vector (https://github.com/ppb/ppb-vector)
+porcupine (https://github.com/Akuli/porcupine)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 22 diagnostics
-+ Found 21 diagnostics
+- Found 19 diagnostics
++ Found 18 diagnostics
 
 mkosi (https://github.com/systemd/mkosi)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 78 diagnostics
 + Found 77 diagnostics
+
+PyGithub (https://github.com/PyGithub/PyGithub)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 300 diagnostics
++ Found 299 diagnostics
+
+ppb-vector (https://github.com/ppb/ppb-vector)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 22 diagnostics
++ Found 21 diagnostics
+
+flake8 (https://github.com/pycqa/flake8)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 39 diagnostics
++ Found 38 diagnostics
 
 aiohttp-devtools (https://github.com/aio-libs/aiohttp-devtools)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
@@ -424,45 +429,30 @@ aiohttp-devtools (https://github.com/aio-libs/aiohttp-devtools)
 - Found 31 diagnostics
 + Found 35 diagnostics
 
+pybind11 (https://github.com/pybind/pybind11)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 217 diagnostics
++ Found 216 diagnostics
+
 PyWinCtl (https://github.com/Kalmat/PyWinCtl)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 32 diagnostics
 + Found 31 diagnostics
-
-check-jsonschema (https://github.com/python-jsonschema/check-jsonschema)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 28 diagnostics
-+ Found 27 diagnostics
-
-imagehash (https://github.com/JohannesBuchner/imagehash)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 11 diagnostics
-+ Found 10 diagnostics
-
-flake8 (https://github.com/pycqa/flake8)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 39 diagnostics
-+ Found 38 diagnostics
 
 poetry (https://github.com/python-poetry/poetry)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 979 diagnostics
 + Found 978 diagnostics
 
-nox (https://github.com/wntrblm/nox)
+imagehash (https://github.com/JohannesBuchner/imagehash)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 25 diagnostics
-+ Found 24 diagnostics
+- Found 11 diagnostics
++ Found 10 diagnostics
 
 schemathesis (https://github.com/schemathesis/schemathesis)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 279 diagnostics
 + Found 278 diagnostics
-
-cki-lib (https://gitlab.com/cki-project/cki-lib)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 241 diagnostics
-+ Found 240 diagnostics
 
 tornado (https://github.com/tornadoweb/tornado)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
@@ -471,20 +461,60 @@ tornado (https://github.com/tornadoweb/tornado)
 - Found 329 diagnostics
 + Found 328 diagnostics
 
-typeshed-stats (https://github.com/AlexWaygood/typeshed-stats)
+nox (https://github.com/wntrblm/nox)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 15 diagnostics
-+ Found 14 diagnostics
+- Found 25 diagnostics
++ Found 24 diagnostics
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 241 diagnostics
++ Found 240 diagnostics
+
+optuna (https://github.com/optuna/optuna)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 578 diagnostics
++ Found 577 diagnostics
 
 dragonchain (https://github.com/dragonchain/dragonchain)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 437 diagnostics
 + Found 436 diagnostics
 
+vision (https://github.com/pytorch/vision)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 1410 diagnostics
++ Found 1409 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 2147 diagnostics
++ Found 2146 diagnostics
+
 alectryon (https://github.com/cpitclaudel/alectryon)
 + All checks passed!
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 1 diagnostic
+
+urllib3 (https://github.com/urllib3/urllib3)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 307 diagnostics
++ Found 306 diagnostics
+
+typeshed-stats (https://github.com/AlexWaygood/typeshed-stats)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 15 diagnostics
++ Found 14 diagnostics
+
+mypy (https://github.com/python/mypy)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 1741 diagnostics
++ Found 1740 diagnostics
+
+artigraph (https://github.com/artigraph/artigraph)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 150 diagnostics
++ Found 149 diagnostics
 
 pandera (https://github.com/pandera-dev/pandera)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
@@ -497,31 +527,10 @@ pandera (https://github.com/pandera-dev/pandera)
 - Found 1579 diagnostics
 + Found 1580 diagnostics
 
-pydantic (https://github.com/pydantic/pydantic)
+antidote (https://github.com/Finistere/antidote)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-+ pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-- pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
-+ pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
-- Found 3160 diagnostics
-+ Found 3159 diagnostics
-
-urllib3 (https://github.com/urllib3/urllib3)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 307 diagnostics
-+ Found 306 diagnostics
+- Found 248 diagnostics
++ Found 247 diagnostics
 
 schema_salad (https://github.com/common-workflow-language/schema_salad)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
@@ -533,44 +542,34 @@ Expression (https://github.com/cognitedata/Expression)
 - Found 206 diagnostics
 + Found 205 diagnostics
 
-mitmproxy (https://github.com/mitmproxy/mitmproxy)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 2147 diagnostics
-+ Found 2146 diagnostics
-
-artigraph (https://github.com/artigraph/artigraph)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 150 diagnostics
-+ Found 149 diagnostics
-
-optuna (https://github.com/optuna/optuna)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 578 diagnostics
-+ Found 577 diagnostics
-
-antidote (https://github.com/Finistere/antidote)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 248 diagnostics
-+ Found 247 diagnostics
-
-mypy (https://github.com/python/mypy)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 1741 diagnostics
-+ Found 1740 diagnostics
-
 psycopg (https://github.com/psycopg/psycopg)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 + psycopg/psycopg/types/json.py:140:26: warning[unsupported-dynamic-base] Unsupported class base: Has type `type[Loader]`
+
+pydantic (https://github.com/pydantic/pydantic)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 3160 diagnostics
++ Found 3159 diagnostics
+
+xarray-dataclasses (https://github.com/astropenguin/xarray-dataclasses)
++ All checks passed!
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 1 diagnostic
+
+koda-validate (https://github.com/keithasaurus/koda-validate)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 406 diagnostics
++ Found 405 diagnostics
 
 comtypes (https://github.com/enthought/comtypes)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 401 diagnostics
 + Found 400 diagnostics
 
-freqtrade (https://github.com/freqtrade/freqtrade)
+pyppeteer (https://github.com/pyppeteer/pyppeteer)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 682 diagnostics
-+ Found 681 diagnostics
+- Found 88 diagnostics
++ Found 87 diagnostics
 
 operator (https://github.com/canonical/operator)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
@@ -579,48 +578,30 @@ operator (https://github.com/canonical/operator)
 
 Tanjun (https://github.com/FasterSpeeding/Tanjun)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]] | _T@cached_inject`
++ tanjun/dependencies/data.py:347:12: error[invalid-return-type] Return type does not match returned value: expected `_T@cached_inject`, found `_T@cached_inject | Coroutine[Any, Any, _T@cached_inject | Coroutine[Any, Any, _T@cached_inject]]`
 - Found 135 diagnostics
 + Found 134 diagnostics
 
-pyppeteer (https://github.com/pyppeteer/pyppeteer)
+freqtrade (https://github.com/freqtrade/freqtrade)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 88 diagnostics
-+ Found 87 diagnostics
-
-mkdocs (https://github.com/mkdocs/mkdocs)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 225 diagnostics
-+ Found 224 diagnostics
-
-discord.py (https://github.com/Rapptz/discord.py)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 549 diagnostics
-+ Found 548 diagnostics
+- Found 682 diagnostics
++ Found 681 diagnostics
 
 build (https://github.com/pypa/build)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 50 diagnostics
 + Found 49 diagnostics
 
+pyproject-metadata (https://github.com/pypa/pyproject-metadata)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 5 diagnostics
++ Found 4 diagnostics
+
 sphinx (https://github.com/sphinx-doc/sphinx)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 346 diagnostics
 + Found 345 diagnostics
-
-koda-validate (https://github.com/keithasaurus/koda-validate)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 406 diagnostics
-+ Found 405 diagnostics
-
-openlibrary (https://github.com/internetarchive/openlibrary)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 1157 diagnostics
-+ Found 1156 diagnostics
-
-cibuildwheel (https://github.com/pypa/cibuildwheel)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 29 diagnostics
-+ Found 28 diagnostics
 
 speedrun.com_global_scoreboard_webapp (https://github.com/Avasam/speedrun.com_global_scoreboard_webapp)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
@@ -632,40 +613,25 @@ trio (https://github.com/python-trio/trio)
 - Found 483 diagnostics
 + Found 482 diagnostics
 
-pyproject-metadata (https://github.com/pypa/pyproject-metadata)
+discord.py (https://github.com/Rapptz/discord.py)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 5 diagnostics
-+ Found 4 diagnostics
-
-xarray-dataclasses (https://github.com/astropenguin/xarray-dataclasses)
-+ All checks passed!
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 1 diagnostic
-
-pyodide (https://github.com/pyodide/pyodide)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 936 diagnostics
-+ Found 935 diagnostics
-
-meson (https://github.com/mesonbuild/meson)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 2155 diagnostics
-+ Found 2154 diagnostics
+- Found 549 diagnostics
++ Found 548 diagnostics
 
 mongo-python-driver (https://github.com/mongodb/mongo-python-driver)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 448 diagnostics
 + Found 447 diagnostics
 
-vision (https://github.com/pytorch/vision)
+mkdocs (https://github.com/mkdocs/mkdocs)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 1410 diagnostics
-+ Found 1409 diagnostics
+- Found 225 diagnostics
++ Found 224 diagnostics
 
-apprise (https://github.com/caronc/apprise)
+cibuildwheel (https://github.com/pypa/cibuildwheel)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 2648 diagnostics
-+ Found 2647 diagnostics
+- Found 29 diagnostics
++ Found 28 diagnostics
 
 zope.interface (https://github.com/zopefoundation/zope.interface)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
@@ -677,40 +643,60 @@ svcs (https://github.com/hynek/svcs)
 - Found 11 diagnostics
 + Found 10 diagnostics
 
-django-test-migrations (https://github.com/wemake-services/django-test-migrations)
+arviz (https://github.com/arviz-devs/arviz)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 3 diagnostics
-+ Found 2 diagnostics
+- Found 59 diagnostics
++ Found 58 diagnostics
 
-cwltool (https://github.com/common-workflow-language/cwltool)
+pyodide (https://github.com/pyodide/pyodide)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 258 diagnostics
-+ Found 257 diagnostics
+- Found 936 diagnostics
++ Found 935 diagnostics
 
-manticore (https://github.com/trailofbits/manticore)
+meson (https://github.com/mesonbuild/meson)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 11070 diagnostics
-+ Found 11069 diagnostics
+- Found 2155 diagnostics
++ Found 2154 diagnostics
 
 rclip (https://github.com/yurijmikhalevich/rclip)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 14 diagnostics
 + Found 13 diagnostics
 
-numpy-stl (https://github.com/WoLpH/numpy-stl)
+cloud-init (https://github.com/canonical/cloud-init)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 23 diagnostics
-+ Found 22 diagnostics
+- Found 1180 diagnostics
++ Found 1179 diagnostics
 
-arviz (https://github.com/arviz-devs/arviz)
+apprise (https://github.com/caronc/apprise)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 59 diagnostics
-+ Found 58 diagnostics
+- Found 2648 diagnostics
++ Found 2647 diagnostics
 
-archinstall (https://github.com/archlinux/archinstall)
+cwltool (https://github.com/common-workflow-language/cwltool)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 58 diagnostics
-+ Found 57 diagnostics
+- Found 258 diagnostics
++ Found 257 diagnostics
+
+xarray (https://github.com/pydata/xarray)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 1762 diagnostics
++ Found 1761 diagnostics
+
+django-test-migrations (https://github.com/wemake-services/django-test-migrations)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 3 diagnostics
++ Found 2 diagnostics
+
+manticore (https://github.com/trailofbits/manticore)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 11070 diagnostics
++ Found 11069 diagnostics
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 1157 diagnostics
++ Found 1156 diagnostics
 
 setuptools (https://github.com/pypa/setuptools)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
@@ -720,42 +706,32 @@ setuptools (https://github.com/pypa/setuptools)
 - Found 1267 diagnostics
 + Found 1265 diagnostics
 
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
++ strawberry/types/base.py:341:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+
 prefect (https://github.com/PrefectHQ/prefect)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-+ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
-- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
-+ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` on object of type `dict[str, Any]`
-- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
-+ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | str | ... omitted 5 union elements]`
-- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
-+ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
-- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
-+ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
-- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-+ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
-- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
-+ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
-- Found 5373 diagnostics
-+ Found 5372 diagnostics
+- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -> Any)`
++ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
+- src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
+- src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
+- src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
+- src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
+- src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
+- src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
+- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
++ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
+- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
++ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
++ src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5375 diagnostics
++ Found 5369 diagnostics
 
-pwndbg (https://github.com/pwndbg/pwndbg)
+archinstall (https://github.com/archlinux/archinstall)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 2039 diagnostics
-+ Found 2038 diagnostics
-
-xarray (https://github.com/pydata/xarray)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 1762 diagnostics
-+ Found 1761 diagnostics
+- Found 58 diagnostics
++ Found 57 diagnostics
 
 hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
@@ -769,59 +745,92 @@ scipy-stubs (https://github.com/scipy/scipy-stubs)
 - Found 1235 diagnostics
 + Found 1232 diagnostics
 
-strawberry (https://github.com/strawberry-graphql/strawberry)
+numpy-stl (https://github.com/WoLpH/numpy-stl)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-+ strawberry/types/base.py:341:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 23 diagnostics
++ Found 22 diagnostics
 
-altair (https://github.com/vega/altair)
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 1062 diagnostics
-+ Found 1061 diagnostics
+- Found 8436 diagnostics
++ Found 8435 diagnostics
 
-cloud-init (https://github.com/canonical/cloud-init)
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 1180 diagnostics
-+ Found 1179 diagnostics
+- src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 49 diagnostics
++ Found 47 diagnostics
+
+pwndbg (https://github.com/pwndbg/pwndbg)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 2039 diagnostics
++ Found 2038 diagnostics
 
 pycryptodome (https://github.com/Legrandin/pycryptodome)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 1322 diagnostics
 + Found 1321 diagnostics
 
-egglog-python (https://github.com/egraphs-good/egglog-python)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 1486 diagnostics
-+ Found 1485 diagnostics
-
-dd-trace-py (https://github.com/DataDog/dd-trace-py)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 8474 diagnostics
-+ Found 8473 diagnostics
-
 aiohttp (https://github.com/aio-libs/aiohttp)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 181 diagnostics
 + Found 180 diagnostics
-
-scikit-build-core (https://github.com/scikit-build/scikit-build-core)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 48 diagnostics
-+ Found 47 diagnostics
 
 AutoSplit (https://github.com/Toufool/AutoSplit)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 64 diagnostics
 + Found 63 diagnostics
 
-django-stubs (https://github.com/typeddjango/django-stubs)
+egglog-python (https://github.com/egraphs-good/egglog-python)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 445 diagnostics
-+ Found 444 diagnostics
+- Found 1486 diagnostics
++ Found 1485 diagnostics
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 2436 diagnostics
++ Found 2435 diagnostics
+
+altair (https://github.com/vega/altair)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 1062 diagnostics
++ Found 1061 diagnostics
 
 CPython (Argument Clinic) (https://github.com/python/cpython)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 22 diagnostics
 + Found 21 diagnostics
+
+cryptography (https://github.com/pyca/cryptography)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 37 diagnostics
++ Found 36 diagnostics
+
+django-stubs (https://github.com/typeddjango/django-stubs)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 445 diagnostics
++ Found 444 diagnostics
+
+CPython (cases_generator) (https://github.com/python/cpython)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 6 diagnostics
++ Found 5 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 878 diagnostics
++ Found 877 diagnostics
+
+CPython (peg_generator) (https://github.com/python/cpython)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 47 diagnostics
++ Found 46 diagnostics
+
+ibis (https://github.com/ibis-project/ibis)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- ibis/examples/__init__.py:122:9: error[unresolved-attribute] Object of type `type` has no attribute `fetch`
+- Found 4609 diagnostics
++ Found 4607 diagnostics
 
 hydpy (https://github.com/hydpy-dev/hydpy)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
@@ -832,79 +841,47 @@ hydpy (https://github.com/hydpy-dev/hydpy)
 - Found 664 diagnostics
 + Found 665 diagnostics
 
-bokeh (https://github.com/bokeh/bokeh)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 878 diagnostics
-+ Found 877 diagnostics
-
 pywin32 (https://github.com/mhammond/pywin32)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 2713 diagnostics
 + Found 2712 diagnostics
 
-CPython (cases_generator) (https://github.com/python/cpython)
+pandas (https://github.com/pandas-dev/pandas)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 6 diagnostics
-+ Found 5 diagnostics
-
-jax (https://github.com/google/jax)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 2806 diagnostics
-+ Found 2805 diagnostics
-
-CPython (peg_generator) (https://github.com/python/cpython)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 47 diagnostics
-+ Found 46 diagnostics
-
-cryptography (https://github.com/pyca/cryptography)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 37 diagnostics
-+ Found 36 diagnostics
-
-ibis (https://github.com/ibis-project/ibis)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- ibis/examples/__init__.py:122:9: error[unresolved-attribute] Object of type `type` has no attribute `fetch`
-- Found 4609 diagnostics
-+ Found 4607 diagnostics
-
-static-frame (https://github.com/static-frame/static-frame)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
-+ static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
-- static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Unknown, Any]`
-+ static_frame/core/node_selector.py:526:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@InterfaceSelectQuartet, Any]`, found `InterGetItemLocReduces[Unknown | Bottom[Series[Any, Any]], Any]`
-+ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | ndarray[Never, Never] | ... omitted 6 union elements, TVDtype@Series]`
+- Found 3795 diagnostics
++ Found 3794 diagnostics
 
 streamlit (https://github.com/streamlit/streamlit)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 104 diagnostics
 + Found 103 diagnostics
 
-pandas (https://github.com/pandas-dev/pandas)
+jax (https://github.com/google/jax)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 3793 diagnostics
-+ Found 3792 diagnostics
-
-scikit-learn (https://github.com/scikit-learn/scikit-learn)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 2436 diagnostics
-+ Found 2435 diagnostics
+- Found 2806 diagnostics
++ Found 2805 diagnostics
 
 materialize (https://github.com/MaterializeInc/materialize)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 515 diagnostics
 + Found 514 diagnostics
 
+static-frame (https://github.com/static-frame/static-frame)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
++ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
+- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Self@iloc | Bus[Any], object_ | Self@iloc]`
++ static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_ | Self@iloc]`
++ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
+- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
++ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
++ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_]`
+- Found 1825 diagnostics
++ Found 1827 diagnostics
+
 sympy (https://github.com/sympy/sympy)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
 - Found 15598 diagnostics
 + Found 15597 diagnostics
-
-zulip (https://github.com/zulip/zulip)
-- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 3673 diagnostics
-+ Found 3672 diagnostics
 
 pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
@@ -913,8 +890,13 @@ pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
 
 rotki (https://github.com/rotki/rotki)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
-- Found 2105 diagnostics
-+ Found 2104 diagnostics
+- Found 2104 diagnostics
++ Found 2103 diagnostics
+
+zulip (https://github.com/zulip/zulip)
+- /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
+- Found 3673 diagnostics
++ Found 3672 diagnostics
 
 colour (https://github.com/colour-science/colour)
 - /home/runner/.config/ty/ty.toml:9:1: warning[unknown-rule] Unknown rule `unsupported-dynamic-base`
@@ -964,26 +946,19 @@ I think the scrapy, black, and aiohttp-devtools changes are true positives.
 _Comment by @codspeed-hq[bot] on 2025-12-29 22:59_
 
 <!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
-## Merging this PR will **degrade performance by 5.11%**
+## Merging this PR will **not alter performance**
 
 
 
 
-`❌ 1` regressed benchmark  
-`✅ 22` untouched benchmarks  
+`✅ 23` untouched benchmarks  
 `⏩ 30` skipped benchmarks[^skipped]  
 
 
-> :warning: _Please fix the performance issues or [acknowledge them on CodSpeed](https://codspeed.io/astral-sh/ruff/branches/charlie%2Fdyn?utm_source=github&utm_medium=comment-v2&utm_content=acknowledge)._
 
-### Performance Changes
-
-|     | Mode | Benchmark | `BASE` | `HEAD` | Efficiency |
-| --- | ---- | --------- | ------ | ------ | ---------- |
-| ❌ | WallTime | [`` pydantic ``](https://codspeed.io/astral-sh/ruff/branches/charlie%2Fdyn?uri=crates%2Fruff_benchmark%2Fbenches%2Fty_walltime.rs%3A%3Apydantic&runnerMode=WallTime&utm_source=github&utm_medium=comment-v2&utm_content=benchmark) | 10 s | 10.6 s | -5.11% |
 ---
 
-<sub>Comparing <code>charlie/dyn</code> (5a177bb) with <code>main</code> (e4ba293)</sub>
+<sub>Comparing <code>charlie/dyn</code> (8df0d85) with <code>main</code> (78ef241)</sub>
 
 <a href="https://codspeed.io/astral-sh/ruff/branches/charlie%2Fdyn?utm_source=github&utm_medium=comment-v2&utm_content=button">
   <picture>
@@ -1057,16 +1032,19 @@ _Comment by @astral-sh-bot[bot] on 2025-12-30 03:30_
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
 | `unknown-rule` | 0 | 156 | 0 |
-| `invalid-return-type` | 4 | 1 | 9 |
-| `invalid-argument-type` | 5 | 2 | 3 |
+| `invalid-return-type` | 1 | 1 | 11 |
+| `invalid-argument-type` | 5 | 3 | 3 |
 | `invalid-assignment` | 0 | 2 | 5 |
 | `unsupported-dynamic-base` | 7 | 0 | 0 |
-| `unresolved-attribute` | 1 | 2 | 0 |
-| `unused-ignore-comment` | 2 | 0 | 0 |
-| **Total** | **19** | **163** | **17** |
+| `unresolved-attribute` | 1 | 2 | 2 |
+| `possibly-missing-attribute` | 0 | 3 | 1 |
+| `unused-ignore-comment` | 3 | 0 | 0 |
+| `invalid-await` | 0 | 2 | 0 |
+| `type-assertion-failure` | 2 | 0 | 0 |
+| **Total** | **19** | **169** | **22** |
 
 
-**[Full report with detailed diff](https://aae4324d.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://aae4324d.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://6800bdc5.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://6800bdc5.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -3100,7 +3078,7 @@ _@charliermarsh reviewed on 2026-01-10 18:53_
 
 ---
 
-_Review comment by @charliermarsh on `crates/ty_python_semantic/resources/mdtest/call/type.md`:678 on 2026-01-10 18:53_
+_Review comment by @charliermarsh on `crates/ty_python_semantic/resources/mdtest/call/type.md`:690 on 2026-01-10 18:53_
 
 I think we said we wanted to ban this as a known simplification @AlexWaygood -- is that right?
 
@@ -3110,13 +3088,13 @@ _@charliermarsh reviewed on 2026-01-10 18:59_
 
 ---
 
-_Review comment by @charliermarsh on `crates/ty_python_semantic/resources/mdtest/call/type.md`:678 on 2026-01-10 18:59_
+_Review comment by @charliermarsh on `crates/ty_python_semantic/resources/mdtest/call/type.md`:690 on 2026-01-10 18:59_
 
 Ah no -- it was inheriting from `Protocol` itself.
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:678 on 2026-01-10 19:00_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:690 on 2026-01-10 19:00_
 
 yeah, inheriting from protocol classes is fine, it just doesn't seem necessary to support creating a _new_ `Protocol` class using `type()` (which you'd do by including `Protocol` itself in the bases list)
 
@@ -3207,7 +3185,7 @@ When `bases` is a module-level variable holding a tuple of class literals, we ca
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:717 on 2026-01-11 11:40_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:736 on 2026-01-11 11:40_
 
 It seems like it is _possible_ to create an empty enum using `type()` if you try realy really hard. But yeah, we don't need to support this 😆
 
@@ -3450,7 +3428,7 @@ _@AlexWaygood reviewed on 2026-01-11 14:08_
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:643 on 2026-01-11 14:08_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:646 on 2026-01-11 14:08_
 
 ```suggestion
     # TODO: `type[Unknown]` would cause fewer false positives
@@ -3473,7 +3451,7 @@ _@AlexWaygood reviewed on 2026-01-11 14:28_
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:633 on 2026-01-11 14:28_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:636 on 2026-01-11 14:28_
 
 I think here as well, `type[Unknown]` would cause fewer false positives (so I'd add a TODO here) -- it's ambiguous here whether we should pick the first overload (which would lead to us inferring `<class 'str'>` or the second overload (which would lead to us inferring a dynamic class-literal type). But either `<class 'str'>` or a dynamic class-literal type are both assignable to `type[Unknown]`, and it's a forgiving type that allows you to access most attributes on it.
 
@@ -3483,7 +3461,7 @@ _@charliermarsh reviewed on 2026-01-11 14:54_
 
 ---
 
-_Review comment by @charliermarsh on `crates/ty_python_semantic/resources/mdtest/call/type.md`:633 on 2026-01-11 14:54_
+_Review comment by @charliermarsh on `crates/ty_python_semantic/resources/mdtest/call/type.md`:636 on 2026-01-11 14:54_
 
 (Adding TODOs, going to tackle these in a separate PR.)
 
@@ -3617,7 +3595,7 @@ I dropped support for "dangling" `type(...)` expressions for now. I attempted to
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:613 on 2026-01-12 17:26_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:615 on 2026-01-12 17:26_
 
 ```suggestion
 from ty_extensions import reveal_mro
@@ -3635,19 +3613,19 @@ reveal_mro(Cls1)  # revealed: (<class 'Cls1'>, @Todo(StarredExpression), <class 
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:679 on 2026-01-12 17:34_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:691 on 2026-01-12 17:34_
 
 could be useful to add a `reveal_mro` call here too
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:696 on 2026-01-12 17:34_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:710 on 2026-01-12 17:34_
 
 and here
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:710 on 2026-01-12 17:34_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:726 on 2026-01-12 17:34_
 
 and here
 
