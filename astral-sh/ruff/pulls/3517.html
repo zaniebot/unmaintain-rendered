@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid C1901 violations within subscripts - astral-sh/ruff #3517</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid C1901 violations within subscripts</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3517">#3517</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-03-14 18:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-14 18:01</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I'm not sold on merging this, but... this PR turns off &quot;compare-to-empty-string&quot; violations when such comparisons are used within a subscript, like <code>df[x == &quot;&quot;]</code>. This is a common idiom in Pandas especially, where <code>x == &quot;&quot;</code> is an elementwise comparison, and can't be replaced with <code>x</code> or <code>bool(x)</code> or whatever.</p>
+<p>The downside here is that we trade off some false positives for false negatives.</p>
+<p>Closes #3494.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-03-14 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-03-14 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-14 18:02</div>
+            <div class="timeline-body"><p>Open to feedback on how we should approach these kinds of issues. We don't have enough typing information to know for certain that the comparison is &quot;valid&quot;, but my guess is that it's also pretty unlikely in practice that this kind of comparison within brackets would be used for anything else.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-14 18:14</div>
+            <div class="timeline-body"><p>ℹ️ ecosystem check <strong>detected changes</strong>. (+0, -2, 0 error(s))</p>
+<details><summary>airflow (+0, -2)</summary>
+<p>
+
+<pre><code class="language-diff">- airflow/providers/apache/hive/transfers/mssql_to_hive.py:118:64: PLC1901 `field[0] == &quot;&quot;` can be simplified to `not field[0]` as an empty string is falsey
+- airflow/providers/apache/hive/transfers/vertica_to_hive.py:122:56: PLC1901 `field[0] == &quot;&quot;` can be simplified to `not field[0]` as an empty string is falsey
+</code></pre>
+</p>
+</details>
+
+<!-- thollander/actions-comment-pull-request "ecosystem-results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/context.rs</code>:255 on 2023-03-15 08:29</div>
+            <div class="timeline-body"><p>Nit: Call it <code>expr_ancestors</code> to clarify that it doesn't iterate over the expressions but the ancestor tree?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-03-15 08:29</div>
+            <div class="timeline-body"><p>Is this another use case where the concept of dialects or knowing about the used frameworks could help?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-03-17 02:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-17 02:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-03-17 02:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-17 02:57</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>ℹ️ ecosystem check <strong>detected changes</strong>. (+0, -2, 0 error(s))</p>
+<details><summary>airflow (+0, -2)</summary>
+<p>
+
+<pre><code class="language-diff">- airflow/providers/apache/hive/transfers/mssql_to_hive.py:118:64: PLC1901 `field[0] == &quot;&quot;` can be simplified to `not field[0]` as an empty string is falsey
+- airflow/providers/apache/hive/transfers/vertica_to_hive.py:122:56: PLC1901 `field[0] == &quot;&quot;` can be simplified to `not field[0]` as an empty string is falsey
+</code></pre>
+</p>
+</details>
+### Benchmark
+#### Linux
+```
+group                        main                                   pr
+-----                        ----                                   --
+linter/large/dataset.py      1.00      7.6±0.01ms     5.3 MB/sec    1.01      7.7±0.01ms     5.3 MB/sec
+linter/numpy/ctypeslib.py    1.00      2.6±0.00ms   132.9 MB/sec    1.00      2.6±0.00ms   133.1 MB/sec
+linter/numpy/globals.py      1.00   1324.4±0.99µs   134.6 MB/sec    1.00   1327.5±2.92µs   134.3 MB/sec
+linter/pydantic/types.py     1.00      3.6±0.01ms     7.1 MB/sec    1.01      3.6±0.01ms     7.1 MB/sec
+```
+
+<h4>Windows</h4>
+<pre><code>group                        main                                    pr
+-----                        ----                                    --
+linter/large/dataset.py      1.00     10.6±0.77ms     3.8 MB/sec     1.01     10.8±0.38ms     3.8 MB/sec
+linter/numpy/ctypeslib.py    1.00      3.5±0.22ms    97.8 MB/sec     1.01      3.6±0.16ms    96.7 MB/sec
+linter/numpy/globals.py      1.00  1809.0±107.48µs    98.5 MB/sec    1.04  1880.8±78.61µs    94.8 MB/sec
+linter/pydantic/types.py     1.00      4.9±0.26ms     5.2 MB/sec     1.00      4.9±0.21ms     5.2 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:45 UTC
+    </footer>
+</body>
+</html>

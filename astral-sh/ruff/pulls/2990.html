@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-tidy-imports`] extend autofix of relative imports - astral-sh/ruff #2990</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-tidy-imports</code>] extend autofix of relative imports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2990">#2990</a>
+        opened by <a href="https://github.com/sbrugman">@sbrugman</a>
+        on 2023-02-17 16:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-02-17 16:31</div>
+            <div class="timeline-body"><p>This extends the autofix for TID252 to work with for relative imports without <code>module</code> (i.e. <code>from .. import</code>). Tested with <code>matplotlib</code> and <code>bokeh</code>.
+(Previously it would panic on unwrap of the module)</p>
+<p>Note that pandas has <a href="https://github.com/pandas-dev/pandas/commit/6057d7a93e6bb792508339dcf8e70998e7e78e1a">replaced</a> <code>absolufy-imports</code> with <code>ruff</code> now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2023-02-17 16:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff/src/rules/flake8_tidy_imports/relative_imports.rs</code>:111 on 2023-02-17 16:33</div>
+            <div class="timeline-body"><p>@charliermarsh Here I wanted to return <code>parts</code> as slice, but couldn't get the types to the other arms to match (<code>Vec&lt;String&gt;</code> vs <code>Vec&lt;&amp;str&gt;</code>). Any pointers? Still learning idiomatic rust..</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_tidy_imports/relative_imports.rs</code>:110 on 2023-02-17 19:12</div>
+            <div class="timeline-body"><p>The best I could come up with was to do the validation as part of this scope:</p>
+<pre><code class="language-rust">let module_name = if let Some(module) = module.or_else(|| {
+    if parts.len() &gt; 1 {
+        Some(parts.last().unwrap())
+    } else {
+        None
+    }
+}) {
+    let call_path = from_relative_import(&amp;parts, module);
+    let parts = call_path.as_slice();
+
+    // Require import to be a valid PEP 8 module:
+    // https://python.org/dev/peps/pep-0008/#package-and-module-names
+    if parts.iter().any(|f| !is_lower_with_underscore(f)) {
+        return None;
+    }
+
+    parts.join(&quot;.&quot;)
+} else {
+    // Require import to be a valid PEP 8 module:
+    // https://python.org/dev/peps/pep-0008/#package-and-module-names
+    if parts.iter().any(|f| !is_lower_with_underscore(f)) {
+        return None;
+    }
+
+    parts.join(&quot;.&quot;)
+};
+</code></pre>
+<p>But, I'm not convinced it's any better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-17 19:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-17 19:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_tidy_imports/relative_imports.rs</code>:110 on 2023-02-17 19:28</div>
+            <div class="timeline-body"><p>I ended up doing something like this, but let me know if you disagree with the current version. Just merging for expediency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-17 19:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-17 19:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-02-17 23:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:35 UTC
+    </footer>
+</body>
+</html>

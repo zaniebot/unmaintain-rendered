@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement pylint's `else-if-used` rule (`PLR5501`) - astral-sh/ruff #3231</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement pylint's <code>else-if-used</code> rule (<code>PLR5501</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3231">#3231</a>
+        opened by <a href="https://github.com/chanman3388">@chanman3388</a>
+        on 2023-02-26 02:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-02-26 02:47</div>
+            <div class="timeline-body"><p>Attempt to implement else-if-used
+https://pylint.pycqa.org/en/latest/user_guide/messages/refactor/else-if-used.html</p>
+<p>Issue #970</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-02-26 02:55</div>
+            <div class="timeline-body"><p>Annoyingly, <code>else-if-used</code> <em>is</em> the name of the rule, but it's disallowed, suggestions? <code>collapsible-else-if</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-26 03:36</div>
+            <div class="timeline-body"><p>Yeah <code>collapsible-else-if</code> seems reasonable to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-26 03:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pylint/rules/else_if_used.rs</code>:27 on 2023-02-26 03:37</div>
+            <div class="timeline-body"><p>Can we not use the <code>orelse</code> passed into the function already?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pylint/rules/else_if_used.rs</code>:29 on 2023-02-26 03:39</div>
+            <div class="timeline-body"><p>Should this be <code>orelse.len() == 1</code>? I thought we'd be looking for <code>orelse.len() == 1 &amp;&amp; matches!(orelse[0].node, StmtKind::If { .. })</code>, which typically indicates an <code>elif</code> (or an <code>else: if:</code> in this case, which we'd have to differentiate somehow).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-26 03:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-26 03:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pylint/rules/else_if_used.rs</code>:29 on 2023-02-26 03:42</div>
+            <div class="timeline-body"><p>Ah, here <code>stmt</code> is the <code>if</code> in the <code>else: if: ...</code>. I'd assumed <code>stmt</code> was the outer <code>if</code> in:</p>
+<pre><code class="language-py">if ...:
+  pass
+else:
+  if:
+    ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-26 03:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/resources/test/fixtures/pylint/else_if_used.py</code>:6 on 2023-02-26 03:43</div>
+            <div class="timeline-body"><p>It looks like this is being flagged as an error in the fixture, when it should be considered ok.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-26 03:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pylint/rules/else_if_used.rs</code>:29 on 2023-02-26 03:44</div>
+            <div class="timeline-body"><p>Hmm, I think we <em>do</em> need to structure this such that it looks at this statement:</p>
+<pre><code class="language-py">if ...:
+  pass
+else:
+  if:
+    ...
+</code></pre>
+<p>Rather than the nested <code>if</code>. Otherwise, how can you tell if you're in an <code>else</code> or not?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chanman3388">@chanman3388</a> on <code>crates/ruff/src/rules/pylint/rules/else_if_used.rs</code>:27 on 2023-02-26 04:25</div>
+            <div class="timeline-body"><p>Yes you're right, going to give that a go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chanman3388">@chanman3388</a> reviewed on 2023-02-26 04:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chanman3388">@chanman3388</a> reviewed on 2023-02-26 04:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chanman3388">@chanman3388</a> on <code>crates/ruff/src/rules/pylint/rules/else_if_used.rs</code>:29 on 2023-02-26 04:42</div>
+            <div class="timeline-body"><p>Yeah, this is more complicated than I thought, namely because you don't know where the else is.
+Pylint does have separate <code>elif</code> tokens which makes it easier...the only way I can think of doing it might be a bit janky where you use the locator to see if 'elif' is in the line or something like that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/chanman3388">@chanman3388</a> reviewed on 2023-02-26 05:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/chanman3388">@chanman3388</a> on <code>crates/ruff/src/rules/pylint/rules/else_if_used.rs</code>:29 on 2023-02-26 05:15</div>
+            <div class="timeline-body"><p>So this can be done via the text method...is that ok? It feels a bit...dirty...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-02-26 13:38</div>
+            <div class="timeline-body"><p>Other suggestions for names: <code>uncollapsed-else-if</code> or <code>unnecessary-nested-else-if</code>? 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chanman3388">@chanman3388</a> on 2023-02-26 14:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Other suggestions for names: <code>uncollapsed-else-if</code> or <code>unnecessary-nested-else-if</code>? 🤔</p>
+</blockquote>
+<p>I quite like the latter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-26 22:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pylint/rules/else_if_used.rs</code>:29 on 2023-02-26 22:39</div>
+            <div class="timeline-body"><p>Yeah it's ok. The alternative would be to do it by lexing and looking at the token stream. But this is effectively equivalent. There's no way to detect this AFAIK from the AST alone.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-26 22:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-26 22:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-26 22:43</div>
+            <div class="timeline-body"><p>Merged as-is since I'm totally fine with the name, but happy to tweak in a follow-up PR if you feel strongly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-02-26 22:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:40 UTC
+    </footer>
+</body>
+</html>

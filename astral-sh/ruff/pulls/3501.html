@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prefer `itertools.pairwise()` over `zip()` for successive pairs (`RUF007`) - astral-sh/ruff #3501</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Prefer <code>itertools.pairwise()</code> over <code>zip()</code> for successive pairs (<code>RUF007</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3501">#3501</a>
+        opened by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a>
+        on 2023-03-14 03:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-03-14 03:58</div>
+            <div class="timeline-body"><p>Fixes #3297.</p>
+<p>We ensure that the two arguments to <code>zip()</code> match and that the lower bound of the slice is 1, if the second argument is a slice. Otherwise, we wouldn't be able to guarantee that the request being made is for successive pairs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>crates/ruff/src/rules/ruff/rules/pairwise_over_zipped.rs</code>:26 on 2023-03-14 04:05</div>
+            <div class="timeline-body"><p>Also check <code>checker.ctx.is_builtin(&quot;zip&quot;)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a> reviewed on 2023-03-14 04:07</div>
+            <div class="timeline-body"><p><a href="https://docs.python.org/3/library/itertools.html#itertools.pairwise"><code>itertools.pairwise</code></a> is new in Python 3.10, so this rule should be restricted to <code>target_version &gt;= PyVersion::Py310</code>.</p>
+<p>Should we also check for <code>zip(a[:-1], a[1:])</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @evanrittenhouse on 2023-03-14 04:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> reviewed on 2023-03-14 04:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on <code>crates/ruff/src/rules/ruff/rules/pairwise_over_zipped.rs</code>:26 on 2023-03-14 04:17</div>
+            <div class="timeline-body"><p>Makes sense, I can implement these changes tomorrow</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-15 03:35</div>
+            <div class="timeline-body"><p>✅ ecosystem check detected no changes.</p>
+<!-- thollander/actions-comment-pull-request "ecosystem-results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @evanrittenhouse on 2023-03-15 03:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/ruff/rules/pairwise_over_zipped.rs</code>:25 on 2023-03-15 07:51</div>
+            <div class="timeline-body"><p>I'm not as familiar with python but should these be <code>i64</code> to support a broader range of valid int indices?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/ruff/rules/pairwise_over_zipped.rs</code>:83 on 2023-03-15 07:53</div>
+            <div class="timeline-body"><p>Checking if <code>ctx.is_builtin</code> is probably the most expensive operation (not very, but still):</p>
+<p>We can help the compiler to generate more optimized code by changing the order of checks:</p>
+<ol>
+<li>Test if the python version is valid</li>
+<li>Test if it only has one argument</li>
+<li>Test if the id is <code>zip</code></li>
+<li>Only then, test if it is the built-in zip</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/ruff/rules/pairwise_over_zipped.rs</code>:105 on 2023-03-15 07:57</div>
+            <div class="timeline-body"><p>Let's avoid the <code>first_arg_info_opt.unwrap()</code></p>
+<pre><code class="language-suggestion">            // If it's not one of those, return
+            let Some(first_arg_info) = first_arg_info_opt else  { return; };
+
+            // Second arg can only be a subscript
+            let ExprKind::Subscript { .. } = &amp;args[1].node else {
+                return;
+            };
+            let second_arg_info = get_slice_info(&amp;args[1], checker.stylist).unwrap();
+
+            let args_are_successive = (first_arg_info.slice_start == 0
+                || first_arg_info.slice_end == -1)
+                &amp;&amp; second_arg_info.slice_start == 1;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/ruff/rules/pairwise_over_zipped.rs</code>:100 on 2023-03-15 07:59</div>
+            <div class="timeline-body"><p>Can we add <code>// SAFETY</code> comment describing why it's safe to call <code>unwrap</code> here (or why it is guaranteed that <code>get_slice_info</code> always returns <code>Some</code> for `args[1])?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-15 07:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a> reviewed on 2023-03-15 08:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>crates/ruff/src/rules/ruff/rules/pairwise_over_zipped.rs</code>:58 on 2023-03-15 08:41</div>
+            <div class="timeline-body"><p>We can’t just default unrecognized things to <code>0</code>. <code>a[0:-1]</code> and <code>a[2147483648:-1]</code> are quite different but this function treats them identically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on <code>crates/ruff/src/rules/ruff/rules/pairwise_over_zipped.rs</code>:58 on 2023-03-15 18:09</div>
+            <div class="timeline-body"><p>Moved the <code>unwrap()</code> to the equality check to force no diagnostic if there was a parsing error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> reviewed on 2023-03-15 18:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on <code>crates/ruff/src/rules/ruff/rules/pairwise_over_zipped.rs</code>:100 on 2023-03-15 18:09</div>
+            <div class="timeline-body"><p>Added a <code>return</code> if <code>get_slice_info</code> is <code>None</code> for <code>args[1]</code> which should remove the potential for panic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> reviewed on 2023-03-15 18:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> reviewed on 2023-03-15 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on <code>crates/ruff/src/rules/ruff/rules/pairwise_over_zipped.rs</code>:105 on 2023-03-15 18:10</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> reviewed on 2023-03-15 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on <code>crates/ruff/src/rules/ruff/rules/pairwise_over_zipped.rs</code>:83 on 2023-03-15 18:10</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> reviewed on 2023-03-15 18:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on <code>crates/ruff/src/rules/ruff/rules/pairwise_over_zipped.rs</code>:25 on 2023-03-15 18:19</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/andersk">@andersk</a> reviewed on 2023-03-15 23:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/andersk">@andersk</a> on <code>crates/ruff/src/rules/ruff/rules/pairwise_over_zipped.rs</code>:55 on 2023-03-15 23:55</div>
+            <div class="timeline-body"><p>We can’t default <em>these</em> unrecognized things to 0 either: <code>a[x:-1]</code> is different from <code>a[0:-1]</code>.</p>
+<p>So is <code>a[0:-1:2]</code>, by the way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/ruff/rules/pairwise_over_zipped.rs</code>:34 on 2023-03-16 08:13</div>
+            <div class="timeline-body"><p>It seems that we only care about whether parsing was successful or not, but not what the actual parsing error was. That means we could use <code>Option&lt;i64&gt;</code> here (you can use <code>result.ok()</code> to get an option) and safe a few bytes of memory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-03-16 08:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-16 08:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/ruff/rules/pairwise_over_zipped.rs</code>:55 on 2023-03-16 08:15</div>
+            <div class="timeline-body"><p>@andersk brought up a few good edge cases. Could you add those to the test suite?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> reviewed on 2023-03-16 17:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on <code>crates/ruff/src/rules/ruff/rules/pairwise_over_zipped.rs</code>:55 on 2023-03-16 17:19</div>
+            <div class="timeline-body"><p>Yup, will do</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on <code>crates/ruff/src/rules/ruff/rules/pairwise_over_zipped.rs</code>:34 on 2023-03-16 17:21</div>
+            <div class="timeline-body"><p>Yeah, that's the path I'm going down in the latest commit. Seems like it'll help with the default issues that @andersk raised, since we can just default to <code>None</code> instead of a number.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> reviewed on 2023-03-16 17:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @evanrittenhouse on 2023-03-16 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-16 23:40</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                        main                                   pr
+-----                        ----                                   --
+linter/large/dataset.py      1.00      9.5±0.27ms     4.3 MB/sec    1.20     11.4±0.38ms     3.6 MB/sec
+linter/numpy/ctypeslib.py    1.00      2.4±0.11ms   139.8 MB/sec    1.01      2.4±0.08ms   138.1 MB/sec
+linter/numpy/globals.py      1.00  1233.2±44.12µs   144.5 MB/sec    1.00  1235.5±43.22µs   144.3 MB/sec
+linter/pydantic/types.py     1.00      4.4±0.17ms     5.8 MB/sec    1.18      5.2±0.16ms     4.9 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                        main                                   pr
+-----                        ----                                   --
+linter/large/dataset.py      1.00      8.7±0.18ms     4.7 MB/sec    1.02      8.9±0.67ms     4.6 MB/sec
+linter/numpy/ctypeslib.py    1.04      2.9±0.05ms   116.2 MB/sec    1.00      2.8±0.02ms   121.2 MB/sec
+linter/numpy/globals.py      1.03  1510.6±27.55µs   118.0 MB/sec    1.00  1464.6±35.84µs   121.7 MB/sec
+linter/pydantic/types.py     1.01      4.1±0.11ms     6.3 MB/sec    1.00      4.0±0.07ms     6.3 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-16 23:46</div>
+            <div class="timeline-body"><p>Should have time to merge this tonight if it's in good shape!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-03-17 00:14</div>
+            <div class="timeline-body"><p>@charliermarsh just have to get the new changes re-reviewed - I changed the logic for determining successive pairs to simply be a difference of 1 between start of first/second slices. That'll allow us to pick up cases like <code>zip(x[2:], x[3:])</code> which should still trigger the violation, e.g. <code>pairwise(x[2:])</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @evanrittenhouse on 2023-03-17 00:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Prefer `itertools.pairwise()` over `zip()` for successive pairs" to "Prefer `itertools.pairwise()` over `zip()` for successive pairs (`RUF007`)" by @charliermarsh on 2023-03-17 03:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-03-17 03:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-17 03:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-17 03:50</div>
+            <div class="timeline-body"><p>Thanks @evanrittenhouse!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-03-17 03:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-03-17 13:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:45 UTC
+    </footer>
+</body>
+</html>

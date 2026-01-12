@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement `asyncio-dangling-task` to track `asyncio.create_task` calls - astral-sh/ruff #2935</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement <code>asyncio-dangling-task</code> to track <code>asyncio.create_task</code> calls</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2935">#2935</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-02-15 18:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-15 18:54</div>
+            <div class="timeline-body"><p>This rule guards against <code>asyncio.create_task</code> usages of the form:</p>
+<pre><code class="language-py">asyncio.create_task(coordinator.ws_connect())  # Error
+</code></pre>
+<p>...which can lead to unexpected bugs due to the lack of a strong reference to the created task. See Will McGugan's blog post for reference: https://textual.textualize.io/blog/2023/02/11/the-heisenbug-lurking-in-your-async-code/.</p>
+<p>Note that we can't detect issues like:</p>
+<pre><code class="language-py">def f():
+    # Stored as `task`, but never used...
+    task = asyncio.create_task(coordinator.ws_connect())
+</code></pre>
+<p>So that would be a false negative. But this catches the common case of failing to assign the task in any way.</p>
+<p>Closes #2809.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Implement asyncio-dangling-task to track asyncio.create_task calls" to "Implement `asyncio-dangling-task` to track `asyncio.create_task` calls" by @charliermarsh on 2023-02-15 18:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-15 19:02</div>
+            <div class="timeline-body"><p>@akx - I notice that <code>home-assistant/core</code> has a couple of these. If you have a sec -- do those look like false positives? Or do they look correct? Just trying to do some real-world evaluation prior to merging.</p>
+<pre><code>❯ cargo run ../core --select RUF006 -n
+   Compiling ruff v0.0.247 (ruff/crates/ruff)
+   Compiling ruff_cli v0.0.247 (ruff/crates/ruff_cli)
+    Finished dev [unoptimized + debuginfo] target(s) in 9.11s
+     Running `target/debug/ruff ../core --select RUF006 -n`
+core/homeassistant/components/apple_tv/__init__.py:225:13: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/august/__init__.py:191:13: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/bluetooth_le_tracker/device_tracker.py:188:17: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/cast/media_player.py:191:9: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/crownstone/entry_manager.py:91:9: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/elkm1/__init__.py:190:5: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/google/calendar.py:475:9: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/homeassistant/__init__.py:157:13: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/homeassistant/__init__.py:180:13: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/homekit/type_cameras.py:446:13: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/insteon/__init__.py:175:5: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/livisi/__init__.py:44:5: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/mysensors/gateway.py:119:13: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/plum_lightpad/light.py:54:5: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/roon/server.py:69:9: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/sense/__init__.py:127:5: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/smart_meter_texas/__init__.py:81:5: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/sonos/__init__.py:481:9: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/squeezebox/media_player.py:173:5: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/squeezebox/media_player.py:206:9: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/unifiprotect/discovery.py:37:5: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/websocket_api/decorators.py:45:9: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/wiz/__init__.py:54:5: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/wled/coordinator.py:98:9: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/zeroconf/__init__.py:396:9: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/zha/core/channels/security.py:353:13: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/zha/core/gateway.py:256:9: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/components/zha/light.py:593:17: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/homeassistant/util/timeout.py:224:13: RUF006 `asyncio.create_task` call without a reference to the returned task
+core/tests/test_runner.py:130:9: RUF006 `asyncio.create_task` call without a reference to the returned task
+Found 30 errors.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-02-15 20:05</div>
+            <div class="timeline-body"><p>Ooh, hey, @frenck, want to chip in on those home-assistant issues? By random sampling they look like they might be genuine bugs..?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/frenck">@frenck</a> on 2023-02-15 20:09</div>
+            <div class="timeline-body"><p>@charliermarsh We are aware, we started working on it actually.
+See: <a href="https://github.com/home-assistant/core/pull/87970">https://github.com/home-assistant/core/pull/87970</a></p>
+<p>This rule would help us a lot to guard it btw, so it is more than welcome 👍</p>
+<p>@akx They are real issues 👍</p>
+<p>../Frenck</p>
+<p>Edit: checked them, and it seems to be correct in its reporting 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-15 20:18</div>
+            <div class="timeline-body"><p>Awesome! Thank you for chiming in! Mostly just wanted to sanity-check that it wasn't totally off-base on real-world code :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-15 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-15 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-02-15 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/frenck">@frenck</a> on 2023-02-15 20:24</div>
+            <div class="timeline-body"><p>No problem, feel free to ping me in such cases. Thanks for the awesome project btw ❤️</p>
+<p>PS: Congrats on merging this one, as it gets 2.5K commits on your main branch 😉 🎉</p>
+<p><img src="https://user-images.githubusercontent.com/195327/219146126-30c024dd-8ffe-42c5-bb76-1f2150b3577b.png" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-16 14:05</div>
+            <div class="timeline-body"><p>@frenck - Thank you so much ❤️ I totally missed 2.5k, it's so cool to see the project come this far!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:34 UTC
+    </footer>
+</body>
+</html>

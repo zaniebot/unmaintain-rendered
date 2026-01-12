@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gracefully handle lint panics - astral-sh/ruff #3509</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Gracefully handle lint panics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3509">#3509</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-03-14 12:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-14 12:50</div>
+            <div class="timeline-body"><p>This PR wraps the linting of every file in a <a href="https://blog.rust-lang.org/2016/05/26/Rust-1.9.html#controlled-unwinding"><code>catch_unwind</code></a> to catch potential panics (due to a bug in ruff) and prints a warning instead of crashing ruff. Catching panics on a per-file basis has the advantage that it doesn't prevent users from adopting or continuing using Ruff because of a bug triggered by a specific code snipped. The catch handler also includes the name of the problematic file to ease identifying the bug.</p>
+<p>The main downside of this approach is that we now need to compile ruff with <code>panic=unwind</code> instead of <code>panic=abort</code>. Changing the panic type results in a ~15% performance regression on my machine:</p>
+<pre><code>Panic 'unwind': ./target/release/ruff ./crates/ruff/resources/test/cpython/ --no-cache
+  Time (mean ± σ):     215.3 ms ±   6.2 ms    [User: 3753.3 ms, System: 98.0 ms]
+  Range (min … max):   203.8 ms … 226.1 ms    13 runs
+ 
+Panic 'abort': ./target/release/ruff ./crates/ruff/resources/test/cpython/ --no-cache
+  Time (mean ± σ):     188.9 ms ±   3.6 ms    [User: 3216.8 ms, System: 116.1 ms]
+  Range (min … max):   181.5 ms … 194.0 ms    15 runs
+</code></pre>
+<p>It also slightly increases the binary from ~19MB to ~20MB due to the additional metadata required to enable unwinding (stack walking etc).</p>
+<h2>Test Plan</h2>
+<p>I changed a linter and added an intentional index out of bounds. Ruff linted all files but printed the following warning everytime the out of bounds index paniced</p>
+<pre><code>warning: Linting panicked /home/micha/.config/JetBrains/CLion2022.3/scratches/scratch_3.py: This indicates a bug in `ruff`. If you could open an issue at:
+
+https://github.com/charliermarsh/ruff/issues/new?title=%5BLinter%20panic%5D
+
+with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we'd be very appreciative!
+
+panicked at 'index out of bounds: the len is 0 but the index is 1', crates/ruff/src/rules/pycodestyle/rules/compound_statements.rs:108:14
+Backtrace:    0: ruff_cli::panic::catch_unwind::{{closure}}
+             at ./crates/ruff_cli/src/panic.rs:35:25
+   1: &lt;alloc::boxed::Box&lt;F,A&gt; as core::ops::function::Fn&lt;Args&gt;&gt;::call
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/alloc/src/boxed.rs:2032:9
+   2: std::panicking::rust_panic_with_hook
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/std/src/panicking.rs:692:13
+   3: std::panicking::begin_panic_handler::{{closure}}
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/std/src/panicking.rs:579:13
+   4: std::sys_common::backtrace::__rust_end_short_backtrace
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/std/src/sys_common/backtrace.rs:137:18
+   5: rust_begin_unwind
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/std/src/panicking.rs:575:5
+   6: core::panicking::panic_fmt
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/core/src/panicking.rs:64:14
+   7: core::panicking::panic_bounds_check
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/core/src/panicking.rs:147:5
+   8: &lt;usize as core::slice::index::SliceIndex&lt;[T]&gt;&gt;::index
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/core/src/slice/index.rs:260:10
+   9: core::slice::index::&lt;impl core::ops::index::Index&lt;I&gt; for [T]&gt;::index
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/core/src/slice/index.rs:18:9
+  10: &lt;alloc::vec::Vec&lt;T,A&gt; as core::ops::index::Index&lt;I&gt;&gt;::index
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/alloc/src/vec/mod.rs:2727:9
+  11: ruff::rules::pycodestyle::rules::compound_statements::compound_statements
+             at ./crates/ruff/src/rules/pycodestyle/rules/compound_statements.rs:108:14
+  12: ruff::checkers::tokens::check_tokens
+             at ./crates/ruff/src/checkers/tokens.rs:123:13
+  13: ruff::linter::check_path
+             at ./crates/ruff/src/linter.rs:90:28
+  14: ruff::linter::lint_only
+             at ./crates/ruff/src/linter.rs:325:18
+  15: ruff_cli::diagnostics::lint_path
+             at ./crates/ruff_cli/src/diagnostics.rs:129:22
+  16: ruff_cli::commands::run::lint_path::{{closure}}
+             at ./crates/ruff_cli/src/commands/run.rs:146:9
+  17: std::panicking::try::do_call
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/std/src/panicking.rs:483:40
+  18: __rust_try
+  19: std::panicking::try
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/std/src/panicking.rs:447:19
+  20: std::panic::catch_unwind
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/std/src/panic.rs:137:14
+  21: ruff_cli::panic::catch_unwind
+             at ./crates/ruff_cli/src/panic.rs:44:18
+  22: ruff_cli::commands::run::lint_path
+             at ./crates/ruff_cli/src/commands/run.rs:145:18
+  23: ruff_cli::commands::run::run::{{closure}}
+             at ./crates/ruff_cli/src/commands/run.rs:88:21
+  24: core::ops::function::impls::&lt;impl core::ops::function::FnMut&lt;A&gt; for &amp;F&gt;::call_mut
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/core/src/ops/function.rs:593:13
+  25: core::iter::adapters::map::map_fold::{{closure}}
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/core/src/iter/adapters/map.rs:84:28
+  26: core::iter::traits::iterator::Iterator::fold
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/core/src/iter/traits/iterator.rs:2414:21
+  27: &lt;core::iter::adapters::map::Map&lt;I,F&gt; as core::iter::traits::iterator::Iterator&gt;::fold
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/core/src/iter/adapters/map.rs:124:9
+  28: &lt;rayon::iter::reduce::ReduceFolder&lt;R,T&gt; as rayon::iter::plumbing::Folder&lt;T&gt;&gt;::consume_iter
+             at /home/micha/.cargo/registry/src/github.com-1ecc6299db9ec823/rayon-1.7.0/src/iter/reduce.rs:105:19
+  29: &lt;rayon::iter::map::MapFolder&lt;C,F&gt; as rayon::iter::plumbing::Folder&lt;T&gt;&gt;::consume_iter
+             at /home/micha/.cargo/registry/src/github.com-1ecc6299db9ec823/rayon-1.7.0/src/iter/map.rs:248:21
+  30: rayon::iter::plumbing::Producer::fold_with
+             at /home/micha/.cargo/registry/src/github.com-1ecc6299db9ec823/rayon-1.7.0/src/iter/plumbing/mod.rs:110:9
+  31: rayon::iter::plumbing::bridge_producer_consumer::helper
+             at /home/micha/.cargo/registry/src/github.com-1ecc6299db9ec823/rayon-1.7.0/src/iter/plumbing/mod.rs:438:13
+  32: rayon::iter::plumbing::bridge_producer_consumer
+             at /home/micha/.cargo/registry/src/github.com-1ecc6299db9ec823/rayon-1.7.0/src/iter/plumbing/mod.rs:397:12
+  33: &lt;rayon::iter::plumbing::bridge::Callback&lt;C&gt; as rayon::iter::plumbing::ProducerCallback&lt;I&gt;&gt;::callback
+             at /home/micha/.cargo/registry/src/github.com-1ecc6299db9ec823/rayon-1.7.0/src/iter/plumbing/mod.rs:373:13
+  34: &lt;rayon::slice::Iter&lt;T&gt; as rayon::iter::IndexedParallelIterator&gt;::with_producer
+             at /home/micha/.cargo/registry/src/github.com-1ecc6299db9ec823/rayon-1.7.0/src/slice/mod.rs:732:9
+  35: rayon::iter::plumbing::bridge
+             at /home/micha/.cargo/registry/src/github.com-1ecc6299db9ec823/rayon-1.7.0/src/iter/plumbing/mod.rs:357:12
+  36: &lt;rayon::slice::Iter&lt;T&gt; as rayon::iter::ParallelIterator&gt;::drive_unindexed
+             at /home/micha/.cargo/registry/src/github.com-1ecc6299db9ec823/rayon-1.7.0/src/slice/mod.rs:708:9
+  37: &lt;rayon::iter::map::Map&lt;I,F&gt; as rayon::iter::ParallelIterator&gt;::drive_unindexed
+             at /home/micha/.cargo/registry/src/github.com-1ecc6299db9ec823/rayon-1.7.0/src/iter/map.rs:49:9
+  38: rayon::iter::reduce::reduce
+             at /home/micha/.cargo/registry/src/github.com-1ecc6299db9ec823/rayon-1.7.0/src/iter/reduce.rs:15:5
+  39: rayon::iter::ParallelIterator::reduce
+             at /home/micha/.cargo/registry/src/github.com-1ecc6299db9ec823/rayon-1.7.0/src/iter/mod.rs:991:9
+  40: ruff_cli::commands::run::run
+             at ./crates/ruff_cli/src/commands/run.rs:76:40
+  41: ruff_cli::check
+             at ./crates/ruff_cli/src/lib.rs:244:13
+  42: ruff_cli::run
+             at ./crates/ruff_cli/src/lib.rs:83:40
+  43: ruff::main
+             at ./crates/ruff_cli/src/bin/ruff.rs:45:11
+  44: core::ops::function::FnOnce::call_once
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/core/src/ops/function.rs:507:5
+  45: std::sys_common::backtrace::__rust_begin_short_backtrace
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/std/src/sys_common/backtrace.rs:121:18
+  46: std::rt::lang_start::{{closure}}
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/std/src/rt.rs:166:18
+  47: core::ops::function::impls::&lt;impl core::ops::function::FnOnce&lt;A&gt; for &amp;F&gt;::call_once
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/core/src/ops/function.rs:606:13
+  48: std::panicking::try::do_call
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/std/src/panicking.rs:483:40
+  49: std::panicking::try
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/std/src/panicking.rs:447:19
+  50: std::panic::catch_unwind
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/std/src/panic.rs:137:14
+  51: std::rt::lang_start_internal::{{closure}}
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/std/src/rt.rs:148:48
+  52: std::panicking::try::do_call
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/std/src/panicking.rs:483:40
+  53: std::panicking::try
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/std/src/panicking.rs:447:19
+  54: std::panic::catch_unwind
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/std/src/panic.rs:137:14
+  55: std::rt::lang_start_internal
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/std/src/rt.rs:148:20
+  56: std::rt::lang_start
+             at /rustc/d5a82bbd26e1ad8b7401f6a718a9c57c96905483/library/std/src/rt.rs:165:17
+  57: main
+  58: &lt;unknown&gt;
+  59: __libc_start_main
+  60: _start
+</code></pre>
+<p>The top frames are related to Rust's unwind handling but frame 11 points to the problematic line.</p>
+<h2>Alternatives</h2>
+<ul>
+<li>We could set a panic handler (<code>set_handler</code>) per processed file. This would allow us to print the file name before crashing ruff, but it doesn't solve the problem that the bug now prevents users from using ruff.</li>
+<li>Keep as is</li>
+<li>Ship two binaries and fallback to the binary with <code>catch_unwind</code> enabled if we run into a panic :rofl:</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/commands/run.rs</code>:172 on 2023-03-14 14:27</div>
+            <div class="timeline-body"><p>We would, ideally, push a warning <code>Diagnostic</code> instead of returning <code>Ok</code> (which is decisive and could result in miscounts if we ever print all linted files), but our diagnostic infrastructure doesn't allow this today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/lib.rs</code>:49 on 2023-03-14 14:27</div>
+            <div class="timeline-body"><p>Any reasons for only enabling this handler in release builds?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-03-14 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2023-03-14 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2023-03-14 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-03-14 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-16 10:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-16 11:04</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     16.5±0.08ms     2.5 MB/sec    1.00     16.6±0.10ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      4.3±0.02ms     3.8 MB/sec    1.00      4.3±0.01ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.03    601.8±2.20µs     4.9 MB/sec    1.00    586.9±1.77µs     5.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.2±0.03ms     3.5 MB/sec    1.00      7.3±0.03ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.01      9.0±0.04ms     4.5 MB/sec    1.00      8.9±0.03ms     4.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02      2.0±0.01ms     8.3 MB/sec    1.00   1978.3±3.63µs     8.4 MB/sec
+linter/default-rules/numpy/globals.py      1.01    230.5±0.67µs    12.8 MB/sec    1.00    227.5±1.61µs    13.0 MB/sec
+linter/default-rules/pydantic/types.py     1.01      4.2±0.01ms     6.1 MB/sec    1.00      4.1±0.02ms     6.2 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     16.0±0.52ms     2.5 MB/sec    1.00     15.9±0.59ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.03      4.3±0.21ms     3.9 MB/sec    1.00      4.2±0.09ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.02   549.6±25.25µs     5.4 MB/sec    1.00   540.8±18.87µs     5.5 MB/sec
+linter/all-rules/pydantic/types.py         1.03      7.1±0.30ms     3.6 MB/sec    1.00      6.9±0.17ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.04      8.8±0.24ms     4.6 MB/sec    1.00      8.5±0.34ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02  1937.6±72.40µs     8.6 MB/sec    1.00  1892.3±96.19µs     8.8 MB/sec
+linter/default-rules/numpy/globals.py      1.01   215.2±12.72µs    13.7 MB/sec    1.00    212.7±8.49µs    13.9 MB/sec
+linter/default-rules/pydantic/types.py     1.04      4.1±0.14ms     6.3 MB/sec    1.00      3.9±0.19ms     6.5 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-17 19:29</div>
+            <div class="timeline-body"><p>How do you think about the tradeoffs here? Would we ever want to enable this until we feel really confident in no-panics, and then remove?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-17 19:30</div>
+            <div class="timeline-body"><p>(Also, the benchmarks look unchanged -- any idea why that is?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-17 20:37</div>
+            <div class="timeline-body"><blockquote>
+<p>(Also, the benchmarks look unchanged -- any idea why that is?)</p>
+</blockquote>
+<p>Cargo doesn't support 'panic=abort' for benchmarks or tests, they always run with 'panic=unwind' <a href="https://github.com/rust-lang/cargo/issues/11214">[source]</a></p>
+<p>I'll reply to your other question tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-18 09:15</div>
+            <div class="timeline-body"><blockquote>
+<p>How do you think about the tradeoffs here? Would we ever want to enable this until we feel really confident in no-panics, and then remove?</p>
+</blockquote>
+<p>It's a difficult one. It comes comes down to the assessment of whether Ruff aborting in the case of a panic is a problem for users.</p>
+<p>In my view, the value of Ruff is increased productivity for users, allowing them to ship high-quality software faster. And ruff delivers on that promise for many users by reducing the lint time from 30s+ to a few milliseconds. But, in my view, it's less important for productivity whether Ruff takes 190ms or 220ms, it doesn't significantly impact productivity.</p>
+<p>However, productivity takes a significant hit if Ruff blows up because of a bug, because then:</p>
+<ul>
+<li>users have to do without Ruff's guidance to write high-quality software</li>
+<li>either users spend (a lot of) time identifying the bug and, in the best case, suppress the problematic rule in the file or on the line causing the bug</li>
+<li>..or users disable ruff until the fix is shipped (locally, on CI, for everyone)</li>
+</ul>
+<p>That's why I'm leaning toward making this a permanent change, except if we have the data that panics are extremely rare, we're in a position to ship bugfixes in hours to days, and Ruff is an established reliable high-quality productivity tool. But @charliermarsh, you're in a better position to assess if this has been a pain-point for users or if I'm extravagating ;)</p>
+<p>Obviously, regressing performance by 15% is significant. Especially because it applies to all code, including the code and tool we'll write in the future. My take here is that I'm convinced that we can improve performance by more than 15% if we are mindful of performance (make performance a habit) and focus on performant architectures and algorithms. Unfortunately, this requires more effort than using <code>panic=abort</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-03-18 18:26</div>
+            <div class="timeline-body"><p>I agree with your assessment, thanks for spelling it out so clearly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-18 18:28</div>
+            <div class="timeline-body"><p>For what it's worth, I'm not sure how to quantify it, but I do think panics are uncommon. Most panic reports have fallen into two camps: (1) some file in the codebase uses CR line endings, typically a file that exists to <em>test</em> CR line endings (we improved this recently); or (2) actual fuzzing. But every panic <em>has</em> been indicative of a real bug, and <em>any</em> file panicking makes Ruff totally unusable right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-19 12:27</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #3509</strong> <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3509" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3509?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-03-19 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-03-19 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-03-19 16:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:45 UTC
+    </footer>
+</body>
+</html>

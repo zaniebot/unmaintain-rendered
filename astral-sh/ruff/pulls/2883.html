@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add initial formatter implementation - astral-sh/ruff #2883</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add initial formatter implementation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2883">#2883</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-02-14 03:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-14 03:17</div>
+            <div class="timeline-body"><h1>Summary</h1>
+<p>This PR contains the code for the autoformatter proof-of-concept.</p>
+<h2>Crate structure</h2>
+<p>The primary formatting hook is the <code>fmt</code> function in <code>crates/ruff_python_formatter/src/lib.rs</code>.</p>
+<p>The current formatter approach is outlined in <code>crates/ruff_python_formatter/src/lib.rs</code>, and is structured as follows:</p>
+<ul>
+<li>Tokenize the code using the RustPython lexer.</li>
+<li>In <code>crates/ruff_python_formatter/src/trivia.rs</code>, extract a variety of trivia tokens from the token stream. These include comments, trailing commas, and empty lines.</li>
+<li>Generate the AST via the RustPython parser.</li>
+<li>In <code>crates/ruff_python_formatter/src/cst.rs</code>, convert the AST to a CST structure. As of now, the CST is nearly identical to the AST, except that every node gets a <code>trivia</code> vector. But we might want to modify it further.</li>
+<li>In <code>crates/ruff_python_formatter/src/attachment.rs</code>, attach each trivia token to the corresponding CST node. The logic for this is mostly in <code>decorate_trivia</code> and is ported almost directly from Prettier (given each token, find its preceding, following, and enclosing nodes, then attach the token to the appropriate node in a second pass).</li>
+<li>In <code>crates/ruff_python_formatter/src/newlines.rs</code>, normalize newlines to match Black’s preferences. This involves traversing the CST and inserting or removing <code>TriviaToken</code> values as we go.</li>
+<li>Call <code>format!</code> on the CST, which delegates to type-specific formatter implementations (e.g., <code>crates/ruff_python_formatter/src/format/stmt.rs</code> for <code>Stmt</code> nodes, and similar for <code>Expr</code> nodes; the others are trivial). Those type-specific implementations delegate to kind-specific functions (e.g., <code>format_func_def</code>).</li>
+</ul>
+<h2>Testing and iteration</h2>
+<p>The formatter is being developed against the Black test suite, which was copied over in-full to <code>crates/ruff_python_formatter/resources/test/fixtures/black</code>.</p>
+<p>The Black fixtures had to be modified to create <code>[insta](https://github.com/mitsuhiko/insta)</code>-compatible snapshots, which now exist in the repo.</p>
+<p>My approach thus far has been to try and improve coverage by tackling fixtures one-by-one.</p>
+<h2>What works, and what doesn’t</h2>
+<ul>
+<li><em>Most</em> nodes are supported at a basic level (though there are a few stragglers at time of writing, like <code>StmtKind::Try</code>).</li>
+<li>Newlines are properly preserved in most cases.</li>
+<li>Magic trailing commas are properly preserved in some (but not all) cases.</li>
+<li>Trivial leading and trailing standalone comments mostly work (although maybe not at the end of a file).</li>
+<li>Inline comments, and comments within expressions, often don’t work -- they work in a few cases, but it’s one-off right now. (We’re probably associating them with the “right” nodes more often than we are actually rendering them in the right place.)</li>
+<li>We don’t properly normalize string quotes. (At present, we just repeat any constants verbatim.)</li>
+<li>We’re mishandling a bunch of wrapping cases (if we treat Black as the reference implementation). Here are a few examples (demonstrating Black's stable behavior):</li>
+</ul>
+<pre><code class="language-py"># In some cases, if the end expression is &quot;self-closing&quot; (functions,
+# lists, dictionaries, sets, subscript accesses, and any length-two
+# boolean operations that end in these elments), Black
+# will wrap like this...
+if some_expression and f(
+    b,
+    c,
+    d,
+):
+    pass
+
+# ...whereas we do this:
+if (
+    some_expression
+    and f(
+        b,
+        c,
+        d,
+    )
+):
+    pass
+
+# If function arguments can fit on a single line, then Black will
+# format them like this, rather than exploding them vertically.
+if f(
+    a, b, c, d, e, f, g, ...
+):
+    pass
+</code></pre>
+<ul>
+<li>We don’t properly preserve parentheses in all cases. Black preserves parentheses in some but not all cases.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-14 03:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/black/jupyter/non_python_notebook.ipynb</code>:1 on 2023-02-14 03:21</div>
+            <div class="timeline-body"><p>Meant to remove most of these -- dropped one commit. Hold on...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autoformatter</span> added by @charliermarsh on 2023-02-14 03:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-14 03:34</div>
+            <div class="timeline-body"><p>\cc @MichaReiser</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-14 04:33</div>
+            <div class="timeline-body"><p>Need to find a way to ignore the &quot;unused&quot; snapshot files, which are intentionally unused.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-02-14 04:46</div>
+            <div class="timeline-body"><p>Why are they intentionally unused? I assume you could change the file extension.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-14 22:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Why are they intentionally unused? I assume you could change the file extension.</p>
+</blockquote>
+<p>They're copied over from Black, so they represent the &quot;desired&quot; output (essentially, the spec). The formatter fails on a bunch of them right now, so only those that it knowingly passes are used, and we'll increase that set over time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-15 04:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-15 04:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-02-15 04:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-02-15 04:27</div>
+            <div class="timeline-body"><blockquote>
+<p>ruff_formatter and ruff_python_formatter</p>
+</blockquote>
+<p>I find these crate names to be very confusing ... what is the difference?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-15 04:45</div>
+            <div class="timeline-body"><p>The former is language-agnostic formatting infrastructure. The latter is a Python source code formatter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-02-15 04:58</div>
+            <div class="timeline-body"><p>Ah right looking at the <a href="https://github.com/rome/tools/tree/main/crates">rome crates</a> I see that there are several language-specific <code>_formatter</code> crates, all depending on <code>rome_formatter</code>. Do you think there is another language ruff could end up being able to format?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-02-15 07:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Ah right looking at the <a href="https://github.com/rome/tools/tree/main/crates?rgh-link-date=2023-02-15T04%3A58%3A04Z">rome crates</a> I see that there are several language-specific <code>_formatter</code> crates, all depending on <code>rome_formatter</code>. Do you think there is another language ruff could end up being able to format?</p>
+</blockquote>
+<p>I would find it interesting if ruff could format toml and JSON files, raw SQL statements in backend code, graphql queries, etc. to have the same experience as with Prettier. It doesn't just format your JavaScript code, but also other languages that are commonly embedded into JavaScript</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:33 UTC
+    </footer>
+</body>
+</html>

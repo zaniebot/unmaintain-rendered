@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test(ruff_python_formatter): Run all Black tests - astral-sh/ruff #2993</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>test(ruff_python_formatter): Run all Black tests</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2993">#2993</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-02-17 18:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-02-17 18:16</div>
+            <div class="timeline-body"><p>This PR changes the testing infrastructure to run all black tests and:</p>
+<ul>
+<li>Pass if Ruff and Black generate the same formatting</li>
+<li>Fail and write a markdown snapshot that shows the input code, the differences between Black and Ruff, Ruffs output, and Blacks output</li>
+</ul>
+<p>This is achieved by introducing a new <code>fixture</code> macro (open to better name suggestions) that &quot;duplicates&quot; the attributed test for every file that matches the specified glob pattern. Creating a new test for each file over having a test that iterates over all files has the advantage that you can run a single test, and that test failures indicate which case is failing.</p>
+<p>The <code>fixture</code> macro also makes it straightforward to e.g. setup our own spec tests that test very specific formatting by creating a new folder and use insta to assert the formatted output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>Cargo.toml</code>:3 on 2023-02-17 18:17</div>
+            <div class="timeline-body"><p>TODO: Move to its own PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-02-17 18:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/snapshots/ruff_python_formatter__tests__black_test__attribute_access_on_number_literals_py.snap</code>:9 on 2023-02-17 18:20</div>
+            <div class="timeline-body"><p>You can override the filetype for .py.snap in your JetBrains IDE to get markdown rendering</p>
+<p><img src="https://user-images.githubusercontent.com/1203881/219748195-d1f71cc4-fc07-41c3-bcb5-0c92af14d470.png" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-02-17 18:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-02-17 18:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_testing_macros/src/lib.rs</code>:171 on 2023-02-17 18:21</div>
+            <div class="timeline-body"><p>This is where all the fun of the new macro is happening</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-02-18 09:21</div>
+            <div class="timeline-body"><p>Hmm. The windows tests are all failing now because the markdown file is written using <code>writeln</code> that always inserts <code>\n</code> but the checked out snapshots use <code>\cr\n</code> because we use no <code>.gitattributes</code> file.</p>
+<p>I tried to add a <code>.gitattributes</code> file that ensures that all platforms use the same line endings when checking out the repository.</p>
+<pre><code>* text=auto eol=auto
+
+crates/ruff/resources/test/fixtures/isort/line_ending_crlf.py text eol=crlf
+crates/ruff/resources/test/fixtures/pycodestyle/W605_1.py text eol=crlf
+
+ruff.schema.json linguist-generated=true text=auto eol=lf
+</code></pre>
+<p>But now many of the linter tests are failing which seems a bit frightening. Does it mean that ruff doesn't correctly handle the case where a project uses the non-default line ending of the operating system?</p>
+<pre><code>━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Differences ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot file: crates\ruff\src\rules\flake8_comprehensions\snapshots\ruff__rules__flake8_comprehensions__tests__C400_C400.py.snap
+Snapshot: C400_C400.py
+Source: C:\Users\Micha\git\ruff:39
+───────────────────────────────────────────────────────────────────────────────
+Expression: diagnostics
+───────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬──────────────────────────────────────────────────────────────────
+   24    24 │     row: 4
+   25    25 │     column: 1
+   26    26 │   fix:
+   27    27 │     content:
+   28       │-      - &quot;[&quot;
+   29       │-      - &quot;    x for x in range(3)&quot;
+   30       │-      - &quot;]&quot;
+         28 │+      - &quot;[\n    x for x in range(3)\n]&quot;
+   31    29 │     location:
+   32    30 │       row: 2
+   33    31 │       column: 4
+   34    32 │     end_location:
+────────────┴──────────────────────────────────────────────────────────────────
+</code></pre>
+<p>Any ideas where I should start looking? Is this in the parser or does the <code>stylist</code> infer the wrong line endings (why are new lines embedded in the string literal)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2023-02-18 09:29</div>
+            <div class="timeline-body"><p>#2033 has some relevant context, especially the <code>add_redaction</code> call in our <code>assert_yaml_snapshot</code> wrapper.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-02-18 10:02</div>
+            <div class="timeline-body"><blockquote>
+<p>#2033 has some relevant context, especially the <code>add_redaction</code> call in our <code>assert_yaml_snapshot</code> wrapper.</p>
+</blockquote>
+<p>Ohh thanks! It would have taken me forever to find this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-02-18 11:07</div>
+            <div class="timeline-body"><p>Depends on #3005 to fix the windows build or we must change this PR to explicitly handle the line ending character on different platforms.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-02-21 08:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/lib.rs</code>:87 on 2023-02-21 08:10</div>
+            <div class="timeline-body"><p>There are now more tests that panic than when I initially created this PR. I think it would be good for us to fix the panics first to get better visibility of our changes (and avoid having any new tests that cause panics)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-02-21 08:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/lib.rs</code>:135 on 2023-02-21 16:06</div>
+            <div class="timeline-body"><p>This piece is just for convenience, right? Since it's a deterministic function of the Ruff and Black output included below?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/lib.rs</code>:190 on 2023-02-21 16:06</div>
+            <div class="timeline-body"><p>This is a nice pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/snapshots/ruff_python_formatter__tests__black_test__beginning_backslash_py.snap</code>:46 on 2023-02-21 16:07</div>
+            <div class="timeline-body"><p>Do we have control over these trailing newlines in the snapshot?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/snapshots/ruff_python_formatter__tests__black_test__beginning_backslash_py.snap</code>:43 on 2023-02-21 16:08</div>
+            <div class="timeline-body"><p>I think there may've been some kind of error in the <code>.expect</code> creation script that made the original snapshots which led to us retaining trailing newlines in the Black output. (Black trims these.) Doesn't have to be fixed in this PR, but we'll need to fix them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_testing_macros/Cargo.toml</code>:2 on 2023-02-21 16:09</div>
+            <div class="timeline-body"><p>What are the tradeoffs RE adding a new crate vs. including these in <code>ruff_macros</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-21 16:12</div>
+            <div class="timeline-body"><p>This is fantastic and completely solves the problems I've been running into with testing and iteration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-02-22 07:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/lib.rs</code>:135 on 2023-02-22 07:08</div>
+            <div class="timeline-body"><p>That's correct. I found it useful when working on rome formatter to have all information in a single file, so that you don't need to search for the expected output file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-02-22 07:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/lib.rs</code>:190 on 2023-02-22 07:09</div>
+            <div class="timeline-body"><p>Thanks. It may be familiar from working on the formatter ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-02-22 07:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_testing_macros/Cargo.toml</code>:2 on 2023-02-22 07:16</div>
+            <div class="timeline-body"><p>In my view it mainly comes down if you prefer having fewer crates or more fine granular crates.</p>
+<p>My preference is to have more fine granular crates because:</p>
+<ul>
+<li>Smaller crates mean there are fewer changes that require a re-compile of its code</li>
+<li>You can be explicit about dependencies<ul>
+<li>the testing macros don't need to depend on itertools</li>
+<li>The test macros can be a <code>dev</code> dependency, ensuring that its functionality isn't used in production code</li>
+</ul>
+</li>
+<li>I find smaller crates help navigate the code base and specific names tell you if this crate is the right crate for your code addition</li>
+</ul>
+<p>The main downside is that we end up with more crates, resulting in a longer <code>crates</code> list. This doesn't seem to be a problem today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-02-22 07:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/snapshots/ruff_python_formatter__tests__black_test__beginning_backslash_py.snap</code>:46 on 2023-02-22 07:41</div>
+            <div class="timeline-body"><p>I would have thought so but that doesn't seem to be the case. Using <code>trim_end()</code>  on the generated content doesn't change anything and the two trailing new lines are present in other snapshot tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-02-22 07:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/snapshots/ruff_python_formatter__tests__black_test__beginning_backslash_py.snap</code>:43 on 2023-02-22 07:49</div>
+            <div class="timeline-body"><p>Done. I added an editorconfig file that sets <code>final_new_line = false</code> for the expect files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-22 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-22 14:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:35 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect all rule-exemption sources when suppressing parser errors - astral-sh/ruff #3665</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Respect all rule-exemption sources when suppressing parser errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3665">#3665</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-03-22 04:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-22 04:08</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>By default, if we hit a syntax error when parsing a file, we show the user a warning in addition to adding a diagnostic (if the user has <code>E999</code> enabled).</p>
+<p>The relevant discussion is here: https://github.com/charliermarsh/ruff/pull/2505. In short, <em>only</em> logging the diagnostic is insufficient, since if a user does <code>ruff check --select F</code>, and the file contains a syntax error, it would lead to a <em>silent</em> failure. However, if a user has explicitly ignored a syntax error, it's tedious to have it reported on every invocation. So this is the workaround.</p>
+<p>However, there's a bug in the current solution, which is that it only recognizes inline <code>noqa</code> comments and not file-wide exemptions (e.g., <code># ruff: noqa</code> at the top of the file), which leads to a really subtle bug in which we <em>think</em> we've introduced a syntax error after removing the unused <code>noqa</code> comment on a syntax-error-causing line.</p>
+<p>This PR fixes <em>that</em> bug (without changing behavior) by respecting all forms of error suppression when considering whether to report a warning back to the user.</p>
+<p>Closes #3622.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-22 04:39</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     13.8±0.08ms     2.9 MB/sec    1.00     13.7±0.12ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.01ms     4.7 MB/sec    1.00      3.6±0.02ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.01    495.7±1.58µs     6.0 MB/sec    1.00    490.4±2.14µs     6.0 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.1±0.05ms     4.2 MB/sec    1.00      6.0±0.04ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.02      7.4±0.04ms     5.5 MB/sec    1.00      7.2±0.05ms     5.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1633.0±3.84µs    10.2 MB/sec    1.00   1616.3±4.43µs    10.3 MB/sec
+linter/default-rules/numpy/globals.py      1.01    183.3±0.63µs    16.1 MB/sec    1.00    182.2±0.54µs    16.2 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.4±0.01ms     7.5 MB/sec    1.00      3.4±0.02ms     7.5 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     17.7±0.61ms     2.3 MB/sec    1.01     17.9±0.30ms     2.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.7±0.11ms     3.5 MB/sec    1.01      4.8±0.11ms     3.5 MB/sec
+linter/all-rules/numpy/globals.py          1.00   606.7±20.18µs     4.9 MB/sec    1.02   621.5±18.59µs     4.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.7±0.20ms     3.3 MB/sec    1.03      7.9±0.13ms     3.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      9.6±0.43ms     4.2 MB/sec    1.05     10.1±0.23ms     4.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.1±0.06ms     8.1 MB/sec    1.05      2.2±0.05ms     7.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00    227.9±7.46µs    12.9 MB/sec    1.04    237.9±9.59µs    12.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.4±0.15ms     5.7 MB/sec    1.04      4.6±0.12ms     5.5 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-03-22 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-03-22 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-03-23 08:54</div>
+            <div class="timeline-body"><p>The change looks reasonable to me. I'm a bit uncertain if it should be possible to suppress syntax errors because they'll ultimately result in a runtime error and other ruff analysis not running (more potential runtime errors).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-23 17:36</div>
+            <div class="timeline-body"><p>Yeah I'm not sure either. This <em>was</em> important when we knowingly didn't support all valid syntax, and users needed a workaround. Now I'm not so sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-03-23 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-23 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-03-23 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-23 17:37</div>
+            <div class="timeline-body"><p>(But, as long as we have this behavior, I think this change is correct.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:48 UTC
+    </footer>
+</body>
+</html>

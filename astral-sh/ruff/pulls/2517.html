@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement many-to-one mapping between codes and rules - astral-sh/ruff #2517</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement many-to-one mapping between codes and rules</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2517">#2517</a>
+        opened by <a href="https://github.com/not-my-profile">@not-my-profile</a>
+        on 2023-02-03 05:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-02-03 05:56</div>
+            <div class="timeline-body"><p>Implements #2186.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-03 21:13</div>
+            <div class="timeline-body"><p>This is really exciting.</p>
+<p>I've read through some of the code and commits but not the entirety of the change (yet). From my testing, it seems like every rule has one &quot;primary&quot; code. So <code>useless-object-inheritance</code> is mapped to <code>PLR0205</code>, <code>PIE792</code>, and <code>UP004</code>. And no matter how you <code>--select</code> it, it's always reported as <code>PIE792</code>. Similarly, you have to use <code>PIE792</code> to <code># noqa</code> it. I thinks this could be confusing, to <code>--select UP</code> and see <code>PIE792</code> violations. How do you view it? Is that an accurate description of current behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-03 21:24</div>
+            <div class="timeline-body"><p>I'm not sure what I would expect as a user. I could imagine a few things:</p>
+<ol>
+<li>If I <code>--select UP --select PIE</code>, I see the error twice, once under both codes. (If I <code>--select UP</code>, I see the error once, under <code>UP004</code>; if I <code>--select PIE</code>, I see the error once, under <code>PIE792</code>.)</li>
+<li>If I <code>--select UP --select PIE</code>, I see the error once, under the &quot;first&quot; (?) code, or under the preferred code as is implicitly implemented here. (If I <code>--select UP</code>, I see the error once, under <code>UP004</code>; if I <code>--select PIE</code>, I see the error once, under <code>PIE792</code>.)</li>
+</ol>
+<p>I don't know how I'd expect <code>noqa</code> violations to work: should <em>any</em> matching code ignore the violation despite the selector that was used to enable it? Or should I be required to add a <code>noqa</code> for every matching code individually?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-02-04 03:20</div>
+            <div class="timeline-body"><blockquote>
+<p>From my testing, it seems like every rule has one &quot;primary&quot; code. I thinks this could be confusing, to --select UP and see PIE792 violations. How do you view it? Is that an accurate description of current behavior?</p>
+</blockquote>
+<p>Yes that's how it currently works. I'd expect us to switch to human-friendly rule names #1773, so no matter which code you used to select in the future ruff will always only report the human-friendly rule name. Until we make that switch the behavior will be a bit confusing, but I don't see a good way around that.</p>
+<blockquote>
+<p>see the error twice</p>
+</blockquote>
+<p>I am positive that we absolutely do not want to report any error multiple times under any circumstance.</p>
+<p>Note that it's totally possible that a rule is enabled via multiple codes, I don't think we want to report multiple codes for a single violation, so we have to pick one ... until we have come up with rule naming guidelines and renamed our rules accordingly.</p>
+<blockquote>
+<p>should any matching code ignore the violation despite the selector that was used to enable it?</p>
+</blockquote>
+<p>Yes. A rule can be identified via multiple codes. Which code you used to enable a rule doesn't matter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-04 03:46</div>
+            <div class="timeline-body"><p>I worry that running <code>--select UP</code> and seeing a <code>PIE792</code> violation is a confusing enough experience that I'd want to really consider whether we enable these at all prior to migrating to human-friendly rule names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-12 05:22</div>
+            <div class="timeline-body"><p>I'm hesitant to merge this as-is due to some of the confusing behaviors that users will experience around aliasing (e.g., the <code>--select UP</code>-to-<code>PIE</code> scenario described above).</p>
+<p>I don't have great answers for them yet, but I know that if we ship this as-is, it will be confusing for users, and we'll get a lot of feedback and questions stemming from that confusion.</p>
+<p>If we want to merge this while giving ourselves time to figure out the best solution for aliasing, what we <em>could</em> do is merge this change but not yet implement any of the actual aliases (apart from, perhaps, deprecating rules, like <code>BLE001</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-02-12 06:04</div>
+            <div class="timeline-body"><p>Right that makes sense. I think the course of action is:</p>
+<ol>
+<li>Rename our rules to match the naming convention ... this does entail the merging of several rules (see <a href="https://www.github.com/charliermarsh/ruff/issues/2714">#2714</a>).
+(We do this first since after the next step renaming rules will be a breaking change.)</li>
+<li>Allow rules to be selected by their name and report violations by their name.</li>
+<li>Enable the many-to-one mapping.</li>
+</ol>
+<p>I already rebased this PR yesterday, which was quite work-intensive since #2583 had landed in between. Further rebasing shouldn't take that much effort, so I'd be alright with leaving this PR open ... but yeah it would be nice to merge this just so that I don't have to deal with merging other changes that may crop up.</p>
+<p>I could add an assert statement to the <code>map_codes</code> proc macro to assert that at most one code is mapped to one rule ... then we could merge this without any UX changes[^1] and simply remove the assert statements once we get to the above mentioned 3rd step.</p>
+<p>[^1]: Aside from the C, C9, T, T1, T2 prefix deprecations in the 7th commit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-02-13 18:45</div>
+            <div class="timeline-body"><p>(Heads-up: I will rename the pathlib rules in https://github.com/charliermarsh/ruff/pull/2348 to os-path - the thing we detect)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-02-14 04:44</div>
+            <div class="timeline-body"><p>I think that landing this PR, will take some coordination that this will be merged before any other <code>registry.rs</code> changes, since this PR changes the format of the frequently edited <code>registry.rs</code> file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-14 05:02</div>
+            <div class="timeline-body"><p>👍 I’m happy to merge this next assuming it doesn’t change the UX right now — is that the case? I have to re-read the code but I’ll review tomorrow after the JetBrains webinar, and hopefully can merge tomorrow afternoon or evening.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-02-14 05:06</div>
+            <div class="timeline-body"><p>Ok great. Yes after I have dropped the last commit demonstrating the mapping and added the aforementioned assert statement there shouldn't be any UX changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-14 20:43</div>
+            <div class="timeline-body"><p>(Returning to this now.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-02-14 20:54</div>
+            <div class="timeline-body"><p>Let me know if you have questions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-14 20:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>ruff.schema.json</code>:1399 on 2023-02-14 20:59</div>
+            <div class="timeline-body"><p>So these work on the CLI (based on my testing), what's the rationale for excluding them?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-14 21:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/printer.rs</code>:605 on 2023-02-14 21:00</div>
+            <div class="timeline-body"><p>Removed from inline just for clarity? Or some other reason?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-14 21:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/settings/pyproject.rs</code>:228 on 2023-02-14 21:01</div>
+            <div class="timeline-body"><p>So this is a result of the prefix now being encoded via <code>codes::Ruff</code>, and so the identifier itself starts with a number, and so we need the underscore. Is that correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>ruff.schema.json</code>:1399 on 2023-02-14 21:02</div>
+            <div class="timeline-body"><p>They only continue to work because I added redirects, see the &quot;Update JSON schema&quot; commit.</p>
+<p>They are no longer generated by <code>cargo dev generate-json-schema</code> since these are partial linter prefixes ... I'd say we should consider them deprecated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-02-14 21:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>ruff.schema.json</code>:1399 on 2023-02-14 21:04</div>
+            <div class="timeline-body"><p>Is this not the McCabe-equivalent of (e.g.) <code>--select B</code> for <code>flake8-bugbear</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-14 21:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-02-14 21:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>crates/ruff/src/settings/pyproject.rs</code>:228 on 2023-02-14 21:04</div>
+            <div class="timeline-body"><p>Yes, see <code>get_prefix_ident</code> in <code>ruff_macros/src/rule_code_prefix.rs</code>:</p>
+<blockquote>
+<p>// Identifiers in Rust may not start with a number.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-14 21:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>ruff.schema.json</code>:1399 on 2023-02-14 21:05</div>
+            <div class="timeline-body"><p>(As an aside, would be nice to just remove these conflicts at some point.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-02-14 21:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>crates/ruff_cli/src/printer.rs</code>:605 on 2023-02-14 21:06</div>
+            <div class="timeline-body"><p>Removed from inline due to borrow checking reasons. Otherwise borrowchk complains due to returning a temporary reference to an owned value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-02-14 21:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>ruff.schema.json</code>:1399 on 2023-02-14 21:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Is this not the McCabe-equivalent of (e.g.) --select B for flake8-bugbear?</p>
+</blockquote>
+<p>No as per <code>#[prefix = &quot;C90&quot;] McCabe</code> in <code>registry.rs</code> the equivalent is C90.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/not-my-profile">@not-my-profile</a> reviewed on 2023-02-14 21:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on <code>ruff.schema.json</code>:1399 on 2023-02-14 21:08</div>
+            <div class="timeline-body"><p>Note that this is also consistent with the upstream mccabe:</p>
+<p>https://github.com/PyCQA/mccabe/blob/master/setup.py#L38</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-14 21:10</div>
+            <div class="timeline-body"><p>Cool this looks good to me -- merging...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-14 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-14 21:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:32 UTC
+    </footer>
+</body>
+</html>

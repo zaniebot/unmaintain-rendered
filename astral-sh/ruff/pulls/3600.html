@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convert single-argument %-style format calls - astral-sh/ruff #3600</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Convert single-argument %-style format calls</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3600">#3600</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-03-18 19:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-18 19:25</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Today, we only convert %-style format calls if the right-hand side is a dictionary or tuple literal. However, I <em>think</em> we can support a larger set of expressions on the right-hand side.</p>
+<p>There are three cases to consider...</p>
+<ol>
+<li>The template string contain at least one named value (<code>&quot;%(foo)s&quot; % x</code>). In that case, the right-hand side <em>has</em> to resolve to a map, so we treat it as kwargs (e.g., <code>&quot;{foo}&quot;.format(**x)</code>).</li>
+<li>The template string contains multiple positional values (<code>&quot;%s %s&quot; % x</code>). In that case, the right-hand side <em>has</em> to resolve to a tuple, so we treat it as kwargs (e.g., <code>&quot;{} {}&quot;.format(*x)</code>).</li>
+<li>The template string contains a single value (<code>&quot;%s&quot; % x</code>). In that case, we can't be certain whether the right-hand side is a single expression, or a tuple containing a single expression -- so unfortunately, we have to continue ignoring those.</li>
+</ol>
+<p>There's one case that's not formally covered above, which is a template string that mixes named and positional values, like <code>&quot;%(foo)s %s&quot;</code>. But I'm unable to come up with a right-hand side that's valid given mixed named and positional values. Does such a case exist? I believe it's impossible.</p>
+<p>Closes #3549.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-03-18 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-03-18 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-03-18 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-18 19:39</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>ℹ️ ecosystem check <strong>detected changes</strong>. (+5, -0, 0 error(s))</p>
+<details><summary>airflow (+1, -0)</summary>
+<p>
+
+<pre><code class="language-diff">+ airflow/providers/google/cloud/hooks/bigtable.py:252:32: UP031 [*] Use format specifiers instead of percent format
+</code></pre>
+</p>
+</details>
+<details><summary>bokeh (+3, -0)</summary>
+<p>
+
+<pre><code class="language-diff">+ src/bokeh/plotting/_figure.py:738:41: UP031 [*] Use format specifiers instead of percent format
++ tests/unit/bokeh/models/test_plots.py:486:38: UP031 [*] Use format specifiers instead of percent format
++ tests/unit/bokeh/models/test_plots.py:492:38: UP031 [*] Use format specifiers instead of percent format
+</code></pre>
+</p>
+</details>
+<details><summary>scikit-build (+1, -0)</summary>
+<p>
+
+<pre><code class="language-diff">+ skbuild/platform_specifics/cygwin.py:33:27: UP031 [*] Use format specifiers instead of percent format
+</code></pre>
+</p>
+</details>
+
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.0±0.04ms     2.9 MB/sec    1.00     14.0±0.04ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.7±0.01ms     4.5 MB/sec    1.00      3.7±0.00ms     4.5 MB/sec
+linter/all-rules/numpy/globals.py          1.01    433.7±1.11µs     6.8 MB/sec    1.00    430.9±2.23µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.2±0.01ms     4.1 MB/sec    1.00      6.2±0.01ms     4.1 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.7±0.02ms     5.3 MB/sec    1.01      7.7±0.03ms     5.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1697.9±5.06µs     9.8 MB/sec    1.00   1706.0±2.25µs     9.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00    175.2±0.29µs    16.8 MB/sec    1.01    176.9±2.56µs    16.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.01ms     7.1 MB/sec    1.00      3.6±0.00ms     7.0 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.04     17.6±0.64ms     2.3 MB/sec    1.00     17.0±0.48ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.8±0.21ms     3.5 MB/sec    1.01      4.8±0.26ms     3.5 MB/sec
+linter/all-rules/numpy/globals.py          1.07   645.5±44.15µs     4.6 MB/sec    1.00   600.7±46.57µs     4.9 MB/sec
+linter/all-rules/pydantic/types.py         1.02      8.2±0.36ms     3.1 MB/sec    1.00      8.0±0.39ms     3.2 MB/sec
+linter/default-rules/large/dataset.py      1.05      9.9±0.38ms     4.1 MB/sec    1.00      9.5±0.58ms     4.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01      2.2±0.13ms     7.7 MB/sec    1.00      2.1±0.10ms     7.8 MB/sec
+linter/default-rules/numpy/globals.py      1.07   265.4±16.18µs    11.1 MB/sec    1.00   248.4±28.31µs    11.9 MB/sec
+linter/default-rules/pydantic/types.py     1.12      5.0±0.16ms     5.1 MB/sec    1.00      4.4±0.22ms     5.7 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2023-03-18 22:19</div>
+            <div class="timeline-body"><p>Case 3 does not hold.</p>
+<pre><code class="language-python">x = (1,)
+print(&quot;%s&quot; % x)
+print(&quot;{}&quot;.format(x))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-18 23:05</div>
+            <div class="timeline-body"><p>Ah that's a shame, I'd guess that's a small minority of cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-18 23:07</div>
+            <div class="timeline-body"><p>I can't think of any way to avoid that, so I guess we have to continue omitting those cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-19 03:20</div>
+            <div class="timeline-body"><p>(Removed, and amended the PR summary.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:398 on 2023-03-20 08:43</div>
+            <div class="timeline-body"><p>I love the comments!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:339 on 2023-03-20 08:44</div>
+            <div class="timeline-body"><p>Nit: A boolean for keywords seems sufficient</p>
+<pre><code class="language-suggestion">    let mut has_keyword_arguments = false;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-03-20 08:44</div>
+            <div class="timeline-body"><p>LGTM. I can't say much about the inference rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-03-20 09:36</div>
+            <div class="timeline-body"><p>I think the proper way to ensure the cases are correctly covered would be reading the cpython source code, but i couldn't find the percent formatting source code, only the tests: https://github.com/python/cpython/blob/5e6661bce968173fa45b74fa2111098645ff609c/Lib/test/test_format.py</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-03-20 09:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pyupgrade/rules/printf_string_formatting.rs</code>:339 on 2023-03-21 03:30</div>
+            <div class="timeline-body"><p>Ah, we need to know if there's <em>more than</em> one positional argument. If we have exactly one positional argument, we can't fix it unfortunately :sob:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-21 03:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-03-21 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-21 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-03-21 03:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:46 UTC
+    </footer>
+</body>
+</html>

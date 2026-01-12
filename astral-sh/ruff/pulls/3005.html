@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chore: Use `LF` on all platforms  - astral-sh/ruff #3005</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>chore: Use <code>LF</code> on all platforms</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3005">#3005</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-02-18 10:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-02-18 10:08</div>
+            <div class="timeline-body"><p>I worked on #2993 and ran into issues that the formatter tests are failing on Windows because <code>writeln!</code> emits <code>\n</code> as line terminator on all platforms, but <code>git</code> on Windows converted the line endings in the snapshots to <code>\r\n</code>.</p>
+<p>I then tried to replicate the issue on my Windows machine and was surprised that all linter snapshot tests are failing on my machine. I figured out after some time that it is due to my global git config keeping the input line endings rather than converting to <code>\r\n</code>.</p>
+<p>Luckily, I've been made aware of #2033 which introduced an &quot;override&quot; for the <code>assert_yaml_snapshot</code> macro that normalizes new lines, by splitting the formatted string using the platform-specific newline character. This is a clever approach and gives nice diffs for multiline fixes but makes assumptions about the setup contributors use and requires special care whenever we use line endings inside of tests.</p>
+<p>I recommend that we remove the special new line handling and use <code>.gitattributes</code> to enforce the use of <code>LF</code> on all platforms <a href="https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings">guide</a>. This gives us platform agnostic tests without having to worry about line endings in our tests or different git configurations.</p>
+<h2>Note</h2>
+<p>It may be necessary for Windows contributors to run the following command to update the line endings of their files</p>
+<pre><code class="language-bash">git rm --cached -r .
+git reset --hard
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "other: Use `LF` on all platforms " to "test: Use `LF` on all platforms " by @MichaReiser on 2023-02-18 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "test: Use `LF` on all platforms " to "chore: Use `LF` on all platforms " by @MichaReiser on 2023-02-18 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-02-18 11:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pycodestyle/mod.rs</code>:71 on 2023-02-18 11:06</div>
+            <div class="timeline-body"><p>This is the only test where the output depends on where the test is run. That's why I'm handling this test specifically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-02-18 11:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-18 11:07</div>
+            <div class="timeline-body"><p>\cc @sbrugman who has the context from #2033</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-02-18 11:30</div>
+            <div class="timeline-body"><p>This is indeed an improvement over the current situation for developers, where we don't account for git settings that may have been overwritten.</p>
+<p>The most important thing is that we do keep testing crlf functionality (which is detected from the file regardless of platform). Will this still test that new changes work with both type of line endings?
+(I think our tests failed correctly)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sbrugman">@sbrugman</a> reviewed on 2023-02-18 11:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sbrugman">@sbrugman</a> on <code>crates/ruff/src/rules/pycodestyle/mod.rs</code>:71 on 2023-02-18 11:50</div>
+            <div class="timeline-body"><p>In https://github.com/charliermarsh/ruff/pull/2033 we chose not to use a special line ending token. In this case however, since it's only the approach taken there would not much differ. (cc @andersk who came up with the idea to split newlines).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-02-18 14:22</div>
+            <div class="timeline-body"><blockquote>
+<p>The most important thing is that we do keep testing crlf functionality (which is detected from the file regardless of platform). Will this still test that new changes work with both type of line endings?</p>
+</blockquote>
+<p>Hmm, that's a good point. No, tests will run with the same line ending as they have in the committed <code>resources</code> folder. I think that's an improvement because it guarantees that tests have a predictable outcome across platforms and contributors can reproduce and fix test failures regardless of the platform they're using. However, it means that we reduced the CR LF test coverage. We can do a few things if we want to keep that coverage high (and potentially combine these approaches).</p>
+<ol>
+<li>Write unit tests that assert the specific behavior that should be different between files using LF and CR LF</li>
+<li>Create a spec test that explicitly uses CR LF file endings. Add a <code>.gitattributes</code> file to that directory that enforces CR LF file endings or override the file in the root <code>.gitattributes</code> file</li>
+<li>Change our linter (and potentially formatter) test to run twice, once with the content as it is on disk and a second time where the <code>LF</code>s are replaced with <code>CR LF</code>.</li>
+</ol>
+<p>I recommend going with 1 and 2 (there's already a test that asserts CR LF behavior)  but I don't know how much a source of bugs the line endings have been in the past that would warrant running all tests twice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-19 15:16</div>
+            <div class="timeline-body"><p>Yeah this makes sense to me. I think we should add a handful of additional, dedicated tests for CRLF line endings, and mark those explicitly as you've done here. But I'd be fine to merge this and add those in a future PR.</p>
+<blockquote>
+<p>I recommend going with 1 and 2 (there's already a test that asserts CR LF behavior) but I don't know how much a source of bugs the line endings have been in the past that would warrant running all tests twice</p>
+</blockquote>
+<p>I would say it hasn't been a <em>major</em> source of bugs, especially since we introduced the <code>stylist</code> pattern which abstracts away some of the newline handling, <em>and</em> we established the pattern of consistently passing newline information to LibCST's <code>CodegenState</code>. Now that those patterns exist and are prevalent across the codebase, they tend to be properly picked up in all new code changes.</p>
+<p>(FWIW, there's at least one <em>known</em> issue around newline handling which is that the <code>textwrap</code> module always uses LF newlines, so we have to do extra work whenever we use the <code>indent</code> or <code>dedent</code> methods. This bit us once, creating an infinite fix loop for import sorting. So it might be worth ensuring we have a CRLF for at least one <code>isort</code> test.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-20 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-20 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-02-21 07:57</div>
+            <div class="timeline-body"><blockquote>
+<p>(FWIW, there's at least one known issue around newline handling which is that the textwrap module always uses LF newlines, so we have to do extra work whenever we use the indent or dedent methods. This bit us once, creating an infinite fix loop for import sorting. So it might be worth ensuring we have a CRLF for at least one isort test.)</p>
+</blockquote>
+<p>That makes sense. I further recommend patching/forking <code>textwrap</code>, adding functionality to support different line endings, and testing the handling of different line endings. This will prevent contributors from running into the same issue and gives us test coverage close to the implementation.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:35 UTC
+    </footer>
+</body>
+</html>

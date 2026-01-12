@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat(isort): Implement isort.force_to_top - astral-sh/ruff #2877</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat(isort): Implement isort.force_to_top</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2877">#2877</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2023-02-14 00:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-14 00:55</div>
+            <div class="timeline-body"><p>test what <code>isort</code> does via:
+<code>isort -t &quot;lib1&quot; -t &quot;lib3&quot; -t &quot;lib5&quot; -t &quot;lib3.lib4&quot; -t &quot;z&quot; crates/ruff/resources/test/fixtures/isort/force_to_top.py</code></p>
+<p>Issue #2695</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-15 16:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/isort/sorting.rs</code>:132 on 2023-02-15 16:02</div>
+            <div class="timeline-body"><p>Are the commented-out lines included by accident?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/spaceone">@spaceone</a> on <code>crates/ruff/src/rules/isort/sorting.rs</code>:132 on 2023-02-15 16:14</div>
+            <div class="timeline-body"><p>no, on purpose currently. I am not sure if we should sort <code>from</code>-imports also there. From reading the <code>isort</code> code it just splits anything at <code> </code> and looks if this is in <code>force_to_top</code>.
+Also the commented code had one error which I don't remember where I couldn't find a rust-solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/spaceone">@spaceone</a> reviewed on 2023-02-15 16:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/spaceone">@spaceone</a> on <code>crates/ruff/src/rules/isort/sorting.rs</code>:132 on 2023-02-15 16:15</div>
+            <div class="timeline-body"><p><code>isort</code> also doesn't really have much tests for <code>force-to-top</code>, so I have to reverse engineer a little how it handles <code>from</code>-imports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/spaceone">@spaceone</a> reviewed on 2023-02-15 16:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/spaceone">@spaceone</a> reviewed on 2023-02-15 16:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/spaceone">@spaceone</a> on <code>crates/ruff/src/rules/isort/sorting.rs</code>:132 on 2023-02-15 16:18</div>
+            <div class="timeline-body"><p>I think the problem was that I don't know how to convert a <code>import_from1.module</code> into a string. maybe you can help here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/isort/sorting.rs</code>:132 on 2023-02-15 16:57</div>
+            <div class="timeline-body"><p>Does this trait help at all?</p>
+<pre><code class="language-rust">pub trait Importable {
+    fn module_name(&amp;self) -&gt; String;
+    fn module_base(&amp;self) -&gt; String;
+}
+
+impl Importable for AliasData&lt;'_&gt; {
+    fn module_name(&amp;self) -&gt; String {
+        self.name.to_string()
+    }
+
+    fn module_base(&amp;self) -&gt; String {
+        self.module_name().split('.').next().unwrap().to_string()
+    }
+}
+
+impl Importable for ImportFromData&lt;'_&gt; {
+    fn module_name(&amp;self) -&gt; String {
+        ast::helpers::format_import_from(self.level, self.module)
+    }
+
+    fn module_base(&amp;self) -&gt; String {
+        self.module_name().split('.').next().unwrap().to_string()
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-15 16:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/spaceone">@spaceone</a> reviewed on 2023-02-15 17:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/spaceone">@spaceone</a> on <code>crates/ruff/src/rules/isort/sorting.rs</code>:132 on 2023-02-15 17:27</div>
+            <div class="timeline-body"><p>thanks. can be merged then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-16 19:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-16 19:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:33 UTC
+    </footer>
+</body>
+</html>

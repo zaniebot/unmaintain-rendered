@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move binding and scope tracking into a separate `ast::Context` struct - astral-sh/ruff #3298</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Move binding and scope tracking into a separate <code>ast::Context</code> struct</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3298">#3298</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-03-02 04:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-02 04:26</div>
+            <div class="timeline-body"><p>This PR is an attempt to split up <code>Checker</code> in such a way so as to allow us to break the Ruff linter itself into multiple crates.</p>
+<p>The first step (seen here) is to remove all AST-visitation state into a new <code>Context</code> struct, which tracks the current scope stack, available bindings, etc. By moving these fields and methods off of <code>Checker</code>, rules can instead take <code>Context</code> as an argument, rather than <code>Checker</code>, which means they can be decoupled from the actual &quot;driver&quot; / &quot;visitor&quot; and thereby the rest of the lint rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-02 04:40</div>
+            <div class="timeline-body"><p><code>Diagnostic</code> is another tough cycle to break. Depends on <code>DiagnosticKind</code> which depends on all rule violations. Need to play around with this and reconsider the struct hierarchy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-02 04:41</div>
+            <div class="timeline-body"><p><code>Settings</code> is another. Perhaps we can change rules to rely on the settings they care about, rather than the <code>Settings</code> struct, and rely on <code>Checker</code> to inject those settings at the call-site.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ctx.rs</code>:1 on 2023-03-02 08:23</div>
+            <div class="timeline-body"><p>Nit: Should the file be named <code>context</code>? Avoiding abbreviations can improve readability for people less familiar with the code base.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ctx.rs</code>:16 on 2023-03-02 08:23</div>
+            <div class="timeline-body"><p>Nit: <code>Vec&lt;String&gt;</code>. An empty <code>vec![]</code> is conceptually the same as <code>None</code> (but requires less space)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast.rs</code>:112 on 2023-03-02 08:26</div>
+            <div class="timeline-body"><p>Could we move the <code>context</code> out of the <code>Checker</code> entirely and pass it around instead of the checker so that:</p>
+<ul>
+<li>The checker orchestrates the &quot;checking&quot;</li>
+<li><code>context</code> stores the state and is passed to the rules.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-02 08:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-02 16:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ctx.rs</code>:16 on 2023-03-02 16:49</div>
+            <div class="timeline-body"><p>(I'll change this on <code>main</code>, since this is just a move.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-02 16:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast.rs</code>:112 on 2023-03-02 16:49</div>
+            <div class="timeline-body"><p>In that setup, would <code>ctx</code> be passed around as part of the <code>Visitor</code> trait?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-02 16:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast.rs</code>:112 on 2023-03-02 16:58</div>
+            <div class="timeline-body"><p>I should have spent some more time reading the code. Storing the <code>context</code> on the <code>Visitor</code> is probably fine. What I'm mainly wondering is if it would be possible to pass the <code>context</code> to various rules instead of the <code>Checker</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-02 17:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast.rs</code>:112 on 2023-03-02 17:01</div>
+            <div class="timeline-body"><p>👍 That's my hope, that we can stop passing <code>Checker</code>, and instead pass: <code>AstContext</code>, a mutable <code>diagnostics</code> vector, and some kind of settings representation.</p>
+<p>(Beyond that, we'd also need <code>Locator</code>, <code>Stylist,</code> etc., which currently live on <code>Checker</code> but there's no reason they need to.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-03-04 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Split up `Checker` into independent structs" to "Move binding and scope tracking into a separate `ast::Context` struct" by @charliermarsh on 2023-03-04 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-04 00:43</div>
+            <div class="timeline-body"><p>Okay, this can be merged as-is (in that, it doesn't depend on any additional refactors to be useful).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-04 07:57</div>
+            <div class="timeline-body"><p>How much did the compilation time improved?
+Or is it preparation for future improvements?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/deferred.rs</code>:15 on 2023-03-04 15:28</div>
+            <div class="timeline-body"><p>Nit: Can you add some documentation explaining what a <code>Deferred</code> is? I'm unable to guess its usage from just its name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:154 on 2023-03-04 15:30</div>
+            <div class="timeline-body"><p>Nit: Should these macros be changed to accept the context as an argument instead to decouple them from <code>Checker</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-03-04 15:33</div>
+            <div class="timeline-body"><p>LGTM: Something that's unclear to me but isn't something that we need to solve now is how do I decide whether to add some logic to <code>Checker</code> or <code>Context</code>? It is my impression that there are still many methods on <code>Checker</code> that only use state stored on the <code>Context</code>. Should these be moved to <code>Context</code> at some point?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-04 17:30</div>
+            <div class="timeline-body"><blockquote>
+<p>It is my impression that there are still many methods on Checker that only use state stored on the Context. Should these be moved to Context at some point?</p>
+</blockquote>
+<p>The intent is that these should all be moved over to Context. Lemme see if I missed any...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-04 17:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:154 on 2023-03-04 17:30</div>
+            <div class="timeline-body"><p>They still require <code>self.visit_expr</code>, we could change them to accept both though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-04 17:31</div>
+            <div class="timeline-body"><blockquote>
+<p>How much did the compilation time improved? Or is it preparation for future improvements?</p>
+</blockquote>
+<p>Yeah just in preparation for future improvements. I don't expect this alone to do much, it's more that it sets us up to be able to split the crate later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-03-04 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-04 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-03-04 19:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:41 UTC
+    </footer>
+</body>
+</html>

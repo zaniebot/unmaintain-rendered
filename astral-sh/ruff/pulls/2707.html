@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `--show-fixes` flag to show applied fixes - astral-sh/ruff #2707</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>--show-fixes</code> flag to show applied fixes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2707">#2707</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-02-10 03:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 03:27</div>
+            <div class="timeline-body"><h1>Summary</h1>
+<p>Haven't bothered to fix up the tests yet, but here's the current UI:</p>
+<p><img src="https://user-images.githubusercontent.com/1309177/217993170-e265c9ec-fed6-47a6-aae1-f0b8a415f783.png" alt="Screen Shot 2023-02-09 at 10 24 05 PM" /></p>
+<p>Once merged, closes #2661.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 03:29</div>
+            <div class="timeline-body"><p>@henryiii - This is just a first draft, but from your perspective, what's missing from the output?</p>
+<p>You'd mentioned line numbers in the issue, but line numbers are a little tricky to include here, because they won't map to lines in the changed file, and they might not even map to line numbers in the <em>original</em> file, because we preform multiple autofix passes. That is: sometimes, fixing a rule introduces a new violation, so we continue autofixing until the code stabilizes (e.g., if we remove a statement, it might render an import unused, and so on).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 03:30</div>
+            <div class="timeline-body"><p>We <em>could</em> include the location information and message for every fixed violation, but the outputs are going to be confusing in some cases due to the above disclaimer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2023-02-10 04:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-02-10 16:29</div>
+            <div class="timeline-body"><p>I don't think the location is that important, though I think the message should be there. That provides a description of sorts of what it did (removed imports, removed print statements, etc). Just the number only helps advanced users who'd memorized all the numbers or are willing to look each on up.</p>
+<p>Something like:</p>
+<pre><code>my/file.py:
+  F821 (x12): I don't actually remember what F821 is, other than very common
+  A123 (x2): Some other fixable thing
+</code></pre>
+<p>Other than that, looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 16:31</div>
+            <div class="timeline-body"><p>What if we included the human-readable name alongside the code, like <code>unused-variable</code>, etc.?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-02-10 16:44</div>
+            <div class="timeline-body"><p>This is nice. Agreed that it probably doesn't make sense to give line/character breakdown. If you're removing lines, then there is no line to reference. And then it seems strange to have some with that information and some without.</p>
+<p>Can I propose something like the following for the output?</p>
+<pre><code>Fixed 81 errors:
+  crates/ruff/resources/test/fixtures/flake8_return/RET504.py:
+     1 × E731 Do not assign a `lambda` expression, use a `def`
+  crates/ruff/resources/test/fixtures/flake8_return/RET505.py:
+    26 × F841 Local variable `…` is assigned to but never used
+  crates/ruff/resources/test/fixtures/flake8_return/RET506.py:
+    19 × F841 Local variable `…` is assigned to but never used
+  crates/ruff/resources/test/fixtures/flake8_return/RET507.py:
+    16 × F841 Local variable `…` is assigned to but never used
+  crates/ruff/resources/test/fixtures/flake8_return/RET508.py:
+    19 × F841 Local variable `…` is assigned to but never used
+</code></pre>
+<p>This makes it easy to parse visually as things align nicely. Some thoughts:</p>
+<ul>
+<li>Sort the outer list of files alphabetically - it's easier to scan through</li>
+<li>Sort the inner lists by decreasing number of fixes - it's nice to know where the biggest wins were</li>
+<li>Output the rule message to avoid having to look up rule codes<ul>
+<li><p>Note that rules with more than one message format should be grouped separately, e.g.</p>
+<pre><code>100 × RUF100 Unused blanket `noqa` directive
+ 10 × RUF100 Unused `noqa` directive
+  1 × RUF100 Unused `noqa` directive (…)
+</code></pre>
+</li>
+<li><p>But don't repeat for all variations of a message, i.e. substitute <code>…</code> for all placeholders</p>
+</li>
+</ul>
+</li>
+<li>Right align the count of violations fixed under <em>all</em> files by the number of digits for the biggest number</li>
+<li>And I love the use of nice unicode symbols... So note the <code>×</code> and <code>…</code> 😉</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 16:48</div>
+            <div class="timeline-body"><p>I'm hesitant to include the message formats because they're not very clear in a lot of cases, and we haven't committed to maintaining variants that <em>would</em> be clear in this context. I'd kind of prefer to use the human-readable rule name for that purpose, which we <em>are</em> committed to maintaining.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-02-10 16:48</div>
+            <div class="timeline-body"><blockquote>
+<p>What if we included the human-readable name alongside the code, like unused-variable, etc.?</p>
+</blockquote>
+<p>I think this will happen anyway when we switch to focusing on human-friendly names as the primary code.</p>
+<p>Also, we lose a bit of context when a rule has different messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-02-10 16:48</div>
+            <div class="timeline-body"><p>(Sorry - am crossing comments. Bad timing! 😅 )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-02-10 16:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Also, we lose a bit of context when a rule has different messages.</p>
+</blockquote>
+<p>Although maybe this is an indication that a rule should be split up into multiple rules? 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-11 04:18</div>
+            <div class="timeline-body"><p>(This'll go out in the next release, not tonight's.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-12 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-12 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-02-12 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Show applied fixes by file and diagnostic" to "Add `--show-fixes` flag to show applied fixes" by @charliermarsh on 2023-02-13 02:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:32 UTC
+    </footer>
+</body>
+</html>

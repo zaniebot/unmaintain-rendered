@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove old `define_violation!` (in favor of `#[violation]`) - astral-sh/ruff #3310</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove old <code>define_violation!</code> (in favor of <code>#[violation]</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3310">#3310</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-03-02 19:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-03-02 19:29</div>
+            <div class="timeline-body"><p>Though this would be good way to play around with the code a bit more, ended up changing every single rule.</p>
+<p>Regex used:</p>
+<pre><code>define_violation!\(\n((    .*\n)*)(    pub struct .+(;|\{(\n    .*)*?\})\n)\);
+</code></pre>
+<pre><code>$1#[violation]
+$3
+</code></pre>
+<p>If you cherry pick only the first two commits, we avoid breaking everyone else's rule additions (and can merge commit 3 later)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @konstin on 2023-03-02 19:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "WIP: Replace `define_violation!` with `#[violation]`" to "Replace `define_violation!` with `#[violation]`" by @konstin on 2023-03-02 19:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/eradicate/rules.rs</code>:23 on 2023-03-02 20:23</div>
+            <div class="timeline-body"><p>Nice! So we're using an attribute macro rather than a function-like macro. This does strike me as more intuitive.</p>
+<p>What would be the motivation to move from an attribute macro to a derive macro? How would that differ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-02 20:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/eradicate/rules.rs</code>:23 on 2023-03-03 09:42</div>
+            <div class="timeline-body"><p>A derive macro can only define the contents of an impl block. So we would first define a trait for, either changing <code>Violation</code> or a new <code>ViolationExplanation</code> and then use it while also adding the other derives manually:</p>
+<pre><code class="language-rust">#[derive(Violation, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+/// # Why is this bad
+/// Has a rather stale taste
+struct EatLaundry;
+</code></pre>
+<p>We could also go all the way refactoring and do a proper trait hierarchy. Note that we still need two proc macros and traits because we need to parse one method and create another.</p>
+<pre><code class="language-rust">trait ViolationMessage {
+    fn message(&amp;self) -&gt; String;
+    fn derived_messages(&amp;self) -&gt; Vec&lt;&amp;'static str&gt;;
+    fn autofix_title(&amp;self) -&gt; String {
+        &quot;&quot;
+    }
+}
+
+trait Violation: ViolationMessage + Debug + PartialEq + Eq + serde::Serialize + serde::Deserialize {
+    fn explanation() -&gt; String;
+}
+
+#[derive(Violation, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+/// # Why is this bad
+/// Has a rather stale taste
+struct EatLaundry;
+
+#[violation_messages] // Adds derived_messages()
+impl ViolationMessage for EatLaundry {
+    fn message(&amp;self) -&gt; String {
+        format!(&quot;Found laundry-eating behaviour&quot;)
+    }
+    fn autofix_title(&amp;self) -&gt; String {
+        &quot;Makes the code munch on tokens instead&quot;.to_string()
+    }
+}
+</code></pre>
+<p>A more elegant alternative would be what <a href="https://docs.rs/thiserror/latest/thiserror/">thiserror does</a>, but that would be an awful lot of work for just an internal helper macro (unless <a href="https://docs.rs/miette/latest/miette/">miette</a> or something gets us that for free, but i haven't checked and i'd be surprised if there was a perfect fit already existing):</p>
+<pre><code class="language-rust">use thiserror::Error;
+
+#[derive(Error, Debug)]
+pub enum DataStoreError {
+    #[error(&quot;data store disconnected&quot;)]
+    Disconnect(#[from] io::Error),
+    #[error(&quot;the data for key `{0}` is not available&quot;)]
+    Redaction(String),
+    #[error(&quot;invalid header (expected {expected:?}, found {found:?})&quot;)]
+    InvalidHeader {
+        expected: String,
+        found: String,
+    },
+    #[error(&quot;unknown data store error&quot;)]
+    Unknown,
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-03 09:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2023-03-03 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-03-03 18:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-03-03 18:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-03-06 11:00</div>
+            <div class="timeline-body"><p>i'll cherry-pick a60a0a2c83240404c57a586b4291fc81a73a3c27 in a couple of days</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-06 13:09</div>
+            <div class="timeline-body"><p>I think my preference would be to merge this sooner rather than later and just require that open PRs etc. rebase as appropriate. What do you think? I tend to prefer hard removals over soft deprecations for internal code, since a soft deprecation leaves the codebase in a somewhat inconsistent state <em>and</em> runs the risk that users continue to add new code that relies on the deprecated functionality anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-03-06 15:09</div>
+            <div class="timeline-body"><p>generally i agree, in this case it's just that this breaks every single rule addition started before this was merged, so i'd rather wait just a bit</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-06 15:29</div>
+            <div class="timeline-body"><p>Makes sense, although we have to fix them anyway, and we <em>don't</em> want new rules to be added with the old macro, right? So is it just a question of whether we fix them now, or when we have time to do so?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Replace `define_violation!` with `#[violation]`" to "Remove old `define_violation!` (in favor of `#[violation]`)" by @konstin on 2023-03-06 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-03-06 15:36</div>
+            <div class="timeline-body"><p>yeah, my plan was to see if there are any new contributors who still use the old syntax, merge them, run my regex migration again and then remove the old code so they don't get conflicts with main on their contributions. If you don't want to wait you can also merge this PR now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-06 15:52</div>
+            <div class="timeline-body"><p>Yeah that makes sense. I guess my perspective is that it can be a little bit of a never-ending battle because even if we do that, then after we merge, people may submit PRs that they started prior to this merge, which still use the old syntax, and so on.</p>
+<p>I'll fix conflicts and merge if that's cool with you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-03-06 15:55</div>
+            <div class="timeline-body"><blockquote>
+<p>I'll fix conflicts and merge if that's cool with you.</p>
+</blockquote>
+<p>just wanted to start fixing them, thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-03-06 17:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-06 17:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-03-06 17:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:41 UTC
+    </footer>
+</body>
+</html>

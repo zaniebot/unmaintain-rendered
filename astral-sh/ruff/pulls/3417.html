@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix: Emit a more useful error if an `extend` points at a non-existent ruff.toml file. - astral-sh/ruff #3417</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix: Emit a more useful error if an <code>extend</code> points at a non-existent ruff.toml file.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3417">#3417</a>
+        opened by <a href="https://github.com/DanCardin">@DanCardin</a>
+        on 2023-03-09 13:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/DanCardin">@DanCardin</a> on 2023-03-09 13:06</div>
+            <div class="timeline-body"><p>Today some <code>extend</code> usage pointing at a ruff.toml (which does not exist):</p>
+<pre><code>[tool.ruff]
+extend = '../ruff.toml'
+</code></pre>
+<p>For some ruff invocation, say, <code>ruff src tests</code>, you just get <code>No such file or directory (os error 2)</code>. When reading this, i initially thought it was telling me that for <code>ruff src tests</code>, src or tests didn't exist.</p>
+<p>It seems like pyproject.toml handling already has an existing error map which prettifies the error and includes the offending file path, but ruff.toml doesnt benefit from being handled in the same place. I basically just moved that logic up a level in order to ensure it applied to either option.</p>
+<hr />
+<p>I was originally trying to add (what i think is nicer behavior) to show the whole path. Something to the end result like:</p>
+<pre><code>error: Following `extends` through pyproject.toml -&gt; ../ruff.toml -&gt; ../ruff.toml, failed to parse: No such file or directory (os error 2)
+</code></pre>
+<p>but given the required changes i wasn't sure that it would be accepted, since it's much more involved for a marginal benefit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @DanCardin on 2023-03-09 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-09 19:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/resolver.rs</code>:131 on 2023-03-09 19:15</div>
+            <div class="timeline-body"><p>Does <code>Failed to parse</code> now appear twice, if it <em>is</em> a <code>pyproject.toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/DanCardin">@DanCardin</a> on <code>crates/ruff/src/resolver.rs</code>:131 on 2023-03-09 19:50</div>
+            <div class="timeline-body"><p>Oh definitely yes. I appear to have undone the removal bit from <code>pyproject.rs</code>. Updated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/DanCardin">@DanCardin</a> reviewed on 2023-03-09 19:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/resolver.rs</code>:131 on 2023-03-09 19:52</div>
+            <div class="timeline-body"><p>Thanks :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-09 19:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-03-09 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-09 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-03-09 19:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:43 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add basic jupyter notebook support - astral-sh/ruff #3440</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add basic jupyter notebook support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3440">#3440</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-03-10 13:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-03-10 13:51</div>
+            <div class="timeline-body"><p>This feature is disabled by default for now behind the <code>jupyter_notebook</code> feature.</p>
+<p>Missing:</p>
+<ul>
+<li>do something about autofixing</li>
+<li>writing back notebooks while making sure we don't change them in the process (round trip test)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/jupyter/schema.rs</code>:7 on 2023-03-15 02:33</div>
+            <div class="timeline-body"><p>What manual edits? Could we separate the manual edits into their own commit, so that even if the PR is squashed, we have access to the history here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/resolver.rs</code>:199 on 2023-03-15 02:33</div>
+            <div class="timeline-body"><p>Cool - so this will go behind a feature flag as discussed synchronously?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/Cargo.toml</code>:63 on 2023-03-15 02:34</div>
+            <div class="timeline-body"><p>Nit: we tend to use the expanded version everywhere (I don't know why, but it is the convention).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:101 on 2023-03-15 02:35</div>
+            <div class="timeline-body"><p>Should this be returning some kind of error diagnostic?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/printer.rs</code>:790 on 2023-03-15 02:37</div>
+            <div class="timeline-body"><p>How does nbqa format / convey these?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/jupyter/jupyter.rs</code>:97 on 2023-03-15 02:38</div>
+            <div class="timeline-body"><p>Can we add some tests for this? It looks unit-testable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/jupyter/jupyter.rs</code>:57 on 2023-03-15 02:40</div>
+            <div class="timeline-body"><p>Nit: IMO we should capitalize as <code>Jupyter Notebook</code>, <code>JSON</code>, and <code>Python</code> for any user-facing text. (For &quot;correctness&quot;, but also for consistency with other user-facing text.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/jupyter/jupyter.rs</code>:72 on 2023-03-15 02:41</div>
+            <div class="timeline-body"><p>Mind adding a comment here to explain what format 4 is vs. other values that this might be?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:31 on 2023-03-15 02:42</div>
+            <div class="timeline-body"><p>Rather than passing around the index... I'm wondering if we should instead change <code>Message</code> to have a more flexible location type, and store the location data on <code>Message</code> directly. This isn't a fully-formed idea, but it seems non-ideal that clients of <code>Diagnostics</code> need to do this translation, worry about what's a notebook, what isn't, etc. Could <code>Message</code> instead have a <code>Location</code> that's an enum or similar, and can be (e.g.) a Python file location or a Jupyter notebook location? What would be the tradeoffs?</p>
+<p>In other words, this feels like exposing an implementation detail, since clients only care about the location, and not that translation step. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:39 on 2023-03-15 02:42</div>
+            <div class="timeline-body"><p>Any reason not to use <code>FxHashMap</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/commands/run.rs</code>:213 on 2023-03-15 02:44</div>
+            <div class="timeline-body"><p>Do you mind using the <code>TODO(konsti)</code>-style TODOs? I like to have authors indicated in the TODOs, not as a sign that they're responsible for fixing them, but as a guidepost for who wrote it and has context on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/jupyter/jupyter.rs</code>:54 on 2023-03-15 02:45</div>
+            <div class="timeline-body"><p>Oh interesting, so this is checking that, in the event that we failed to parse, did the user accidentally save a Python file as a <code>.ipynb</code> file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/jupyter/jupyter.rs</code>:106 on 2023-03-15 02:46</div>
+            <div class="timeline-body"><p>Is there any way to hint the size here? (Maybe not!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/jupyter/jupyter.rs</code>:101 on 2023-03-15 02:47</div>
+            <div class="timeline-body"><p>What's the motivation for 1-based-to-1-based, rather than 0-based to 0-based? Seems like it could potentially cause confusion to have this 0 padding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:94 on 2023-03-15 02:49</div>
+            <div class="timeline-body"><p>Idly wondering if we should tag files by dialect in the <code>resolver</code>, and pass around tagged files, rather than checking extensions on <code>Path</code> everywhere. Same goes for the <code>.pyi</code> files. (Maybe not actionable, just a rough thought.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-15 02:51</div>
+            <div class="timeline-body"><p>Sweet! Impressive that you were able to tease apart the existing codepaths to get this far. I know we chatted about a few changes here earlier (feature flag, maybe using diagnostics in lieu of some of the current error handling), but thought I'd drop some comments on current state :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-15 07:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/Cargo.toml</code>:63 on 2023-03-15 07:56</div>
+            <div class="timeline-body"><p>tbh i'm a big fan of indoc everywhere, but yes consistency</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-15 07:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:101 on 2023-03-15 07:58</div>
+            <div class="timeline-body"><p>updated the comment, this could e.g. be an R notebook which we want to just skip</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-15 08:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/src/printer.rs</code>:790 on 2023-03-15 08:54</div>
+            <div class="timeline-body"><pre><code>$ nbqa ruff /home/konsti/ruff/crates/ruff/resources/test/fixtures/jupyter/
+crates/ruff/resources/test/fixtures/jupyter/valid.ipynb:cell_1:2:5: F841 [*] Local variable `x` is assigned to but never used
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+
+nbQA failed to process /home/konsti/ruff/crates/ruff/resources/test/fixtures/jupyter/not_json.ipynb with exception &quot;JSONDecodeError('Expecting value: line 1 column 1 (char 0)')&quot;
+nbQA failed to process /home/konsti/ruff/crates/ruff/resources/test/fixtures/jupyter/invalid_extension.ipynb with exception &quot;JSONDecodeError('Expecting value: line 1 column 1 (char 0)')&quot;
+nbQA failed to process /home/konsti/ruff/crates/ruff/resources/test/fixtures/jupyter/wrong_schema.ipynb with exception &quot;KeyError('cells')&quot;
+
+If you believe the notebook(s) to be valid, please report a bug at https://github.com/nbQA-dev/nbQA/issues 
+</code></pre>
+<p>Underscore instead of space but otherwise same format</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/jupyter/jupyter.rs</code>:72 on 2023-03-15 08:56</div>
+            <div class="timeline-body"><p>tbh i've only seen v4 in the wild</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-15 08:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> reviewed on 2023-03-15 08:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on <code>crates/ruff_cli/src/commands/run.rs</code>:213 on 2023-03-15 08:57</div>
+            <div class="timeline-body"><p>What about git blame? Is it for the case of refactoring?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:31 on 2023-03-15 09:02</div>
+            <div class="timeline-body"><p>i'm not completely sure either; my current thought is that most code can just assume to see one consistent python file and not bother with everything else and a special case such as jupyter notebooks gets patched in the appropriate places.</p>
+<p>making <code>location</code> and <code>end_location</code> an enum of <code>Location(Location)</code> and <code>JupyterLocation { cell: u32, row: u32, column: u32}</code> would definitely also be possible</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-15 09:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/jupyter/jupyter.rs</code>:54 on 2023-03-15 09:04</div>
+            <div class="timeline-body"><p>yes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-15 09:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-15 09:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/jupyter/jupyter.rs</code>:106 on 2023-03-15 09:14</div>
+            <div class="timeline-body"><p>i've also checked that <code>.join(&quot;\n&quot;)</code> does size hints internally</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/jupyter/jupyter.rs</code>:101 on 2023-03-15 09:16</div>
+            <div class="timeline-body"><p>mainly that everywhere else uses 1-based indices (current way means no conversions, i would have to introduce some otherwise)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-15 09:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-15 09:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:94 on 2023-03-15 09:19</div>
+            <div class="timeline-body"><p>maybe a  <code>enum FileInfo { Py, PyI, Jupyter { index: JupyterIndex }}</code>, we could also put that in a hash map <code>Path</code> (or string) -&gt; <code>FileInfo</code> that we read when collecting the results</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-15 09:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/jupyter/schema.rs</code>:7 on 2023-03-15 09:26</div>
+            <div class="timeline-body"><p>i've added comments on what i changed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-15 11:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/resolver.rs</code>:199 on 2023-03-15 11:09</div>
+            <div class="timeline-body"><p>yes, in <code>is_jupyter_notebook</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-15 11:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/src/printer.rs</code>:1 on 2023-03-15 11:43</div>
+            <div class="timeline-body"><p>this is a mess unfortunately</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-03-15 11:44</div>
+            <div class="timeline-body"><p>Thank you for the detailed review!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2023-03-15 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/jupyter/schema.rs</code>:44 on 2023-03-15 12:38</div>
+            <div class="timeline-body"><p>Is the difference between an empty <code>HashMap</code> (and an empty <code>Vec</code> for <code>outputs</code>) important or can we change the types to <code>HashMap&lt;String&lt;HashMap&lt;String, SourceValue&gt;&gt;</code> and use <code>skip_if=HashMapp::is_empty</code>?</p>
+<p>The same applies for other <code>Option&lt;Collection&gt;</code> usages in this file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:26 on 2023-03-15 12:39</div>
+            <div class="timeline-body"><p>Nit: We could use <code>u32</code> to reduce memory usage</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:134 on 2023-03-15 12:44</div>
+            <div class="timeline-body"><p>Nit: I didn't expect that the function would filter out non-python notebooks from the name <code>read_jupyter_notebook</code>. Maybe add another function <code>read_python_jupyter_notebook()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:147 on 2023-03-15 12:45</div>
+            <div class="timeline-body"><p>Nit: I expected this function to concat two notebooks. What do you think of adding a <code>index()</code> function on <code>JupyterNotebook</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:191 on 2023-03-15 12:46</div>
+            <div class="timeline-body"><p>Would it cause much downstream issues to add a lifetime to Index<code>and use a</code>Cow` to store the content (to avoid cloning the source value?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:199 on 2023-03-15 12:48</div>
+            <div class="timeline-body"><p>What's your preference of creating standalone functions vs adding them as methods to <code>JupyterNotebook</code>. E.g.</p>
+<pre><code>let notebook = JupyterNotebook::try_from_path(...)?;
+notebook.write(path);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:106 on 2023-03-15 12:49</div>
+            <div class="timeline-body"><p>Does  <code>Diagnostics</code> implement <code>Default</code> or can we add a <code>Default</code> implementation. This then becomes <code>Ok(Diagnostics::default())</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:119 on 2023-03-15 12:50</div>
+            <div class="timeline-body"><p>You can simplify this if <code>Diagnostics</code> implements <code>Default</code></p>
+<pre><code class="language-suggestion">                return Ok(Diagnostics {
+                	..Diagnostics::default(),
+                	messages: vec![Message::from_diagnostic(
+                        *diagnostic,
+                        path.to_string_lossy().to_string(),
+                        None,
+                        1,
+                    )],
+                });
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-03-15 12:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/printer.rs</code>:1 on 2023-03-15 12:51</div>
+            <div class="timeline-body"><p>Yeah, I think we should prioritize reworking our Diagnostics representations. We're hitting rough edges in many places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-15 12:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:162 on 2023-03-15 12:52</div>
+            <div class="timeline-body"><p>Did you profile if setting the <code>size_hint</code> outperforms iterating over the code cells?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-03-15 12:53</div>
+            <div class="timeline-body"><p>Excellent work and thanks for taking the time to document the data structures.</p>
+<p>Could we add one or two jupyter notebooks to our benchmark so that we have good numbers from the beginning?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-15 16:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/jupyter/schema.rs</code>:44 on 2023-03-15 16:33</div>
+            <div class="timeline-body"><p>afaik it saying the field to be missing vs. the field is present but empty. it believe it makes a difference for round-trip serialization and json schema compliance</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:26 on 2023-03-15 16:39</div>
+            <div class="timeline-body"><p>is there are a smart way to convert usize -&gt; u32? because clippy complains for e.g. for <code>string.lines().count() as u32</code></p>
+<blockquote>
+<p>casting <code>usize</code> to <code>u32</code> may truncate the value on targets with 64-bit wide pointers</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-15 16:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-15 17:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:147 on 2023-03-15 17:14</div>
+            <div class="timeline-body"><p>good point, i renamed it <code>index_notebook</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:191 on 2023-03-15 17:17</div>
+            <div class="timeline-body"><p>the contents string itself we have to build anew and the index doesn't have any string contents. i'd have hoped that the current code is already compiler friendly enough that the content string building is fast enough not to show up in any flamegraphs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-15 17:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:162 on 2023-03-15 17:26</div>
+            <div class="timeline-body"><p>no i did that based on charlie's comment above; i currently also don't have any large enough jupyter notebook repo to make relevant tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-15 17:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:199 on 2023-03-15 17:30</div>
+            <div class="timeline-body"><p>didn't think about that, that is much nicer, thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-15 17:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-03-15 17:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Could we add one or two jupyter notebooks to our benchmark so that we have good numbers from the beginning?</p>
+</blockquote>
+<p>i'll add benchmarks in the next round, this is already large</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-03-15 17:37</div>
+            <div class="timeline-body"><p>Thank to you too for the detailed review!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-15 18:02</div>
+            <div class="timeline-body"><p>✅ ecosystem check detected no changes.</p>
+<!-- thollander/actions-comment-pull-request "ecosystem-results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-15 23:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/Cargo.toml</code>:65 on 2023-03-15 23:48</div>
+            <div class="timeline-body"><p>(We need to do this for <code>logical_lines</code> too I think, not part of this PR, just a note to self...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-15 23:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:222 on 2023-03-15 23:50</div>
+            <div class="timeline-body"><p>Should we use <code>relativize_path</code> here for consistency with <code>fixed</code>, below?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-15 23:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/printer.rs</code>:790 on 2023-03-15 23:51</div>
+            <div class="timeline-body"><p>Should we use an underscore? Wdyt? It might play better with regex parsers that rely on the structure of this output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-15 23:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/printer.rs</code>:1 on 2023-03-15 23:52</div>
+            <div class="timeline-body"><p>I'd def support a PR that improves the Diagnostic representation with this generalization in mind.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:72 on 2023-03-15 23:52</div>
+            <div class="timeline-body"><p>Nit: <code>Python</code> for user-facing messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-15 23:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-15 23:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/commands/run.rs</code>:94 on 2023-03-15 23:54</div>
+            <div class="timeline-body"><p>Does this manifest itself in practice? Like, what path / usage hits this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/jupyter/schema.rs</code>:8 on 2023-03-15 23:56</div>
+            <div class="timeline-body"><p>For whatever reason I tend to use &quot;we&quot; instead of &quot;I&quot; in code comments, I don't know why :joy:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-15 23:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-03-15 23:56</div>
+            <div class="timeline-body"><p>🎸 🎸 🎸</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-15 23:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/jupyter/schema.rs</code>:8 on 2023-03-15 23:56</div>
+            <div class="timeline-body"><p>I guess to me it conveys that we're all responsible for whatever is being written / committed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-20 10:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/src/commands/run.rs</code>:94 on 2023-03-20 10:15</div>
+            <div class="timeline-body"><p>not anymore since i switched to diagnostics, but i would keep it to avoid hiding source errors that some <code>?</code> might produce. with io errors i always found it helpful to have to have the chain to being able to tell what happened</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-20 10:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/jupyter/schema.rs</code>:8 on 2023-03-20 10:23</div>
+            <div class="timeline-body"><p>i normally use we for general explanations and i when i did something opionated, but i agree with the ~~royal~~ <a href="https://math.stackexchange.com/a/447722">mathematical</a> we over i. here i think we can get away with passive voice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-20 10:38</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     13.4±0.04ms     3.0 MB/sec    1.00     13.3±0.04ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.5±0.01ms     4.7 MB/sec    1.00      3.5±0.01ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00    481.1±1.01µs     6.1 MB/sec    1.00    480.7±1.06µs     6.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.9±0.01ms     4.3 MB/sec    1.00      5.9±0.01ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.1±0.01ms     5.7 MB/sec    1.01      7.2±0.02ms     5.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1608.0±4.39µs    10.4 MB/sec    1.00   1592.9±1.65µs    10.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    180.0±0.32µs    16.4 MB/sec    1.01    181.2±0.65µs    16.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.4±0.01ms     7.6 MB/sec    1.00      3.4±0.01ms     7.6 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.8±0.14ms     2.7 MB/sec    1.03     15.2±0.09ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.0±0.04ms     4.1 MB/sec    1.02      4.1±0.03ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    519.0±7.51µs     5.7 MB/sec    1.02    528.4±5.75µs     5.6 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.6±0.05ms     3.9 MB/sec    1.03      6.8±0.08ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.2±0.05ms     5.0 MB/sec    1.04      8.5±0.04ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1800.0±14.73µs     9.3 MB/sec    1.04  1863.1±11.28µs     8.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    200.9±2.50µs    14.7 MB/sec    1.05    210.1±5.84µs    14.0 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.05ms     6.7 MB/sec    1.04      3.9±0.04ms     6.5 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2023-03-20 11:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-03-20 11:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-03-20 11:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blink1073">@blink1073</a> on 2023-03-20 14:41</div>
+            <div class="timeline-body"><p>Nice, thanks @konstin!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:43 UTC
+    </footer>
+</body>
+</html>

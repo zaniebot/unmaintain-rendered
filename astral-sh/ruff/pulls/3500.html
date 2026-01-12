@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ensure that redirect warnings appear exactly once per code - astral-sh/ruff #3500</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ensure that redirect warnings appear exactly once per code</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3500">#3500</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-03-14 03:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-14 03:28</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>We often have warnings that we want to show users -- but we only want to show those warnings <em>once</em>, no matter how many times the triggering codepath executes, since it's not useful to show the same warning multiple times.</p>
+<p>Case in point: when the user lists a rule code that has been deprecated and redirected to a <em>new</em> rule code (e.g., <code>RUF004</code> was moved to <code>B026</code>), that redirect could happen multiple times in a single invocation -- the out-dated rule could appear in multiple parts of the configuration file, it could be provided on the command-line in addition to the configuration file, and so on.</p>
+<p>Historically, to show one-time warnings, we used this <code>warn_user_once!</code> macro, which relies on an <code>AtomicBool</code>. This macro does warn once, but is dependent on the code path. That is: it doesn't support dynamic warnings, since the &quot;state&quot; gets inlined into the call-site.</p>
+<p>For the redirect case described above, we currently print that warning multiple times, since we can't use our <code>warn_user_once!</code> macro. This PR thus introduces a <code>warn_user_once_by_id</code> variant that stores the warnings in a global &quot;registry&quot; with arbitrary keys. By registering each redirect warning based on the redirection code, we avoid repeated warnings even for codes that are redirected multiple times.</p>
+<p>Closes #3431.</p>
+<h1>Test Plan</h1>
+<p>Add the following to a <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.ruff]
+select = [&quot;PDV010&quot;]
+</code></pre>
+<p>Over an arbitrary file, run: <code>cargo run -p ruff_cli -- foo.py --select PDV010 -n</code>.</p>
+<p>Verify that exactly one warning appears:</p>
+<pre><code class="language-console">warning: `PDV010` has been remapped to `PD010`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-03-14 03:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-03-14 03:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-03-14 03:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-14 03:40</div>
+            <div class="timeline-body"><p>✅ ecosystem check detected no changes.</p>
+<!-- thollander/actions-comment-pull-request "ecosystem-results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/logging.rs</code>:10 on 2023-03-14 08:21</div>
+            <div class="timeline-body"><p>Using a <code>String</code> as the key has the potential risk that two keys end up with the same name.</p>
+<p>We can use <code>TypeId</code> to avoid this. I've done this before for the <a href="https://github.com/charliermarsh/ruff/blob/e356ebcc6b6984a2e02dfe55f97f5d36ce0574a5/crates/ruff_formatter/src/format_element/tag.rs#L243"><code>Label</code></a> struct in the formatter.</p>
+<pre><code class="language-rust">#[derive(Eq, PartialEq, Copy, Clone, Debug)]
+pub struct WarningId {
+    id: TypeId,
+	// Pretty name for debugging
+    #[cfg(debug_assertions)]
+    label: &amp;'static str,
+}
+
+impl WarningId {
+    pub fn of&lt;T: ?Sized + 'static&gt;() -&gt; Self {
+        Self {
+            id: TypeId::of::&lt;T&gt;(),
+            #[cfg(debug_assertions)]
+            label: type_name::&lt;T&gt;(),
+        }
+    }
+}
+</code></pre>
+<p>Usage:</p>
+<pre><code class="language-rust">struct MyWarning;
+
+let id = WarningId::of::&lt;MyWarning&gt;(&quot;Some name&quot;);
+</code></pre>
+<p>Using <code>TypeId</code> further has the advantage that using a simple <code>Vec</code> and scanning it is probably cheaper (this is based on the assumption that users will have few warnings, let's say less than 16).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/logging.rs</code>:10 on 2023-03-14 08:25</div>
+            <div class="timeline-body"><p>Hm, okay, you indeed want to match on a string here. The above approach could still work but may be more complicated.</p>
+<p>I would still argue that using a <code>Vec</code> instead of a <code>FxHashMap</code> is probably cheaper since the lookups are rare and the table only contains few entries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-03-14 08:25</div>
+            <div class="timeline-body"><p>Can you extend the PR with a test plan.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>foo.py</code>:1 on 2023-03-14 10:04</div>
+            <div class="timeline-body"><p>huh?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-03-14 10:05</div>
+            <div class="timeline-body"><p>There's also https://github.com/Luthaf/log-once which might be relevant</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-14 12:20</div>
+            <div class="timeline-body"><p>Unrelated to the fix but related to our <code>warn</code> and <code>warn_once</code> outputs:</p>
+<p>We should refactor our code in the long term to avoid writing to stdout/stderr during analysis because they, at best, get printed to stdout when running in WebAssembly and are inaccessible to other APIs. That's why we should only rely on Diagnostics to communicate output to the users.</p>
+<p>Relying on global-state is related. WebAssembly or other APIs can call the linter multiple times, and calling <code>lint</code> with the same content should produce the exact result. That means that our internals shouldn't rely on any global state that changes between invocations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-14 14:29</div>
+            <div class="timeline-body"><blockquote>
+<p>We should refactor our code in the long term to avoid writing to stdout/stderr during analysis...</p>
+</blockquote>
+<p>Wow I hadn't thought about that (RE WebAssembly, APIs, etc.).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-14 14:29</div>
+            <div class="timeline-body"><p>Wondering whether to refactor to use <code>log_once</code>, that crate looks reasonable enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-14 14:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Wondering whether to refactor to use <code>log_once</code>, that crate looks reasonable enough.</p>
+</blockquote>
+<p>Our code looks simple enough and this is a pattern that we, ideally, shouldn't encourage. That's why I would prefer our code over having another dependency (dependencies have a maintenance cost too)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-03-14 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-14 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-03-14 15:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:44 UTC
+    </footer>
+</body>
+</html>

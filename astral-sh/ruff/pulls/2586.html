@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implemented flake8-django plugin rules - astral-sh/ruff #2586</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implemented flake8-django plugin rules</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2586">#2586</a>
+        opened by <a href="https://github.com/konysko">@konysko</a>
+        on 2023-02-05 18:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konysko">@konysko</a> on 2023-02-05 18:40</div>
+            <div class="timeline-body"><p>Hello,</p>
+<p>I started porting rules from <a href="https://github.com/rocioar/flake8-django">flake8-django</a>. I will add rest of the rules in the following prs.</p>
+<p>List of implemented plugin rules:</p>
+<ul>
+<li>[X] DJ01</li>
+<li>[ ] DJ03</li>
+<li>[ ] DJ06</li>
+<li>[ ] DJ07</li>
+<li>[X] DJ08</li>
+<li>[ ] DJ12</li>
+<li>[X] DJ13</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @konysko on 2023-02-05 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konysko on 2023-02-05 19:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">plugin</span> added by @charliermarsh on 2023-02-05 21:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-05 21:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/checkers/ast.rs</code>:769 on 2023-02-05 21:35</div>
+            <div class="timeline-body"><p>We'd generally write this as: <code>self.diagnostics.extend(flake8_django::rules::ModelStringFieldNullable::check(bases, body))</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-05 21:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_django/rules.rs</code>:22 on 2023-02-05 21:36</div>
+            <div class="timeline-body"><p>The convention in the codebase is to write these as top-level functions with the same name as the violation, rather than associated methods on the violation, e.g.:</p>
+<pre><code class="language-rust">pub fn model_dunder_str(bases: &amp;[Expr], ...) -&gt; Option&lt;Diagnostic&gt; {
+  ...
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-05 21:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_django/rules.rs</code>:17 on 2023-02-05 21:36</div>
+            <div class="timeline-body"><p>We tend to put raw code (like <code>__str__</code> in backticks within the rule messages).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-05 21:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>resources/test/fixtures/flake8_django/DJ13.py</code>:1 on 2023-02-05 21:38</div>
+            <div class="timeline-body"><p>It'd be preferable, I think, to copy over the existing test fixtures directly (https://github.com/rocioar/flake8-django/blob/master/tests/fixtures/model_dunder_str.py). That way, we can test for 1:1 compatibility with the existing plugin.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-05 21:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_django/rules.rs</code>:209 on 2023-02-05 21:44</div>
+            <div class="timeline-body"><p>We should use <code>Checker</code> for this to ensure that <code>Model</code> is actually <code>django.models.Model</code> or whatever.</p>
+<p>If you thread <code>checker: Checker</code> through here, you can do:</p>
+<pre><code class="language-rust">checker.resolve_call_path(&amp;base).map_or(false, |call_path| call_path.as_slice() == [&quot;django&quot;, &quot;Model&quot;])
+</code></pre>
+<p>That will ensure that we support things like:</p>
+<pre><code class="language-py">from django import models
+
+class Foo(models.Model):
+  ...
+
+from django.models import Model as Moo
+
+class Foo(Moo):
+  ...
+</code></pre>
+<p>...and so on. <em>And</em> that we avoid flagging <code>Model</code> references that <em>aren't</em> to <code>django.models.Model</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-05 21:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_django/rules.rs</code>:63 on 2023-02-05 21:47</div>
+            <div class="timeline-body"><p>Can you include a comment or docstring to indicate an example of the Python code that this is trying to catch? E.g., I initially assumed this would be checking to see if class is an <code>abc.ABC</code> or similar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-10 00:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_django/rules.rs</code>:209 on 2023-02-10 00:13</div>
+            <div class="timeline-body"><p>Just checking in -- are you able to address these refactors? Or do you want a hand?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konysko">@konysko</a> reviewed on 2023-02-10 14:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konysko">@konysko</a> on <code>src/rules/flake8_django/rules.rs</code>:209 on 2023-02-10 14:12</div>
+            <div class="timeline-body"><p>I didn't have time to fix those, i'll do it durning the weekend. Also good catch with resolving whole path to check whether it's the django model.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_django/rules.rs</code>:209 on 2023-02-10 14:27</div>
+            <div class="timeline-body"><p>Ok no worries! Was just trying to keep track of whether you planned to look into these changes or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-10 14:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konysko">@konysko</a> on 2023-02-11 16:20</div>
+            <div class="timeline-body"><p>@charliermarsh i applied your suggestions, added fixtures from the original package and split rules into separate files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-12 17:00</div>
+            <div class="timeline-body"><p>Tracking remaining work in #2817.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>README.md</code>:1087 on 2023-02-12 17:47</div>
+            <div class="timeline-body"><p>Controversially, I renamed these to add a leading zero. It deviates from upstream, but it's much more consistent with the other plugins.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-12 17:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-12 17:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-12 17:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mounirmesselmeni">@mounirmesselmeni</a> on 2023-02-13 22:36</div>
+            <div class="timeline-body"><p>With version 0.0.246, the DJ001 is not raised when defining a model with a nullable CharField</p>
+<pre><code class="language-python">tax_number = models.CharField(max_length=13, null=True)
+</code></pre>
+<p>While the DJ013 works</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-14 00:10</div>
+            <div class="timeline-body"><p>@mounirmesselmeni - Do you mind posting the full code snippet? (If relevant: you have to import <code>models</code> for Ruff to flag that, e.g., <code>from django.db import models</code> or however you like.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mounirmesselmeni">@mounirmesselmeni</a> on 2023-02-14 08:02</div>
+            <div class="timeline-body"><p>@charliermarsh The import is there but the model is extending from another base model class btw</p>
+<p>Example:</p>
+<pre><code class="language-python">from django.db import models
+from django.utils.translation import gettext_lazy as _
+from utils.models import BaseModel
+
+
+class ExampleModel(BaseModel):
+    name = models.CharField(max_length=255, verbose_name=_('Name'), null=True)
+    description = models.TextField(verbose_name=_('Description'))
+
+    def __str__(self) -&gt; str:
+        return self.name
+
+</code></pre>
+<p>I have these two checks selected:
+<code>&quot;DJ001&quot;, &quot;DJ008&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konysko">@konysko</a> on 2023-02-14 10:47</div>
+            <div class="timeline-body"><p>@mounirmesselmeni I created <a href="https://github.com/charliermarsh/ruff/issues/2892">issue</a> for this</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:32 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow `# ruff:` prefix for isort action comments - astral-sh/ruff #3493</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow <code># ruff:</code> prefix for isort action comments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3493">#3493</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-03-13 21:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-13 21:38</div>
+            <div class="timeline-body"><p>This PR lets users write <code># ruff: isort: skip_file</code> in lieu of <code># isort: skip_file</code> -- similar to how we support <code># ruff: noqa: F401</code> in lieu of <code># flake8: noqa: F401</code>.</p>
+<p>This option is admittedly more verbose, but it's clearer that they're intended for Ruff, that the project is using Ruff, etc.</p>
+<p>Closes #3450.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-03-13 21:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-03-13 21:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-13 21:49</div>
+            <div class="timeline-body"><p>✅ ecosystem check detected no changes.</p>
+<!-- thollander/actions-comment-pull-request "ecosystem-results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/directives.rs</code>:110 on 2023-03-14 08:35</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">        if matches!(comment_text, &quot;# isort: split&quot; | &quot;# ruff: isort: split&quot;) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/directives.rs</code>:116 on 2023-03-14 08:38</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">        } else if matches!(comment_text, &quot;# isort: skip_file&quot; | &quot;# isort:skip_file&quot; | &quot;# ruff: isort: skip_file&quot; | &quot;# ruff: isort:skip_file&quot;)
+        {
+</code></pre>
+<p>or use a <code>match</code> statement</p>
+<pre><code class="language-rust">match comment_text {
+	&quot;# isort: split&quot; | &quot;# ruff: isort: split&quot; =&gt; { ... },
+	&quot;# isort: skip_file&quot; | &quot;# isort:skip_file&quot; | &quot; #ruff: isort: skip_file&quot; | ... =&gt; {},
+	_ if off.is_some() =&gt; {...
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/directives.rs</code>:109 on 2023-03-14 08:39</div>
+            <div class="timeline-body"><p>It could help performance if you first test if the comment starts with either <code># isort</code> or <code>ruff: isort</code> and, if not, bail out early. That ensures that we short-circuit for the majority of comments.</p>
+<p>We could even go as far as doing, to reduce the casing necessary</p>
+<pre><code class="language-rust">    if let Some(isort_comment) = comment_text.split_once([&quot;# isort:&quot;, &quot;# ruff: isort:&quot;]) {
+        match isort_comment.trim_start() {
+            &quot;split&quot; =&gt; {},
+            &quot;skip_file&quot; =&gt; {}
+        }
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/resources/test/fixtures/isort/skip.py</code>:9 on 2023-03-14 08:41</div>
+            <div class="timeline-body"><p>Can we add a test for <code># ruff: isort:skip_file</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-03-14 08:41</div>
+            <div class="timeline-body"><p>I find the &quot;double&quot; colons a bit confusing but it makes sense to use the same format since we already have precedence.</p>
+<p>Rome uses the <code>rome linter:</code> format to avoid having two colons <a href="https://docs.rome.tools/linter/#ignoring-code">docs</a> which I find nice (also supports rome linter/rule-name).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-03-14 10:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-03-14 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-14 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-03-14 18:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:44 UTC
+    </footer>
+</body>
+</html>

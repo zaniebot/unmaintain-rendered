@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat(E275): add  Missing whitespace after keyword - astral-sh/ruff #3225</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat(E275): add  Missing whitespace after keyword</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3225">#3225</a>
+        opened by <a href="https://github.com/carlosmiei">@carlosmiei</a>
+        on 2023-02-25 13:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carlosmiei">@carlosmiei</a> on 2023-02-25 13:25</div>
+            <div class="timeline-body"><ul>
+<li>add https://www.flake8rules.com/rules/E275.html</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pycodestyle/rules/whitespace_around_keywords.rs</code>:84 on 2023-02-25 16:43</div>
+            <div class="timeline-body"><p>Interestingly, <code>pycodestyle</code> does this a little differently -- can you help me understand how the implementation differs?</p>
+<pre><code>@register_check
+def missing_whitespace_after_keyword(logical_line, tokens):
+    r&quot;&quot;&quot;Keywords should be followed by whitespace.
+
+    Okay: from foo import (bar, baz)
+    E275: from foo import(bar, baz)
+    E275: from importable.module import(bar, baz)
+    E275: if(foo): bar
+    &quot;&quot;&quot;
+    for tok0, tok1 in zip(tokens, tokens[1:]):
+        # This must exclude the True/False/None singletons, which can
+        # appear e.g. as &quot;if x is None:&quot;, and async/await, which were
+        # valid identifier names in old Python versions.
+        if (tok0.end == tok1.start and
+                keyword.iskeyword(tok0.string) and
+                tok0.string not in SINGLETONS and
+                tok0.string not in ('async', 'await') and
+                not (tok0.string == 'except' and tok1.string == '*') and
+                not (tok0.string == 'yield' and tok1.string == ')') and
+                tok1.string not in ':\n'):
+            yield tok0.end, &quot;E275 missing whitespace after keyword&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-25 16:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-25 16:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pycodestyle/rules/whitespace_around_keywords.rs</code>:84 on 2023-02-25 16:43</div>
+            <div class="timeline-body"><p>I think the current version we have here would flag <code>if None:</code>, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carlosmiei">@carlosmiei</a> reviewed on 2023-02-25 17:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carlosmiei">@carlosmiei</a> on <code>crates/ruff/src/rules/pycodestyle/rules/whitespace_around_keywords.rs</code>:84 on 2023-02-25 17:11</div>
+            <div class="timeline-body"><p>@charliermarsh yes you're right, will try to improve this implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carlosmiei on 2023-02-25 17:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-25 17:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pycodestyle/rules/whitespace_around_keywords.rs</code>:84 on 2023-02-25 17:23</div>
+            <div class="timeline-body"><p>No prob! Most of the pycodestyle code thus far is nearly a 1:1 port of the original implementation, so you can probably check out their source for inspiration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @carlosmiei on 2023-02-26 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carlosmiei">@carlosmiei</a> on 2023-02-26 17:36</div>
+            <div class="timeline-body"><p>@charliermarsh I have refactored it (following your suggestion), let me know if anything 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carlosmiei">@carlosmiei</a> reviewed on 2023-02-26 17:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carlosmiei">@carlosmiei</a> on <code>crates/ruff/src/rules/pycodestyle/helpers.rs</code>:62 on 2023-02-26 17:38</div>
+            <div class="timeline-body"><p>@charliermarsh I noticed that we have <code>KWLIST</code> but converting <code>Tok</code> to a string would require a hacky solution (they add single quotes to most tokens so we would need to remove them, eg <code>&quot;')'&quot;</code>) so I added these helper methods.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @carlosmiei on 2023-02-26 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-26 19:16</div>
+            <div class="timeline-body"><p>Thank you! Will review today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-02-26 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-02-26 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-26 21:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:39 UTC
+    </footer>
+</body>
+</html>

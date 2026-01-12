@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flag PEP 585 and PEP 604 violations in quoted annotations - astral-sh/ruff #3593</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Flag PEP 585 and PEP 604 violations in quoted annotations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3593">#3593</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-03-18 03:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-18 03:42</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>At present, we don't flag PEP 585 and PEP 604 errors in quoted annotations. This mirrors <code>pyupgrade</code>, which doesn't <em>fix</em> quoted annotations. However, in our case, we should <em>at least</em> be flagging them as errors.</p>
+<p>As a reminder, PEP 585 introduced standard library generics, so you can do <code>list[int]</code> instead of <code>from typing import List; List[int]</code>. PEP 604 added new syntax for unions, so you can do <code>str | int</code> instead of <code>from typing import Union; Union[str, int]</code>.</p>
+<p>Note that we <em>can</em> fix simple quoted annotations, but... we need to take care in certain cases.</p>
+<p>For example: a quoted annotation can contain an implicit string concatenation, like <code>x: &quot;Li&quot; &quot;st[int] = []</code>. This is also valid:</p>
+<pre><code class="language-py">x: &quot;&quot;&quot;
+List[str]
+&quot;&quot;&quot; = []
+</code></pre>
+<p>Fixing those cases will be challenging, so for now, it's safer just to avoid fixing them at all (though we should add autofix for &quot;simple&quot; cases soon).</p>
+<p>Closes #3555.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-03-18 03:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-03-18 03:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-03-18 03:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2023-03-18 03:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-18 03:55</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     13.4±0.08ms     3.0 MB/sec    1.00     13.4±0.08ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.01ms     4.7 MB/sec    1.00      3.5±0.01ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    479.4±0.94µs     6.2 MB/sec    1.01    482.8±1.02µs     6.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.9±0.02ms     4.3 MB/sec    1.00      5.9±0.02ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.1±0.02ms     5.7 MB/sec    1.00      7.1±0.02ms     5.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1604.0±1.56µs    10.4 MB/sec    1.00   1604.8±1.38µs    10.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    180.0±0.35µs    16.4 MB/sec    1.00    180.2±0.42µs    16.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.4±0.01ms     7.6 MB/sec    1.00      3.4±0.01ms     7.6 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.8±0.19ms     2.7 MB/sec    1.01     15.0±0.21ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.1±0.06ms     4.1 MB/sec    1.01      4.1±0.07ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00   453.0±24.56µs     6.5 MB/sec    1.01   458.5±33.09µs     6.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.7±0.09ms     3.8 MB/sec    1.01      6.7±0.10ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.1±0.09ms     5.0 MB/sec    1.01      8.2±0.07ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1746.5±21.26µs     9.5 MB/sec    1.01  1768.3±32.04µs     9.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    180.6±4.35µs    16.3 MB/sec    1.02    183.6±7.80µs    16.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.06ms     6.7 MB/sec    1.02      3.9±0.06ms     6.6 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:2174 on 2023-03-20 08:18</div>
+            <div class="timeline-body"><p>My understanding is that our guideline is to use rule names that work well with <code>allow</code>. Is this an internal-only name and what's the motivation of using the PEP names?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pyupgrade/rules/use_pep585_annotation.rs</code>:17 on 2023-03-20 08:22</div>
+            <div class="timeline-body"><p>NIt: Unrelated to this change: A <code>Availability::None</code> would remove the need for <code>Option&lt;AutofixKind&gt;</code>. It would then simply be <code>AUTOFX: AutofixKind = AutofixKind::NONE</code> (we could even inline <code>Availability</code> into <code>AutofixKind</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-03-20 08:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-03-20 09:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:2174 on 2023-03-20 09:47</div>
+            <div class="timeline-body"><p>python features often lack a name beyond the PEP number. e.g. https://docs.python.org/3/library/typing.html says:</p>
+<blockquote>
+<p><a href="https://peps.python.org/pep-0604/">PEP 604</a>: Allow writing union types as X | Y
+Introducing <a href="https://docs.python.org/3/library/types.html#types.UnionType">types.UnionType</a> and the ability to use the binary-or operator | to signify a <a href="https://docs.python.org/3/library/stdtypes.html#types-union">union of types</a></p>
+</blockquote>
+<p>we could invent our own name such as <code>NonPipeUnion</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-03-20 09:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-20 15:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pyupgrade/rules/use_pep585_annotation.rs</code>:17 on 2023-03-20 15:15</div>
+            <div class="timeline-body"><p>Yeah this would be a good change, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-03-20 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-20 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-03-20 15:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:46 UTC
+    </footer>
+</body>
+</html>

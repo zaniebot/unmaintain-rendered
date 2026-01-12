@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add autofix for W605 [InvalidEscapeSequence] - astral-sh/ruff #1361</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add autofix for W605 [InvalidEscapeSequence]</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/1361">#1361</a>
+        opened by <a href="https://github.com/Sawbez">@Sawbez</a>
+        on 2022-12-24 18:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Sawbez">@Sawbez</a> on 2022-12-24 18:13</div>
+            <div class="timeline-body"><p>I added the autofix, updated the README, and updated the insta tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2022-12-24 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-24 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2022-12-24 19:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cclauss">@cclauss</a> on 2023-03-10 10:02</div>
+            <div class="timeline-body"><p>This solution does not seem pythonic to me.  I believe the use of <code>r&quot;raw strings&quot;</code> would be more intuitive and safer.</p>
+<ul>
+<li>https://docs.python.org/3/library/re.html</li>
+</ul>
+<blockquote>
+<p>The solution is to use Python’s raw string notation for regular expression patterns; backslashes are not handled in any special way in a string literal prefixed with 'r'. So r&quot;\n&quot; is a two-character string containing '' and 'n', while &quot;\n&quot; is a one-character string containing a newline. Usually, patterns will be expressed in Python code using this raw string notation.</p>
+</blockquote>
+<ul>
+<li>https://www.flake8rules.com/rules/W605.html</li>
+<li>https://bugs.python.org/issue27364</li>
+</ul>
+<p>There is also a Windows path corner case when the <strong>fixer should not run</strong> or the fixer should add <code>noqa: W605</code> because <code>\\</code> is not helpful:</p>
+<pre><code>&quot;&quot;&quot;
+Windows files of interest:
+* C:\documents\README.md
+* D:\readme\README.txt
+* Z:\net_disk\README.rst
+&quot;&quot;&quot;  # noqa: W605
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2023-03-10 17:24</div>
+            <div class="timeline-body"><p>@cclauss Docstrings are not exempt from the normal Python syntax rules about string literals. If you want to include a Windows path in a docstring, you still need to escape the backslashes ( <code>&quot;&quot;&quot;… C:\\documents\\README.md …&quot;&quot;&quot;</code>) or write the docstring as raw (<code>r&quot;&quot;&quot;… C:\documents\README.txt …&quot;&quot;&quot;</code>). Otherwise not just Ruff but also Python itself will warn (if you have warnings enabled), and this may become a syntax error in the future. Also pydoc and other documentation generators will interpret the valid <code>\r</code> and <code>\n</code> escape sequences in your docstring as written and render something like</p>
+<pre><code>        Windows files of interest:
+        * C:\documents\README.md
+        * D: eadme\README.txt
+        * Z:
+    et_disk\README.rst
+</code></pre>
+<p>So ignoring W605 is not a good plan.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cclauss">@cclauss</a> on 2023-03-10 17:28</div>
+            <div class="timeline-body"><p>The leading <code>r</code> on a docstring is also acceptable to Python and friends.</p>
+<pre><code>r&quot;&quot;&quot;
+Windows files of interest:
+* C:\documents\README.md
+* D:\readme\README.txt
+* Z:\net_disk\README.rst
+&quot;&quot;&quot;
+</code></pre>
+<p>I have no problem with <code>W605</code> being raised.  That logic is correct.
+My problem is with the <code>--fix</code> which does not use <code>r&quot;raw strings&quot;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2023-03-10 17:35</div>
+            <div class="timeline-body"><p>It’s acceptable to Ruff too. Just because the autofixer wants to fix it one way doesn’t mean you’re not allowed to fix it a different way!</p>
+<p>The main reason the autofixer has to go with <code>\\</code> is that it can’t read your mind and know that you intend to remove the effects of the valid escape sequences that might also be present, such as your <code>\r</code> and <code>\n</code>. It aims to never change the meaning of your code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cclauss">@cclauss</a> on 2023-03-10 17:38</div>
+            <div class="timeline-body"><p>Please reread the first few paragraphs of https://docs.python.org/3/library/re.html</p>
+<p>If my string is being flagged for having an invalid escape sequence then the fixer does not need to read my mind.  It just needs to suggest that I do what the Python docs recommend in that situation.  Those docs explicitly say that substituting ever more backslashes only confuses the reader.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2023-03-10 17:48</div>
+            <div class="timeline-body"><p>What I’m saying is that if the autofixer were to change <code>&quot;&quot;&quot;C:\documents, D:\readme&quot;&quot;&quot;</code> to <code>r&quot;&quot;&quot;C:\documents, D:\readme&quot;&quot;&quot;</code> as you suggest, that would be a parsed as a <em>different string</em>. It would change the meaning of your code. It might happen to be a good change in this case, but Ruff can’t know that, and either way it doesn’t want to automatically change the meaning of your code.</p>
+<pre><code class="language-pycon">❯ python3 -Wd
+Python 3.10.10 (main, Feb  7 2023, 12:19:31) [GCC 12.2.0] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; s = &quot;&quot;&quot;C:\documents, D:\readme&quot;&quot;&quot;
+&lt;stdin&gt;:1: DeprecationWarning: invalid escape sequence '\d'
+&gt;&gt;&gt; s == &quot;&quot;&quot;C:\\documents, D:\readme&quot;&quot;&quot;
+True
+&gt;&gt;&gt; s == r&quot;&quot;&quot;C:\documents, D:\readme&quot;&quot;&quot;
+False
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cclauss">@cclauss</a> on 2023-03-10 18:02</div>
+            <div class="timeline-body"><p>Nice example.  I understand now.  Thanks.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:31 UTC
+    </footer>
+</body>
+</html>

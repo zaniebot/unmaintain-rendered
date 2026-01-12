@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ci: Benchmark CI Step - astral-sh/ruff #3480</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ci: Benchmark CI Step</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3480">#3480</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-03-13 12:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-13 12:51</div>
+            <div class="timeline-body"><p>This PR adds a new benchmark step that runs for every pull request and compares the PR performance against main. The action writes a comment (or updates an existing one) with the results.</p>
+<p>This is inspired and partially based on <a href="https://github.com/rome/tools/">Rome</a>'s and <a href="https://github.com/Boshen/oxc">OXC</a>'s benchmarking setup that @Boshen created.</p>
+<h2>Test Plan</h2>
+<p>See <a href="https://github.com/charliermarsh/ruff/pull/3480#issuecomment-1469583939">this comment</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-14 08:56</div>
+            <div class="timeline-body"><p>@Boshen It's not fully functional yet nor have I tested the caching but I think you could find some of it interesting ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-14 09:57</div>
+            <div class="timeline-body"><p>Okay, caching and running PR/main on different runners is a bad idea. The runtime difference is too big even if there are no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-03-14 10:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sciyoshi">@sciyoshi</a> on 2023-03-15 01:58</div>
+            <div class="timeline-body"><p>This is great! Two quick comments since I was working recently on the <a href="https://github.com/charliermarsh/ruff/issues/2677">ecosystem CI check</a> which also comments on the PR:</p>
+<ul>
+<li>It would probably make sense to combine the commenting piece of this workflow with <code>ecosystem-comment.yaml</code> (and probably rename it to e.g. <code>pr-comment.yaml</code>). That way there will be a single comment rather than two which would probably make for less noise, and also the separate workflow means that the PR comment can also work for PRs from forks of this repo (which is basically every PR except yours and @charliermarsh's 😄)</li>
+<li>I'm not sure what artifacts <code>cargo bench</code> requires, but assuming it only needs the debug binary, you could use the artifacts that are <a href="https://github.com/charliermarsh/ruff/blob/57796c5e59e3e0950d4409d3e54e7ba5a04bdda1/.github/workflows/ci.yaml#L82-L85">now uploaded by the <code>cargo test</code> step</a>. That would save on the re-build time (at least for the main branch), and means that the benchmark only runs if the remaining tests pass.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Boshen">@Boshen</a> on 2023-03-15 02:40</div>
+            <div class="timeline-body"><p>Very clever approaches for speeding up CI times! Thank you @MichaReiser, I stole this faster than you could merge this PR ;-)</p>
+<p>I wonder if we can also build the binary on main and then just download it on the PR 🤔</p>
+<p>Uploading the binary from the test step doesn't work I think, it it seems to be uploading a debug build? <code>path: target/debug/ruff</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-15 06:58</div>
+            <div class="timeline-body"><blockquote>
+<p>This is great! Two quick comments since I was working recently on the https://github.com/charliermarsh/ruff/issues/2677 which also comments on the PR:</p>
+</blockquote>
+<p>Thanks for that work. I used your job as inspiration on how we can improve the benchmarking, and it seems there's more for me to learn :smiley:</p>
+<ul>
+<li>Comments: That's clever. Let me give this a try.</li>
+<li>Re-using the binary: The benchmark uses the release build of <code>ruff_benchmark</code> which we aren't building as part of the pull_request workflow. However, we could do something good for the environment (it won't speed up the overall time) and build the binary for main once and then re-use when running the baseline benchmarks on PRs.</li>
+</ul>
+<blockquote>
+<p>I wonder if we can also build the binary on main and then just download it on the PR thinking</p>
+</blockquote>
+<p>Yes, I'll give that a try</p>
+<blockquote>
+<p>Very clever approaches for speeding up CI times! Thank you @MichaReiser, I stole this faster than you could merge this PR ;-)</p>
+</blockquote>
+<p>:laughing:  Thank you! I saw your PR yesterday and was, wow, that was quick. I should update the PR summary to clarify that this workflow is heavily inspired by your work on Rome's and OXC's benchmarks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2023-03-15 07:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-03-15 08:44</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                        main                                   pr
+-----                        ----                                   --
+linter/large/dataset.py      1.00      9.1±0.09ms     4.5 MB/sec    1.01      9.2±0.04ms     4.4 MB/sec
+linter/numpy/ctypeslib.py    1.00      3.0±0.04ms   111.8 MB/sec    1.01      3.0±0.00ms   111.2 MB/sec
+linter/numpy/globals.py      1.00  1569.6±16.01µs   113.6 MB/sec    1.01   1590.0±4.44µs   112.1 MB/sec
+linter/pydantic/types.py     1.00      4.3±0.04ms     6.0 MB/sec    1.02      4.3±0.01ms     5.9 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                        main                                   pr
+-----                        ----                                   --
+linter/large/dataset.py      1.00      9.2±0.15ms     4.4 MB/sec    1.00      9.2±0.45ms     4.4 MB/sec
+linter/numpy/ctypeslib.py    1.00      3.0±0.07ms   113.8 MB/sec    1.00      2.9±0.06ms   114.3 MB/sec
+linter/numpy/globals.py      1.00  1548.2±55.86µs   115.1 MB/sec    1.01  1567.2±63.16µs   113.7 MB/sec
+linter/pydantic/types.py     1.00      4.3±0.16ms     6.0 MB/sec    1.01      4.4±0.17ms     5.9 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-03-15 09:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-15 09:31</div>
+            <div class="timeline-body"><p>I implemented the recommended changes.</p>
+<p>I haven't been able to test the caching because it requires triggering a build on main.... which I can only do after this PR lands.</p>
+<p>EDIT: Caching on main isn't as straightforward as I have thought with our approach where we use <code>cargo bench</code>. <code>cargo bench</code> doesn't create a single binary but one binary for each benchmark. Each binary has a unique name <code>linter-&lt;hash&gt;</code>, that makes it difficult to extract. Building <code>main</code> should also take less time than building the PR branch because it is only necessary to build the difference.</p>
+<p>One thing we could try is to setup a release build for main that warms the cache but I would prefer to leave this for another PR. Mainly because we should potentially re-visit our caching overall to avoid running into GitHubs 10GB cache limit, which results in cache-pruning (e.g. warm the cache on main for test, and release build, don't populate the cache from PR branches)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-15 09:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/ci.yaml</code>:164 on 2023-03-15 09:32</div>
+            <div class="timeline-body"><p>This adds the ecosystem output to the CI job summary</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/ci.yaml</code>:83 on 2023-03-15 09:33</div>
+            <div class="timeline-body"><p>We only need the linux binary. Trying to run this on windows creates a warning because the file is named <code>ruff.exe</code> and not <code>ruff</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-15 09:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>.github/workflows/pr-comment.yaml</code>:67 on 2023-03-15 23:46</div>
+            <div class="timeline-body"><p>(Should we put this under its own header for consistency? It looks like there's a header for <code>PR Check Results</code> and <code>Benchmark Results</code>, but not <code>Ecosystem Results</code> or <code>Ecosystem</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-03-15 23:47</div>
+            <div class="timeline-body"><p>I love this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-03-16 08:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-03-16 08:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-03-16 08:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:44 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>refactor: Replace `Vec` in options metadata with static array - astral-sh/ruff #3433</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>refactor: Replace <code>Vec</code> in options metadata with static array</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3433">#3433</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-03-10 08:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-10 08:33</div>
+            <div class="timeline-body"><p>This refactor replaces the usages of a <code>Vec</code> inside <code>get_available_options</code> with a static array slice. I used this refactor as an exercise to familiarize myself with options.</p>
+<p>The old implementation used the <code>ConfigurationOptions</code> trait with a <code>get_available_options</code> method to retrieve the child-options of a group. The downside was that <code>get_available_options</code> allocated and returned a new vector with each invocation.</p>
+<p>This implementation replaces the <code>ConfigurationOptions</code> trait with a <code>OptionsGroup</code> struct that references a static option entries slice and implements the <code>get</code> operation to find a child option.</p>
+<h2>Test Plan</h2>
+<pre><code class="language-bash">cargo dev generate-options
+</code></pre>
+<p>Generates no changes</p>
+<pre><code class="language-bash">&gt; cargo run --bin ruff -q config flake8-annotations
+mypy-init-return
+suppress-dummy-args
+suppress-none-returning
+allow-star-arg-any
+ignore-fully-untyped
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2023-03-10 08:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2023-03-10 08:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/Cargo.toml</code>:16 on 2023-03-10 08:33</div>
+            <div class="timeline-body"><p>We want doctests and <code>crate-type</code> is no longer necessary now that the wasm code lives in <code>ruff_wasm</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-10 08:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/registry.rs</code>:821 on 2023-03-10 08:34</div>
+            <div class="timeline-body"><p>We can make <code>LintSource</code> copy because its size is less than 8 bytes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-10 08:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/settings/options_base.rs</code>:38 on 2023-03-10 21:03</div>
+            <div class="timeline-body"><p>Maybe a ridiculous question, but is there any way to get Rust to compile these snippets, to ensure they're kept up to date?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-10 21:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-03-10 21:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-10 21:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/settings/options_base.rs</code>:38 on 2023-03-10 21:07</div>
+            <div class="timeline-body"><p>Even better. The snippets run as part of our test suite (<a href="https://doc.rust-lang.org/rustdoc/write-documentation/documentation-tests.html">doctests</a>) This is one of my favorite parts of Rust: writing documentation with examples gives you testing for free ☺️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-10 21:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/settings/options_base.rs</code>:38 on 2023-03-10 21:08</div>
+            <div class="timeline-body"><p>Ohh I assumed something like this was happening, but <code>cargo check --all</code> didn't have any effect for me after introducing errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-03-11 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-03-11 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-03-11 09:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:43 UTC
+    </footer>
+</body>
+</html>

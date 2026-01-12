@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>refactor: Introduce `CacheKey` trait - astral-sh/ruff #3323</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>refactor: Introduce <code>CacheKey</code> trait</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3323">#3323</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-03-03 17:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-03 17:25</div>
+            <div class="timeline-body"><p>This PR introduces a new <code>CacheKey</code> trait for types that can be used as a cache key.</p>
+<p>I'm not entirely sure if this is worth the &quot;overhead&quot;, but I was surprised to find <code>HashableHashSet</code> and got scared when I looked at the time complexity of the <code>hash</code> function. These implementations must be extremely slow in hashed collections.</p>
+<p>I then searched for usages and quickly realized that only the cache uses these <code>Hash</code> implementations, where performance is less sensitive.</p>
+<p>This PR introduces a new <code>CacheKey</code> trait to communicate the difference between a hash and computing a key for the cache. The new trait can be implemented for types that don't implement <code>Hash</code> for performance reasons, and we can define additional constraints on the implementation:  For example, we'll want to enforce portability when we add remote caching support. Using a different trait further allows us not to implement it for types without stable identities (e.g. pointers) or use other implementations than the standard hash function.</p>
+<h2>Test Plan</h2>
+<p>Ran</p>
+<pre><code class="language-bash"> time ./target/release/ruff ./crates/ruff/resources/test/cpython/ --no-cache
+ time ./target/release/ruff ./crates/ruff/resources/test/cpython/ --no-cache 
+</code></pre>
+<p>To see if the second run runs faster and produces the same warnings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/settings/types.rs</code>:102 on 2023-03-03 17:26</div>
+            <div class="timeline-body"><p>TODO: Come up with a better name</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_macros/src/cache_key.rs</code>:103 on 2023-03-03 17:26</div>
+            <div class="timeline-body"><p>Add tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-03 17:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-03-03 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-03 18:09</div>
+            <div class="timeline-body"><p>I like this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cache/Cargo.toml</code>:7 on 2023-03-03 18:11</div>
+            <div class="timeline-body"><p>I've been using this pattern in the other internal-only crates:</p>
+<pre><code class="language-toml">[package]
+name = &quot;ruff_cache&quot;
+version = &quot;0.0.0&quot;
+publish = false
+edition = { workspace = true }
+rust-version = { workspace = true }
+</code></pre>
+<p>Thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-03 18:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cache/src/globset.rs</code>:4 on 2023-03-03 18:12</div>
+            <div class="timeline-body"><p>I guess in some sense it could make sense for these implementations to go in (e.g.) <code>ruff</code>, or whichever crate actually needs to cache these types, but I think we can't do that due to the orphan rule?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-03 18:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-03 18:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cache/src/globset.rs</code>:4 on 2023-03-03 18:14</div>
+            <div class="timeline-body"><p>Yeah, orphan rule strikes again ;)</p>
+<p>I thought about adding feature flags, but it felt overkill to add it for so little code.</p>
+<p>This is probably the main downside of this approach. <code>Hash</code> is implemented by many libraries. Implementing <code>CacheKey</code> for non-std types requires adding all of them to <code>ruff_cache</code> OR introducing new type wrappers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-03-03 18:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cache/Cargo.toml</code>:7 on 2023-03-03 18:14</div>
+            <div class="timeline-body"><p>I should not have used the CLion standard template...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-03 18:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cache/src/globset.rs</code>:4 on 2023-03-03 18:15</div>
+            <div class="timeline-body"><p>Yeah. We could add a flag for each &quot;external library&quot;, right? Like this crate could have a <code>globset</code> flag?</p>
+<p>I think it's fine. For the reasons you described, it's actually a good thing that we have to intentionally implement <code>CacheKey</code>. We should be wary of putting complex types in settings anyway, since they have to be user-editable, serializable, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-03-03 18:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-03-03 18:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-03-03 18:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-03-03 18:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 04:41:41 UTC
+    </footer>
+</body>
+</html>
