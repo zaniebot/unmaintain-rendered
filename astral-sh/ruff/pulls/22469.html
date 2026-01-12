@@ -578,10 +578,71 @@ pandas (https://github.com/pandas-dev/pandas)
 <p><strong><a href="https://7baa43d3.ty-ecosystem-ext.pages.dev/diff">Full report with detailed diff</a></strong> (<a href="https://7baa43d3.ty-ecosystem-ext.pages.dev/timing">timing results</a>)</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:96 on 2026-01-12 19:59</div>
+            <div class="timeline-body"><p>Is it correct to just overwrite the previous <code>forms</code> here? Can you come up with a test case in which this loss of information causes a problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:120 on 2026-01-12 19:59</div>
+            <div class="timeline-body"><p>It seems like we should be able to collapse these into a single case -- if we can't, it suggests the intersection case isn't being handled quite right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:113 on 2026-01-12 20:01</div>
+            <div class="timeline-body"><p>How do we know that <code>BindingError</code> is correct here? Don't we need to look at the individual results of the individual elements and use our error priority levels?</p>
+<p>If this does need fixing, let's also add a test that fails with the current code and passes with the fixed code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:137 on 2026-01-12 20:03</div>
+            <div class="timeline-body"><p>In what scenario do we need to unwrap here? Is that scenario reachable, or should this just be an <code>.unwrap()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:141 on 2026-01-12 20:04</div>
+            <div class="timeline-body"><p>This comment is misleading. <code>Bindings</code> does not represent a &quot;union or intersection&quot; -- it always represents a union (possibly size one) of callables, each element of which is an intersection (possibly size one).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:215 on 2026-01-12 20:11</div>
+            <div class="timeline-body"><p>Each input binding should have a length-one <code>.elements</code>, because in our DNF representation of types, intersections cannot contain unions. So we can just assert that invariant (with a comment) instead of flat-mapping.</p>
+<p>If we did need to handle input unions here, we would need to distribute them, not just flat-map (the flat-map effectively turns an input union into an intersection, which is wrong.) But that's a bit complex, so no reason to do it when it should never happen.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:272 on 2026-01-12 20:12</div>
+            <div class="timeline-body"><p>How is this method used? Do callers implicitly assume it's a union? Can flattening the union and intersection cause callers to treat the returned bindings incorrectly? Do we need to instead update callers to understand the two-level structure?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:277 on 2026-01-12 20:13</div>
+            <div class="timeline-body"><p>Same question as for <code>iter</code> -- is this flattening correct, given how callers use this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:377 on 2026-01-12 20:17</div>
+            <div class="timeline-body"><p>Let's just call <code>element.retain_successful()</code> here, and handle the logic about which cases are no-ops etc internally within the <code>retain_successful()</code> method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:552 on 2026-01-12 20:21</div>
+            <div class="timeline-body"><p>I think the handling of <code>UnionDiagnostic</code> and <code>IntersectionDiagnostic</code> needs to be layered instead. If we have an intersection inside a union, and multiple bindings in that intersection fail with the same priority, we should report those errors with <em>both</em> union and intersection context. (Let's add a test demonstrating this. It should be a test with snapshotted diagnostics.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/ty_python_semantic/src/types/call/bind.rs</code>:458 on 2026-01-12 20:30</div>
+            <div class="timeline-body"><p>We could use <code>is_intersection()</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2026-01-12 20:32</div>
+            <div class="timeline-body"></div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:18:51 UTC
+        Synced at 2026-01-12 21:16:01 UTC
     </footer>
 </body>
 </html>
