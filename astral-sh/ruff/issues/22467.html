@@ -72,10 +72,42 @@ uv run --all-groups --all-extras ruff check repro.py
         <div class="timeline-entry">
             <div class="event">Renamed from "ruff misinterprets a module as an object" to "`F821`: Incorrectly reports use before assignment for conditional import" by @MichaReiser on 2026-01-09 11:12</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2026-01-12 20:23</div>
+            <div class="timeline-body"><p>Thanks for the report! As pointed out on the PR (https://github.com/astral-sh/ruff/pull/22472#issuecomment-3732861947), this code raises an <code>UnboundLocalError</code> at runtime, so it seems like Ruff is giving an accurate diagnostic. Is there a reason you think the error should be suppressed?</p>
+<p>I cloned pwndbg and tried this to confirm:</p>
+<pre><code class="language-shell">git clone https://github.com/pwndbg/pwndbg.git
+cd pwndbg/
+uv run python &lt;&lt;EOF
+from __future__ import annotations
+
+import pwndbg
+
+
+def myfunc() -&gt; None:
+    # note that dbg is an object in the pwndbg module
+    if pwndbg.dbg.is_gdblib_available():
+        import pwndbg.gdblib.functions
+        _ = pwndbg.gdblib.functions.functions
+        print(&quot;yes!&quot;)
+    else:
+        print(&quot;no!&quot;)
+
+myfunc()
+EOF
+</code></pre>
+<pre><code>Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 15, in &lt;module&gt;
+  File &quot;&lt;stdin&gt;&quot;, line 8, in myfunc
+UnboundLocalError: cannot access local variable 'pwndbg' where it is not associated with a value
+</code></pre>
+<p>This was surprising to me too, but the local <code>import pwndbg...</code> makes the <code>pwndbg</code> reference within the function a local variable reference, which is then used before its definition. There's even a <a href="https://docs.python.org/3/faq/programming.html#why-am-i-getting-an-unboundlocalerror-when-the-variable-has-a-value">Python FAQ</a> entry on this topic, although they use an assignment rather than an import in the example.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:45 UTC
+        Synced at 2026-01-12 21:27:13 UTC
     </footer>
 </body>
 </html>

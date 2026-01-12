@@ -503,10 +503,141 @@
             <div class="timeline-body"><p>I worked it over a few times.  If it still needs improvement, I need a shove in the right direction.  But yes, it's ready for another review.</p>
 </div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jkhall81">@Jkhall81</a> on 2026-01-12 20:22</div>
+            <div class="timeline-body"><p>I can add tests based on the ecosystem results, no problem, if the 'rule update' is acceptable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2026-01-12 20:26</div>
+            <div class="timeline-body"><p>Sounds good! I just wanted to double check before I took a look. @amyreese might have a better sense for whether we should add more tests based on what she saw in the earlier ecosystem reports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/perflint/rules/manual_list_comprehension.rs</code>:272 on 2026-01-12 20:45</div>
+            <div class="timeline-body"><p>Could we revert changing the order of this comparison and restore the comments that were here? I think the comments were still accurate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/perflint/rules/manual_list_comprehension.rs</code>:111 on 2026-01-12 20:52</div>
+            <div class="timeline-body"><p>I think if we move the <code>targets.contains</code> check into the <code>for target_id in &amp;targets</code> loop, we can avoid allocating a <code>Vec</code> here and just return a <code>&amp;[Expr]</code> from the <code>match</code>. This is the patch I was working with locally:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/perflint/rules/manual_list_comprehension.rs b/crates/ruff_linter/src/rules/perflint/rules/manual_list_comprehension.rs
+index 60edacb5e2..465211b334 100644
+--- a/crates/ruff_linter/src/rules/perflint/rules/manual_list_comprehension.rs
++++ b/crates/ruff_linter/src/rules/perflint/rules/manual_list_comprehension.rs
+@@ -95,20 +95,13 @@ impl Violation for ManualListComprehension {
+ 
+ /// PERF401
+ pub(crate) fn manual_list_comprehension(checker: &amp;Checker, for_stmt: &amp;ast::StmtFor) {
+-    let mut targets = Vec::new();
+-    match &amp;*for_stmt.target {
+-        Expr::Name(ast::ExprName { id, .. }) =&gt; targets.push(id),
++    let targets = match &amp;*for_stmt.target {
++        name @ Expr::Name(_) =&gt; std::slice::from_ref(name),
+         Expr::Tuple(ast::ExprTuple { elts, .. }) | Expr::List(ast::ExprList { elts, .. }) =&gt; {
+-            for elt in elts {
+-                if let Expr::Name(ast::ExprName { id, .. }) = elt {
+-                    targets.push(id);
+-                } else {
+-                    return;
+-                }
+-            }
++            elts.as_slice()
+         }
+         _ =&gt; return,
+-    }
++    };
+ 
+     let (stmt, if_test) = match &amp;*for_stmt.body {
+         // ```python
+@@ -181,19 +174,6 @@ pub(crate) fn manual_list_comprehension(checker: &amp;Checker, for_stmt: &amp;ast::StmtF
+         return;
+     };
+ 
+-    // Ignore direct list copies (e.g., `for x in y: filtered.append(x)`), unless it's async, which
+-    // `manual-list-copy` doesn't cover.
+-    if !for_stmt.is_async {
+-        if if_test.is_none() {
+-            if arg
+-                .as_name_expr()
+-                .is_some_and(|arg| targets.contains(&amp;&amp;arg.id))
+-            {
+-                return;
+-            }
+-        }
+-    }
+-
+     // Avoid, e.g., `for x in y: filtered.append(filtered[-1] * 2)`.
+     if any_over_expr(arg, &amp;|expr| {
+         expr.as_name_expr()
+@@ -254,11 +234,32 @@ pub(crate) fn manual_list_comprehension(checker: &amp;Checker, for_stmt: &amp;ast::StmtF
+ 
+     // Ensure none of the loop targets (e.g., x, y in `for x, y in ...`)
+     // leak outside the loop.
+-    for target_id in &amp;targets {
+-        let Some(target_binding) = checker.semantic().bindings.iter().find(|binding| {
+-            binding.name(checker.locator().contents()) == **target_id
+-                &amp;&amp; for_stmt.target.range().contains(binding.range().start())
+-        }) else {
++    for target in targets {
++        let ast::Expr::Name(ast::ExprName {
++            id: target_id,
++            range: target_range,
++            ..
++        }) = target
++        else {
++            return;
++        };
++
++        // Ignore direct list copies (e.g., `for x in y: filtered.append(x)`), unless it's async, which
++        // `manual-list-copy` doesn't cover.
++        if !for_stmt.is_async {
++            if if_test.is_none() {
++                if arg.as_name_expr().is_some_and(|arg| arg.id == *target_id) {
++                    return;
++                }
++            }
++        }
++
++        let Some(target_binding) = checker
++            .semantic()
++            .bindings
++            .iter()
++            .find(|binding| binding.range == *target_range)
++        else {
+             return;
+         };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/perflint/PERF401.py</code>:313 on 2026-01-12 20:53</div>
+            <div class="timeline-body"><p>I think it would make sense to add a test with a list target:</p>
+<pre><code class="language-py">def f():
+    xs = []
+    for [x, y] in [[1, 2]]:
+        xs.append(x + y)  # PERF401
+</code></pre>
+<p>since you handled it in the implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/perflint/rules/manual_list_comprehension.rs</code>:260 on 2026-01-12 21:01</div>
+            <div class="timeline-body"><p>I included this in the patch above, but if we keep a reference to the whole <code>Expr</code> or <code>ExprName</code>, we can simplify this back to:</p>
+<pre><code class="language-suggestion">            binding.range == *target_range
+</code></pre>
+<p><code>Binding::name</code> is just using its range internally, so I don't think we're gaining anything by comparing both the str derived from the range and the range itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2026-01-12 21:03</div>
+            <div class="timeline-body"><p>Thank you! This looks reasonable to me overall, I Just had a few minor suggestions, mostly around avoiding allocating a <code>Vec</code> for the loop targets.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 20:16:47 UTC
+        Synced at 2026-01-12 21:28:19 UTC
     </footer>
 </body>
 </html>

@@ -145,10 +145,39 @@ match[0]: int  # Expected newline, found name(invalid-syntax)
         <div class="timeline-entry">
             <div class="event">Label <span class="label">parser</span> added by @MichaReiser on 2026-01-12 08:51</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2026-01-12 20:58</div>
+            <div class="timeline-body"><p>A minimal fix for just this example would be something like this:</p>
+<pre><code class="language-diff">diff --git i/crates/ruff_python_parser/src/parser/statement.rs w/crates/ruff_python_parser/src/parser/statement.rs
+index 0a56768df5..ae334e8b1d 100644
+--- i/crates/ruff_python_parser/src/parser/statement.rs
++++ w/crates/ruff_python_parser/src/parser/statement.rs
+@@ -2449,9 +2449,14 @@ impl&lt;'src&gt; Parser&lt;'src&gt; {
+ 
+         match self.current_token_kind() {
+             TokenKind::Colon =&gt; {
+-                // `match` is a keyword
++                // `match` is a keyword or annotated assignment
+                 self.bump(TokenKind::Colon);
+ 
++                if self.current_token_kind() != TokenKind::Newline {
++                    self.rewind(checkpoint);
++                    return None;
++                }
++
+                 let cases = self.parse_match_body();
+ 
+                 Some(ast::StmtMatch {
+</code></pre>
+<p>But I think the correct thing to do is mimic the CPython behavior more precisely. The relevant code is here:</p>
+<p>https://github.com/python/cpython/blob/66e1399311c17684c6e26f5d9d9603fbd0717d0d/Parser/parser.c#L7765-L7778</p>
+<p>and I believe the logic is to revert to treating <code>match</code> as an identifier unless we &quot;match&quot; (pun intended) the pattern: <code>match</code>, followed by valid <code>subject</code>, followed by <code>:</code> and <code>Newline</code> and indent, followed by one or more valid <code>case</code>s, followed by a <code>dedent</code>.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 16:53:46 UTC
+        Synced at 2026-01-12 21:27:13 UTC
     </footer>
 </body>
 </html>
