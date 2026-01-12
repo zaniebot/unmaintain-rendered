@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-12T17:37:58Z
+updated_at: 2026-01-12T22:18:11Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-12T18:23:22Z
+synced_at: 2026-01-12T23:24:02Z
 ```
 
 # Dependency Dashboard
@@ -61,6 +61,7 @@ Unlike deprecated packages with official notices, abandonment is detected by rel
 The following updates are awaiting their schedule. To get an update now, click on a checkbox below.
 
  - [ ] <!-- unschedule-branch=renovate/actions-checkout-digest -->Update actions/checkout digest to 0c366fd
+ - [ ] <!-- unschedule-branch=renovate/url-2.x-lockfile -->Update Rust crate url to v2.5.8
  - [ ] <!-- unschedule-branch=renovate/rust-wasm-bindgen-monorepo -->Update rust-wasm-bindgen monorepo (`js-sys`, `wasm-bindgen`, `wasm-bindgen-test`)
  - [ ] <!-- unschedule-branch=renovate/npm-development-dependencies -->Update dependency typescript-eslint to v8.52.0
  - [ ] <!-- unschedule-branch=renovate/prek-dependencies -->Update pre-commit hook mdformat-mkdocs to v5.1.1
@@ -82,7 +83,6 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/snapbox-0.x-lockfile -->Update Rust crate snapbox to v0.6.24
  - [ ] <!-- approvePr-branch=renovate/syn-2.x-lockfile -->Update Rust crate syn to v2.0.114
  - [ ] <!-- approvePr-branch=renovate/toml-0.x-lockfile -->Update Rust crate toml to v0.9.11
- - [ ] <!-- approvePr-branch=renovate/url-2.x-lockfile -->Update Rust crate url to v2.5.8
  - [ ] <!-- approvePr-branch=renovate/tomli-2.x -->Update dependency tomli to v2.4.0
  - [ ] <!-- approvePr-branch=renovate/indexmap-2.x-lockfile -->Update Rust crate indexmap to v2.13.0
  - [ ] <!-- approvePr-branch=renovate/ordermap-1.x-lockfile -->Update Rust crate ordermap to v1.1.0

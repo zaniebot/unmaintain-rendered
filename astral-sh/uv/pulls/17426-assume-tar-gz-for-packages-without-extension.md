@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: pp/assume-tgz
 created_at: 2026-01-12T21:08:12Z
-updated_at: 2026-01-12T22:10:37Z
+updated_at: 2026-01-12T22:44:44Z
 url: https://github.com/astral-sh/uv/pull/17426
-synced_at: 2026-01-12T22:25:03Z
+synced_at: 2026-01-12T23:24:27Z
 ```
 
 # Assume tar.gz for packages without extension
@@ -47,5 +47,11 @@ Co-authored-by: Copilot Agent
 
 I added test with installing a package without file extension..
 
+
+---
+
+_Comment by @charliermarsh on 2026-01-12 22:44_
+
+Appreciate the contribution! Unfortunately I don't think it's correct to assume `.tar.gz` for extension-less URLs. I think the right fix here is that we need to respect `Content-Disposition` headers in these cases.
 
 ---

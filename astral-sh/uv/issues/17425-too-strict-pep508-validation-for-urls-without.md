@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2026-01-12T20:30:56Z
-updated_at: 2026-01-12T20:30:56Z
+updated_at: 2026-01-12T22:38:32Z
 url: https://github.com/astral-sh/uv/issues/17425
-synced_at: 2026-01-12T21:25:59Z
+synced_at: 2026-01-12T23:24:19Z
 ```
 
 # Too strict PEP508 validation for URLs without file extension
@@ -63,5 +63,11 @@ uv 0.9.22 (82a6a66b8 2026-01-06)
 ---
 
 _Label `bug` added by @ppalucha on 2026-01-12 20:30_
+
+---
+
+_Comment by @ppalucha on 2026-01-12 22:38_
+
+I proposed a PR that fixes it, assuming we agree this is the right direction: https://github.com/astral-sh/uv/pull/17426
 
 ---

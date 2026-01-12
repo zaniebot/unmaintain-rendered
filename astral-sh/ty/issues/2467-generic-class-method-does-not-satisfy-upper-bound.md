@@ -4,12 +4,14 @@ title: "Generic class method \"does not satisfy upper bound\""
 type: issue
 state: open
 author: Jeremiah-England
-labels: []
+labels:
+  - bug
+  - generics
 assignees: []
 created_at: 2026-01-12T14:11:55Z
-updated_at: 2026-01-12T14:11:55Z
+updated_at: 2026-01-12T23:04:57Z
 url: https://github.com/astral-sh/ty/issues/2467
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-12T23:23:57Z
 ```
 
 # Generic class method "does not satisfy upper bound"
@@ -51,5 +53,23 @@ C(x=K(0)).g()  # 1. Argument to bound method `g` is incorrect: Argument type `C[
 ### Version
 
 0.0.11
+
+---
+
+_Comment by @carljm on 2026-01-12 23:04_
+
+Oof, that seems bad. Sorry about this! We'll get it fixed ASAP.
+
+---
+
+_Label `bug` added by @carljm on 2026-01-12 23:04_
+
+---
+
+_Label `generics` added by @carljm on 2026-01-12 23:04_
+
+---
+
+_Added to milestone `Pre-stable 1` by @carljm on 2026-01-12 23:04_
 
 ---

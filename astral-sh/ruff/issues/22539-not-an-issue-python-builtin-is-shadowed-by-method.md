@@ -4,12 +4,13 @@ title: "\"Not an issue\": Python builtin is shadowed by method `str` A003"
 type: issue
 state: open
 author: hunterhogan
-labels: []
+labels:
+  - question
 assignees: []
 created_at: 2026-01-12T22:13:29Z
-updated_at: 2026-01-12T22:13:29Z
+updated_at: 2026-01-12T22:24:52Z
 url: https://github.com/astral-sh/ruff/issues/22539
-synced_at: 2026-01-12T22:24:39Z
+synced_at: 2026-01-12T23:24:03Z
 ```
 
 # "Not an issue": Python builtin is shadowed by method `str` A003
@@ -126,5 +127,64 @@ class DOT:
 ### Version
 
 2026.34.0
+
+---
+
+_Comment by @MichaReiser on 2026-01-12 22:23_
+
+The shadowing that's happening here is that the return type annotation `str` doesn't resolve to the builtin type `str` but to `DOT.str`. As you can see e.g. by clicking on `str` in this [playground](https://play.ty.dev/87fe4a96-f251-4588-95ee-cb996f4dbfdb) or by running the following snippet in Python 3.14
+
+```pycon
+>>>
+... import builtins
+... import sys
+...
+... type hasDOTrest = ast.MatchMapping
+... type hasDOTtag = ast.TypeIgnore
+... type hasDOTtype_comment = ast.arg | ast.Assign | ast.AsyncFor | ast.AsyncFunctionDef | ast.AsyncWith | ast.For | ast.FunctionDef | ast.With
+...
+... if sys.version_info >= (3, 14):
+...     type hasDOTstr = ast.Interpolation
+...
+... class DOT:
+...     """Access attributes and sub-nodes of AST elements via consistent accessor methods.
+...
+...     The DOT class provides static methods to access specific attributes of different types of AST nodes in a consistent
+...     way. This simplifies attribute access across various node types and improves code readability by abstracting the
+...     underlying AST structure details.
+...
+...     DOT is designed for safe, read-only access to node properties, unlike the grab class which is designed for modifying
+...     node attributes.
+...
+...     """
+...
+...     @staticmethod
+...     def rest(node: hasDOTrest) -> None | str:
+...         return node.rest
+...
+...     if sys.version_info >= (3, 14):
+...
+...         @staticmethod
+...         def str(node: hasDOTstr) -> builtins.str:
+...             return node.str
+...
+...     @staticmethod
+...     def tag(node: hasDOTtag) -> str:
+...         return node.tag
+...
+...     @staticmethod
+...     def type_comment(node: hasDOTtype_comment) -> None | str:
+...         return node.type_comment
+...     print(str)
+...
+<staticmethod(<function DOT.str at 0x105c07270>)>
+```
+
+
+The shadowning warning goes away if you change all `str` return types to `builtins.str`.
+
+---
+
+_Label `question` added by @MichaReiser on 2026-01-12 22:24_
 
 ---

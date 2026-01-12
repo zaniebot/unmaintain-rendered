@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2026-01-02T19:44:53Z
-updated_at: 2026-01-02T19:44:53Z
+updated_at: 2026-01-12T23:16:38Z
 url: https://github.com/astral-sh/uv/issues/17310
-synced_at: 2026-01-12T16:02:48Z
+synced_at: 2026-01-12T23:24:19Z
 ```
 
 # Show package constraints (similar to `poetry show`)
@@ -50,5 +50,11 @@ _No response_
 ---
 
 _Label `enhancement` added by @jack-mcivor on 2026-01-02 19:44_
+
+---
+
+_Comment by @powercoconola on 2026-01-12 23:16_
+
+Does `uv tree` solve your issue?
 
 ---
