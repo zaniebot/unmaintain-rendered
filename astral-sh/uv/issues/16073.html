@@ -59,10 +59,95 @@ I would suggest either to fix the behaviour or add an option to the cli which en
         <div class="timeline-entry">
             <div class="event">Assigned to @konstin by @zanieb on 2025-09-30 14:47</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hutch3232">@hutch3232</a> on 2026-01-12 19:24</div>
+            <div class="timeline-body"><p>I came looking to post approximately this same issue. Quick summary of my issue:</p>
+<p>I use a private package repo on Artifactory. I'm using CICD to <code>build</code> and <code>publish</code> with <code>uv</code>. I found that if I triggered the publish process without incrementing the version, I was overwriting previously released versions (and breaking hashes). The <code>--check-url</code> stuff worked locally, it was only breaking in CICD. Found it was because in my local environment I had a <code>.netrc</code> with creds for Artifactory, but not in CICD. The curious thing is that it is able to use command line passed creds to publish, but it couldn't use those same creds for the check?</p>
+<p><code>pyproject.toml</code></p>
+<pre><code>[[tool.uv.index]]
+name = &quot;artifactory&quot;
+url = &quot;https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple&quot;
+publish-url = &quot;https://artifactory.myco.com/artifactory/api/pypi/pypi-local&quot;
+</code></pre>
+<pre><code>+ python3.9 -m uv build
+Building source distribution (uv build backend)...
+Building wheel from source distribution (uv build backend)...
+Successfully built dist/mypkg-0.0.31.tar.gz
+Successfully built dist/mypkg-0.0.31-py3-none-any.whl
+
++ python3.9 -m uv publish --verbose --verbose --dry-run --index artifactory -u hutch3232 -p ****
+DEBUG uv 0.9.7
+DEBUG Publishing with index artifactory
+DEBUG Not a distribution filename: `.gitignore`
+Checking 2 files against https://artifactory.myco.com/artifactory/api/pypi/pypi-local
+DEBUG Using request timeout of 900s
+DEBUG Checking for mypkg-0.0.31-py3-none-any.whl in the registry
+TRACE Fetching metadata for mypkg from https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple/mypkg/
+TRACE Response from https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple/mypkg/ is storable because it has an 'max-age' cache-control directive
+TRACE Freshness lifetime found via cache-control max age setting: 60s
+TRACE Request to https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple/mypkg/ does not have a fresh cache entry because it has a 'no-cache' cache-control directive
+DEBUG Found stale response for: https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple/mypkg/
+DEBUG Sending revalidation request for: https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple/mypkg/
+TRACE Handling request for https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple/mypkg/ with authentication policy auto
+TRACE Request for https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple/mypkg/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple/mypkg/
+TRACE Attempting unauthenticated request for https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple/mypkg/
+TRACE Request for https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple/mypkg/ failed with 403 Forbidden, checking for credentials
+TRACE No credentials in cache for URL https://artifactory.myco.com/artifactory/api/pypi/pypi/simple
+TRACE No credentials in cache for realm https://artifactory.myco.com/
+DEBUG No netrc file found
+TRACE Checking lock for `credentials store` at `/export/home/cicdjenk/.local/share/uv/credentials/credentials.toml.lock`
+DEBUG Acquired lock for `credentials store`
+DEBUG Released lock at `/export/home/cicdjenk/.local/share/uv/credentials/credentials.toml.lock`
+DEBUG No credentials file found at /export/home/cicdjenk/.local/share/uv/credentials/credentials.toml
+TRACE Considering retry of response HTTP 403 Forbidden for https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple/mypkg/
+TRACE Cannot retry nested reqwest middleware error
+DEBUG Indexes search failed because of status code failure: 403 Forbidden
+WARN Package not found in the registry; skipping upload check for mypkg-0.0.31-py3-none-any.whl
+Checking mypkg-0.0.31-py3-none-any.whl (63.0KiB)
+DEBUG Hashing dist/mypkg-0.0.31-py3-none-any.whl
+DEBUG Skipping validation request for unsupported publish URL: https://artifactory.myco.com/artifactory/api/pypi/pypi-local
+DEBUG Checking for mypkg-0.0.31.tar.gz in the registry
+TRACE Fetching metadata for mypkg from https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple/mypkg/
+TRACE Response from https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple/mypkg/ is storable because it has an 'max-age' cache-control directive
+TRACE Freshness lifetime found via cache-control max age setting: 60s
+TRACE Request to https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple/mypkg/ does not have a fresh cache entry because it has a 'no-cache' cache-control directive
+DEBUG Found stale response for: https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple/mypkg/
+DEBUG Sending revalidation request for: https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple/mypkg/
+TRACE Handling request for https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple/mypkg/ with authentication policy auto
+TRACE Request for https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple/mypkg/ is unauthenticated, checking cache
+TRACE No credentials in cache for URL https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple/mypkg/
+TRACE Attempting unauthenticated request for https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple/mypkg/
+TRACE Request for https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple/mypkg/ failed with 403 Forbidden, checking for credentials
+TRACE No credentials in cache for URL https://artifactory.myco.com/artifactory/api/pypi/pypi/simple
+TRACE No credentials in cache for realm https://artifactory.myco.com/
+TRACE Skipping fetch of credentials for https://artifactory.myco.com/artifactory/api/pypi/pypi/simple, previous attempt failed
+TRACE Considering retry of response HTTP 403 Forbidden for https://artifactory.myco.com/artifactory/api/pypi/pypi-local/simple/mypkg/
+TRACE Cannot retry nested reqwest middleware error
+DEBUG Indexes search failed because of status code failure: 403 Forbidden
+WARN Package not found in the registry; skipping upload check for mypkg-0.0.31.tar.gz
+Checking mypkg-0.0.31.tar.gz (49.5KiB)
+DEBUG Hashing dist/mypkg-0.0.31.tar.gz
+DEBUG Skipping validation request for unsupported publish URL: https://artifactory.myco.com/artifactory/api/pypi/pypi-local
+</code></pre>
+<p>The log is running with <code>--dry-run</code> so it isn't actually publishing, but we can see it disabled the check. The funny thing is that if I took out <code>--dry-run</code> it actually succeeds to upload. I would think if it can upload, the check should be able to succeed.</p>
+<p>Thank you for the incredible package!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2026-01-12 20:06</div>
+            <div class="timeline-body"><p>Some indexes use different credentials for write (publish) and read (check)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hutch3232">@hutch3232</a> on 2026-01-12 20:10</div>
+            <div class="timeline-body"><p>Thanks! I was able to resolve nicely by setting <code>UV_INDEX_ARTIFACTORY_USERNAME</code> and <code>UV_INDEX_ARTIFACTORY_PASSWORD</code></p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 17:33:02 UTC
+        Synced at 2026-01-12 20:17:55 UTC
     </footer>
 </body>
 </html>
