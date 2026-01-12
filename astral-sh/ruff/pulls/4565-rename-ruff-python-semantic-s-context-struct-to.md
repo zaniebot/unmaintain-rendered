@@ -1,0 +1,114 @@
+```yaml
+number: 4565
+title: "Rename ruff_python_semantic's `Context` struct to `SemanticModel`"
+type: pull_request
+state: merged
+author: charliermarsh
+labels: []
+assignees: []
+merged: true
+base: main
+head: charlie/model
+created_at: 2023-05-21T19:36:07Z
+updated_at: 2023-05-22T02:50:37Z
+url: https://github.com/astral-sh/ruff/pull/4565
+synced_at: 2026-01-12T03:50:03Z
+```
+
+# Rename ruff_python_semantic's `Context` struct to `SemanticModel`
+
+---
+
+_Pull request opened by @charliermarsh on 2023-05-21 19:36_
+
+## Summary
+
+I'm finding that the term "context" is overloaded in our codebase, and it feels more generic than what this `Context` struct is doing, which is: enabling us to query for semantic information across bindings, scopes, etc.
+
+---
+
+_Review requested from @MichaReiser by @charliermarsh on 2023-05-21 19:36_
+
+---
+
+_Comment by @github-actions[bot] on 2023-05-21 19:52_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     14.2±0.18ms     2.9 MB/sec    1.00     14.0±0.04ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.01ms     4.9 MB/sec    1.00      3.4±0.00ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    424.4±3.40µs     7.0 MB/sec    1.09  460.8±117.75µs     6.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.8±0.01ms     4.4 MB/sec    1.13      6.6±1.51ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.7±0.02ms     6.0 MB/sec    1.07      7.2±0.80ms     5.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1449.6±3.86µs    11.5 MB/sec    1.06  1536.8±201.71µs    10.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00    160.3±0.24µs    18.4 MB/sec    1.01    161.8±1.10µs    18.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.01ms     8.5 MB/sec    1.02      3.1±0.13ms     8.3 MB/sec
+parser/large/dataset.py                    1.00      5.4±0.00ms     7.5 MB/sec    1.21      6.5±0.01ms     6.3 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1063.7±17.71µs    15.7 MB/sec    1.16   1238.4±1.37µs    13.4 MB/sec
+parser/numpy/globals.py                    1.00    109.2±0.20µs    27.0 MB/sec    1.12    122.8±0.54µs    24.0 MB/sec
+parser/pydantic/types.py                   1.00      2.3±0.00ms    11.0 MB/sec    1.17      2.7±0.01ms     9.4 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     12.3±0.08ms     3.3 MB/sec    1.00     12.3±0.05ms     3.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.2±0.02ms     5.2 MB/sec    1.00      3.2±0.02ms     5.2 MB/sec
+linter/all-rules/numpy/globals.py          1.00    328.6±4.59µs     9.0 MB/sec    1.00    328.4±4.31µs     9.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.2±0.04ms     4.9 MB/sec    1.00      5.2±0.05ms     4.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.4±0.03ms     6.4 MB/sec    1.00      6.4±0.03ms     6.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1301.3±11.94µs    12.8 MB/sec    1.01  1313.3±15.57µs    12.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00    139.3±1.50µs    21.2 MB/sec    1.00    139.5±1.67µs    21.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.8±0.01ms     9.0 MB/sec    1.00      2.8±0.02ms     9.0 MB/sec
+parser/large/dataset.py                    1.01      5.0±0.03ms     8.1 MB/sec    1.00      5.0±0.02ms     8.2 MB/sec
+parser/numpy/ctypeslib.py                  1.00    941.7±5.81µs    17.7 MB/sec    1.00    939.1±7.27µs    17.7 MB/sec
+parser/numpy/globals.py                    1.00     98.4±1.03µs    30.0 MB/sec    1.00     98.2±0.69µs    30.0 MB/sec
+parser/pydantic/types.py                   1.01      2.1±0.01ms    12.1 MB/sec    1.00      2.1±0.02ms    12.2 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_@MichaReiser approved on 2023-05-21 20:50_
+
+> Arguably we could rename it to SemanticModel.)
+
+I'm in favor of SemanticModel. `Model` is a very generic term that conveys very little information to readers. 
+
+
+
+---
+
+_Comment by @Boshen on 2023-05-22 02:16_
+
+> > Arguably we could rename it to SemanticModel.)
+> 
+> I'm in favor of SemanticModel. `Model` is a very generic term that conveys very little information to readers.
+
++1 for `SemanticModel` 
+
+---
+
+_Renamed from "Rename ruff_python_semantic's `Context` struct to `Model`" to "Rename ruff_python_semantic's `Context` struct to `SemanticModel`" by @charliermarsh on 2023-05-22 02:23_
+
+---
+
+_Merged by @charliermarsh on 2023-05-22 02:35_
+
+---
+
+_Closed by @charliermarsh on 2023-05-22 02:35_
+
+---
+
+_Branch deleted on 2023-05-22 02:35_
+
+---

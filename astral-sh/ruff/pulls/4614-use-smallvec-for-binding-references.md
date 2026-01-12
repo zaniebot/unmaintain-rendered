@@ -1,0 +1,109 @@
+```yaml
+number: 4614
+title: "Use `SmallVec` for binding references"
+type: pull_request
+state: closed
+author: charliermarsh
+labels: []
+assignees: []
+base: main
+head: charlie/small-vec
+created_at: 2023-05-24T00:24:06Z
+updated_at: 2023-06-01T22:38:05Z
+url: https://github.com/astral-sh/ruff/pull/4614
+synced_at: 2026-01-12T03:50:03Z
+```
+
+# Use `SmallVec` for binding references
+
+---
+
+_Pull request opened by @charliermarsh on 2023-05-24 00:24_
+
+_No description provided._
+
+---
+
+_Comment by @charliermarsh on 2023-05-24 00:24_
+
+(Checking to see benchmarks.)
+
+---
+
+_Comment by @github-actions[bot] on 2023-05-24 00:34_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     15.2±0.06ms     2.7 MB/sec    1.01     15.3±0.05ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.7±0.01ms     4.6 MB/sec    1.00      3.7±0.01ms     4.6 MB/sec
+linter/all-rules/numpy/globals.py          1.00    375.2±0.87µs     7.9 MB/sec    1.00    375.1±1.14µs     7.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.3±0.03ms     4.0 MB/sec    1.00      6.3±0.02ms     4.0 MB/sec
+linter/default-rules/large/dataset.py      1.01      7.5±0.01ms     5.4 MB/sec    1.00      7.5±0.01ms     5.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1604.5±4.09µs    10.4 MB/sec    1.00   1599.7±2.10µs    10.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    177.6±0.28µs    16.6 MB/sec    1.00    177.2±2.06µs    16.7 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.4±0.01ms     7.5 MB/sec    1.00      3.4±0.01ms     7.5 MB/sec
+parser/large/dataset.py                    1.00      5.7±0.00ms     7.1 MB/sec    1.01      5.7±0.01ms     7.1 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1120.7±0.77µs    14.9 MB/sec    1.01   1128.7±3.00µs    14.8 MB/sec
+parser/numpy/globals.py                    1.00    115.9±0.21µs    25.5 MB/sec    1.00    115.9±0.23µs    25.5 MB/sec
+parser/pydantic/types.py                   1.00      2.4±0.00ms    10.4 MB/sec    1.01      2.5±0.00ms    10.3 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     20.3±0.39ms     2.0 MB/sec    1.00     20.2±0.38ms     2.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      5.2±0.19ms     3.2 MB/sec    1.00      5.1±0.12ms     3.3 MB/sec
+linter/all-rules/numpy/globals.py          1.01   614.9±23.39µs     4.8 MB/sec    1.00   611.3±22.24µs     4.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.5±0.17ms     3.0 MB/sec    1.00      8.5±0.20ms     3.0 MB/sec
+linter/default-rules/large/dataset.py      1.01     10.0±0.18ms     4.1 MB/sec    1.00      9.9±0.22ms     4.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.1±0.07ms     7.7 MB/sec    1.00      2.1±0.06ms     7.8 MB/sec
+linter/default-rules/numpy/globals.py      1.03   252.6±10.78µs    11.7 MB/sec    1.00    246.3±9.18µs    12.0 MB/sec
+linter/default-rules/pydantic/types.py     1.01      4.5±0.13ms     5.6 MB/sec    1.00      4.5±0.16ms     5.6 MB/sec
+parser/large/dataset.py                    1.00      7.9±0.15ms     5.2 MB/sec    1.02      8.0±0.15ms     5.1 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1500.0±43.31µs    11.1 MB/sec    1.01  1520.7±42.78µs    10.9 MB/sec
+parser/numpy/globals.py                    1.00    151.9±5.11µs    19.4 MB/sec    1.03    157.1±9.39µs    18.8 MB/sec
+parser/pydantic/types.py                   1.00      3.4±0.10ms     7.6 MB/sec    1.02      3.4±0.07ms     7.4 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Review requested from @MichaReiser by @charliermarsh on 2023-05-24 01:02_
+
+---
+
+_Comment by @MichaReiser on 2023-05-24 16:49_
+
+Do we have any evidence that this improves performance? if not, then using a vec is preferred in my view (accessing a small vec comes at a cost)
+
+---
+
+_Comment by @charliermarsh on 2023-05-24 22:16_
+
+(Need to find a free moment to benchmark.)
+
+---
+
+_@MichaReiser requested changes on 2023-05-25 05:15_
+
+To benchmark the change
+
+---
+
+_Comment by @charliermarsh on 2023-06-01 22:38_
+
+Closing until I have time to benchmark this.
+
+---
+
+_Closed by @charliermarsh on 2023-06-01 22:38_
+
+---

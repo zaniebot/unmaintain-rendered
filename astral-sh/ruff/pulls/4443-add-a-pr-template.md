@@ -1,0 +1,171 @@
+```yaml
+number: 4443
+title: Add a PR template
+type: pull_request
+state: closed
+author: evanrittenhouse
+labels: []
+assignees: []
+base: main
+head: main
+created_at: 2023-05-15T17:51:34Z
+updated_at: 2023-05-17T01:11:54Z
+url: https://github.com/astral-sh/ruff/pull/4443
+synced_at: 2026-01-12T03:50:03Z
+```
+
+# Add a PR template
+
+---
+
+_Pull request opened by @evanrittenhouse on 2023-05-15 17:51_
+
+Seen a lot of new folks in Discord who are interested in contributing. Creating a template for our PRs may be helpful
+
+---
+
+_Comment by @github-actions[bot] on 2023-05-15 18:22_
+
+## PR Check Results
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.02     19.1±0.51ms     2.1 MB/sec    1.00     18.7±0.52ms     2.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.03      4.6±0.16ms     3.6 MB/sec    1.00      4.5±0.16ms     3.7 MB/sec
+linter/all-rules/numpy/globals.py          1.04   573.3±24.41µs     5.1 MB/sec    1.00   549.5±15.51µs     5.4 MB/sec
+linter/all-rules/pydantic/types.py         1.02      7.8±0.21ms     3.3 MB/sec    1.00      7.6±0.21ms     3.3 MB/sec
+linter/default-rules/large/dataset.py      1.02      8.9±0.17ms     4.6 MB/sec    1.00      8.8±0.10ms     4.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.03  1908.8±57.08µs     8.7 MB/sec    1.00  1862.0±44.52µs     8.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    222.7±8.81µs    13.3 MB/sec    1.00    222.0±7.37µs    13.3 MB/sec
+linter/default-rules/pydantic/types.py     1.01      4.0±0.06ms     6.4 MB/sec    1.00      3.9±0.12ms     6.5 MB/sec
+parser/large/dataset.py                    1.00      7.2±0.12ms     5.7 MB/sec    1.00      7.2±0.08ms     5.7 MB/sec
+parser/numpy/ctypeslib.py                  1.01  1405.8±29.58µs    11.8 MB/sec    1.00  1398.3±25.38µs    11.9 MB/sec
+parser/numpy/globals.py                    1.00    140.8±5.52µs    21.0 MB/sec    1.00    140.1±3.82µs    21.1 MB/sec
+parser/pydantic/types.py                   1.01      3.1±0.14ms     8.2 MB/sec    1.00      3.1±0.05ms     8.3 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     22.5±1.05ms  1853.2 KB/sec    1.02     22.8±0.89ms  1825.0 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.5±0.25ms     3.0 MB/sec    1.06      5.8±0.26ms     2.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00   638.8±35.92µs     4.6 MB/sec    1.00   639.9±37.00µs     4.6 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.9±0.40ms     2.9 MB/sec    1.07      9.5±0.37ms     2.7 MB/sec
+linter/default-rules/large/dataset.py      1.02     10.7±0.64ms     3.8 MB/sec    1.00     10.5±0.40ms     3.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.3±0.10ms     7.3 MB/sec    1.00      2.3±0.08ms     7.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00   263.8±14.92µs    11.2 MB/sec    1.08   285.5±24.42µs    10.3 MB/sec
+linter/default-rules/pydantic/types.py     1.41      6.9±4.52ms     3.7 MB/sec    1.00      4.9±0.26ms     5.2 MB/sec
+parser/large/dataset.py                    1.04      9.2±0.42ms     4.4 MB/sec    1.00      8.9±0.25ms     4.6 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1741.7±70.27µs     9.6 MB/sec    1.01  1756.6±63.14µs     9.5 MB/sec
+parser/numpy/globals.py                    1.00   177.5±11.34µs    16.6 MB/sec    1.00    177.6±8.21µs    16.6 MB/sec
+parser/pydantic/types.py                   1.00      3.9±0.12ms     6.5 MB/sec    1.01      3.9±0.25ms     6.5 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_@JonathanPlasse reviewed on 2023-05-15 18:39_
+
+---
+
+_Review comment by @JonathanPlasse on `.github/PULL_REQUEST_TEMPLATE.md`:9 on 2023-05-15 18:39_
+
+The examples should be commented to avoid having to remove them for each PR.
+```suggestion
+<!-- Some issue -->
+
+## Changes
+<!-- Ipsum lorem. -->
+ 
+## Specific Testing (Optional)
+<!-- Any specific text used to test outside of typical Ruff workflows -->
+```
+
+---
+
+_@evanrittenhouse reviewed on 2023-05-16 00:05_
+
+---
+
+_Review comment by @evanrittenhouse on `.github/PULL_REQUEST_TEMPLATE.md`:9 on 2023-05-16 00:05_
+
+Thank you!
+
+---
+
+_@JonathanPlasse reviewed on 2023-05-16 07:29_
+
+---
+
+_Review comment by @JonathanPlasse on `.github/PULL_REQUEST_TEMPLATE.md`:9 on 2023-05-16 07:29_
+
+To fix `pre-commit`.
+```suggestion
+
+## Closes
+
+<!-- Some issue -->
+
+## Changes
+
+<!-- Ipsum lorem. -->
+ 
+## Specific Testing (Optional)
+
+<!-- Any specific text used to test outside of typical Ruff workflows -->
+```
+
+---
+
+_Review comment by @calumy on `.github/PULL_REQUEST_TEMPLATE.md`:9 on 2023-05-16 07:53_
+
+```suggestion
+ # Summary
++
+ ## Closes
++
+ <!-- Some issue -->
+ 
+ ## Changes
++
+ <!-- Ipsum lorem. -->
+- 
++
+ ## Specific Testing (Optional)
++
+ <!-- Any specific text used to test outside of typical Ruff workflows -->
+```
+
+---
+
+_@calumy reviewed on 2023-05-16 07:53_
+
+Suggestion to fix pre-commit issue
+
+---
+
+_Review comment by @evanrittenhouse on `.github/PULL_REQUEST_TEMPLATE.md`:9 on 2023-05-16 12:34_
+
+Thanks for your help - sorry for the duplicate commit suggestions, have been away from my computer.
+
+---
+
+_@evanrittenhouse reviewed on 2023-05-16 12:34_
+
+---
+
+_Comment by @JonathanPlasse on 2023-05-16 15:28_
+
+You could also install `pre-commit` to fix the errors automatically with:
+```console
+pre-commit run --all-files
+```
+
+---
+
+_Closed by @evanrittenhouse on 2023-05-17 01:11_
+
+---

@@ -1,0 +1,112 @@
+```yaml
+number: 4531
+title: "[`pylint`] Add `named_expr_without_context` (`W0131`)"
+type: pull_request
+state: merged
+author: hoel-bagard
+labels:
+  - rule
+assignees: []
+merged: true
+base: main
+head: named-expr-without-context
+created_at: 2023-05-19T15:23:14Z
+updated_at: 2023-05-19T18:22:15Z
+url: https://github.com/astral-sh/ruff/pull/4531
+synced_at: 2026-01-12T03:50:03Z
+```
+
+# [`pylint`] Add `named_expr_without_context` (`W0131`)
+
+---
+
+_Pull request opened by @hoel-bagard on 2023-05-19 15:23_
+
+This is part of https://github.com/charliermarsh/ruff/issues/970.
+
+---
+
+_Comment by @github-actions[bot] on 2023-05-19 15:33_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+0, -0, 1 error(s))
+
+<details><summary>bokeh (error)</summary>
+https://github.com/bokeh/bokeh ref branch-3.2 select ALL ignore  exclude 
+<p>
+
+```
+error: TOML parse error at line 169, column 12
+    |
+169 | [tool.ruff.pyupgrade]
+    |            ^^^^^^^^^
+unknown field `pyupgrade`, expected one of `allowed-confusables`, `builtins`, `cache-dir`, `dummy-variable-rgx`, `exclude`, `extend`, `extend-exclude`, `extend-include`, `extend-ignore`, `extend-select`, `extend-fixable`, `extend-unfixable`, `external`, `fix`, `fix-only`, `fixable`, `format`, `force-exclude`, `ignore`, `ignore-init-module-imports`, `include`, `line-length`, `required-version`, `respect-gitignore`, `select`, `show-source`, `show-fixes`, `src`, `namespace-packages`, `target-version`, `task-tags`, `typing-modules`, `unfixable`, `flake8-annotations`, `flake8-bandit`, `flake8-bugbear`, `flake8-builtins`, `flake8-comprehensions`, `flake8-errmsg`, `flake8-quotes`, `flake8-self`, `flake8-tidy-imports`, `flake8-type-checking`, `flake8-gettext`, `flake8-implicit-str-concat`, `flake8-import-conventions`, `flake8-pytest-style`, `flake8-unused-arguments`, `isort`, `mccabe`, `pep8-naming`, `pycodestyle`, `pydocstyle`, `pylint`, `per-file-ignores`, `extend-per-file-ignores`
+
+
+```
+
+</p>
+</details>
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.2±0.29ms     2.9 MB/sec    1.00     14.2±0.09ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.01ms     4.9 MB/sec    1.01      3.4±0.01ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00    422.7±0.73µs     7.0 MB/sec    1.00    424.2±1.16µs     7.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.8±0.02ms     4.4 MB/sec    1.00      5.9±0.02ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.7±0.03ms     6.0 MB/sec    1.01      6.8±0.01ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1444.2±3.16µs    11.5 MB/sec    1.02   1468.2±1.62µs    11.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    160.4±0.28µs    18.4 MB/sec    1.03    164.8±1.89µs    17.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.02ms     8.5 MB/sec    1.02      3.1±0.00ms     8.4 MB/sec
+parser/large/dataset.py                    1.00      5.4±0.00ms     7.5 MB/sec    1.00      5.4±0.01ms     7.5 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1063.0±1.34µs    15.7 MB/sec    1.00   1065.1±1.04µs    15.6 MB/sec
+parser/numpy/globals.py                    1.01    109.9±0.55µs    26.8 MB/sec    1.00    109.4±0.26µs    27.0 MB/sec
+parser/pydantic/types.py                   1.00      2.3±0.01ms    11.1 MB/sec    1.00      2.3±0.00ms    11.0 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     20.2±0.33ms     2.0 MB/sec    1.06     21.4±0.54ms  1949.0 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.1±0.12ms     3.3 MB/sec    1.07      5.5±0.19ms     3.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00   572.0±12.52µs     5.2 MB/sec    1.07   611.9±26.70µs     4.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.4±0.19ms     3.0 MB/sec    1.06      8.9±0.34ms     2.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      9.7±0.20ms     4.2 MB/sec    1.06     10.3±0.36ms     4.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.0±0.06ms     8.2 MB/sec    1.04      2.1±0.07ms     7.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    225.7±8.93µs    13.1 MB/sec    1.06    238.3±8.26µs    12.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.3±0.13ms     5.9 MB/sec    1.03      4.5±0.09ms     5.7 MB/sec
+parser/large/dataset.py                    1.00      8.0±0.15ms     5.1 MB/sec    1.00      8.0±0.21ms     5.1 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1509.3±40.18µs    11.0 MB/sec    1.00  1509.7±26.55µs    11.0 MB/sec
+parser/numpy/globals.py                    1.01    158.1±7.66µs    18.7 MB/sec    1.00    155.9±8.57µs    18.9 MB/sec
+parser/pydantic/types.py                   1.00      3.3±0.07ms     7.6 MB/sec    1.01      3.4±0.07ms     7.5 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_@charliermarsh reviewed on 2023-05-19 17:32_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff/src/rules/pylint/rules/named_expr_without_context.rs`:26 on 2023-05-19 17:32_
+
+Thank you for including docs.
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-05-19 17:40_
+
+---
+
+_Merged by @charliermarsh on 2023-05-19 18:00_
+
+---
+
+_Closed by @charliermarsh on 2023-05-19 18:00_
+
+---

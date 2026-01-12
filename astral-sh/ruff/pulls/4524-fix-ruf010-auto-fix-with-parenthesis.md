@@ -1,0 +1,203 @@
+```yaml
+number: 4524
+title: Fix RUF010 auto-fix with parenthesis
+type: pull_request
+state: merged
+author: JonathanPlasse
+labels:
+  - bug
+assignees: []
+merged: true
+base: main
+head: fix-ruf010-auto-fix
+created_at: 2023-05-19T09:30:25Z
+updated_at: 2023-05-19T19:27:16Z
+url: https://github.com/astral-sh/ruff/pull/4524
+synced_at: 2026-01-12T03:50:03Z
+```
+
+# Fix RUF010 auto-fix with parenthesis
+
+---
+
+_Pull request opened by @JonathanPlasse on 2023-05-19 09:30_
+
+- Close #4520
+- From #4423
+  > It looks like we now generate one diagnostic for the whole f-string (and that the diagnostic range is that of the entire f-string).
+  > 
+  > I think it'd be preferable to retain one diagnostic per formatted value, and limit the diagnostic to the formatted value. It's fine if the autofix contents include the whole string, even for each formatted value, but they should be separate diagnostics. (E.g., we could iterate over `formatted_values` and create one diagnostic per index, with a fix specific to that index.)
+
+
+
+---
+
+_Comment by @github-actions[bot] on 2023-05-19 09:39_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+7, -26, 0 error(s))
+
+<details><summary>airflow (+1, -12)</summary>
+<p>
+
+```diff
+- airflow/exceptions.py:299:49: RUF010 [*] Use conversion in f-string
+- airflow/policies.py:170:43: RUF010 [*] Use conversion in f-string
+- airflow/providers/amazon/aws/log/cloudwatch_task_handler.py:99:40: RUF010 [*] Use conversion in f-string
+- airflow/providers/apache/livy/triggers/livy.py:104:80: RUF010 [*] Use conversion in f-string
+- airflow/providers/apache/spark/hooks/spark_submit.py:270:51: RUF010 [*] Use conversion in f-string
++ airflow/providers/grpc/hooks/grpc.py:115:33: RUF010 Use conversion in f-string
+- airflow/providers/grpc/hooks/grpc.py:115:33: RUF010 [*] Use conversion in f-string
+- airflow/providers/sftp/operators/sftp.py:188:83: RUF010 [*] Use conversion in f-string
+- airflow/task/task_runner/cgroup_task_runner.py:137:84: RUF010 [*] Use conversion in f-string
+- tests/integration/executors/test_celery_executor.py:247:56: RUF010 [*] Use conversion in f-string
+- tests/models/test_baseoperator.py:53:56: RUF010 [*] Use conversion in f-string
+- tests/models/test_renderedtifields.py:51:56: RUF010 [*] Use conversion in f-string
+- tests/serialization/test_dag_serialization.py:1053:49: RUF010 [*] Use conversion in f-string
+```
+
+</p>
+</details>
+<details><summary>zulip (+6, -14)</summary>
+<p>
+
+```diff
+- zerver/lib/data_types.py:107:33: RUF010 [*] Use conversion in f-string
+- zerver/lib/queue.py:97:32: RUF010 [*] Use conversion in f-string
+- zerver/lib/test_classes.py:1068:62: RUF010 [*] Use conversion in f-string
+- zerver/lib/test_classes.py:1192:45: RUF010 [*] Use conversion in f-string
+- zerver/tests/test_openapi.py:385:31: RUF010 [*] Use conversion in f-string
+- zerver/tests/test_openapi.py:385:50: RUF010 [*] Use conversion in f-string
++ zerver/tests/test_push_notifications.py:1031:115: RUF010 Use conversion in f-string
+- zerver/tests/test_push_notifications.py:1031:115: RUF010 [*] Use conversion in f-string
++ zerver/tests/test_push_notifications.py:1031:149: RUF010 Use conversion in f-string
+- zerver/tests/test_push_notifications.py:1031:149: RUF010 [*] Use conversion in f-string
++ zerver/tests/test_push_notifications.py:1038:59: RUF010 Use conversion in f-string
+- zerver/tests/test_push_notifications.py:1038:59: RUF010 [*] Use conversion in f-string
++ zerver/tests/test_push_notifications.py:1038:93: RUF010 Use conversion in f-string
+- zerver/tests/test_push_notifications.py:1038:93: RUF010 [*] Use conversion in f-string
++ zerver/tests/test_push_notifications.py:1092:115: RUF010 Use conversion in f-string
+- zerver/tests/test_push_notifications.py:1092:115: RUF010 [*] Use conversion in f-string
++ zerver/tests/test_push_notifications.py:1092:149: RUF010 Use conversion in f-string
+- zerver/tests/test_push_notifications.py:1092:149: RUF010 [*] Use conversion in f-string
+- zerver/tests/test_push_notifications.py:401:104: RUF010 [*] Use conversion in f-string
+- zerver/tests/test_push_notifications.py:403:129: RUF010 [*] Use conversion in f-string
+```
+
+</p>
+</details>
+Rules changed: 1
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| RUF010 | 33 | 7 | 26 |
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.2±0.11ms     2.9 MB/sec    1.01     14.4±0.13ms     2.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.01ms     4.8 MB/sec    1.00      3.4±0.01ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00    424.4±0.94µs     7.0 MB/sec    1.00    423.4±0.92µs     7.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.9±0.02ms     4.4 MB/sec    1.01      5.9±0.03ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.7±0.01ms     6.0 MB/sec    1.01      6.8±0.02ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1459.0±4.25µs    11.4 MB/sec    1.01   1469.9±3.44µs    11.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    161.2±0.30µs    18.3 MB/sec    1.02    165.1±0.40µs    17.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.01ms     8.4 MB/sec    1.01      3.1±0.00ms     8.3 MB/sec
+parser/large/dataset.py                    1.00      5.4±0.00ms     7.6 MB/sec    1.16      6.3±0.01ms     6.5 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1059.4±0.56µs    15.7 MB/sec    1.13   1196.6±0.54µs    13.9 MB/sec
+parser/numpy/globals.py                    1.00    109.1±0.61µs    27.0 MB/sec    1.10    120.1±0.25µs    24.6 MB/sec
+parser/pydantic/types.py                   1.00      2.3±0.00ms    11.1 MB/sec    1.14      2.6±0.00ms     9.8 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     18.5±0.94ms     2.2 MB/sec    1.00     18.5±0.91ms     2.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.09      5.2±0.45ms     3.2 MB/sec    1.00      4.8±0.29ms     3.5 MB/sec
+linter/all-rules/numpy/globals.py          1.00   547.4±32.92µs     5.4 MB/sec    1.10   602.8±57.15µs     4.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.8±0.38ms     3.3 MB/sec    1.02      7.9±0.51ms     3.2 MB/sec
+linter/default-rules/large/dataset.py      1.01      9.4±0.55ms     4.3 MB/sec    1.00      9.3±0.48ms     4.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1933.6±85.28µs     8.6 MB/sec    1.04      2.0±0.12ms     8.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00   230.4±10.42µs    12.8 MB/sec    1.10   254.0±26.00µs    11.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.1±0.26ms     6.2 MB/sec    1.04      4.3±0.30ms     5.9 MB/sec
+parser/large/dataset.py                    1.02      8.0±0.51ms     5.1 MB/sec    1.00      7.9±0.35ms     5.2 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1475.4±78.79µs    11.3 MB/sec    1.04  1529.5±92.09µs    10.9 MB/sec
+parser/numpy/globals.py                    1.00   155.1±10.49µs    19.0 MB/sec    1.05   162.4±11.74µs    18.2 MB/sec
+parser/pydantic/types.py                   1.03      3.5±0.23ms     7.4 MB/sec    1.00      3.4±0.21ms     7.6 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/cst/matchers.rs`:144 on 2023-05-19 09:47_
+
+Can we avoid adding these new methods and instead pass a `ast::FormattedString` node as argument OR, if the rule should accept multiple nodes, define a new union that only contains the nodes relevant for that rule?
+
+
+
+---
+
+_@MichaReiser reviewed on 2023-05-19 09:47_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/rules/ruff/rules/explicit_f_string_type_conversion.rs`:87 on 2023-05-19 09:49_
+
+Is there a chance that this refactor changes the semantic of the code?
+
+---
+
+_@MichaReiser reviewed on 2023-05-19 09:49_
+
+---
+
+_@JonathanPlasse reviewed on 2023-05-19 10:34_
+
+---
+
+_Review comment by @JonathanPlasse on `crates/ruff/src/rules/ruff/rules/explicit_f_string_type_conversion.rs`:87 on 2023-05-19 10:34_
+
+It should not.
+https://peps.python.org/pep-3101/#explicit-conversion-flag
+
+---
+
+_@JonathanPlasse reviewed on 2023-05-19 11:11_
+
+---
+
+_Review comment by @JonathanPlasse on `crates/ruff/src/cst/matchers.rs`:144 on 2023-05-19 11:11_
+
+I will make a following PR for this.
+
+---
+
+_@charliermarsh reviewed on 2023-05-19 12:39_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff/src/rules/ruff/rules/explicit_f_string_type_conversion.rs`:153 on 2023-05-19 12:39_
+
+I think we should generate a separate fix for each diagnostic. As-is, the diagnostic only highlights one violation (correct), but the fix shows modifying the whole string.
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-05-19 18:58_
+
+---
+
+_Merged by @charliermarsh on 2023-05-19 19:05_
+
+---
+
+_Closed by @charliermarsh on 2023-05-19 19:05_
+
+---
+
+_Branch deleted on 2023-05-19 19:06_
+
+---

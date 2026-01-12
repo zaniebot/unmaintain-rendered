@@ -1,0 +1,109 @@
+```yaml
+number: 4683
+title: Fix PLW3301 false positive single argument nested min/max
+type: pull_request
+state: merged
+author: JonathanPlasse
+labels:
+  - bug
+assignees: []
+merged: true
+base: main
+head: fix-plw3301-false-positive-single-argument-nested-min-max
+created_at: 2023-05-27T16:33:24Z
+updated_at: 2023-05-27T19:37:41Z
+url: https://github.com/astral-sh/ruff/pull/4683
+synced_at: 2026-01-12T03:50:03Z
+```
+
+# Fix PLW3301 false positive single argument nested min/max
+
+---
+
+_Pull request opened by @JonathanPlasse on 2023-05-27 16:33_
+
+- Close #4682
+<!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+Nested `min`/`max` with a single argument should not be flattened.
+
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+## Test Plan
+
+Added a fixture.
+
+<!-- How was it tested? -->
+
+
+---
+
+_Comment by @github-actions[bot] on 2023-05-27 17:08_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     17.3±0.53ms     2.3 MB/sec    1.02     17.7±0.37ms     2.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.2±0.27ms     4.0 MB/sec    1.00      4.2±0.14ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00   529.5±18.14µs     5.6 MB/sec    1.01   533.5±23.82µs     5.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.2±0.20ms     3.5 MB/sec    1.01      7.3±0.19ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.1±0.16ms     5.0 MB/sec    1.04      8.4±0.19ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1778.2±45.42µs     9.4 MB/sec    1.04  1844.6±54.36µs     9.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00   216.9±10.66µs    13.6 MB/sec    1.02    221.5±9.28µs    13.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.09ms     6.9 MB/sec    1.05      3.9±0.11ms     6.6 MB/sec
+parser/large/dataset.py                    1.00      6.3±0.14ms     6.5 MB/sec    1.03      6.4±0.13ms     6.3 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1242.8±37.99µs    13.4 MB/sec    1.03  1282.7±41.69µs    13.0 MB/sec
+parser/numpy/globals.py                    1.00    126.0±6.43µs    23.4 MB/sec    1.02    129.1±5.29µs    22.9 MB/sec
+parser/pydantic/types.py                   1.00      2.7±0.08ms     9.3 MB/sec    1.03      2.8±0.10ms     9.0 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     17.0±0.30ms     2.4 MB/sec    1.00     16.9±0.27ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.3±0.10ms     3.9 MB/sec    1.00      4.3±0.11ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.01   509.8±11.32µs     5.8 MB/sec    1.00   507.0±14.40µs     5.8 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.2±0.13ms     3.6 MB/sec    1.00      7.1±0.11ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.01      8.4±0.11ms     4.9 MB/sec    1.00      8.3±0.09ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02  1806.2±43.27µs     9.2 MB/sec    1.00  1777.6±25.27µs     9.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    206.0±4.31µs    14.3 MB/sec    1.00    206.4±7.17µs    14.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.07ms     6.7 MB/sec    1.00      3.8±0.06ms     6.8 MB/sec
+parser/large/dataset.py                    1.23      8.1±0.09ms     5.0 MB/sec    1.00      6.6±0.11ms     6.2 MB/sec
+parser/numpy/ctypeslib.py                  1.20  1505.9±36.93µs    11.1 MB/sec    1.00  1253.4±28.20µs    13.3 MB/sec
+parser/numpy/globals.py                    1.16    146.6±4.56µs    20.1 MB/sec    1.00    126.6±2.91µs    23.3 MB/sec
+parser/pydantic/types.py                   1.21      3.4±0.07ms     7.5 MB/sec    1.00      2.8±0.04ms     9.0 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-05-27 19:33_
+
+---
+
+_Merged by @charliermarsh on 2023-05-27 19:34_
+
+---
+
+_Closed by @charliermarsh on 2023-05-27 19:34_
+
+---
+
+_Branch deleted on 2023-05-27 19:37_
+
+---

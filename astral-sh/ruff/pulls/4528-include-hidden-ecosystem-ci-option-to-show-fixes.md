@@ -1,0 +1,121 @@
+```yaml
+number: 4528
+title: Include hidden ecosystem_ci option to show fixes without feature
+type: pull_request
+state: merged
+author: konstin
+labels: []
+assignees: []
+merged: true
+base: main
+head: ecosystem_ci_without_feature_flag
+created_at: 2023-05-19T12:20:38Z
+updated_at: 2023-05-24T02:22:24Z
+url: https://github.com/astral-sh/ruff/pull/4528
+synced_at: 2026-01-12T03:50:03Z
+```
+
+# Include hidden ecosystem_ci option to show fixes without feature
+
+---
+
+_Pull request opened by @konstin on 2023-05-19 12:20_
+
+This removes the feature flag but adds a warning akin to #4453, so we can use the ecosystem ci option to diff fixes with pypi and other normal builds. This reduces the possible build matrix .
+
+Example output:
+```
+$ target/debug/ruff --no-cache --select F841 crates/ruff/resources/test/fixtures/flake8_pyi/PYI001.pyi --show-fixes
+crates/ruff/resources/test/fixtures/flake8_pyi/PYI001.pyi:16:5: F841 [*] Local variable `T` is assigned to but never used
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+$  target/debug/ruff --no-cache --select F841 crates/ruff/resources/test/fixtures/flake8_pyi/PYI001.pyi --ecosystem-ci --show-fixes
+warning: The formatting of fixes emitted by this option is a work-in-progress, subject to change at any time, and intended for use with the ecosystem ci scripts only.
+crates/ruff/resources/test/fixtures/flake8_pyi/PYI001.pyi:16:5: F841 [*] Local variable `T` is assigned to but never used
+ℹ Suggested fix
+13 13 | _P = ParamSpec("_P")  # OK
+14 14 |
+15 15 | def f():
+16    |-    T = TypeVar("T")  # OK
+   16 |+    TypeVar("T")  # OK
+
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+```
+
+---
+
+_Comment by @github-actions[bot] on 2023-05-19 12:35_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+0, -0, 1 error(s))
+
+<details><summary>bokeh (error)</summary>
+https://github.com/bokeh/bokeh ref branch-3.2 select ALL ignore  exclude 
+<p>
+
+```
+error: TOML parse error at line 169, column 12
+    |
+169 | [tool.ruff.pyupgrade]
+    |            ^^^^^^^^^
+unknown field `pyupgrade`, expected one of `allowed-confusables`, `builtins`, `cache-dir`, `dummy-variable-rgx`, `exclude`, `extend`, `extend-exclude`, `extend-include`, `extend-ignore`, `extend-select`, `extend-fixable`, `extend-unfixable`, `external`, `fix`, `fix-only`, `fixable`, `format`, `force-exclude`, `ignore`, `ignore-init-module-imports`, `include`, `line-length`, `required-version`, `respect-gitignore`, `select`, `show-source`, `show-fixes`, `src`, `namespace-packages`, `target-version`, `task-tags`, `typing-modules`, `unfixable`, `flake8-annotations`, `flake8-bandit`, `flake8-bugbear`, `flake8-builtins`, `flake8-comprehensions`, `flake8-errmsg`, `flake8-quotes`, `flake8-self`, `flake8-tidy-imports`, `flake8-type-checking`, `flake8-gettext`, `flake8-implicit-str-concat`, `flake8-import-conventions`, `flake8-pytest-style`, `flake8-unused-arguments`, `isort`, `mccabe`, `pep8-naming`, `pycodestyle`, `pydocstyle`, `pylint`, `per-file-ignores`
+
+
+```
+
+</p>
+</details>
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.6±0.07ms     2.8 MB/sec    1.00     14.6±0.06ms     2.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.5±0.03ms     4.7 MB/sec    1.00      3.5±0.02ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.01    427.9±0.56µs     6.9 MB/sec    1.00    425.2±1.39µs     6.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.1±0.06ms     4.2 MB/sec    1.00      6.1±0.06ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.02      6.9±0.03ms     5.9 MB/sec    1.00      6.8±0.02ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02   1483.9±4.98µs    11.2 MB/sec    1.00   1455.0±4.81µs    11.4 MB/sec
+linter/default-rules/numpy/globals.py      1.01    163.3±0.29µs    18.1 MB/sec    1.00    161.9±1.03µs    18.2 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.1±0.01ms     8.2 MB/sec    1.00      3.1±0.01ms     8.3 MB/sec
+parser/large/dataset.py                    1.01      5.4±0.01ms     7.5 MB/sec    1.00      5.4±0.01ms     7.6 MB/sec
+parser/numpy/ctypeslib.py                  1.01   1062.0±1.39µs    15.7 MB/sec    1.00   1055.9±1.65µs    15.8 MB/sec
+parser/numpy/globals.py                    1.01    109.3±0.45µs    27.0 MB/sec    1.00    108.6±0.30µs    27.2 MB/sec
+parser/pydantic/types.py                   1.01      2.3±0.00ms    11.0 MB/sec    1.00      2.3±0.00ms    11.1 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     20.3±0.70ms     2.0 MB/sec    1.00     20.0±0.76ms     2.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      5.2±0.27ms     3.2 MB/sec    1.00      5.2±0.23ms     3.2 MB/sec
+linter/all-rules/numpy/globals.py          1.01   606.1±29.94µs     4.9 MB/sec    1.00   601.0±24.16µs     4.9 MB/sec
+linter/all-rules/pydantic/types.py         1.01      8.6±0.32ms     3.0 MB/sec    1.00      8.5±0.34ms     3.0 MB/sec
+linter/default-rules/large/dataset.py      1.02     10.3±0.28ms     3.9 MB/sec    1.00     10.2±0.28ms     4.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.1±0.08ms     7.9 MB/sec    1.01      2.1±0.09ms     7.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00    250.3±9.74µs    11.8 MB/sec    1.03   257.1±14.90µs    11.5 MB/sec
+linter/default-rules/pydantic/types.py     1.01      4.6±0.12ms     5.5 MB/sec    1.00      4.6±0.17ms     5.6 MB/sec
+parser/large/dataset.py                    1.00      8.4±0.22ms     4.9 MB/sec    1.00      8.4±0.26ms     4.9 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1624.9±47.89µs    10.2 MB/sec    1.02  1659.0±73.45µs    10.0 MB/sec
+parser/numpy/globals.py                    1.02    168.5±8.59µs    17.5 MB/sec    1.00    165.0±9.06µs    17.9 MB/sec
+parser/pydantic/types.py                   1.00      3.6±0.09ms     7.1 MB/sec    1.00      3.6±0.11ms     7.1 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Merged by @charliermarsh on 2023-05-24 02:22_
+
+---
+
+_Closed by @charliermarsh on 2023-05-24 02:22_
+
+---
+
+_Branch deleted on 2023-05-24 02:22_
+
+---

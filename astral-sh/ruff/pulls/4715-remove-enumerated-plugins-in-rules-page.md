@@ -1,0 +1,108 @@
+```yaml
+number: 4715
+title: Remove enumerated plugins in rules page
+type: pull_request
+state: merged
+author: JonathanPlasse
+labels:
+  - documentation
+assignees: []
+merged: true
+base: main
+head: remove-enumerated-plugins-in-rules-pages
+created_at: 2023-05-29T22:11:52Z
+updated_at: 2023-05-29T22:45:49Z
+url: https://github.com/astral-sh/ruff/pull/4715
+synced_at: 2026-01-12T03:50:03Z
+```
+
+# Remove enumerated plugins in rules page
+
+---
+
+_Pull request opened by @JonathanPlasse on 2023-05-29 22:11_
+
+- Close #4709
+<!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+Remove the manually generated list of plugins on the rules page as they are already present on the table of content on the left.
+
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+## Test Plan
+
+n/a
+<!-- How was it tested? -->
+
+
+---
+
+_Label `documentation` added by @charliermarsh on 2023-05-29 22:14_
+
+---
+
+_Merged by @charliermarsh on 2023-05-29 22:20_
+
+---
+
+_Closed by @charliermarsh on 2023-05-29 22:20_
+
+---
+
+_Branch deleted on 2023-05-29 22:23_
+
+---
+
+_Comment by @github-actions[bot] on 2023-05-29 22:23_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     16.0±0.37ms     2.5 MB/sec    1.00     15.8±0.34ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.8±0.08ms     4.4 MB/sec    1.00      3.8±0.09ms     4.4 MB/sec
+linter/all-rules/numpy/globals.py          1.06   517.3±25.97µs     5.7 MB/sec    1.00   485.7±12.58µs     6.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.6±0.18ms     3.9 MB/sec    1.01      6.6±0.21ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.4±0.16ms     5.5 MB/sec    1.02      7.6±0.19ms     5.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1657.9±55.79µs    10.0 MB/sec    1.00  1656.8±39.27µs    10.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00    199.4±7.41µs    14.8 MB/sec    1.03   205.8±14.56µs    14.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.4±0.08ms     7.5 MB/sec    1.01      3.4±0.11ms     7.4 MB/sec
+parser/large/dataset.py                    1.00      5.9±0.14ms     6.9 MB/sec    1.00      5.9±0.14ms     7.0 MB/sec
+parser/numpy/ctypeslib.py                  1.01  1168.0±41.45µs    14.3 MB/sec    1.00  1158.8±32.93µs    14.4 MB/sec
+parser/numpy/globals.py                    1.02    116.7±4.43µs    25.3 MB/sec    1.00    114.8±3.25µs    25.7 MB/sec
+parser/pydantic/types.py                   1.01      2.6±0.08ms    10.0 MB/sec    1.00      2.5±0.06ms    10.1 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.02     17.8±0.15ms     2.3 MB/sec    1.00     17.4±0.12ms     2.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.5±0.04ms     3.7 MB/sec    1.00      4.4±0.04ms     3.8 MB/sec
+linter/all-rules/numpy/globals.py          1.01    461.2±7.77µs     6.4 MB/sec    1.00    457.3±7.01µs     6.5 MB/sec
+linter/all-rules/pydantic/types.py         1.02      7.5±0.05ms     3.4 MB/sec    1.00      7.4±0.08ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.07      9.2±0.07ms     4.4 MB/sec    1.00      8.6±0.04ms     4.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.05  1915.5±10.94µs     8.7 MB/sec    1.00  1828.3±14.84µs     9.1 MB/sec
+linter/default-rules/numpy/globals.py      1.03    204.3±2.64µs    14.4 MB/sec    1.00   199.3±11.69µs    14.8 MB/sec
+linter/default-rules/pydantic/types.py     1.05      4.1±0.04ms     6.2 MB/sec    1.00      3.9±0.04ms     6.5 MB/sec
+parser/large/dataset.py                    1.02      6.8±0.03ms     6.0 MB/sec    1.00      6.7±0.03ms     6.1 MB/sec
+parser/numpy/ctypeslib.py                  1.02  1292.8±13.36µs    12.9 MB/sec    1.00  1273.5±13.87µs    13.1 MB/sec
+parser/numpy/globals.py                    1.01    134.2±1.06µs    22.0 MB/sec    1.00    132.8±1.95µs    22.2 MB/sec
+parser/pydantic/types.py                   1.01      2.9±0.02ms     8.8 MB/sec    1.00      2.9±0.02ms     8.9 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---

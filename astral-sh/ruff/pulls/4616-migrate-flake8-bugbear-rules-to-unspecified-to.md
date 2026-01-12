@@ -1,0 +1,115 @@
+```yaml
+number: 4616
+title: "Migrate flake8_bugbear rules to `unspecified`  to `suggested`"
+type: pull_request
+state: merged
+author: sladyn98
+labels: []
+assignees: []
+merged: true
+base: main
+head: migrate-flake8-unspecified
+created_at: 2023-05-24T05:00:37Z
+updated_at: 2023-05-24T19:24:49Z
+url: https://github.com/astral-sh/ruff/pull/4616
+synced_at: 2026-01-12T03:50:03Z
+```
+
+# Migrate flake8_bugbear rules to `unspecified`  to `suggested`
+
+---
+
+_Pull request opened by @sladyn98 on 2023-05-24 05:00_
+
+<!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+<!-- What's the purpose of the change? What does it do, and why? -->
+This PR aims to migrate unspecified code to safe or maybe_correct
+
+Refers: https://github.com/charliermarsh/ruff/issues/4184
+
+## Test Plan
+
+<!-- How was it tested? -->
+All tests pass 
+
+
+---
+
+_Comment by @github-actions[bot] on 2023-05-24 05:10_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     18.5±0.60ms     2.2 MB/sec    1.04     19.3±0.64ms     2.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.3±0.10ms     3.9 MB/sec    1.02      4.4±0.19ms     3.8 MB/sec
+linter/all-rules/numpy/globals.py          1.01   553.4±26.28µs     5.3 MB/sec    1.00   546.6±35.09µs     5.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.6±0.18ms     3.4 MB/sec    1.00      7.6±0.23ms     3.4 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.7±0.41ms     4.7 MB/sec    1.01      8.8±0.20ms     4.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1882.1±69.96µs     8.8 MB/sec    1.01  1894.1±47.03µs     8.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00   227.8±12.27µs    13.0 MB/sec    1.01    229.1±8.38µs    12.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.9±0.11ms     6.6 MB/sec    1.01      3.9±0.08ms     6.5 MB/sec
+parser/large/dataset.py                    1.00      6.6±0.15ms     6.2 MB/sec    1.02      6.7±0.20ms     6.1 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1301.5±31.06µs    12.8 MB/sec    1.01  1309.4±42.10µs    12.7 MB/sec
+parser/numpy/globals.py                    1.00    129.1±4.05µs    22.9 MB/sec    1.01    130.5±5.69µs    22.6 MB/sec
+parser/pydantic/types.py                   1.00      2.8±0.06ms     9.0 MB/sec    1.02      2.9±0.10ms     8.8 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     16.4±0.07ms     2.5 MB/sec    1.00     16.3±0.09ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.2±0.03ms     4.0 MB/sec    1.00      4.2±0.08ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    496.8±5.20µs     5.9 MB/sec    1.00    496.5±9.50µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.9±0.05ms     3.7 MB/sec    1.00      6.9±0.05ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.1±0.06ms     5.0 MB/sec    1.00      8.1±0.06ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1740.3±20.14µs     9.6 MB/sec    1.01  1755.3±20.88µs     9.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    203.3±2.38µs    14.5 MB/sec    1.02    208.1±6.44µs    14.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.03ms     7.0 MB/sec    1.02      3.7±0.03ms     6.8 MB/sec
+parser/large/dataset.py                    1.00      6.4±0.04ms     6.3 MB/sec    1.01      6.5±0.09ms     6.3 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1220.2±16.50µs    13.6 MB/sec    1.00  1222.0±21.92µs    13.6 MB/sec
+parser/numpy/globals.py                    1.00    123.9±1.38µs    23.8 MB/sec    1.01    125.0±2.27µs    23.6 MB/sec
+parser/pydantic/types.py                   1.00      2.7±0.02ms     9.3 MB/sec    1.00      2.7±0.03ms     9.3 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/rules/flake8_bugbear/rules/setattr_with_constant.rs`:84 on 2023-05-24 05:38_
+
+You can now remove the deprecated attribute
+
+---
+
+_@MichaReiser reviewed on 2023-05-24 05:39_
+
+I'll leave this to @charliermarsh to review. Reasoning about python semantics is still hard
+
+---
+
+_Merged by @charliermarsh on 2023-05-24 16:16_
+
+---
+
+_Closed by @charliermarsh on 2023-05-24 16:16_
+
+---
+
+_Branch deleted on 2023-05-24 19:24_
+
+---
