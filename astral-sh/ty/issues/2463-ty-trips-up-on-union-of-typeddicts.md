@@ -2,14 +2,14 @@
 number: 2463
 title: ty trips up on Union of TypedDicts
 type: issue
-state: open
+state: closed
 author: adamjstewart
 labels: []
 assignees: []
 created_at: 2026-01-12T12:31:46Z
-updated_at: 2026-01-12T15:20:13Z
+updated_at: 2026-01-12T16:56:31Z
 url: https://github.com/astral-sh/ty/issues/2463
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-12T18:23:17Z
 ```
 
 # ty trips up on Union of TypedDicts
@@ -95,5 +95,15 @@ I'm confused how something can satisfy type `Foo` but not `Optional[Union[Foo, .
 ### Version
 
 ty 0.0.11
+
+---
+
+_Comment by @ibraheemdev on 2026-01-12 16:56_
+
+Thanks for the report. This is a known issue, and should be resolved by https://github.com/astral-sh/ruff/pull/22294.
+
+---
+
+_Closed by @ibraheemdev on 2026-01-12 16:56_
 
 ---

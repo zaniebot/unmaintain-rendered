@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-11-18T16:56:03Z
-updated_at: 2026-01-12T15:22:47Z
+updated_at: 2026-01-12T18:10:21Z
 url: https://github.com/astral-sh/uv/issues/16769
-synced_at: 2026-01-12T16:02:38Z
+synced_at: 2026-01-12T18:23:48Z
 ```
 
 # Add Setting To No Longer Force Lock Files to have 777 Permissions in Linux
@@ -151,5 +151,13 @@ CIS 6.1.10 - "Ensure no world writable files exist".  I attached a PDF of the CI
 _Comment by @zanieb on 2026-01-12 15:22_
 
 Sorry but those are just best practice security rules, there's nothing there that talks about concrete attack vectors.
+
+---
+
+_Comment by @dcwatson on 2026-01-12 18:10_
+
+Agreed that these are best practices. Personally I have a hard time imagining an "attack" that wasn't already possible - I can create world-writable files in /tmp as easy as uv can. That said, it _is_ best practice not to leave world-writable files lying around if not necessary, and we (and probably other orgs) need to appease the scanner gods from time to time.
+
+I'm happy to do whatever validation work you need or submit a PR for this (although I see Claude beat me to it).
 
 ---

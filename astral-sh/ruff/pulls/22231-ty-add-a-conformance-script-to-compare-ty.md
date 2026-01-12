@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: wld/improve-conformance-suite
 created_at: 2025-12-28T01:15:26Z
-updated_at: 2026-01-12T15:21:32Z
+updated_at: 2026-01-12T18:04:20Z
 url: https://github.com/astral-sh/ruff/pull/22231
-synced_at: 2026-01-12T15:57:44Z
+synced_at: 2026-01-12T18:23:35Z
 ```
 
 # [ty] Add a conformance script to compare ty diagnostics with expected errors
@@ -659,5 +659,109 @@ _@AlexWaygood reviewed on 2026-01-12 15:21_
 This is great!!
 
 I think for use in CI, another great feature would be if the in-depth sections below the summary table could link directly to each line where a diagnostic was added or removed. That would make it very easy for us to debug exactly why a diagnostic was being added or removed as the result of a PR. But that could always be done as a followup (either by you or me!)
+
+---
+
+_@WillDuke reviewed on 2026-01-12 16:47_
+
+---
+
+_Review comment by @WillDuke on `scripts/conformance.py`:396 on 2026-01-12 16:47_
+
+More jargon! Precision is the fraction of diagnostics which are true errors (the number of true positives divided by the total number of diagnostics), while recall is the fraction of true errors for which ty raises a diagnostic. My goal was to give you a sense of how accurate ty is when it raises a diagnostic (precision) and how comprehensive its ability to detect errors is (recall).
+
+I can certainly remove the abbreviations. 
+
+---
+
+_@WillDuke reviewed on 2026-01-12 16:49_
+
+---
+
+_Review comment by @WillDuke on `scripts/conformance.py`:396 on 2026-01-12 16:49_
+
+If you'd like to keep these stats, I could include a sentence explaining what they mean in the output. 
+
+---
+
+_@AlexWaygood reviewed on 2026-01-12 17:00_
+
+---
+
+_Review comment by @AlexWaygood on `scripts/conformance.py`:396 on 2026-01-12 17:00_
+
+Yeah, these seem like useful statistics for sure! But rather than including them in the table, I think I'd prefer it if the script wrote out a descriptive sentence below the table: "The percentage of diagnostic emitted that were true positives increased from 49% to 51%", "The percentage of diagnostics emitted that were true positives held steady at 63%" or "The percentage of diagnostics emitted that were true positives fell from 78% to 74%", etc.
+
+---
+
+_Review comment by @MichaReiser on `scripts/conformance.py`:410 on 2026-01-12 17:12_
+
+The default here feels a bit arbitrary. I'm leaning towards removing it
+
+---
+
+_Review comment by @MichaReiser on `scripts/conformance.py`:417 on 2026-01-12 17:12_
+
+I think defaulting to the latest version is a more sensible default than some arbitrary old version
+
+```suggestion
+        default=["uvx", "ty@latest"],
+```
+
+---
+
+_Review comment by @MichaReiser on `scripts/conformance.py`:422 on 2026-01-12 17:13_
+
+Maybe just `--tests-path`?
+
+---
+
+_Review comment by @MichaReiser on `scripts/conformance.py`:396 on 2026-01-12 17:14_
+
+I find sentences much harder to parse. It's what I like about codspeed. I can just look at the last column to see the result. 
+
+Adding some documentation at the end of the output makes sense to me
+
+---
+
+_@MichaReiser approved on 2026-01-12 17:17_
+
+This is great. Thank you
+
+---
+
+_@AlexWaygood reviewed on 2026-01-12 17:39_
+
+---
+
+_Review comment by @AlexWaygood on `scripts/conformance.py`:396 on 2026-01-12 17:39_
+
+I'm fine with a jargony table and some documentation below it that explains the jargon :-)
+
+though I wonder if we could add a visual indicator somehow that makes it clear whether a number in the table going up or down is a good or bad thing without having to read a separate documentation paragraph somewhere else. Maybe something similar to the emoji suggestion I had in https://github.com/astral-sh/ruff/pull/22231#discussion_r2682732308?
+
+---
+
+_@AlexWaygood reviewed on 2026-01-12 17:40_
+
+---
+
+_Review comment by @AlexWaygood on `scripts/conformance.py`:396 on 2026-01-12 17:40_
+
+> I'm fine with a jargony table and some documentation below it that explains the jargon :-)
+
+we can always do this for now and iterate on it
+
+---
+
+_@MichaReiser reviewed on 2026-01-12 18:04_
+
+---
+
+_Review comment by @MichaReiser on `scripts/conformance.py`:396 on 2026-01-12 18:04_
+
+This is what biomejs does https://github.com/biomejs/biome/pull/8361#issuecomment-3613423566
+
+and it does add nice emoji's for every row based on the change https://github.com/biomejs/biome/blob/f2445269b6a7bff5d81ee08a6a321bc229b61b50/xtask/coverage/src/results.rs#L37-L72
 
 ---

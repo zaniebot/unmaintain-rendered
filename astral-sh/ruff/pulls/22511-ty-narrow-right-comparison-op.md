@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: narrow-right-comparison-op
 created_at: 2026-01-11T23:56:30Z
-updated_at: 2026-01-12T11:46:39Z
+updated_at: 2026-01-12T17:01:15Z
 url: https://github.com/astral-sh/ruff/pull/22511
-synced_at: 2026-01-12T15:57:51Z
+synced_at: 2026-01-12T18:23:35Z
 ```
 
 # [ty] narrow right comparison op
@@ -374,5 +374,21 @@ I was also a bit confused about why you had the `matches!(op, ast::CmpOp::Eq | a
 _@AlexWaygood reviewed on 2026-01-12 11:46_
 
 Thanks, this is great!!
+
+---
+
+_@drbh reviewed on 2026-01-12 17:01_
+
+---
+
+_Review comment by @drbh on `crates/ty_python_semantic/src/types/narrow.rs`:1204 on 2026-01-12 17:01_
+
+>  maybe this branch could just go below that one?
+
+oh great point, thanks for the suggestion! applied the patch in the latest changes. Thanks @AlexWaygood 
+
+> arrowing the right-hand side is only valid if op is a symmetric operator, and in/not in are not symmetric operators?
+
+yea exactly the reasoning I had, in the latest changes I added two new tests to show the symmetric and non-symmetric cases to `crates/ty_python_semantic/src/types/infer/tests.rs`
 
 ---

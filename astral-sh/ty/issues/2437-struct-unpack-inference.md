@@ -6,11 +6,12 @@ state: open
 author: sakgoyal
 labels:
   - question
+  - wish
 assignees: []
 created_at: 2026-01-10T22:44:38Z
-updated_at: 2026-01-12T06:35:06Z
+updated_at: 2026-01-12T17:39:54Z
 url: https://github.com/astral-sh/ty/issues/2437
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-12T18:23:17Z
 ```
 
 # Struct unpack inference
@@ -111,5 +112,9 @@ Can you provide a small example of this case? I don't see any `struct.unpack` in
 _Comment by @dhruvmanila on 2026-01-12 06:35_
 
 Oh, is `get_unpack_type` an equivalent implementation of `struct.unpack` ?
+
+---
+
+_Label `wish` added by @MichaReiser on 2026-01-12 17:39_
 
 ---

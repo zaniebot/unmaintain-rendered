@@ -1,0 +1,111 @@
+```yaml
+number: 1432
+title: "feat(ignore): Allow parallel-walker to borrow data"
+type: pull_request
+state: closed
+author: epage
+labels:
+  - rollup
+assignees: []
+base: master
+head: lifetimes
+created_at: 2019-11-21T14:10:16Z
+updated_at: 2020-02-17T22:16:38Z
+url: https://github.com/BurntSushi/ripgrep/pull/1432
+synced_at: 2026-01-12T18:23:13Z
+```
+
+# feat(ignore): Allow parallel-walker to borrow data
+
+---
+
+_@epage_
+
+This makes it so the caller can more easily refactor from
+single-threaded to multi-threaded walking. If they want to support both,
+this makes it easier to do so with a single initialization code-path.
+
+In a separate commit, ripgrep is updated to use this. I assume the performance difference is negligible
+but it cleans up the code and provides a test case for ignores changes. I kept it as a separate commit so we can more easily validate that compatibility was not broken.
+
+Closes #1410
+
+---
+
+_Comment by @epage on 2019-11-28 04:08_
+
+@BurntSushi any word on this? 
+
+As for the test failures, they seem unrelated to my changes.
+
+---
+
+_Comment by @BurntSushi on 2019-11-28 04:18_
+
+My todo list has grown very long from a period of inactivity and this touches on some of the more complex areas that I think have not been well done, so I've been avoiding diving back into it. So to be honest, it could be some time before I look at this.
+
+I glanced over things, and I have these concerns:
+
+1. I don't really know what problem you're trying to solve. I see your PR description, but I don't grok it. I think an example would help.
+2. An extra dependency has been added, so I'll need to audit that and consider the trade offs there.
+3. It looks like public docs have changed? It's there a breaking change lurking?
+
+---
+
+_Comment by @epage on 2019-11-28 14:06_
+
+> My todo list has grown very long from a period of inactivity and this touches on some of the more complex areas that I think have not been well done, so I've been avoiding diving back into it. So to be honest, it could be some time before I look at this.
+
+I understand; I'm in the same boat. This is one of the reasons I'm intentionally focusing on the area of most concern (for me) rather than also worrying about the Visitor stuff.  This is also why I didn't ping you earlier on the issues but waited until a PR was available so that you weren't having to talk to someone about something theoretical that they might not get to.
+
+> I don't really know what problem you're trying to solve. I see your PR description, but I don't grok it. I think an example would help.
+
+The problem I'm trying to solve becomes clearer when you look at [the change to ripgrep](https://github.com/BurntSushi/ripgrep/pull/1432/files#diff-639fbc4ef05b315af92b4d836c31b023L129) I made.
+
+The reason I care is that this will help keep my code simple.  For ripgrep, parallel and non-parallel code paths are completely separate so it doesn't make too much of a difference.  For my project, they are branches within the same function.  I don't want to put everything into `Arc`s just because the parallel code path requires it and I don't want to fork the code paths.
+
+> An extra dependency has been added, so I'll need to audit that and consider the trade offs there.
+
+I added `crossbeam_utils`.  It is already an indirect dependency of `ignore` through `crossbeam_channels`.
+
+> It looks like public docs have changed? It's there a breaking change lurking?
+
+I've reverted the change.  It was a side effect of the code's evolution.  I started in my Visitor branch and that was the comment for the visitor entry point. My motivation for the Visitor work was to give me more concrete types to iterate through lifetime issues for better compiler messages. When I saw some inactivity from you and was concerned about prioritizing my changes, I pulled the lifetime stuff off of that branch to keep the change focused.
+
+I do not expect any breaking changes from this.  All I've done is made the API more accepting of inputs.  A limited test case of this is that I kept my `ripgrep` change to a separate commit and am able to build old and new `ripgrep` against the new `ignore`.
+
+---
+
+_Comment by @epage on 2019-11-28 14:07_
+
+And of course, go enjoy thanksgiving :) I don't need immediate responses back.
+
+---
+
+_@BurntSushi approved on 2020-02-17 14:54_
+
+Sorry about the delay, but I've finally found the time to move through the PR queue. I think this overall looks good! I am going to make a few small cosmetic tweaks and merge this in #1486. 
+
+---
+
+_Comment by @epage on 2020-02-17 15:26_
+
+Thanks!
+
+Again, I can understand the delays.  Happens in my projects too :/
+
+---
+
+_Comment by @BurntSushi on 2020-02-17 15:34_
+
+@epage Also, just to confirm, I did some light benchmarking with ripgrep before and after this change and I can't witness any performance differences (as was expected).
+
+---
+
+_Label `rollup` added by @BurntSushi on 2020-02-17 15:53_
+
+---
+
+_Closed by @BurntSushi on 2020-02-17 22:16_
+
+---

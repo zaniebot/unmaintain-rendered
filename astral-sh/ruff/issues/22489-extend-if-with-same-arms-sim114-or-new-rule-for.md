@@ -4,12 +4,14 @@ title: Extend if-with-same-arms (SIM114) or new rule for seperate if statements 
 type: issue
 state: open
 author: GideonBear
-labels: []
+labels:
+  - rule
+  - needs-decision
 assignees: []
 created_at: 2026-01-10T09:44:43Z
-updated_at: 2026-01-10T09:44:43Z
+updated_at: 2026-01-12T18:07:16Z
 url: https://github.com/astral-sh/ruff/issues/22489
-synced_at: 2026-01-12T15:54:58Z
+synced_at: 2026-01-12T18:23:23Z
 ```
 
 # Extend if-with-same-arms (SIM114) or new rule for seperate if statements that return
@@ -31,5 +33,13 @@ Take the following example: [playground](https://play.ruff.rs/a1efcc7f-af3e-4d6b
 I propose making SIM114 check, similarly to what RET505 checks in the first block, if the blocks return in all paths. If that is the case, pretend like it is `if-elif`, because the runtime behavior is identical.
 
 This will make the rule more complex, as it will need to run on pairs/sets of if statements. This can be a new RUF rule as well, if you don't want to overload SIM114.
+
+---
+
+_Label `rule` added by @ntBre on 2026-01-12 18:07_
+
+---
+
+_Label `needs-decision` added by @ntBre on 2026-01-12 18:07_
 
 ---

@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ibraheem/setitem-dunder-tcx
 created_at: 2025-12-22T22:52:37Z
-updated_at: 2025-12-30T23:30:22Z
+updated_at: 2026-01-12T17:48:45Z
 url: https://github.com/astral-sh/ruff/pull/22148
-synced_at: 2026-01-12T15:57:43Z
+synced_at: 2026-01-12T18:23:35Z
 ```
 
 # [ty] Use key and value parameter types as type context for `__setitem__` dunder calls
@@ -337,5 +337,45 @@ _@MichaReiser reviewed on 2025-12-30 08:10_
 _Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/infer/builder.rs`:7339 on 2025-12-30 08:10_
 
 Same here. This is also a rather big function that we now monomorphize for every possible combination of `I, F`. It would be nice if it could be avoided.
+
+---
+
+_Review comment by @carljm on `crates/ruff_python_ast/src/nodes.rs`:3413 on 2026-01-12 17:22_
+
+Should this also implement `FusedIterator`? And maybe `ExactSizeIterator` as well? (Though maybe we don't need to bother with the latter if we currently never need it anywhere.)
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/bidirectional.md`:300 on 2026-01-12 17:24_
+
+Worth adding TODO tests here for multi-inference? (I assume this would look like cases where the subscripted type is a union?)
+
+What about where `__setitem__` is overloaded?
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer/builder.rs`:4049 on 2026-01-12 17:45_
+
+This encodes some things (notably the `MemberLookupPolicy`) that feel like they should be encapsulated by a `try_call_dunder` method. I don't see any other usages of `callable` below -- why not pass the `object_ty` and dunder name into `self.infer_and_try_call_dunder`, and have it do this internally?
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer/builder.rs`:4068 on 2026-01-12 17:46_
+
+I think the ergonomics of argument handling for `self.infer_and_try_call_dunder` could probably be better? But we can defer that to once we have >1 use of it.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer/builder.rs`:13133 on 2026-01-12 17:48_
+
+```suggestion
+/// An expression representing the function argument at the given index, along with its type
+```
+
+---
+
+_@carljm approved on 2026-01-12 17:48_
+
+Thank you!
 
 ---

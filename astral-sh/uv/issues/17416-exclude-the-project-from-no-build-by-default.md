@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2026-01-12T13:43:52Z
-updated_at: 2026-01-12T16:13:05Z
+updated_at: 2026-01-12T16:50:13Z
 url: https://github.com/astral-sh/uv/issues/17416
-synced_at: 2026-01-12T16:13:59Z
+synced_at: 2026-01-12T18:23:49Z
 ```
 
 # Exclude the project from `no-build` by default
@@ -104,23 +104,10 @@ I didn't test other backends. Give me a few minutes to try them all.
 
 _Comment by @NMertsch on 2026-01-12 16:11_
 
-I now tried steps from the original post on all supported build backends. Results:
+I now tried steps from the original post on all supported build backends.
 
-* uv: works
-* hatch: error
-* flit: error
-* pdm: error
-* poetry: error
-* maturin: skipped (no rust toolchain installed)
-* scikit: error
-
-The error always looks the same:
-
-```text
-Building source distribution...
-  × Failed to build `C:\Users\...\my-package`
-  ╰─▶ Building source distributions is disabled
-```
+* `uv sync` behavior doesn't depend on the build backend. It always fails with `no-build = true` and always works without it.
+* `uv build` with `-no-build = true` only works for `--build-backend uv` and fails for all other backends (hatch, flit, pdm, poetry, scikit, setuptools; I skipped maturin because I don't have Rust installed). The error message is always the same: "Building source distributions is disabled".
 
 (Updated the original post: setuptools -> all backends besides uv_build)
 

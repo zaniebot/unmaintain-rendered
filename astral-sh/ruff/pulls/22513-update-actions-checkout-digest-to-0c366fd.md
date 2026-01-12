@@ -2,17 +2,18 @@
 number: 22513
 title: Update actions/checkout digest to 0c366fd
 type: pull_request
-state: open
+state: merged
 author: renovate
 labels:
   - internal
 assignees: []
+merged: true
 base: main
 head: renovate/actions-checkout-digest
 created_at: 2026-01-12T00:43:02Z
-updated_at: 2026-01-12T10:47:35Z
+updated_at: 2026-01-12T17:36:52Z
 url: https://github.com/astral-sh/ruff/pull/22513
-synced_at: 2026-01-12T15:57:51Z
+synced_at: 2026-01-12T18:23:35Z
 ```
 
 # Update actions/checkout digest to 0c366fd
@@ -120,5 +121,17 @@ _Comment by @AlexWaygood on 2026-01-12 10:47_
 > Why do I have to comment to re-open a PR???
 
 You don't, but the bot deleted the branch immediately after the PR was closed, so you need to restore the branch before you can reopen the PR (I've done so)
+
+---
+
+_Merged by @MichaReiser on 2026-01-12 17:36_
+
+---
+
+_Closed by @MichaReiser on 2026-01-12 17:36_
+
+---
+
+_Branch deleted on 2026-01-12 17:36_
 
 ---

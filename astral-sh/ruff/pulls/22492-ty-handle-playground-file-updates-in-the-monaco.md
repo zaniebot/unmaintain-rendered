@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: fix-playground-completions
 created_at: 2026-01-10T13:37:09Z
-updated_at: 2026-01-12T08:26:25Z
+updated_at: 2026-01-12T17:54:59Z
 url: https://github.com/astral-sh/ruff/pull/22492
-synced_at: 2026-01-12T15:57:51Z
+synced_at: 2026-01-12T18:23:35Z
 ```
 
 # [ty] Handle playground file updates in the monaco editor onChange
@@ -76,5 +76,19 @@ Yup, this fixes the bug for me! I can't review the typescript though 😆
 ---
 
 _Label `ty` added by @AlexWaygood on 2026-01-12 08:26_
+
+---
+
+_Comment by @MichaReiser on 2026-01-12 17:26_
+
+I hope to get to reviewing this tomorrow. One question from skimming the code: Could we use the same mechanism for setting changes or what's the reason that settings are handled differently?
+
+---
+
+_Comment by @RasmusNygren on 2026-01-12 17:54_
+
+> I hope to get to reviewing this tomorrow. One question from skimming the code: Could we use the same mechanism for setting changes or what's the reason that settings are handled differently?
+
+We could, but we update the options in a few different scenarios in Playground.tsx and I'm not sure it's an improvement to specifically handle the settings changes when a file is modified in the editor while the rest still has to remain in the playground.
 
 ---

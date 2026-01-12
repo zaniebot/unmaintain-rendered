@@ -8,13 +8,12 @@ labels:
   - ty
   - ecosystem-analyzer
 assignees: []
-draft: true
 base: main
 head: alex/starred-tuples-2
 created_at: 2026-01-11T16:35:18Z
-updated_at: 2026-01-12T12:33:38Z
+updated_at: 2026-01-12T18:06:52Z
 url: https://github.com/astral-sh/ruff/pull/22503
-synced_at: 2026-01-12T15:57:51Z
+synced_at: 2026-01-12T18:23:35Z
 ```
 
 # [ty] Fix `@Todo` type for starred expressions
@@ -25,11 +24,30 @@ _@AlexWaygood_
 
 ## Summary
 
-Fixes https://github.com/astral-sh/ty/issues/2071
+Fixes https://github.com/astral-sh/ty/issues/2071.
+
+`(1, *(2, 3), 4)` should be inferred as `tuple[Literal[1], Literal[2], Literal[3], Literal[4]]`, but we currently infer it as `tuple[Literal[1], @Todo(StarredExpression), Literal[4]]`, which causes a variety of false positives on user code because we infer a tuple of the wrong length altogether.
+
+This PR still leaves open a couple of TODOs, but they are much more narrowly scoped and low-impact:
+- Starred expressions in annotations are still TODOs (PEP 646):
+  ```py
+  # generic over a typevartuple
+  def f[*Ts](*args: *Ts): ...
+
+  # not generic, but also TODO:
+  def g(*args: *tuple[int, *tuple[str, ...]]): ...
+  ```
+- Starred expressions in class bases are still TODO:
+  ```py
+  bases = (int, object)
+  class Foo(*bases): ...  # still not inferred correctly
+  ```
 
 ## Test Plan
 
-<!-- How was it tested? -->
+- Mdtests added and extended
+- Lots of false positives going away in the ecosystem results
+- Some new diagnostics being added in the ecosystem, but these mostly look like true positives to me
 
 
 ---
@@ -336,5 +354,21 @@ _Comment by @astral-sh-bot[bot] on 2026-01-11 16:45_
 **[Full report with detailed diff](https://965ac6ec.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://965ac6ec.ty-ecosystem-ext.pages.dev/timing))
 
 
+
+---
+
+_Marked ready for review by @AlexWaygood on 2026-01-12 18:06_
+
+---
+
+_Review requested from @carljm by @AlexWaygood on 2026-01-12 18:06_
+
+---
+
+_Review requested from @sharkdp by @AlexWaygood on 2026-01-12 18:06_
+
+---
+
+_Review requested from @dcreager by @AlexWaygood on 2026-01-12 18:06_
 
 ---

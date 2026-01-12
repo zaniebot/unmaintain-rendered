@@ -8,9 +8,9 @@ labels:
   - cli
 assignees: []
 created_at: 2024-10-10T01:38:11Z
-updated_at: 2025-11-02T19:56:44Z
+updated_at: 2026-01-12T18:09:15Z
 url: https://github.com/astral-sh/uv/issues/8064
-synced_at: 2026-01-12T15:59:19Z
+synced_at: 2026-01-12T18:23:39Z
 ```
 
 # Support interactive script invocations
@@ -146,5 +146,21 @@ Anyways, I managed to achieve this effect for now by manually adding a `breakpoi
 _Comment by @technillogue on 2025-11-02 19:56_
 
 `uv sync --script script.py` does not handle requires-python. it would be great  if `--with-script` was reinstated, or if uv run could just accept the full set of python arguments (-i, -O, -OO, -u, -v, -W, -X)
+
+---
+
+_Comment by @ciarancourtney on 2026-01-12 18:09_
+
+To anyone looking for a workaround you can set`PYTHONINSPECT` directly in your script per the docs 
+https://docs.python.org/3/using/cmdline.html#envvar-PYTHONINSPECT
+
+> PYTHONINSPECT
+> If this is set to a non-empty string it is equivalent to specifying the [-i](https://docs.python.org/3/using/cmdline.html#cmdoption-i) option.
+> This variable can also be modified by Python code using [os.environ](https://docs.python.org/3/library/os.html#os.environ) to force inspect mode on program termination.
+
+```python
+import os
+os.environ["PYTHONINSPECT"] = "1"
+```
 
 ---

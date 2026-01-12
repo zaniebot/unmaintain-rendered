@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: wsl_shebang
 created_at: 2025-04-23T15:29:13Z
-updated_at: 2026-01-11T09:35:41Z
+updated_at: 2026-01-12T17:29:40Z
 url: https://github.com/astral-sh/ruff/pull/17584
-synced_at: 2026-01-12T15:56:02Z
+synced_at: 2026-01-12T18:23:34Z
 ```
 
 # Allow EXE001 & EXE002 on WSL, fix issues with other cases of mounting non-unix filesystems
@@ -235,5 +235,24 @@ _Comment by @MusicalNinjaDad on 2026-01-11 09:35_
 Is there something I could do to make this approach easier to maintain? I understand if you are reluctant to take over the additional test infrastructure. (@ntBre, @MichaReiser, @amyreese)
 
 The logic change itself is simple and shouldn't add maintenance burden, particularly with CI-based tests in place. I *could* remove the testing and just provide the logic, although personally I dislike the idea ;)
+
+---
+
+_Comment by @ntBre on 2026-01-12 17:29_
+
+Thanks again for your work on this! 
+
+Taking a quick look back at the diff, the main things that make this look hard to review to me are:
+- the changes to the nextest config
+- the added CI workflows
+- the added benchmarks
+- the modified build script
+- the platform-dependent `test_matrix` changes
+
+These all raise the bar of how closely I feel I need to review the changes compared to modifying the rule's Rust code or normal test fixtures.
+
+Beyond that, I'm just not that familiar with Windows and don't have a Windows machine (easily) available for testing. The core change does look straightforward, but it's also a bit surprising to create a temporary file and check its permissions (assuming I'm understanding correctly) instead of calling `is_wsl` from a third-party crate.
+
+Hopefully that gives some context. That's why the PR looks complicated to review to me in its current form and why I haven't found a chance to prioritize it yet.
 
 ---

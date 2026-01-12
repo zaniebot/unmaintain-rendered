@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-12T14:00:23Z
+updated_at: 2026-01-12T17:37:58Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-12T15:54:50Z
+synced_at: 2026-01-12T18:23:22Z
 ```
 
 # Dependency Dashboard
@@ -60,7 +60,9 @@ Unlike deprecated packages with official notices, abandonment is detected by rel
 
 The following updates are awaiting their schedule. To get an update now, click on a checkbox below.
 
+ - [ ] <!-- unschedule-branch=renovate/actions-checkout-digest -->Update actions/checkout digest to 0c366fd
  - [ ] <!-- unschedule-branch=renovate/rust-wasm-bindgen-monorepo -->Update rust-wasm-bindgen monorepo (`js-sys`, `wasm-bindgen`, `wasm-bindgen-test`)
+ - [ ] <!-- unschedule-branch=renovate/npm-development-dependencies -->Update dependency typescript-eslint to v8.52.0
  - [ ] <!-- unschedule-branch=renovate/prek-dependencies -->Update pre-commit hook mdformat-mkdocs to v5.1.1
  - [ ] <!-- unschedule-branch=renovate/codspeed-criterion-compat-4.x-lockfile -->Update Rust crate codspeed-criterion-compat to v4.2.0
  - [ ] <!-- unschedule-branch=renovate/divan-4.x-lockfile -->Update Rust crate divan to v4.2.0
@@ -82,7 +84,6 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/toml-0.x-lockfile -->Update Rust crate toml to v0.9.11
  - [ ] <!-- approvePr-branch=renovate/url-2.x-lockfile -->Update Rust crate url to v2.5.8
  - [ ] <!-- approvePr-branch=renovate/tomli-2.x -->Update dependency tomli to v2.4.0
- - [ ] <!-- approvePr-branch=renovate/npm-development-dependencies -->Update NPM Development dependencies (`@cloudflare/workers-types`, `@types/react`, `miniflare`, `typescript-eslint`, `vite`, `wrangler`)
  - [ ] <!-- approvePr-branch=renovate/indexmap-2.x-lockfile -->Update Rust crate indexmap to v2.13.0
  - [ ] <!-- approvePr-branch=renovate/ordermap-1.x-lockfile -->Update Rust crate ordermap to v1.1.0
  - [ ] <!-- approvePr-branch=renovate/taiki-e-install-action-2.x -->Update taiki-e/install-action action to v2.66.1
@@ -91,7 +92,6 @@ The following updates await pending status checks. To force their creation now, 
 
 The following updates have all been created. To force a retry/rebase of any, click on a checkbox below.
 
- - [ ] <!-- rebase-branch=renovate/actions-checkout-digest -->[Update actions/checkout digest to 0c366fd](../pull/22513)
  - [ ] <!-- rebase-branch=renovate/unicode-normalization-0.x-lockfile -->[Update Rust crate unicode-normalization to v0.1.25](../pull/21229)
  - [ ] <!-- rebase-branch=renovate/unicode_names2-2.x -->[Update Rust crate unicode_names2 to v2](../pull/19172)
  - [ ] <!-- rebase-all-open-prs -->**Click on this checkbox to rebase all open PRs at once**
@@ -742,18 +742,18 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
 <details><summary>.github/workflows/release.yml (13)</summary>
 
- - `actions/checkout 8e8c483db84b4bee98b60c0593521ed34d9990e8` → [Updates: `undefined`]
+ - `actions/checkout de0fac2e4500dabe0009e67214ff5f5447ce83dd` → [Updates: `undefined`]
  - `actions/upload-artifact b7c566a772e6b6bfb58ed0dc250532a479d7789f`
  - `actions/upload-artifact b7c566a772e6b6bfb58ed0dc250532a479d7789f`
- - `actions/checkout 8e8c483db84b4bee98b60c0593521ed34d9990e8` → [Updates: `undefined`]
+ - `actions/checkout de0fac2e4500dabe0009e67214ff5f5447ce83dd` → [Updates: `undefined`]
  - `actions/download-artifact 37930b1c2abaa49bbe596cd826c3c89aef350131`
  - `actions/download-artifact 37930b1c2abaa49bbe596cd826c3c89aef350131`
  - `actions/upload-artifact b7c566a772e6b6bfb58ed0dc250532a479d7789f`
- - `actions/checkout 8e8c483db84b4bee98b60c0593521ed34d9990e8` → [Updates: `undefined`]
+ - `actions/checkout de0fac2e4500dabe0009e67214ff5f5447ce83dd` → [Updates: `undefined`]
  - `actions/download-artifact 37930b1c2abaa49bbe596cd826c3c89aef350131`
  - `actions/download-artifact 37930b1c2abaa49bbe596cd826c3c89aef350131`
  - `actions/upload-artifact b7c566a772e6b6bfb58ed0dc250532a479d7789f`
- - `actions/checkout 8e8c483db84b4bee98b60c0593521ed34d9990e8` → [Updates: `undefined`]
+ - `actions/checkout de0fac2e4500dabe0009e67214ff5f5447ce83dd` → [Updates: `undefined`]
  - `actions/download-artifact 37930b1c2abaa49bbe596cd826c3c89aef350131`
 
 </details>

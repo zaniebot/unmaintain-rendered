@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: string-literal-completions
 created_at: 2025-12-23T02:15:11Z
-updated_at: 2026-01-12T15:09:55Z
+updated_at: 2026-01-12T17:25:36Z
 url: https://github.com/astral-sh/ruff/pull/22154
-synced_at: 2026-01-12T15:57:43Z
+synced_at: 2026-01-12T18:23:35Z
 ```
 
 # [ty] Offer string literal completion suggestions in function calls, annotated assignments, and TypedDict contexts
@@ -585,5 +585,11 @@ _Review request for @sharkdp removed by @BurntSushi on 2026-01-12 15:09_
 ---
 
 _Review request for @dcreager removed by @BurntSushi on 2026-01-12 15:09_
+
+---
+
+_Comment by @MichaReiser on 2026-01-12 17:25_
+
+Can either of you say more about what `ExpectedType` is used for and what we store, ideally with an example?
 
 ---

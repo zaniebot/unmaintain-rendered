@@ -6,16 +6,17 @@ GitHub issues and pull requests rendered as markdown.
 
 ### [BurntSushi/ripgrep](https://github.com/BurntSushi/ripgrep)
 
-- [Issues](BurntSushi/ripgrep/issues/) (3267)
+- [Issues](BurntSushi/ripgrep/issues/) (3523)
+- [Pull Requests](BurntSushi/ripgrep/pulls/) (1972)
 
 ### [astral-sh/ruff](https://github.com/astral-sh/ruff)
 
-- [Issues](astral-sh/ruff/issues/) (15263)
-- [Pull Requests](astral-sh/ruff/pulls/) (28444)
+- [Issues](astral-sh/ruff/issues/) (15267)
+- [Pull Requests](astral-sh/ruff/pulls/) (28446)
 
 ### [astral-sh/ty](https://github.com/astral-sh/ty)
 
-- [Issues](astral-sh/ty/issues/) (4142)
+- [Issues](astral-sh/ty/issues/) (4144)
 - [Pull Requests](astral-sh/ty/pulls/) (790)
 
 ### [astral-sh/uv](https://github.com/astral-sh/uv)
@@ -38,4 +39,4 @@ GitHub issues and pull requests rendered as markdown.
 - [Issues](zanieb/unmaintain-test/issues/) (4)
 
 ---
-_Last updated: 2026-01-12 16:16:38 UTC_
+_Last updated: 2026-01-12 18:25:57 UTC_

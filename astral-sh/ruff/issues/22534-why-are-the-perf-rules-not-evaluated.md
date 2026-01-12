@@ -5,12 +5,13 @@ type: issue
 state: open
 author: mosc9575
 labels:
-  - question
+  - bug
+  - rule
 assignees: []
 created_at: 2026-01-12T15:50:21Z
-updated_at: 2026-01-12T15:52:33Z
+updated_at: 2026-01-12T17:18:13Z
 url: https://github.com/astral-sh/ruff/issues/22534
-synced_at: 2026-01-12T16:13:37Z
+synced_at: 2026-01-12T18:23:23Z
 ```
 
 # Why are the PERF rules not evaluated?
@@ -64,5 +65,31 @@ Why is the PERF rule not applied?
 ---
 
 _Label `question` added by @mosc9575 on 2026-01-12 15:50_
+
+---
+
+_Comment by @ntBre on 2026-01-12 17:02_
+
+Thanks for the report! I agree, this looks like a bug. I can't immediately tell from the rule implementation why it's not firing. At first I thought we failed to identify the comprehension as a dict, but this case triggers the rule:
+
+```py
+d = {letter: i for i, letter in enumerate(list('abc'))}
+for k, v in d.items():
+    print(k)
+```
+
+so it seems to be something with the assignment in the loop.
+
+---
+
+_Label `question` removed by @ntBre on 2026-01-12 17:02_
+
+---
+
+_Label `bug` added by @ntBre on 2026-01-12 17:02_
+
+---
+
+_Label `rule` added by @MichaReiser on 2026-01-12 17:18_
 
 ---

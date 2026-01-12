@@ -5,13 +5,12 @@ type: issue
 state: open
 author: abrahammurciano
 labels:
-  - good first issue
-  - rule
+  - documentation
 assignees: []
 created_at: 2026-01-05T09:17:16Z
-updated_at: 2026-01-12T14:54:28Z
+updated_at: 2026-01-12T17:28:24Z
 url: https://github.com/astral-sh/ruff/issues/22395
-synced_at: 2026-01-12T15:54:58Z
+synced_at: 2026-01-12T18:23:23Z
 ```
 
 # no-explicit-stacklevel (B028) should allow no stacklevel when skip_file_prefixes is provided
@@ -59,5 +58,17 @@ I also tested locally and I don't get the warning if I set the `skip_file_prefix
 _Comment by @abrahammurciano on 2026-01-12 14:54_
 
 Weird, it was reporting it for me even with the `skip_file_prefixes` parameter set, but now it's not. Perhaps I was using an older version or something. Regardless, the documentation for this rule should probably also mention this parameter as an alternative fix for this rule.
+
+---
+
+_Label `good first issue` removed by @MichaReiser on 2026-01-12 17:28_
+
+---
+
+_Label `rule` removed by @MichaReiser on 2026-01-12 17:28_
+
+---
+
+_Label `documentation` added by @MichaReiser on 2026-01-12 17:28_
 
 ---

@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: ibraheem/type-dict-union
 created_at: 2025-12-29T23:42:26Z
-updated_at: 2025-12-29T23:52:54Z
+updated_at: 2026-01-12T17:51:39Z
 url: https://github.com/astral-sh/ruff/pull/22294
-synced_at: 2026-01-12T15:57:46Z
+synced_at: 2026-01-12T18:23:35Z
 ```
 
 # [ty] Support assignment to unions of `TypedDict`s
@@ -233,5 +233,43 @@ _Comment by @astral-sh-bot[bot] on 2025-12-29 23:52_
 **[Full report with detailed diff](https://f7017201.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://f7017201.ty-ecosystem-ext.pages.dev/timing))
 
 
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/resources/mdtest/typed_dict.md`:356 on 2026-01-12 17:26_
+
+At some point we might start simplifying this union to just `FooBar1`, since the two types are equivalent. (I want to say we did it before, and then we stopped doing it because of a Pydantic perf regression? I forget.) It might be interesting to test the case where `FooBar2` has an extra `NotRequired` key here?
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/types/infer/builder.rs`:7894 on 2026-01-12 17:27_
+
+TIL!
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/types/infer/builder.rs`:7901 on 2026-01-12 17:28_
+
+This is never expected to fail, right, because of the filter above? Should it be an `.expect(...)`?
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/types/infer/builder.rs`:7916 on 2026-01-12 17:41_
+
+Out of curiosity, what would go wrong if we skipped this step? (I.e. we restored the previous multi-inference state and then just returned the union, without actually re-inferring these expressions in the `Intersect` state.)
+
+---
+
+_@oconnor663 reviewed on 2026-01-12 17:46_
+
+---
+
+_@AlexWaygood reviewed on 2026-01-12 17:51_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/typed_dict.md`:356 on 2026-01-12 17:51_
+
+I think it was a stack overflow on pydantic rather than a perf regression 🙃
 
 ---

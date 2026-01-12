@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: wld/update-conformance-workflow
 created_at: 2026-01-11T17:55:59Z
-updated_at: 2026-01-12T08:25:49Z
+updated_at: 2026-01-12T17:32:03Z
 url: https://github.com/astral-sh/ruff/pull/22504
-synced_at: 2026-01-12T15:57:51Z
+synced_at: 2026-01-12T18:23:35Z
 ```
 
 # [ty] Update conformance workflow to use comparison script
@@ -80,5 +80,11 @@ _Label `ci` added by @AlexWaygood on 2026-01-12 08:25_
 ---
 
 _Label `ty` added by @AlexWaygood on 2026-01-12 08:25_
+
+---
+
+_Comment by @MichaReiser on 2026-01-12 17:32_
+
+@WillDuke The CI job is currently failing because it can't find the file. Would you mind taking a look or would you prefer one of us doing the CI integration?
 
 ---

@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: konsti/clear-env-for-tests
 created_at: 2025-06-16T16:28:29Z
-updated_at: 2026-01-12T13:55:24Z
+updated_at: 2026-01-12T17:15:55Z
 url: https://github.com/astral-sh/uv/pull/14080
-synced_at: 2026-01-12T16:11:01Z
+synced_at: 2026-01-12T18:24:28Z
 ```
 
 # Clear known env vars for tests
@@ -124,5 +124,9 @@ _Closed by @konstin on 2026-01-12 13:55_
 ---
 
 _Reopened by @konstin on 2026-01-12 13:55_
+
+---
+
+_Review requested from @EliteTK by @EliteTK on 2026-01-12 17:15_
 
 ---

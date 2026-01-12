@@ -10,7 +10,7 @@ assignees: []
 created_at: 2016-12-01T08:00:29Z
 updated_at: 2016-12-01T12:10:49Z
 url: https://github.com/BurntSushi/ripgrep/issues/260
-synced_at: 2026-01-12T16:13:21Z
+synced_at: 2026-01-12T18:23:11Z
 ```
 
 # Add sort option?
@@ -71,5 +71,13 @@ This appears to be a dupe of #263.
 Notably, there's no regression here because ripgrep has *never* done sorting.
 
 I don't know what ttys have to do with sorting. :-/ @nerdrew Perhaps you could clarify in #263.
+
+---
+
+_Closed by @BurntSushi on 2016-12-01 12:10_
+
+---
+
+_Label `duplicate` added by @BurntSushi on 2016-12-01 12:10_
 
 ---

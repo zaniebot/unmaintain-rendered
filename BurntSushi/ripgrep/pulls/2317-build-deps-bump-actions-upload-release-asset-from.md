@@ -1,0 +1,93 @@
+```yaml
+number: 2317
+title: "build(deps): bump actions/upload-release-asset from 1.0.1 to 1.0.2"
+type: pull_request
+state: merged
+author: dependabot
+labels:
+  - dependencies
+assignees: []
+merged: true
+base: master
+head: dependabot/github_actions/actions/upload-release-asset-1.0.2
+created_at: 2022-09-29T12:04:21Z
+updated_at: 2022-09-29T12:15:42Z
+url: https://github.com/BurntSushi/ripgrep/pull/2317
+synced_at: 2026-01-12T18:23:14Z
+```
+
+# build(deps): bump actions/upload-release-asset from 1.0.1 to 1.0.2
+
+---
+
+_@dependabot_
+
+Bumps [actions/upload-release-asset](https://github.com/actions/upload-release-asset) from 1.0.1 to 1.0.2.
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href="https://github.com/actions/upload-release-asset/releases">actions/upload-release-asset's releases</a>.</em></p>
+<blockquote>
+<h2>Automate sliding major version number</h2>
+<p>This is a minor update to make the current release have the latest code from master, and additionally allows for a new automation workflow to execute to automate the sliding of the major (v1, v2, v3, etc) version numbers for ease of referencing</p>
+</blockquote>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href="https://github.com/actions/upload-release-asset/commit/e8f9f06c4b078e705bd2ea027f0926603fc9b4d5"><code>e8f9f06</code></a> Merge pull request <a href="https://github-redirect.dependabot.com/actions/upload-release-asset/issues/27">#27</a> from actions/IAmHughes/add-automated-versioning</li>
+<li><a href="https://github.com/actions/upload-release-asset/commit/14187540b829095dbe6f33eb1b166503318e9ceb"><code>1418754</code></a> Add versioning action to automatically slide major versions with releases</li>
+<li><a href="https://github.com/actions/upload-release-asset/commit/7d8fb6c931cb341bda0f898a0d2191cf54abc69a"><code>7d8fb6c</code></a> Merge pull request <a href="https://github-redirect.dependabot.com/actions/upload-release-asset/issues/6">#6</a> from actions/IAmHughes/fix-link-to-license</li>
+<li><a href="https://github.com/actions/upload-release-asset/commit/c53f077c5d8c19236718abc4697a59634ef534cf"><code>c53f077</code></a> Fix link to LICENSE</li>
+<li><a href="https://github.com/actions/upload-release-asset/commit/72e8a5ef036620fb7afff8bbb8f9e78910c7ccbc"><code>72e8a5e</code></a> Merge pull request <a href="https://github-redirect.dependabot.com/actions/upload-release-asset/issues/5">#5</a> from cesperanc/documentation-update</li>
+<li><a href="https://github.com/actions/upload-release-asset/commit/bf2a7fbecfaaaa29f7819c650ad302e52f68238e"><code>bf2a7fb</code></a> Update example to use the fixed version</li>
+<li>See full diff in <a href="https://github.com/actions/upload-release-asset/compare/v1.0.1...v1.0.2">compare view</a></li>
+</ul>
+</details>
+<br />
+
+
+[![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=actions/upload-release-asset&package-manager=github_actions&previous-version=1.0.1&new-version=1.0.2)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)
+
+Dependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
+
+[//]: # (dependabot-automerge-start)
+[//]: # (dependabot-automerge-end)
+
+---
+
+<details>
+<summary>Dependabot commands and options</summary>
+<br />
+
+You can trigger Dependabot actions by commenting on this PR:
+- `@dependabot rebase` will rebase this PR
+- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
+- `@dependabot merge` will merge this PR after your CI passes on it
+- `@dependabot squash and merge` will squash and merge this PR after your CI passes on it
+- `@dependabot cancel merge` will cancel a previously requested merge and block automerging
+- `@dependabot reopen` will reopen this PR if it is closed
+- `@dependabot close` will close this PR and stop Dependabot recreating it. You can achieve the same result by closing it manually
+- `@dependabot ignore this major version` will close this PR and stop Dependabot creating any more for this major version (unless you reopen the PR or upgrade to it yourself)
+- `@dependabot ignore this minor version` will close this PR and stop Dependabot creating any more for this minor version (unless you reopen the PR or upgrade to it yourself)
+- `@dependabot ignore this dependency` will close this PR and stop Dependabot creating any more for this dependency (unless you reopen the PR or upgrade to it yourself)
+
+
+</details>
+
+---
+
+_Label `dependencies` added by @dependabot[bot] on 2022-09-29 12:04_
+
+---
+
+_Merged by @BurntSushi on 2022-09-29 12:15_
+
+---
+
+_Closed by @BurntSushi on 2022-09-29 12:15_
+
+---
+
+_Branch deleted on 2022-09-29 12:15_
+
+---

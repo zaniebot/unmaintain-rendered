@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: dhruv/log-guidance
 created_at: 2026-01-12T09:31:56Z
-updated_at: 2026-01-12T12:49:08Z
+updated_at: 2026-01-12T17:47:21Z
 url: https://github.com/astral-sh/ruff/pull/22530
-synced_at: 2026-01-12T15:57:51Z
+synced_at: 2026-01-12T18:23:35Z
 ```
 
 # [ty] Improve log guidance message for Zed
@@ -71,5 +71,35 @@ _Review request for @sharkdp removed by @dhruvmanila on 2026-01-12 12:49_
 ---
 
 _Label `server` added by @dhruvmanila on 2026-01-12 12:49_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_server/src/server/api.rs`:126 on 2026-01-12 17:44_
+
+Should we make `session.client` an `enum` instead of mapping at the use sides? 
+
+```rust
+#[derive(Debug, Clone)]
+enum Client {
+	Zed,
+	Unknown(String)
+}
+```
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_server/src/session.rs`:1152 on 2026-01-12 17:46_
+
+```suggestion
+            "Check the logs for more details (command palette: `dev: open language server logs`)."
+```
+
+The *find logs* part confused me for a bit. I think saying "command pallete" and mentioning the text to search for should be sufficient.
+
+---
+
+_@MichaReiser approved on 2026-01-12 17:47_
+
+I'd prefer mapping the client to an enum early (e.g. in `Server`) rather than doing it in the code path using the name
 
 ---
