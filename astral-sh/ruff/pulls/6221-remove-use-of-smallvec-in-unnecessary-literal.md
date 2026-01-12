@@ -1,0 +1,97 @@
+```yaml
+number: 6221
+title: "Remove use of `SmallVec` in `unnecessary-literal-union`"
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - internal
+assignees: []
+merged: true
+base: main
+head: charlie/small
+created_at: 2023-08-01T03:55:40Z
+updated_at: 2023-08-01T04:28:32Z
+url: https://github.com/astral-sh/ruff/pull/6221
+synced_at: 2026-01-12T02:58:30Z
+```
+
+# Remove use of `SmallVec` in `unnecessary-literal-union`
+
+---
+
+_Pull request opened by @charliermarsh on 2023-08-01 03:55_
+
+I prefer to use this on an as-needed basis.
+
+---
+
+_Renamed from "Remove use of SmallVec in unnecessary-literal-union" to "Remove use of `SmallVec` in unnecessary-literal-union" by @charliermarsh on 2023-08-01 03:55_
+
+---
+
+_Renamed from "Remove use of `SmallVec` in unnecessary-literal-union" to "Remove use of `SmallVec` in `unnecessary-literal-union`" by @charliermarsh on 2023-08-01 03:55_
+
+---
+
+_Label `internal` added by @charliermarsh on 2023-08-01 03:55_
+
+---
+
+_Merged by @charliermarsh on 2023-08-01 04:03_
+
+---
+
+_Closed by @charliermarsh on 2023-08-01 04:03_
+
+---
+
+_Branch deleted on 2023-08-01 04:04_
+
+---
+
+_Comment by @github-actions[bot] on 2023-08-01 04:09_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      8.7±0.19ms     4.7 MB/sec    1.00      8.6±0.14ms     4.7 MB/sec
+formatter/numpy/ctypeslib.py               1.01  1706.0±28.39µs     9.8 MB/sec    1.00  1685.5±26.22µs     9.9 MB/sec
+formatter/numpy/globals.py                 1.01    184.6±4.21µs    16.0 MB/sec    1.00    182.6±2.87µs    16.2 MB/sec
+formatter/pydantic/types.py                1.02      3.7±0.08ms     6.9 MB/sec    1.00      3.6±0.06ms     7.0 MB/sec
+linter/all-rules/large/dataset.py          1.01     11.4±0.06ms     3.6 MB/sec    1.00     11.3±0.06ms     3.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      2.9±0.01ms     5.8 MB/sec    1.00      2.8±0.01ms     5.9 MB/sec
+linter/all-rules/numpy/globals.py          1.01    385.1±0.75µs     7.7 MB/sec    1.00    381.0±0.74µs     7.7 MB/sec
+linter/all-rules/pydantic/types.py         1.01      5.1±0.04ms     5.0 MB/sec    1.00      5.0±0.05ms     5.1 MB/sec
+linter/default-rules/large/dataset.py      1.02      6.1±0.02ms     6.7 MB/sec    1.00      6.0±0.04ms     6.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.03   1270.7±1.79µs    13.1 MB/sec    1.00   1237.8±9.79µs    13.5 MB/sec
+linter/default-rules/numpy/globals.py      1.04    138.7±1.27µs    21.3 MB/sec    1.00    133.7±2.99µs    22.1 MB/sec
+linter/default-rules/pydantic/types.py     1.01      2.7±0.01ms     9.6 MB/sec    1.00      2.6±0.04ms     9.7 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.06     11.0±0.26ms     3.7 MB/sec    1.00     10.4±0.20ms     3.9 MB/sec
+formatter/numpy/ctypeslib.py               1.04      2.1±0.06ms     8.0 MB/sec    1.00  2000.0±64.84µs     8.3 MB/sec
+formatter/numpy/globals.py                 1.00    220.6±5.79µs    13.4 MB/sec    1.03   226.9±23.95µs    13.0 MB/sec
+formatter/pydantic/types.py                1.02      4.6±0.11ms     5.6 MB/sec    1.00      4.5±0.18ms     5.7 MB/sec
+linter/all-rules/large/dataset.py          1.03     14.3±0.23ms     2.9 MB/sec    1.00     13.8±0.20ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.03      3.7±0.09ms     4.5 MB/sec    1.00      3.6±0.07ms     4.6 MB/sec
+linter/all-rules/numpy/globals.py          1.00   444.2±13.14µs     6.6 MB/sec    1.00    443.5±9.36µs     6.7 MB/sec
+linter/all-rules/pydantic/types.py         1.04      6.4±0.12ms     4.0 MB/sec    1.00      6.2±0.12ms     4.1 MB/sec
+linter/default-rules/large/dataset.py      1.02      7.9±0.12ms     5.2 MB/sec    1.00      7.7±0.11ms     5.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1557.0±28.92µs    10.7 MB/sec    1.01  1576.6±33.63µs    10.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00   174.6±21.01µs    16.9 MB/sec    1.02    177.3±8.85µs    16.6 MB/sec
+linter/default-rules/pydantic/types.py     1.02      3.4±0.08ms     7.5 MB/sec    1.00      3.3±0.05ms     7.6 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---

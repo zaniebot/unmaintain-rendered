@@ -1,0 +1,170 @@
+```yaml
+number: 6263
+title: "Extend `UP032` to support implicitly concatenated strings"
+type: pull_request
+state: merged
+author: harupy
+labels: []
+assignees: []
+merged: true
+base: main
+head: UP032-implicit
+created_at: 2023-08-02T06:20:16Z
+updated_at: 2023-08-02T19:31:02Z
+url: https://github.com/astral-sh/ruff/pull/6263
+synced_at: 2026-01-12T02:58:30Z
+```
+
+# Extend `UP032` to support implicitly concatenated strings
+
+---
+
+_Pull request opened by @harupy on 2023-08-02 06:20_
+
+<!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+Extend `UP032` to support implicitly concatenated strings.
+
+## Test Plan
+
+<!-- How was it tested? -->
+
+Existing and new test cases.
+
+
+---
+
+_Comment by @github-actions[bot] on 2023-08-02 06:39_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+25, -0, 0 error(s))
+
+<details><summary>airflow (+11, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/3141d4bff5fb80267b3f38955838eac89c9098fd/airflow/models/dagrun.py#L234'>airflow/models/dagrun.py:234:16:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/apache/airflow/blob/3141d4bff5fb80267b3f38955838eac89c9098fd/airflow/providers/common/sql/operators/sql.py#L834'>airflow/providers/common/sql/operators/sql.py:834:21:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/apache/airflow/blob/3141d4bff5fb80267b3f38955838eac89c9098fd/airflow/providers/databricks/hooks/databricks.py#L78'>airflow/providers/databricks/hooks/databricks.py:78:17:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/apache/airflow/blob/3141d4bff5fb80267b3f38955838eac89c9098fd/airflow/providers/google/cloud/hooks/bigquery.py#L3034'>airflow/providers/google/cloud/hooks/bigquery.py:3034:13:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/apache/airflow/blob/3141d4bff5fb80267b3f38955838eac89c9098fd/airflow/providers/google/cloud/hooks/bigquery.py#L3185'>airflow/providers/google/cloud/hooks/bigquery.py:3185:21:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/apache/airflow/blob/3141d4bff5fb80267b3f38955838eac89c9098fd/airflow/providers/google/cloud/operators/functions.py#L285'>airflow/providers/google/cloud/operators/functions.py:285:21:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/apache/airflow/blob/3141d4bff5fb80267b3f38955838eac89c9098fd/tests/operators/test_bash.py#L82'>tests/operators/test_bash.py:82:30:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/apache/airflow/blob/3141d4bff5fb80267b3f38955838eac89c9098fd/tests/operators/test_trigger_dagrun.py#L40'>tests/operators/test_trigger_dagrun.py:40:14:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/apache/airflow/blob/3141d4bff5fb80267b3f38955838eac89c9098fd/tests/providers/apache/hive/hooks/test_hive.py#L252'>tests/providers/apache/hive/hooks/test_hive.py:252:13:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/apache/airflow/blob/3141d4bff5fb80267b3f38955838eac89c9098fd/tests/providers/google/cloud/hooks/test_gcs.py#L371'>tests/providers/google/cloud/hooks/test_gcs.py:371:34:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/apache/airflow/blob/3141d4bff5fb80267b3f38955838eac89c9098fd/tests/providers/postgres/hooks/test_postgres.py#L436'>tests/providers/postgres/hooks/test_postgres.py:436:13:</a> UP032 [*] Use f-string instead of `format` call
+</pre>
+
+</p>
+</details>
+<details><summary>scikit-build (+1, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/scikit-build/scikit-build/blob/c2025f24823599fc0abe0e7376ed5a10ad1e7b88/tests/test_setup.py#L844'>tests/test_setup.py:844:13:</a> UP032 [*] Use f-string instead of `format` call
+</pre>
+
+</p>
+</details>
+<details><summary>zulip (+13, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/ff409342e15624dd6f44c40fcc21a238396ed81e/tools/droplets/create.py#L100'>tools/droplets/create.py:100:21:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/zulip/zulip/blob/ff409342e15624dd6f44c40fcc21a238396ed81e/zerver/lib/bot_config.py#L58'>zerver/lib/bot_config.py:58:13:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/zulip/zulip/blob/ff409342e15624dd6f44c40fcc21a238396ed81e/zerver/lib/zcommand.py#L15'>zerver/lib/zcommand.py:15:13:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/zulip/zulip/blob/ff409342e15624dd6f44c40fcc21a238396ed81e/zerver/management/commands/send_webhook_fixture_message.py#L59'>zerver/management/commands/send_webhook_fixture_message.py:59:17:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/zulip/zulip/blob/ff409342e15624dd6f44c40fcc21a238396ed81e/zerver/tests/test_auth_backends.py#L1722'>zerver/tests/test_auth_backends.py:1722:13:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/zulip/zulip/blob/ff409342e15624dd6f44c40fcc21a238396ed81e/zerver/tests/test_markdown.py#L2544'>zerver/tests/test_markdown.py:2544:13:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/zulip/zulip/blob/ff409342e15624dd6f44c40fcc21a238396ed81e/zerver/tests/test_markdown.py#L2624'>zerver/tests/test_markdown.py:2624:13:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/zulip/zulip/blob/ff409342e15624dd6f44c40fcc21a238396ed81e/zerver/tests/test_message_send.py#L1504'>zerver/tests/test_message_send.py:1504:13:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/zulip/zulip/blob/ff409342e15624dd6f44c40fcc21a238396ed81e/zerver/tests/test_signup.py#L344'>zerver/tests/test_signup.py:344:17:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/zulip/zulip/blob/ff409342e15624dd6f44c40fcc21a238396ed81e/zerver/tests/test_upload.py#L600'>zerver/tests/test_upload.py:600:68:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/zulip/zulip/blob/ff409342e15624dd6f44c40fcc21a238396ed81e/zerver/tests/test_upload.py#L610'>zerver/tests/test_upload.py:610:68:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/zulip/zulip/blob/ff409342e15624dd6f44c40fcc21a238396ed81e/zerver/webhooks/front/view.py#L44'>zerver/webhooks/front/view.py:44:9:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/zulip/zulip/blob/ff409342e15624dd6f44c40fcc21a238396ed81e/zerver/webhooks/front/view.py#L54'>zerver/webhooks/front/view.py:54:9:</a> UP032 [*] Use f-string instead of `format` call
+</pre>
+
+</p>
+</details>
+Rules changed: 1
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| UP032 | 25 | 25 | 0 |
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      8.2±0.05ms     4.9 MB/sec    1.02      8.4±0.12ms     4.8 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1663.6±50.35µs    10.0 MB/sec    1.01  1681.6±43.12µs     9.9 MB/sec
+formatter/numpy/globals.py                 1.02    193.4±7.70µs    15.3 MB/sec    1.00    189.9±7.27µs    15.5 MB/sec
+formatter/pydantic/types.py                1.00      3.6±0.14ms     7.1 MB/sec    1.00      3.6±0.10ms     7.1 MB/sec
+linter/all-rules/large/dataset.py          1.01     11.0±0.12ms     3.7 MB/sec    1.00     10.8±0.03ms     3.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      2.8±0.03ms     6.0 MB/sec    1.00      2.8±0.02ms     6.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    380.7±3.06µs     7.8 MB/sec    1.00    379.2±3.32µs     7.8 MB/sec
+linter/all-rules/pydantic/types.py         1.01      4.9±0.10ms     5.2 MB/sec    1.00      4.9±0.02ms     5.2 MB/sec
+linter/default-rules/large/dataset.py      1.01      5.8±0.08ms     7.0 MB/sec    1.00      5.8±0.11ms     7.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1206.1±22.91µs    13.8 MB/sec    1.00  1200.5±16.17µs    13.9 MB/sec
+linter/default-rules/numpy/globals.py      1.01    134.3±3.17µs    22.0 MB/sec    1.00    132.5±0.24µs    22.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.5±0.04ms    10.0 MB/sec    1.00      2.5±0.05ms    10.0 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.0±0.10ms     4.1 MB/sec    1.01     10.1±0.11ms     4.0 MB/sec
+formatter/numpy/ctypeslib.py               1.01  1948.3±26.04µs     8.5 MB/sec    1.00  1932.3±23.11µs     8.6 MB/sec
+formatter/numpy/globals.py                 1.01    217.7±6.65µs    13.6 MB/sec    1.00    216.5±5.33µs    13.6 MB/sec
+formatter/pydantic/types.py                1.00      4.3±0.07ms     6.0 MB/sec    1.00      4.3±0.05ms     6.0 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.5±0.16ms     3.0 MB/sec    1.02     13.9±0.19ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.04ms     4.7 MB/sec    1.00      3.6±0.05ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    434.7±7.17µs     6.8 MB/sec    1.00    436.6±7.07µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.1±0.08ms     4.2 MB/sec    1.01      6.1±0.10ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.3±0.07ms     5.6 MB/sec    1.00      7.3±0.07ms     5.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1515.8±18.83µs    11.0 MB/sec    1.00  1505.7±18.48µs    11.1 MB/sec
+linter/default-rules/numpy/globals.py      1.00    169.8±2.98µs    17.4 MB/sec    1.00    170.0±3.70µs    17.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.03ms     7.9 MB/sec    1.00      3.2±0.04ms     7.9 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Marked ready for review by @harupy on 2023-08-02 07:10_
+
+---
+
+_Review requested from @charliermarsh by @charliermarsh on 2023-08-02 18:45_
+
+---
+
+_@charliermarsh approved on 2023-08-02 18:45_
+
+---
+
+_Merged by @charliermarsh on 2023-08-02 18:56_
+
+---
+
+_Closed by @charliermarsh on 2023-08-02 18:56_
+
+---
+
+_Branch deleted on 2023-08-02 19:31_
+
+---

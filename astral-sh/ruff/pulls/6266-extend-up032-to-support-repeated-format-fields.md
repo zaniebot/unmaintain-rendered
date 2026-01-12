@@ -1,0 +1,163 @@
+```yaml
+number: 6266
+title: "Extend `UP032` to support repeated format fields"
+type: pull_request
+state: merged
+author: harupy
+labels:
+  - rule
+assignees: []
+merged: true
+base: main
+head: UP032-repeated
+created_at: 2023-08-02T07:43:22Z
+updated_at: 2023-08-02T19:30:51Z
+url: https://github.com/astral-sh/ruff/pull/6266
+synced_at: 2026-01-12T02:58:30Z
+```
+
+# Extend `UP032` to support repeated format fields
+
+---
+
+_Pull request opened by @harupy on 2023-08-02 07:43_
+
+<!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+Resovle #6217
+
+## Test Plan
+
+<!-- How was it tested? -->
+
+New & existing test cases.
+
+
+---
+
+_Review comment by @konstin on `crates/ruff/src/rules/pyupgrade/rules/f_strings.rs`:107 on 2023-08-02 09:15_
+
+i know they have been missing previously, but could you please add some docstrings to these methods?
+
+---
+
+_Comment by @github-actions[bot] on 2023-08-02 09:26_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+13, -0, 0 error(s))
+
+<details><summary>airflow (+8, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/f9bd53cacfc380928dd19f6b12fa7bfd90c6199d/airflow/models/baseoperator.py#L1380'>airflow/models/baseoperator.py:1380:16:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/apache/airflow/blob/f9bd53cacfc380928dd19f6b12fa7bfd90c6199d/airflow/providers/apache/hive/sensors/metastore_partition.py#L75'>airflow/providers/apache/hive/sensors/metastore_partition.py:75:24:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/apache/airflow/blob/f9bd53cacfc380928dd19f6b12fa7bfd90c6199d/airflow/providers/elasticsearch/hooks/elasticsearch.py#L119'>airflow/providers/elasticsearch/hooks/elasticsearch.py:119:21:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/apache/airflow/blob/f9bd53cacfc380928dd19f6b12fa7bfd90c6199d/airflow/providers/elasticsearch/hooks/elasticsearch.py#L123'>airflow/providers/elasticsearch/hooks/elasticsearch.py:123:15:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/apache/airflow/blob/f9bd53cacfc380928dd19f6b12fa7bfd90c6199d/airflow/www/utils.py#L200'>airflow/www/utils.py:200:19:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/apache/airflow/blob/f9bd53cacfc380928dd19f6b12fa7bfd90c6199d/tests/dags/test_default_impersonation.py#L38'>tests/dags/test_default_impersonation.py:38:5:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/apache/airflow/blob/f9bd53cacfc380928dd19f6b12fa7bfd90c6199d/tests/dags/test_impersonation.py#L38'>tests/dags/test_impersonation.py:38:5:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/apache/airflow/blob/f9bd53cacfc380928dd19f6b12fa7bfd90c6199d/tests/system/providers/plexus/example_plexus.py#L26'>tests/system/providers/plexus/example_plexus.py:26:20:</a> UP032 [*] Use f-string instead of `format` call
+</pre>
+
+</p>
+</details>
+<details><summary>zulip (+5, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/ff409342e15624dd6f44c40fcc21a238396ed81e/tools/droplets/add_mentor.py#L55'>tools/droplets/add_mentor.py:55:13:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/zulip/zulip/blob/ff409342e15624dd6f44c40fcc21a238396ed81e/tools/droplets/create.py#L254'>tools/droplets/create.py:254:9:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/zulip/zulip/blob/ff409342e15624dd6f44c40fcc21a238396ed81e/zerver/tests/test_markdown.py#L2655'>zerver/tests/test_markdown.py:2655:13:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/zulip/zulip/blob/ff409342e15624dd6f44c40fcc21a238396ed81e/zerver/tests/test_retention.py#L676'>zerver/tests/test_retention.py:676:17:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/zulip/zulip/blob/ff409342e15624dd6f44c40fcc21a238396ed81e/zerver/tests/test_retention.py#L683'>zerver/tests/test_retention.py:683:17:</a> UP032 [*] Use f-string instead of `format` call
+</pre>
+
+</p>
+</details>
+Rules changed: 1
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| UP032 | 13 | 13 | 0 |
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.8±0.06ms     4.1 MB/sec    1.01      9.9±0.10ms     4.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1952.7±30.16µs     8.5 MB/sec    1.01  1981.7±48.42µs     8.4 MB/sec
+formatter/numpy/globals.py                 1.00    217.8±1.09µs    13.6 MB/sec    1.01    220.5±3.46µs    13.4 MB/sec
+formatter/pydantic/types.py                1.00      4.2±0.05ms     6.0 MB/sec    1.00      4.2±0.10ms     6.0 MB/sec
+linter/all-rules/large/dataset.py          1.01     13.4±0.10ms     3.0 MB/sec    1.00     13.3±0.07ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.4±0.08ms     4.9 MB/sec    1.00      3.3±0.01ms     5.0 MB/sec
+linter/all-rules/numpy/globals.py          1.01    461.5±6.14µs     6.4 MB/sec    1.00    457.9±8.16µs     6.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.0±0.09ms     4.3 MB/sec    1.00      5.9±0.16ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.0±0.05ms     5.8 MB/sec    1.00      7.0±0.03ms     5.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1452.8±31.52µs    11.5 MB/sec    1.00  1450.9±19.13µs    11.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    160.3±1.34µs    18.4 MB/sec    1.01    161.9±0.82µs    18.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.04ms     8.4 MB/sec    1.02      3.1±0.28ms     8.2 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.5±0.50ms     3.9 MB/sec    1.01     10.6±0.42ms     3.8 MB/sec
+formatter/numpy/ctypeslib.py               1.01      2.1±0.15ms     8.0 MB/sec    1.00      2.1±0.15ms     8.1 MB/sec
+formatter/numpy/globals.py                 1.00   230.0±18.02µs    12.8 MB/sec    1.01   231.9±12.82µs    12.7 MB/sec
+formatter/pydantic/types.py                1.01      4.7±0.31ms     5.5 MB/sec    1.00      4.6±0.33ms     5.5 MB/sec
+linter/all-rules/large/dataset.py          1.00     14.6±0.54ms     2.8 MB/sec    1.00     14.6±0.47ms     2.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.9±0.15ms     4.3 MB/sec    1.00      3.8±0.19ms     4.3 MB/sec
+linter/all-rules/numpy/globals.py          1.00   475.0±22.49µs     6.2 MB/sec    1.03   487.1±23.17µs     6.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.6±0.31ms     3.9 MB/sec    1.00      6.6±0.29ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.9±0.26ms     5.2 MB/sec    1.00      7.9±0.26ms     5.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1601.9±66.16µs    10.4 MB/sec    1.03  1645.6±83.18µs    10.1 MB/sec
+linter/default-rules/numpy/globals.py      1.00   187.4±10.83µs    15.7 MB/sec    1.00   186.9±18.07µs    15.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.5±0.16ms     7.3 MB/sec    1.00      3.5±0.14ms     7.3 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_@konstin reviewed on 2023-08-02 09:51_
+
+---
+
+_@harupy reviewed on 2023-08-02 12:59_
+
+---
+
+_Review comment by @harupy on `crates/ruff/src/rules/pyupgrade/rules/f_strings.rs`:107 on 2023-08-02 12:59_
+
+Sure!
+
+---
+
+_Merged by @charliermarsh on 2023-08-02 18:23_
+
+---
+
+_Closed by @charliermarsh on 2023-08-02 18:23_
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-08-02 18:23_
+
+---
+
+_Branch deleted on 2023-08-02 19:30_
+
+---
