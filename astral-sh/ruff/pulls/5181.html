@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run shadowed-variable analyses in deferred handlers - astral-sh/ruff #5181</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Run shadowed-variable analyses in deferred handlers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5181">#5181</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-06-19 14:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-19 14:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR extracts a bunch of complex logic from <code>add_binding</code>, instead running the the shadowing rules in the deferred handler, thereby decoupling the binding phase (during which we build up the semantic model) from the analysis phase, and generally making <code>add_binding</code> much more focused.</p>
+<p>This was made possible by improving the semantic model to better handle deletions -- previously, we'd &quot;lose track&quot; of bindings if they were deleted, which made this kind of refactor impossible.</p>
+<h2>Test Plan</h2>
+<p>We have good automated coverage for this, but I want to benchmark it separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-19 14:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pyflakes/snapshots/ruff__rules__pyflakes__tests__del_shadowed_global_import_in_local_scope.snap</code>:26 on 2023-06-19 14:28</div>
+            <div class="timeline-body"><p>This was a false negative.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pyflakes/snapshots/ruff__rules__pyflakes__tests__del_shadowed_import_shadow_in_local_scope.snap</code>:26 on 2023-06-19 14:28</div>
+            <div class="timeline-body"><p>I think it's fine not to flag this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-19 14:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-19 14:44</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      7.7±0.02ms     5.3 MB/sec    1.02      7.9±0.01ms     5.2 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1689.5±7.15µs     9.9 MB/sec    1.02   1716.6±2.78µs     9.7 MB/sec
+formatter/numpy/globals.py                 1.00    188.3±0.51µs    15.7 MB/sec    1.01    190.6±0.33µs    15.5 MB/sec
+formatter/pydantic/types.py                1.00      3.7±0.01ms     7.0 MB/sec    1.01      3.7±0.01ms     6.9 MB/sec
+linter/all-rules/large/dataset.py          1.01     13.0±0.05ms     3.1 MB/sec    1.00     13.0±0.03ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.2±0.00ms     5.1 MB/sec    1.04      3.4±0.02ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    422.0±1.46µs     7.0 MB/sec    1.03    433.3±1.04µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.7±0.01ms     4.5 MB/sec    1.00      5.7±0.01ms     4.5 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.6±0.02ms     6.2 MB/sec    1.00      6.6±0.01ms     6.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1432.8±3.88µs    11.6 MB/sec    1.00   1434.3±1.10µs    11.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00    161.0±0.15µs    18.3 MB/sec    1.01    162.8±3.67µs    18.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.01ms     8.6 MB/sec    1.00      3.0±0.01ms     8.6 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     12.5±0.59ms     3.2 MB/sec    1.00     12.5±0.59ms     3.3 MB/sec
+formatter/numpy/ctypeslib.py               1.06      2.6±0.14ms     6.5 MB/sec    1.00      2.4±0.12ms     6.9 MB/sec
+formatter/numpy/globals.py                 1.03   292.0±32.72µs    10.1 MB/sec    1.00   282.7±16.83µs    10.4 MB/sec
+formatter/pydantic/types.py                1.04      5.5±0.26ms     4.6 MB/sec    1.00      5.3±0.24ms     4.8 MB/sec
+linter/all-rules/large/dataset.py          1.00     19.9±0.88ms     2.0 MB/sec    1.04     20.8±0.90ms  2002.4 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.2±0.25ms     3.2 MB/sec    1.02      5.3±0.39ms     3.2 MB/sec
+linter/all-rules/numpy/globals.py          1.00   634.1±38.43µs     4.7 MB/sec    1.03   652.1±36.79µs     4.5 MB/sec
+linter/all-rules/pydantic/types.py         1.05      9.1±0.56ms     2.8 MB/sec    1.00      8.7±0.47ms     2.9 MB/sec
+linter/default-rules/large/dataset.py      1.00     10.1±0.51ms     4.0 MB/sec    1.01     10.2±0.42ms     4.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.2±0.10ms     7.7 MB/sec    1.04      2.3±0.08ms     7.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00   263.9±15.49µs    11.2 MB/sec    1.04   274.4±14.52µs    10.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.7±0.20ms     5.4 MB/sec    1.01      4.8±0.26ms     5.3 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-06-19 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-06-19 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pyflakes/snapshots/ruff__rules__pyflakes__tests__del_shadowed_import_shadow_in_local_scope.snap</code>:26 on 2023-06-20 07:17</div>
+            <div class="timeline-body"><p>Why did this change? Is it because <code>f</code> assigned <code>os</code> on line 5?</p>
+<p>Should we update the comment in the test input file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1078 on 2023-06-20 07:19</div>
+            <div class="timeline-body"><p>Unrelated to this PR. Why do we need a global shadowed_bindings and a scoipe specfici shadowed binding tracking?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1075 on 2023-06-20 07:20</div>
+            <div class="timeline-body"><p>Are both paths (checking the scope specific and global shadowed bindings) check necessary after we've found the first shadowed binding?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-06-20 07:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-20 16:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1078 on 2023-06-20 16:12</div>
+            <div class="timeline-body"><p>Unfortunately, Flake8 has different rules around <em>when</em> it flags for shadowed-while-unused depending on whether the shadowing is within-scope or across scopes.</p>
+<p>Namely, when flagging shadowed-while-unused across scopes, it only flags when the shadowed variable is an import like:</p>
+<pre><code class="language-python">import os
+
+def f():
+  os = 1
+</code></pre>
+<p>But not:</p>
+<pre><code class="language-python">os = 1
+
+def f():
+  os = 1
+</code></pre>
+<p>However, when flagging shadowed-while-unused within scopes, it does flag:</p>
+<pre><code class="language-python">def f():
+  os = 1
+  os = 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1067 on 2023-06-21 08:19</div>
+            <div class="timeline-body"><p>this setting first to false is kinda confusing to read</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-06-21 08:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-29 00:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pyflakes/snapshots/ruff__rules__pyflakes__tests__del_shadowed_import_shadow_in_local_scope.snap</code>:26 on 2023-06-29 00:01</div>
+            <div class="timeline-body"><p>I did!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-29 00:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pyflakes/snapshots/ruff__rules__pyflakes__tests__del_shadowed_import_shadow_in_local_scope.snap</code>:26 on 2023-06-29 00:01</div>
+            <div class="timeline-body"><p>It's because we <code>del os</code> in the containing scope (not visible in this diff).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-06-29 00:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-29 00:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-06-29 00:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:37:34 UTC
+    </footer>
+</body>
+</html>

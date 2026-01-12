@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix AST visitor traversal order - astral-sh/ruff #5221</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix AST visitor traversal order</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5221">#5221</a>
+        opened by <a href="https://github.com/jgberry">@jgberry</a>
+        on 2023-06-20 17:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jgberry">@jgberry</a> on 2023-06-20 17:49</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>According to the AST visitor documentation, the AST visitor &quot;visits all nodes in the AST recursively in evaluation-order&quot;. However, the current traversal fails to meet this specification in a few places.</p>
+<h3>Function traversal</h3>
+<pre><code class="language-python">order = []
+@(order.append(&quot;decorator&quot;) or (lambda x: x))
+def f(
+    posonly: order.append(&quot;posonly annotation&quot;) = order.append(&quot;posonly default&quot;),
+    /,
+    arg: order.append(&quot;arg annotation&quot;) = order.append(&quot;arg default&quot;),
+    *args: order.append(&quot;vararg annotation&quot;),
+    kwarg: order.append(&quot;kwarg annotation&quot;) = order.append(&quot;kwarg default&quot;),
+    **kwargs: order.append(&quot;kwarg annotation&quot;)
+) -&gt; order.append(&quot;return annotation&quot;):
+    pass
+print(order)
+</code></pre>
+<p>Executing the above snippet using CPython 3.10.6 prints the following result (formatted for readability):</p>
+<pre><code class="language-python">[
+    'decorator',
+    'posonly default',
+    'arg default',
+    'kwarg default',
+    'arg annotation',
+    'posonly annotation',
+    'vararg annotation',
+    'kwarg annotation',
+    'kwarg annotation',
+    'return annotation',
+]
+</code></pre>
+<p>Here we can see that decorators are evaluated first, followed by argument defaults, and annotations are last. The current traversal of a function's AST does not align with this order.</p>
+<h3>Annotated assignment traversal</h3>
+<pre><code class="language-python">order = []
+x: order.append(&quot;annotation&quot;) = order.append(&quot;expression&quot;)
+print(order)
+</code></pre>
+<p>Executing the above snippet using CPython 3.10.6 prints the following result:</p>
+<pre><code class="language-python">['expression', 'annotation']
+</code></pre>
+<p>Here we can see that an annotated assignments annotation gets evaluated after the assignment's expression. The current traversal of an annotated assignment's AST does not align with this order.</p>
+<h2>Why?</h2>
+<p>I'm slowly working on #3946 and porting over some of the logic and tests from ssort. ssort is very sensitive to AST traversal order, so ensuring the utmost correctness here is important.</p>
+<h2>Test Plan</h2>
+<p>There doesn't seem to be existing tests for the AST visitor, so I didn't bother adding tests for these very subtle changes. However, this behavior will be captured in the tests for the PR which addresses #3946.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-20 17:55</div>
+            <div class="timeline-body"><p>Nice, thank you -- this makes sense.</p>
+<p>We actually end up overriding this behavior in the core AST checker (which implements the <code>Visitor</code> trait), because we evaluate the defaults vs. the arguments in different scopes. The defaults are evaluated in the enclosing scope, while the arguments are evaluated within the function scope (since they inject new symbols into the scope). So, that's at least one reason why we may not have noticed this (and it's not a risky change).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/visitor.rs</code>:639 on 2023-06-20 18:00</div>
+            <div class="timeline-body"><p>I wonder if we instead need to change how we walk over these such that, in <code>walk_arguments</code>, we walk over the defaults, then the arguments... We may want to remove <code>visit_arg_with_default</code> from the interface entirely. 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-20 18:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-20 18:15</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      6.4±0.01ms     6.4 MB/sec    1.00      6.4±0.01ms     6.4 MB/sec
+formatter/numpy/ctypeslib.py               1.01   1357.4±3.57µs    12.3 MB/sec    1.00   1347.1±3.96µs    12.4 MB/sec
+formatter/numpy/globals.py                 1.00    132.6±0.16µs    22.3 MB/sec    1.00    133.1±0.16µs    22.2 MB/sec
+formatter/pydantic/types.py                1.01      2.6±0.01ms     9.6 MB/sec    1.00      2.6±0.01ms     9.7 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.0±0.05ms     3.1 MB/sec    1.02     13.2±0.07ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.3±0.01ms     5.0 MB/sec    1.00      3.3±0.01ms     5.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00    423.9±0.80µs     7.0 MB/sec    1.01    427.9±0.64µs     6.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.8±0.01ms     4.4 MB/sec    1.01      5.8±0.02ms     4.4 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.6±0.01ms     6.2 MB/sec    1.01      6.6±0.02ms     6.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1451.8±2.15µs    11.5 MB/sec    1.03   1489.9±2.87µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    167.2±0.29µs    17.6 MB/sec    1.02    171.0±0.39µs    17.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.01ms     8.5 MB/sec    1.02      3.1±0.01ms     8.4 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      7.8±0.10ms     5.2 MB/sec    1.00      7.8±0.11ms     5.2 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1584.0±18.99µs    10.5 MB/sec    1.01  1601.2±27.46µs    10.4 MB/sec
+formatter/numpy/globals.py                 1.00    152.6±4.54µs    19.3 MB/sec    1.03    157.8±6.44µs    18.7 MB/sec
+formatter/pydantic/types.py                1.01      3.2±0.07ms     8.0 MB/sec    1.00      3.2±0.04ms     8.0 MB/sec
+linter/all-rules/large/dataset.py          1.02     16.1±0.22ms     2.5 MB/sec    1.00     15.8±0.23ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.05      4.3±0.11ms     3.9 MB/sec    1.00      4.1±0.06ms     4.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00    498.5±7.59µs     5.9 MB/sec    1.00    500.5±8.64µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.03      7.2±0.18ms     3.5 MB/sec    1.00      7.0±0.10ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.02      8.3±0.15ms     4.9 MB/sec    1.00      8.1±0.10ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1737.3±26.86µs     9.6 MB/sec    1.00  1738.1±23.87µs     9.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00    196.1±3.61µs    15.0 MB/sec    1.01    198.8±5.90µs    14.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.06ms     6.9 MB/sec    1.00      3.7±0.07ms     6.9 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jgberry">@jgberry</a> reviewed on 2023-06-20 18:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jgberry">@jgberry</a> on <code>crates/ruff_python_ast/src/visitor.rs</code>:639 on 2023-06-20 18:35</div>
+            <div class="timeline-body"><p>Yeah, that's the way I originally implemented it, but after resolving the conflicts from #5192, this seemed to be the simplest way to do things. I'm open to restructuring, but it would make this PR more involved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "AST visitor: walk arguments in correct order" to "Fix AST visitor traversal order" by @jgberry on 2023-06-20 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jgberry">@jgberry</a> on 2023-06-20 21:45</div>
+            <div class="timeline-body"><p>I've updated this PR to be more a general &quot;fix-all&quot; for a few different traversal order issues I've run into while working on #3946. The PR summary has been updated to reflect these changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/visitor.rs</code>:639 on 2023-06-21 16:57</div>
+            <div class="timeline-body"><p>This won't necessarily visit in the described order though. Given:</p>
+<pre><code class="language-python">def f(
+  x: int = 1,
+  y : float = 2.0,
+):
+  ...
+</code></pre>
+<p>This would visit <code>1</code>, then <code>int</code>, then <code>2.0</code>, then <code>float</code>. I thought you were looking to enforce <code>1</code>, then <code>2.0</code>, then <code>int</code>, then <code>float</code>. Is this change sufficient? I'm fine with either but the latter seems &quot;more correct&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-21 16:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jgberry">@jgberry</a> reviewed on 2023-06-21 17:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jgberry">@jgberry</a> on <code>crates/ruff_python_ast/src/visitor.rs</code>:639 on 2023-06-21 17:49</div>
+            <div class="timeline-body"><p>Yes, you're right. This doesn't completely solve the issue. But, given as given as function arguments are now walked one by one, it wouldn't be possible to traverse them in the correct order without removing or avoiding calling <code>visit_arg_with_default</code>. I think the simplest solution would be to have <code>walk_arguments</code> handle all argument traversal and never call <code>visit_arg_with_default</code>, but this isn't the cleanest in my opinion. I'll throw this change in though and you can let me know what you think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jgberry">@jgberry</a> reviewed on 2023-06-21 18:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jgberry">@jgberry</a> on <code>crates/ruff_python_ast/src/visitor.rs</code>:639 on 2023-06-21 18:37</div>
+            <div class="timeline-body"><p>Hmm, this became unbearably messy for my tastes. The problem is we need to call <code>visit_arg</code> with a <code>ArgWithDefault</code>, so we have to convert an <code>ArgWithDefault</code> to just a plain <code>Arg</code>... but then there are lifetime issues to resolve and the whole thing blows up. I'm inclined to leave this as is for now. Yes, it's not completely correct, but it's so subtle that I don't anticipate it causing issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-21 18:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/visitor.rs</code>:639 on 2023-06-21 18:40</div>
+            <div class="timeline-body"><p>Hah, ok -- that's fine, lets see how it goes, this is clearly an improvement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-06-21 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-21 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-21 18:41</div>
+            <div class="timeline-body"><p>Thanks! I love the PR summary too, very clear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-06-21 20:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:37:34 UTC
+    </footer>
+</body>
+</html>

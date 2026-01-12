@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move file-level rule exemption to lexer-based approach - astral-sh/ruff #5567</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Move file-level rule exemption to lexer-based approach</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5567">#5567</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-07-06 18:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-06 18:10</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>In addition to <code># noqa</code> codes, we also support file-level exemptions, which look like:</p>
+<ul>
+<li><code># flake8: noqa</code> (ignore all rules in the file, for compatibility)</li>
+<li><code># ruff: noqa</code> (all rules in the file)</li>
+<li><code># ruff: noqa: F401</code> (ignore <code>F401</code> in the file, Flake8 doesn't support this)</li>
+</ul>
+<p>This PR moves that logic to something that looks a lot more like our <code># noqa</code> parser. Performance is actually quite a bit <em>worse</em> than the previous approach (lexing <code># flake8: noqa</code> goes from 2ns to 11ns; lexing <code># ruff: noqa: F401, F841</code> is about the same<code>; lexing </code># type: ignore # noqa: E501` fgoes from 4ns to 6ns), but the numbers are very small so it's... maybe worth it?</p>
+<p>The primary benefit here is that we now properly support flexible whitespace, like: <code>#flake8:noqa</code>. Previously, we required exact string matching, and we also didn't support all case-insensitive variants of <code>noqa</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-07-06 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-06 18:11</div>
+            <div class="timeline-body"><p>I thought this might end up being faster, but given that it's slower, IDK, open to not merging. I do think handling <code>#flake8: noqa</code> (for example) is nice though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-06 18:20</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      7.9±0.03ms     5.2 MB/sec    1.00      7.9±0.03ms     5.2 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1753.3±2.03µs     9.5 MB/sec    1.00   1756.2±3.49µs     9.5 MB/sec
+formatter/numpy/globals.py                 1.00    197.9±0.85µs    14.9 MB/sec    1.01    199.6±0.52µs    14.8 MB/sec
+formatter/pydantic/types.py                1.01      3.8±0.01ms     6.7 MB/sec    1.00      3.8±0.00ms     6.8 MB/sec
+linter/all-rules/large/dataset.py          1.06     14.5±1.27ms     2.8 MB/sec    1.00     13.6±0.06ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      3.5±0.10ms     4.8 MB/sec    1.00      3.4±0.01ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    437.9±0.47µs     6.7 MB/sec    1.00    437.4±1.19µs     6.7 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.0±0.03ms     4.2 MB/sec    1.00      6.0±0.02ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.01      6.8±0.02ms     6.0 MB/sec    1.00      6.7±0.02ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1481.7±3.54µs    11.2 MB/sec    1.00   1468.8±3.68µs    11.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    169.7±0.21µs    17.4 MB/sec    1.00    170.5±1.10µs    17.3 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.1±0.02ms     8.3 MB/sec    1.00      3.0±0.01ms     8.4 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      7.6±0.03ms     5.3 MB/sec    1.00      7.6±0.03ms     5.3 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1592.3±13.92µs    10.5 MB/sec    1.01  1601.8±11.61µs    10.4 MB/sec
+formatter/numpy/globals.py                 1.00    170.8±1.46µs    17.3 MB/sec    1.01    172.0±3.35µs    17.2 MB/sec
+formatter/pydantic/types.py                1.00      3.5±0.01ms     7.2 MB/sec    1.00      3.6±0.02ms     7.2 MB/sec
+linter/all-rules/large/dataset.py          1.04     13.0±0.15ms     3.1 MB/sec    1.00     12.6±0.04ms     3.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.3±0.02ms     5.1 MB/sec    1.00      3.2±0.01ms     5.2 MB/sec
+linter/all-rules/numpy/globals.py          1.00    347.7±3.18µs     8.5 MB/sec    1.00    346.2±6.27µs     8.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.5±0.04ms     4.7 MB/sec    1.00      5.5±0.02ms     4.6 MB/sec
+linter/default-rules/large/dataset.py      1.02      6.7±0.10ms     6.0 MB/sec    1.00      6.6±0.02ms     6.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1339.7±13.14µs    12.4 MB/sec    1.00  1330.5±20.62µs    12.5 MB/sec
+linter/default-rules/numpy/globals.py      1.01    147.8±2.21µs    20.0 MB/sec    1.00    145.7±1.00µs    20.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.9±0.01ms     8.8 MB/sec    1.00      2.9±0.01ms     8.8 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-07-07 09:29</div>
+            <div class="timeline-body"><p>Neat. As mentioned in the other PR. An alternative would have been to write a more &quot;traditional&quot; lexer that returns a sequence of Tokens instead (with their ranges). See <code>SimpleTokenizer</code> for an example. But this works too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-07-07 10:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/noqa.rs</code>:260 on 2023-07-07 10:10</div>
+            <div class="timeline-body"><p>nit: <code>ParsedFileExemption</code> -&gt; <code>Self</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-07-07 10:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/noqa.rs</code>:349 on 2023-07-07 10:16</div>
+            <div class="timeline-body"><p>I'm surprised there isn't a better way to write this, but at least i found the issue for the missing methos https://github.com/rust-lang/rfcs/issues/2566</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-07-07 10:17</div>
+            <div class="timeline-body"><p>How did you compute those ns timings?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-07 11:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/noqa.rs</code>:349 on 2023-07-07 11:19</div>
+            <div class="timeline-body"><p>We could match on the byte slice because we only compare with byte characters. But you then still need to do the invariant which is annoying?</p>
+<pre><code>match line.as_str().bytes() {
+	['n' | 'N', 'o' | 'O', 'q' | 'Q',  'a' | 'A'] =&gt; tada,
+	_ =&gt; nope
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-07-07 12:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/noqa.rs</code>:349 on 2023-07-07 12:04</div>
+            <div class="timeline-body"><p>the problem is that we want to select the string after <code>&quot;noqa&quot;</code> and converting back from bytes isn't safe.</p>
+<p>Which reminds me, would <code>line.strip_prefix(&quot;noqa&quot;)</code> work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-07 13:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/noqa.rs</code>:349 on 2023-07-07 13:56</div>
+            <div class="timeline-body"><p>I don't think <code>line.strip_prefix(&quot;noqa&quot;)</code> matches case-insensitively, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/noqa.rs</code>:349 on 2023-07-07 13:57</div>
+            <div class="timeline-body"><blockquote>
+<p>the problem is that we want to select the string after &quot;noqa&quot; and converting back from bytes isn't safe.</p>
+</blockquote>
+<p>I think it would be safe here right because we know that all variations of <code>noqa</code> have an exact length of 4 bytes</p>
+<p>Anyway. I think the current code is fine. it's verbose but does the job</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-07 13:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-07 15:30</div>
+            <div class="timeline-body"><blockquote>
+<p>How did you compute those ns timings?</p>
+</blockquote>
+<p>I use <code>cargo bench</code> in the <code>ruff</code> crate. I add something like:</p>
+<pre><code class="language-rust">use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
+
+use ruff::noqa::ParsedFileExemption;
+
+pub fn directive_benchmark(c: &amp;mut Criterion) {
+    let mut group = c.benchmark_group(&quot;Directive&quot;);
+    for i in [
+        &quot;# noqa: F401&quot;,
+        &quot;# noqa: F401, F841&quot;,
+        &quot;# flake8: noqa: F401, F841&quot;,
+        &quot;# ruff: noqa: F401, F841&quot;,
+        &quot;# flake8: noqa&quot;,
+        &quot;# ruff: noqa&quot;,
+        &quot;# noqa&quot;,
+        &quot;# type: ignore # noqa: E501&quot;,
+        &quot;# type: ignore # nosec&quot;,
+        &quot;# some very long comment that # is interspersed with characters but # no directive&quot;,
+    ]
+    .iter()
+    {
+        group.bench_with_input(BenchmarkId::new(&quot;Regex&quot;, i), i, |b, _i| {
+            b.iter(|| ParsedFileExemption::try_regex(black_box(i)))
+        });
+        group.bench_with_input(BenchmarkId::new(&quot;Lexer&quot;, i), i, |b, _i| {
+            b.iter(|| ParsedFileExemption::try_extract(black_box(i)))
+        });
+    }
+    group.finish();
+}
+
+criterion_group!(benches, directive_benchmark);
+criterion_main!(benches);
+</code></pre>
+<p>In <code>crates/ruff/benches/benchmark.rs</code>. Then add:</p>
+<pre><code class="language-toml">[[bench]]
+name = &quot;benchmark&quot;
+harness = false
+</code></pre>
+<p>To <code>crates/ruff/Cargo.toml</code>, along with `criterion = &quot;0.5.1&quot;.</p>
+<p>Then <code>cargo bench</code> in <code>crates/ruff</code> gives you benchmarks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/noqa.rs</code>:349 on 2023-07-07 15:33</div>
+            <div class="timeline-body"><p>I like this, I changed it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-07 15:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-07-07 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-07 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-07-07 15:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:37:35 UTC
+    </footer>
+</body>
+</html>

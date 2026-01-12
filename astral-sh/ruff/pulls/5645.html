@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix find_only_token_in_range with expression parentheses - astral-sh/ruff #5645</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix find_only_token_in_range with expression parentheses</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5645">#5645</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-07-10 12:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-07-10 12:09</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fix an oversight in <code>find_only_token_in_range</code> where the following code would panic due do the closing and opening parentheses being in the range we scan:</p>
+<pre><code class="language-python">d1 = [
+    (&quot;a&quot;) if # 1
+    (&quot;b&quot;) else # 2
+    (&quot;c&quot;)
+]
+</code></pre>
+<p>Closing and opening parentheses respectively are now correctly skipped.</p>
+<h2>Test Plan</h2>
+<p>I added a regression test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-10 12:38</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      8.4±0.14ms     4.9 MB/sec    1.01      8.4±0.01ms     4.8 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1800.5±1.86µs     9.2 MB/sec    1.01   1811.4±4.27µs     9.2 MB/sec
+formatter/numpy/globals.py                 1.00    198.0±1.60µs    14.9 MB/sec    1.00    198.1±0.31µs    14.9 MB/sec
+formatter/pydantic/types.py                1.01      4.1±0.01ms     6.2 MB/sec    1.00      4.1±0.02ms     6.3 MB/sec
+linter/all-rules/large/dataset.py          1.00     14.0±0.04ms     2.9 MB/sec    1.01     14.1±0.06ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.01ms     4.7 MB/sec    1.00      3.5±0.01ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.01    365.2±1.07µs     8.1 MB/sec    1.00    362.6±1.13µs     8.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.2±0.01ms     4.1 MB/sec    1.00      6.2±0.01ms     4.1 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.1±0.02ms     5.7 MB/sec    1.00      7.1±0.02ms     5.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1463.7±3.90µs    11.4 MB/sec    1.00   1468.6±2.25µs    11.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    155.5±0.22µs    19.0 MB/sec    1.00    156.3±0.84µs    18.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.01ms     8.1 MB/sec    1.01      3.2±0.01ms     8.0 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.4±0.26ms     4.3 MB/sec    1.01      9.5±0.14ms     4.3 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.1±0.05ms     8.1 MB/sec    1.01      2.1±0.04ms     8.0 MB/sec
+formatter/numpy/globals.py                 1.00    236.9±8.65µs    12.5 MB/sec    1.00   236.9±12.29µs    12.5 MB/sec
+formatter/pydantic/types.py                1.00      4.6±0.10ms     5.5 MB/sec    1.01      4.7±0.12ms     5.5 MB/sec
+linter/all-rules/large/dataset.py          1.00     16.1±0.33ms     2.5 MB/sec    1.11     17.8±0.31ms     2.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.2±0.08ms     3.9 MB/sec    1.06      4.5±0.09ms     3.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00   507.6±14.15µs     5.8 MB/sec    1.02    517.6±7.04µs     5.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.1±0.10ms     3.6 MB/sec    1.08      7.7±0.34ms     3.3 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.0±0.13ms     5.1 MB/sec    1.01      8.1±0.13ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1726.3±40.41µs     9.6 MB/sec    1.00  1719.0±33.45µs     9.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00    203.9±9.09µs    14.5 MB/sec    1.01    205.5±5.81µs    14.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.08ms     7.1 MB/sec    1.00      3.6±0.07ms     7.1 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-07-10 12:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2023-07-10 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-07-10 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-07-10 13:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:37:35 UTC
+    </footer>
+</body>
+</html>

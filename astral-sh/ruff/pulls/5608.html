@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prefer expanding parenthesized expressions before operands - astral-sh/ruff #5608</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Prefer expanding parenthesized expressions before operands</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5608">#5608</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-07-08 09:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-08 09:23</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This PR implements Black's behavior where it first splits off parenthesized expressions before splitting before operands to avoid unnecessary parentheses:</p>
+<pre><code class="language-python"># We want 
+if a + [ 
+	b,
+	c
+]: 
+	pass
+
+# Rather than
+if (
+    a
+    + [b, c]
+): 
+	pass
+</code></pre>
+<p>This is implemented by using the new IR elements introduced in #5596.</p>
+<ul>
+<li>We give the group wrapping the optional parentheses an ID (<code>parentheses_id</code>)</li>
+<li>We use <code>conditional_group</code> for the lower priority groups  (all non-parenthesized expressions) with the condition that the <code>parentheses_id</code> group breaks (we want to split before operands only if the parentheses are necessary)</li>
+<li>We use <code>fits_expanded</code> to wrap all other parenthesized expressions (lists, dicts, sets), to prevent that expanding e.g. a list expands the <code>parentheses_id</code> group. We gate the <code>fits_expand</code> to only apply if the <code>parentheses_id</code> group fits (because we  prefer <code>a\n+[b, c]</code> over expanding <code>[b, c]</code> if the whole expression gets parenthesized).</li>
+</ul>
+<p>We limit using <code>fits_expanded</code> and <code>conditional_group</code> only to expressions that themselves are not in parentheses (checking the conditions isn't free)</p>
+<h2>Test Plan</h2>
+<p>It increases the Jaccard index for Django from 0.915 to 0.917</p>
+<h2>Incompatibilites</h2>
+<p>There are two incompatibilities left that I'm aware of (there may be more, I didn't go through all snapshot differences).</p>
+<h3>Long string literals</h3>
+<p>I  commented on the regression. The issue is that a very long string (or any content without a split point) may not fit when only breaking the right side. The formatter than inserts the optional parentheses. But this is kind of useless because the overlong string will still not fit, because there are no new split points.</p>
+<p>I think we should ignore this incompatibility for now</p>
+<h3>Expressions on statement level</h3>
+<p>I don't fully understand the logic behind this yet, but black doesn't break before the operators for the following example even though the expression exceeds the configured line width</p>
+<pre><code class="language-python">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa &lt; bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb &gt; ccccccccccccccccccccccccccccc == ddddddddddddddddddddd
+</code></pre>
+<p>But it would if the expression is used inside of a condition.</p>
+<p>What I understand so far is that Black doesn't insert optional parentheses on the expression statement level (and a few other places) and, therefore, only breaks after opening parentheses. I propose to keep this deviation for now to avoid overlong-lines and use the compatibility report to make a decision if we should implement the same behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-08 09:23</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #5596</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5596" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #5608</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5608" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #5609</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5609" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #5643</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5643" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #5644</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5644" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+<li><strong>PR #5615</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5615" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5608?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @MichaReiser on 2023-07-08 09:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-08 10:14</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      8.4±0.04ms     4.8 MB/sec    1.00      8.4±0.02ms     4.8 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1861.6±10.12µs     8.9 MB/sec    1.01   1876.6±6.75µs     8.9 MB/sec
+formatter/numpy/globals.py                 1.00    199.4±0.35µs    14.8 MB/sec    1.02    204.1±1.24µs    14.5 MB/sec
+formatter/pydantic/types.py                1.02      4.2±0.07ms     6.1 MB/sec    1.00      4.1±0.00ms     6.2 MB/sec
+linter/all-rules/large/dataset.py          1.00     14.1±0.03ms     2.9 MB/sec    1.00     14.1±0.06ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.01ms     4.7 MB/sec    1.00      3.5±0.00ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    365.9±1.30µs     8.1 MB/sec    1.00    367.1±1.43µs     8.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.3±0.05ms     4.1 MB/sec    1.00      6.3±0.06ms     4.1 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.2±0.01ms     5.6 MB/sec    1.00      7.2±0.15ms     5.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1484.3±4.68µs    11.2 MB/sec    1.00   1489.4±2.32µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    161.1±0.73µs    18.3 MB/sec    1.00    161.4±1.51µs    18.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.01ms     7.9 MB/sec    1.00      3.2±0.01ms     8.0 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     11.7±0.44ms     3.5 MB/sec    1.00     11.7±0.37ms     3.5 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.6±0.12ms     6.4 MB/sec    1.05      2.7±0.13ms     6.1 MB/sec
+formatter/numpy/globals.py                 1.00   286.1±14.85µs    10.3 MB/sec    1.04   298.0±18.83µs     9.9 MB/sec
+formatter/pydantic/types.py                1.00      5.6±0.23ms     4.5 MB/sec    1.04      5.9±0.33ms     4.3 MB/sec
+linter/all-rules/large/dataset.py          1.00     19.5±0.61ms     2.1 MB/sec    1.00     19.6±0.65ms     2.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      5.1±0.20ms     3.3 MB/sec    1.00      5.0±0.21ms     3.3 MB/sec
+linter/all-rules/numpy/globals.py          1.01   629.4±21.41µs     4.7 MB/sec    1.00   622.7±80.29µs     4.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.7±0.33ms     2.9 MB/sec    1.00      8.7±0.34ms     2.9 MB/sec
+linter/default-rules/large/dataset.py      1.02     10.1±0.33ms     4.0 MB/sec    1.00      9.9±0.37ms     4.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.1±0.07ms     7.9 MB/sec    1.00      2.1±0.08ms     7.9 MB/sec
+linter/default-rules/numpy/globals.py      1.02   258.7±15.88µs    11.4 MB/sec    1.00   254.2±19.29µs    11.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.5±0.20ms     5.6 MB/sec    1.01      4.6±0.31ms     5.6 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@simple_cases__trailing_comma_optional_parens3.py.snap</code>:8 on 2023-07-09 11:16</div>
+            <div class="timeline-body"><p>This is a regression</p>
+<p>Ruff tests if all lines fit. This is usless in the given case because strings have no further split point. Meaning, changing the layout to fully expanded doesn't really fix the <em>does not fit</em> problem, because we would need to split the srings, which we cannot. Splitting the last line doesn't really help either.
+Should the <code>FitsExpanded</code> measure mode be <code>FitsEnd</code> rather than <code>StartAndEnd</code>? Meaning, we measure if everything up to the first separator fits, then everything coming after the last line break?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Prefer parenthesized expressions before operands" to "Prefer expanding parenthesized expressions before operands" by @MichaReiser on 2023-07-09 12:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @MichaReiser on 2023-07-10 11:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-07-10 11:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-07-10 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-10 11:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:131 on 2023-07-11 10:27</div>
+            <div class="timeline-body"><p>why is the line break inside the indent?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:228 on 2023-07-11 10:27</div>
+            <div class="timeline-body"><p>i think this should mention black</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@simple_cases__trailing_comma_optional_parens3.py.snap</code>:8 on 2023-07-11 10:36</div>
+            <div class="timeline-body"><p>i think we do need to measure after the line break here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-07-11 10:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-11 11:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@simple_cases__trailing_comma_optional_parens3.py.snap</code>:8 on 2023-07-11 11:17</div>
+            <div class="timeline-body"><p>I'll leave this for now to fix later. This is a general problem when using <code>groups</code> that contain no further split points.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-11 11:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:131 on 2023-07-11 11:20</div>
+            <div class="timeline-body"><p><code>Indent</code> is a bit counter-intuitive. Luckily, this is hidden a way by <code>soft_block_indent</code> and <code>block_indent</code>. <code>indent</code> only increments the indentation level, it doesn't insert any line breaks itself. The <code>soft_line_break</code> is necessary to then start a new line, with the new, incremented indent.</p>
+<p>This is why the <em>closing</em> newline is outside of the indent. We first need to decrement the indent counter, and only then start the new line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-07-11 12:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-07-11 12:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-07-11 12:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-11 12:07</div>
+            <div class="timeline-body"><p>@MichaReiser merged this pull request with <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5608">Graphite</a>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:37:35 UTC
+    </footer>
+</body>
+</html>

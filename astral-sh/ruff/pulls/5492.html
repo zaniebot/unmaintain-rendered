@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extend ruff_dev formatter script to compute statistics and format a project - astral-sh/ruff #5492</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Extend ruff_dev formatter script to compute statistics and format a project</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5492">#5492</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-07-03 19:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-07-03 19:24</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This extends the <code>ruff_dev</code> formatter script util. Instead of only doing stability checks, you can now choose different compatible options on the CLI and get statistics.</p>
+<ul>
+<li>It adds an option the formats all files that ruff would check to allow looking at an entire black-formatted repository with <code>git diff</code></li>
+<li>It computes the <a href="https://en.wikipedia.org/wiki/Jaccard_index">Jaccard index</a> as a measure of deviation between input and output, which is useful as single number metric for assessing our current deviations from black.</li>
+<li>It adds progress bars to both the single projects as well as the multi-project mode.</li>
+<li>It adds an option to write the multi-project output to a file</li>
+</ul>
+<p>Sample usage:</p>
+<pre><code>$ cargo run --bin ruff_dev -- format-dev --stability-check crates/ruff/resources/test/cpython
+$ cargo run --bin ruff_dev -- format-dev --stability-check /home/konsti/projects/django
+Syntax error in /home/konsti/projects/django/tests/test_runner_apps/tagged/tests_syntax_error.py: source contains syntax errors (parser error): BaseError { error: UnrecognizedToken(Name { name: &quot;syntax_error&quot; }, None), offset: 131, source_path: &quot;&lt;filename&gt;&quot; }
+Found 0 stability errors in 2755 files (jaccard index 0.911) in 9.75s
+$ cargo run --bin ruff_dev -- format-dev --write /home/konsti/projects/django
+</code></pre>
+<p>Options:</p>
+<pre><code>Several utils related to the formatter which can be run on one or more repositories. The selected set of files in a repository is the same as for `ruff check`.
+
+* Check formatter stability: Format a repository twice and ensure that it looks that the first and second formatting look the same. * Format: Format the files in a repository to be able to check them with `git diff` * Statistics: The subcommand the Jaccard index between the (assumed to be black formatted) input and the ruff formatted output
+
+Usage: ruff_dev format-dev [OPTIONS] [FILES]...
+
+Arguments:
+  [FILES]...
+          Like `ruff check`'s files. See `--multi-project` if you want to format an ecosystem checkout
+
+Options:
+      --stability-check
+          Check stability
+          
+          We want to ensure that once formatted content stays the same when formatted again, which is known as formatter stability or formatter idempotency, and that the formatter prints syntactically valid code. As our test cases cover only a limited amount of code, this allows checking entire repositories.
+
+      --write
+          Format the files. Without this flag, the python files are not modified
+
+      --format &lt;FORMAT&gt;
+          Control the verbosity of the output
+          
+          [default: default]
+
+          Possible values:
+          - minimal: Filenames only
+          - default: Filenames and reduced diff
+          - full:    Full diff and invalid code
+
+  -x, --exit-first-error
+          Print only the first error and exit, `-x` is same as pytest
+
+      --multi-project
+          Checks each project inside a directory, useful e.g. if you want to check all of the ecosystem checkouts
+
+      --error-file &lt;ERROR_FILE&gt;
+          Write all errors to this file in addition to stdout. Only used in multi-project mode
+</code></pre>
+<h2>Test Plan</h2>
+<p>I ran this on django (2755 files, jaccard index 0.911) and discovered a magic trailing comma problem and that we really needed to implement import formatting. I ran the script on cpython to identify https://github.com/astral-sh/ruff/pull/5558.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-07-03 19:24</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #5491</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5491" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #5492</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5492" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5492?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-03 19:38</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      8.3±0.03ms     4.9 MB/sec    1.00      8.3±0.03ms     4.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1762.4±6.65µs     9.4 MB/sec    1.00   1763.7±4.28µs     9.4 MB/sec
+formatter/numpy/globals.py                 1.00    193.0±0.83µs    15.3 MB/sec    1.01    194.7±2.69µs    15.2 MB/sec
+formatter/pydantic/types.py                1.01      4.0±0.01ms     6.4 MB/sec    1.00      3.9±0.04ms     6.5 MB/sec
+linter/all-rules/large/dataset.py          1.04     14.5±0.05ms     2.8 MB/sec    1.00     13.9±0.04ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      3.6±0.00ms     4.6 MB/sec    1.00      3.5±0.00ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.02    371.1±2.91µs     8.0 MB/sec    1.00    364.5±1.15µs     8.1 MB/sec
+linter/all-rules/pydantic/types.py         1.02      6.3±0.01ms     4.1 MB/sec    1.00      6.1±0.01ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.06      7.6±0.01ms     5.4 MB/sec    1.00      7.2±0.01ms     5.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.05   1542.6±2.29µs    10.8 MB/sec    1.00   1467.6±1.60µs    11.3 MB/sec
+linter/default-rules/numpy/globals.py      1.03    163.8±0.25µs    18.0 MB/sec    1.00    158.5±0.28µs    18.6 MB/sec
+linter/default-rules/pydantic/types.py     1.04      3.3±0.01ms     7.7 MB/sec    1.00      3.2±0.01ms     8.0 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     11.4±0.30ms     3.6 MB/sec    1.00     11.4±0.28ms     3.6 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.5±0.09ms     6.7 MB/sec    1.00      2.5±0.07ms     6.7 MB/sec
+formatter/numpy/globals.py                 1.00   283.9±14.29µs    10.4 MB/sec    1.04   296.1±27.07µs    10.0 MB/sec
+formatter/pydantic/types.py                1.01      5.6±0.28ms     4.6 MB/sec    1.00      5.5±0.22ms     4.6 MB/sec
+linter/all-rules/large/dataset.py          1.00     19.5±0.41ms     2.1 MB/sec    1.00     19.5±0.45ms     2.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.1±0.16ms     3.3 MB/sec    1.00      5.1±0.20ms     3.3 MB/sec
+linter/all-rules/numpy/globals.py          1.00   618.1±21.54µs     4.8 MB/sec    1.00   621.1±20.63µs     4.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.5±0.22ms     3.0 MB/sec    1.02      8.6±0.24ms     3.0 MB/sec
+linter/default-rules/large/dataset.py      1.01      9.9±0.23ms     4.1 MB/sec    1.00      9.8±0.21ms     4.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02      2.1±0.12ms     7.8 MB/sec    1.00      2.1±0.06ms     8.0 MB/sec
+linter/default-rules/numpy/globals.py      1.01   251.8±10.78µs    11.7 MB/sec    1.00   248.6±10.90µs    11.9 MB/sec
+linter/default-rules/pydantic/types.py     1.01      4.5±0.15ms     5.7 MB/sec    1.00      4.4±0.15ms     5.8 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2023-07-05 13:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.cargo/config.toml</code>:15 on 2023-07-05 16:34</div>
+            <div class="timeline-body"><p>I suggest moving this into a dedicated PR. I found the rule useful so far (I've been liberal with allowing the rule in methods where I knew it isn't a problem)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/args.rs</code>:78 on 2023-07-05 16:35</div>
+            <div class="timeline-body"><p>Does this change the size of the resulting binary? If so, move behind a feature flag? Why does the existing <code>WrapperArgs</code> approach no longer work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_dev/src/format_project.rs</code>:68 on 2023-07-05 16:38</div>
+            <div class="timeline-body"><p>What's your motivation for creating another command vs integrating it into the <code>check_formatter_stability</code>? My main concern is that we start duplicating the code for each command (we probably want to have an option to run the script over multiple projects in the future...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_dev/src/format_project.rs</code>:192 on 2023-07-05 16:43</div>
+            <div class="timeline-body"><p>Why does this file write any output?</p>
+<p>Rome had a useful script. It allowed you to generate a markdown report for all prettier test. The report contained:</p>
+<ul>
+<li>For files where the formatting differs<ul>
+<li>The Jacard index</li>
+<li>The formatting diff</li>
+</ul>
+</li>
+<li>The Jacard index for the whole project</li>
+</ul>
+<p>I found this report extremely useful because:</p>
+<ul>
+<li>I had syntax highlighting of the patch</li>
+<li>I can see which files have the biggest differences</li>
+<li>I get an overview metric</li>
+</ul>
+<p>I think it would be possible to integrate this report into the <code>check-stability</code> command and only generate the report if a specific argument is present.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-05 16:44</div>
+            <div class="timeline-body"><p>How much effort would it be to unify the <code>checek_formatter_stability</code> and <code>format_project</code> commands? I'm worried that we're having too many CLIs (the one in <code>ruff_python_formatter</code>, <code>ruff format</code>, <code>check_stability</code>, <code>format_project</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @konstin on 2023-07-06 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add script to reformat a project for testing" to "Extend ruff_dev formatter scripts to compute statistics and format a project" by @konstin on 2023-07-06 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-07-06 18:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/src/args.rs</code>:78 on 2023-07-06 18:46</div>
+            <div class="timeline-body"><p><code>WrapperArgs</code> was mostly a hack around clap's limitations, i think this is a much cleaner solution.</p>
+<p>For <code>ruff-0.0.277-py3-none-manylinux_2_34_x86_64.whl</code> from <code>CARGO_TARGET_DIR=target-maturin maturin build --release --strip -j 2</code>:</p>
+<ul>
+<li>On main: 5593346</li>
+<li>This branch: 5504378</li>
+</ul>
+<p>Surprisingly even better than main, so i'd say the impact on binary size is in the realm of noise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Extend ruff_dev formatter scripts to compute statistics and format a project" to "Extend ruff_dev formatter script to compute statistics and format a project" by @konstin on 2023-07-06 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/lib.rs</code>:94 on 2023-07-06 19:21</div>
+            <div class="timeline-body"><p>the <code>anyhow::Result</code> from <code>format_node</code> had irked me already and now i had the motivation to change it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-07-06 19:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2023-07-06 19:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-07-06 19:22</div>
+            <div class="timeline-body"><p>I have to check the details with fresh eyes, but the command works and does the right thing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-07-07 08:51</div>
+            <div class="timeline-body"><p>Looks code wise. You may want to consider writing a report instead of formatting the files, to avoid overlap with the functionality of ruff and ruff python formatter</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-07-07 10:27</div>
+            <div class="timeline-body"><blockquote>
+<p>You may want to consider writing a report instead of formatting the files, to avoid overlap with the functionality of ruff and ruff python formatter</p>
+</blockquote>
+<p>Open to that, just not a priority for me atm</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2023-07-07 11:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-07-07 11:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-07-07 11:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:37:35 UTC
+    </footer>
+</body>
+</html>

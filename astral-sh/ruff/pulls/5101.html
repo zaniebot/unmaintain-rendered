@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignore `reimplemented-builtin` if using `await` - astral-sh/ruff #5101</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ignore <code>reimplemented-builtin</code> if using <code>await</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5101">#5101</a>
+        opened by <a href="https://github.com/tjkuson">@tjkuson</a>
+        on 2023-06-14 21:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-06-14 21:03</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Checks if <code>checker</code> is in an <code>async</code> context. If yes, return early.</p>
+<p>Fixes #5098.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @tjkuson on 2023-06-14 21:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-14 21:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_simplify/rules/reimplemented_builtin.rs</code>:236 on 2023-06-14 21:10</div>
+            <div class="timeline-body"><p>Could we instead check if the statement body contains an <code>await</code>? We have a <code>contains_await</code> utility in <code>rules/pyupgrade/rules/unpacked_list_comprehension.rs</code> that we could move to <code>helpers.rs</code>.</p>
+<p>E.g., sometimes, it's okay to run this in an async function:</p>
+<pre><code class="language-py">async def f():
+    # OK
+    for x in iterable:
+        if check(x):
+            return True
+    return False
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tjkuson">@tjkuson</a> reviewed on 2023-06-14 21:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tjkuson">@tjkuson</a> on <code>crates/ruff/src/rules/flake8_simplify/rules/reimplemented_builtin.rs</code>:236 on 2023-06-14 21:12</div>
+            <div class="timeline-body"><p>Yeah, that makes sense. The PR is a bit nuclear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_simplify/rules/reimplemented_builtin.rs</code>:236 on 2023-06-14 21:13</div>
+            <div class="timeline-body"><p>Oh wait, we also have <code>is_async_generator</code> which is significantly simpler in <code>rules/flake8_comprehensions/rules/unnecessary_comprehension_any_all.rs</code>. We should be able to reuse that snippet (but we can just redefine it here).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-06-14 21:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-14 21:16</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      6.3±0.05ms     6.5 MB/sec    1.01      6.3±0.03ms     6.4 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1323.0±5.58µs    12.6 MB/sec    1.00   1321.7±2.54µs    12.6 MB/sec
+formatter/numpy/globals.py                 1.00    126.8±0.40µs    23.3 MB/sec    1.00    126.8±0.21µs    23.3 MB/sec
+formatter/pydantic/types.py                1.00      2.6±0.01ms     9.9 MB/sec    1.00      2.6±0.01ms     9.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.7±0.15ms     3.0 MB/sec    1.02     14.0±0.21ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.3±0.01ms     5.0 MB/sec    1.01      3.4±0.01ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    420.5±2.44µs     7.0 MB/sec    1.01    424.9±0.74µs     6.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.9±0.06ms     4.4 MB/sec    1.01      5.9±0.03ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.6±0.02ms     6.1 MB/sec    1.01      6.7±0.03ms     6.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1463.1±2.40µs    11.4 MB/sec    1.00   1466.5±3.29µs    11.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    165.6±0.72µs    17.8 MB/sec    1.00    166.0±0.55µs    17.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.00ms     8.3 MB/sec    1.00      3.1±0.01ms     8.3 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      8.0±0.05ms     5.1 MB/sec    1.00      7.9±0.07ms     5.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1612.5±11.93µs    10.3 MB/sec    1.00  1611.2±19.59µs    10.3 MB/sec
+formatter/numpy/globals.py                 1.00    156.8±2.62µs    18.8 MB/sec    1.01    157.6±2.71µs    18.7 MB/sec
+formatter/pydantic/types.py                1.00      3.3±0.04ms     7.8 MB/sec    1.00      3.3±0.10ms     7.8 MB/sec
+linter/all-rules/large/dataset.py          1.00     16.4±0.33ms     2.5 MB/sec    1.05     17.2±0.19ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.2±0.02ms     4.0 MB/sec    1.05      4.4±0.03ms     3.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00    435.6±5.45µs     6.8 MB/sec    1.04    451.2±8.27µs     6.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.3±0.19ms     3.5 MB/sec    1.02      7.4±0.12ms     3.4 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.5±0.04ms     4.8 MB/sec    1.02      8.6±0.10ms     4.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1769.3±12.38µs     9.4 MB/sec    1.01  1778.5±14.06µs     9.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    188.6±1.79µs    15.6 MB/sec    1.02    191.6±2.45µs    15.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.05ms     6.6 MB/sec    1.01      3.9±0.02ms     6.6 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-06-14 22:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-14 22:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-14 22:00</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Ignore `reimplemented-builtin` if in `async` context" to "Ignore `reimplemented-builtin` if using `await`" by @tjkuson on 2023-06-14 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-07-10 09:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:37:34 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement Pylint W0149 - astral-sh/ruff #4652</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement Pylint W0149</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4652">#4652</a>
+        opened by <a href="https://github.com/tjkuson">@tjkuson</a>
+        on 2023-05-25 09:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-05-25 09:32</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Implement the Pylint <a href="https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/while-used.html">W0149 rule</a> that checks for while loops. Related to #970.</p>
+<p>Includes documentation.</p>
+<h2>Test Plan</h2>
+<p>Added test files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:1516 on 2023-05-25 09:42</div>
+            <div class="timeline-body"><p>We can remove the <code>if let Some(stmt::While)</code> check in the rule by doing</p>
+<pre><code>            Stmt::While(stmt_while @ ast::StmtWhile { body, orelse, .. }) =&gt; {
+                if self.enabled(Rule::FunctionUsesLoopVariable) {
+                    flake8_bugbear::rules::function_uses_loop_variable(self, &amp;Node::Stmt(stmt));
+                }
+                if self.enabled(Rule::UselessElseOnLoop) {
+                    pylint::rules::useless_else_on_loop(self, stmt, body, orelse);
+                }
+                if self.enabled(Rule::WhileLoop) {
+                    pylint::rules::while_loop(self, stmt_while);
+                }
+            }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-25 09:43</div>
+            <div class="timeline-body"><p>The code looks good to me but I'm conflicted on the rule itself. It seems over-aggressive to flag every while loop. Could we improve the rule to detect cases where the loop can be rewritten to a <code>for range</code> loop with reasonable certainty?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-25 09:50</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>ℹ️ ecosystem check <strong>detected changes</strong>. (+447, -0, 0 error(s))</p>
+<details><summary>airflow (+295, -0)</summary>
+<p>
+
+<pre><code class="language-diff">+ airflow/api/common/mark_tasks.py:219:5: PLW0149 Used `while` loop
++ airflow/cli/commands/internal_api_command.py:188:21: PLW0149 Used `while` loop
++ airflow/cli/commands/kubernetes_command.py:113:5: PLW0149 Used `while` loop
++ airflow/cli/commands/standalone_command.py:122:9: PLW0149 Used `while` loop
++ airflow/cli/commands/standalone_command.py:93:9: PLW0149 Used `while` loop
++ airflow/cli/commands/webserver_command.py:157:9: PLW0149 Used `while` loop
++ airflow/cli/commands/webserver_command.py:215:13: PLW0149 Used `while` loop
++ airflow/cli/commands/webserver_command.py:486:21: PLW0149 Used `while` loop
++ airflow/configuration.py:95:5: PLW0149 Used `while` loop
++ airflow/dag_processing/manager.py:1012:13: PLW0149 Used `while` loop
++ airflow/dag_processing/manager.py:1074:9: PLW0149 Used `while` loop
++ airflow/dag_processing/manager.py:200:9: PLW0149 Used `while` loop
++ airflow/dag_processing/manager.py:266:9: PLW0149 Used `while` loop
++ airflow/dag_processing/manager.py:573:9: PLW0149 Used `while` loop
++ airflow/dag_processing/processor.py:279:13: PLW0149 Used `while` loop
++ airflow/dag_processing/processor.py:473:13: PLW0149 Used `while` loop
++ airflow/example_dags/plugins/workday.py:43:9: PLW0149 Used `while` loop
++ airflow/executors/celery_executor.py:358:13: PLW0149 Used `while` loop
++ airflow/executors/debug_executor.py:68:9: PLW0149 Used `while` loop
++ airflow/executors/kubernetes_executor.py:1000:9: PLW0149 Used `while` loop
++ airflow/executors/kubernetes_executor.py:112:9: PLW0149 Used `while` loop
++ airflow/executors/kubernetes_executor.py:440:9: PLW0149 Used `while` loop
++ airflow/executors/kubernetes_executor.py:467:9: PLW0149 Used `while` loop
++ airflow/executors/kubernetes_executor.py:691:9: PLW0149 Used `while` loop
++ airflow/executors/kubernetes_executor.py:986:9: PLW0149 Used `while` loop
++ airflow/executors/local_executor.py:184:9: PLW0149 Used `while` loop
++ airflow/executors/local_executor.py:270:13: PLW0149 Used `while` loop
++ airflow/executors/local_executor.py:277:13: PLW0149 Used `while` loop
++ airflow/executors/local_executor.py:332:13: PLW0149 Used `while` loop
++ airflow/jobs/backfill_job_runner.py:450:9: PLW0149 Used `while` loop
++ airflow/jobs/backfill_job_runner.py:906:13: PLW0149 Used `while` loop
++ airflow/jobs/local_task_job_runner.py:172:13: PLW0149 Used `while` loop
++ airflow/jobs/triggerer_job_runner.py:352:9: PLW0149 Used `while` loop
++ airflow/jobs/triggerer_job_runner.py:382:9: PLW0149 Used `while` loop
++ airflow/jobs/triggerer_job_runner.py:395:9: PLW0149 Used `while` loop
++ airflow/jobs/triggerer_job_runner.py:468:9: PLW0149 Used `while` loop
++ airflow/jobs/triggerer_job_runner.py:488:9: PLW0149 Used `while` loop
++ airflow/jobs/triggerer_job_runner.py:511:9: PLW0149 Used `while` loop
++ airflow/jobs/triggerer_job_runner.py:569:9: PLW0149 Used `while` loop
++ airflow/kubernetes/pod_launcher_deprecated.py:134:13: PLW0149 Used `while` loop
++ airflow/kubernetes/pod_launcher_deprecated.py:151:13: PLW0149 Used `while` loop
++ airflow/kubernetes/pod_launcher_deprecated.py:170:13: PLW0149 Used `while` loop
++ airflow/kubernetes/pod_launcher_deprecated.py:176:9: PLW0149 Used `while` loop
++ airflow/kubernetes/pod_launcher_deprecated.py:296:13: PLW0149 Used `while` loop
++ airflow/migrations/versions/0023_1_8_2_add_max_tries_column_to_task_instance.py:109:9: PLW0149 Used `while` loop
++ airflow/migrations/versions/0023_1_8_2_add_max_tries_column_to_task_instance.py:77:9: PLW0149 Used `while` loop
++ airflow/models/abstractoperator.py:171:9: PLW0149 Used `while` loop
++ airflow/models/abstractoperator.py:251:9: PLW0149 Used `while` loop
++ airflow/models/dag.py:1048:9: PLW0149 Used `while` loop
++ airflow/models/dag.py:2699:9: PLW0149 Used `while` loop
++ airflow/models/taskinstance.py:1877:9: PLW0149 Used `while` loop
++ airflow/models/taskinstance.py:2860:5: PLW0149 Used `while` loop
++ airflow/operators/trigger_dagrun.py:196:13: PLW0149 Used `while` loop
++ airflow/providers/airbyte/hooks/airbyte.py:64:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/athena.py:237:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/batch_client.py:324:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/batch_client.py:363:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/datasync.py:129:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/datasync.py:185:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/datasync.py:316:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/ec2.py:198:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/ecs.py:175:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/eks.py:515:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/elasticache_replication_group.py:145:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/elasticache_replication_group.py:199:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/emr.py:477:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/glue.py:270:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/glue_crawler.py:184:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/logs.py:82:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/quicksight.py:158:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/rds.py:346:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/redshift_cluster.py:245:21: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/redshift_cluster.py:274:21: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/redshift_data.py:103:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/redshift_data.py:179:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/s3.py:911:13: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/sagemaker.py:1141:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/sagemaker.py:270:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/sagemaker.py:715:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/sagemaker.py:800:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/hooks/sagemaker.py:959:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/operators/appflow.py:491:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/operators/redshift_cluster.py:435:13: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/operators/redshift_cluster.py:493:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/operators/redshift_cluster.py:581:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/operators/redshift_cluster.py:663:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/operators/sagemaker.py:125:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/transfers/dynamodb_to_s3.py:186:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/triggers/ec2.py:70:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/triggers/redshift_cluster.py:188:13: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/triggers/redshift_cluster.py:258:13: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/triggers/redshift_cluster.py:333:13: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/triggers/redshift_cluster.py:64:9: PLW0149 Used `while` loop
++ airflow/providers/amazon/aws/utils/waiter.py:61:5: PLW0149 Used `while` loop
++ airflow/providers/apache/beam/hooks/beam.py:105:5: PLW0149 Used `while` loop
++ airflow/providers/apache/beam/hooks/beam.py:142:5: PLW0149 Used `while` loop
++ airflow/providers/apache/beam/operators/beam.py:445:21: PLW0149 Used `while` loop
++ airflow/providers/apache/druid/hooks/druid.py:105:9: PLW0149 Used `while` loop
++ airflow/providers/apache/hive/hooks/hive.py:284:17: PLW0149 Used `while` loop
++ airflow/providers/apache/kafka/operators/consume.py:154:9: PLW0149 Used `while` loop
++ airflow/providers/apache/kafka/triggers/await_message.py:102:9: PLW0149 Used `while` loop
++ airflow/providers/apache/kylin/operators/kylin_cube.py:165:13: PLW0149 Used `while` loop
++ airflow/providers/apache/livy/hooks/livy.py:291:9: PLW0149 Used `while` loop
++ airflow/providers/apache/livy/hooks/livy.py:545:13: PLW0149 Used `while` loop
++ airflow/providers/apache/livy/hooks/livy.py:674:9: PLW0149 Used `while` loop
++ airflow/providers/apache/livy/operators/livy.py:175:9: PLW0149 Used `while` loop
++ airflow/providers/apache/livy/triggers/livy.py:118:9: PLW0149 Used `while` loop
++ airflow/providers/apache/spark/hooks/spark_submit.py:554:9: PLW0149 Used `while` loop
++ airflow/providers/cncf/kubernetes/python_kubernetes_script.py:31:5: PLW0149 Used `while` loop
++ airflow/providers/cncf/kubernetes/triggers/pod.py:122:9: PLW0149 Used `while` loop
++ airflow/providers/cncf/kubernetes/utils/pod_manager.py:306:9: PLW0149 Used `while` loop
++ airflow/providers/cncf/kubernetes/utils/pod_manager.py:385:9: PLW0149 Used `while` loop
++ airflow/providers/cncf/kubernetes/utils/pod_manager.py:408:9: PLW0149 Used `while` loop
++ airflow/providers/cncf/kubernetes/utils/pod_manager.py:418:9: PLW0149 Used `while` loop
++ airflow/providers/cncf/kubernetes/utils/pod_manager.py:522:9: PLW0149 Used `while` loop
++ airflow/providers/cncf/kubernetes/utils/pod_manager.py:561:13: PLW0149 Used `while` loop
++ airflow/providers/cncf/kubernetes/utils/pod_manager.py:563:17: PLW0149 Used `while` loop
++ airflow/providers/cncf/kubernetes/utils/pod_manager.py:566:17: PLW0149 Used `while` loop
++ airflow/providers/databricks/hooks/databricks.py:173:9: PLW0149 Used `while` loop
++ airflow/providers/databricks/operators/databricks.py:58:9: PLW0149 Used `while` loop
++ airflow/providers/databricks/triggers/databricks.py:82:13: PLW0149 Used `while` loop
++ airflow/providers/dbt/cloud/hooks/dbt.py:291:13: PLW0149 Used `while` loop
++ airflow/providers/dbt/cloud/hooks/dbt.py:528:9: PLW0149 Used `while` loop
++ airflow/providers/dbt/cloud/triggers/dbt.py:71:13: PLW0149 Used `while` loop
++ airflow/providers/docker/operators/docker_swarm.py:148:9: PLW0149 Used `while` loop
++ airflow/providers/docker/operators/docker_swarm.py:154:9: PLW0149 Used `while` loop
++ airflow/providers/docker/operators/docker_swarm.py:185:9: PLW0149 Used `while` loop
++ airflow/providers/facebook/ads/hooks/ads.py:169:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/bigquery.py:1490:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/bigquery.py:2855:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/cloud_sql.py:392:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/cloud_sql.py:582:13: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/cloud_sql.py:851:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/cloud_storage_transfer_service.py:245:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/cloud_storage_transfer_service.py:381:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/cloud_storage_transfer_service.py:435:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/compute.py:735:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/dataflow.py:309:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/dataflow.py:355:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/dataflow.py:427:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/dataflow.py:450:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/dataform.py:77:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/datafusion.py:114:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/dataproc.py:1022:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/dataproc.py:712:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/datastore.py:241:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/dlp.py:265:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/functions.py:226:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/gcs.py:265:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/gcs.py:332:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/gcs.py:487:13: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/gcs.py:764:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/gcs.py:819:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/gdm.py:74:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/kubernetes_engine.py:127:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/life_sciences.py:133:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/looker.py:152:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/mlengine.py:242:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/mlengine.py:270:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/hooks/mlengine.py:366:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/log/stackdriver_task_handler.py:285:13: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/operators/bigquery_dts.py:360:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/operators/dataflow.py:418:17: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/operators/mlengine.py:1293:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/triggers/bigquery.py:128:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/triggers/bigquery.py:197:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/triggers/bigquery.py:302:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/triggers/bigquery.py:430:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/triggers/bigquery.py:502:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/triggers/bigquery.py:579:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/triggers/bigquery.py:77:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/triggers/bigquery_dts.py:87:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/triggers/cloud_build.py:81:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/triggers/cloud_composer.py:68:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/triggers/dataflow.py:95:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/triggers/datafusion.py:86:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/triggers/dataproc.py:147:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/triggers/dataproc.py:201:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/triggers/dataproc.py:266:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/triggers/dataproc.py:312:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/triggers/dataproc.py:95:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/triggers/gcs.py:153:13: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/triggers/gcs.py:254:13: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/triggers/gcs.py:75:13: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/triggers/kubernetes_engine.py:163:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/triggers/mlengine.py:94:9: PLW0149 Used `while` loop
++ airflow/providers/google/cloud/utils/bigquery_get_data.py:39:5: PLW0149 Used `while` loop
++ airflow/providers/google/common/hooks/base_google.py:593:9: PLW0149 Used `while` loop
++ airflow/providers/google/common/hooks/discovery_api.py:132:9: PLW0149 Used `while` loop
++ airflow/providers/google/firebase/hooks/firestore.py:121:9: PLW0149 Used `while` loop
++ airflow/providers/google/marketing_platform/hooks/analytics.py:39:9: PLW0149 Used `while` loop
++ airflow/providers/google/marketing_platform/hooks/campaign_manager.py:117:9: PLW0149 Used `while` loop
++ airflow/providers/google/marketing_platform/operators/campaign_manager.py:239:13: PLW0149 Used `while` loop
++ airflow/providers/google/suite/hooks/calendar.py:132:9: PLW0149 Used `while` loop
++ airflow/providers/google/suite/hooks/drive.py:193:9: PLW0149 Used `while` loop
++ airflow/providers/http/hooks/http.py:373:13: PLW0149 Used `while` loop
++ airflow/providers/jenkins/operators/jenkins_job_trigger.py:156:9: PLW0149 Used `while` loop
++ airflow/providers/jenkins/operators/jenkins_job_trigger.py:206:9: PLW0149 Used `while` loop
++ airflow/providers/microsoft/azure/hooks/batch.py:259:9: PLW0149 Used `while` loop
++ airflow/providers/microsoft/azure/hooks/batch.py:363:9: PLW0149 Used `while` loop
++ airflow/providers/microsoft/azure/hooks/data_factory.py:818:9: PLW0149 Used `while` loop
++ airflow/providers/microsoft/azure/hooks/synapse.py:175:9: PLW0149 Used `while` loop
++ airflow/providers/microsoft/azure/operators/container_instances.py:294:9: PLW0149 Used `while` loop
++ airflow/providers/microsoft/azure/triggers/data_factory.py:153:17: PLW0149 Used `while` loop
++ airflow/providers/microsoft/azure/triggers/data_factory.py:74:13: PLW0149 Used `while` loop
++ airflow/providers/microsoft/azure/triggers/wasb.py:147:17: PLW0149 Used `while` loop
++ airflow/providers/microsoft/azure/triggers/wasb.py:72:17: PLW0149 Used `while` loop
++ airflow/providers/microsoft/psrp/hooks/psrp.py:188:13: PLW0149 Used `while` loop
++ airflow/providers/microsoft/psrp/hooks/psrp.py:193:21: PLW0149 Used `while` loop
++ airflow/providers/microsoft/winrm/operators/winrm.py:112:13: PLW0149 Used `while` loop
++ airflow/providers/oracle/transfers/oracle_to_oracle.py:77:13: PLW0149 Used `while` loop
++ airflow/providers/plexus/operators/job.py:84:13: PLW0149 Used `while` loop
++ airflow/providers/qubole/hooks/qubole.py:175:9: PLW0149 Used `while` loop
++ airflow/providers/ssh/hooks/ssh.py:513:9: PLW0149 Used `while` loop
++ airflow/providers/tableau/hooks/tableau.py:172:9: PLW0149 Used `while` loop
++ airflow/security/kerberos.py:189:5: PLW0149 Used `while` loop
++ airflow/sensors/base.py:210:9: PLW0149 Used `while` loop
++ airflow/task/task_runner/base_task_runner.py:105:9: PLW0149 Used `while` loop
++ airflow/triggers/external_task.py:143:9: PLW0149 Used `while` loop
++ airflow/triggers/external_task.py:79:9: PLW0149 Used `while` loop
++ airflow/triggers/file.py:63:9: PLW0149 Used `while` loop
++ airflow/triggers/temporal.py:63:13: PLW0149 Used `while` loop
++ airflow/triggers/temporal.py:68:9: PLW0149 Used `while` loop
++ airflow/utils/dag_cycle_tester.py:73:9: PLW0149 Used `while` loop
++ airflow/utils/dag_edges.py:106:5: PLW0149 Used `while` loop
++ airflow/utils/dates.py:108:9: PLW0149 Used `while` loop
++ airflow/utils/dates.py:184:5: PLW0149 Used `while` loop
++ airflow/utils/dates.py:197:5: PLW0149 Used `while` loop
++ airflow/utils/decorators.py:88:5: PLW0149 Used `while` loop
++ airflow/utils/helpers.py:92:5: PLW0149 Used `while` loop
++ airflow/utils/log/log_reader.py:84:13: PLW0149 Used `while` loop
++ airflow/utils/log/logging_mixin.py:224:5: PLW0149 Used `while` loop
++ airflow/utils/process_utils.py:222:13: PLW0149 Used `while` loop
++ airflow/utils/task_group.py:443:9: PLW0149 Used `while` loop
++ airflow/utils/task_group.py:460:21: PLW0149 Used `while` loop
++ airflow/utils/task_group.py:491:9: PLW0149 Used `while` loop
++ airflow/utils/task_group.py:502:9: PLW0149 Used `while` loop
++ airflow/www/views.py:2969:17: PLW0149 Used `while` loop
++ dev/breeze/src/airflow_breeze/commands/developer_commands.py:455:9: PLW0149 Used `while` loop
++ dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py:233:5: PLW0149 Used `while` loop
++ dev/breeze/src/airflow_breeze/utils/confirm.py:50:5: PLW0149 Used `while` loop
++ dev/breeze/src/airflow_breeze/utils/image.py:124:5: PLW0149 Used `while` loop
++ dev/breeze/src/airflow_breeze/utils/kubernetes_utils.py:422:5: PLW0149 Used `while` loop
++ dev/breeze/src/airflow_breeze/utils/kubernetes_utils.py:486:5: PLW0149 Used `while` loop
++ dev/breeze/src/airflow_breeze/utils/kubernetes_utils.py:93:5: PLW0149 Used `while` loop
++ dev/breeze/src/airflow_breeze/utils/parallel.py:328:13: PLW0149 Used `while` loop
++ dev/breeze/src/airflow_breeze/utils/parallel.py:393:5: PLW0149 Used `while` loop
++ dev/breeze/src/airflow_breeze/utils/path_utils.py:43:5: PLW0149 Used `while` loop
++ dev/provider_packages/prepare_provider_packages.py:1186:5: PLW0149 Used `while` loop
++ dev/provider_packages/prepare_provider_packages.py:1223:5: PLW0149 Used `while` loop
++ dev/provider_packages/prepare_provider_packages.py:1954:5: PLW0149 Used `while` loop
++ docker_tests/test_docker_compose_quick_start.py:64:5: PLW0149 Used `while` loop
++ docs/exts/substitution_extensions.py:71:13: PLW0149 Used `while` loop
++ kubernetes_tests/test_base.py:153:9: PLW0149 Used `while` loop
++ kubernetes_tests/test_base.py:188:9: PLW0149 Used `while` loop
++ kubernetes_tests/test_kubernetes_pod_operator.py:1116:13: PLW0149 Used `while` loop
++ scripts/ci/pre_commit/pre_commit_update_example_dags_paths.py:46:5: PLW0149 Used `while` loop
++ scripts/ci/pre_commit/pre_commit_update_example_dags_paths.py:55:13: PLW0149 Used `while` loop
++ scripts/ci/pre_commit/pre_commit_update_providers_dependencies.py:111:5: PLW0149 Used `while` loop
++ scripts/ci/pre_commit/pre_commit_vendor_k8s_json_schema.py:67:1: PLW0149 Used `while` loop
++ tests/cli/commands/_common_cli_classes.py:95:9: PLW0149 Used `while` loop
++ tests/dag_processing/test_job_runner.py:1347:9: PLW0149 Used `while` loop
++ tests/dag_processing/test_job_runner.py:136:9: PLW0149 Used `while` loop
++ tests/dag_processing/test_job_runner.py:139:13: PLW0149 Used `while` loop
++ tests/dag_processing/test_job_runner.py:807:9: PLW0149 Used `while` loop
++ tests/dag_processing/test_job_runner.py:840:13: PLW0149 Used `while` loop
++ tests/datasets/test_manager.py:42:5: PLW0149 Used `while` loop
++ tests/executors/test_base_executor.py:218:9: PLW0149 Used `while` loop
++ tests/executors/test_dask_executor.py:201:9: PLW0149 Used `while` loop
++ tests/executors/test_dask_executor.py:222:9: PLW0149 Used `while` loop
++ tests/executors/test_dask_executor.py:72:9: PLW0149 Used `while` loop
++ tests/executors/test_kubernetes_executor.py:1356:13: PLW0149 Used `while` loop
++ tests/jobs/test_local_task_job.py:608:13: PLW0149 Used `while` loop
++ tests/jobs/test_local_task_job.py:801:13: PLW0149 Used `while` loop
++ tests/jobs/test_local_task_job.py:891:17: PLW0149 Used `while` loop
++ tests/jobs/test_local_task_job.py:896:17: PLW0149 Used `while` loop
++ tests/jobs/test_local_task_job.py:947:13: PLW0149 Used `while` loop
++ tests/providers/cncf/kubernetes/utils/test_pod_manager.py:202:13: PLW0149 Used `while` loop
++ tests/providers/cncf/kubernetes/utils/test_pod_manager.py:220:13: PLW0149 Used `while` loop
++ tests/providers/cncf/kubernetes/utils/test_pod_manager.py:226:13: PLW0149 Used `while` loop
++ tests/providers/docker/operators/test_docker_swarm.py:40:13: PLW0149 Used `while` loop
++ tests/providers/microsoft/psrp/hooks/test_psrp.py:93:9: PLW0149 Used `while` loop
++ tests/sensors/test_timeout_sensor.py:53:9: PLW0149 Used `while` loop
++ tests/serialization/test_dag_serialization.py:463:9: PLW0149 Used `while` loop
++ tests/system/providers/amazon/aws/example_hive_to_dynamodb.py:82:5: PLW0149 Used `while` loop
++ tests/task/task_runner/test_standard_task_runner.py:114:13: PLW0149 Used `while` loop
++ tests/task/task_runner/test_standard_task_runner.py:160:13: PLW0149 Used `while` loop
++ tests/task/task_runner/test_standard_task_runner.py:204:13: PLW0149 Used `while` loop
++ tests/task/task_runner/test_standard_task_runner.py:333:13: PLW0149 Used `while` loop
++ tests/task/task_runner/test_standard_task_runner.py:343:13: PLW0149 Used `while` loop
++ tests/task/task_runner/test_standard_task_runner.py:354:13: PLW0149 Used `while` loop
++ tests/task/task_runner/test_standard_task_runner.py:393:13: PLW0149 Used `while` loop
++ tests/utils/test_process_utils.py:54:9: PLW0149 Used `while` loop
++ tests/utils/test_process_utils.py:72:9: PLW0149 Used `while` loop
++ tests/www/views/test_views.py:464:5: PLW0149 Used `while` loop
+</code></pre>
+</p>
+</details>
+<details><summary>bokeh (+23, -0)</summary>
+<p>
+
+<pre><code class="language-diff">+ examples/basic/data/server_sent_events_source.py:54:9: PLW0149 Used `while` loop
++ examples/models/gauges.py:59:5: PLW0149 Used `while` loop
++ examples/models/gauges.py:65:5: PLW0149 Used `while` loop
++ examples/plotting/periodic_shells.py:45:5: PLW0149 Used `while` loop
++ examples/server/app/spectrogram/audio.py:29:9: PLW0149 Used `while` loop
++ examples/server/app/spectrogram/audio.py:56:9: PLW0149 Used `while` loop
++ src/bokeh/client/connection.py:336:9: PLW0149 Used `while` loop
++ src/bokeh/document/document.py:386:13: PLW0149 Used `while` loop
++ src/bokeh/document/document.py:795:13: PLW0149 Used `while` loop
++ src/bokeh/driving.py:216:5: PLW0149 Used `while` loop
++ src/bokeh/io/util.py:97:13: PLW0149 Used `while` loop
++ src/bokeh/layouts.py:390:13: PLW0149 Used `while` loop
++ src/bokeh/layouts.py:536:9: PLW0149 Used `while` loop
++ src/bokeh/model/util.py:113:5: PLW0149 Used `while` loop
++ src/bokeh/models/sources.py:390:13: PLW0149 Used `while` loop
++ src/bokeh/plotting/_tools.py:207:9: PLW0149 Used `while` loop
++ src/bokeh/util/sampledata.py:196:9: PLW0149 Used `while` loop
++ src/bokeh/util/warnings.py:79:5: PLW0149 Used `while` loop
++ tests/support/plugins/bokeh_server.py:75:9: PLW0149 Used `while` loop
++ tests/support/plugins/file_server.py:100:9: PLW0149 Used `while` loop
++ tests/support/plugins/file_server.py:85:9: PLW0149 Used `while` loop
++ tests/support/plugins/jupyter_notebook.py:140:13: PLW0149 Used `while` loop
++ tests/unit/bokeh/command/subcommands/test_serve.py:70:13: PLW0149 Used `while` loop
+</code></pre>
+</p>
+</details>
+<details><summary>cibuildwheel (+2, -0)</summary>
+<p>
+
+<pre><code class="language-diff">+ bin/bump_version.py:136:5: PLW0149 Used `while` loop
++ cibuildwheel/oci_container.py:291:9: PLW0149 Used `while` loop
+</code></pre>
+</p>
+</details>
+<details><summary>disnake (+32, -0)</summary>
+<p>
+
+<pre><code class="language-diff">+ disnake/client.py:927:9: PLW0149 Used `while` loop
++ disnake/client.py:942:17: PLW0149 Used `while` loop
++ disnake/context_managers.py:40:9: PLW0149 Used `while` loop
++ disnake/ext/commands/common_bot_base.py:664:9: PLW0149 Used `while` loop
++ disnake/ext/commands/cooldowns.py:299:9: PLW0149 Used `while` loop
++ disnake/ext/commands/cooldowns.py:310:9: PLW0149 Used `while` loop
++ disnake/ext/commands/core.py:119:5: PLW0149 Used `while` loop
++ disnake/ext/commands/core.py:596:9: PLW0149 Used `while` loop
++ disnake/ext/commands/core.py:661:9: PLW0149 Used `while` loop
++ disnake/ext/commands/core.py:679:9: PLW0149 Used `while` loop
++ disnake/ext/commands/core.py:758:17: PLW0149 Used `while` loop
++ disnake/ext/commands/flag_converter.py:349:5: PLW0149 Used `while` loop
++ disnake/ext/commands/help.py:400:9: PLW0149 Used `while` loop
++ disnake/ext/commands/view.py:120:9: PLW0149 Used `while` loop
++ disnake/ext/commands/view.py:48:9: PLW0149 Used `while` loop
++ disnake/ext/commands/view.py:93:9: PLW0149 Used `while` loop
++ disnake/ext/tasks/__init__.py:157:13: PLW0149 Used `while` loop
++ disnake/gateway.py:193:9: PLW0149 Used `while` loop
++ disnake/gateway.py:217:17: PLW0149 Used `while` loop
++ disnake/iterators.py:130:9: PLW0149 Used `while` loop
++ disnake/iterators.py:166:9: PLW0149 Used `while` loop
++ disnake/iterators.py:91:9: PLW0149 Used `while` loop
++ disnake/oggparse.py:90:9: PLW0149 Used `while` loop
++ disnake/player.py:200:9: PLW0149 Used `while` loop
++ disnake/player.py:694:9: PLW0149 Used `while` loop
++ disnake/shard.py:162:9: PLW0149 Used `while` loop
++ disnake/shard.py:485:9: PLW0149 Used `while` loop
++ disnake/state.py:2195:9: PLW0149 Used `while` loop
++ disnake/state.py:669:13: PLW0149 Used `while` loop
++ disnake/ui/view.py:192:9: PLW0149 Used `while` loop
++ disnake/voice_client.py:337:9: PLW0149 Used `while` loop
++ disnake/voice_client.py:426:9: PLW0149 Used `while` loop
+</code></pre>
+</p>
+</details>
+<details><summary>scikit-build (+1, -0)</summary>
+<p>
+
+<pre><code class="language-diff">+ skbuild/utils/__init__.py:255:9: PLW0149 Used `while` loop
+</code></pre>
+</p>
+</details>
+<details><summary>zulip (+94, -0)</summary>
+<p>
+
+<pre><code class="language-diff">+ analytics/lib/counts.py:153:5: PLW0149 Used `while` loop
++ analytics/lib/time_utils.py:30:5: PLW0149 Used `while` loop
++ confirmation/migrations/0009_confirmation_expiry_date_backfill.py:49:5: PLW0149 Used `while` loop
++ corporate/lib/stripe.py:1111:5: PLW0149 Used `while` loop
++ corporate/lib/stripe.py:147:5: PLW0149 Used `while` loop
++ corporate/lib/stripe.py:174:5: PLW0149 Used `while` loop
++ corporate/lib/stripe.py:192:5: PLW0149 Used `while` loop
++ corporate/tests/test_stripe.py:528:9: PLW0149 Used `while` loop
++ scripts/lib/zulip_tools.py:219:5: PLW0149 Used `while` loop
++ scripts/lib/zulip_tools.py:47:5: PLW0149 Used `while` loop
++ tools/droplets/create.py:202:5: PLW0149 Used `while` loop
++ tools/lib/template_parser.py:121:5: PLW0149 Used `while` loop
++ tools/lib/template_parser.py:617:5: PLW0149 Used `while` loop
++ tools/lib/template_parser.py:627:5: PLW0149 Used `while` loop
++ tools/lib/template_parser.py:635:5: PLW0149 Used `while` loop
++ tools/lib/template_parser.py:643:5: PLW0149 Used `while` loop
++ tools/lib/template_parser.py:653:5: PLW0149 Used `while` loop
++ tools/lib/template_parser.py:665:5: PLW0149 Used `while` loop
++ tools/lib/template_parser.py:685:5: PLW0149 Used `while` loop
++ tools/lib/template_parser.py:697:5: PLW0149 Used `while` loop
++ tools/lib/template_parser.py:709:5: PLW0149 Used `while` loop
++ tools/lib/template_parser.py:723:5: PLW0149 Used `while` loop
++ tools/lib/template_parser.py:736:5: PLW0149 Used `while` loop
++ tools/lib/test_server.py:86:13: PLW0149 Used `while` loop
++ tools/oneclickapps/prepare_digital_ocean_one_click_app_release.py:38:5: PLW0149 Used `while` loop
++ tools/oneclickapps/prepare_digital_ocean_one_click_app_release.py:52:5: PLW0149 Used `while` loop
++ zerver/actions/message_flags.py:51:5: PLW0149 Used `while` loop
++ zerver/actions/realm_settings.py:347:9: PLW0149 Used `while` loop
++ zerver/actions/streams.py:143:5: PLW0149 Used `while` loop
++ zerver/data_import/gitter.py:258:5: PLW0149 Used `while` loop
++ zerver/data_import/slack.py:738:5: PLW0149 Used `while` loop
++ zerver/lib/cache.py:95:9: PLW0149 Used `while` loop
++ zerver/lib/ccache.py:42:5: PLW0149 Used `while` loop
++ zerver/lib/ccache.py:68:5: PLW0149 Used `while` loop
++ zerver/lib/debug.py:72:5: PLW0149 Used `while` loop
++ zerver/lib/email_validation.py:70:9: PLW0149 Used `while` loop
++ zerver/lib/events.py:1522:5: PLW0149 Used `while` loop
++ zerver/lib/export.py:2063:5: PLW0149 Used `while` loop
++ zerver/lib/export.py:2194:5: PLW0149 Used `while` loop
++ zerver/lib/export.py:2213:5: PLW0149 Used `while` loop
++ zerver/lib/import_realm.py:1450:5: PLW0149 Used `while` loop
++ zerver/lib/import_realm.py:1492:5: PLW0149 Used `while` loop
++ zerver/lib/logging_util.py:135:5: PLW0149 Used `while` loop
++ zerver/lib/markdown/__init__.py:1179:9: PLW0149 Used `while` loop
++ zerver/lib/markdown/__init__.py:2382:9: PLW0149 Used `while` loop
++ zerver/lib/markdown/__init__.py:2415:5: PLW0149 Used `while` loop
++ zerver/lib/markdown/__init__.py:334:5: PLW0149 Used `while` loop
++ zerver/lib/markdown/__init__.py:384:5: PLW0149 Used `while` loop
++ zerver/lib/markdown/api_arguments_table_generator.py:66:9: PLW0149 Used `while` loop
++ zerver/lib/markdown/api_return_values_table_generator.py:33:9: PLW0149 Used `while` loop
++ zerver/lib/markdown/fenced_code.py:433:9: PLW0149 Used `while` loop
++ zerver/lib/markdown/help_relative_links.py:95:9: PLW0149 Used `while` loop
++ zerver/lib/markdown/help_settings_links.py:151:9: PLW0149 Used `while` loop
++ zerver/lib/markdown/tabbed_sections.py:119:9: PLW0149 Used `while` loop
++ zerver/lib/migrate.py:34:5: PLW0149 Used `while` loop
++ zerver/lib/rate_limiter.py:439:13: PLW0149 Used `while` loop
++ zerver/lib/retention.py:138:5: PLW0149 Used `while` loop
++ zerver/lib/retention.py:659:5: PLW0149 Used `while` loop
++ zerver/lib/soft_deactivation.py:241:5: PLW0149 Used `while` loop
++ zerver/lib/soft_deactivation.py:274:5: PLW0149 Used `while` loop
++ zerver/lib/templates.py:181:5: PLW0149 Used `while` loop
++ zerver/lib/utils.py:23:5: PLW0149 Used `while` loop
++ zerver/lib/utils.py:43:5: PLW0149 Used `while` loop
++ zerver/management/commands/change_password.py:47:9: PLW0149 Used `while` loop
++ zerver/management/commands/deliver_scheduled_emails.py:37:13: PLW0149 Used `while` loop
++ zerver/management/commands/deliver_scheduled_messages.py:29:13: PLW0149 Used `while` loop
++ zerver/migrations/0177_user_message_add_and_index_is_private_flag.py:22:9: PLW0149 Used `while` loop
++ zerver/migrations/0182_set_initial_value_is_private_flag.py:21:5: PLW0149 Used `while` loop
++ zerver/migrations/0239_usermessage_copy_id_to_bigint_id.py:49:5: PLW0149 Used `while` loop
++ zerver/migrations/0244_message_copy_pub_date_to_date_sent.py:47:5: PLW0149 Used `while` loop
++ zerver/migrations/0257_fix_has_link_attribute.py:72:5: PLW0149 Used `while` loop
++ zerver/migrations/0313_finish_is_user_active_migration.py:18:5: PLW0149 Used `while` loop
++ zerver/migrations/0371_invalid_characters_in_topics.py:33:5: PLW0149 Used `while` loop
++ zerver/migrations/0375_invalid_characters_in_stream_names.py:54:13: PLW0149 Used `while` loop
++ zerver/migrations/0377_message_edit_history_format.py:142:9: PLW0149 Used `while` loop
++ zerver/migrations/0380_userprofile_uuid_backfill.py:19:5: PLW0149 Used `while` loop
++ zerver/migrations/0386_fix_attachment_caches.py:44:9: PLW0149 Used `while` loop
++ zerver/migrations/0386_fix_attachment_caches.py:53:9: PLW0149 Used `while` loop
++ zerver/migrations/0419_backfill_message_realm.py:42:9: PLW0149 Used `while` loop
++ zerver/openapi/markdown_extension.py:445:9: PLW0149 Used `while` loop
++ zerver/tests/test_digest.py:533:13: PLW0149 Used `while` loop
++ zerver/tests/test_openapi.py:426:9: PLW0149 Used `while` loop
++ zerver/tests/test_queue_worker.py:65:9: PLW0149 Used `while` loop
++ zerver/tests/test_queue_worker.py:781:9: PLW0149 Used `while` loop
++ zerver/tornado/event_queue.py:402:9: PLW0149 Used `while` loop
++ zerver/tornado/event_queue.py:417:13: PLW0149 Used `while` loop
++ zerver/tornado/event_queue.py:421:9: PLW0149 Used `while` loop
++ zerver/views/sentry.py:53:9: PLW0149 Used `while` loop
++ zerver/views/streams.py:932:9: PLW0149 Used `while` loop
++ zerver/worker/queue_processors.py:1028:13: PLW0149 Used `while` loop
++ zerver/worker/queue_processors.py:656:9: PLW0149 Used `while` loop
++ zilencer/management/commands/populate_db.py:1072:5: PLW0149 Used `while` loop
++ zilencer/management/commands/render_messages.py:14:5: PLW0149 Used `while` loop
++ zilencer/views.py:385:5: PLW0149 Used `while` loop
+</code></pre>
+</p>
+</details>
+Rules changed: 1
+
+<p>| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| PLW0149 | 447 | 447 | 0 |</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     15.8±0.29ms     2.6 MB/sec    1.00     15.6±0.29ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.8±0.06ms     4.4 MB/sec    1.00      3.8±0.07ms     4.4 MB/sec
+linter/all-rules/numpy/globals.py          1.02   477.9±11.44µs     6.2 MB/sec    1.00    468.6±9.60µs     6.3 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.6±0.13ms     3.9 MB/sec    1.00      6.5±0.13ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.7±0.13ms     5.3 MB/sec    1.00      7.6±0.11ms     5.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.04  1719.9±41.28µs     9.7 MB/sec    1.00  1659.8±31.78µs    10.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00    192.8±4.05µs    15.3 MB/sec    1.01    195.0±8.57µs    15.1 MB/sec
+linter/default-rules/pydantic/types.py     1.02      3.5±0.06ms     7.3 MB/sec    1.00      3.5±0.07ms     7.4 MB/sec
+parser/large/dataset.py                    1.05      6.1±0.12ms     6.7 MB/sec    1.00      5.8±0.11ms     7.0 MB/sec
+parser/numpy/ctypeslib.py                  1.04  1193.2±21.20µs    14.0 MB/sec    1.00  1149.8±25.87µs    14.5 MB/sec
+parser/numpy/globals.py                    1.02    119.6±3.85µs    24.7 MB/sec    1.00    117.6±2.39µs    25.1 MB/sec
+parser/pydantic/types.py                   1.03      2.6±0.06ms     9.8 MB/sec    1.00      2.5±0.05ms    10.1 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.04     17.3±0.20ms     2.4 MB/sec    1.00     16.7±0.15ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.03      4.3±0.04ms     3.8 MB/sec    1.00      4.2±0.04ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.01    508.6±6.93µs     5.8 MB/sec    1.00    503.8±6.80µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.03      7.3±0.09ms     3.5 MB/sec    1.00      7.1±0.08ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.06      8.8±0.07ms     4.6 MB/sec    1.00      8.3±0.09ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.04  1856.8±21.02µs     9.0 MB/sec    1.00  1791.0±32.93µs     9.3 MB/sec
+linter/default-rules/numpy/globals.py      1.02    211.9±3.36µs    13.9 MB/sec    1.00   207.6±11.02µs    14.2 MB/sec
+linter/default-rules/pydantic/types.py     1.06      4.0±0.06ms     6.4 MB/sec    1.00      3.8±0.04ms     6.8 MB/sec
+parser/large/dataset.py                    1.00      6.4±0.06ms     6.3 MB/sec    1.00      6.5±0.05ms     6.3 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1220.7±13.40µs    13.6 MB/sec    1.01  1227.3±11.66µs    13.6 MB/sec
+parser/numpy/globals.py                    1.00    124.7±1.99µs    23.7 MB/sec    1.01    125.3±2.39µs    23.6 MB/sec
+parser/pydantic/types.py                   1.00      2.7±0.03ms     9.3 MB/sec    1.00      2.8±0.04ms     9.3 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-05-25 09:54</div>
+            <div class="timeline-body"><blockquote>
+<p>The code looks good to me but I'm conflicted on the rule itself. It seems over-aggressive to flag every while loop. Could we improve the rule to detect cases where the loop can be rewritten to a <code>for range</code> loop with reasonable certainty?</p>
+</blockquote>
+<p>The rule is certainly aggressive, but unless I am mistaken, the Pylint rule is as well. Personally, I'd like it to flag every <code>while</code> loop. Even when I can't cleanly replace the <code>while</code> loop with for <code>for</code> loop or comprehension, they indicate that I should refactor my logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tjkuson">@tjkuson</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:1516 on 2023-05-25 10:37</div>
+            <div class="timeline-body"><p>Changed in <a href="https://github.com/charliermarsh/ruff/pull/4652/commits/c786b8ad209af107d5bbccff2f9b38018649950e">c786b8a</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tjkuson">@tjkuson</a> reviewed on 2023-05-25 10:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-05-26 10:39</div>
+            <div class="timeline-body"><p>Is it worth creating a separate issue for this rule to discuss its merits? I assumed that the rule would be implemented as-is following #970. However, I recognise it might be a controversial rule.</p>
+<p>For what it's worth, I value Pylint W0149 in my workflow as-is, and if the rule were to be adapted, I would prefer it to have limited exceptions rather than conservatively flagging <code>while</code> loops that can be cleanly rewritten to <code>for</code> loops.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-05-26 12:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-26 18:49</div>
+            <div class="timeline-body"><p>I think I'd prefer not to implement this rule for now. It requires a Pylint extension (<code>pylint.extensions.while_used</code>), so it's not enabled by default, and I suspect most users would find it to be too aggressive to be on-by-default.</p>
+<p>I'd be open to implementing it if we had the ability for users to selectively opt-in to specific, aggressive rules (similar to the nursery group), but we haven't implemented that yet, the main challenge being explaining and communicating that behavior to users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-05-26 19:08</div>
+            <div class="timeline-body"><blockquote>
+<p>I think I'd prefer not to implement this rule for now. It requires a Pylint extension (<code>pylint.extensions.while_used</code>), so it's not enabled by default, and I suspect most users would find it to be too aggressive to be on-by-default.</p>
+</blockquote>
+<p>That's reasonable. I can see how it would be unhelpful for many users!</p>
+<blockquote>
+<p>I'd be open to implementing it if we had the ability for users to selectively opt-in to specific, aggressive rules (similar to the nursery group), but we haven't implemented that yet, the main challenge being explaining and communicating that behavior to users.</p>
+</blockquote>
+<p>Unless you think it's unwise, I will keep the PR open. If a rule opt-in or other feature were to be added, I think this rule would be a valuable addition for users like myself who prefer to avoid <code>while</code> loops (if not demonstrated by the fact it's a built-in Pylint extension).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-05-26 19:29</div>
+            <div class="timeline-body"><blockquote>
+<p>the main challenge being explaining and communicating that behavior to users.</p>
+</blockquote>
+<p>Are you open to the idea of creating a namespace for esoteric rules? For example, it would be confusing if selecting “PL” didn't also select “PLW0149”. But, if the opt-in rules were under, for example, namespace “X” (the universal character for spooky), then it wouldn't be too surprising that the behaviour for “XPLW0149” were different.</p>
+<p>EDIT: “X” for explicit is probably a better justification…</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-02 02:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Unless you think it's unwise, I will keep the PR open.</p>
+</blockquote>
+<p>I'm going to close this, only because I like to try and keep the PR queue actionable. (I don't always do a great job of this, but I do <em>try</em>.) If we want to revive this work, we'll always have the history here as a closed PR -- but by closing, we ensure that we're not keeping around too many PRs that aren't being actively worked on.</p>
+<blockquote>
+<p>Are you open to the idea of creating a namespace for esoteric rules?</p>
+</blockquote>
+<p>I'm open to the idea, but I don't know that I'd want to layer it on to the existing categorizations (e.g., <code>XPLW0149</code>). I'd probably rather have a pedantic category that isn't included in <code>ALL</code> or similar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-02 02:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-07-10 09:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:37:34 UTC
+    </footer>
+</body>
+</html>

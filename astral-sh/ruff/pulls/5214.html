@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keep track of when files are last seen in the cache - astral-sh/ruff #5214</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Keep track of when files are last seen in the cache</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5214">#5214</a>
+        opened by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a>
+        on 2023-06-20 15:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> on 2023-06-20 15:54</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>And remove cached files that we haven't seen for a certain period of time, currently 30 days.</p>
+<p>For the last seen timestamp we actually use an <code>u64</code>, it's smaller on disk than <code>SystemTime</code> (which size is OS dependent) and fits in an <code>AtomicU64</code> which we can use to update it without locks.</p>
+<h2>Test Plan</h2>
+<p>Added a new unit test, run by <code>cargo test</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @Thomasdezeeuw on 2023-06-20 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @Thomasdezeeuw on 2023-06-20 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-20 16:16</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.12      8.0±0.30ms     5.1 MB/sec    1.00      7.1±0.32ms     5.8 MB/sec
+formatter/numpy/ctypeslib.py               1.24  1863.5±86.61µs     8.9 MB/sec    1.00  1507.3±78.92µs    11.0 MB/sec
+formatter/numpy/globals.py                 1.45   229.8±16.11µs    12.8 MB/sec    1.00   158.1±13.38µs    18.7 MB/sec
+formatter/pydantic/types.py                1.39      4.1±0.16ms     6.2 MB/sec    1.00      2.9±0.16ms     8.6 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.7±0.89ms     2.6 MB/sec    1.01     15.9±0.47ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.0±0.13ms     4.2 MB/sec    1.00      3.9±0.11ms     4.3 MB/sec
+linter/all-rules/numpy/globals.py          1.00   485.7±25.04µs     6.1 MB/sec    1.16   562.3±27.08µs     5.2 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.6±0.26ms     3.8 MB/sec    1.07      7.1±0.29ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.0±0.47ms     5.1 MB/sec    1.04      8.3±0.26ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1659.5±76.77µs    10.0 MB/sec    1.05  1736.3±60.91µs     9.6 MB/sec
+linter/default-rules/numpy/globals.py      1.04    206.3±8.71µs    14.3 MB/sec    1.00   199.0±11.17µs    14.8 MB/sec
+linter/default-rules/pydantic/types.py     1.05      3.6±0.10ms     7.1 MB/sec    1.00      3.4±0.16ms     7.4 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.03      8.0±0.11ms     5.1 MB/sec    1.00      7.7±0.03ms     5.3 MB/sec
+formatter/numpy/ctypeslib.py               1.13   1749.1±9.82µs     9.5 MB/sec    1.00   1550.8±8.72µs    10.7 MB/sec
+formatter/numpy/globals.py                 1.30    203.9±2.65µs    14.5 MB/sec    1.00   156.9±17.76µs    18.8 MB/sec
+formatter/pydantic/types.py                1.29      4.1±0.02ms     6.3 MB/sec    1.00      3.2±0.03ms     8.1 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.7±0.29ms     2.6 MB/sec    1.00     15.7±0.36ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.1±0.02ms     4.1 MB/sec    1.04      4.2±0.16ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.01    422.7±5.04µs     7.0 MB/sec    1.00    417.0±5.38µs     7.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.8±0.04ms     3.7 MB/sec    1.05      7.2±0.15ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.1±0.10ms     5.0 MB/sec    1.00      8.1±0.03ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02  1708.6±16.00µs     9.7 MB/sec    1.00  1679.3±11.70µs     9.9 MB/sec
+linter/default-rules/numpy/globals.py      1.02    182.1±2.59µs    16.2 MB/sec    1.00    177.8±3.83µs    16.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.06ms     6.9 MB/sec    1.00      3.7±0.05ms     7.0 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/cache.rs</code>:69 on 2023-06-21 06:38</div>
+            <div class="timeline-body"><p>Nit: Can we add a <code>// SAFETY</code> comment explaining why the truncation is okay in this case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/cache.rs</code>:110 on 2023-06-21 06:40</div>
+            <div class="timeline-body"><p>Nit: Move the computation (and truncation) into a helper function to avoid repeating it (and scope the <code>allow</code> attribute) or create a <code>Cache::new_with_package(path, package)</code> method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/cache.rs</code>:184 on 2023-06-21 06:42</div>
+            <div class="timeline-body"><p>Nit: Wouldn't <code>Relaxed</code> be sufficient?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-06-21 06:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> reviewed on 2023-06-21 08:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> on <code>crates/ruff_cli/src/cache.rs</code>:184 on 2023-06-21 08:19</div>
+            <div class="timeline-body"><p>Maybe, but it can also be subtly wrong. So I'm more inclined to use the stronger orderings unless lessening it is proven correct (and faster).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-06-21 09:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/cache.rs</code>:184 on 2023-06-21 09:11</div>
+            <div class="timeline-body"><p>My understanding is that <code>Release</code> should be used together with <code>Aquire</code> (which we are not?) <a href="https://marabos.nl/atomics/memory-ordering.html#release-and-acquire-ordering">source</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-22 20:02</div>
+            <div class="timeline-body"><p>Looks reasonable to me! I'll let @MichaReiser approve</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-06-23 06:16</div>
+            <div class="timeline-body"><p>Looks good. Can you please add the test plan in the PR summary? Ideally, we would have a unit test for this as well but I can see how this may be difficult.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> on <code>crates/ruff_cli/src/cache.rs</code>:184 on 2023-06-23 08:53</div>
+            <div class="timeline-body"><p>You're right I've changed it to <code>SeqCst</code> to generate the correct assembly (<code>xchg</code>, see https://godbolt.org/z/WcKfxjjfq).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> reviewed on 2023-06-23 09:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Thomasdezeeuw">@Thomasdezeeuw</a> on 2023-06-23 09:14</div>
+            <div class="timeline-body"><blockquote>
+<p>Looks good. Can you please add the test plan in the PR summary? Ideally, we would have a unit test for this as well but I can see how this may be difficult.</p>
+</blockquote>
+<p>Added a test: https://github.com/astral-sh/ruff/pull/5214/files#diff-80a9c2637c432502a7075c792cc60db92282dd786999a78bfa9bb6f025afab35R532-R579.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Thomasdezeeuw on 2023-06-23 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Thomasdezeeuw on 2023-06-23 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-06-23 13:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:37:34 UTC
+    </footer>
+</body>
+</html>

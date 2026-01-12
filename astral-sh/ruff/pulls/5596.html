@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extend formatter IR to support Black's expression formatting - astral-sh/ruff #5596</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Extend formatter IR to support Black's expression formatting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5596">#5596</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-07-07 16:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-07 16:28</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This PR makes two extensions to support Black's expression formatting.</p>
+<h3><code>ConditionalGroup</code></h3>
+<p>The first extension adds a new <code>ConditionalGroup</code> IR element. The semantic is the same as for <code>Group</code>, except that it has a condition controlling whether the enclosing content should be grouped or not. Another way to think about this is: Only group this content if some condition is true, but the condition only gets evaluated when printing the IR.</p>
+<p>This is necessary to support Black's formatting for expressions where the enclosing parentheses are optional, for example Black only adds parentheses around the condition of an <code>if</code> statement if the expression, after breaking any lists, dicts, etc., does not fit on a line:</p>
+<pre><code class="language-python"># We want 
+if a + [ 
+	b,
+	c
+]: 
+	pass
+
+# Rather than
+if a
+	+ [b, c]
+: 
+	pass
+</code></pre>
+<p>which is invalid syntax. Meaning we only want to break after left-parens (<code>(</code>, <code>[</code>, <code>{</code>), but not before operators.</p>
+<p>However, we do want to break <strong>before</strong> operators when the whole expression does not fit:</p>
+<pre><code class="language-python"># We want
+if (
+	a
+	+ [b, c]
+): pass
+
+# rather than
+if (
+	a + [
+		b, 
+		c
+	]
+): pass
+</code></pre>
+<p>If the whole expression does not fit. You can see, how this is the opposite of when not adding the parentheses.</p>
+<p>The way this extension solves this problem is to <em>remove</em> the binary expression groups (gate them with a condition) when the whole expression fits, but <em>keep</em> them when the whole expression expands.</p>
+<p>Another way to think about the new IR is that this is the same as the following, but as custom IR to avoid interning <code>content</code>.</p>
+<pre><code>if_group_breaks(group(content), parentheses_group_id)),
+if_group_fits_on_line(content, parentheses_group_id)
+</code></pre>
+<h3><code>FitsExpanded</code></h3>
+<p>The way we implement the adding of the optional parentheses is by wrapping the whole <code>if</code> condition by a group. However, this creates a problem if an inner parenthesized expression expands, because this would automatically expand all enclosing groups, including the group that adds the optional parentheses. But we don't want the optional parentheses if a parenthesized expression expands.</p>
+<p>The way this PR solves this problem is by introducing a new <code>FitsExpanded</code> IR that, similar to best fitting, acts as an expands boundary. Meaning, it won't expand the enclosing parentheses <code>group</code> if any of its content expands (a parenthesized expression). Other than best fitting, it also has a different <code>fits</code> definition. The content inside a <code>FitsExpanded</code> doesn't get measured in the &quot;all flat&quot; mode, instead, it gets measured assuming all its inner content will expand (what's the least space that is required, rather than what is the most space that it requires).</p>
+<p><code>FitsExpanded</code> also supports an optional <code>Condition</code> to control when this changed semantic applies or not. This is necessary because we want to keep the list expression together, if possible, when we break before an operator</p>
+<pre><code class="language-python"># We want
+if (
+	a
+	+ [b, c]
+): pass
+
+# Instead of 
+if (
+	a + [
+		b, 
+		c
+	]
+): pass
+</code></pre>
+<h2>Test Plan</h2>
+<p>I added a few doctests and use the new IR in the next IR to format expressions.</p>
+<h3>Reference</h3>
+<p>This behavior mimics Blacks <a href="https://github.com/psf/black/blob/d1248ca9beaf0ba526d265f4108836d89cf551b7/src/black/lines.py#L881-L963"><code>can_omit_invisible_parentheses</code></a> and <a href="https://github.com/psf/black/blob/d1248ca9beaf0ba526d265f4108836d89cf551b7/src/black/linegen.py#L601-L604">transformer selection</a>.</p>
+<p>Ruff does not test whether a parenthesized expression is at the start or end of line. This is done inside of the printer (expanding after an opening parentheses always has the consequence that the expression now is at the end of the line)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-07 16:29</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #5596</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5596" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #5608</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5608" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #5609</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5609" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #5643</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5643" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #5644</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5644" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+<li><strong>PR #5615</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5615" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/5596?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Use different formatting logic depending on whether an expression is parenthesized" to "Extend formatter IR to support Black's expression formatting" by @MichaReiser on 2023-07-08 08:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-07-08 08:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-07-08 09:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @MichaReiser on 2023-07-08 09:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-07-08 09:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-08 09:31</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      8.0±0.02ms     5.1 MB/sec    1.00      8.0±0.02ms     5.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1844.7±2.43µs     9.0 MB/sec    1.00   1843.5±5.33µs     9.0 MB/sec
+formatter/numpy/globals.py                 1.00    205.6±0.59µs    14.4 MB/sec    1.00    205.7±0.36µs    14.3 MB/sec
+formatter/pydantic/types.py                1.02      4.0±0.01ms     6.4 MB/sec    1.00      3.9±0.01ms     6.5 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.6±0.09ms     3.0 MB/sec    1.00     13.6±0.06ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.01ms     4.9 MB/sec    1.00      3.4±0.01ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    435.6±1.12µs     6.8 MB/sec    1.00    435.5±2.80µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.1±0.03ms     4.2 MB/sec    1.00      6.0±0.02ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.01      6.7±0.02ms     6.0 MB/sec    1.00      6.7±0.02ms     6.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1470.6±8.16µs    11.3 MB/sec    1.00   1464.1±3.48µs    11.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    166.4±0.26µs    17.7 MB/sec    1.00    166.9±0.51µs    17.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.01ms     8.4 MB/sec    1.00      3.0±0.01ms     8.4 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     11.7±0.33ms     3.5 MB/sec    1.01     11.9±0.30ms     3.4 MB/sec
+formatter/numpy/ctypeslib.py               1.01      2.7±0.21ms     6.2 MB/sec    1.00      2.7±0.10ms     6.2 MB/sec
+formatter/numpy/globals.py                 1.00   299.9±15.36µs     9.8 MB/sec    1.01   302.4±16.71µs     9.8 MB/sec
+formatter/pydantic/types.py                1.01      5.8±0.21ms     4.4 MB/sec    1.00      5.7±0.23ms     4.5 MB/sec
+linter/all-rules/large/dataset.py          1.00     20.0±0.38ms     2.0 MB/sec    1.00     19.9±0.37ms     2.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      5.2±0.14ms     3.2 MB/sec    1.00      5.1±0.16ms     3.2 MB/sec
+linter/all-rules/numpy/globals.py          1.00   635.8±27.72µs     4.6 MB/sec    1.00   635.3±25.22µs     4.6 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.9±0.24ms     2.9 MB/sec    1.02      9.1±0.37ms     2.8 MB/sec
+linter/default-rules/large/dataset.py      1.01     10.2±0.30ms     4.0 MB/sec    1.00     10.1±0.23ms     4.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.1±0.07ms     7.8 MB/sec    1.02      2.2±0.15ms     7.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00    250.1±9.72µs    11.8 MB/sec    1.01    253.2±9.66µs    11.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.5±0.16ms     5.6 MB/sec    1.00      4.5±0.15ms     5.6 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_formatter/src/builders.rs</code>:1416 on 2023-07-11 09:27</div>
+            <div class="timeline-body"><p>nit: the <code>&amp;</code> on the <code>&amp;str</code> seems redundant</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_formatter/src/builders.rs</code>:1434 on 2023-07-11 09:28</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// let content = format_with(|f| {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_formatter/src/builders.rs</code>:1476 on 2023-07-11 09:53</div>
+            <div class="timeline-body"><p>these examples are great</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_formatter/src/builders.rs</code>:2010 on 2023-07-11 09:56</div>
+            <div class="timeline-body"><p>do we need a custom limit here if we already got the line break after the comment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-07-11 10:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-11 11:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_formatter/src/builders.rs</code>:1416 on 2023-07-11 11:08</div>
+            <div class="timeline-body"><p>Unfortunately not. I think it is because <code>field</code> expects a <code>&amp;Debug</code>. <code>&amp;str</code> does implement <code>Debug</code> but it needs the <code>&amp;</code> to get the reference to the debug implementation.</p>
+<pre><code>error[E0277]: the size for values of type `str` cannot be known at compilation time
+    --&gt; crates/ruff_formatter/src/builders.rs:1416:31
+     |
+1416 |             .field(&quot;content&quot;, &quot;{{content}}&quot;)
+     |                               ^^^^^^^^^^^^^ doesn't have a size known at compile-time
+     |
+     = help: the trait `Sized` is not implemented for `str`
+     = note: required for the cast from `&amp;'static str` to `&amp;dyn Debug`
+help: consider borrowing the value, since `&amp;&amp;'static str` can be coerced into `&amp;dyn Debug`
+     |
+1416 |             .field(&quot;content&quot;, &amp;&quot;{{content}}&quot;)
+     |                               +
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-11 11:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_formatter/src/builders.rs</code>:2010 on 2023-07-11 11:11</div>
+            <div class="timeline-body"><p>You're right. I can remove it because of the <code>expand_parent</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-07-11 11:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-07-11 11:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-07-11 11:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:37:35 UTC
+    </footer>
+</body>
+</html>

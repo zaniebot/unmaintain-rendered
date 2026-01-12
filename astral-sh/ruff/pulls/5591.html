@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rework upstream categories so we can `all_rules()` - astral-sh/ruff #5591</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rework upstream categories so we can <code>all_rules()</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5591">#5591</a>
+        opened by <a href="https://github.com/akx">@akx</a>
+        on 2023-07-07 11:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/akx">@akx</a> on 2023-07-07 11:33</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR reworks the <code>upstream_categories</code> mechanism that is only used for documentation purposes to make it easier to generate docs using <code>all_rules()</code>. The new implementation also relies on &quot;tribal knowledge&quot; about rule codes, so it's not the best implementation, but gets us forward.</p>
+<p>Another option would be to change the rule-defining proc macros to allow configuring an optional <code>RuleCategory</code>, but that seems more heavy-handed and possibly unnecessary in the long run...</p>
+<p>Draft since this builds on #5439.</p>
+<p>cc @charliermarsh :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-07 11:46</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.03      8.1±0.03ms     5.0 MB/sec    1.00      7.9±0.04ms     5.2 MB/sec
+formatter/numpy/ctypeslib.py               1.03   1785.0±1.62µs     9.3 MB/sec    1.00   1740.2±2.40µs     9.6 MB/sec
+formatter/numpy/globals.py                 1.02    198.4±0.31µs    14.9 MB/sec    1.00    195.0±0.57µs    15.1 MB/sec
+formatter/pydantic/types.py                1.04      3.9±0.01ms     6.5 MB/sec    1.00      3.8±0.00ms     6.7 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.5±0.07ms     3.0 MB/sec    1.00     13.5±0.07ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.02ms     4.9 MB/sec    1.00      3.4±0.01ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    431.5±0.99µs     6.8 MB/sec    1.01    434.3±0.64µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.9±0.02ms     4.3 MB/sec    1.01      6.0±0.02ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.7±0.02ms     6.1 MB/sec    1.01      6.7±0.02ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1458.2±2.65µs    11.4 MB/sec    1.01   1471.9±3.35µs    11.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    166.7±0.22µs    17.7 MB/sec    1.01    168.4±0.24µs    17.5 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.01ms     8.5 MB/sec    1.01      3.0±0.01ms     8.4 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.4±0.08ms     4.3 MB/sec    1.00      9.4±0.19ms     4.3 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.1±0.03ms     8.1 MB/sec    1.00      2.1±0.03ms     8.1 MB/sec
+formatter/numpy/globals.py                 1.00    231.2±3.52µs    12.8 MB/sec    1.02   236.4±10.72µs    12.5 MB/sec
+formatter/pydantic/types.py                1.01      4.6±0.08ms     5.5 MB/sec    1.00      4.6±0.07ms     5.6 MB/sec
+linter/all-rules/large/dataset.py          1.01     16.2±0.19ms     2.5 MB/sec    1.00     16.1±0.16ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.2±0.05ms     4.0 MB/sec    1.01      4.2±0.05ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00   505.1±12.95µs     5.8 MB/sec    1.02    513.4±7.71µs     5.7 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.2±0.10ms     3.6 MB/sec    1.00      7.1±0.08ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.1±0.06ms     5.0 MB/sec    1.01      8.2±0.07ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1738.7±18.75µs     9.6 MB/sec    1.01  1764.3±22.81µs     9.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    204.3±2.80µs    14.4 MB/sec    1.02    208.2±5.21µs    14.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.06ms     7.0 MB/sec    1.01      3.7±0.03ms     6.9 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/registry.rs</code>:10 on 2023-07-07 11:54</div>
+            <div class="timeline-body"><p>nit:</p>
+<pre><code class="language-suggestion">use crate::codes;
+</code></pre>
+<p>(i'm surprised clippy doesn't complain about this)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_dev/src/generate_rules_table.rs</code>:54 on 2023-07-07 11:55</div>
+            <div class="timeline-body"><p>&quot;and not active by default&quot; or something similar, but i'll leave the exact phrasing up to @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-07-07 11:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2023-07-07 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/akx">@akx</a> on <code>crates/ruff_dev/src/generate_rules_table.rs</code>:54 on 2023-07-07 12:40</div>
+            <div class="timeline-body"><p>That can be discussed in #5439 (too) :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/akx">@akx</a> reviewed on 2023-07-07 12:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-10 02:30</div>
+            <div class="timeline-body"><p>@akx - Do you mind rebasing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @akx on 2023-07-10 07:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-07-10 07:57</div>
+            <div class="timeline-body"><p>@charliermarsh Rebased 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-07-10 13:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-10 13:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-07-10 13:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:37:35 UTC
+    </footer>
+</body>
+</html>

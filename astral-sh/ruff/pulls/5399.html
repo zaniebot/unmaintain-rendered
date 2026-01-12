@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement Pylint `single-string-used-for-slots` (`C0205`) as `single-string-slots` (`PLC0205`) - astral-sh/ruff #5399</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement Pylint <code>single-string-used-for-slots</code> (<code>C0205</code>) as <code>single-string-slots</code> (<code>PLC0205</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5399">#5399</a>
+        opened by <a href="https://github.com/tjkuson">@tjkuson</a>
+        on 2023-06-27 17:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-06-27 17:26</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Implement Pylint rule <code>single-string-used-for-slots</code> (<code>C0205</code>) as <code>single-string-slots</code> (<code>PLC0205</code>). This rule checks for single strings being assigned to <code>__slots__</code>. For example</p>
+<pre><code class="language-python">class Foo:
+    __slots__: str = &quot;bar&quot;
+
+    def __init__(self, bar: str) -&gt; None:
+        self.bar = bar
+</code></pre>
+<p>should be</p>
+<pre><code class="language-python">class Foo:
+    __slots__: tuple[str, ...] = (&quot;bar&quot;,)
+
+    def __init__(self, bar: str) -&gt; None:
+        self.bar = bar
+</code></pre>
+<p>Related to #970. Includes documentation.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-27 17:34</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>ℹ️ ecosystem check <strong>detected changes</strong>. (+1, -0, 0 error(s))</p>
+<details><summary>disnake (+1, -0)</summary>
+<p>
+
+<pre><code class="language-diff">+ tests/test_utils.py:380:9: PLC0205 Class `__slots__` should be a non-string iterable
+</code></pre>
+</p>
+</details>
+Rules changed: 1
+
+<p>| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| PLC0205 | 1 | 1 | 0 |</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.4±0.04ms     4.3 MB/sec    1.00      9.3±0.03ms     4.4 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.0±0.00ms     8.2 MB/sec    1.00      2.0±0.01ms     8.2 MB/sec
+formatter/numpy/globals.py                 1.00    228.1±0.69µs    12.9 MB/sec    1.00    228.3±1.49µs    12.9 MB/sec
+formatter/pydantic/types.py                1.00      4.4±0.01ms     5.7 MB/sec    1.00      4.4±0.01ms     5.7 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.8±0.08ms     2.6 MB/sec    1.01     16.0±0.12ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.0±0.02ms     4.2 MB/sec    1.00      4.0±0.01ms     4.2 MB/sec
+linter/all-rules/numpy/globals.py          1.00    512.3±1.11µs     5.8 MB/sec    1.00    513.6±3.70µs     5.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.0±0.06ms     3.7 MB/sec    1.00      7.0±0.03ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.0±0.04ms     5.1 MB/sec    1.01      8.0±0.04ms     5.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1758.5±3.43µs     9.5 MB/sec    1.00   1760.8±5.99µs     9.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    198.8±0.72µs    14.8 MB/sec    1.00    198.8±3.21µs    14.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.01ms     7.0 MB/sec    1.00      3.7±0.02ms     7.0 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.03     10.7±0.15ms     3.8 MB/sec    1.00     10.4±0.20ms     3.9 MB/sec
+formatter/numpy/ctypeslib.py               1.03      2.2±0.03ms     7.7 MB/sec    1.00      2.1±0.03ms     7.9 MB/sec
+formatter/numpy/globals.py                 1.00    237.9±4.67µs    12.4 MB/sec    1.00    237.2±9.08µs    12.4 MB/sec
+formatter/pydantic/types.py                1.01      4.9±0.08ms     5.3 MB/sec    1.00      4.8±0.17ms     5.3 MB/sec
+linter/all-rules/large/dataset.py          1.02     16.5±0.27ms     2.5 MB/sec    1.00     16.3±0.26ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.3±0.09ms     3.9 MB/sec    1.00      4.3±0.10ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00   516.6±23.69µs     5.7 MB/sec    1.00    515.0±9.21µs     5.7 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.3±0.16ms     3.5 MB/sec    1.00      7.3±0.12ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.3±0.13ms     4.9 MB/sec    1.00      8.3±0.11ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1756.0±24.03µs     9.5 MB/sec    1.02  1792.9±25.84µs     9.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    205.2±3.89µs    14.4 MB/sec    1.00    204.6±6.59µs    14.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.06ms     6.8 MB/sec    1.01      3.8±0.06ms     6.7 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-06-27 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-06-27 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-27 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-07-10 09:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:37:34 UTC
+    </footer>
+</body>
+</html>

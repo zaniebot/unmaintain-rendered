@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>stop having end-of-line comments expand parent - astral-sh/ruff #5353</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>stop having end-of-line comments expand parent</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5353">#5353</a>
+        opened by <a href="https://github.com/davidszotten">@davidszotten</a>
+        on 2023-06-25 08:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-06-25 08:56</div>
+            <div class="timeline-body"><p>this seems more in line with black (and seems to help with <code>StmtWith</code>
+formatting)</p>
+<p>only unexpected change in the diff afict is</p>
+<pre><code>while (
+    some_condition(unformatted, args) # trailing some condition
+    and anotherCondition or aThirdCondition  # trailing third condition
+):  # comment
+    print(&quot;Do something&quot;)
+</code></pre>
+<p>which for some reason (bug elsewhere?) now doesn't get wrapped</p>
+<p>to keep dict formatting from getting worse, first add magic trailing comma support to dicts (separate commit) which
+seems mostly better, though still need to think about</p>
+<p><code>json = {&quot;k&quot;: {&quot;k2&quot;: {&quot;k3&quot;: [1,]}}}</code> where we differ from black in
+trailing commans for all the outer dicts</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-25 09:15</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      7.9±0.06ms     5.1 MB/sec    1.01      8.0±0.11ms     5.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1871.2±3.40µs     8.9 MB/sec    1.00  1866.9±26.89µs     8.9 MB/sec
+formatter/numpy/globals.py                 1.03    235.1±6.38µs    12.6 MB/sec    1.00    227.4±1.61µs    13.0 MB/sec
+formatter/pydantic/types.py                1.01      4.2±0.01ms     6.1 MB/sec    1.00      4.1±0.06ms     6.2 MB/sec
+linter/all-rules/large/dataset.py          1.02     15.9±0.32ms     2.6 MB/sec    1.00     15.7±0.09ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.0±0.04ms     4.2 MB/sec    1.00      3.9±0.01ms     4.2 MB/sec
+linter/all-rules/numpy/globals.py          1.00    508.0±3.93µs     5.8 MB/sec    1.00    505.7±1.00µs     5.8 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.0±0.06ms     3.6 MB/sec    1.00      7.0±0.05ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.01      8.0±0.06ms     5.1 MB/sec    1.00      7.9±0.10ms     5.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.03   1753.4±8.54µs     9.5 MB/sec    1.00  1710.3±22.85µs     9.7 MB/sec
+linter/default-rules/numpy/globals.py      1.01    193.6±2.10µs    15.2 MB/sec    1.00    191.1±2.94µs    15.4 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.6±0.02ms     7.0 MB/sec    1.00      3.6±0.05ms     7.1 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.9±0.42ms     4.1 MB/sec    1.08     10.6±0.63ms     3.8 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.2±0.10ms     7.7 MB/sec    1.11      2.4±0.18ms     7.0 MB/sec
+formatter/numpy/globals.py                 1.00   269.2±13.76µs    11.0 MB/sec    1.09   293.4±21.21µs    10.1 MB/sec
+formatter/pydantic/types.py                1.00      4.8±0.19ms     5.3 MB/sec    1.11      5.4±0.28ms     4.7 MB/sec
+linter/all-rules/large/dataset.py          1.01     18.9±0.77ms     2.2 MB/sec    1.00     18.8±0.71ms     2.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      5.1±0.23ms     3.3 MB/sec    1.00      5.1±0.21ms     3.3 MB/sec
+linter/all-rules/numpy/globals.py          1.02   626.1±27.78µs     4.7 MB/sec    1.00   614.2±27.84µs     4.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.5±0.30ms     3.0 MB/sec    1.00      8.5±0.30ms     3.0 MB/sec
+linter/default-rules/large/dataset.py      1.00      9.9±0.39ms     4.1 MB/sec    1.03     10.2±0.69ms     4.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.2±0.11ms     7.7 MB/sec    1.00      2.2±0.08ms     7.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00   252.4±11.89µs    11.7 MB/sec    1.09   274.4±19.80µs    10.8 MB/sec
+linter/default-rules/pydantic/types.py     1.02      4.7±0.22ms     5.4 MB/sec    1.00      4.6±0.18ms     5.5 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_list.rs</code>:55 on 2023-06-26 05:54</div>
+            <div class="timeline-body"><p>Nice! Would you mind splitting this change into its own PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-06-26 06:06</div>
+            <div class="timeline-body"><p>Thanks for looking into this difference.</p>
+<p>This deviation has been a deliberate decision of me, but we haven't decided if we want to keep it.</p>
+<p>Overall, our goal is not 100% black compatibility. Our main goal is to format already <em>black formatted</em> files without changes, to ease adoption. My understanding is that the current formatting upholdes this property.</p>
+<p>The reasons why I decided to deviate are:</p>
+<ul>
+<li><p>Using <code>expand</code> can prevent <em>comment migration</em>. This is a problem specific to trailing comments because they potentially move from the end of node <strong>A</strong> to the end of node <strong>B</strong> after formatting once. This can be problematic because the formatter may decide for a different layout because <code>has_dangling_comments</code> now suddenly returns <code>false</code>, or the comment moves even further on the second format and now becomes a trailing comment of node <strong>C</strong></p>
+</li>
+<li><p>In my view, it's a desired property to respect the user's comment positioning when possible (I mean, we support the weirdest slice comment placements). That means, We shouldn't move the comment from the argument <code>b</code> in the following example if I deliberately choose to document the argument <code>b</code> (and not the function header).</p>
+<pre><code class="language-python">function(
+    a,
+    b=[] # Using a list here is important because of X
+):  
+</code></pre>
+<p>Moving the comment to the end of the line changes the context of the comment and it now becomes unclear to what <em>here</em> is referencing. Preserving the placement can further prevent that <code>type-ignore</code> or other placement sensitive comments (noqa) are moved or increase scope.</p>
+</li>
+<li><p>Aggressively collapsing comments can lead to some weird comment formatting (Ruff can run into this too, but it should happen less often)</p>
+<pre><code class="language-python"># Input
+while (
+    cond1  # almost always true
+    and cond2  # almost never true
+):
+    print(&quot;Do something&quot;)
+
+# Output
+while cond1 and cond2:  # almost always true  # almost never true
+    print(&quot;Do something&quot;)
+</code></pre>
+</li>
+</ul>
+<p>What's your perspective on the comment placement? @konstin I remember that you were leaning towards moving comments to the end too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-06-26 06:42</div>
+            <div class="timeline-body"><p>thanks for the explanation. l also prefer the current output, but was concerned about black compat, however</p>
+<blockquote>
+<p>Our main goal is to format already black formatted files without changes, to ease adoption.</p>
+</blockquote>
+<p>this is a great distinction i hadn't considered (no changes to black-formatted code vs same output as black on unformatted code).</p>
+<p>aside: is this how we use the fixtures from black's test suite? (format with black, _then with ruff). should it be?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @davidszotten on 2023-06-26 06:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-26 06:48</div>
+            <div class="timeline-body"><blockquote>
+<p>aside: is this how we use the fixtures from black's test suite? (format with black, _then with ruff). should it be?</p>
+</blockquote>
+<p>This is a good point. No. The fixtures compare Black's and Ruff's output after formatting an unformatted file. But I like what you're proposing to add another test that uses the expected black output and run it through ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-06-26 06:54</div>
+            <div class="timeline-body"><blockquote>
+<p>What's your perspective on the comment placement? @konstin I remember that you were leaning towards moving comments to the end too</p>
+</blockquote>
+<p>Generally favourable towards moving them to the end.</p>
+<blockquote>
+<p>Using expand can prevent comment migration</p>
+</blockquote>
+<p>I'm fine with a certain amount of comment migration, i often like it when black does that. I feel like having one line comments be fixed and end-of-line comments migrate is a good compromise and gives the user convenience (the formatter will collapse my statements) and control (i can use an own line comment and it will stick).</p>
+<blockquote>
+<p>Moving the comment to the end of the line changes the context of the comment and it now becomes unclear to what here is referencing. Preserving the placement can further prevent that type-ignore or other placement sensitive comments (noqa) are moved or increase scope.</p>
+</blockquote>
+<blockquote>
+<p>Aggressively collapsing comments can lead to some weird comment formatting (Ruff can run into this too, but it should happen less often)</p>
+</blockquote>
+<p>Those are good points, and i wouldn't be sure how to handle them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-26 07:29</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm fine with a certain amount of comment migration, i often like it when black does that. I feel like having one line comments be fixed and end-of-line comments migrate is a good compromise and gives the user convenience (the formatter will collapse my statements) and control (i can use an own line comment and it will stick).</p>
+</blockquote>
+<p>This resonates with me and I see this working well in an editor. However, it may require manual review when formatting a new project. I added a new item to the formatter task to make a decision and linked to this conversation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-06-26 09:05</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I'm fine with a certain amount of comment migration, i often like it when black does that. I feel like having one line comments be fixed and end-of-line comments migrate is a good compromise and gives the user convenience (the formatter will collapse my statements) and control (i can use an own line comment and it will stick).</p>
+</blockquote>
+</blockquote>
+<p>Do you have an example of a comment migration that you like (esp. one where comments got merged)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-06-26 09:40</div>
+            <div class="timeline-body"><pre><code class="language-python">model.train(
+    learning_rate=0.0001, # 0.001 doesn't converge
+    batch=128 # about 8GB
+)
+</code></pre>
+<p>gets merged into</p>
+<pre><code class="language-python">model.train(learning_rate=0.0001, batch=128)  # 0.001 doesn't converge  # about 8GB
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-06-26 10:41</div>
+            <div class="timeline-body"><p>interesting. i would prefer the separate rather than the merged output in that example (note that &quot;that you like&quot; in the above)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:37:34 UTC
+    </footer>
+</body>
+</html>
