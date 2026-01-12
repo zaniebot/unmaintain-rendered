@@ -2,16 +2,19 @@
 number: 17388
 title: "Split up `ci.yml`"
 type: pull_request
-state: open
+state: merged
 author: zanieb
-labels: []
+labels:
+  - no-build
+  - no-test
 assignees: []
+merged: true
 base: main
 head: zb/reusable-workflow
 created_at: 2026-01-09T19:43:46Z
-updated_at: 2026-01-12T18:04:42Z
+updated_at: 2026-01-12T18:34:32Z
 url: https://github.com/astral-sh/uv/pull/17388
-synced_at: 2026-01-12T18:24:33Z
+synced_at: 2026-01-12T19:14:22Z
 ```
 
 # Split up `ci.yml`
@@ -87,5 +90,25 @@ _@zanieb reviewed on 2026-01-12 17:59_
 _Review comment by @zanieb on `.github/workflows/publish-docs.yml`:39 on 2026-01-12 17:59_
 
 I confirmed we're using `v2.8.2` in a bunch of places on `main`.
+
+---
+
+_Label `no-build` added by @zanieb on 2026-01-12 18:30_
+
+---
+
+_Label `no-test` added by @zanieb on 2026-01-12 18:30_
+
+---
+
+_Merged by @zanieb on 2026-01-12 18:34_
+
+---
+
+_Closed by @zanieb on 2026-01-12 18:34_
+
+---
+
+_Branch deleted on 2026-01-12 18:34_
 
 ---

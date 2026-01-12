@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-12T12:37:27Z
+updated_at: 2026-01-12T18:35:50Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-12T15:58:39Z
+synced_at: 2026-01-12T19:14:12Z
 ```
 
 # Dependency Dashboard
@@ -52,6 +52,7 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/rcgen-0.x-lockfile -->Update Rust crate rcgen to v0.14.6
  - [ ] <!-- unschedule-branch=renovate/rkyv-0.x-lockfile -->Update Rust crate rkyv to v0.8.13
  - [ ] <!-- unschedule-branch=renovate/rmp-serde-1.x-lockfile -->Update Rust crate rmp-serde to v1.3.1
+ - [ ] <!-- unschedule-branch=renovate/rustls-0.x-lockfile -->Update Rust crate rustls to v0.23.36
  - [ ] <!-- unschedule-branch=renovate/serde_json-1.x-lockfile -->Update Rust crate serde_json to v1.0.148
  - [ ] <!-- unschedule-branch=renovate/syn-2.x-lockfile -->Update Rust crate syn to v2.0.113
  - [ ] <!-- unschedule-branch=renovate/target-lexicon-0.x-lockfile -->Update Rust crate target-lexicon to v0.13.4
@@ -61,14 +62,12 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/tokio-stream-0.x-lockfile -->Update Rust crate tokio-stream to v0.1.18
  - [ ] <!-- unschedule-branch=renovate/tokio-util-0.x-lockfile -->Update Rust crate tokio-util to v0.7.18
  - [ ] <!-- unschedule-branch=renovate/pubgrub -->Update Rust crate version-ranges to v0.1.4
- - [ ] <!-- unschedule-branch=renovate/swatinem-rust-cache-2.x -->Update Swatinem/rust-cache action to v2.8.2
  - [ ] <!-- unschedule-branch=renovate/tokio-tracing-monorepo -->Update tokio-tracing monorepo (`tracing`, `tracing-subscriber`)
  - [ ] <!-- unschedule-branch=renovate/acj-freebsd-firecracker-action-0.x -->Update acj/freebsd-firecracker-action action to v0.8.0
  - [ ] <!-- unschedule-branch=renovate/astral-sh-setup-uv-7.x -->Update astral-sh/setup-uv action to v7.2.0
  - [ ] <!-- unschedule-branch=renovate/codspeedhq-action-4.x -->Update CodSpeedHQ/action action to v4.5.2
  - [ ] <!-- unschedule-branch=renovate/crate-ci-typos-1.x -->Update crate-ci/typos action to v1.41.0
  - [ ] <!-- unschedule-branch=renovate/python-3.x -->Update dependency python to v3.14.2
- - [ ] <!-- unschedule-branch=renovate/maturin-1.x -->Update maturin to v1.10.2
  - [ ] <!-- unschedule-branch=renovate/msrv -->Update MSRV to v1.90.0
  - [ ] <!-- unschedule-branch=renovate/pre-commit-dependencies -->Update pre-commit dependencies (`astral-sh/ruff-pre-commit`, `crate-ci/typos`)
  - [ ] <!-- unschedule-branch=renovate/assert_cmd-2.x-lockfile -->Update Rust crate assert_cmd to v2.1.1
@@ -109,7 +108,6 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/flate2-1.x-lockfile -->Update Rust crate flate2 to v1.1.8
  - [ ] <!-- approvePr-branch=renovate/h2-0.x-lockfile -->Update Rust crate h2 to v0.4.13
  - [ ] <!-- approvePr-branch=renovate/quote-1.x-lockfile -->Update Rust crate quote to v1.0.43
- - [ ] <!-- approvePr-branch=renovate/rustls-0.x-lockfile -->Update Rust crate rustls to v0.23.36
  - [ ] <!-- approvePr-branch=renovate/toml-0.x-lockfile -->Update Rust crate toml to v0.9.11
  - [ ] <!-- approvePr-branch=renovate/url-2.x-lockfile -->Update Rust crate url to v2.5.8
  - [ ] <!-- approvePr-branch=renovate/data-encoding-2.x-lockfile -->Update Rust crate data-encoding to v2.10.0
@@ -616,168 +614,24 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 </blockquote>
 </details>
 
-<details><summary>github-actions (9)</summary>
+<details><summary>github-actions (22)</summary>
 <blockquote>
 
-<details><summary>.github/workflows/build-binaries.yml (88)</summary>
+<details><summary>.github/workflows/bench.yml (8)</summary>
 
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
- - `uraimo/run-on-arch-action v3.0.1@d94c13912ea685de38fccc1109385b83fd79427d`
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
- - `uraimo/run-on-arch-action v3.0.1@d94c13912ea685de38fccc1109385b83fd79427d`
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
- - `uraimo/run-on-arch-action v3.0.1@d94c13912ea685de38fccc1109385b83fd79427d`
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
- - `uraimo/run-on-arch-action v3.0.1@d94c13912ea685de38fccc1109385b83fd79427d`
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
- - `uraimo/run-on-arch-action v3.0.1@d94c13912ea685de38fccc1109385b83fd79427d`
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
- - `uraimo/run-on-arch-action v3.0.1@d94c13912ea685de38fccc1109385b83fd79427d`
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
- - `addnab/docker-run-action v3@4f65fabd2431ebc8d299f8e5a018d79a769ae185`
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
- - `addnab/docker-run-action v3@4f65fabd2431ebc8d299f8e5a018d79a769ae185`
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
- - `uraimo/run-on-arch-action v3.0.1@d94c13912ea685de38fccc1109385b83fd79427d`
- - `uraimo/run-on-arch-action v3.0.1@d94c13912ea685de38fccc1109385b83fd79427d`
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
- - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
- - `uraimo/run-on-arch-action v3.0.1@d94c13912ea685de38fccc1109385b83fd79427d`
- - `uraimo/run-on-arch-action v3.0.1@d94c13912ea685de38fccc1109385b83fd79427d`
- - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
-
-</details>
-
-<details><summary>.github/workflows/build-docker.yml (17)</summary>
-
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `docker/login-action v3.6.0@5e57cd118135c172c3672efd75eb46360885c0ef`
- - `docker/login-action v3.6.0@5e57cd118135c172c3672efd75eb46360885c0ef`
- - `depot/setup-action b0b1ea4f69e92ebf5dea3f8713a1b0c37b2126a5`
- - `docker/metadata-action v5.10.0@c299e40c65443455700f0fdfc63efafe5b349051`
- - `depot/build-push-action v1.16.2@9785b135c3c76c33db102e45be96a25ab55cd507`
- - `actions/attest-build-provenance v3.1.0@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8`
- - `docker/login-action v3.6.0@5e57cd118135c172c3672efd75eb46360885c0ef`
- - `docker/login-action v3.6.0@5e57cd118135c172c3672efd75eb46360885c0ef`
- - `depot/setup-action b0b1ea4f69e92ebf5dea3f8713a1b0c37b2126a5`
- - `docker/metadata-action v5.10.0@c299e40c65443455700f0fdfc63efafe5b349051`
- - `depot/build-push-action v1.16.2@9785b135c3c76c33db102e45be96a25ab55cd507`
- - `actions/attest-build-provenance v3.1.0@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8`
- - `actions/attest-build-provenance v3.1.0@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8`
- - `docker/login-action v3.6.0@5e57cd118135c172c3672efd75eb46360885c0ef`
- - `docker/login-action v3.6.0@5e57cd118135c172c3672efd75eb46360885c0ef`
- - `actions/attest-build-provenance v3.1.0@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8`
-
-</details>
-
-<details><summary>.github/workflows/ci.yml (224)</summary>
-
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
- - `ludeeus/action-shellcheck 2.0.0@00cae500b08a931fb5698e11e79bfbd38e612a38`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `EmbarkStudios/cargo-deny-action v2.0.14@76cd80eb775d7bbbd2d80292136d74d39e1b4918` → [Updates: `v2.0.15`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.65.13`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `rui314/setup-mold v1@725a8794d15fc7563f59595bd9556495c0564878`
- - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
- - `taiki-e/install-action v2.57.1@a416ddeedbd372e614cc1386e8b642692f66865e` → [Updates: `v2.65.13`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `rui314/setup-mold v1@725a8794d15fc7563f59595bd9556495c0564878`
- - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
- - `taiki-e/install-action v2.57.1@a416ddeedbd372e614cc1386e8b642692f66865e` → [Updates: `v2.65.13`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
- - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `taiki-e/install-action v2.57.1@a416ddeedbd372e614cc1386e8b642692f66865e` → [Updates: `v2.65.13`]
+ - `CodSpeedHQ/action v4.4.1@346a2d8a8d9d38909abd0bc3d23f773110f076ad` → [Updates: `v4.5.2`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `taiki-e/install-action v2.57.1@a416ddeedbd372e614cc1386e8b642692f66865e` → [Updates: `v2.65.13`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `crate-ci/typos v1.37.3@64e4db431eb262bb5c6baa19dce280d78532830c` → [Updates: `v1.41.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `Swatinem/rust-cache v2.8.0@98c8021b550208e191a6a3145459bfc9fb29c4c0` → [Updates: `v2.8.2`]
- - `webfactory/ssh-agent v0.9.1@a6f90b1f127823b31d4d4a8d96047790581349bd`
+ - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.65.13`]
+ - `CodSpeedHQ/action v4.4.1@346a2d8a8d9d38909abd0bc3d23f773110f076ad` → [Updates: `v4.5.2`]
+
+</details>
+
+<details><summary>.github/workflows/build-dev-binaries.yml (33)</summary>
+
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `rui314/setup-mold v1@725a8794d15fc7563f59595bd9556495c0564878`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
@@ -811,155 +665,201 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `acj/freebsd-firecracker-action v0.6.0@a5a3fc1709c5b5368141a5699f10259aca3cd965` → [Updates: `v0.8.0`]
+
+</details>
+
+<details><summary>.github/workflows/build-docker.yml (17)</summary>
+
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `docker/login-action v3.6.0@5e57cd118135c172c3672efd75eb46360885c0ef`
+ - `docker/login-action v3.6.0@5e57cd118135c172c3672efd75eb46360885c0ef`
+ - `depot/setup-action b0b1ea4f69e92ebf5dea3f8713a1b0c37b2126a5`
+ - `docker/metadata-action v5.10.0@c299e40c65443455700f0fdfc63efafe5b349051`
+ - `depot/build-push-action v1.16.2@9785b135c3c76c33db102e45be96a25ab55cd507`
+ - `actions/attest-build-provenance v3.1.0@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8`
+ - `docker/login-action v3.6.0@5e57cd118135c172c3672efd75eb46360885c0ef`
+ - `docker/login-action v3.6.0@5e57cd118135c172c3672efd75eb46360885c0ef`
+ - `depot/setup-action b0b1ea4f69e92ebf5dea3f8713a1b0c37b2126a5`
+ - `docker/metadata-action v5.10.0@c299e40c65443455700f0fdfc63efafe5b349051`
+ - `depot/build-push-action v1.16.2@9785b135c3c76c33db102e45be96a25ab55cd507`
+ - `actions/attest-build-provenance v3.1.0@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8`
+ - `actions/attest-build-provenance v3.1.0@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8`
+ - `docker/login-action v3.6.0@5e57cd118135c172c3672efd75eb46360885c0ef`
+ - `docker/login-action v3.6.0@5e57cd118135c172c3672efd75eb46360885c0ef`
+ - `actions/attest-build-provenance v3.1.0@00014ed6ed5efc5b1ab7f7f34a39eb55d41aa4f8`
+
+</details>
+
+<details><summary>.github/workflows/build-release-binaries.yml (88)</summary>
+
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `conda-incubator/setup-miniconda v3.2.0@835234971496cad1653abb28a638a281cf32541f`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `Vampire/setup-wsl v6.0.0@6a8db447be7ed35f2f499c02c6e60ff77ef11278`
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `aws-actions/configure-aws-credentials v5.1.1@61815dcd50bd041e203e49132bacad1fd04d2708`
- - `google-github-actions/auth fc2174804b84f912b1f6d334e9463f484f1c552d`
- - `google-github-actions/setup-gcloud aa5489c8933f4cc7a4f7d45035b3b1440c9c10db`
+ - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
+ - `uraimo/run-on-arch-action v3.0.1@d94c13912ea685de38fccc1109385b83fd79427d`
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
+ - `uraimo/run-on-arch-action v3.0.1@d94c13912ea685de38fccc1109385b83fd79427d`
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
+ - `uraimo/run-on-arch-action v3.0.1@d94c13912ea685de38fccc1109385b83fd79427d`
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
+ - `uraimo/run-on-arch-action v3.0.1@d94c13912ea685de38fccc1109385b83fd79427d`
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
+ - `uraimo/run-on-arch-action v3.0.1@d94c13912ea685de38fccc1109385b83fd79427d`
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
+ - `uraimo/run-on-arch-action v3.0.1@d94c13912ea685de38fccc1109385b83fd79427d`
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
+ - `addnab/docker-run-action v3@4f65fabd2431ebc8d299f8e5a018d79a769ae185`
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
+ - `addnab/docker-run-action v3@4f65fabd2431ebc8d299f8e5a018d79a769ae185`
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
+ - `uraimo/run-on-arch-action v3.0.1@d94c13912ea685de38fccc1109385b83fd79427d`
+ - `uraimo/run-on-arch-action v3.0.1@d94c13912ea685de38fccc1109385b83fd79427d`
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+ - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
+ - `uraimo/run-on-arch-action v3.0.1@d94c13912ea685de38fccc1109385b83fd79427d`
+ - `uraimo/run-on-arch-action v3.0.1@d94c13912ea685de38fccc1109385b83fd79427d`
+ - `actions/upload-artifact v4.6.2@ea165f8d65b6e75b540449e92b4886f43607fa02` → [Updates: `v6.0.0`]
+
+</details>
+
+<details><summary>.github/workflows/check-docs.yml (6)</summary>
+
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
+ - `webfactory/ssh-agent v0.9.1@a6f90b1f127823b31d4d4a8d96047790581349bd`
+ - `astral-sh/uv 0.9.24`
+
+</details>
+
+<details><summary>.github/workflows/check-fmt.yml (5)</summary>
+
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `astral-sh/uv 0.9.24`
+
+</details>
+
+<details><summary>.github/workflows/check-generated-files.yml (2)</summary>
+
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
+
+</details>
+
+<details><summary>.github/workflows/check-lint.yml (23)</summary>
+
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `ludeeus/action-shellcheck 2.0.0@00cae500b08a931fb5698e11e79bfbd38e612a38`
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
+ - `EmbarkStudios/cargo-deny-action v2.0.14@76cd80eb775d7bbbd2d80292136d74d39e1b4918` → [Updates: `v2.0.15`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.65.13`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `crate-ci/typos v1.37.3@64e4db431eb262bb5c6baa19dce280d78532830c` → [Updates: `v1.41.0`]
+ - `astral-sh/uv 0.9.24`
+ - `astral-sh/uv 0.9.24`
+ - `astral-sh/uv 0.9.24`
+ - `python 3.12` → [Updates: `3.14`]
+
+</details>
+
+<details><summary>.github/workflows/check-publish.yml (2)</summary>
+
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
+
+</details>
+
+<details><summary>.github/workflows/check-zizmor.yml (2)</summary>
+
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `zizmorcore/zizmor-action v0.3.0@e639db99335bc9038abc0e066dfcd72e23d26fb4`
+
+</details>
+
+<details><summary>.github/workflows/ci.yml (5)</summary>
+
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
  - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
  - `pypa/gh-action-pypi-publish v1.13.0@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e`
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `conda-incubator/setup-miniconda v3.2.0@835234971496cad1653abb28a638a281cf32541f`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `taiki-e/install-action v2.57.1@a416ddeedbd372e614cc1386e8b642692f66865e` → [Updates: `v2.65.13`]
- - `CodSpeedHQ/action v4.4.1@346a2d8a8d9d38909abd0bc3d23f773110f076ad` → [Updates: `v4.5.2`]
- - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
- - `taiki-e/install-action v2.57.1@a416ddeedbd372e614cc1386e8b642692f66865e` → [Updates: `v2.65.13`]
- - `CodSpeedHQ/action v4.4.1@346a2d8a8d9d38909abd0bc3d23f773110f076ad` → [Updates: `v4.5.2`]
- - `python 3.12` → [Updates: `3.14`]
- - `astral-sh/uv 0.9.24`
- - `astral-sh/uv 0.9.24`
- - `astral-sh/uv 0.9.24`
- - `astral-sh/uv 0.9.24`
- - `astral-sh/uv 0.9.24`
- - `alpine latest` → [Updates: `latest`]
- - `python 3.12.7` → [Updates: `3.14.2`]
- - `python 3.12` → [Updates: `3.14`]
- - `debian bookworm` → [Updates: `trixie`, `bookworm`]
- - `fedora 43` → [Updates: `44`, `43`]
- - `python 3.12` → [Updates: `3.14`]
- - `pyston/pyston 2.3.5` → [Updates: `2.3.5`]
- - `alpine latest` → [Updates: `latest`]
- - `python 3.13` → [Updates: `3.14`]
- - `python 3.10` → [Updates: `3.14`]
- - `python 3.10` → [Updates: `3.14`]
- - `python 3.13` → [Updates: `3.14`]
- - `python 3.13` → [Updates: `3.14`]
- - `python 3.13` → [Updates: `3.14`]
- - `python 3.13` → [Updates: `3.14`]
- - `amazonlinux 2023` → [Updates: `2023`]
 
 </details>
 
@@ -973,7 +873,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
- - `Swatinem/rust-cache v2.8.0@98c8021b550208e191a6a3145459bfc9fb29c4c0` → [Updates: `v2.8.2`]
+ - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `webfactory/ssh-agent v0.9.1@a6f90b1f127823b31d4d4a8d96047790581349bd`
  - `python 3.12` → [Updates: `3.14`]
 
@@ -1015,10 +915,185 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
 </details>
 
-<details><summary>.github/workflows/zizmor.yml (2)</summary>
+<details><summary>.github/workflows/test-ecosystem.yml (3)</summary>
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `zizmorcore/zizmor-action v0.3.0@e639db99335bc9038abc0e066dfcd72e23d26fb4`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+
+</details>
+
+<details><summary>.github/workflows/test-integration.yml (41)</summary>
+
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `conda-incubator/setup-miniconda v3.2.0@835234971496cad1653abb28a638a281cf32541f`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `Vampire/setup-wsl v6.0.0@6a8db447be7ed35f2f499c02c6e60ff77ef11278`
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `aws-actions/configure-aws-credentials v5.1.1@61815dcd50bd041e203e49132bacad1fd04d2708`
+ - `google-github-actions/auth fc2174804b84f912b1f6d334e9463f484f1c552d`
+ - `google-github-actions/setup-gcloud aa5489c8933f4cc7a4f7d45035b3b1440c9c10db`
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `python 3.12.7` → [Updates: `3.14.2`]
+ - `python 3.12` → [Updates: `3.14`]
+
+</details>
+
+<details><summary>.github/workflows/test-smoke.yml (13)</summary>
+
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `alpine latest` → [Updates: `latest`]
+
+</details>
+
+<details><summary>.github/workflows/test-system.yml (73)</summary>
+
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `conda-incubator/setup-miniconda v3.2.0@835234971496cad1653abb28a638a281cf32541f`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `actions/download-artifact v4.3.0@d3f86a106a0bac45b974a628896c90dbdf5c8093` → [Updates: `v7.0.0`]
+ - `debian bookworm` → [Updates: `trixie`, `bookworm`]
+ - `fedora 43` → [Updates: `44`, `43`]
+ - `python 3.12` → [Updates: `3.14`]
+ - `pyston/pyston 2.3.5` → [Updates: `2.3.5`]
+ - `alpine latest` → [Updates: `latest`]
+ - `python 3.13` → [Updates: `3.14`]
+ - `python 3.10` → [Updates: `3.14`]
+ - `python 3.10` → [Updates: `3.14`]
+ - `python 3.13` → [Updates: `3.14`]
+ - `python 3.13` → [Updates: `3.14`]
+ - `python 3.13` → [Updates: `3.14`]
+ - `python 3.13` → [Updates: `3.14`]
+ - `amazonlinux 2023` → [Updates: `2023`]
+
+</details>
+
+<details><summary>.github/workflows/test-windows-trampolines.yml (5)</summary>
+
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
+ - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.65.13`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
+
+</details>
+
+<details><summary>.github/workflows/test.yml (17)</summary>
+
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `rui314/setup-mold v1@725a8794d15fc7563f59595bd9556495c0564878`
+ - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
+ - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.65.13`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `rui314/setup-mold v1@725a8794d15fc7563f59595bd9556495c0564878`
+ - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
+ - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.65.13`]
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
+ - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
+ - `taiki-e/install-action v2.63.3@d850aa816998e5cf15f67a78c7b933f2a5033f8a` → [Updates: `v2.65.13`]
+ - `astral-sh/uv 0.9.24`
+ - `astral-sh/uv 0.9.24`
+ - `astral-sh/uv 0.9.24`
 
 </details>
 
@@ -1040,37 +1115,10 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 </blockquote>
 </details>
 
-<details><summary>regex (5)</summary>
+<details><summary>regex (4)</summary>
 <blockquote>
 
-<details><summary>.github/workflows/build-binaries.yml (22)</summary>
-
- - `maturin v1.9.6` → [Updates: `v1.10.2`]
- - `maturin v1.9.6` → [Updates: `v1.10.2`]
- - `maturin v1.9.6` → [Updates: `v1.10.2`]
- - `maturin v1.9.6` → [Updates: `v1.10.2`]
- - `maturin v1.9.6` → [Updates: `v1.10.2`]
- - `maturin v1.9.6` → [Updates: `v1.10.2`]
- - `maturin v1.9.6` → [Updates: `v1.10.2`]
- - `maturin v1.9.6` → [Updates: `v1.10.2`]
- - `maturin v1.9.6` → [Updates: `v1.10.2`]
- - `maturin v1.9.6` → [Updates: `v1.10.2`]
- - `maturin v1.9.6` → [Updates: `v1.10.2`]
- - `maturin v1.9.6` → [Updates: `v1.10.2`]
- - `maturin v1.9.6` → [Updates: `v1.10.2`]
- - `maturin v1.9.6` → [Updates: `v1.10.2`]
- - `maturin v1.9.6` → [Updates: `v1.10.2`]
- - `maturin v1.9.6` → [Updates: `v1.10.2`]
- - `maturin v1.9.6` → [Updates: `v1.10.2`]
- - `maturin v1.9.6` → [Updates: `v1.10.2`]
- - `maturin v1.9.6` → [Updates: `v1.10.2`]
- - `maturin v1.9.6` → [Updates: `v1.10.2`]
- - `maturin v1.9.6` → [Updates: `v1.10.2`]
- - `maturin v1.9.6` → [Updates: `v1.10.2`]
-
-</details>
-
-<details><summary>.github/workflows/ci.yml (1)</summary>
+<details><summary>.github/workflows/check-lint.yml (1)</summary>
 
  - `koalaman/shellcheck v0.11.0`
 
