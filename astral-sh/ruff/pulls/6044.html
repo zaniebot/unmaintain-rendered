@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tweak lambda rule to use annotations rather than shadowing - astral-sh/ruff #6044</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Tweak lambda rule to use annotations rather than shadowing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6044">#6044</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-07-24 21:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-24 21:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR ensures that we can retain the current behavior even after we reorder the visitor a bit, by looking for annotated lambdas rather than &quot;is the name bound to anything?&quot;, since if we visit the name before we run this rule, it'll <em>always</em> be bound. (This check is already a bit flawed -- in truth, we should probably run this rule deferred so that we can reliably detect shadowing.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2023-07-24 21:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-07-24 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-24 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-07-24 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-24 21:42</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.6±0.02ms     4.2 MB/sec    1.00      9.7±0.03ms     4.2 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1884.4±2.18µs     8.8 MB/sec    1.00   1883.2±5.83µs     8.8 MB/sec
+formatter/numpy/globals.py                 1.00    206.3±0.27µs    14.3 MB/sec    1.01    208.3±2.00µs    14.2 MB/sec
+formatter/pydantic/types.py                1.00      4.2±0.01ms     6.1 MB/sec    1.00      4.2±0.01ms     6.1 MB/sec
+linter/all-rules/large/dataset.py          1.01     13.4±0.04ms     3.0 MB/sec    1.00     13.3±0.03ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.01ms     4.9 MB/sec    1.00      3.4±0.01ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    364.9±1.53µs     8.1 MB/sec    1.00    365.4±0.79µs     8.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.1±0.02ms     4.2 MB/sec    1.00      6.0±0.01ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.01      7.2±0.02ms     5.7 MB/sec    1.00      7.1±0.01ms     5.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1452.7±5.33µs    11.5 MB/sec    1.00   1440.1±2.36µs    11.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00    152.0±0.27µs    19.4 MB/sec    1.00    151.9±0.22µs    19.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.01ms     8.0 MB/sec    1.00      3.2±0.01ms     8.0 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.9±0.06ms     3.7 MB/sec    1.01     10.9±0.18ms     3.7 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.1±0.03ms     7.8 MB/sec    1.00      2.1±0.02ms     7.9 MB/sec
+formatter/numpy/globals.py                 1.00    230.7±2.45µs    12.8 MB/sec    1.01    232.7±5.53µs    12.7 MB/sec
+formatter/pydantic/types.py                1.00      4.7±0.03ms     5.4 MB/sec    1.01      4.7±0.05ms     5.4 MB/sec
+linter/all-rules/large/dataset.py          1.00     14.9±0.09ms     2.7 MB/sec    1.00     15.0±0.09ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.0±0.03ms     4.2 MB/sec    1.00      4.0±0.02ms     4.2 MB/sec
+linter/all-rules/numpy/globals.py          1.00    404.3±6.53µs     7.3 MB/sec    1.00    404.9±5.64µs     7.3 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.9±0.03ms     3.7 MB/sec    1.01      6.9±0.04ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.1±0.06ms     5.0 MB/sec    1.00      8.1±0.03ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1627.5±25.59µs    10.2 MB/sec    1.01  1646.9±33.20µs    10.1 MB/sec
+linter/default-rules/numpy/globals.py      1.00    173.3±1.61µs    17.0 MB/sec    1.00    173.5±1.26µs    17.0 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.02ms     7.1 MB/sec    1.00      3.6±0.01ms     7.1 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:31:01 UTC
+    </footer>
+</body>
+</html>

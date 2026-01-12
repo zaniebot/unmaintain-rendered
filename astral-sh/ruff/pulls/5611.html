@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handle io errors gracefully - astral-sh/ruff #5611</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Handle io errors gracefully</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5611">#5611</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-07-08 13:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-07-08 13:31</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>It can happen that we can't read a file (a python file, a jupyter notebook or pyproject.toml), which needs to be handled and handled consistently for all file types. Instead of using <code>Err</code> or <code>error!</code>, we emit E602 with the io error as message and continue. This PR makes sure we handle all three cases consistently, emit E602.</p>
+<p>I'm not convinced that it should be possible to disable io errors, but we now handle the regular case consistently and at least print warning consistently.</p>
+<p>I went with <code>warn!</code> but i can change them all to <code>error!</code>, too.</p>
+<p>It also checks the error case when a pyproject.toml is not readable. The error message is not very helpful, but it's now a bit clearer that actually ruff itself failed instead vs this being a diagnostic.</p>
+<h2>Examples</h2>
+<p>This is how an Err of <code>run</code> looks now:</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/6826232/890f7ab2-2309-4b6f-a4b3-67161947cc83" alt="image" /></p>
+<p>With an unreadable file and <code>IOError</code> disabled:</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/6826232/fd3d6959-fa23-4ddf-b2e5-8d6022df54b1" alt="image" /></p>
+<p>(we lint zero files but count files before linting not during so we exit 0)</p>
+<p>I'm not sure if it should (or if we should take a different path with manual ExitStatus), but this currently also triggers when <code>files</code> is empty:</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/6826232/f7ede301-41b5-4743-97fd-49149f750337" alt="image" /></p>
+<h2>Test Plan</h2>
+<p>Unix only: Create a temporary directory with files with permissions <code>000</code> (not readable by the owner) and run on that directory. Since this breaks the assumptions of most of the test code (single file, <code>ruff</code> instead of <code>ruff_cli</code>), the test code is rather cumbersome and looks a bit misplaced; i'm happy about suggestions to fit it in closer with the other tests or streamline it in other ways. I added another test for when the entire directory is not readable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-07-08 13:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/tests/integration_test.rs</code>:311 on 2023-07-08 13:32</div>
+            <div class="timeline-body"><p>Is configuration discovery the right term?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Handle inaccessible files gracefully" to "Handle io errors gracefully" by @konstin on 2023-07-08 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-08 13:42</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.3±0.06ms     4.4 MB/sec    1.02      9.5±0.05ms     4.3 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1857.7±1.63µs     9.0 MB/sec    1.01   1874.9±2.27µs     8.9 MB/sec
+formatter/numpy/globals.py                 1.00    206.9±0.58µs    14.3 MB/sec    1.01    209.4±0.29µs    14.1 MB/sec
+formatter/pydantic/types.py                1.00      4.0±0.01ms     6.4 MB/sec    1.01      4.1±0.01ms     6.3 MB/sec
+linter/all-rules/large/dataset.py          1.07     14.0±0.12ms     2.9 MB/sec    1.00     13.1±0.09ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.03      3.4±0.01ms     4.8 MB/sec    1.00      3.3±0.05ms     5.0 MB/sec
+linter/all-rules/numpy/globals.py          1.03    446.1±0.88µs     6.6 MB/sec    1.00    433.9±0.71µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.08      6.4±0.11ms     4.0 MB/sec    1.00      6.0±0.06ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.13      7.5±0.04ms     5.4 MB/sec    1.00      6.6±0.03ms     6.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.11   1555.4±4.39µs    10.7 MB/sec    1.00   1407.0±1.46µs    11.8 MB/sec
+linter/default-rules/numpy/globals.py      1.06    165.7±0.22µs    17.8 MB/sec    1.00    155.6±0.36µs    19.0 MB/sec
+linter/default-rules/pydantic/types.py     1.12      3.3±0.01ms     7.7 MB/sec    1.00      3.0±0.01ms     8.6 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.11     16.9±0.73ms     2.4 MB/sec    1.00     15.2±0.60ms     2.7 MB/sec
+formatter/numpy/ctypeslib.py               1.07      3.2±0.20ms     5.2 MB/sec    1.00      3.0±0.13ms     5.6 MB/sec
+formatter/numpy/globals.py                 1.06   358.9±18.29µs     8.2 MB/sec    1.00   339.2±20.23µs     8.7 MB/sec
+formatter/pydantic/types.py                1.04      6.9±0.29ms     3.7 MB/sec    1.00      6.6±0.34ms     3.8 MB/sec
+linter/all-rules/large/dataset.py          1.02     22.4±0.79ms  1862.3 KB/sec    1.00     22.0±1.07ms  1893.0 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.04      5.7±0.19ms     2.9 MB/sec    1.00      5.5±0.25ms     3.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00   678.4±38.04µs     4.3 MB/sec    1.02   690.7±32.76µs     4.3 MB/sec
+linter/all-rules/pydantic/types.py         1.00      9.6±0.34ms     2.6 MB/sec    1.00      9.6±0.43ms     2.6 MB/sec
+linter/default-rules/large/dataset.py      1.01     11.8±0.45ms     3.4 MB/sec    1.00     11.7±0.31ms     3.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.4±0.11ms     6.9 MB/sec    1.01      2.4±0.10ms     6.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00   283.6±13.14µs    10.4 MB/sec    1.03   292.1±14.79µs    10.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      5.1±0.19ms     5.0 MB/sec    1.02      5.2±0.18ms     4.9 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-07-12 11:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-13 00:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/pyproject_toml.rs</code>:50 on 2023-07-13 00:02</div>
+            <div class="timeline-body"><p>Can't we not just push inside the <code>if</code>, and then return <code>messages</code> either way -- since it'd be empty in the <code>else</code> case, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-13 00:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/commands/run.rs</code>:231 on 2023-07-13 00:02</div>
+            <div class="timeline-body"><p>Should this be <code>TODO(konsti)</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-13 00:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/settings/mod.rs</code>:304 on 2023-07-13 00:03</div>
+            <div class="timeline-body"><p>Why are these no longer <code>#[cfg(test)]</code>? Are they used outside of tests?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:140 on 2023-07-13 00:06</div>
+            <div class="timeline-body"><p>Are these not already treated as <code>IOError</code> via the <code>IOError</code> handling in <code>run.rs</code>? Like this block:</p>
+<pre><code class="language-rust">error!(
+    &quot;{}{}{} {message}&quot;,
+    &quot;Failed to lint &quot;.bold(),
+    fs::relativize_path(path).bold(),
+    &quot;:&quot;.bold()
+);
+let settings = resolver.resolve(path, pyproject_config);
+if settings.rules.enabled(Rule::IOError) {
+    let file =
+        SourceFileBuilder::new(path.to_string_lossy().as_ref(), &quot;&quot;).finish();
+
+    Diagnostics::new(
+        vec![Message::from_diagnostic(
+            Diagnostic::new(IOError { message }, TextRange::default()),
+            file,
+            TextSize::default(),
+        )],
+        ImportMap::default(),
+    )
+} else {
+    Diagnostics::default()
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-13 00:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-13 00:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/tests/integration_test.rs</code>:311 on 2023-07-13 00:06</div>
+            <div class="timeline-body"><p>Yes!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/settings/mod.rs</code>:304 on 2023-07-13 00:07</div>
+            <div class="timeline-body"><p>Oh, perhaps for the configuration tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-13 00:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-13 00:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/bin/ruff.rs</code>:61 on 2023-07-13 00:07</div>
+            <div class="timeline-body"><p>Do you mind including a screenshot of this in the PR summary? Trying to visualize it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-13 00:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:140 on 2023-07-13 00:08</div>
+            <div class="timeline-body"><p>With this change, do we not lose that warning message that appears separately from the diagnostics?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-07-13 07:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/src/commands/run.rs</code>:231 on 2023-07-13 07:08</div>
+            <div class="timeline-body"><p>no it's just a note for when someone wants to add another test case so they don't trip over this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-07-13 07:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/settings/mod.rs</code>:304 on 2023-07-13 07:09</div>
+            <div class="timeline-body"><p>they are used across crates now (the test has to live in ruff_cli)) and <code>cfg(test)</code> doesn't get passed across crate boundaries</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/src/bin/ruff.rs</code>:61 on 2023-07-19 11:17</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-07-19 11:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-07-19 11:21</div>
+            <div class="timeline-body"><p>the diagnostics now check whether <code>IOError</code> is enabled and if it isn't, print a <code>warn!</code> instead (i can change this to an <code>error!</code>, not sure which one is better here). I added another test case for an unreadable directory. There are still cases where we didn't lint any file and still exit 0 because <code>IOError</code> is disabled and/or we count paths before linting instead of after. I added screenshots to the original change description</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2023-07-19 11:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/commands/run.rs</code>:231 on 2023-07-20 02:04</div>
+            <div class="timeline-body"><p>I might just suggest removing this comment -- it was confusing enough for me that I had to ask about it :joy:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/bin/ruff.rs</code>:55 on 2023-07-20 02:05</div>
+            <div class="timeline-body"><p>Maybe, for stylistic consistency with the warnings, we do:</p>
+<pre><code>&lt;bold red&gt;error&lt;/&gt;&lt;bold&gt;: ruff failed&lt;/bold&gt;
+  Cause ...
+  Cause ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/Cargo.toml</code>:67 on 2023-07-20 02:05</div>
+            <div class="timeline-body"><p>Do we need to specify features if they're specified at the workspace level? (I genuinely don't know.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-07-20 02:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-07-20 09:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/Cargo.toml</code>:67 on 2023-07-20 09:10</div>
+            <div class="timeline-body"><p>surprisingly, yes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-07-20 09:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/src/bin/ruff.rs</code>:55 on 2023-07-20 09:10</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-07-20 09:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/src/commands/run.rs</code>:231 on 2023-07-20 09:10</div>
+            <div class="timeline-body"><p>fair</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2023-07-20 09:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-07-20 09:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-07-20 09:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:31:00 UTC
+    </footer>
+</body>
+</html>

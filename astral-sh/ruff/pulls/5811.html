@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>perf: only compute start offset for overlong lines - astral-sh/ruff #5811</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>perf: only compute start offset for overlong lines</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5811">#5811</a>
+        opened by <a href="https://github.com/sbrugman">@sbrugman</a>
+        on 2023-07-16 19:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-07-16 19:10</div>
+            <div class="timeline-body"><p>Moves the computation of the <code>start_offset</code> for overlong lines to just before the result is returned. There is a slight overhead for overlong lines (double the work for the first <code>limit</code> characters).</p>
+<p>In practice this results in a speedup on the CPython codebase. Most lines are not overlong, or are not enforced because the line ends with a URL, or does not contain whitespace. Nonetheless, the 0.3% of overlong lines are a lot compared to other violations.</p>
+<h3>Before</h3>
+<p><img src="https://github.com/astral-sh/ruff/assets/9756388/d32047df-7fd2-4ae8-8333-1a3679ce000f" alt="selected before" />
+<em>Selected W505 and E501</em></p>
+<p><img src="https://github.com/astral-sh/ruff/assets/9756388/98495118-c474-46ff-873c-fb58a78cfe15" alt="all before" />
+<em>All rules</em></p>
+<h3>After</h3>
+<p><img src="https://github.com/astral-sh/ruff/assets/9756388/e4bd7f10-ff7e-4d52-8267-27cace8c5471" alt="selected after" />
+<em>Selected W505 and E501</em></p>
+<p><img src="https://github.com/astral-sh/ruff/assets/9756388/573bdbe2-c64f-4f22-9659-c68726ff52c0" alt="all after" />
+<em>All rules</em></p>
+<p>CPython line statistics:</p>
+<ul>
+<li>Number of Python lines: 867.696</li>
+<li>Number of overlong lines: 2.963 (0.3%)</li>
+</ul>
+<details>
+
+<p>Benchmark selected:</p>
+<pre><code class="language-shell">cargo build --release &amp;&amp; hyperfine --warmup 10 --min-runs 50 \                                                  
+  &quot;./target/release/ruff ./crates/ruff/resources/test/cpython/ --no-cache -e --select W505,E501&quot;
+</code></pre>
+<p>Benchmark all:</p>
+<pre><code class="language-shell">cargo build --release &amp;&amp; hyperfine --warmup 10 --min-runs 50 \                                                  
+  &quot;./target/release/ruff ./crates/ruff/resources/test/cpython/ --no-cache -e --select ALL&quot;
+</code></pre>
+<p>Overlong lines in CPython</p>
+<pre><code class="language-shell">cargo run -p ruff_cli -- check crates/ruff/resources/test/cpython/Lib --no-cache --select=E501,W505 --statistics
+</code></pre>
+<p>Total Python lines:</p>
+<pre><code class="language-shell">find crates/ruff/resources/test/cpython/ -name '*.py' | xargs wc -l
+</code></pre>
+</details>
+
+<p>(Performance tested on Mac M1)</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/pycodestyle/helpers.rs</code>:86 on 2023-07-16 19:14</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    // Obtain the start offset of the part of the line that exceeds the limit
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-07-16 19:15</div>
+            <div class="timeline-body"><p>amazing, that's a neat speedup</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2023-07-16 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-16 19:23</div>
+            <div class="timeline-body"><p>That’s awesome. I’m wondering if there’s another optimization we can make here. Is it faster to compute the number of bytes in the line instead of the width? If so, could we only check lines that have more bytes than the line limit? I think it would be impossible for an overlong line to have <em>fewer</em> bytes than the limit, though lines with more bytes could end up being below the limit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-16 19:27</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.7±0.02ms     4.2 MB/sec    1.01      9.8±0.03ms     4.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1873.7±1.81µs     8.9 MB/sec    1.01  1899.6±11.00µs     8.8 MB/sec
+formatter/numpy/globals.py                 1.00    204.2±0.38µs    14.5 MB/sec    1.02    208.0±2.20µs    14.2 MB/sec
+formatter/pydantic/types.py                1.00      4.2±0.01ms     6.1 MB/sec    1.01      4.3±0.04ms     6.0 MB/sec
+linter/all-rules/large/dataset.py          1.01     13.7±0.02ms     3.0 MB/sec    1.00     13.6±0.02ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      3.5±0.01ms     4.7 MB/sec    1.00      3.5±0.01ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.04    385.1±0.62µs     7.7 MB/sec    1.00    370.9±1.48µs     8.0 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.2±0.01ms     4.1 MB/sec    1.00      6.1±0.01ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.02      7.0±0.02ms     5.8 MB/sec    1.00      6.9±0.01ms     5.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.04   1465.6±3.12µs    11.4 MB/sec    1.00   1410.7±2.05µs    11.8 MB/sec
+linter/default-rules/numpy/globals.py      1.08    159.8±0.56µs    18.5 MB/sec    1.00    147.9±0.27µs    19.9 MB/sec
+linter/default-rules/pydantic/types.py     1.03      3.2±0.01ms     8.1 MB/sec    1.00      3.1±0.01ms     8.3 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.04     11.3±0.09ms     3.6 MB/sec    1.00     10.9±0.08ms     3.7 MB/sec
+formatter/numpy/ctypeslib.py               1.03      2.2±0.04ms     7.5 MB/sec    1.00      2.2±0.04ms     7.7 MB/sec
+formatter/numpy/globals.py                 1.03   253.0±24.74µs    11.7 MB/sec    1.00    245.4±5.50µs    12.0 MB/sec
+formatter/pydantic/types.py                1.03      4.8±0.05ms     5.3 MB/sec    1.00      4.7±0.06ms     5.4 MB/sec
+linter/all-rules/large/dataset.py          1.02     15.4±0.13ms     2.6 MB/sec    1.00     15.1±0.13ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      4.1±0.04ms     4.1 MB/sec    1.00      4.0±0.05ms     4.2 MB/sec
+linter/all-rules/numpy/globals.py          1.03    500.9±6.14µs     5.9 MB/sec    1.00    486.8±5.58µs     6.1 MB/sec
+linter/all-rules/pydantic/types.py         1.02      7.0±0.06ms     3.7 MB/sec    1.00      6.8±0.05ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.03      8.0±0.05ms     5.1 MB/sec    1.00      7.8±0.04ms     5.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.06  1720.4±15.74µs     9.7 MB/sec    1.00  1628.4±12.98µs    10.2 MB/sec
+linter/default-rules/numpy/globals.py      1.07    201.3±2.45µs    14.7 MB/sec    1.00    187.3±2.52µs    15.8 MB/sec
+linter/default-rules/pydantic/types.py     1.03      3.6±0.03ms     7.1 MB/sec    1.00      3.5±0.03ms     7.3 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-16 19:50</div>
+            <div class="timeline-body"><blockquote>
+<p>That’s awesome. I’m wondering if there’s another optimization we can make here. Is it faster to compute the number of bytes in the line instead of the width? If so, could we only check lines that have more bytes than the line limit? I think it would be impossible for an overlong line to have <em>fewer</em> bytes than the limit, though lines with more bytes could end up being below the limit.</p>
+</blockquote>
+<p>That sounds like a neat optimization. Each character is between 1-4 bytes. Meaning your assumption here is safe.</p>
+<p>Checking the byte length is <code>O(1)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-07-16 20:10</div>
+            <div class="timeline-body"><p><img src="https://github.com/astral-sh/ruff/assets/9756388/0b262119-ab1e-4aaf-9315-be2d6f170f18" alt="check byte length" />
+<em>Selected</em></p>
+<p><img src="https://github.com/astral-sh/ruff/assets/9756388/0eff788b-dbaa-4d07-842c-7312f03c3746" alt="all" />
+<em>All</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-07-17 01:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-17 01:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2023-07-17 01:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-07-17 06:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:31:00 UTC
+    </footer>
+</body>
+</html>

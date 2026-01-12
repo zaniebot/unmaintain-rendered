@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Include file permissions in key for cached files - astral-sh/ruff #5901</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Include file permissions in key for cached files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5901">#5901</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2023-07-19 20:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-19 20:48</div>
+            <div class="timeline-body"><p>Reimplements https://github.com/astral-sh/ruff/pull/3104
+Closes https://github.com/astral-sh/ruff/issues/5726</p>
+<p>Note that we will generate the hash for a cache key twice in normal operation. Once to check for the cached item and again to update the cache. We could optimize this by generating the hash once in <code>diagnostics::lint_file</code> and passing the <code>u64</code> into <code>get</code> and <code>update</code>. We'd probably want to wrap it in a <code>CacheKeyHash</code> enum for type safety.</p>
+<h2>Test plan</h2>
+<p>Unit tests for Windows and Unix.</p>
+<p>Manual test with case from issue</p>
+<pre><code>❯ touch fake.py
+❯ chmod +x fake.py
+❯ ./target/debug/ruff --select EXE fake.py
+fake.py:1:1: EXE002 The file is executable but no shebang is present
+Found 1 error.
+❯ chmod -x fake.py
+❯ ./target/debug/ruff --select EXE fake.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-19 21:28</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.2±0.03ms     4.4 MB/sec    1.00      9.2±0.04ms     4.4 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1870.6±1.87µs     8.9 MB/sec    1.00   1871.0±3.01µs     8.9 MB/sec
+formatter/numpy/globals.py                 1.00    208.4±0.91µs    14.2 MB/sec    1.01    211.4±0.24µs    14.0 MB/sec
+formatter/pydantic/types.py                1.01      4.0±0.01ms     6.3 MB/sec    1.00      4.0±0.01ms     6.4 MB/sec
+linter/all-rules/large/dataset.py          1.07     13.6±0.09ms     3.0 MB/sec    1.00     12.8±0.08ms     3.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.04      3.4±0.03ms     4.9 MB/sec    1.00      3.2±0.01ms     5.1 MB/sec
+linter/all-rules/numpy/globals.py          1.02    431.1±1.89µs     6.8 MB/sec    1.00    423.4±1.25µs     7.0 MB/sec
+linter/all-rules/pydantic/types.py         1.03      6.1±0.02ms     4.2 MB/sec    1.00      5.9±0.02ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.13      7.5±0.02ms     5.4 MB/sec    1.00      6.6±0.03ms     6.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.09   1549.4±2.59µs    10.7 MB/sec    1.00   1423.4±1.80µs    11.7 MB/sec
+linter/default-rules/numpy/globals.py      1.07    165.8±2.16µs    17.8 MB/sec    1.00    155.6±0.69µs    19.0 MB/sec
+linter/default-rules/pydantic/types.py     1.10      3.3±0.01ms     7.7 MB/sec    1.00      3.0±0.01ms     8.5 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      8.9±0.05ms     4.5 MB/sec    1.00      8.8±0.12ms     4.6 MB/sec
+formatter/numpy/ctypeslib.py               1.01  1727.8±35.23µs     9.6 MB/sec    1.00   1709.1±9.45µs     9.7 MB/sec
+formatter/numpy/globals.py                 1.00    179.8±1.81µs    16.4 MB/sec    1.04    186.4±7.05µs    15.8 MB/sec
+formatter/pydantic/types.py                1.01      3.8±0.04ms     6.7 MB/sec    1.00      3.8±0.03ms     6.7 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.2±0.05ms     3.3 MB/sec    1.00     12.2±0.12ms     3.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.2±0.01ms     5.3 MB/sec    1.00      3.2±0.02ms     5.3 MB/sec
+linter/all-rules/numpy/globals.py          1.00    332.1±2.82µs     8.9 MB/sec    1.00    331.3±3.26µs     8.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.5±0.03ms     4.6 MB/sec    1.00      5.5±0.03ms     4.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.7±0.02ms     6.1 MB/sec    1.00      6.7±0.02ms     6.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.03   1360.6±7.48µs    12.2 MB/sec    1.00   1325.0±4.69µs    12.6 MB/sec
+linter/default-rules/numpy/globals.py      1.02    143.1±1.42µs    20.6 MB/sec    1.00    140.6±1.14µs    21.0 MB/sec
+linter/default-rules/pydantic/types.py     1.01      2.9±0.01ms     8.7 MB/sec    1.00      2.9±0.01ms     8.8 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-25 14:18</div>
+            <div class="timeline-body"><p>Works on macOS but not Linux, investigating...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2023-07-25 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @zanieb on 2023-07-25 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2023-07-25 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/cache.rs</code>:538 on 2023-07-25 15:59</div>
+            <div class="timeline-body"><p>Nit: You can use <code>assert_eq</code> here (and some other places where the tests use <code>assert(left == right)</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/cache.rs</code>:596 on 2023-07-25 15:59</div>
+            <div class="timeline-body"><p>Nit: <code>assert_eq</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:142 on 2023-07-25 16:02</div>
+            <div class="timeline-body"><p>Nit: We could move this code into a <code>FileCacheKey::from_path</code> function to improve readability (it also gives you the option two have entire different implementations for windows and UNIX to avoid the conditional code blocks)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-07-25 16:02</div>
+            <div class="timeline-body"><p>Thank you so much for fixing this complicated and weird issue. Testing with real IO is so painful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-25 16:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/cache.rs</code>:522 on 2023-07-25 16:42</div>
+            <div class="timeline-body"><p>The answer might be no, but feel obligated to ask if there’s any way to design around this potential test flakiness.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-07-25 16:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_cli/src/cache.rs</code>:522 on 2023-07-25 16:58</div>
+            <div class="timeline-body"><p>Thanks for the additional nudge, testing https://github.com/astral-sh/ruff/pull/5901/commits/dc322440f1277c09b2b191918806e56f2b173a54</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2023-07-25 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-07-25 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-07-25 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-25 17:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/cache.rs</code>:522 on 2023-07-25 17:10</div>
+            <div class="timeline-body"><p>I don't think so. The problem here seems to be the precision at which the file system (and kernel) represent times</p>
+<p>https://stackoverflow.com/questions/14392975/timestamp-accuracy-on-ext4-sub-millsecond</p>
+<p>https://apenwarr.ca/log/20181113</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_cli/src/cache.rs</code>:522 on 2023-07-25 17:28</div>
+            <div class="timeline-body"><p>@MichaReiser let me know if my patch causes problems on your superspeed machine</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-07-25 17:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-25 17:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/cache.rs</code>:522 on 2023-07-25 17:46</div>
+            <div class="timeline-body"><p>ohhh nice! Works perfectly</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:31:01 UTC
+    </footer>
+</body>
+</html>

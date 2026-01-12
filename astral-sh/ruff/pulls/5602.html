@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add RUF016: Detection of invalid index types - astral-sh/ruff #5602</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add RUF016: Detection of invalid index types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5602">#5602</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2023-07-07 22:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-07 22:21</div>
+            <div class="timeline-body"><p>Detects invalid types for tuple, list, bytes, string indices.</p>
+<p>For example, the following will raise a <code>TypeError</code> at runtime and when imported Python will display a <code>SyntaxWarning</code></p>
+<pre><code class="language-python">var = [1, 2, 3][&quot;x&quot;]
+</code></pre>
+<pre><code>example.py:1: SyntaxWarning: list indices must be integers or slices, not str; perhaps you missed a comma?
+  var = [1, 2, 3][&quot;x&quot;]
+Traceback (most recent call last):
+  File &quot;example.py&quot;, line 1, in &lt;module&gt;
+    var = [1, 2, 3][&quot;x&quot;]
+          ~~~~~~~~~^^^^^
+TypeError: list indices must be integers or slices, not str
+</code></pre>
+<p>Previously, Ruff would not report the invalid syntax but now a violation will be reported. This does not apply to cases where a variable, call, or complex expression is used in the index — detection is roughly limited to static definitions, which matches Python's warnings.</p>
+<pre><code>❯ ./target/debug/ruff example.py --select RUF015 --show-source --no-cache
+example.py:1:17: RUF015 Indexed access to type `list` uses type `str` instead of an integer or slice.
+  |
+1 | var = [1, 2, 3][&quot;x&quot;]
+  |                 ^^^ RUF015
+  |
+</code></pre>
+<p>Closes https://github.com/astral-sh/ruff/issues/5082
+xref https://github.com/python/cpython/commit/ffff1440d118cae189a6c2baf595dda52cdc7c3a</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-07 22:47</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                    pr
+-----                                      ----                                    --
+formatter/large/dataset.py                 1.01      8.6±0.46ms     4.8 MB/sec     1.00      8.4±0.37ms     4.8 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1981.2±115.85µs     8.4 MB/sec    1.01  1997.7±147.35µs     8.3 MB/sec
+formatter/numpy/globals.py                 1.01   227.4±14.01µs    13.0 MB/sec     1.00   225.5±13.82µs    13.1 MB/sec
+formatter/pydantic/types.py                1.00      4.2±0.19ms     6.1 MB/sec     1.02      4.3±0.21ms     6.0 MB/sec
+linter/all-rules/large/dataset.py          1.00     14.9±0.62ms     2.7 MB/sec     1.01     15.0±0.53ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      3.7±0.15ms     4.5 MB/sec     1.00      3.6±0.15ms     4.6 MB/sec
+linter/all-rules/numpy/globals.py          1.00   471.5±37.62µs     6.3 MB/sec     1.02   478.9±25.68µs     6.2 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.7±0.37ms     3.8 MB/sec     1.00      6.6±0.29ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.2±0.29ms     5.6 MB/sec     1.00      7.2±0.24ms     5.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1583.3±67.33µs    10.5 MB/sec     1.02  1608.8±84.20µs    10.3 MB/sec
+linter/default-rules/numpy/globals.py      1.04   191.8±16.00µs    15.4 MB/sec     1.00    184.2±9.93µs    16.0 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.3±0.14ms     7.7 MB/sec     1.00      3.3±0.19ms     7.7 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.5±0.06ms     4.3 MB/sec    1.00      9.5±0.05ms     4.3 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.1±0.01ms     7.9 MB/sec    1.02      2.2±0.09ms     7.7 MB/sec
+formatter/numpy/globals.py                 1.00    229.7±5.18µs    12.8 MB/sec    1.01    232.4±7.65µs    12.7 MB/sec
+formatter/pydantic/types.py                1.00      4.7±0.06ms     5.4 MB/sec    1.00      4.7±0.05ms     5.4 MB/sec
+linter/all-rules/large/dataset.py          1.02     15.9±0.15ms     2.6 MB/sec    1.00     15.6±0.11ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.2±0.04ms     4.0 MB/sec    1.00      4.1±0.03ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00   427.6±11.45µs     6.9 MB/sec    1.00    426.3±4.69µs     6.9 MB/sec
+linter/all-rules/pydantic/types.py         1.02      7.2±0.05ms     3.6 MB/sec    1.00      7.1±0.07ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.02      8.3±0.05ms     4.9 MB/sec    1.00      8.1±0.06ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1672.7±12.11µs    10.0 MB/sec    1.00  1668.8±18.43µs    10.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00    180.7±1.73µs    16.3 MB/sec    1.00    180.5±4.26µs    16.3 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.7±0.02ms     7.0 MB/sec    1.00      3.6±0.02ms     7.1 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-10 14:47</div>
+            <div class="timeline-body"><p>In a comparison with Python's syntax warnings, we use a different message format and perform additional validation of the types used <em>in</em> slices.</p>
+<pre><code>❯ python crates/ruff/resources/test/fixtures/ruff/RUF015.py     
+RUF015.py:20: SyntaxWarning: str indices must be integers or slices, not str; perhaps you missed a comma?
+RUF015.py:21: SyntaxWarning: str indices must be integers or slices, not str; perhaps you missed a comma?
+RUF015.py:24: SyntaxWarning: bytes indices must be integers or slices, not str; perhaps you missed a comma?
+RUF015.py:27: SyntaxWarning: list indices must be integers or slices, not str; perhaps you missed a comma?
+RUF015.py:28: SyntaxWarning: tuple indices must be integers or slices, not str; perhaps you missed a comma?
+RUF015.py:31: SyntaxWarning: list indices must be integers or slices, not str; perhaps you missed a comma?
+RUF015.py:34: SyntaxWarning: str indices must be integers or slices, not tuple; perhaps you missed a comma?
+RUF015.py:37: SyntaxWarning: list indices must be integers or slices, not str; perhaps you missed a comma?
+RUF015.py:40: SyntaxWarning: list indices must be integers or slices, not float; perhaps you missed a comma?
+RUF015.py:43: SyntaxWarning: list indices must be integers or slices, not dict; perhaps you missed a comma?
+RUF015.py:46: SyntaxWarning: list indices must be integers or slices, not dict; perhaps you missed a comma?
+RUF015.py:49: SyntaxWarning: list indices must be integers or slices, not tuple; perhaps you missed a comma?
+RUF015.py:52: SyntaxWarning: list indices must be integers or slices, not list; perhaps you missed a comma?
+RUF015.py:55: SyntaxWarning: list indices must be integers or slices, not set; perhaps you missed a comma?
+RUF015.py:58: SyntaxWarning: list indices must be integers or slices, not bytes; perhaps you missed a comma?
+RUF015.py:76: SyntaxWarning: list indices must be integers or slices, not str; perhaps you missed a comma?
+</code></pre>
+<pre><code>❯ ./target/debug/ruff check --select RUF015 crates/ruff/resources/test/fixtures/ruff/RUF015.py
+RUF015.py:20:13: RUF015 Indexed access to type `str` uses type `str` instead of an integer or slice.
+RUF015.py:21:14: RUF015 Indexed access to type `str` uses type `str` instead of an integer or slice.
+RUF015.py:24:14: RUF015 Indexed access to type `bytes` uses type `str` instead of an integer or slice.
+RUF015.py:27:17: RUF015 Indexed access to type `list` uses type `str` instead of an integer or slice.
+RUF015.py:28:17: RUF015 Indexed access to type `tuple` uses type `str` instead of an integer or slice.
+RUF015.py:31:30: RUF015 Indexed access to type `list comprehension` uses type `str` instead of an integer or slice.
+RUF015.py:34:13: RUF015 Indexed access to type `str` uses type `tuple` instead of an integer or slice.
+RUF015.py:37:14: RUF015 Indexed access to type `list` uses type `str` instead of an integer or slice.
+RUF015.py:40:14: RUF015 Indexed access to type `list` uses type `float` instead of an integer or slice.
+RUF015.py:43:14: RUF015 Indexed access to type `list` uses type `dict` instead of an integer or slice.
+RUF015.py:46:14: RUF015 Indexed access to type `list` uses type `dict comprehension` instead of an integer or slice.
+RUF015.py:49:14: RUF015 Indexed access to type `list` uses type `tuple` instead of an integer or slice.
+RUF015.py:52:14: RUF015 Indexed access to type `list` uses type `list comprehension` instead of an integer or slice.
+RUF015.py:55:14: RUF015 Indexed access to type `list` uses type `set` instead of an integer or slice.
+RUF015.py:58:14: RUF015 Indexed access to type `list` uses type `bytes` instead of an integer or slice.
+RUF015.py:61:17: RUF015 Slice in indexed access to type `list` uses type `str` as bound instead of an integer.
+RUF015.py:62:17: RUF015 Slice in indexed access to type `list` uses type `str` as bound instead of an integer.
+RUF015.py:63:17: RUF015 Slice in indexed access to type `list` uses type `float` as bound instead of an integer.
+RUF015.py:64:17: RUF015 Slice in indexed access to type `list` uses type `set` as bound instead of an integer.
+RUF015.py:67:19: RUF015 Slice in indexed access to type `list` uses type `str` as bound instead of an integer.
+RUF015.py:68:19: RUF015 Slice in indexed access to type `list` uses type `str` as bound instead of an integer.
+RUF015.py:69:19: RUF015 Slice in indexed access to type `list` uses type `float` as bound instead of an integer.
+RUF015.py:70:19: RUF015 Slice in indexed access to type `list` uses type `set` as bound instead of an integer.
+RUF015.py:73:17: RUF015 Slice in indexed access to type `list` uses type `str` as bound instead of an integer.
+RUF015.py:73:21: RUF015 Slice in indexed access to type `list` uses type `str` as bound instead of an integer.
+RUF015.py:76:17: RUF015 Indexed access to type `list` uses type `str` instead of an integer or slice.
+</code></pre>
+<p>I've ensured that each of the slice cases raises an error at runtime</p>
+<pre><code class="language-python">
+
+Traceback (most recent call last):
+  File &quot;/Users/mz/eng/src/charliermarsh/ruff/example.py&quot;, line 3, in &lt;module&gt;
+    var = [1, 2, 3][&quot;x&quot;:2]
+          ~~~~~~~~~^^^^^^^
+TypeError: slice indices must be integers or None or have an __index__ method
+
+Traceback (most recent call last):
+  File &quot;/Users/mz/eng/src/charliermarsh/ruff/example.py&quot;, line 4, in &lt;module&gt;
+    var = [1, 2, 3][f&quot;x&quot;:2]
+          ~~~~~~~~~^^^^^^^^
+TypeError: slice indices must be integers or None or have an __index__ method
+
+Traceback (most recent call last):
+  File &quot;/Users/mz/eng/src/charliermarsh/ruff/example.py&quot;, line 5, in &lt;module&gt;
+    var = [1, 2, 3][1.2:2]
+          ~~~~~~~~~^^^^^^^
+TypeError: slice indices must be integers or None or have an __index__ method
+
+Traceback (most recent call last):
+  File &quot;/Users/mz/eng/src/charliermarsh/ruff/example.py&quot;, line 6, in &lt;module&gt;
+    var = [1, 2, 3][{&quot;x&quot;}:2]
+          ~~~~~~~~~^^^^^^^^^
+TypeError: slice indices must be integers or None or have an __index__ method
+
+Traceback (most recent call last):
+  File &quot;/Users/mz/eng/src/charliermarsh/ruff/example.py&quot;, line 9, in &lt;module&gt;
+    var = [1, 2, 3][0:&quot;x&quot;]
+          ~~~~~~~~~^^^^^^^
+TypeError: slice indices must be integers or None or have an __index__ method
+
+Traceback (most recent call last):
+  File &quot;/Users/mz/eng/src/charliermarsh/ruff/example.py&quot;, line 10, in &lt;module&gt;
+    var = [1, 2, 3][0:f&quot;x&quot;]
+          ~~~~~~~~~^^^^^^^^
+TypeError: slice indices must be integers or None or have an __index__ method
+
+Traceback (most recent call last):
+  File &quot;/Users/mz/eng/src/charliermarsh/ruff/example.py&quot;, line 11, in &lt;module&gt;
+    var = [1, 2, 3][0:1.2]
+          ~~~~~~~~~^^^^^^^
+TypeError: slice indices must be integers or None or have an __index__ method
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2023-07-10 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:92 on 2023-07-10 16:38</div>
+            <div class="timeline-body"><p>I'm not enthused about this pattern but it also doesn't really make sense to implement names for expressions that are not supported by this rule</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-07-10 16:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @zanieb on 2023-07-10 16:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2023-07-10 16:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:147 on 2023-07-10 17:02</div>
+            <div class="timeline-body"><p>Can this return <code>&amp;'static str</code>? Same with <code>expression_type_name</code>. The allocation (<code>.to_string()</code>) shouldn't be necessary since it's just returning a constant value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:14 on 2023-07-10 17:03</div>
+            <div class="timeline-body"><p>We could also mention that this will yield a <code>SyntaxWarning</code> at parse-time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:49 on 2023-07-10 17:05</div>
+            <div class="timeline-body"><p>One thing you can do here (which is newer so not all rules are written this way):</p>
+<pre><code class="language-rust">pub(crate) fn invalid_index_type&lt;'a&gt;(checker: &amp;mut Checker, expr: &amp;'a ast::ExprSubscript) { ... }
+</code></pre>
+<p>That ensures that we only pass in an expression of the correct type, as opposed to passing in two expressions that are <em>assumed</em> to be fields of some specific expression type.</p>
+<p>You might have to change <code>ast/mod.rs</code> to use:</p>
+<pre><code class="language-rust">Expr::Subscript(subscript @ ast::ExprSubscript {
+    value,
+    slice,
+    ctx,
+    range: _,
+}) =&gt; { ... }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-10 17:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-07-10 17:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:49 on 2023-07-10 17:10</div>
+            <div class="timeline-body"><p>I like that, also that <code>var @ match</code> syntax is useful I think I can use that elsewhere too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-10 17:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:92 on 2023-07-10 17:11</div>
+            <div class="timeline-body"><p>The way I'd think about this is to make this condition unrepresentable by coupling the detection conditions above to the &quot;ability to generate a name for the expression&quot;. Will come up with an example, one sec...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:147 on 2023-07-10 17:12</div>
+            <div class="timeline-body"><p>Definitely, but won't I need to allocate <code>to_string()</code> when I place it in the <code>InvalidIndexType</code> struct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-07-10 17:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-10 17:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:92 on 2023-07-10 17:16</div>
+            <div class="timeline-body"><p>For example, you could introduce a new type like this:</p>
+<pre><code class="language-rust">#[derive(Debug)]
+enum IndexType&lt;'a&gt; {
+    Constant(&amp;'a Constant),
+    JoinedStr,
+    List,
+    ListComp,
+    DictComp,
+    Set,
+    Dict,
+    Tuple,
+}
+
+impl fmt::Display for IndexType {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+        match self {
+            Self::Constant(constant) =&gt; f.write_str(&amp;constant_type_name(constant)),
+            Self::JoinedStr =&gt; f.write_str(&quot;str&quot;),
+            Self::List =&gt; f.write_str(&quot;list&quot;),
+            Self::ListComp =&gt; f.write_str(&quot;list comprehension&quot;),
+            Self::DictComp =&gt; f.write_str(&quot;dict comprehension&quot;),
+            Self::Set =&gt; f.write_str(&quot;set&quot;),
+            Self::Dict =&gt; f.write_str(&quot;dict&quot;),
+            Self::Tuple =&gt; f.write_str(&quot;tuple&quot;),
+        }
+    }
+}
+</code></pre>
+<p>(Or replace the constant variant with <code>ConstantStr</code> and <code>ConstantBytes</code>.)</p>
+<p>Then, with a method like:</p>
+<pre><code class="language-rust">impl&lt;'a&gt; IndexType {
+    fn try_from(expr: &amp;'a Expr) -&gt; Option&lt;Self&lt;'a&gt;&gt; {
+        match expr {
+            Expr::Constant(ExprConstant { value, .. }) =&gt; Some(Self::Constant(value)),
+            Expr::JoinedStr(_) =&gt; Some(Self::JoinedStr),
+            Expr::List(_) =&gt; Some(Self::List),
+            Expr::ListComp(_) =&gt; Some(Self::ListComp),
+            Expr::DictComp(_) =&gt; Some(Self::DictComp),
+            Expr::Set(_) =&gt; Some(Self::Set),
+            Expr::Dict(_) =&gt; Some(Self::Dict),
+            Expr::Tuple(_) =&gt; Some(Self::Tuple),
+            _ =&gt; None,
+        }
+    }
+}
+</code></pre>
+<p>If you do this, then the first line of this method could be like:</p>
+<pre><code class="language-rust">let Some(value) = IndexType::try_from(value) else {
+    return None;
+};
+
+// Maybe some other conditions depending on where you are in the code?
+if !matches!(value, IndexType::List | IndexType::Dict | ...) {
+   return None;
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-10 17:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:125 on 2023-07-10 17:16</div>
+            <div class="timeline-body"><p>Does this intentionally omit <code>SetComp</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:147 on 2023-07-10 17:18</div>
+            <div class="timeline-body"><p>Yes! But it's best to defer that allocation until it's necessary (both in practice and just as a matter of API design), both because it lets you avoid allocations in some cases (maybe the caller doesn't need a <code>String</code>), and because you can always convert a <code>&amp;str</code> to <code>String</code> but not other way around (so returning <code>&amp;str</code> is more flexible). In this case, you'd call <code>.to_string()</code> on the returned value of this method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-10 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-10 17:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:92 on 2023-07-10 17:19</div>
+            <div class="timeline-body"><p>(There might be some intricacies in this rule that might this pattern not as trivial as I've painted it above, but I'm more trying to demonstrate how I'd think about the logic and responsibilities. How can we use types to make <code>.expect</code> and <code>.unwrap</code> calls unnecessary or even impossible?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:147 on 2023-07-10 17:21</div>
+            <div class="timeline-body"><p>👍 thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-07-10 17:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:125 on 2023-07-10 17:25</div>
+            <div class="timeline-body"><p>Nope! Adding test coverage...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-07-10 17:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-07-10 17:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:92 on 2023-07-10 17:27</div>
+            <div class="timeline-body"><p>Makes sense, I can definitely do this if it feels worth the time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:92 on 2023-07-10 17:31</div>
+            <div class="timeline-body"><p>I think it's worth a try. @MichaReiser may have a different opinion if you want him to weigh in too :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-10 17:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:29 on 2023-07-11 13:03</div>
+            <div class="timeline-body"><p>Nit: I prefer to avoid abbreviations when naming variables.</p>
+<pre><code class="language-suggestion">    variable_type: String,
+    index_type: String,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:152 on 2023-07-11 13:04</div>
+            <div class="timeline-body"><p>Should we list the expressions here to force a compile error when a new expression was added.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:92 on 2023-07-11 13:06</div>
+            <div class="timeline-body"><p>The <code>IndexType</code> may also be something that's valuable for other rules and, thus, would make sense to have in our ast crate. But it would then probably make sense that each variant stores the corresponding expression node (similar to <code>AnyFunctionDefinition</code>), implements <code>Ranged</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-07-11 13:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-07-11 13:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:92 on 2023-07-11 13:38</div>
+            <div class="timeline-body"><p>@MichaReiser that's not an enumeration of valid index types. That's just an enumeration of types that we can reasonably detect as <em>invalid</em> index types. It's more of a <code>CheckableLiteralType</code> which could also be useful elsewhere?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-07-11 13:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:152 on 2023-07-11 13:46</div>
+            <div class="timeline-body"><p>I don't think so. Unless new literal types are introduced, a new expression is unlikely to be detectable by this rule as a violation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-11 14:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:92 on 2023-07-11 14:44</div>
+            <div class="timeline-body"><p>Oh whoops. I like charlie's proposal because it's explicit about which types can exist (I don't have to infer it from looking at other functions) but your solution is fine too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-07-11 15:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:77 on 2023-07-11 15:55</div>
+            <div class="timeline-body"><p>@charliermarsh I retained this expect because I'd rather not silently return in this case. A developer has broken this rule if the type is not checkable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add RUF015: Detection of invalid index types" to "Add RUF016: Detection of invalid index types" by @zanieb on 2023-07-11 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-11 17:06</div>
+            <div class="timeline-body"><p>Note I had to rebase this due to conflict with #5549 which took the RUF015 code — some of the commits will not pass tests anymore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-07-11 17:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/rules/ruff/rules/unnecessary_iterable_allocation_for_first_element.rs</code>:81 on 2023-07-11 17:07</div>
+            <div class="timeline-body"><p>I narrowed this to match the pattern used in <code>InvalidIndexType</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:42 on 2023-07-12 03:51</div>
+            <div class="timeline-body"><p>Nit: destructure <code>is_slice</code> above? Since you're already destructuring <code>value_type</code> and <code>index_type</code>. You may then have to do <code>if *is_slice</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:77 on 2023-07-12 03:54</div>
+            <div class="timeline-body"><p>To me it would be a bit more natural to do this before the <code>if !matches</code> (like <code>let Some(value_type) = ... else { return; };</code>), then have an <code>if !matches(value_type, CheckableExprType::List | ...)</code> to enforce the further narrowing. That way the <code>expect</code> is unnecessary as the condition is impossible. But it's not blocking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-07-12 03:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-07-12 03:55</div>
+            <div class="timeline-body"><p>Looks great :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-07-12 04:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:42 on 2023-07-12 04:03</div>
+            <div class="timeline-body"><p>Honestly I don't understand what difference the destructing makes at all, why do we do it here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-12 04:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:42 on 2023-07-12 04:05</div>
+            <div class="timeline-body"><p>The nice thing about the destructuring is that we can inline the variables directly in the <code>format!</code> call. This is valid:</p>
+<pre><code class="language-rust">let MultiValueRepeatedKeyLiteral { name } = self;
+format!(&quot;Dictionary key literal `{name}` repeated&quot;)
+</code></pre>
+<p>However, this is not:</p>
+<pre><code class="language-rust">format!(&quot;Dictionary key literal `{self.name}` repeated&quot;)
+</code></pre>
+<p>Instead, you'd have to do:</p>
+<pre><code class="language-rust">format!(&quot;Dictionary key literal `{}` repeated&quot;, self.name)
+</code></pre>
+<p>That's the main benefit of destructuring in these violation implementations -- that we can inline values in the <code>format!</code> calls.</p>
+<p>And then, if we're going to destructure <em>some</em> members, IMO it's preferable to be consistent and destructure everything rather than mixing and matching.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-07-12 04:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:77 on 2023-07-12 04:07</div>
+            <div class="timeline-body"><p>I did this before then moved it back to an <code>expect</code>, I feel like it confuses the logic of the rule. Like...</p>
+<p>If the value is a list, byte, string, or tuple then we want to enforce this rule.</p>
+<p>To display a violation, we happen to use <code>CheckableExprType</code> to generate a type name for the value. However, this is just for display purposes not a limitation of the rule itself.</p>
+<p>If someone were to extend the rule to apply to a new type, e.g. byte arrays, I would not expect this function to exit early because there is not an implementation for displaying the type name. In this case, the <code>expect</code> would point a developer to the next step in their implementation.</p>
+<p>🤷‍♀️ it does feel like a subtle stylistic choice in the end — maybe you shouldn't have sent me that BurntSushi article 😝</p>
+<p>I'm kind of curious to see what lessons I learn from making my own stylistic choices but I'm happy to follow precedent for the project too!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-12 04:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:77 on 2023-07-12 04:14</div>
+            <div class="timeline-body"><p>This makes sense. I'd say run with what you have here! I tend to be pretty defensive around <code>expect</code> and <code>unwrap</code> (which are ~equivalent) because they're not recoverable in any way, so e.g. if we shipped a release that had an oversight here, Ruff would bail entirely on files that hit this codepath.</p>
+<p>The &quot;right&quot; answer here may be to extend <code>CheckableExprType</code> to instead implement all expression types (so it doesn't return <code>Option</code>), or perhaps to use a debug assertion so that we see this failure in debug builds but fail silently in releases. But it's also ok for now, we know that it's a superset of expressions on the <code>match</code> anyway. (And we're obviously overdoing it on this one point just for educational / discussion purposes, it's not a sticking point in practice :))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-07-12 04:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:77 on 2023-07-12 04:18</div>
+            <div class="timeline-body"><blockquote>
+<p>or perhaps to use a debug assertion so that we see this failure in debug builds but fail silently in releases.</p>
+</blockquote>
+<p>I'm pretty happy with that as an approach.</p>
+<p>Although... I'd also <em>want</em> a user to report a failure here because it's a bug in Ruff. I guess it's a matter of if we want to panic and make the rule entirely unusable for their code or fail silently and <em>hope</em> they notice that the rule isn't raising a violation. I can understand preferring the second as a safer user experience :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:77 on 2023-07-12 04:25</div>
+            <div class="timeline-body"><p>I wanted <code>debug_panic!(...)</code> but I guess <code>debug_assert!(false, ...)</code> will do https://github.com/astral-sh/ruff/pull/5602/commits/e058e240574053c900129bcfae2c18016ab61563</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-07-12 04:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-12 04:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/rules/invalid_index_type.rs</code>:77 on 2023-07-12 04:25</div>
+            <div class="timeline-body"><p>I'm happy with whatever! If it were me on a desert island, I <em>guess</em> I'd write something like <code>let Some(value_type) = CheckableExprType::try_from(value) else { return; };</code> but I'm not convinced that's the best option. This looks good to me.</p>
+<p>(Again just to complete the picture, I <em>think</em> if we hit a panic here, the behavior the user would see is that we'd throw up a message asking them to file an issue and wouldn't print any violations for the failing file, but would print out violations for all other files as usual.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2023-07-12 05:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-07-12 05:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:31:00 UTC
+    </footer>
+</body>
+</html>

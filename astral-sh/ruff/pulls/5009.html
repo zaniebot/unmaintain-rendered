@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add isort line-length independent config - astral-sh/ruff #5009</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add isort line-length independent config</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5009">#5009</a>
+        opened by <a href="https://github.com/silvanocerza">@silvanocerza</a>
+        on 2023-06-10 17:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/silvanocerza">@silvanocerza</a> on 2023-06-10 17:08</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes #3206.</p>
+<p>This PR adds a <code>line-length</code> config for <code>isort</code>, this way users will be able to specify a different line length that differs from default Ruff config.</p>
+<p>I handled three different cases:</p>
+<ul>
+<li><code>ruff.isort.line-length</code> is not set: use <code>tool.ruff.line-length</code></li>
+<li><code>ruff.isort.line-length</code> is smaller than <code>tool.ruff.line-length</code>: use <code>tool.ruff.line-length</code></li>
+<li><code>ruff.isort.line-length</code> is greater than <code>tool.ruff.line-length</code>: use <code>tool.ruff.isort.line-length</code></li>
+</ul>
+<h2>Test Plan</h2>
+<p>I tested it by adding the <code>tool.ruff.isort.line-length</code> config in <code>crates/ruff/resources/test/fixtures/isort/pyproject.toml</code> and running the following command:</p>
+<pre><code>cargo run -p ruff_cli -- check crates/ruff/resources/test/fixtures/isort/fit_line_length.py --no-cache
+</code></pre>
+<p>I decided to leave the <code>tool.ruff.line-length</code> in <code>pyproject.toml</code> to verify that it's ignored if it's greater than the <code>isort</code> one.</p>
+<p>I'd like to add an automatic test in case <code>tool.ruff.line-length</code> is less than <code>tool.ruff.isort.line-length</code> but I'm not sure how to proceed on this. If anyone could point to similar tests I'll gladly try to add a new one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-10 17:16</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      7.2±0.33ms     5.6 MB/sec    1.07      7.7±0.24ms     5.3 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1535.3±67.73µs    10.8 MB/sec    1.05  1613.0±53.98µs    10.3 MB/sec
+formatter/numpy/globals.py                 1.05   159.8±11.86µs    18.5 MB/sec    1.00    151.4±8.91µs    19.5 MB/sec
+formatter/pydantic/types.py                1.00      3.2±0.11ms     8.1 MB/sec    1.00      3.2±0.27ms     8.1 MB/sec
+linter/all-rules/large/dataset.py          1.00     16.4±0.43ms     2.5 MB/sec    1.01     16.6±0.69ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.0±0.25ms     4.2 MB/sec    1.03      4.1±0.16ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00   520.7±26.81µs     5.7 MB/sec    1.02   529.7±30.66µs     5.6 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.8±0.26ms     3.7 MB/sec    1.05      7.2±0.24ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.02      7.9±0.34ms     5.1 MB/sec    1.00      7.7±0.21ms     5.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1655.3±59.68µs    10.1 MB/sec    1.02  1682.8±76.41µs     9.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    195.2±7.43µs    15.1 MB/sec    1.00   195.0±12.19µs    15.1 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.6±0.14ms     7.2 MB/sec    1.00      3.5±0.12ms     7.2 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      8.6±0.30ms     4.7 MB/sec    1.23     10.5±0.44ms     3.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1788.2±62.19µs     9.3 MB/sec    1.24      2.2±0.10ms     7.5 MB/sec
+formatter/numpy/globals.py                 1.00   176.3±11.39µs    16.7 MB/sec    1.13   199.4±12.60µs    14.8 MB/sec
+formatter/pydantic/types.py                1.00      3.6±0.16ms     7.1 MB/sec    1.23      4.4±0.23ms     5.8 MB/sec
+linter/all-rules/large/dataset.py          1.00     18.8±0.74ms     2.2 MB/sec    1.03     19.4±0.92ms     2.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.8±0.19ms     3.5 MB/sec    1.00      4.8±0.22ms     3.5 MB/sec
+linter/all-rules/numpy/globals.py          1.00   574.0±23.39µs     5.1 MB/sec    1.05   601.8±43.57µs     4.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.0±0.41ms     3.2 MB/sec    1.00      8.0±0.41ms     3.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      9.2±0.35ms     4.4 MB/sec    1.02      9.4±0.29ms     4.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1988.7±85.11µs     8.4 MB/sec    1.05      2.1±0.10ms     8.0 MB/sec
+linter/default-rules/numpy/globals.py      1.01    231.5±9.78µs    12.7 MB/sec    1.00   230.3±10.92µs    12.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.3±0.16ms     6.0 MB/sec    1.00      4.2±0.19ms     6.0 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-12 16:18</div>
+            <div class="timeline-body"><p>Thanks! The code looks reasonable, but what I'm mainly unsure of is how we should handle the case in which the import length is greater than the default length. In your implementation, it falls back to the shorter of the two, which is reasonable given that it'll be much harder to &quot;properly&quot; support varying line lengths... But it's also a confusing user behavior. I'm going to ask in the relevant issue if anyone has such a use case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-21 03:57</div>
+            <div class="timeline-body"><p>I think we need to close this out until we have a way to support enforcing separate line lengths on imports (e.g., so that we can support <em>larger</em> line length maximums for imports).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-21 03:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:31:00 UTC
+    </footer>
+</body>
+</html>

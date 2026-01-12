@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow specification of `logging.Logger` re-exports via `logger-objects` - astral-sh/ruff #5750</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow specification of <code>logging.Logger</code> re-exports via <code>logger-objects</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5750">#5750</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-07-13 23:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-13 23:03</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a <code>logger-objects</code> setting that allows users to mark specific symbols a <code>logging.Logger</code> objects. Currently, if a <code>logger</code> is imported, we only flagged it as a <code>logging.Logger</code> if it comes exactly from the <code>logging</code> module or is <code>flask.current_app.logger</code>.</p>
+<p>This PR allows users to mark specific loggers, like <code>logging_setup.logger</code>, to ensure that they're covered by the <code>flake8-logging-format</code> rules and others.</p>
+<p>For example, if you have a module <code>logging_setup.py</code> with the following
+contents:</p>
+<pre><code class="language-python">import logging
+
+logger = logging.getLogger(__name__)
+</code></pre>
+<p>Adding <code>&quot;logging_setup.logger&quot;</code> to <code>logger-objects</code> will ensure that
+<code>logging_setup.logger</code> is treated as a <code>logging.Logger</code> object when
+imported from other modules (e.g., <code>from logging_setup import logger</code>).</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/5694.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-07-13 23:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-13 23:13</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.3±0.04ms     4.4 MB/sec    1.00      9.3±0.02ms     4.4 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1861.3±1.53µs     8.9 MB/sec    1.00   1861.6±2.16µs     8.9 MB/sec
+formatter/numpy/globals.py                 1.00    210.0±2.49µs    14.0 MB/sec    1.00    210.2±0.24µs    14.0 MB/sec
+formatter/pydantic/types.py                1.00      4.0±0.01ms     6.4 MB/sec    1.00      4.0±0.01ms     6.4 MB/sec
+linter/all-rules/large/dataset.py          1.01     13.0±0.06ms     3.1 MB/sec    1.00     13.0±0.03ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.3±0.02ms     5.0 MB/sec    1.00      3.3±0.00ms     5.1 MB/sec
+linter/all-rules/numpy/globals.py          1.01    431.3±1.33µs     6.8 MB/sec    1.00    428.5±0.61µs     6.9 MB/sec
+linter/all-rules/pydantic/types.py         1.01      5.9±0.01ms     4.3 MB/sec    1.00      5.8±0.01ms     4.4 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.5±0.03ms     6.2 MB/sec    1.00      6.5±0.01ms     6.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1411.6±1.80µs    11.8 MB/sec    1.00   1401.5±3.13µs    11.9 MB/sec
+linter/default-rules/numpy/globals.py      1.01    156.9±0.37µs    18.8 MB/sec    1.00    155.4±0.83µs    19.0 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.01ms     8.6 MB/sec    1.00      3.0±0.01ms     8.6 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     13.4±0.30ms     3.0 MB/sec    1.01     13.6±0.36ms     3.0 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.7±0.08ms     6.3 MB/sec    1.00      2.7±0.08ms     6.3 MB/sec
+formatter/numpy/globals.py                 1.00    295.3±9.64µs    10.0 MB/sec    1.04   308.5±18.08µs     9.6 MB/sec
+formatter/pydantic/types.py                1.00      5.8±0.13ms     4.4 MB/sec    1.01      5.8±0.16ms     4.4 MB/sec
+linter/all-rules/large/dataset.py          1.00     19.3±0.37ms     2.1 MB/sec    1.02     19.7±0.34ms     2.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.0±0.10ms     3.3 MB/sec    1.02      5.1±0.18ms     3.3 MB/sec
+linter/all-rules/numpy/globals.py          1.00   601.7±19.88µs     4.9 MB/sec    1.01   609.1±19.40µs     4.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      9.0±0.29ms     2.8 MB/sec    1.01      9.1±0.37ms     2.8 MB/sec
+linter/default-rules/large/dataset.py      1.00     10.0±0.21ms     4.1 MB/sec    1.01     10.0±0.35ms     4.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.1±0.05ms     8.1 MB/sec    1.01      2.1±0.05ms     8.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00    235.3±9.37µs    12.5 MB/sec    1.03   242.8±11.26µs    12.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.4±0.16ms     5.8 MB/sec    1.02      4.5±0.11ms     5.7 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-13 23:16</div>
+            <div class="timeline-body"><p>For what it's worth, these are false positives in cibuildwheel because they use a custom logger without deferred formatting https://github.com/pypa/cibuildwheel/blob/66b46d086804a9e9782354100d96a3a445431bca/cibuildwheel/logger.py</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-13 23:16</div>
+            <div class="timeline-body"><p>Sadly those errors in cibuildwheel are false positives. They have a custom logger that matches our heuristic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-13 23:17</div>
+            <div class="timeline-body"><p>It does seem weird / unlikely to have this rule enabled at all if you are using a custom logger though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-07-14 06:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/petermattia">@petermattia</a> on 2023-07-15 15:25</div>
+            <div class="timeline-body"><p>In our use case, we configure the standard logger in the package-level <code>__init.py__</code> and then import the configured <code>logger</code> object into our other modules. I imagine this use case is pretty common, but not positive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-15 15:55</div>
+            <div class="timeline-body"><p>Yeah your use-case is very reasonable I think. The case I’m worried about is someone exporting something that matches the logger-like naming patterns we detect that isn’t actually a standard-library logger.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/petermattia">@petermattia</a> on 2023-07-17 14:57</div>
+            <div class="timeline-body"><p>Understood. How do you resolve situations like this? I suppose one option is to make the intended behavior configurable.</p>
+<p>FWIW, I think the affected logging rules make sense for any logger, not just the standard library logger.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-23 00:44</div>
+            <div class="timeline-body"><p>What we may want to do for now is add a <code>logging-modules</code> setting similar to <a href="https://beta.ruff.rs/docs/settings/#typing-modules"><code>typing-modules</code></a> that lets you specify first-party modules that export loggers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/petermattia">@petermattia</a> on 2023-07-23 05:15</div>
+            <div class="timeline-body"><p>That sounds perfect!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Detect local logging module re-exports in flake8-logging-format" to "Allow users to specify re-exports `logging.Logger` objects via `logger-objects`" by @charliermarsh on 2023-07-24 04:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Allow users to specify re-exports `logging.Logger` objects via `logger-objects`" to "Allow specification of `logging.Logger` re-exports via `logger-objects`" by @charliermarsh on 2023-07-24 04:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2023-07-24 04:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-07-24 04:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-24 04:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-07-24 04:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:31:00 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove `__all__` enforcement rules out of binding phase - astral-sh/ruff #5897</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove <code>__all__</code> enforcement rules out of binding phase</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5897">#5897</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-07-19 19:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-19 19:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR moves two rules (<code>invalid-all-format</code> and <code>invalid-all-object</code>) out of the name-binding phase, and into the dedicated pass over all bindings that occurs at the end of the <code>Checker</code>. This is part of my continued quest to separate the semantic model-building logic from the actual rule enforcement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/binding.rs</code>:266 on 2023-07-19 19:34</div>
+            <div class="timeline-body"><p>I considered putting these flags on <code>BindingKind::Export</code> but it increases the size of the enum variant and felt unnecessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-19 19:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-19 19:42</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     11.5±0.29ms     3.5 MB/sec    1.00     11.5±0.37ms     3.5 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.3±0.08ms     7.2 MB/sec    1.00      2.3±0.09ms     7.2 MB/sec
+formatter/numpy/globals.py                 1.00    262.8±6.10µs    11.2 MB/sec    1.01   266.6±16.09µs    11.1 MB/sec
+formatter/pydantic/types.py                1.02      5.0±0.24ms     5.1 MB/sec    1.00      4.9±0.17ms     5.2 MB/sec
+linter/all-rules/large/dataset.py          1.00     16.4±0.40ms     2.5 MB/sec    1.01     16.5±0.45ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.1±0.13ms     4.0 MB/sec    1.00      4.1±0.09ms     4.1 MB/sec
+linter/all-rules/numpy/globals.py          1.01   563.1±31.76µs     5.2 MB/sec    1.00   559.5±22.24µs     5.3 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.5±0.24ms     3.4 MB/sec    1.00      7.4±0.20ms     3.4 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.3±0.23ms     4.9 MB/sec    1.00      8.4±0.56ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1752.7±38.57µs     9.5 MB/sec    1.00  1750.5±46.64µs     9.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    210.2±7.18µs    14.0 MB/sec    1.01   211.3±11.16µs    14.0 MB/sec
+linter/default-rules/pydantic/types.py     1.03      3.8±0.23ms     6.7 MB/sec    1.00      3.7±0.09ms     6.8 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     11.1±0.11ms     3.7 MB/sec    1.00     11.1±0.30ms     3.7 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.2±0.01ms     7.7 MB/sec    1.00      2.1±0.05ms     7.8 MB/sec
+formatter/numpy/globals.py                 1.00    232.7±1.94µs    12.7 MB/sec    1.00    233.8±5.92µs    12.6 MB/sec
+formatter/pydantic/types.py                1.01      4.8±0.03ms     5.3 MB/sec    1.00      4.8±0.03ms     5.4 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.3±0.11ms     2.7 MB/sec    1.00     15.3±0.10ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.0±0.02ms     4.1 MB/sec    1.00      4.1±0.02ms     4.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00    416.9±6.12µs     7.1 MB/sec    1.01    420.9±5.88µs     7.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.9±0.04ms     3.7 MB/sec    1.01      7.0±0.07ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.1±0.02ms     5.0 MB/sec    1.01      8.1±0.03ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1630.2±12.39µs    10.2 MB/sec    1.01  1652.9±87.85µs    10.1 MB/sec
+linter/default-rules/numpy/globals.py      1.00    171.7±1.16µs    17.2 MB/sec    1.01    174.0±1.91µs    17.0 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.02ms     7.0 MB/sec    1.00      3.6±0.03ms     7.0 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2023-07-19 21:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-07-19 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-19 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-07-19 21:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:31:01 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix `F507` false positive - astral-sh/ruff #5986</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix <code>F507</code> false positive</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5986">#5986</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2023-07-22 16:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/harupy">@harupy</a> on 2023-07-22 16:14</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>F507 should not be raised when the right-hand side value is a non-tuple object.</p>
+<pre><code class="language-python">'%s' % (1, 2, 3)  # throws
+'%s' % [1, 2, 3]  # doesn't throw
+'%s' % {1, 2, 3}  # doesn't throw
+</code></pre>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>New test cases</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-07-22 16:15</div>
+            <div class="timeline-body"><p>pyflakes' source code for F507:</p>
+<p>https://github.com/PyCQA/pyflakes/blob/afe2c4dbe57b0cf3c86ec96a7e622163b2171b4a/pyflakes/checker.py#L1657</p>
+<pre><code class="language-python">        if (
+                isinstance(node.right, (ast.List, ast.Tuple)) and
+                # does not have any *splats (py35+ feature)
+                not any(
+                    isinstance(elt, ast.Starred)
+                    for elt in node.right.elts
+                )
+        ):
+</code></pre>
+<p>Not sure if this is a mistake or intended...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-22 16:32</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      9.3±0.01ms     4.4 MB/sec    1.00      9.3±0.03ms     4.4 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1849.5±2.46µs     9.0 MB/sec    1.00   1855.5±2.23µs     9.0 MB/sec
+formatter/numpy/globals.py                 1.00    202.8±0.32µs    14.5 MB/sec    1.01    203.9±0.36µs    14.5 MB/sec
+formatter/pydantic/types.py                1.00      4.0±0.01ms     6.4 MB/sec    1.01      4.0±0.02ms     6.3 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.8±0.06ms     3.2 MB/sec    1.07     13.8±0.04ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.3±0.00ms     5.1 MB/sec    1.05      3.4±0.01ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    433.1±0.44µs     6.8 MB/sec    1.03    445.6±0.83µs     6.6 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.8±0.01ms     4.4 MB/sec    1.06      6.2±0.02ms     4.1 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.6±0.02ms     6.2 MB/sec    1.14      7.5±0.02ms     5.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1409.2±1.57µs    11.8 MB/sec    1.11   1560.2±6.27µs    10.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00    156.0±0.31µs    18.9 MB/sec    1.07    166.7±0.19µs    17.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.01ms     8.6 MB/sec    1.12      3.3±0.01ms     7.7 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     11.0±0.15ms     3.7 MB/sec    1.00     11.0±0.15ms     3.7 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.2±0.04ms     7.7 MB/sec    1.00      2.2±0.03ms     7.7 MB/sec
+formatter/numpy/globals.py                 1.00    242.7±7.12µs    12.2 MB/sec    1.01    245.8±4.95µs    12.0 MB/sec
+formatter/pydantic/types.py                1.00      4.7±0.06ms     5.4 MB/sec    1.03      4.8±0.14ms     5.3 MB/sec
+linter/all-rules/large/dataset.py          1.01     15.5±0.16ms     2.6 MB/sec    1.00     15.3±0.16ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.0±0.04ms     4.1 MB/sec    1.00      4.0±0.06ms     4.2 MB/sec
+linter/all-rules/numpy/globals.py          1.04    490.2±9.63µs     6.0 MB/sec    1.00    470.0±7.44µs     6.3 MB/sec
+linter/all-rules/pydantic/types.py         1.02      6.9±0.07ms     3.7 MB/sec    1.00      6.8±0.06ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.1±0.07ms     5.0 MB/sec    1.00      8.0±0.10ms     5.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1672.1±24.67µs    10.0 MB/sec    1.00  1667.6±15.97µs    10.0 MB/sec
+linter/default-rules/numpy/globals.py      1.03    190.9±2.90µs    15.5 MB/sec    1.00    184.9±3.25µs    16.0 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.6±0.04ms     7.1 MB/sec    1.00      3.5±0.04ms     7.2 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix `F507` fasel positive" to "Fix `F507` false positive" by @harupy on 2023-07-22 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-07-22 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-07-22 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-22 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-07-23 00:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:31:01 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid stack overflow for non-BitOr binary types - astral-sh/ruff #5743</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid stack overflow for non-BitOr binary types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5743">#5743</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-07-13 17:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-13 17:21</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes #5742.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-13 17:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/typing.rs</code>:42 on 2023-07-13 17:22</div>
+            <div class="timeline-body"><p>I think we can remove this entirely and instead do this recursion via <code>contains_none</code> and <code>contains_any</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-13 17:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/typing.rs</code>:138 on 2023-07-13 17:22</div>
+            <div class="timeline-body"><p>This was the key issue: every BinOp was getting turned into <code>PEP604Union</code>, and when we went to analyze that expression in <code>PEP604UnionIterator</code>, we'd see that it wasn't a <code>BitOr</code>, and return that expression immediately, then analyze it again here, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @charliermarsh on 2023-07-13 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-13 17:36</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      8.1±0.04ms     5.0 MB/sec    1.00      7.9±0.03ms     5.1 MB/sec
+formatter/numpy/ctypeslib.py               1.01   1863.8±3.97µs     8.9 MB/sec    1.00   1843.0±3.39µs     9.0 MB/sec
+formatter/numpy/globals.py                 1.00    207.6±0.29µs    14.2 MB/sec    1.00    207.1±0.48µs    14.2 MB/sec
+formatter/pydantic/types.py                1.03      4.0±0.01ms     6.3 MB/sec    1.00      3.9±0.01ms     6.5 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.4±0.01ms     3.0 MB/sec    1.00     13.4±0.03ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.00ms     4.9 MB/sec    1.00      3.4±0.00ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    445.6±0.51µs     6.6 MB/sec    1.00    445.0±0.65µs     6.6 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.0±0.01ms     4.2 MB/sec    1.05      6.3±0.08ms     4.0 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.6±0.01ms     6.1 MB/sec    1.01      6.7±0.01ms     6.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1445.1±2.74µs    11.5 MB/sec    1.01   1453.4±2.81µs    11.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    165.9±0.55µs    17.8 MB/sec    1.00    166.4±8.56µs    17.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.01ms     8.5 MB/sec    1.00      3.0±0.01ms     8.5 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.11     12.6±0.46ms     3.2 MB/sec    1.00     11.4±0.39ms     3.6 MB/sec
+formatter/numpy/ctypeslib.py               1.06      2.7±0.12ms     6.1 MB/sec    1.00      2.6±0.21ms     6.4 MB/sec
+formatter/numpy/globals.py                 1.03   320.1±23.48µs     9.2 MB/sec    1.00   310.0±16.15µs     9.5 MB/sec
+formatter/pydantic/types.py                1.06      6.0±0.23ms     4.2 MB/sec    1.00      5.7±0.26ms     4.5 MB/sec
+linter/all-rules/large/dataset.py          1.00     18.7±0.68ms     2.2 MB/sec    1.05     19.7±0.60ms     2.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.0±0.19ms     3.4 MB/sec    1.04      5.2±0.18ms     3.2 MB/sec
+linter/all-rules/numpy/globals.py          1.00   596.7±22.71µs     4.9 MB/sec    1.09   649.9±33.02µs     4.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.8±0.34ms     2.9 MB/sec    1.01      8.8±0.33ms     2.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      9.7±0.27ms     4.2 MB/sec    1.03     10.0±0.29ms     4.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.1±0.06ms     7.9 MB/sec    1.00      2.1±0.08ms     7.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    247.8±9.91µs    11.9 MB/sec    1.02   252.4±11.86µs    11.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.5±0.31ms     5.7 MB/sec    1.00      4.5±0.16ms     5.7 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-07-13 17:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/rules/ruff/typing.rs</code>:138 on 2023-07-13 17:45</div>
+            <div class="timeline-body"><p>Oh, nice catch! I wonder what's the use case of any other operator in this context (will look at the linked project to satisfy my curiosity).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/rules/ruff/typing.rs</code>:109 on 2023-07-13 17:50</div>
+            <div class="timeline-body"><p>I wonder if we should just short-circuit if the <code>op</code> isn't <code>BitOr</code> and return <code>Unknown</code>?</p>
+<p>Just thinking out loud that otherwise this will try to <code>resolve_call_path</code> and  return <code>Unknown</code> type. Either ways, <code>contains_none</code> will be <code>true</code> and <code>contains_any</code> will be <code>false</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/rules/ruff/typing.rs</code>:42 on 2023-07-13 17:53</div>
+            <div class="timeline-body"><p>Yeah.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2023-07-13 17:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-07-13 18:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/ruff/typing.rs</code>:109 on 2023-07-13 18:23</div>
+            <div class="timeline-body"><p>I think it's fine because <code>resolve_call_path</code> will exit &quot;immediately&quot; when it detects the expression type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-07-13 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-13 18:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-07-13 18:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:31:00 UTC
+    </footer>
+</body>
+</html>

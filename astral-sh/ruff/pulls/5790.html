@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omit tuple parentheses inside comprehensions - astral-sh/ruff #5790</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Omit tuple parentheses inside comprehensions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5790">#5790</a>
+        opened by <a href="https://github.com/cnpryer">@cnpryer</a>
+        on 2023-07-15 23:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/cnpryer">@cnpryer</a> on 2023-07-15 23:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes #5779</p>
+<p>Implements <code>TupleParentheses::Comprehension</code> for omitting parentheses inside comprehensions.</p>
+<h2>Test Plan</h2>
+<p>Review updated snapshots.</p>
+<hr />
+<p>I feel like this kind of thing can be implemented a number of ways. One way I was thinking about was a <code>NeedsParentheses</code> implementation. I imagined something like</p>
+<pre><code class="language-rust">impl NeedsParentheses for ExprTuple {
+    fn needs_parentheses(
+        &amp;self,
+        parent: AnyNodeRef,
+        _context: &amp;PyFormatContext,
+    ) -&gt; OptionalParentheses {
+        if parent.is_comprehension() {
+            ...
+        }
+    }
+}
+</code></pre>
+<p>I could be mixing concepts though. I'm also wondering if this warrants just having <code>TupleParentheses::Never</code>.</p>
+<p>TODO:</p>
+<ul>
+<li>[x] <a href="https://github.com/astral-sh/ruff/issues/5779#issuecomment-1637614763">Handle parenthesized <code>Argument</code></a> https://github.com/astral-sh/ruff/pull/5790/commits/3bc182b0946e10c39eb6133b4ceb08107c35c9eb</li>
+<li>[x] More fixtures</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-07-15 23:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_python_formatter/src/expression/expr_tuple.rs</code>:131 on 2023-07-15 23:28</div>
+            <div class="timeline-body"><p>This threw me off a little, so I can play around with it more.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_python_formatter/src/other/comprehension.rs</code>:118 on 2023-07-15 23:32</div>
+            <div class="timeline-body"><p>Should I be consistent here with a .fmt()? They're effectively the same thing, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-07-15 23:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-15 23:36</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.8±0.05ms     4.2 MB/sec    1.01      9.8±0.04ms     4.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1904.1±5.72µs     8.7 MB/sec    1.00   1910.2±3.86µs     8.7 MB/sec
+formatter/numpy/globals.py                 1.00    207.6±0.45µs    14.2 MB/sec    1.01    209.0±0.82µs    14.1 MB/sec
+formatter/pydantic/types.py                1.00      4.2±0.01ms     6.1 MB/sec    1.00      4.2±0.01ms     6.1 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.6±0.11ms     3.0 MB/sec    1.00     13.5±0.08ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.01ms     4.9 MB/sec    1.00      3.4±0.00ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    373.9±0.76µs     7.9 MB/sec    1.00    373.0±2.76µs     7.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.1±0.06ms     4.2 MB/sec    1.00      6.1±0.06ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.01      7.1±0.03ms     5.7 MB/sec    1.00      7.1±0.03ms     5.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1440.4±4.38µs    11.6 MB/sec    1.00   1434.0±5.05µs    11.6 MB/sec
+linter/default-rules/numpy/globals.py      1.01    150.5±0.38µs    19.6 MB/sec    1.00    149.3±0.49µs    19.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.02ms     8.1 MB/sec    1.00      3.2±0.01ms     8.1 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.3±0.18ms     3.9 MB/sec    1.01     10.4±0.25ms     3.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1936.9±26.87µs     8.6 MB/sec    1.01  1959.1±32.26µs     8.5 MB/sec
+formatter/numpy/globals.py                 1.00    208.0±1.72µs    14.2 MB/sec    1.00    207.9±2.18µs    14.2 MB/sec
+formatter/pydantic/types.py                1.00      4.3±0.07ms     5.9 MB/sec    1.01      4.3±0.08ms     5.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.0±0.48ms     2.7 MB/sec    1.02     15.3±0.43ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.7±0.13ms     4.6 MB/sec    1.05      3.8±0.18ms     4.3 MB/sec
+linter/all-rules/numpy/globals.py          1.00    399.3±5.48µs     7.4 MB/sec    1.00   399.4±11.91µs     7.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.5±0.12ms     3.9 MB/sec    1.00      6.5±0.26ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.06      7.9±0.16ms     5.2 MB/sec    1.00      7.4±0.12ms     5.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.04  1535.1±21.35µs    10.8 MB/sec    1.00  1471.2±15.37µs    11.3 MB/sec
+linter/default-rules/numpy/globals.py      1.03    166.1±2.04µs    17.8 MB/sec    1.00    161.8±1.52µs    18.2 MB/sec
+linter/default-rules/pydantic/types.py     1.04      3.3±0.03ms     7.7 MB/sec    1.00      3.2±0.04ms     8.0 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-07-16 01:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_python_formatter/src/expression/expr_tuple.rs</code>:17 on 2023-07-16 01:58</div>
+            <div class="timeline-body"><p>Originally I wanted to do <code>TupleParentheses::Expr(Parentheses::Never)</code> but I'd need more to handle</p>
+<pre><code># Input
+h3 = 1, &quot;qweiurpoiqwurepqiurpqirpuqoiwrupqoirupqoirupqoiurpqiorupwqiourpqurpqurpqurpqurpqurpqurüqurqpuriq&quot;
+
+# Ruff
+h3 = 1, &quot;qweiurpoiqwurepqiurpqirpuqoiwrupqoirupqoirupqoiurpqiorupwqiourpqurpqurpqurpqurpqurpqurüqurqpuriq&quot;
+
+# Black
++h3 = (
++    1,
++    &quot;qweiurpoiqwurepqiurpqirpuqoiwrupqoirupqoirupqoiurpqiorupwqiourpqurpqurpqurpqurpqurpqurüqurqpuriq&quot;,
++)
+</code></pre>
+<p>I also feel like I'm misunderstanding what <code>Some(Parentheses)</code> implies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @konstin on 2023-07-16 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/other/comprehension.rs</code>:118 on 2023-07-18 09:15</div>
+            <div class="timeline-body"><p><code>write!</code> has slightly more overhead and it depends on the compiler if it is able to <em>reduce</em> it exactly to <code>other.format().fmt(f)</code></p>
+<p>The difference are:</p>
+<ul>
+<li><p>The <code>write!</code> macro wraps the <code>[...]</code> in an <code>Arguments</code> struct, and each entry in the array in an <code>Argument</code> (it calls the <code>format_args![]</code> macro internally</p>
+</li>
+<li><p><code>write</code> calls into <code>buffer.write_fmt</code> which iterates over all arguments https://github.com/astral-sh/ruff/blob/df9e64dba0f9e5f2dadf85c543bfa548dabd42ae/crates/ruff_formatter/src/lib.rs#L717-L724</p>
+</li>
+<li><p><code>write</code> accepts any object that implements <code>Buffer</code> as the first argument. So you can do</p>
+<pre><code class="language-rust">  let mut recording = f.start_recording();
+  write!(recording, [...])?;
+  let recorded = recording.stop();
+</code></pre>
+<p>whereas <code>.fmt(f)</code> directly uses the passed <code>Formatter</code>.</p>
+</li>
+</ul>
+<p>I tend to use <code>.fmt</code> for single items, and <code>write![]</code> for sequences. The downside of this is that adding a new item requires changing the code from <code>fmt</code> to <code>write</code> (or the other way round) and I don't do this consistently. That's why I'm okay leaving this to individuals to decide what they prefer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_tuple.rs</code>:18 on 2023-07-18 09:17</div>
+            <div class="timeline-body"><p>How does <code>Comprehension</code> fit into your other PR where you tried to generalize the parentheses rule names (would this match <code>Never</code>)? Is it just comprehension where tuples aren't wrapped even if they exceed the line width?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-18 09:18</div>
+            <div class="timeline-body"><p>Nice. This looks good to me. My main question is about how this fits into your other work on parenthesizing tuples.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-07-18 13:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_python_formatter/src/expression/expr_tuple.rs</code>:18 on 2023-07-18 13:10</div>
+            <div class="timeline-body"><p>This PR predates that PR. I wasn't sure if <code>Comprehension</code> matched the pattern that was already materializing or there was room to improve. I decided to propose an alternative that I'll try to shortly explain motivations behind below.</p>
+<blockquote>
+<p>Is it just comprehension where tuples aren't wrapped even if they exceed the line width?</p>
+</blockquote>
+<p>I kinda wanna answer this with another question. From what perspective is <code>TupleParentheses</code> useful?</p>
+<p>To me it's useful in defining formatting behavior for a tuple's parentheses. So if I'm implementing <code>Comprehension</code> I'd want to say &quot;tuples here don't have parentheses&quot; I'd probably use something closer to <code>TupleParentheses::Never</code>.</p>
+<p>But to add to this, I'm still curious of understanding <code>NeedsParentheses</code>' role in all of this.</p>
+<p>Is there a way to incorporate some of this configuration in how <code>NeedsParentheses</code> is implemented?</p>
+<pre><code class="language-rs">impl NeedsParentheses for ExprTuple {
+    fn needs_parentheses(
+        &amp;self,
+        parent: AnyNodeRef,
+        _context: &amp;PyFormatContext,
+    ) -&gt; OptionalParentheses {
+        if parent.is_comprehension() {
+            ...
+        }
+    }
+}
+</code></pre>
+<p>Does this imply that if <code>needs_parentheses</code> is invoked somewhere we could just handle it with knowledge of the tuple's <code>parent</code>?</p>
+<p>Is this where <code>TupleParentheses::Expr(Parentheses::Never)</code> becomes useful?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-07-19 01:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_python_formatter/src/other/comprehension.rs</code>:118 on 2023-07-19 01:15</div>
+            <div class="timeline-body"><p>48af71ad23e71b9d6cd6e40c0526cb5ef1fadc01</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-07-19 01:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_python_formatter/src/expression/expr_tuple.rs</code>:131 on 2023-07-19 01:15</div>
+            <div class="timeline-body"><p>48af71ad23e71b9d6cd6e40c0526cb5ef1fadc01</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-07-19 01:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_python_formatter/src/expression/expr_tuple.rs</code>:18 on 2023-07-19 01:17</div>
+            <div class="timeline-body"><p>What do you think about merging with <code>TupleParentheses::Comprehension</code> here and then I can better document motivations in #5810.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-07-19 02:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_python_formatter/src/expression/expr_tuple.rs</code>:17 on 2023-07-19 02:02</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/5810#discussion_r1267439876</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_tuple.rs</code>:18 on 2023-07-19 06:31</div>
+            <div class="timeline-body"><blockquote>
+<p>But to add to this, I'm still curious of understanding NeedsParentheses' role in all of this.</p>
+</blockquote>
+<p>Okay, let's see if I can explain this well.</p>
+<p>It is possible to parenthesize an expression in Python (and most other languages). Adding parentheses allows to express the precedence explicitly. All these are parenthesized expressions: <code>(a)</code>, <code>(1), </code>([a, b])`.</p>
+<p>Tuples are special because they have their own parentheses (like lists or dicts too), but they also happen to be the same as for parenthesizing expressions. The tuple parentheses are, in some situations, optional: so you can write <code>a, b</code> or <code>(a, b)</code>. The tuple <code>(a, b)</code> is a tuple with its optional parentheses, but it is not a parenthesized expression. It is only a parenthesized expression if you add one extra pair of parentheses: <code>((a, b))</code>.</p>
+<p>The logic in <code>FormatExpr</code> and <code>NeedsParantheses</code> is only concerned about the &quot;generic&quot; parentheses (parenthesized expressions). That's why <code>TupleParentheses</code> is the right approach in my view, because it doesn't control whether the expression should be parenthesized, but whether the tuple should preserve its parentheses.</p>
+<blockquote>
+<p>Is this where TupleParentheses::Expr(Parentheses::Never) becomes useful?</p>
+</blockquote>
+<p>I don't think this variant is used anymore and we should not use it to determine whether to keep the tuple parentheses (except if we <strong>always</strong> must preserve them if the expression is parenthesized). I must have overlooked it by one of my refactors that removed the <code>Parenthesize::Custom</code> variant.</p>
+<blockquote>
+<p>What do you think about merging with TupleParentheses::Comprehension here and then I can better document motivations in #5810.</p>
+</blockquote>
+<p>Sounds good to me. Can you remove the <code>TODO Never</code> before merging?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-07-19 06:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-07-19 12:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_python_formatter/src/expression/expr_tuple.rs</code>:18 on 2023-07-19 12:01</div>
+            <div class="timeline-body"><p>This is so awesome. Thank you for all the detail. Happy to curate some docs on it if I can too.</p>
+<p>3ddff0b9f51beaf88cd1b3907cc4c82f98c5d908</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-07-19 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-07-19 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-07-19 12:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_python_formatter/src/expression/expr_tuple.rs</code>:18 on 2023-07-19 22:52</div>
+            <div class="timeline-body"><blockquote>
+<p>removed the <code>Parentheses::Custom</code></p>
+</blockquote>
+<p>#5708 right? I'm checking that out now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-07-19 22:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-20 06:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_tuple.rs</code>:18 on 2023-07-20 06:47</div>
+            <div class="timeline-body"><p>Yes, that's the PR that I had in mind but it didn't change <code>TupleParentheses::Expr</code> (or any logic related to it). It seems, that the <code>Expr</code> variant could have been unified with the <code>Default</code> variant from the beginning.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:31:00 UTC
+    </footer>
+</body>
+</html>

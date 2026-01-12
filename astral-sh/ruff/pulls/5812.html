@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tuple constants are for optimisations, not source - astral-sh/ruff #5812</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>tuple constants are for optimisations, not source</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5812">#5812</a>
+        opened by <a href="https://github.com/davidszotten">@davidszotten</a>
+        on 2023-07-16 20:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-07-16 20:58</div>
+            <div class="timeline-body"><p>my reading of https://docs.python.org/3/library/ast.html#ast.unparse and
+https://discuss.python.org/t/ast-constant-value-tuple-s-and-frozenset-s/22578 is that tuple constants cannot come from parsing python source, they are only for optimised bytecode</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-16 21:03</div>
+            <div class="timeline-body"><p>Oh that’s so interesting, I’ve always wondered how these were “created”.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-16 21:10</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.4±0.04ms     4.3 MB/sec    1.01      9.5±0.02ms     4.3 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1871.3±1.78µs     8.9 MB/sec    1.01   1886.2±6.39µs     8.8 MB/sec
+formatter/numpy/globals.py                 1.00    210.2±0.47µs    14.0 MB/sec    1.00    211.1±1.27µs    14.0 MB/sec
+formatter/pydantic/types.py                1.01      4.1±0.01ms     6.2 MB/sec    1.00      4.0±0.01ms     6.3 MB/sec
+linter/all-rules/large/dataset.py          1.01     13.2±0.06ms     3.1 MB/sec    1.00     13.1±0.04ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.00ms     4.9 MB/sec    1.00      3.4±0.00ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    451.9±0.65µs     6.5 MB/sec    1.00    451.7±1.98µs     6.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.0±0.01ms     4.3 MB/sec    1.00      6.0±0.02ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.01      6.7±0.01ms     6.1 MB/sec    1.00      6.7±0.02ms     6.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1476.5±1.60µs    11.3 MB/sec    1.01   1486.3±2.21µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.01    169.5±0.23µs    17.4 MB/sec    1.00    168.6±0.30µs    17.5 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.01ms     8.4 MB/sec    1.00      3.0±0.01ms     8.4 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.07     11.7±0.11ms     3.5 MB/sec    1.00     10.9±0.11ms     3.7 MB/sec
+formatter/numpy/ctypeslib.py               1.05      2.3±0.04ms     7.4 MB/sec    1.00      2.2±0.04ms     7.7 MB/sec
+formatter/numpy/globals.py                 1.01    251.0±4.54µs    11.8 MB/sec    1.00   249.5±11.53µs    11.8 MB/sec
+formatter/pydantic/types.py                1.05      5.0±0.08ms     5.2 MB/sec    1.00      4.7±0.08ms     5.4 MB/sec
+linter/all-rules/large/dataset.py          1.01     15.8±0.17ms     2.6 MB/sec    1.00     15.6±0.25ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.1±0.06ms     4.0 MB/sec    1.00      4.2±0.06ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    501.3±7.04µs     5.9 MB/sec    1.00   503.4±12.90µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.1±0.09ms     3.6 MB/sec    1.00      7.0±0.11ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.2±0.08ms     5.0 MB/sec    1.00      8.1±0.10ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1737.3±19.87µs     9.6 MB/sec    1.00  1728.0±21.17µs     9.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00    202.9±3.51µs    14.5 MB/sec    1.00    202.9±2.68µs    14.5 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.7±0.04ms     7.0 MB/sec    1.00      3.6±0.03ms     7.1 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-16 21:18</div>
+            <div class="timeline-body"><p>@MichaReiser - any objection to me just removing this node from the AST altogether?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-17 07:35</div>
+            <div class="timeline-body"><blockquote>
+<p>@MichaReiser - any objection to me just removing this node from the AST altogether?</p>
+</blockquote>
+<p>Nope. I would actually prefer this. Less generated code and less confusion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-07-17 08:18</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>@MichaReiser - any objection to me just removing this node from the AST altogether?</p>
+</blockquote>
+<p>Nope. I would actually prefer this. Less generated code and less confusion.</p>
+</blockquote>
+<p>👍  where does that live?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-17 08:28</div>
+            <div class="timeline-body"><p>You can find the parser code in this repository. https://github.com/astral-sh/RustPython-Parser</p>
+<p>We would need to:</p>
+<ul>
+<li>create a PR to the parser repository that removes the node</li>
+<li>tag the new parser version</li>
+<li>Update the Ruff's workspace <code>Cargo.toml</code> to use the new commit (same as the tag) and delete all code that no longer compiles. You can already start working on this PR before the parser PR is merged by changing the rustpython version to use your repo &amp; commit.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davidszotten">@davidszotten</a> on 2023-07-18 06:58</div>
+            <div class="timeline-body"><p>fixed by #5840</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @davidszotten on 2023-07-18 06:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:31:00 UTC
+    </footer>
+</body>
+</html>
