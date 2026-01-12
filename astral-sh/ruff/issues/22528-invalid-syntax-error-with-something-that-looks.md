@@ -4,12 +4,14 @@ title: "invalid syntax error with something that looks like a `match` statement"
 type: issue
 state: open
 author: KotlinIsland
-labels: []
+labels:
+  - bug
+  - parser
 assignees: []
 created_at: 2026-01-12T08:42:37Z
-updated_at: 2026-01-12T08:50:47Z
+updated_at: 2026-01-12T08:54:48Z
 url: https://github.com/astral-sh/ruff/issues/22528
-synced_at: 2026-01-12T08:52:49Z
+synced_at: 2026-01-12T09:56:43Z
 ```
 
 # invalid syntax error with something that looks like a `match` statement
@@ -37,7 +39,7 @@ main(4, 2, 0)
 
 `Expected newline, found `{` (invalid-syntax) [Ln 4, Col 45]`
 
-finders scredit to @decorator-factory 
+finders credit to @decorator-factory 
 
 <details><summary>Solution</summary>
 <p>
@@ -142,5 +144,13 @@ Module(
                Constant(value=0)]))])
 
 ```
+
+---
+
+_Label `bug` added by @MichaReiser on 2026-01-12 08:51_
+
+---
+
+_Label `parser` added by @MichaReiser on 2026-01-12 08:51_
 
 ---

@@ -4,12 +4,13 @@ title: Document marker limitation in required-environments
 type: issue
 state: open
 author: michael-o
-labels: []
+labels:
+  - documentation
 assignees: []
 created_at: 2026-01-09T16:46:32Z
-updated_at: 2026-01-09T16:46:32Z
+updated_at: 2026-01-12T09:21:25Z
 url: https://github.com/astral-sh/uv/issues/17382
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T09:56:59Z
 ```
 
 # Document marker limitation in required-environments
@@ -28,5 +29,9 @@ required-environments = [
 ```
 
 That could have saved parts of #17109.
+
+---
+
+_Label `documentation` added by @konstin on 2026-01-12 09:21_
 
 ---

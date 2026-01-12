@@ -9,9 +9,9 @@ labels:
   - generics
 assignees: []
 created_at: 2026-01-11T03:56:05Z
-updated_at: 2026-01-12T06:56:58Z
+updated_at: 2026-01-12T09:35:18Z
 url: https://github.com/astral-sh/ty/issues/2439
-synced_at: 2026-01-12T07:59:26Z
+synced_at: 2026-01-12T09:56:38Z
 ```
 
 # Emit diagnostic when specializing a non-generic class
@@ -158,5 +158,13 @@ _Comment by @tamireinhorn on 2026-01-12 06:56_
 
 I forgot to mention, but on later testing, I removed the wrong type arguments for RowMapping, and ty still spat out the same type. I put them in just to check what happened and did not remove them from the example posted here. Can edit if preferred.
 
+
+---
+
+_Comment by @dhruvmanila on 2026-01-12 09:34_
+
+> I forgot to mention, but on later testing, I removed the wrong type arguments for RowMapping, and ty still spat out the same type. I put them in just to check what happened and did not remove them from the example posted here. Can edit if preferred.
+
+Yeah, I suspect that's because `sa.Sequence` itself is a non-generic class (as highlighted by mypy)?
 
 ---

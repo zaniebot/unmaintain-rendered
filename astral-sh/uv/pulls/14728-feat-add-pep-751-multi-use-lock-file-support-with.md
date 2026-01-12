@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: toml-extra
 created_at: 2025-07-18T15:20:55Z
-updated_at: 2026-01-09T16:57:49Z
+updated_at: 2026-01-12T09:34:45Z
 url: https://github.com/astral-sh/uv/pull/14728
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T09:57:06Z
 ```
 
 # feat: Add PEP 751 multi-use lock file support with extras and dependency groups markers
@@ -230,5 +230,35 @@ _Renamed from "Populate more information into pylock.toml" to "feat: Add PEP 751
 ---
 
 _Marked ready for review by @gaborbernat on 2026-01-08 22:19_
+
+---
+
+_Review comment by @konstin on `crates/uv/tests/it/export.rs`:3652 on 2026-01-12 09:26_
+
+Those dependencies aren't conditional - do we need a simplify/complexify, or is this a marker graph implication?
+
+https://inspector.pypi.io/project/anyio/3.7.0/packages/68/fe/7ce1926952c8a403b35029e194555558514b365ad77d75125f521a2bec62/anyio-3.7.0-py3-none-any.whl/anyio-3.7.0.dist-info/METADATA#line.26
+
+---
+
+_Review comment by @konstin on `crates/uv-pep508/src/marker/lowering.rs`:174 on 2026-01-12 09:28_
+
+The added docstrings don't add information here. We should either keep as-is, or add docstrings that explain e.g. what list
+
+---
+
+_Review comment by @konstin on `crates/uv-resolver/src/lock/export/marker_conversion.rs`:68 on 2026-01-12 09:31_
+
+We should not parse this format, we know what conflicts there are from resolution input and resolution output.
+
+---
+
+_Review comment by @konstin on `crates/uv-resolver/src/lock/export/marker_conversion.rs`:113 on 2026-01-12 09:34_
+
+dead code
+
+---
+
+_@konstin reviewed on 2026-01-12 09:34_
 
 ---

@@ -5,12 +5,12 @@ type: issue
 state: open
 author: AlexanderWells-diamond
 labels:
-  - bug
+  - question
 assignees: []
 created_at: 2026-01-09T14:16:33Z
-updated_at: 2026-01-09T17:11:50Z
+updated_at: 2026-01-12T09:48:47Z
 url: https://github.com/astral-sh/uv/issues/17378
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T09:56:59Z
 ```
 
 # `uv` incorrectly rolls back dependency between build-time and run-time
@@ -198,5 +198,21 @@ Is there any chance that uv could re-invoke its resolver if it has fetched metad
 _Comment by @zanieb on 2026-01-09 17:11_
 
 It seems pretty unlikely, this is a fairly fundamental constraint. You might be able to declare it as an extra build dependency and use `match-runtime = true` so our resolver uses a matching version in both environments?
+
+---
+
+_Label `bug` removed by @konstin on 2026-01-12 09:42_
+
+---
+
+_Label `question` added by @konstin on 2026-01-12 09:42_
+
+---
+
+_Comment by @konstin on 2026-01-12 09:48_
+
+> Is there any chance that uv could re-invoke its resolver if it has fetched metadata for a library but then finds it has to do a source build of that library?
+
+Doing this generally (beyond `match-runtime = true`) breaks the assumptions uv (and other tools too) make that a source distribution can be used the same as a wheel when there is no matching wheel, that a wheel built from source distribution can be reused for further installation (the alternative would be rebuilding all source distributions on each installation) and that you can build a consistent cross-platform lockfile from a set of requirements even without building for all platforms.
 
 ---

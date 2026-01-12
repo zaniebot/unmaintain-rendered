@@ -8,9 +8,9 @@ labels:
   - server
 assignees: []
 created_at: 2025-12-02T10:29:38Z
-updated_at: 2025-12-02T11:50:16Z
+updated_at: 2026-01-12T09:32:49Z
 url: https://github.com/astral-sh/ty/issues/1717
-synced_at: 2026-01-10T01:58:59Z
+synced_at: 2026-01-12T09:56:37Z
 ```
 
 # Zed: Unclear where to find the logs when ty crashes
@@ -40,5 +40,11 @@ Though, for zed, there are some environment variables we can check if set: `ZED_
 _Comment by @MichaReiser on 2025-12-02 11:50_
 
 One option is to handle this in Zed's extension. Another is to try to detect the Zed client by inspecting the client name (part of the initialization request) or rely on environment variables as you suggest
+
+---
+
+_Comment by @dhruvmanila on 2026-01-12 09:32_
+
+https://github.com/astral-sh/ruff/pull/22530 could help?
 
 ---

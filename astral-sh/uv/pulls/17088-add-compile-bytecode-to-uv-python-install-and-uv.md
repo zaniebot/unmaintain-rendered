@@ -2,17 +2,18 @@
 number: 17088
 title: "Add `--compile-bytecode` to `uv python install` and `uv python upgrade` to compile the standard library"
 type: pull_request
-state: open
+state: merged
 author: EliteTK
 labels:
   - enhancement
 assignees: []
+merged: true
 base: main
 head: tk/py-install-bytecomp
 created_at: 2025-12-11T16:37:16Z
-updated_at: 2026-01-06T15:39:58Z
+updated_at: 2026-01-12T09:31:36Z
 url: https://github.com/astral-sh/uv/pull/17088
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T09:57:06Z
 ```
 
 # Add `--compile-bytecode` to `uv python install` and `uv python upgrade` to compile the standard library
@@ -594,5 +595,21 @@ _@EliteTK reviewed on 2026-01-06 15:39_
 _Review comment by @EliteTK on `crates/uv/src/commands/python/install.rs`:217 on 2026-01-06 15:39_
 
 Alright, I'll leave it as is then.
+
+---
+
+_@konstin approved on 2026-01-12 09:18_
+
+---
+
+_Merged by @EliteTK on 2026-01-12 09:31_
+
+---
+
+_Closed by @EliteTK on 2026-01-12 09:31_
+
+---
+
+_Branch deleted on 2026-01-12 09:31_
 
 ---

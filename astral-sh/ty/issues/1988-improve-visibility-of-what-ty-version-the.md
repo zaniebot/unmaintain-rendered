@@ -8,9 +8,9 @@ labels:
   - server
 assignees: []
 created_at: 2025-12-17T08:49:55Z
-updated_at: 2025-12-17T08:50:44Z
+updated_at: 2026-01-12T09:25:20Z
 url: https://github.com/astral-sh/ty/issues/1988
-synced_at: 2026-01-10T01:55:00Z
+synced_at: 2026-01-12T09:56:37Z
 ```
 
 # Improve visibility of what ty version the extension is using
@@ -28,5 +28,17 @@ _Label `server` added by @MichaReiser on 2025-12-17 08:49_
 ---
 
 _Added to milestone `Stable` by @MichaReiser on 2025-12-17 08:50_
+
+---
+
+_Comment by @dhruvmanila on 2026-01-12 09:25_
+
+Yeah, I think we can use the status bar to show the ty version and possibly could also display the source, so something like (similar to Python extension's version and venv):
+- `ty 0.0.11 (bundled)`
+- `ty 0.0.11 (environment)`
+
+<img width="668" height="26" alt="Image" src="https://github.com/user-attachments/assets/ae71b937-1d88-4d00-aecb-80169d69388e" />
+
+Or, we could start with just include the version initially.
 
 ---

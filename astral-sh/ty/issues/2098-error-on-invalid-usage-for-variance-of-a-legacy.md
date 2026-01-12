@@ -5,12 +5,13 @@ type: issue
 state: open
 author: carljm
 labels:
+  - diagnostics
   - generics
 assignees: []
 created_at: 2025-12-19T02:23:35Z
-updated_at: 2025-12-19T02:23:35Z
+updated_at: 2026-01-12T09:19:25Z
 url: https://github.com/astral-sh/ty/issues/2098
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T09:56:37Z
 ```
 
 # error on invalid usage for variance of a legacy typevar
@@ -28,5 +29,9 @@ _Added to milestone `Stable` by @carljm on 2025-12-19 02:23_
 ---
 
 _Label `generics` added by @carljm on 2025-12-19 02:23_
+
+---
+
+_Label `diagnostics` added by @dhruvmanila on 2026-01-12 09:19_
 
 ---

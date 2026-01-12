@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/spec
 created_at: 2026-01-11T22:28:08Z
-updated_at: 2026-01-12T06:20:10Z
+updated_at: 2026-01-12T09:41:58Z
 url: https://github.com/astral-sh/ruff/pull/22510
-synced_at: 2026-01-12T06:55:04Z
+synced_at: 2026-01-12T09:56:53Z
 ```
 
 # [ty] Fix `__file__` type in completions to show `str` instead of `str | None`
@@ -165,5 +165,12 @@ _Review requested from @Gankra by @charliermarsh on 2026-01-12 00:38_
 ---
 
 _Review requested from @BurntSushi by @dhruvmanila on 2026-01-12 06:20_
+
+---
+
+_Comment by @sinon on 2026-01-12 09:39_
+
+A related PR which is the semantics side for handling
+`from a import __file__ as a_path`: https://github.com/astral-sh/ruff/pull/22333 - with that PR, existing current module semantic overrides and now this there might soon be at least 3 places where these special casings for `__file__` (and other per-file dunder attributes) are being specified 🤔 Maybe fine for now but probably worth raising a follow-up issue to re-examine if the 3rd case lands (as there might end up being more if users then also want the completion typing correct for the `from a import __f<CURSOR>` case too to match this)
 
 ---

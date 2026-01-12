@@ -8,9 +8,9 @@ labels:
   - server
 assignees: []
 created_at: 2026-01-11T09:18:54Z
-updated_at: 2026-01-11T22:36:40Z
+updated_at: 2026-01-12T09:06:55Z
 url: https://github.com/astral-sh/ty/issues/2440
-synced_at: 2026-01-12T02:26:12Z
+synced_at: 2026-01-12T09:56:38Z
 ```
 
 # "Extract variable" refactor
@@ -32,5 +32,9 @@ _Label `server` added by @AlexWaygood on 2026-01-11 09:19_
 ---
 
 _Renamed from "Feature: refactor into variable" to ""Extract variable" refactor" by @MichaReiser on 2026-01-11 22:36_
+
+---
+
+_Added to milestone `Stable` by @MichaReiser on 2026-01-12 09:06_
 
 ---
