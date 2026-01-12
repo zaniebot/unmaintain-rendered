@@ -1,0 +1,155 @@
+```yaml
+number: 6546
+title: "Remove `SemanticModel#find_binding`"
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - internal
+assignees: []
+merged: true
+base: main
+head: charlie/find-binding
+created_at: 2023-08-14T03:55:41Z
+updated_at: 2023-08-14T04:22:08Z
+url: https://github.com/astral-sh/ruff/pull/6546
+synced_at: 2026-01-12T02:52:04Z
+```
+
+# Remove `SemanticModel#find_binding`
+
+---
+
+_Pull request opened by @charliermarsh on 2023-08-14 03:55_
+
+## Summary
+
+This method is almost never what you actually want, because it doesn't respect Python's scoping semantics. For example, if you call this within a class method, it will return class attributes, whereas Python actually _skips_ symbols in classes unless the load occurs within the class itself. I also want to move away from these kinds of dynamic lookups and more towards `resolve_name`, which performs a lookup based on the stored `BindingId` at the time of symbol resolution, and will make it much easier for us to separate model building from linting in the near future.
+
+## Test Plan
+
+`cargo test`
+
+
+---
+
+_Label `internal` added by @charliermarsh on 2023-08-14 03:55_
+
+---
+
+_Comment by @github-actions[bot] on 2023-08-14 04:06_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+3, -28, 0 error(s))
+
+<details><summary>airflow (+2, -20)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/5e1e5fa637aa90b92e4b0e1d62c577461ea92369/airflow/jobs/backfill_job_runner.py#L860'>airflow/jobs/backfill_job_runner.py:860:21:</a> SLF001 Private member accessed: `_DagRunTaskStatus`
+- <a href='https://github.com/apache/airflow/blob/5e1e5fa637aa90b92e4b0e1d62c577461ea92369/airflow/models/dag.py#L1221'>airflow/models/dag.py:1221:32:</a> SLF001 Private member accessed: `_upgrade_outdated_dag_access_control`
+- <a href='https://github.com/apache/airflow/blob/5e1e5fa637aa90b92e4b0e1d62c577461ea92369/airflow/models/dag.py#L626'>airflow/models/dag.py:626:32:</a> SLF001 Private member accessed: `_upgrade_outdated_dag_access_control`
+- <a href='https://github.com/apache/airflow/blob/5e1e5fa637aa90b92e4b0e1d62c577461ea92369/airflow/models/xcom.py#L693'>airflow/models/xcom.py:693:16:</a> SLF001 Private member accessed: `_deserialize_value`
+- <a href='https://github.com/apache/airflow/blob/5e1e5fa637aa90b92e4b0e1d62c577461ea92369/airflow/models/xcom.py#L704'>airflow/models/xcom.py:704:16:</a> SLF001 Private member accessed: `_deserialize_value`
+- <a href='https://github.com/apache/airflow/blob/5e1e5fa637aa90b92e4b0e1d62c577461ea92369/airflow/providers/apache/hive/hooks/hive.py#L776'>airflow/providers/apache/hive/hooks/hive.py:776:16:</a> SLF001 Private member accessed: `_get_max_partition_from_part_specs`
+- <a href='https://github.com/apache/airflow/blob/5e1e5fa637aa90b92e4b0e1d62c577461ea92369/airflow/providers/apache/livy/hooks/livy.py#L383'>airflow/providers/apache/livy/hooks/livy.py:383:21:</a> SLF001 Private member accessed: `_validate_list_of_stringables`
+- <a href='https://github.com/apache/airflow/blob/5e1e5fa637aa90b92e4b0e1d62c577461ea92369/airflow/providers/apache/livy/hooks/livy.py#L385'>airflow/providers/apache/livy/hooks/livy.py:385:21:</a> SLF001 Private member accessed: `_validate_list_of_stringables`
+- <a href='https://github.com/apache/airflow/blob/5e1e5fa637aa90b92e4b0e1d62c577461ea92369/airflow/providers/apache/livy/hooks/livy.py#L387'>airflow/providers/apache/livy/hooks/livy.py:387:25:</a> SLF001 Private member accessed: `_validate_list_of_stringables`
+- <a href='https://github.com/apache/airflow/blob/5e1e5fa637aa90b92e4b0e1d62c577461ea92369/airflow/providers/apache/livy/hooks/livy.py#L389'>airflow/providers/apache/livy/hooks/livy.py:389:22:</a> SLF001 Private member accessed: `_validate_list_of_stringables`
+- <a href='https://github.com/apache/airflow/blob/5e1e5fa637aa90b92e4b0e1d62c577461ea92369/airflow/providers/apache/livy/hooks/livy.py#L391'>airflow/providers/apache/livy/hooks/livy.py:391:30:</a> SLF001 Private member accessed: `_validate_size_format`
+- <a href='https://github.com/apache/airflow/blob/5e1e5fa637aa90b92e4b0e1d62c577461ea92369/airflow/providers/apache/livy/hooks/livy.py#L395'>airflow/providers/apache/livy/hooks/livy.py:395:32:</a> SLF001 Private member accessed: `_validate_size_format`
+- <a href='https://github.com/apache/airflow/blob/5e1e5fa637aa90b92e4b0e1d62c577461ea92369/airflow/providers/apache/livy/hooks/livy.py#L401'>airflow/providers/apache/livy/hooks/livy.py:401:25:</a> SLF001 Private member accessed: `_validate_list_of_stringables`
+- <a href='https://github.com/apache/airflow/blob/5e1e5fa637aa90b92e4b0e1d62c577461ea92369/airflow/providers/apache/livy/hooks/livy.py#L407'>airflow/providers/apache/livy/hooks/livy.py:407:21:</a> SLF001 Private member accessed: `_validate_extra_conf`
++ <a href='https://github.com/apache/airflow/blob/5e1e5fa637aa90b92e4b0e1d62c577461ea92369/airflow/providers/celery/executors/celery_executor.py#L491'>airflow/providers/celery/executors/celery_executor.py:491:12:</a> SLF001 Private member accessed: `_get_parser`
++ <a href='https://github.com/apache/airflow/blob/5e1e5fa637aa90b92e4b0e1d62c577461ea92369/airflow/providers/cncf/kubernetes/executors/kubernetes_executor.py#L740'>airflow/providers/cncf/kubernetes/executors/kubernetes_executor.py:740:12:</a> SLF001 Private member accessed: `_get_parser`
+- <a href='https://github.com/apache/airflow/blob/5e1e5fa637aa90b92e4b0e1d62c577461ea92369/airflow/providers/databricks/hooks/databricks_base.py#L614'>airflow/providers/databricks/hooks/databricks_base.py:614:29:</a> SLF001 Private member accessed: `_get_error_code`
+- <a href='https://github.com/apache/airflow/blob/5e1e5fa637aa90b92e4b0e1d62c577461ea92369/airflow/providers/openlineage/utils/utils.py#L183'>airflow/providers/openlineage/utils/utils.py:183:23:</a> SLF001 Private member accessed: `_cast_basic_types`
+- <a href='https://github.com/apache/airflow/blob/5e1e5fa637aa90b92e4b0e1d62c577461ea92369/airflow/utils/log/logging_mixin.py#L81'>airflow/utils/log/logging_mixin.py:81:16:</a> SLF001 Private member accessed: `_get_log`
+- <a href='https://github.com/apache/airflow/blob/5e1e5fa637aa90b92e4b0e1d62c577461ea92369/airflow/utils/log/logging_mixin.py#L86'>airflow/utils/log/logging_mixin.py:86:16:</a> SLF001 Private member accessed: `_get_log`
+- <a href='https://github.com/apache/airflow/blob/5e1e5fa637aa90b92e4b0e1d62c577461ea92369/tests/utils/test_process_utils.py#L66'>tests/utils/test_process_utils.py:66:20:</a> SLF001 Private member accessed: `_ignores_sigterm`
+- <a href='https://github.com/apache/airflow/blob/5e1e5fa637aa90b92e4b0e1d62c577461ea92369/tests/utils/test_process_utils.py#L84'>tests/utils/test_process_utils.py:84:49:</a> SLF001 Private member accessed: `_parent_of_ignores_sigterm`
+</pre>
+
+</p>
+</details>
+<details><summary>bokeh (+1, -8)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/88109a2966ed0ab146fe46c0cf0dde025fa37099/src/bokeh/application/handlers/code.py#L197'>src/bokeh/application/handlers/code.py:197:14:</a> SLF001 Private member accessed: `_io_functions`
+- <a href='https://github.com/bokeh/bokeh/blob/88109a2966ed0ab146fe46c0cf0dde025fa37099/src/bokeh/core/validation/issue.py#L54'>src/bokeh/core/validation/issue.py:54:9:</a> SLF001 Private member accessed: `_code_map`
+- <a href='https://github.com/bokeh/bokeh/blob/88109a2966ed0ab146fe46c0cf0dde025fa37099/src/bokeh/core/validation/issue.py#L55'>src/bokeh/core/validation/issue.py:55:9:</a> SLF001 Private member accessed: `_name_map`
+- <a href='https://github.com/bokeh/bokeh/blob/88109a2966ed0ab146fe46c0cf0dde025fa37099/src/bokeh/document/events.py#L240'>src/bokeh/document/events.py:240:21:</a> SLF001 Private member accessed: `_handlers`
+- <a href='https://github.com/bokeh/bokeh/blob/88109a2966ed0ab146fe46c0cf0dde025fa37099/src/bokeh/models/sources.py#L203'>src/bokeh/models/sources.py:203:47:</a> SLF001 Private member accessed: `_data_from_df`
+- <a href='https://github.com/bokeh/bokeh/blob/88109a2966ed0ab146fe46c0cf0dde025fa37099/src/bokeh/models/sources.py#L205'>src/bokeh/models/sources.py:205:58:</a> SLF001 Private member accessed: `_data_from_groupby`
+- <a href='https://github.com/bokeh/bokeh/blob/88109a2966ed0ab146fe46c0cf0dde025fa37099/src/bokeh/models/sources.py#L272'>src/bokeh/models/sources.py:272:22:</a> SLF001 Private member accessed: `_df_index_name`
+- <a href='https://github.com/bokeh/bokeh/blob/88109a2966ed0ab146fe46c0cf0dde025fa37099/src/bokeh/models/sources.py#L302'>src/bokeh/models/sources.py:302:16:</a> SLF001 Private member accessed: `_data_from_df`
+- <a href='https://github.com/bokeh/bokeh/blob/88109a2966ed0ab146fe46c0cf0dde025fa37099/src/bokeh/models/sources.py#L519'>src/bokeh/models/sources.py:519:26:</a> SLF001 Private member accessed: `_df_index_name`
+</pre>
+
+</p>
+</details>
+Rules changed: 1
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| SLF001 | 31 | 3 | 28 |
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.7±0.37ms     3.8 MB/sec    1.04     11.1±0.41ms     3.7 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.1±0.20ms     7.9 MB/sec    1.00      2.1±0.09ms     7.9 MB/sec
+formatter/numpy/globals.py                 1.00   239.8±11.16µs    12.3 MB/sec    1.00   238.8±16.30µs    12.4 MB/sec
+formatter/pydantic/types.py                1.00      4.6±0.17ms     5.6 MB/sec    1.00      4.6±0.17ms     5.6 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.7±0.40ms     3.0 MB/sec    1.00     13.8±0.56ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.05      3.7±0.19ms     4.5 MB/sec    1.00      3.6±0.12ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.04  549.4±147.24µs     5.4 MB/sec    1.00   527.8±33.18µs     5.6 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.2±0.25ms     3.5 MB/sec    1.01      7.2±0.29ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.07      7.4±0.42ms     5.5 MB/sec    1.00      6.9±0.17ms     5.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1552.2±60.98µs    10.7 MB/sec    1.00  1537.1±73.26µs    10.8 MB/sec
+linter/default-rules/numpy/globals.py      1.02    193.5±8.69µs    15.2 MB/sec    1.00    190.5±7.64µs    15.5 MB/sec
+linter/default-rules/pydantic/types.py     1.03      3.3±0.11ms     7.8 MB/sec    1.00      3.2±0.08ms     8.1 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.0±0.14ms     4.1 MB/sec    1.01     10.1±0.13ms     4.0 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1932.4±23.81µs     8.6 MB/sec    1.01  1954.6±37.88µs     8.5 MB/sec
+formatter/numpy/globals.py                 1.00    214.7±3.90µs    13.7 MB/sec    1.03    220.7±8.18µs    13.4 MB/sec
+formatter/pydantic/types.py                1.00      4.2±0.07ms     6.1 MB/sec    1.03      4.3±0.11ms     5.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.8±0.18ms     3.2 MB/sec    1.00     12.8±0.10ms     3.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.04ms     4.7 MB/sec    1.00      3.5±0.04ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    441.2±8.82µs     6.7 MB/sec    1.00    443.3±7.60µs     6.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.6±0.10ms     3.9 MB/sec    1.00      6.6±0.09ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.0±0.09ms     5.8 MB/sec    1.01      7.0±0.08ms     5.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1495.9±44.98µs    11.1 MB/sec    1.01  1508.2±22.66µs    11.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00    177.4±2.56µs    16.6 MB/sec    1.00    178.2±3.16µs    16.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.05ms     8.1 MB/sec    1.00      3.1±0.03ms     8.1 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Comment by @charliermarsh on 2023-08-14 04:09_
+
+All of those changes look correct to me. I actually think there was a bug in the previous implementation (we were iterating over all scopes, not the _current_ scopes).
+
+---
+
+_Merged by @charliermarsh on 2023-08-14 04:09_
+
+---
+
+_Closed by @charliermarsh on 2023-08-14 04:09_
+
+---
+
+_Branch deleted on 2023-08-14 04:09_
+
+---

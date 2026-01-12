@@ -1,0 +1,141 @@
+```yaml
+number: 6223
+title: "Add `DTZ003` and `DTZ004` docs"
+type: pull_request
+state: merged
+author: klistwan
+labels:
+  - documentation
+assignees: []
+merged: true
+base: main
+head: docs/DTZ003-DTZ004
+created_at: 2023-08-01T06:29:18Z
+updated_at: 2023-08-07T01:43:42Z
+url: https://github.com/astral-sh/ruff/pull/6223
+synced_at: 2026-01-12T02:52:03Z
+```
+
+# Add `DTZ003` and `DTZ004` docs
+
+---
+
+_Pull request opened by @klistwan on 2023-08-01 06:29_
+
+Changes:
+- Fixes typo and repeated phrase in `DTZ002`
+- Adds docs for `DTZ003`
+- Adds docs for `DTZ004`
+- Adds example for <=Python3.10 in `DTZ001`
+
+Related to: https://github.com/astral-sh/ruff/issues/2646
+
+---
+
+_Comment by @github-actions[bot] on 2023-08-01 06:42_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.7±0.07ms     4.2 MB/sec    1.06     10.2±0.11ms     4.0 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1926.2±21.40µs     8.6 MB/sec    1.04      2.0±0.03ms     8.3 MB/sec
+formatter/numpy/globals.py                 1.00    217.6±6.54µs    13.6 MB/sec    1.01    219.9±6.60µs    13.4 MB/sec
+formatter/pydantic/types.py                1.00      4.1±0.06ms     6.3 MB/sec    1.06      4.3±0.09ms     5.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.1±0.07ms     3.4 MB/sec    1.11     13.5±0.15ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.2±0.02ms     5.2 MB/sec    1.04      3.4±0.01ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    450.8±0.67µs     6.5 MB/sec    1.01    457.2±3.71µs     6.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.6±0.04ms     4.6 MB/sec    1.08      6.0±0.07ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.2±0.03ms     6.5 MB/sec    1.16      7.2±0.08ms     5.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1332.4±1.91µs    12.5 MB/sec    1.11  1484.6±14.07µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    149.8±0.24µs    19.7 MB/sec    1.07    161.0±3.38µs    18.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.8±0.01ms     9.2 MB/sec    1.14      3.2±0.05ms     8.0 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     12.0±0.37ms     3.4 MB/sec    1.03     12.4±0.46ms     3.3 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.3±0.10ms     7.2 MB/sec    1.02      2.4±0.09ms     7.1 MB/sec
+formatter/numpy/globals.py                 1.01   267.0±20.68µs    11.1 MB/sec    1.00   264.3±17.76µs    11.2 MB/sec
+formatter/pydantic/types.py                1.00      5.1±0.17ms     5.0 MB/sec    1.03      5.2±0.22ms     4.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.4±0.30ms     2.6 MB/sec    1.10     16.9±0.44ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.2±0.13ms     4.0 MB/sec    1.05      4.4±0.15ms     3.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00   520.4±28.97µs     5.7 MB/sec    1.03   535.4±23.81µs     5.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.1±0.22ms     3.6 MB/sec    1.06      7.5±0.22ms     3.4 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.3±0.17ms     4.9 MB/sec    1.14      9.4±0.35ms     4.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1706.3±52.49µs     9.8 MB/sec    1.09  1865.6±59.43µs     8.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    195.4±9.42µs    15.1 MB/sec    1.09   213.2±10.47µs    13.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.09ms     6.9 MB/sec    1.09      4.0±0.13ms     6.3 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Review comment by @zanieb on `crates/ruff/src/rules/flake8_datetimez/rules/call_datetime_utcfromtimestamp.rs`:19 on 2023-08-01 13:56_
+
+Thanks for contributing this!
+
+I find this section a little vague and hard to read. Are there some resources we can use for more specific content here? It'd be nice to avoid using "naive" repeatedly as well.
+
+---
+
+_@zanieb reviewed on 2023-08-01 13:56_
+
+---
+
+_Label `docstring` added by @zanieb on 2023-08-01 14:35_
+
+---
+
+_Label `docstring` removed by @zanieb on 2023-08-01 14:35_
+
+---
+
+_Label `documentation` added by @zanieb on 2023-08-01 14:35_
+
+---
+
+_@klistwan reviewed on 2023-08-02 05:59_
+
+---
+
+_Review comment by @klistwan on `crates/ruff/src/rules/flake8_datetimez/rules/call_datetime_utcfromtimestamp.rs`:19 on 2023-08-02 05:59_
+
+Thanks for the feedback!
+
+Sure, what do you think of this? For consistency, I was hoping to just re-use the same explanation on each `DTZ` issue - let me know if that's okay too and I can update the rest.
+
+> Python datetime objects can be naive or timezone-aware. An aware object represents a specific moment in time. A naive object does not contain enough information to unambiguously locate itself relative to other datetime objects which can lead to errors. It is recommended to always use timezone-aware objects. See https://docs.python.org/3/library/datetime.html#aware-and-naive-objects
+
+
+
+---
+
+_@klistwan reviewed on 2023-08-06 01:05_
+
+---
+
+_Review comment by @klistwan on `crates/ruff/src/rules/flake8_datetimez/rules/call_datetime_utcfromtimestamp.rs`:19 on 2023-08-06 01:05_
+
+@zanieb Let me know what you think, I've updated DTZ003 and DTZ004 with the updated wording.
+
+---
+
+_Review requested from @zanieb by @klistwan on 2023-08-06 01:05_
+
+---
+
+_Merged by @charliermarsh on 2023-08-07 01:21_
+
+---
+
+_Closed by @charliermarsh on 2023-08-07 01:21_
+
+---

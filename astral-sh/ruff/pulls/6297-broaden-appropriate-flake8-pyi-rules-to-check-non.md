@@ -1,0 +1,311 @@
+```yaml
+number: 6297
+title: Broaden appropriate flake8-pyi rules to check non-stub code too
+type: pull_request
+state: merged
+author: andersk
+labels:
+  - rule
+assignees: []
+merged: true
+base: main
+head: broaden-pyi
+created_at: 2023-08-03T04:09:05Z
+updated_at: 2023-08-03T15:40:48Z
+url: https://github.com/astral-sh/ruff/pull/6297
+synced_at: 2026-01-12T02:52:03Z
+```
+
+# Broaden appropriate flake8-pyi rules to check non-stub code too
+
+---
+
+_Pull request opened by @andersk on 2023-08-03 04:09_
+
+Of the rules that flake8-pyi enforces for `.pyi` type stubs, many of them equally make sense to check in normal runtime code with type annotations.  Broaden these rules to check all files:
+
+PYI013 ellipsis-in-non-empty-class-body
+PYI016 duplicate-union-member
+PYI018 unused-private-type-var
+PYI019 custom-type-var-return-type
+PYI024 collections-named-tuple
+PYI025 unaliased-collections-abc-set-import
+PYI030 unnecessary-literal-union
+PYI032 any-eq-ne-annotation
+PYI034 non-self-return-type
+PYI036 bad-exit-annotation
+PYI041 redundant-numeric-union
+PYI042 snake-case-type-alias
+PYI043 t-suffixed-type-alias
+PYI045 iter-method-return-iterable
+PYI046 unused-private-protocol
+PYI047 unused-private-type-alias
+PYI049 unused-private-typed-dict
+PYI050 no-return-argument-annotation-in-stub (Python ≥ 3.11)
+PYI051 redundant-literal-union
+PYI056 unsupported-method-call-on-all
+
+The other rules are stub-specific and remain enabled only in `.pyi` files.
+
+PYI001 unprefixed-type-param
+PYI002 complex-if-statement-in-stub
+PYI003 unrecognized-version-info-check
+PYI004 patch-version-comparison
+PYI005 wrong-tuple-length-version-comparison (could make sense to broaden, see https://github.com/astral-sh/ruff/pull/6297#issuecomment-1663314807)
+PYI006 bad-version-info-comparison (same)
+PYI007 unrecognized-platform-check
+PYI008 unrecognized-platform-name
+PYI009 pass-statement-stub-body
+PYI010 non-empty-stub-body
+PYI011 typed-argument-default-in-stub
+PYI012 pass-in-class-body
+PYI014 argument-default-in-stub
+PYI015 assignment-default-in-stub
+PYI017 complex-assignment-in-stub
+PYI020 quoted-annotation-in-stub
+PYI021 docstring-in-stub
+PYI026 type-alias-without-annotation (could make sense to broaden, but gives many false positives on runtime code as currently implemented)
+PYI029 str-or-repr-defined-in-stub
+PYI033 type-comment-in-stub
+PYI035 unassigned-special-variable-in-stub
+PYI044 future-annotations-in-stub
+PYI048 stub-body-multiple-statements
+PYI052 unannotated-assignment-in-stub
+PYI053 string-or-bytes-too-long
+PYI054 numeric-literal-too-long
+
+
+---
+
+_Comment by @charliermarsh on 2023-08-03 04:20_
+
+This looks great! I've been wanting this to happen but someone had to go through and do the hard work of auditing the rules for appropriateness, thank you for taking that on. I may rename the rules that are stub-only to have a consistent `-in-stub` suffix, but that can happen separately.
+
+---
+
+_Comment by @github-actions[bot] on 2023-08-03 04:20_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+89, -0, 0 error(s))
+
+<details><summary>airflow (+78, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/cli/commands/task_command.py#L736'>airflow/cli/commands/task_command.py:736:9:</a> PYI034 `__enter__` methods in classes like `LoggerMutationHelper` usually return `self` at runtime
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/hooks/subprocess.py#L28'>airflow/hooks/subprocess.py:28:20:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/metrics/base_stats_logger.py#L34'>airflow/metrics/base_stats_logger.py:34:15:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/metrics/base_stats_logger.py#L45'>airflow/metrics/base_stats_logger.py:45:15:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/metrics/base_stats_logger.py#L56'>airflow/metrics/base_stats_logger.py:56:15:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/metrics/datadog_logger.py#L98'>airflow/metrics/datadog_logger.py:98:16:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/metrics/otel_logger.py#L227'>airflow/metrics/otel_logger.py:227:16:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/metrics/protocols.py#L105'>airflow/metrics/protocols.py:105:9:</a> PYI034 `__enter__` methods in classes like `Timer` usually return `self` at runtime
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/metrics/statsd_logger.py#L112'>airflow/metrics/statsd_logger.py:112:16:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/metrics/validators.py#L44'>airflow/metrics/validators.py:44:5:</a> PYI013 [*] Non-empty class body must not contain `...`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/models/param.py#L190'>airflow/models/param.py:190:29:</a> PYI032 [*] Prefer `object` to `Any` for the second parameter to `__eq__`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/models/xcom.py#L716'>airflow/models/xcom.py:716:9:</a> PYI034 `__iter__` methods in classes like `_LazyXComAccessIterator` usually return `self` at runtime
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/models/xcom.py#L752'>airflow/models/xcom.py:752:29:</a> PYI032 [*] Prefer `object` to `Any` for the second parameter to `__eq__`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/models/xcom_arg.py#L253'>airflow/models/xcom_arg.py:253:29:</a> PYI032 [*] Prefer `object` to `Any` for the second parameter to `__eq__`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/models/xcom_arg.py#L95'>airflow/models/xcom_arg.py:95:9:</a> PYI034 `__new__` methods in classes like `XComArg` usually return `self` at runtime
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/operators/python.py#L520'>airflow/operators/python.py:520:25:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/amazon/aws/hooks/batch_client.py#L263'>airflow/providers/amazon/aws/hooks/batch_client.py:263:16:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/amazon/aws/hooks/batch_client.py#L292'>airflow/providers/amazon/aws/hooks/batch_client.py:292:56:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/amazon/aws/hooks/batch_client.py#L315'>airflow/providers/amazon/aws/hooks/batch_client.py:315:57:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/amazon/aws/hooks/batch_client.py#L512'>airflow/providers/amazon/aws/hooks/batch_client.py:512:27:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/amazon/aws/hooks/batch_client.py#L512'>airflow/providers/amazon/aws/hooks/batch_client.py:512:47:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/amazon/aws/hooks/batch_client.py#L512'>airflow/providers/amazon/aws/hooks/batch_client.py:512:72:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/amazon/aws/hooks/batch_client.py#L540'>airflow/providers/amazon/aws/hooks/batch_client.py:540:22:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/amazon/aws/hooks/batch_waiters.py#L193'>airflow/providers/amazon/aws/hooks/batch_waiters.py:193:16:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/amazon/aws/hooks/glue.py#L73'>airflow/providers/amazon/aws/hooks/glue.py:73:22:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/amazon/aws/hooks/glue.py#L77'>airflow/providers/amazon/aws/hooks/glue.py:77:28:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/amazon/aws/hooks/sagemaker.py#L57'>airflow/providers/amazon/aws/hooks/sagemaker.py:57:12:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/amazon/aws/operators/glue.py#L105'>airflow/providers/amazon/aws/operators/glue.py:105:28:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/amazon/aws/operators/glue.py#L94'>airflow/providers/amazon/aws/operators/glue.py:94:22:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/amazon/aws/transfers/sql_to_s3.py#L45'>airflow/providers/amazon/aws/transfers/sql_to_s3.py:45:15:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/amazon/aws/triggers/glue.py#L42'>airflow/providers/amazon/aws/triggers/glue.py:42:28:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/amazon/aws/utils/waiter.py#L37'>airflow/providers/amazon/aws/utils/waiter.py:37:16:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/databricks/hooks/databricks_base.py#L646'>airflow/providers/databricks/hooks/databricks_base.py:646:9:</a> PYI034 `__new__` methods in classes like `BearerAuth` usually return `self` at runtime
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/datadog/hooks/datadog.py#L75'>airflow/providers/datadog/hooks/datadog.py:75:20:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/ftp/hooks/ftp.py#L53'>airflow/providers/ftp/hooks/ftp.py:53:34:</a> PYI036 The first argument in `__exit__` should be annotated with `object` or `type[BaseException] | None`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/ftp/hooks/ftp.py#L53'>airflow/providers/ftp/hooks/ftp.py:53:48:</a> PYI036 The second argument in `__exit__` should be annotated with `object` or `BaseException | None`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/ftp/hooks/ftp.py#L53'>airflow/providers/ftp/hooks/ftp.py:53:61:</a> PYI036 The third argument in `__exit__` should be annotated with `object` or `types.TracebackType | None`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/google/cloud/triggers/bigquery.py#L393'>airflow/providers/google/cloud/triggers/bigquery.py:393:21:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/imap/hooks/imap.py#L58'>airflow/providers/imap/hooks/imap.py:58:9:</a> PYI034 `__enter__` methods in classes like `ImapHook` usually return `self` at runtime
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/microsoft/azure/operators/container_instances.py#L215'>airflow/providers/microsoft/azure/operators/container_instances.py:215:32:</a> PYI016 [*] Duplicate union member `Volume`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/microsoft/azure/operators/container_instances.py#L216'>airflow/providers/microsoft/azure/operators/container_instances.py:216:43:</a> PYI016 [*] Duplicate union member `VolumeMount`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/microsoft/azure/operators/container_instances.py#L48'>airflow/providers/microsoft/azure/operators/container_instances.py:48:10:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/microsoft/azure/transfers/sftp_to_wasb.py#L36'>airflow/providers/microsoft/azure/transfers/sftp_to_wasb.py:36:12:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/qubole/operators/qubole_check.py#L165'>airflow/providers/qubole/operators/qubole_check.py:165:21:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/qubole/operators/qubole_check.py#L166'>airflow/providers/qubole/operators/qubole_check.py:166:20:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/smtp/hooks/smtp.py#L62'>airflow/providers/smtp/hooks/smtp.py:62:9:</a> PYI034 `__enter__` methods in classes like `SmtpHook` usually return `self` at runtime
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/ssh/hooks/ssh.py#L367'>airflow/providers/ssh/hooks/ssh.py:367:9:</a> PYI034 `__enter__` methods in classes like `SSHHook` usually return `self` at runtime
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/tableau/hooks/tableau.py#L101'>airflow/providers/tableau/hooks/tableau.py:101:34:</a> PYI036 The first argument in `__exit__` should be annotated with `object` or `type[BaseException] | None`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/tableau/hooks/tableau.py#L101'>airflow/providers/tableau/hooks/tableau.py:101:48:</a> PYI036 The second argument in `__exit__` should be annotated with `object` or `BaseException | None`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers/tableau/hooks/tableau.py#L101'>airflow/providers/tableau/hooks/tableau.py:101:61:</a> PYI036 The third argument in `__exit__` should be annotated with `object` or `types.TracebackType | None`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/providers_manager.py#L194'>airflow/providers_manager.py:194:24:</a> PYI030 Multiple literal members in a union. Use a single literal, e.g. `Literal["source", "package"]`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/ti_deps/deps/base_ti_dep.py#L48'>airflow/ti_deps/deps/base_ti_dep.py:48:29:</a> PYI032 [*] Prefer `object` to `Any` for the second parameter to `__eq__`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/timetables/_cron.py#L73'>airflow/timetables/_cron.py:73:29:</a> PYI032 [*] Prefer `object` to `Any` for the second parameter to `__eq__`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/timetables/interval.py#L187'>airflow/timetables/interval.py:187:29:</a> PYI032 [*] Prefer `object` to `Any` for the second parameter to `__eq__`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/timetables/simple.py#L43'>airflow/timetables/simple.py:43:29:</a> PYI032 [*] Prefer `object` to `Any` for the second parameter to `__eq__`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/utils/context.py#L228'>airflow/utils/context.py:228:29:</a> PYI032 [*] Prefer `object` to `Any` for the second parameter to `__eq__`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/utils/context.py#L233'>airflow/utils/context.py:233:29:</a> PYI032 [*] Prefer `object` to `Any` for the second parameter to `__ne__`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/utils/serve_logs.py#L137'>airflow/utils/serve_logs.py:137:18:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/utils/task_group.py#L336'>airflow/utils/task_group.py:336:9:</a> PYI034 `__enter__` methods in classes like `TaskGroup` usually return `self` at runtime
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/airflow/utils/timezone.py#L241'>airflow/utils/timezone.py:241:26:</a> PYI041 Use `float` instead of `int | float`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/dev/provider_packages/prepare_provider_packages.py#L610'>dev/provider_packages/prepare_provider_packages.py:610:15:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/tests/always/test_connection.py#L36'>tests/always/test_connection.py:36:19:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/tests/decorators/test_python.py#L292'>tests/decorators/test_python.py:292:17:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/tests/operators/test_python.py#L182'>tests/operators/test_python.py:182:17:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/tests/providers/apache/hive/hooks/test_hive.py#L444'>tests/providers/apache/hive/hooks/test_hive.py:444:25:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/tests/providers/apache/hive/hooks/test_hive.py#L523'>tests/providers/apache/hive/hooks/test_hive.py:523:27:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/tests/providers/apache/hive/hooks/test_hive.py#L525'>tests/providers/apache/hive/hooks/test_hive.py:525:21:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/tests/providers/apache/hive/hooks/test_hive.py#L527'>tests/providers/apache/hive/hooks/test_hive.py:527:25:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/tests/providers/apache/hive/hooks/test_hive.py#L545'>tests/providers/apache/hive/hooks/test_hive.py:545:27:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/tests/providers/apache/hive/hooks/test_hive.py#L547'>tests/providers/apache/hive/hooks/test_hive.py:547:21:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/tests/providers/google/cloud/hooks/test_kms.py#L30'>tests/providers/google/cloud/hooks/test_kms.py:30:12:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/tests/providers/microsoft/azure/operators/test_azure_container_instances.py#L38'>tests/providers/microsoft/azure/operators/test_azure_container_instances.py:38:21:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/tests/providers/microsoft/azure/operators/test_azure_container_instances.py#L41'>tests/providers/microsoft/azure/operators/test_azure_container_instances.py:41:17:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/tests/providers/microsoft/azure/operators/test_azure_container_instances.py#L44'>tests/providers/microsoft/azure/operators/test_azure_container_instances.py:44:19:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/tests/providers/microsoft/azure/operators/test_azure_container_instances.py#L56'>tests/providers/microsoft/azure/operators/test_azure_container_instances.py:56:21:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/tests/providers/microsoft/azure/operators/test_azure_container_instances.py#L59'>tests/providers/microsoft/azure/operators/test_azure_container_instances.py:59:17:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/tests/providers/microsoft/azure/operators/test_azure_container_instances.py#L62'>tests/providers/microsoft/azure/operators/test_azure_container_instances.py:62:19:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
++ <a href='https://github.com/apache/airflow/blob/05f47b0fe87511842f894e538ddb77027bad3c55/tests/sensors/test_python.py#L59'>tests/sensors/test_python.py:59:17:</a> PYI024 Use `typing.NamedTuple` instead of `collections.namedtuple`
+</pre>
+
+</p>
+</details>
+<details><summary>bokeh (+10, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/38d05d037223234aedeb25e35502abf3332bf0b4/src/bokeh/client/session.py#L318'>src/bokeh/client/session.py:318:9:</a> PYI034 `__enter__` methods in classes like `ClientSession` usually return `self` at runtime
++ <a href='https://github.com/bokeh/bokeh/blob/38d05d037223234aedeb25e35502abf3332bf0b4/src/bokeh/client/session.py#L324'>src/bokeh/client/session.py:324:34:</a> PYI036 The first argument in `__exit__` should be annotated with `object` or `type[BaseException] | None`
++ <a href='https://github.com/bokeh/bokeh/blob/38d05d037223234aedeb25e35502abf3332bf0b4/src/bokeh/client/session.py#L324'>src/bokeh/client/session.py:324:50:</a> PYI036 The second argument in `__exit__` should be annotated with `object` or `BaseException | None`
++ <a href='https://github.com/bokeh/bokeh/blob/38d05d037223234aedeb25e35502abf3332bf0b4/src/bokeh/client/session.py#L324'>src/bokeh/client/session.py:324:70:</a> PYI036 The third argument in `__exit__` should be annotated with `object` or `types.TracebackType | None`
++ <a href='https://github.com/bokeh/bokeh/blob/38d05d037223234aedeb25e35502abf3332bf0b4/src/bokeh/embed/util.py#L219'>src/bokeh/embed/util.py:219:29:</a> PYI032 [*] Prefer `object` to `Any` for the second parameter to `__eq__`
++ <a href='https://github.com/bokeh/bokeh/blob/38d05d037223234aedeb25e35502abf3332bf0b4/src/bokeh/io/export.py#L529'>src/bokeh/io/export.py:529:9:</a> PYI034 `__enter__` methods in classes like `_TempFile` usually return `self` at runtime
++ <a href='https://github.com/bokeh/bokeh/blob/38d05d037223234aedeb25e35502abf3332bf0b4/src/bokeh/io/export.py#L532'>src/bokeh/io/export.py:532:29:</a> PYI036 The first argument in `__exit__` should be annotated with `object` or `type[BaseException] | None`
++ <a href='https://github.com/bokeh/bokeh/blob/38d05d037223234aedeb25e35502abf3332bf0b4/src/bokeh/io/export.py#L532'>src/bokeh/io/export.py:532:41:</a> PYI036 The second argument in `__exit__` should be annotated with `object` or `BaseException | None`
++ <a href='https://github.com/bokeh/bokeh/blob/38d05d037223234aedeb25e35502abf3332bf0b4/src/bokeh/io/export.py#L532'>src/bokeh/io/export.py:532:50:</a> PYI036 The third argument in `__exit__` should be annotated with `object` or `types.TracebackType | None`
++ <a href='https://github.com/bokeh/bokeh/blob/38d05d037223234aedeb25e35502abf3332bf0b4/src/bokeh/model/model.py#L90'>src/bokeh/model/model.py:90:9:</a> PYI034 `__new__` methods in classes like `Model` usually return `self` at runtime
+</pre>
+
+</p>
+</details>
+<details><summary>zulip (+1, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/6632eca2dcf2051043e95348658d6da02305669f/zerver/lib/push_notifications.py#L102'>zerver/lib/push_notifications.py:102:29:</a> PYI032 [*] Prefer `object` to `Any` for the second parameter to `__eq__`
+</pre>
+
+</p>
+</details>
+Rules changed: 8
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| PYI041 | 26 | 26 | 0 |
+| PYI024 | 24 | 24 | 0 |
+| PYI034 | 12 | 12 | 0 |
+| PYI036 | 12 | 12 | 0 |
+| PYI032 | 11 | 11 | 0 |
+| PYI016 | 2 | 2 | 0 |
+| PYI013 | 1 | 1 | 0 |
+| PYI030 | 1 | 1 | 0 |
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.9±0.09ms     4.1 MB/sec    1.00      9.9±0.04ms     4.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1945.2±13.96µs     8.6 MB/sec    1.00  1948.8±11.81µs     8.5 MB/sec
+formatter/numpy/globals.py                 1.00    216.0±2.42µs    13.7 MB/sec    1.01    217.3±2.04µs    13.6 MB/sec
+formatter/pydantic/types.py                1.00      4.2±0.04ms     6.1 MB/sec    1.00      4.2±0.04ms     6.1 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.2±0.09ms     3.1 MB/sec    1.02     13.4±0.18ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.01ms     5.0 MB/sec    1.00      3.4±0.03ms     5.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    450.9±0.76µs     6.5 MB/sec    1.02    459.0±1.04µs     6.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.9±0.03ms     4.3 MB/sec    1.03      6.0±0.10ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.01      6.9±0.06ms     5.9 MB/sec    1.00      6.8±0.06ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1428.5±3.54µs    11.7 MB/sec    1.00   1417.8±9.95µs    11.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00    156.3±1.19µs    18.9 MB/sec    1.01    157.2±2.81µs    18.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.02ms     8.4 MB/sec    1.00      3.0±0.03ms     8.4 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     12.2±0.35ms     3.3 MB/sec    1.01     12.4±0.45ms     3.3 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.4±0.10ms     7.0 MB/sec    1.01      2.4±0.14ms     6.9 MB/sec
+formatter/numpy/globals.py                 1.00   267.1±16.09µs    11.0 MB/sec    1.01   269.2±27.96µs    11.0 MB/sec
+formatter/pydantic/types.py                1.00      5.1±0.20ms     5.0 MB/sec    1.00      5.1±0.21ms     5.0 MB/sec
+linter/all-rules/large/dataset.py          1.00     16.4±0.32ms     2.5 MB/sec    1.01     16.6±0.38ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.4±0.20ms     3.8 MB/sec    1.01      4.5±0.21ms     3.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00   544.7±24.55µs     5.4 MB/sec    1.01   549.7±27.94µs     5.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.5±0.25ms     3.4 MB/sec    1.02      7.6±0.25ms     3.3 MB/sec
+linter/default-rules/large/dataset.py      1.00      9.0±0.25ms     4.5 MB/sec    1.01      9.0±0.34ms     4.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1863.6±63.62µs     8.9 MB/sec    1.00  1838.8±59.43µs     9.1 MB/sec
+linter/default-rules/numpy/globals.py      1.02    210.7±9.40µs    14.0 MB/sec    1.00   207.3±11.04µs    14.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.0±0.37ms     6.3 MB/sec    1.00      4.0±0.15ms     6.4 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Comment by @charliermarsh on 2023-08-03 04:35_
+
+Would any of PYI003 - PYI006 make sense to include?
+
+---
+
+_@charliermarsh approved on 2023-08-03 04:35_
+
+---
+
+_Comment by @andersk on 2023-08-03 05:29_
+
+PYI003 unrecognized-version-info-check and PY004 patch-version-comparison target version comparisons that aren’t specially recognized by type checkers but seem fine to allow in runtime code:
+
+```python
+MIN_VERSION = (3, 10)
+if sys.version_info < MIN_VERSION:  # PYI003
+    exit(1)
+
+if sys.version_info < (3, 10, 0):  # PYI004
+    exit(1)
+```
+
+Broadening PYI005 wrong-tuple-length-version-comparison and PYI006 bad-version-info-comparison could make sense. I had skipped these four rules together because they’re handled by the same function.
+
+I note that these rules are currently restricted to the context of an `if` statement condition, and then within at most one level of `and` or `or`. The `flake8_2020` functions cover the relevant expressions in all contexts and might be a better home for generalized versions of these rules.
+
+---
+
+_@dhruvmanila approved on 2023-08-03 05:51_
+
+This is awesome! Thanks a lot for doing this :)
+
+We may want to update the documentation to reflect that these rules will be checked against Python files as well but that can happen in another PR.
+
+---
+
+_Comment by @zanieb on 2023-08-03 14:52_
+
+Sweet! Thank you!
+
+---
+
+_Merged by @charliermarsh on 2023-08-03 15:40_
+
+---
+
+_Closed by @charliermarsh on 2023-08-03 15:40_
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-08-03 15:40_
+
+---

@@ -1,0 +1,86 @@
+```yaml
+number: 6660
+title: Bump version to 0.0.285
+type: pull_request
+state: merged
+author: zanieb
+labels: []
+assignees: []
+merged: true
+base: main
+head: release/285
+created_at: 2023-08-17T19:28:05Z
+updated_at: 2023-08-17T20:46:30Z
+url: https://github.com/astral-sh/ruff/pull/6660
+synced_at: 2026-01-12T02:52:04Z
+```
+
+# Bump version to 0.0.285
+
+---
+
+_Pull request opened by @zanieb on 2023-08-17 19:28_
+
+Requires
+- https://github.com/astral-sh/ruff/pull/6655
+- https://github.com/astral-sh/ruff/pull/6657
+
+---
+
+_Comment by @github-actions[bot] on 2023-08-17 19:57_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      3.3±0.01ms    12.5 MB/sec    1.03      3.4±0.01ms    12.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00   678.2±20.65µs    24.6 MB/sec    1.00    675.2±5.12µs    24.7 MB/sec
+formatter/numpy/globals.py                 1.01     70.9±0.97µs    41.6 MB/sec    1.00     70.5±0.32µs    41.8 MB/sec
+formatter/pydantic/types.py                1.00  1306.0±15.07µs    19.5 MB/sec    1.02  1335.7±24.77µs    19.1 MB/sec
+linter/all-rules/large/dataset.py          1.01     10.8±0.05ms     3.8 MB/sec    1.00     10.8±0.03ms     3.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      2.9±0.01ms     5.7 MB/sec    1.00      2.9±0.01ms     5.8 MB/sec
+linter/all-rules/numpy/globals.py          1.02    327.4±0.96µs     9.0 MB/sec    1.00    320.9±1.72µs     9.2 MB/sec
+linter/all-rules/pydantic/types.py         1.01      5.5±0.02ms     4.6 MB/sec    1.00      5.5±0.07ms     4.7 MB/sec
+linter/default-rules/large/dataset.py      1.04      5.8±0.02ms     7.0 MB/sec    1.00      5.6±0.02ms     7.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02   1214.1±6.32µs    13.7 MB/sec    1.00   1186.8±3.77µs    14.0 MB/sec
+linter/default-rules/numpy/globals.py      1.03    126.1±0.33µs    23.4 MB/sec    1.00    122.9±0.94µs    24.0 MB/sec
+linter/default-rules/pydantic/types.py     1.03      2.6±0.02ms     9.9 MB/sec    1.00      2.5±0.02ms    10.2 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      4.5±0.15ms     9.1 MB/sec    1.03      4.6±0.19ms     8.8 MB/sec
+formatter/numpy/ctypeslib.py               1.00   897.0±27.87µs    18.6 MB/sec    1.07   955.5±45.45µs    17.4 MB/sec
+formatter/numpy/globals.py                 1.00     93.0±3.21µs    31.7 MB/sec    1.05     97.7±5.68µs    30.2 MB/sec
+formatter/pydantic/types.py                1.00  1732.9±96.45µs    14.7 MB/sec    1.08  1875.9±76.97µs    13.6 MB/sec
+linter/all-rules/large/dataset.py          1.01     15.2±0.40ms     2.7 MB/sec    1.00     15.1±0.31ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.1±0.15ms     4.1 MB/sec    1.00      4.1±0.09ms     4.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00   500.8±22.23µs     5.9 MB/sec    1.04   518.7±16.07µs     5.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.5±0.22ms     3.4 MB/sec    1.05      7.8±0.18ms     3.3 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.3±0.23ms     4.9 MB/sec    1.03      8.6±0.17ms     4.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1794.2±84.24µs     9.3 MB/sec    1.00  1781.7±42.67µs     9.3 MB/sec
+linter/default-rules/numpy/globals.py      1.01    212.7±6.33µs    13.9 MB/sec    1.00    209.8±9.57µs    14.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.10ms     6.9 MB/sec    1.05      3.9±0.12ms     6.5 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Merged by @zanieb on 2023-08-17 20:46_
+
+---
+
+_Closed by @zanieb on 2023-08-17 20:46_
+
+---
+
+_Branch deleted on 2023-08-17 20:46_
+
+---

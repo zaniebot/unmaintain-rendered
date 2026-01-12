@@ -1,0 +1,99 @@
+```yaml
+number: 6456
+title: Improve counting of message arguments when msg is provided as a keyword
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+merged: true
+base: main
+head: charlie/args
+created_at: 2023-08-09T20:29:36Z
+updated_at: 2023-08-09T21:03:14Z
+url: https://github.com/astral-sh/ruff/pull/6456
+synced_at: 2026-01-12T02:52:04Z
+```
+
+# Improve counting of message arguments when msg is provided as a keyword
+
+---
+
+_Pull request opened by @charliermarsh on 2023-08-09 20:29_
+
+Closes https://github.com/astral-sh/ruff/issues/6454.
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-08-09 20:29_
+
+---
+
+_@zanieb approved on 2023-08-09 20:33_
+
+---
+
+_Comment by @charliermarsh on 2023-08-09 20:33_
+
+This was a regression in v0.0.283.
+
+---
+
+_Merged by @charliermarsh on 2023-08-09 20:39_
+
+---
+
+_Closed by @charliermarsh on 2023-08-09 20:39_
+
+---
+
+_Branch deleted on 2023-08-09 20:39_
+
+---
+
+_Comment by @github-actions[bot] on 2023-08-09 20:42_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.8±0.12ms     4.2 MB/sec    1.02     10.0±0.08ms     4.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1956.5±29.83µs     8.5 MB/sec    1.00  1959.7±21.01µs     8.5 MB/sec
+formatter/numpy/globals.py                 1.00    223.9±5.01µs    13.2 MB/sec    1.00    224.5±5.13µs    13.1 MB/sec
+formatter/pydantic/types.py                1.00      4.2±0.08ms     6.1 MB/sec    1.00      4.2±0.09ms     6.1 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.2±0.08ms     3.3 MB/sec    1.01     12.4±0.16ms     3.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.2±0.05ms     5.2 MB/sec    1.04      3.3±0.06ms     5.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    453.6±4.64µs     6.5 MB/sec    1.01    455.9±2.15µs     6.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.3±0.08ms     4.0 MB/sec    1.02      6.4±0.05ms     4.0 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.3±0.06ms     6.5 MB/sec    1.05      6.6±0.09ms     6.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1348.3±21.05µs    12.3 MB/sec    1.03  1394.7±10.85µs    11.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    156.0±2.60µs    18.9 MB/sec    1.02    159.0±1.85µs    18.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.8±0.03ms     9.0 MB/sec    1.03      2.9±0.03ms     8.8 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.1±0.16ms     4.0 MB/sec    1.01     10.2±0.13ms     4.0 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1926.6±23.22µs     8.6 MB/sec    1.01  1954.0±28.22µs     8.5 MB/sec
+formatter/numpy/globals.py                 1.00    213.3±4.52µs    13.8 MB/sec    1.03   220.6±16.97µs    13.4 MB/sec
+formatter/pydantic/types.py                1.00      4.2±0.06ms     6.0 MB/sec    1.01      4.3±0.06ms     6.0 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.8±0.12ms     3.2 MB/sec    1.02     13.1±0.21ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.03ms     4.8 MB/sec    1.02      3.5±0.04ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00    433.3±5.84µs     6.8 MB/sec    1.01    438.0±7.62µs     6.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.6±0.13ms     3.9 MB/sec    1.01      6.7±0.13ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.9±0.08ms     5.9 MB/sec    1.01      7.0±0.10ms     5.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1442.4±79.39µs    11.5 MB/sec    1.00  1446.1±16.09µs    11.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    163.4±2.36µs    18.1 MB/sec    1.03    167.5±3.48µs    17.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.04ms     8.3 MB/sec    1.01      3.1±0.03ms     8.2 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---

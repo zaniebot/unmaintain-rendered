@@ -1,0 +1,106 @@
+```yaml
+number: 6735
+title: "Remove `remove_super_arguments`"
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - internal
+assignees: []
+merged: true
+base: main
+head: charlie/pyup
+created_at: 2023-08-21T15:42:21Z
+updated_at: 2023-08-21T17:04:14Z
+url: https://github.com/astral-sh/ruff/pull/6735
+synced_at: 2026-01-12T02:52:04Z
+```
+
+# Remove `remove_super_arguments`
+
+---
+
+_Pull request opened by @charliermarsh on 2023-08-21 15:42_
+
+Now that we have an `Arguments` node, we can use it directly to get the range.
+
+
+---
+
+_Comment by @github-actions[bot] on 2023-08-21 16:02_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+1, -1, 0 error(s))
+
+<details><summary>airflow (+1, -1)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/ae25a52ae342c9e0bc3afdb21d613447c3687f6c/tests/providers/telegram/hooks/test_telegram.py#L35'>tests/providers/telegram/hooks/test_telegram.py:35:16:</a> UP008 [*] Use `super()` instead of `super(__class__, self)`
++ <a href='https://github.com/apache/airflow/blob/ae25a52ae342c9e0bc3afdb21d613447c3687f6c/tests/providers/telegram/hooks/test_telegram.py#L35'>tests/providers/telegram/hooks/test_telegram.py:35:21:</a> UP008 [*] Use `super()` instead of `super(__class__, self)`
+</pre>
+
+</p>
+</details>
+Rules changed: 1
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| UP008 | 2 | 1 | 1 |
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      3.8±0.20ms    10.7 MB/sec    1.00      3.8±0.24ms    10.7 MB/sec
+formatter/numpy/ctypeslib.py               1.01   809.5±28.06µs    20.6 MB/sec    1.00   798.8±38.28µs    20.8 MB/sec
+formatter/numpy/globals.py                 1.00     81.1±3.37µs    36.4 MB/sec    1.05     85.3±5.11µs    34.6 MB/sec
+formatter/pydantic/types.py                1.00  1590.7±75.18µs    16.0 MB/sec    1.06  1688.4±247.97µs    15.1 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.4±0.37ms     3.3 MB/sec    1.03     12.8±0.44ms     3.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.3±0.15ms     5.0 MB/sec    1.02      3.4±0.14ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.03   504.3±18.83µs     5.9 MB/sec    1.00   488.4±15.89µs     6.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.6±0.39ms     3.9 MB/sec    1.00      6.6±0.22ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.5±0.25ms     6.3 MB/sec    1.04      6.7±0.27ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1444.0±57.26µs    11.5 MB/sec    1.03  1481.7±46.91µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00   179.4±10.32µs    16.5 MB/sec    1.03    183.9±8.84µs    16.0 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.10ms     8.5 MB/sec    1.02      3.1±0.12ms     8.3 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      3.7±0.05ms    10.9 MB/sec    1.00      3.7±0.05ms    10.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00   767.1±19.83µs    21.7 MB/sec    1.00   764.6±12.14µs    21.8 MB/sec
+formatter/numpy/globals.py                 1.00     79.6±1.85µs    37.1 MB/sec    1.00     79.9±2.64µs    36.9 MB/sec
+formatter/pydantic/types.py                1.00  1535.5±24.05µs    16.6 MB/sec    1.01  1549.6±32.00µs    16.5 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.4±0.13ms     3.3 MB/sec    1.01     12.5±0.16ms     3.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.03ms     4.9 MB/sec    1.01      3.4±0.02ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.01    440.9±6.75µs     6.7 MB/sec    1.00   436.1±13.12µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.6±0.13ms     3.9 MB/sec    1.00      6.6±0.11ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.03      7.2±0.08ms     5.7 MB/sec    1.00      7.0±0.06ms     5.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.03  1520.1±22.33µs    11.0 MB/sec    1.00  1477.2±14.05µs    11.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    172.9±7.94µs    17.1 MB/sec    1.00    173.4±2.73µs    17.0 MB/sec
+linter/default-rules/pydantic/types.py     1.02      3.2±0.03ms     8.0 MB/sec    1.00      3.1±0.03ms     8.2 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Merged by @charliermarsh on 2023-08-21 17:04_
+
+---
+
+_Closed by @charliermarsh on 2023-08-21 17:04_
+
+---
+
+_Branch deleted on 2023-08-21 17:04_
+
+---
+
+_Label `internal` added by @charliermarsh on 2023-08-21 17:04_
+
+---

@@ -1,0 +1,96 @@
+```yaml
+number: 6556
+title: "Tweak documentation for `FBT002`"
+type: pull_request
+state: merged
+author: tjkuson
+labels:
+  - documentation
+assignees: []
+merged: true
+base: main
+head: fix-docs
+created_at: 2023-08-14T12:37:52Z
+updated_at: 2023-08-14T14:35:39Z
+url: https://github.com/astral-sh/ruff/pull/6556
+synced_at: 2026-01-12T02:52:04Z
+```
+
+# Tweak documentation for `FBT002`
+
+---
+
+_Pull request opened by @tjkuson on 2023-08-14 12:37_
+
+## Summary
+
+Make the rule clearer/improve example re: #6530
+
+## Test Plan
+
+Look at docs.
+
+
+---
+
+_Comment by @github-actions[bot] on 2023-08-14 13:13_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      4.0±0.03ms    10.2 MB/sec    1.02      4.0±0.02ms    10.1 MB/sec
+formatter/numpy/ctypeslib.py               1.05    802.6±5.15µs    20.7 MB/sec    1.00    764.7±2.91µs    21.8 MB/sec
+formatter/numpy/globals.py                 1.08     84.3±0.35µs    35.0 MB/sec    1.00     78.2±0.62µs    37.7 MB/sec
+formatter/pydantic/types.py                1.00  1629.6±10.21µs    15.6 MB/sec    1.00   1621.8±4.97µs    15.7 MB/sec
+linter/all-rules/large/dataset.py          1.00     10.3±0.04ms     3.9 MB/sec    1.00     10.3±0.06ms     4.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      2.8±0.01ms     6.0 MB/sec    1.00      2.8±0.02ms     6.0 MB/sec
+linter/all-rules/numpy/globals.py          1.01    396.5±3.18µs     7.4 MB/sec    1.00    394.2±1.97µs     7.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.4±0.02ms     4.8 MB/sec    1.00      5.4±0.01ms     4.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      5.4±0.01ms     7.5 MB/sec    1.00      5.4±0.02ms     7.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1203.3±13.68µs    13.8 MB/sec    1.00  1196.4±18.55µs    13.9 MB/sec
+linter/default-rules/numpy/globals.py      1.02    142.9±4.14µs    20.6 MB/sec    1.00    140.7±3.23µs    21.0 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.4±0.01ms    10.5 MB/sec    1.00      2.4±0.00ms    10.4 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      4.6±0.12ms     8.9 MB/sec    1.00      4.6±0.08ms     8.9 MB/sec
+formatter/numpy/ctypeslib.py               1.05   888.6±11.36µs    18.7 MB/sec    1.00   849.9±17.63µs    19.6 MB/sec
+formatter/numpy/globals.py                 1.09     93.7±5.71µs    31.5 MB/sec    1.00     85.9±2.29µs    34.4 MB/sec
+formatter/pydantic/types.py                1.00  1865.9±44.97µs    13.7 MB/sec    1.00  1872.7±34.68µs    13.6 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.0±0.22ms     3.1 MB/sec    1.01     13.1±0.24ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.03      3.6±0.08ms     4.6 MB/sec    1.00      3.5±0.04ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    446.9±9.96µs     6.6 MB/sec    1.00    445.4±7.36µs     6.6 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.8±0.14ms     3.7 MB/sec    1.01      6.9±0.16ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.1±0.10ms     5.7 MB/sec    1.00      7.1±0.08ms     5.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1504.6±23.76µs    11.1 MB/sec    1.00  1502.6±33.97µs    11.1 MB/sec
+linter/default-rules/numpy/globals.py      1.00    174.6±2.88µs    16.9 MB/sec    1.00    174.4±3.89µs    16.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.04ms     8.0 MB/sec    1.00      3.2±0.04ms     8.0 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Merged by @charliermarsh on 2023-08-14 13:22_
+
+---
+
+_Closed by @charliermarsh on 2023-08-14 13:22_
+
+---
+
+_Label `documentation` added by @charliermarsh on 2023-08-14 13:22_
+
+---
+
+_Branch deleted on 2023-08-14 14:35_
+
+---
