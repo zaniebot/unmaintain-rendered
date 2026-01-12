@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T17:34:22Z
-updated_at: 2026-01-12T08:27:19Z
+updated_at: 2026-01-12T10:28:59Z
 url: https://github.com/astral-sh/ruff/issues/10578
-synced_at: 2026-01-12T08:52:48Z
+synced_at: 2026-01-12T11:01:07Z
 ```
 
 # Dependency Dashboard
@@ -91,6 +91,7 @@ The following updates await pending status checks. To force their creation now, 
 
 The following updates have all been created. To force a retry/rebase of any, click on a checkbox below.
 
+ - [ ] <!-- rebase-branch=renovate/actions-checkout-digest -->[Update actions/checkout digest to 0c366fd](../pull/22513)
  - [ ] <!-- rebase-branch=renovate/unicode-normalization-0.x-lockfile -->[Update Rust crate unicode-normalization to v0.1.25](../pull/21229)
  - [ ] <!-- rebase-branch=renovate/unicode_names2-2.x -->[Update Rust crate unicode_names2 to v2](../pull/19172)
  - [ ] <!-- rebase-all-open-prs -->**Click on this checkbox to rebase all open PRs at once**
@@ -99,7 +100,6 @@ The following updates have all been created. To force a retry/rebase of any, cli
 
 The following updates are blocked by an existing closed PR. To recreate the PR, click on a checkbox below.
 
- - [ ] <!-- recreate-branch=renovate/actions-checkout-digest -->[Update actions/checkout digest to 0c366fd](../pull/22513)
  - [ ] <!-- recreate-branch=renovate/lsp-types-digest -->[Update lsp-types digest to ddc7dc8](../pull/20618)
  - [ ] <!-- recreate-branch=renovate/salsa-digest -->[Update salsa digest to b6398ec](../pull/22514)
  - [ ] <!-- recreate-branch=renovate/mkdocs-llmstxt-0.x -->[Update dependency mkdocs-llmstxt to v0.5.0](../pull/22524)

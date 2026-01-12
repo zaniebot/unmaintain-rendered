@@ -2,15 +2,15 @@
 number: 2427
 title: Invalid solution to contravariant type variable with upper bound
 type: issue
-state: open
+state: closed
 author: ibraheemdev
 labels:
   - generics
 assignees: []
 created_at: 2026-01-09T21:52:26Z
-updated_at: 2026-01-09T22:40:17Z
+updated_at: 2026-01-12T10:00:37Z
 url: https://github.com/astral-sh/ty/issues/2427
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T11:01:03Z
 ```
 
 # Invalid solution to contravariant type variable with upper bound
@@ -41,5 +41,9 @@ _Label `generics` added by @ibraheemdev on 2026-01-09 21:52_
 ---
 
 _Added to milestone `Stable` by @carljm on 2026-01-09 22:40_
+
+---
+
+_Closed by @dcreager on 2026-01-12 10:00_
 
 ---

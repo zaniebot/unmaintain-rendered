@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2025-12-29T15:54:57Z
-updated_at: 2025-12-29T16:04:01Z
+updated_at: 2026-01-12T10:01:22Z
 url: https://github.com/astral-sh/uv/issues/17253
-synced_at: 2026-01-10T01:57:37Z
+synced_at: 2026-01-12T11:01:24Z
 ```
 
 # `UV_TOOL_PYTHON` for using `uv tool` with CWD-aware version managers
@@ -47,5 +47,11 @@ _No response_
 ---
 
 _Label `enhancement` added by @jklaiho on 2025-12-29 15:54_
+
+---
+
+_Comment by @jklaiho on 2026-01-12 10:01_
+
+Having found out about #15119 via an ansible installation problem together with keyring, I'm actually not going to be able to use `uv tool` to set up my environment after all. I won't close this request, just in case someone finds utility in this idea besides myself. If not, then the maintainers may as well close this.
 
 ---

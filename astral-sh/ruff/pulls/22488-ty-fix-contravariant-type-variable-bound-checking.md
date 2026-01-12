@@ -2,18 +2,19 @@
 number: 22488
 title: "[ty] Fix contravariant type variable bound checking in specialization inference"
 type: pull_request
-state: open
+state: merged
 author: bxff
 labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+merged: true
 base: main
 head: fix-ty-2427
 created_at: 2026-01-10T06:56:32Z
-updated_at: 2026-01-12T09:47:12Z
+updated_at: 2026-01-12T10:03:29Z
 url: https://github.com/astral-sh/ruff/pull/22488
-synced_at: 2026-01-12T09:56:53Z
+synced_at: 2026-01-12T11:01:19Z
 ```
 
 # [ty] Fix contravariant type variable bound checking in specialization inference
@@ -221,5 +222,23 @@ _Comment by @astral-sh-bot[bot] on 2026-01-12 09:47_
 **[Full report with detailed diff](https://fddb8357.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://fddb8357.ty-ecosystem-ext.pages.dev/timing))
 
 
+
+---
+
+_Merged by @dcreager on 2026-01-12 10:00_
+
+---
+
+_Closed by @dcreager on 2026-01-12 10:00_
+
+---
+
+_@bxff reviewed on 2026-01-12 10:03_
+
+---
+
+_Review comment by @bxff on `crates/ty_python_semantic/src/types/generics.rs`:1886 on 2026-01-12 10:03_
+
+Thanks for the review :)
 
 ---

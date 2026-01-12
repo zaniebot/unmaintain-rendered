@@ -8,9 +8,9 @@ labels:
   - enhancement
 assignees: []
 created_at: 2026-01-11T15:12:07Z
-updated_at: 2026-01-11T15:12:07Z
+updated_at: 2026-01-12T10:34:24Z
 url: https://github.com/astral-sh/uv/issues/17405
-synced_at: 2026-01-12T02:26:26Z
+synced_at: 2026-01-12T11:01:24Z
 ```
 
 # Make .local Parameterizable
@@ -30,5 +30,11 @@ _No response_
 ---
 
 _Label `enhancement` added by @muellert on 2026-01-11 15:12_
+
+---
+
+_Comment by @konstin on 2026-01-12 10:34_
+
+uv reads the `XDG_` variables, can you use those?
 
 ---

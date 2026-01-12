@@ -8,9 +8,9 @@ labels:
   - wish
 assignees: []
 created_at: 2026-01-07T15:44:08Z
-updated_at: 2026-01-08T15:24:11Z
+updated_at: 2026-01-12T10:39:20Z
 url: https://github.com/astral-sh/ty/issues/2377
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T11:01:03Z
 ```
 
 # Cython support
@@ -34,5 +34,15 @@ _Comment by @asukaminato0721 on 2026-01-08 15:24_
 > Unfortunately, Cython doesn't have a proper linter or language server, as far as I know
 
 https://github.com/ktnrg45/cyright
+
+---
+
+_Comment by @sr0lle on 2026-01-12 10:39_
+
+> > Unfortunately, Cython doesn't have a proper linter or language server, as far as I know
+> 
+> https://github.com/ktnrg45/cyright
+
+Thanks, but this is only a linter, not a language server as this issue is about. Plus, the project has been abandoned for two years.
 
 ---

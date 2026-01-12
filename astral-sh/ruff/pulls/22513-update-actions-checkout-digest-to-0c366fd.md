@@ -2,7 +2,7 @@
 number: 22513
 title: Update actions/checkout digest to 0c366fd
 type: pull_request
-state: closed
+state: open
 author: renovate
 labels:
   - internal
@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: renovate/actions-checkout-digest
 created_at: 2026-01-12T00:43:02Z
-updated_at: 2026-01-12T08:12:48Z
+updated_at: 2026-01-12T10:47:35Z
 url: https://github.com/astral-sh/ruff/pull/22513
-synced_at: 2026-01-12T08:53:00Z
+synced_at: 2026-01-12T11:01:19Z
 ```
 
 # Update actions/checkout digest to 0c366fd
@@ -78,5 +78,47 @@ If you accidentally closed this PR, or if you changed your mind: rename this PR 
 ---
 
 _Branch deleted on 2026-01-12 08:12_
+
+---
+
+_Comment by @dhruvmanila on 2026-01-12 09:59_
+
+> I can't even find the mentioned commit...
+
+It's https://github.com/actions/checkout/commit/0c366fd6a839edf440554fa01a7085ccba70ac98 ?
+
+I merged it in the ty repo (https://github.com/astral-sh/ty/pull/2452) as that looked v6.0.2, the tag is on the parent commit actually. Do we need to revert that?
+
+---
+
+_Comment by @MichaReiser on 2026-01-12 10:23_
+
+> It's https://github.com/actions/checkout/commit/0c366fd6a839edf440554fa01a7085ccba70ac98 ?
+
+Now I'm not sure why I wasn't able to find it (I used Cmd+f?)
+
+Pinning it to `de0fac2e4500dabe0009e67214ff5f5447ce83dd` makes senes to me (which is what the tag points to)
+
+---
+
+_Comment by @MichaReiser on 2026-01-12 10:23_
+
+Why do I have to comment to re-open a PR???
+
+---
+
+_Branch restored on 2026-01-12 10:27_
+
+---
+
+_Reopened by @AlexWaygood on 2026-01-12 10:27_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-12 10:47_
+
+> Why do I have to comment to re-open a PR???
+
+You don't, but the bot deleted the branch immediately after the PR was closed, so you need to restore the branch before you can reopen the PR (I've done so)
 
 ---

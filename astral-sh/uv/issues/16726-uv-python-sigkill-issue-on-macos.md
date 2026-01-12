@@ -9,9 +9,9 @@ labels:
   - needs-mre
 assignees: []
 created_at: 2025-11-13T17:28:28Z
-updated_at: 2025-12-25T01:52:11Z
+updated_at: 2026-01-12T10:34:20Z
 url: https://github.com/astral-sh/uv/issues/16726
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T11:01:24Z
 ```
 
 # UV Python SIGKILL Issue on macOS
@@ -350,5 +350,60 @@ I'm on a work-managed computer and the workaround doesn't work for me due to som
 _Comment by @jr200 on 2025-12-25 01:52_
 
 Also having this issue recently - @mgrbyte's solution worked for me.
+
+---
+
+_Comment by @mgrbyte on 2026-01-12 10:34_
+
+I won't have time to investigate this again until April due to workload, but fwiw I have attached the script I use to workaround this in an automated fashion:
+
+```bash
+cat > ~/.local/bin/auto-sign-uv-binaries.sh << 'EOF'
+#!/bin/bash
+# Auto-sign uv-managed Python binaries to prevent macOS Gatekeeper SIGKILL
+# Usage: Run this periodically via cron or launchd
+
+UV_PYTHON_DIR="$HOME/.local/share/uv/python"
+
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starting Python binary signing check..."
+
+# Find all Python binaries in uv directory
+find "$UV_PYTHON_DIR" -type f -name "python*" -perm +111 2>/dev/null | while read -r python_bin; do
+    # Check if it's actually a binary (not a symlink)
+    if [ -f "$python_bin" ] && file "$python_bin" | grep -q "Mach-O.*executable"; then
+        echo "  Signing: $python_bin"
+        codesign --force --sign - "$python_bin" 2>&1 | grep -v "replacing existing signature" || true
+    fi
+done
+EOF
+
+chmod u+x ~/.local/bin/auto-sign-uv-binaries.sh
+ 
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Signing check complete."
+cat > ~/Library/LaunchAgents/com.mgrbyte.uv-python-signing.plist << 'EOF'
+  <?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+  <plist version="1.0">
+  <dict>
+      <key>Label</key>
+      <string>com.mgrbyte.uv-python-signing</string>
+      <key>ProgramArguments</key>
+      <array>
+          <string>/Users/mgrbyte/.local/bin/auto-sign-uv-python.sh</string>
+      </array>
+      <key>StartInterval</key>
+      <integer>300</integer>
+      <key>StandardOutPath</key>
+      <string>/Users/mgrbyte/Library/Logs/uv-python-signing.log</string>
+      <key>StandardErrorPath</key>
+      <string>/Users/mgrbyte/Library/Logs/uv-python-signing.log</string>
+      <key>RunAtLoad</key>
+      <true/>
+  </dict>
+  </plist>
+EOF
+
+launchctl load ~/Library/LaunchAgents/com.mgrbyte.uv-python-signing.plist
+```
 
 ---

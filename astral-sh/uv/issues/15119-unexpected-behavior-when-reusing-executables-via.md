@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2025-08-06T22:45:49Z
-updated_at: 2025-08-06T23:03:24Z
+updated_at: 2026-01-12T10:13:28Z
 url: https://github.com/astral-sh/uv/issues/15119
-synced_at: 2026-01-10T01:57:34Z
+synced_at: 2026-01-12T11:01:24Z
 ```
 
 # Unexpected behavior when reusing executables via --with-executables-from
@@ -110,5 +110,15 @@ _Comment by @chuckn246 on 2025-08-06 23:03_
 Sounds good to me!
 
 I wasn't exactly sure how to tag it, I just wanted to bring it to someone's attention. When I was testing it to use in my install scripts I hit the error and figured I better mention it.
+
+---
+
+_Comment by @jklaiho on 2026-01-12 10:13_
+
+Ah, I came to file an issue about this too, fortunately saw this already open.
+
+This actually prevents me from using `uv tool` with my Ansible installation. I rely on a custom `vault_password_file` setting, pointing to a Python script that uses `keyring` to fetch my `sudo` password on the target server, enabling `ansible-playbook` runs without entering the password. I need `keyring` installed not only in the same Python environment as Ansible, but many others as well, and `--force` won't be an option.
+
+Perhaps the `uv tool` docs could be more clear about this limitation in the **Python versions** and/or **Tool executables** section? I, for one, at least could not infer this from "Each tool environment is linked to a specific Python version".
 
 ---

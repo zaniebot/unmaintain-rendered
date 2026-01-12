@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-12T09:17:38Z
-updated_at: 2026-01-12T09:49:45Z
+updated_at: 2026-01-12T10:01:57Z
 url: https://github.com/astral-sh/ruff/issues/22529
-synced_at: 2026-01-12T09:56:43Z
+synced_at: 2026-01-12T11:01:08Z
 ```
 
 # PT017: add `pytest.raises(..., check=...)` example (for pytest â‰¥ 8.4.0)
@@ -58,7 +58,7 @@ _Renamed from "PT017 docs: add `pytest.raises(..., check=...)` example (pytest â
 
 _Comment by @harupy on 2026-01-12 09:18_
 
-Sorry, this is not a question but a rule request.
+Sorry, this is not a question but a rule request. If this request makes sense, I can file a PR.
 
 ---
 

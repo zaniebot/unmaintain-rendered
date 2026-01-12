@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-12T09:33:18Z
+updated_at: 2026-01-12T10:01:32Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-12T09:56:56Z
+synced_at: 2026-01-12T11:01:22Z
 ```
 
 # Dependency Dashboard
@@ -122,9 +122,7 @@ The following updates have all been created. To force a retry/rebase of any, cli
  - [ ] <!-- rebase-branch=renovate/pin-dependencies -->[Pin dependencies](../pull/17407) (`alpine`, `amazonlinux`, `debian`, `fedora`, `pyston/pyston`)
  - [ ] <!-- rebase-branch=renovate/actions-attest-build-provenance-digest -->[Update actions/attest-build-provenance digest to 98f3aa9](../pull/17302)
  - [ ] <!-- rebase-branch=renovate/actions-checkout-digest -->[Update actions/checkout digest to 0c366fd](../pull/17408)
- - [ ] <!-- rebase-branch=renovate/astral-sh-uv-0.x -->[Update dependency astral-sh/uv to v0.9.24](../pull/17409)
  - [ ] <!-- rebase-branch=renovate/cargo-util-0.x-lockfile -->[Update Rust crate cargo-util to v0.2.25](../pull/17410)
- - [ ] <!-- rebase-branch=renovate/peter-evans-create-pull-request-8.x -->[Update peter-evans/create-pull-request action to v8](../pull/17392)
  - [ ] <!-- rebase-all-open-prs -->**Click on this checkbox to rebase all open PRs at once**
 
 ## PR Closed (Blocked)
@@ -940,11 +938,11 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `taiki-e/install-action v2.57.1@a416ddeedbd372e614cc1386e8b642692f66865e` → [Updates: `v2.65.13`]
  - `CodSpeedHQ/action v4.4.1@346a2d8a8d9d38909abd0bc3d23f773110f076ad` → [Updates: `v4.5.2`]
  - `python 3.12` → [Updates: `3.14`]
- - `astral-sh/uv 0.9.21` → [Updates: `0.9.24`]
- - `astral-sh/uv 0.9.21` → [Updates: `0.9.24`]
- - `astral-sh/uv 0.9.21` → [Updates: `0.9.24`]
- - `astral-sh/uv 0.9.21` → [Updates: `0.9.24`]
- - `astral-sh/uv 0.9.21` → [Updates: `0.9.24`]
+ - `astral-sh/uv 0.9.24`
+ - `astral-sh/uv 0.9.24`
+ - `astral-sh/uv 0.9.24`
+ - `astral-sh/uv 0.9.24`
+ - `astral-sh/uv 0.9.24`
  - `alpine latest` → [Updates: `latest`]
  - `python 3.12.7` → [Updates: `3.14.2`]
  - `python 3.12` → [Updates: `3.14`]
@@ -1012,7 +1010,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
- - `peter-evans/create-pull-request v7.0.8@271a8d0340265f705b14b6d32b9829c1cb33d45e` → [Updates: `v8.0.0`]
+ - `peter-evans/create-pull-request v8.0.0@98357b18bf14b5342f975ff684046ec3b2a07725`
 
 </details>
 

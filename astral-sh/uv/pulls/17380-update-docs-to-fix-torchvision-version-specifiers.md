@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: appleparan/fix-pytorch-docs
 created_at: 2026-01-09T14:56:30Z
-updated_at: 2026-01-10T02:57:38Z
+updated_at: 2026-01-12T10:33:18Z
 url: https://github.com/astral-sh/uv/pull/17380
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T11:01:31Z
 ```
 
 # Update docs to fix torchvision version specifiers for CPU wheels
@@ -54,5 +54,15 @@ Without the `environments` constraint, uv generates all possible combinations of
 ```
 (extra == 'cpu' and extra == 'cu126')
 ```
+
+---
+
+_@konstin reviewed on 2026-01-12 10:33_
+
+---
+
+_Review comment by @konstin on `docs/guides/integration/pytorch.md`:252 on 2026-01-12 10:33_
+
+CC @atalman just to confirm that this is intentional
 
 ---
