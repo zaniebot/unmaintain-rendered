@@ -1,0 +1,167 @@
+```yaml
+number: 6049
+title: "Replace `NoHashHasher` usages with `FxHashMap`"
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - performance
+assignees: []
+merged: true
+base: main
+head: charlie/intmap
+created_at: 2023-07-24T23:31:11Z
+updated_at: 2023-07-25T00:01:47Z
+url: https://github.com/astral-sh/ruff/pull/6049
+synced_at: 2026-01-12T03:30:22Z
+```
+
+# Replace `NoHashHasher` usages with `FxHashMap`
+
+---
+
+_Pull request opened by @charliermarsh on 2023-07-24 23:31_
+
+## Summary
+
+I had always assumed that `NoHashHasher` would be faster when using integer keys, but benchmarking shows otherwise:
+
+```
+linter/default-rules/numpy/globals.py
+                        time:   [66.544 µs 66.606 µs 66.678 µs]
+                        thrpt:  [44.253 MiB/s 44.300 MiB/s 44.342 MiB/s]
+                 change:
+                        time:   [-0.1843% +0.1087% +0.3718%] (p = 0.46 > 0.05)
+                        thrpt:  [-0.3704% -0.1086% +0.1847%]
+                        No change in performance detected.
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high mild
+linter/default-rules/pydantic/types.py
+                        time:   [1.3787 ms 1.3811 ms 1.3837 ms]
+                        thrpt:  [18.431 MiB/s 18.466 MiB/s 18.498 MiB/s]
+                 change:
+                        time:   [-0.4827% -0.1074% +0.1927%] (p = 0.56 > 0.05)
+                        thrpt:  [-0.1924% +0.1075% +0.4850%]
+                        No change in performance detected.
+linter/default-rules/numpy/ctypeslib.py
+                        time:   [624.82 µs 625.96 µs 627.17 µs]
+                        thrpt:  [26.550 MiB/s 26.601 MiB/s 26.650 MiB/s]
+                 change:
+                        time:   [-0.7071% -0.4908% -0.2736%] (p = 0.00 < 0.05)
+                        thrpt:  [+0.2744% +0.4932% +0.7122%]
+                        Change within noise threshold.
+linter/default-rules/large/dataset.py
+                        time:   [3.1585 ms 3.1634 ms 3.1685 ms]
+                        thrpt:  [12.840 MiB/s 12.861 MiB/s 12.880 MiB/s]
+                 change:
+                        time:   [-1.5338% -1.3463% -1.1476%] (p = 0.00 < 0.05)
+                        thrpt:  [+1.1610% +1.3647% +1.5577%]
+                        Performance has improved.
+
+linter/all-rules/numpy/globals.py
+                        time:   [140.17 µs 140.37 µs 140.58 µs]
+                        thrpt:  [20.989 MiB/s 21.020 MiB/s 21.051 MiB/s]
+                 change:
+                        time:   [-0.1066% +0.3140% +0.7479%] (p = 0.14 > 0.05)
+                        thrpt:  [-0.7423% -0.3130% +0.1067%]
+                        No change in performance detected.
+Found 3 outliers among 100 measurements (3.00%)
+  2 (2.00%) high mild
+  1 (1.00%) high severe
+linter/all-rules/pydantic/types.py
+                        time:   [2.7030 ms 2.7069 ms 2.7112 ms]
+                        thrpt:  [9.4064 MiB/s 9.4216 MiB/s 9.4351 MiB/s]
+                 change:
+                        time:   [-0.6721% -0.4874% -0.2974%] (p = 0.00 < 0.05)
+                        thrpt:  [+0.2982% +0.4898% +0.6766%]
+                        Change within noise threshold.
+Found 14 outliers among 100 measurements (14.00%)
+  12 (12.00%) high mild
+  2 (2.00%) high severe
+linter/all-rules/numpy/ctypeslib.py
+                        time:   [1.4709 ms 1.4727 ms 1.4749 ms]
+                        thrpt:  [11.290 MiB/s 11.306 MiB/s 11.320 MiB/s]
+                 change:
+                        time:   [-1.1617% -0.9766% -0.8094%] (p = 0.00 < 0.05)
+                        thrpt:  [+0.8160% +0.9862% +1.1754%]
+                        Change within noise threshold.
+Found 12 outliers among 100 measurements (12.00%)
+  9 (9.00%) high mild
+  3 (3.00%) high severe
+linter/all-rules/large/dataset.py
+                        time:   [5.8086 ms 5.8163 ms 5.8240 ms]
+                        thrpt:  [6.9854 MiB/s 6.9946 MiB/s 7.0038 MiB/s]
+                 change:
+                        time:   [-1.5651% -1.3536% -1.1584%] (p = 0.00 < 0.05)
+                        thrpt:  [+1.1720% +1.3721% +1.5900%]
+                        Performance has improved.
+```
+
+My guess is that `NoHashHasher` underperforms because the keys are not randomly distributed...
+
+Anyway, it's a ~1% (significant) performance gain on some of the above, plus we get to remove a dependency.
+
+
+---
+
+_Label `performance` added by @charliermarsh on 2023-07-24 23:31_
+
+---
+
+_Merged by @charliermarsh on 2023-07-24 23:41_
+
+---
+
+_Closed by @charliermarsh on 2023-07-24 23:41_
+
+---
+
+_Branch deleted on 2023-07-24 23:41_
+
+---
+
+_Comment by @github-actions[bot] on 2023-07-24 23:45_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.7±0.03ms     4.2 MB/sec    1.00      9.7±0.03ms     4.2 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1892.2±1.58µs     8.8 MB/sec    1.00   1887.7±3.05µs     8.8 MB/sec
+formatter/numpy/globals.py                 1.00    206.9±0.40µs    14.3 MB/sec    1.00    207.3±0.97µs    14.2 MB/sec
+formatter/pydantic/types.py                1.00      4.2±0.01ms     6.1 MB/sec    1.00      4.2±0.01ms     6.1 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.3±0.03ms     3.1 MB/sec    1.00     13.3±0.03ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.00ms     4.9 MB/sec    1.00      3.4±0.01ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.01    365.4±1.10µs     8.1 MB/sec    1.00    362.5±0.98µs     8.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.0±0.01ms     4.2 MB/sec    1.00      6.0±0.02ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.0±0.01ms     5.8 MB/sec    1.00      7.0±0.01ms     5.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1420.4±2.39µs    11.7 MB/sec    1.00   1423.2±2.82µs    11.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00    149.8±1.40µs    19.7 MB/sec    1.00    150.1±0.44µs    19.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.00ms     8.1 MB/sec    1.00      3.1±0.01ms     8.1 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.7±0.10ms     3.8 MB/sec    1.02     11.0±0.12ms     3.7 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.1±0.03ms     7.8 MB/sec    1.01      2.2±0.05ms     7.7 MB/sec
+formatter/numpy/globals.py                 1.00    241.5±4.10µs    12.2 MB/sec    1.04   251.7±29.31µs    11.7 MB/sec
+formatter/pydantic/types.py                1.00      4.7±0.06ms     5.5 MB/sec    1.02      4.7±0.06ms     5.4 MB/sec
+linter/all-rules/large/dataset.py          1.00     14.9±0.12ms     2.7 MB/sec    1.00     14.9±0.14ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.9±0.03ms     4.2 MB/sec    1.00      4.0±0.05ms     4.2 MB/sec
+linter/all-rules/numpy/globals.py          1.00    477.4±5.41µs     6.2 MB/sec    1.00    479.3±6.08µs     6.2 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.9±0.12ms     3.7 MB/sec    1.00      6.9±0.07ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.0±0.08ms     5.1 MB/sec    1.00      8.0±0.08ms     5.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1660.6±14.89µs    10.0 MB/sec    1.00  1668.8±34.02µs    10.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00    190.7±2.70µs    15.5 MB/sec    1.01    192.5±2.64µs    15.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.03ms     7.2 MB/sec    1.00      3.6±0.04ms     7.2 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---

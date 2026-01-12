@@ -1,0 +1,104 @@
+```yaml
+number: 6118
+title: "Update `SIM115` to cover `pathlib.Path.open`"
+type: pull_request
+state: merged
+author: harupy
+labels: []
+assignees: []
+merged: true
+base: main
+head: SIM115-pathlib
+created_at: 2023-07-27T08:05:55Z
+updated_at: 2023-07-27T18:20:55Z
+url: https://github.com/astral-sh/ruff/pull/6118
+synced_at: 2026-01-12T03:30:22Z
+```
+
+# Update `SIM115` to cover `pathlib.Path.open`
+
+---
+
+_Pull request opened by @harupy on 2023-07-27 08:05_
+
+<!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+Close #5974
+
+## Test Plan
+
+<!-- How was it tested? -->
+
+New test cases
+
+---
+
+_Comment by @github-actions[bot] on 2023-07-27 08:15_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     11.5±0.34ms     3.5 MB/sec    1.03     11.9±0.60ms     3.4 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.2±0.08ms     7.5 MB/sec    1.05      2.4±0.17ms     7.1 MB/sec
+formatter/numpy/globals.py                 1.00   242.6±13.39µs    12.2 MB/sec    1.09   265.1±23.94µs    11.1 MB/sec
+formatter/pydantic/types.py                1.00      4.8±0.15ms     5.3 MB/sec    1.08      5.2±0.36ms     4.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     18.1±0.96ms     2.2 MB/sec    1.00     18.1±0.57ms     2.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.4±0.27ms     3.8 MB/sec    1.01      4.4±0.25ms     3.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00   540.0±34.34µs     5.5 MB/sec    1.03   558.1±20.05µs     5.3 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.8±0.43ms     3.3 MB/sec    1.03      8.0±0.52ms     3.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.6±0.70ms     4.7 MB/sec    1.06      9.1±0.57ms     4.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1731.8±82.70µs     9.6 MB/sec    1.10  1898.8±233.50µs     8.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00    195.0±6.31µs    15.1 MB/sec    1.03   201.2±13.44µs    14.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.22ms     6.9 MB/sec    1.02      3.8±0.17ms     6.7 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.3±0.14ms     3.9 MB/sec    1.00     10.3±0.12ms     3.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1966.2±24.46µs     8.5 MB/sec    1.00  1974.7±27.96µs     8.4 MB/sec
+formatter/numpy/globals.py                 1.00    215.8±5.63µs    13.7 MB/sec    1.02    220.2±9.76µs    13.4 MB/sec
+formatter/pydantic/types.py                1.00      4.3±0.05ms     5.9 MB/sec    1.01      4.3±0.06ms     5.9 MB/sec
+linter/all-rules/large/dataset.py          1.01     14.6±0.13ms     2.8 MB/sec    1.00     14.5±0.11ms     2.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.8±0.03ms     4.4 MB/sec    1.00      3.8±0.04ms     4.4 MB/sec
+linter/all-rules/numpy/globals.py          1.00    451.2±6.05µs     6.5 MB/sec    1.01    453.8±5.51µs     6.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.5±0.11ms     3.9 MB/sec    1.00      6.5±0.07ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.01      7.4±0.06ms     5.5 MB/sec    1.00      7.4±0.06ms     5.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1503.3±20.06µs    11.1 MB/sec    1.00  1505.9±15.09µs    11.1 MB/sec
+linter/default-rules/numpy/globals.py      1.00    168.8±3.31µs    17.5 MB/sec    1.00    169.0±3.39µs    17.5 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.3±0.04ms     7.8 MB/sec    1.00      3.2±0.03ms     7.9 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Merged by @charliermarsh on 2023-07-27 18:20_
+
+---
+
+_Closed by @charliermarsh on 2023-07-27 18:20_
+
+---
+
+_Comment by @charliermarsh on 2023-07-27 18:20_
+
+LGTM!
+
+---

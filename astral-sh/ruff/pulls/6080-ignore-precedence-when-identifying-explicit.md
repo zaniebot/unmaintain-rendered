@@ -1,0 +1,176 @@
+```yaml
+number: 6080
+title: Ignore precedence when identifying explicit concatenations
+type: pull_request
+state: closed
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+base: main
+head: charlie/exp
+created_at: 2023-07-26T01:10:32Z
+updated_at: 2023-07-26T01:55:33Z
+url: https://github.com/astral-sh/ruff/pull/6080
+synced_at: 2026-01-12T03:30:22Z
+```
+
+# Ignore precedence when identifying explicit concatenations
+
+---
+
+_Pull request opened by @charliermarsh on 2023-07-26 01:10_
+
+This is the other piece of https://github.com/astral-sh/ruff/issues/5332.
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-07-26 01:10_
+
+---
+
+_Label `rule` removed by @charliermarsh on 2023-07-26 01:10_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-07-26 01:10_
+
+---
+
+_Comment by @github-actions[bot] on 2023-07-26 01:33_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+30, -1, 0 error(s))
+
+<details><summary>airflow (+11, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/f2108892e89085f695f8a3f52e076b39288497c6/airflow/dag_processing/manager.py#L878'>airflow/dag_processing/manager.py:878:13:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/apache/airflow/blob/f2108892e89085f695f8a3f52e076b39288497c6/airflow/dag_processing/manager.py#L880'>airflow/dag_processing/manager.py:880:15:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/apache/airflow/blob/f2108892e89085f695f8a3f52e076b39288497c6/airflow/dag_processing/manager.py#L883'>airflow/dag_processing/manager.py:883:15:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/apache/airflow/blob/f2108892e89085f695f8a3f52e076b39288497c6/airflow/providers/amazon/aws/links/logs.py#L31'>airflow/providers/amazon/aws/links/logs.py:31:11:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/apache/airflow/blob/f2108892e89085f695f8a3f52e076b39288497c6/airflow/providers/google/cloud/hooks/dataflow.py#L457'>airflow/providers/google/cloud/hooks/dataflow.py:457:21:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/apache/airflow/blob/f2108892e89085f695f8a3f52e076b39288497c6/airflow/providers/google/cloud/links/cloud_storage_transfer.py#L39'>airflow/providers/google/cloud/links/cloud_storage_transfer.py:39:7:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/apache/airflow/blob/f2108892e89085f695f8a3f52e076b39288497c6/airflow/providers/google/cloud/links/dataform.py#L32'>airflow/providers/google/cloud/links/dataform.py:32:7:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/apache/airflow/blob/f2108892e89085f695f8a3f52e076b39288497c6/airflow/providers/google/cloud/links/dataform.py#L37'>airflow/providers/google/cloud/links/dataform.py:37:7:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/apache/airflow/blob/f2108892e89085f695f8a3f52e076b39288497c6/airflow/providers/google/cloud/links/dataform.py#L42'>airflow/providers/google/cloud/links/dataform.py:42:7:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/apache/airflow/blob/f2108892e89085f695f8a3f52e076b39288497c6/airflow/providers/google/cloud/links/dataform.py#L43'>airflow/providers/google/cloud/links/dataform.py:43:7:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/apache/airflow/blob/f2108892e89085f695f8a3f52e076b39288497c6/scripts/in_container/remove_arm_packages.py#L43'>scripts/in_container/remove_arm_packages.py:43:9:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
+</pre>
+
+</p>
+</details>
+<details><summary>bokeh (+1, -1)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/5ad0156dc652746e1b971aaab98bceaa32431e3b/src/bokeh/models/sources.py#L208'>src/bokeh/models/sources.py:208:21:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
+- <a href='https://github.com/bokeh/bokeh/blob/5ad0156dc652746e1b971aaab98bceaa32431e3b/src/bokeh/server/session.py#L90'>src/bokeh/server/session.py:90:40:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
+</pre>
+
+</p>
+</details>
+<details><summary>pip (+5, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/pypa/pip/blob/07049fe1a618ba4f3b3a6b4ce87afc92bdcc6b77/src/pip/_internal/resolution/resolvelib/factory.py#L717'>src/pip/_internal/resolution/resolvelib/factory.py:717:15:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/pypa/pip/blob/07049fe1a618ba4f3b3a6b4ce87afc92bdcc6b77/src/pip/_internal/resolution/resolvelib/factory.py#L718'>src/pip/_internal/resolution/resolvelib/factory.py:718:15:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/pypa/pip/blob/07049fe1a618ba4f3b3a6b4ce87afc92bdcc6b77/src/pip/_internal/resolution/resolvelib/factory.py#L719'>src/pip/_internal/resolution/resolvelib/factory.py:719:15:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/pypa/pip/blob/07049fe1a618ba4f3b3a6b4ce87afc92bdcc6b77/src/pip/_internal/resolution/resolvelib/factory.py#L720'>src/pip/_internal/resolution/resolvelib/factory.py:720:15:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/pypa/pip/blob/07049fe1a618ba4f3b3a6b4ce87afc92bdcc6b77/tests/lib/__init__.py#L844'>tests/lib/__init__.py:844:13:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
+</pre>
+
+</p>
+</details>
+<details><summary>zulip (+13, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/5ccb408f194ea54c6137f650384d6daa3173ceec/scripts/lib/zulip_tools.py#L227'>scripts/lib/zulip_tools.py:227:19:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/zulip/zulip/blob/5ccb408f194ea54c6137f650384d6daa3173ceec/scripts/lib/zulip_tools.py#L237'>scripts/lib/zulip_tools.py:237:15:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/zulip/zulip/blob/5ccb408f194ea54c6137f650384d6daa3173ceec/scripts/lib/zulip_tools.py#L238'>scripts/lib/zulip_tools.py:238:15:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/zulip/zulip/blob/5ccb408f194ea54c6137f650384d6daa3173ceec/scripts/lib/zulip_tools.py#L239'>scripts/lib/zulip_tools.py:239:15:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/zulip/zulip/blob/5ccb408f194ea54c6137f650384d6daa3173ceec/scripts/lib/zulip_tools.py#L240'>scripts/lib/zulip_tools.py:240:15:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/zulip/zulip/blob/5ccb408f194ea54c6137f650384d6daa3173ceec/zerver/actions/streams.py#L1273'>zerver/actions/streams.py:1273:15:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/zulip/zulip/blob/5ccb408f194ea54c6137f650384d6daa3173ceec/zerver/actions/streams.py#L1274'>zerver/actions/streams.py:1274:15:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/zulip/zulip/blob/5ccb408f194ea54c6137f650384d6daa3173ceec/zerver/actions/streams.py#L1277'>zerver/actions/streams.py:1277:15:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/zulip/zulip/blob/5ccb408f194ea54c6137f650384d6daa3173ceec/zerver/lib/emoji.py#L41'>zerver/lib/emoji.py:41:5:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/zulip/zulip/blob/5ccb408f194ea54c6137f650384d6daa3173ceec/zerver/lib/markdown/api_return_values_table_generator.py#L100'>zerver/lib/markdown/api_return_values_table_generator.py:100:15:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/zulip/zulip/blob/5ccb408f194ea54c6137f650384d6daa3173ceec/zerver/lib/markdown/api_return_values_table_generator.py#L89'>zerver/lib/markdown/api_return_values_table_generator.py:89:19:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/zulip/zulip/blob/5ccb408f194ea54c6137f650384d6daa3173ceec/zerver/webhooks/taiga/view.py#L357'>zerver/webhooks/taiga/view.py:357:15:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
++ <a href='https://github.com/zulip/zulip/blob/5ccb408f194ea54c6137f650384d6daa3173ceec/zerver/webhooks/taiga/view.py#L371'>zerver/webhooks/taiga/view.py:371:15:</a> ISC003 Explicitly concatenated string should be implicitly concatenated
+</pre>
+
+</p>
+</details>
+Rules changed: 1
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| ISC003 | 31 | 30 | 1 |
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.02      9.4±0.09ms     4.3 MB/sec    1.00      9.2±0.03ms     4.4 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1869.7±5.38µs     8.9 MB/sec    1.00   1861.8±1.94µs     8.9 MB/sec
+formatter/numpy/globals.py                 1.00    209.1±4.17µs    14.1 MB/sec    1.00    208.5±1.14µs    14.2 MB/sec
+formatter/pydantic/types.py                1.00      4.0±0.01ms     6.3 MB/sec    1.00      4.0±0.01ms     6.3 MB/sec
+linter/all-rules/large/dataset.py          1.01     12.7±0.11ms     3.2 MB/sec    1.00     12.6±0.07ms     3.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.3±0.03ms     5.1 MB/sec    1.00      3.2±0.00ms     5.2 MB/sec
+linter/all-rules/numpy/globals.py          1.01    426.6±1.12µs     6.9 MB/sec    1.00    422.7±0.66µs     7.0 MB/sec
+linter/all-rules/pydantic/types.py         1.03      6.0±0.08ms     4.3 MB/sec    1.00      5.8±0.02ms     4.4 MB/sec
+linter/default-rules/large/dataset.py      1.02      6.6±0.04ms     6.1 MB/sec    1.00      6.5±0.02ms     6.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1407.8±6.99µs    11.8 MB/sec    1.00   1404.0±1.28µs    11.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    155.8±1.53µs    18.9 MB/sec    1.00    155.5±0.19µs    19.0 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.0±0.01ms     8.5 MB/sec    1.00      3.0±0.02ms     8.6 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.8±0.13ms     3.8 MB/sec    1.00     10.8±0.14ms     3.8 MB/sec
+formatter/numpy/ctypeslib.py               1.01      2.1±0.03ms     7.8 MB/sec    1.00      2.1±0.05ms     7.8 MB/sec
+formatter/numpy/globals.py                 1.00    242.8±4.99µs    12.2 MB/sec    1.00   243.5±11.88µs    12.1 MB/sec
+formatter/pydantic/types.py                1.00      4.7±0.06ms     5.4 MB/sec    1.00      4.7±0.06ms     5.4 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.1±0.16ms     2.7 MB/sec    1.01     15.2±0.42ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.0±0.07ms     4.1 MB/sec    1.00      4.0±0.05ms     4.2 MB/sec
+linter/all-rules/numpy/globals.py          1.00    483.3±7.02µs     6.1 MB/sec    1.00    484.1±6.32µs     6.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.0±0.09ms     3.6 MB/sec    1.00      7.0±0.07ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.01      8.1±0.13ms     5.0 MB/sec    1.00      8.0±0.10ms     5.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1674.8±32.13µs     9.9 MB/sec    1.01  1690.3±25.63µs     9.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    193.6±3.31µs    15.2 MB/sec    1.00    194.5±2.71µs    15.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.05ms     7.0 MB/sec    1.00      3.6±0.06ms     7.0 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Comment by @charliermarsh on 2023-07-26 01:54_
+
+This might not actually be safe.
+
+---
+
+_Comment by @charliermarsh on 2023-07-26 01:55_
+
+Mmm yeah, this suggests an implicit concatenation here which is wrong:
+
+```python
+print(
+       "Unexpected changes:\n"
+        + "\n".join(["1", "2", "3"])
+)
+```
+
+---
+
+_Closed by @charliermarsh on 2023-07-26 01:55_
+
+---

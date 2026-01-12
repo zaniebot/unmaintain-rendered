@@ -1,0 +1,134 @@
+```yaml
+number: 6083
+title: Allow pytest.raises body to contain a single func or class definition
+type: pull_request
+state: merged
+author: harupy
+labels: []
+assignees: []
+merged: true
+base: main
+head: PT012-allow-def
+created_at: 2023-07-26T03:33:03Z
+updated_at: 2023-07-26T03:59:01Z
+url: https://github.com/astral-sh/ruff/pull/6083
+synced_at: 2026-01-12T03:30:22Z
+```
+
+# Allow pytest.raises body to contain a single func or class definition
+
+---
+
+_Pull request opened by @harupy on 2023-07-26 03:33_
+
+<!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+https://github.com/astral-sh/ruff/pull/6081#issuecomment-1650858388
+
+## Test Plan
+
+<!-- How was it tested? -->
+
+New test cases
+
+
+---
+
+_Comment by @github-actions[bot] on 2023-07-26 03:44_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+0, -9, 0 error(s))
+
+<details><summary>airflow (+0, -4)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/8809478f444da794254a52b19c4090b2d5726102/tests/decorators/test_python.py#L224'>tests/decorators/test_python.py:224:9:</a> PT012 `pytest.raises()` block should contain a single simple statement
+- <a href='https://github.com/apache/airflow/blob/8809478f444da794254a52b19c4090b2d5726102/tests/utils/test_retries.py#L78'>tests/utils/test_retries.py:78:9:</a> PT012 `pytest.raises()` block should contain a single simple statement
+- <a href='https://github.com/apache/airflow/blob/8809478f444da794254a52b19c4090b2d5726102/tests/utils/test_session.py#L30'>tests/utils/test_session.py:30:9:</a> PT012 `pytest.raises()` block should contain a single simple statement
+- <a href='https://github.com/apache/airflow/blob/8809478f444da794254a52b19c4090b2d5726102/tests/utils/test_task_group.py#L1091'>tests/utils/test_task_group.py:1091:5:</a> PT012 `pytest.raises()` block should contain a single simple statement
+</pre>
+
+</p>
+</details>
+<details><summary>disnake (+0, -5)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/DisnakeDev/disnake/blob/a309929c9b7c43eba5fa6103571d3fa562cb6def/tests/ext/commands/test_base_core.py#L33'>tests/ext/commands/test_base_core.py:33:9:</a> PT012 `pytest.raises()` block should contain a single simple statement
+- <a href='https://github.com/DisnakeDev/disnake/blob/a309929c9b7c43eba5fa6103571d3fa562cb6def/tests/ext/tasks/test_loops.py#L22'>tests/ext/tasks/test_loops.py:22:9:</a> PT012 `pytest.raises()` block should contain a single simple statement
+- <a href='https://github.com/DisnakeDev/disnake/blob/a309929c9b7c43eba5fa6103571d3fa562cb6def/tests/ext/tasks/test_loops.py#L35'>tests/ext/tasks/test_loops.py:35:9:</a> PT012 `pytest.raises()` block should contain a single simple statement
+- <a href='https://github.com/DisnakeDev/disnake/blob/a309929c9b7c43eba5fa6103571d3fa562cb6def/tests/ext/tasks/test_loops.py#L76'>tests/ext/tasks/test_loops.py:76:9:</a> PT012 `pytest.raises()` block should contain a single simple statement
+- <a href='https://github.com/DisnakeDev/disnake/blob/a309929c9b7c43eba5fa6103571d3fa562cb6def/tests/test_flags.py#L96'>tests/test_flags.py:96:5:</a> PT012 `pytest.raises()` block should contain a single simple statement
+</pre>
+
+</p>
+</details>
+Rules changed: 1
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| PT012 | 9 | 0 | 9 |
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.9±0.08ms     3.7 MB/sec    1.01     11.1±0.06ms     3.7 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.2±0.01ms     7.5 MB/sec    1.00      2.2±0.01ms     7.5 MB/sec
+formatter/numpy/globals.py                 1.00    246.8±1.27µs    12.0 MB/sec    1.02   250.8±10.95µs    11.8 MB/sec
+formatter/pydantic/types.py                1.00      4.8±0.02ms     5.4 MB/sec    1.00      4.8±0.03ms     5.3 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.2±0.14ms     2.7 MB/sec    1.00     15.1±0.14ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.8±0.02ms     4.3 MB/sec    1.00      3.8±0.02ms     4.3 MB/sec
+linter/all-rules/numpy/globals.py          1.00    502.3±2.60µs     5.9 MB/sec    1.01    508.9±2.00µs     5.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.9±0.04ms     3.7 MB/sec    1.00      7.0±0.04ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.01      7.9±0.05ms     5.2 MB/sec    1.00      7.8±0.04ms     5.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1672.9±8.78µs    10.0 MB/sec    1.00   1672.0±6.69µs    10.0 MB/sec
+linter/default-rules/numpy/globals.py      1.01    186.9±0.26µs    15.8 MB/sec    1.00    185.7±0.73µs    15.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.01ms     7.2 MB/sec    1.00      3.6±0.01ms     7.2 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     11.1±0.12ms     3.7 MB/sec    1.00     11.1±0.16ms     3.7 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.1±0.02ms     7.8 MB/sec    1.00      2.1±0.02ms     7.8 MB/sec
+formatter/numpy/globals.py                 1.00    232.6±6.31µs    12.7 MB/sec    1.00    232.3±6.40µs    12.7 MB/sec
+formatter/pydantic/types.py                1.00      4.8±0.10ms     5.3 MB/sec    1.00      4.8±0.04ms     5.3 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.2±0.14ms     2.7 MB/sec    1.01     15.4±0.14ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.0±0.06ms     4.1 MB/sec    1.00      4.0±0.04ms     4.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00   416.8±11.43µs     7.1 MB/sec    1.00    415.1±9.62µs     7.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.0±0.06ms     3.6 MB/sec    1.00      7.1±0.13ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.2±0.07ms     5.0 MB/sec    1.00      8.2±0.20ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1671.4±16.83µs    10.0 MB/sec    1.00  1652.1±14.79µs    10.1 MB/sec
+linter/default-rules/numpy/globals.py      1.01    176.4±3.50µs    16.7 MB/sec    1.00    175.4±5.52µs    16.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.04ms     6.9 MB/sec    1.00      3.7±0.04ms     6.9 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Merged by @charliermarsh on 2023-07-26 03:45_
+
+---
+
+_Closed by @charliermarsh on 2023-07-26 03:45_
+
+---
+
+_Branch deleted on 2023-07-26 03:48_
+
+---

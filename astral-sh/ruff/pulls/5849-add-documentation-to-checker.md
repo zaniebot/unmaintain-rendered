@@ -1,0 +1,104 @@
+```yaml
+number: 5849
+title: "Add documentation to `Checker`"
+type: pull_request
+state: merged
+author: charliermarsh
+labels: []
+assignees: []
+merged: true
+base: main
+head: charlie/visitor-docs
+created_at: 2023-07-18T00:19:06Z
+updated_at: 2023-07-18T11:52:06Z
+url: https://github.com/astral-sh/ruff/pull/5849
+synced_at: 2026-01-12T03:30:22Z
+```
+
+# Add documentation to `Checker`
+
+---
+
+_Pull request opened by @charliermarsh on 2023-07-18 00:19_
+
+## Summary
+
+Documents the overall responsibilities along with the various steps in the data flow.
+
+---
+
+_Review requested from @MichaReiser by @charliermarsh on 2023-07-18 00:19_
+
+---
+
+_Comment by @github-actions[bot] on 2023-07-18 00:32_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      9.8±0.03ms     4.1 MB/sec    1.00      9.8±0.03ms     4.2 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1885.5±5.85µs     8.8 MB/sec    1.00   1876.7±8.48µs     8.9 MB/sec
+formatter/numpy/globals.py                 1.00    204.1±1.50µs    14.5 MB/sec    1.01    205.2±1.59µs    14.4 MB/sec
+formatter/pydantic/types.py                1.02      4.2±0.01ms     6.0 MB/sec    1.00      4.2±0.01ms     6.1 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.8±0.03ms     2.9 MB/sec    1.00     13.8±0.04ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.01ms     4.8 MB/sec    1.00      3.5±0.01ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00    373.3±2.29µs     7.9 MB/sec    1.00    371.9±1.31µs     7.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.2±0.04ms     4.1 MB/sec    1.00      6.2±0.01ms     4.1 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.0±0.02ms     5.8 MB/sec    1.00      7.0±0.02ms     5.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1424.4±3.14µs    11.7 MB/sec    1.00   1417.4±3.58µs    11.7 MB/sec
+linter/default-rules/numpy/globals.py      1.01    149.6±0.30µs    19.7 MB/sec    1.00    147.7±0.29µs    20.0 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.04ms     8.2 MB/sec    1.00      3.1±0.01ms     8.2 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     13.2±0.41ms     3.1 MB/sec    1.06     14.1±0.34ms     2.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.6±0.07ms     6.4 MB/sec    1.04      2.7±0.06ms     6.2 MB/sec
+formatter/numpy/globals.py                 1.00    292.1±8.15µs    10.1 MB/sec    1.05   305.9±23.55µs     9.6 MB/sec
+formatter/pydantic/types.py                1.00      5.6±0.16ms     4.5 MB/sec    1.06      6.0±0.14ms     4.3 MB/sec
+linter/all-rules/large/dataset.py          1.01     18.7±0.29ms     2.2 MB/sec    1.00     18.6±0.30ms     2.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.9±0.12ms     3.4 MB/sec    1.00      4.9±0.11ms     3.4 MB/sec
+linter/all-rules/numpy/globals.py          1.00   591.0±16.46µs     5.0 MB/sec    1.02   601.8±26.39µs     4.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.5±0.27ms     3.0 MB/sec    1.00      8.5±0.29ms     3.0 MB/sec
+linter/default-rules/large/dataset.py      1.00      9.6±0.23ms     4.2 MB/sec    1.00      9.5±0.24ms     4.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.0±0.04ms     8.3 MB/sec    1.00      2.0±0.05ms     8.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    230.4±7.28µs    12.8 MB/sec    1.01   233.6±12.15µs    12.6 MB/sec
+linter/default-rules/pydantic/types.py     1.01      4.3±0.10ms     6.0 MB/sec    1.00      4.2±0.07ms     6.0 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_@MichaReiser approved on 2023-07-18 06:02_
+
+---
+
+_Comment by @MichaReiser on 2023-07-18 06:02_
+
+Thank you
+
+---
+
+_@konstin approved on 2023-07-18 11:47_
+
+---
+
+_Merged by @charliermarsh on 2023-07-18 11:52_
+
+---
+
+_Closed by @charliermarsh on 2023-07-18 11:52_
+
+---
+
+_Branch deleted on 2023-07-18 11:52_
+
+---

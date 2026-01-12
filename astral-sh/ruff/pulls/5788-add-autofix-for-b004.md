@@ -1,0 +1,132 @@
+```yaml
+number: 5788
+title: Add autofix for B004
+type: pull_request
+state: merged
+author: density
+labels:
+  - fixes
+assignees: []
+merged: true
+base: main
+head: B004-autofix
+created_at: 2023-07-15T20:38:13Z
+updated_at: 2023-07-16T16:06:35Z
+url: https://github.com/astral-sh/ruff/pull/5788
+synced_at: 2026-01-12T03:30:21Z
+```
+
+# Add autofix for B004
+
+---
+
+_Pull request opened by @density on 2023-07-15 20:38_
+
+## Summary
+
+Adds autofix for `hasattr` case of B004. I don't think it's safe (or simple) to implement it for the `getattr` case because, inter alia, calling `getattr` may have side effects.
+
+Fixes #3545
+
+## Test Plan
+
+Existing tests were sufficient. Updated snapshots
+
+
+---
+
+_Comment by @github-actions[bot] on 2023-07-15 20:48_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+1, -1, 0 error(s))
+
+<details><summary>airflow (+1, -1)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/c6594480e2722513fd082a6c65e30e2504698ba2/airflow/www/extensions/init_appbuilder.py#L365'>airflow/www/extensions/init_appbuilder.py:365:12:</a> B004 Using `hasattr(x, '__call__')` to test if x is callable is unreliable. Use `callable(x)` for consistent results.
++ <a href='https://github.com/apache/airflow/blob/c6594480e2722513fd082a6c65e30e2504698ba2/airflow/www/extensions/init_appbuilder.py#L365'>airflow/www/extensions/init_appbuilder.py:365:12:</a> B004 [*] Using `hasattr(x, "__call__")` to test if x is callable is unreliable. Use `callable(x)` for consistent results.
+</pre>
+
+</p>
+</details>
+Rules changed: 1
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| B004 | 2 | 1 | 1 |
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     11.1±0.23ms     3.7 MB/sec    1.02     11.3±0.15ms     3.6 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.2±0.04ms     7.5 MB/sec    1.00      2.2±0.01ms     7.5 MB/sec
+formatter/numpy/globals.py                 1.00   221.5±15.08µs    13.3 MB/sec    1.12    248.1±4.92µs    11.9 MB/sec
+formatter/pydantic/types.py                1.00      4.7±0.32ms     5.5 MB/sec    1.03      4.8±0.03ms     5.3 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.7±0.39ms     2.6 MB/sec    1.07     16.8±0.12ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.0±0.14ms     4.2 MB/sec    1.03      4.1±0.02ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00   499.3±35.08µs     5.9 MB/sec    1.09    544.4±1.38µs     5.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.6±0.43ms     3.9 MB/sec    1.13      7.5±0.09ms     3.4 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.2±0.34ms     5.7 MB/sec    1.16      8.3±0.06ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1726.5±36.58µs     9.6 MB/sec    1.04  1788.7±24.03µs     9.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    201.4±1.90µs    14.7 MB/sec    1.07    215.5±6.32µs    13.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.08ms     7.1 MB/sec    1.03      3.7±0.03ms     6.9 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.8±0.06ms     3.8 MB/sec    1.00     10.8±0.07ms     3.8 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.1±0.02ms     7.8 MB/sec    1.00      2.1±0.03ms     7.8 MB/sec
+formatter/numpy/globals.py                 1.00    242.2±3.75µs    12.2 MB/sec    1.01    244.6±7.68µs    12.1 MB/sec
+formatter/pydantic/types.py                1.00      4.6±0.06ms     5.5 MB/sec    1.01      4.7±0.06ms     5.5 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.3±0.09ms     2.7 MB/sec    1.03     15.7±0.09ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.1±0.04ms     4.1 MB/sec    1.01      4.1±0.05ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    500.4±6.34µs     5.9 MB/sec    1.01   505.7±10.44µs     5.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.0±0.05ms     3.7 MB/sec    1.02      7.1±0.07ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.9±0.05ms     5.1 MB/sec    1.00      8.0±0.05ms     5.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1694.5±15.83µs     9.8 MB/sec    1.00  1702.9±21.32µs     9.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00    199.7±2.43µs    14.8 MB/sec    1.02    203.9±3.20µs    14.5 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.5±0.03ms     7.2 MB/sec    1.01      3.6±0.02ms     7.1 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Marked ready for review by @density on 2023-07-15 23:21_
+
+---
+
+_Label `autofix` added by @charliermarsh on 2023-07-16 01:24_
+
+---
+
+_Merged by @charliermarsh on 2023-07-16 01:32_
+
+---
+
+_Closed by @charliermarsh on 2023-07-16 01:32_
+
+---
+
+_Comment by @bluetech on 2023-07-16 14:36_
+
+> I don't think it's safe (or simple) to implement it for the getattr case because, inter alia, calling getattr may have side effects.
+
+FYI, `hasattr` has the same side effects as `getattr`, it's basically `getattr` + try-except.
+
+---
+
+_Branch deleted on 2023-07-16 16:06_
+
+---
+
+_Comment by @density on 2023-07-16 16:06_
+
+@bluetech oof, good point. Sad but not surprising.
+
+---

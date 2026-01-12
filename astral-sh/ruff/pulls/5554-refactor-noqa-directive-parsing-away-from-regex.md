@@ -1,0 +1,416 @@
+```yaml
+number: 5554
+title: "Refactor `noqa` directive parsing away from regex-based implementation"
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - performance
+  - suppression
+assignees: []
+merged: true
+base: main
+head: charlie/noqa-parser
+created_at: 2023-07-06T05:45:06Z
+updated_at: 2023-07-23T23:25:52Z
+url: https://github.com/astral-sh/ruff/pull/5554
+synced_at: 2026-01-12T03:30:21Z
+```
+
+# Refactor `noqa` directive parsing away from regex-based implementation
+
+---
+
+_Pull request opened by @charliermarsh on 2023-07-06 05:45_
+
+## Summary
+
+This PR removes our regex-based implementation in favor of "manual" parsing.
+
+I tried a couple different implementations. In the benchmarks below:
+
+- `Directive/Regex` is our implementation on `main`.
+- `Directive/Find` just uses `text.find("noqa")`, which is insufficient, since it doesn't cover case-insensitive variants like `NOQA`, and doesn't handle multiple `noqa` matches in a single like, like ` # Here's a noqa comment # noqa: F401`. But it's kind of a baseline.
+- `Directive/Memchr` uses three `memchr` iterative finders (one for `noqa`, `NOQA`, and `NoQA`).
+- `Directive/AhoCorasick` is roughly the variant checked-in here.
+
+The raw results:
+
+```
+Directive/Regex/# noqa: F401
+                        time:   [273.69 ns 274.71 ns 276.03 ns]
+                        change: [+1.4467% +1.8979% +2.4243%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 15 outliers among 100 measurements (15.00%)
+  3 (3.00%) low mild
+  8 (8.00%) high mild
+  4 (4.00%) high severe
+Directive/Find/# noqa: F401
+                        time:   [66.972 ns 67.048 ns 67.132 ns]
+                        change: [+2.8292% +2.9377% +3.0540%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 15 outliers among 100 measurements (15.00%)
+  1 (1.00%) low severe
+  3 (3.00%) low mild
+  8 (8.00%) high mild
+  3 (3.00%) high severe
+Directive/AhoCorasick/# noqa: F401
+                        time:   [76.922 ns 77.189 ns 77.536 ns]
+                        change: [+0.4265% +0.6862% +0.9871%] (p = 0.00 < 0.05)
+                        Change within noise threshold.
+Found 8 outliers among 100 measurements (8.00%)
+  1 (1.00%) low mild
+  3 (3.00%) high mild
+  4 (4.00%) high severe
+Directive/Memchr/# noqa: F401
+                        time:   [62.627 ns 62.654 ns 62.679 ns]
+                        change: [-0.1780% -0.0887% -0.0120%] (p = 0.03 < 0.05)
+                        Change within noise threshold.
+Found 11 outliers among 100 measurements (11.00%)
+  1 (1.00%) low severe
+  5 (5.00%) low mild
+  3 (3.00%) high mild
+  2 (2.00%) high severe
+Directive/Regex/# noqa: F401, F841
+                        time:   [321.83 ns 322.39 ns 322.93 ns]
+                        change: [+8602.4% +8623.5% +8644.5%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 5 outliers among 100 measurements (5.00%)
+  1 (1.00%) low severe
+  2 (2.00%) low mild
+  1 (1.00%) high mild
+  1 (1.00%) high severe
+Directive/Find/# noqa: F401, F841
+                        time:   [78.618 ns 78.758 ns 78.896 ns]
+                        change: [+1.6909% +1.8771% +2.0628%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 3 outliers among 100 measurements (3.00%)
+  3 (3.00%) high mild
+Directive/AhoCorasick/# noqa: F401, F841
+                        time:   [87.739 ns 88.057 ns 88.468 ns]
+                        change: [+0.1843% +0.4685% +0.7854%] (p = 0.00 < 0.05)
+                        Change within noise threshold.
+Found 11 outliers among 100 measurements (11.00%)
+  5 (5.00%) low mild
+  3 (3.00%) high mild
+  3 (3.00%) high severe
+Directive/Memchr/# noqa: F401, F841
+                        time:   [80.674 ns 80.774 ns 80.860 ns]
+                        change: [-0.7343% -0.5633% -0.4031%] (p = 0.00 < 0.05)
+                        Change within noise threshold.
+Found 14 outliers among 100 measurements (14.00%)
+  4 (4.00%) low severe
+  9 (9.00%) low mild
+  1 (1.00%) high mild
+Directive/Regex/# noqa  time:   [194.86 ns 195.93 ns 196.97 ns]
+                        change: [+11973% +12039% +12103%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 6 outliers among 100 measurements (6.00%)
+  5 (5.00%) low mild
+  1 (1.00%) high mild
+Directive/Find/# noqa   time:   [25.327 ns 25.354 ns 25.383 ns]
+                        change: [+3.8524% +4.0267% +4.1845%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 9 outliers among 100 measurements (9.00%)
+  6 (6.00%) high mild
+  3 (3.00%) high severe
+Directive/AhoCorasick/# noqa
+                        time:   [34.267 ns 34.368 ns 34.481 ns]
+                        change: [+0.5646% +0.8505% +1.1281%] (p = 0.00 < 0.05)
+                        Change within noise threshold.
+Found 5 outliers among 100 measurements (5.00%)
+  5 (5.00%) high mild
+Directive/Memchr/# noqa time:   [21.770 ns 21.818 ns 21.874 ns]
+                        change: [-0.0990% +0.1464% +0.4046%] (p = 0.26 > 0.05)
+                        No change in performance detected.
+Found 10 outliers among 100 measurements (10.00%)
+  4 (4.00%) low mild
+  4 (4.00%) high mild
+  2 (2.00%) high severe
+Directive/Regex/# type: ignore # noqa: E501
+                        time:   [278.76 ns 279.69 ns 280.72 ns]
+                        change: [+7449.4% +7469.8% +7490.5%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 3 outliers among 100 measurements (3.00%)
+  1 (1.00%) low mild
+  1 (1.00%) high mild
+  1 (1.00%) high severe
+Directive/Find/# type: ignore # noqa: E501
+                        time:   [67.791 ns 67.976 ns 68.184 ns]
+                        change: [+2.8321% +3.1735% +3.5418%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 6 outliers among 100 measurements (6.00%)
+  5 (5.00%) high mild
+  1 (1.00%) high severe
+Directive/AhoCorasick/# type: ignore # noqa: E501
+                        time:   [75.908 ns 76.055 ns 76.210 ns]
+                        change: [+0.9269% +1.1427% +1.3955%] (p = 0.00 < 0.05)
+                        Change within noise threshold.
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high severe
+Directive/Memchr/# type: ignore # noqa: E501
+                        time:   [72.549 ns 72.723 ns 72.957 ns]
+                        change: [+1.5881% +1.9660% +2.3974%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 15 outliers among 100 measurements (15.00%)
+  10 (10.00%) high mild
+  5 (5.00%) high severe
+Directive/Regex/# type: ignore # nosec
+                        time:   [66.967 ns 67.075 ns 67.207 ns]
+                        change: [+1713.0% +1715.8% +1718.9%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 10 outliers among 100 measurements (10.00%)
+  1 (1.00%) low severe
+  3 (3.00%) low mild
+  2 (2.00%) high mild
+  4 (4.00%) high severe
+Directive/Find/# type: ignore # nosec
+                        time:   [18.505 ns 18.548 ns 18.597 ns]
+                        change: [+1.3520% +1.6976% +2.0333%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 4 outliers among 100 measurements (4.00%)
+  4 (4.00%) high mild
+Directive/AhoCorasick/# type: ignore # nosec
+                        time:   [16.162 ns 16.206 ns 16.252 ns]
+                        change: [+1.2919% +1.5587% +1.8430%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 4 outliers among 100 measurements (4.00%)
+  3 (3.00%) high mild
+  1 (1.00%) high severe
+Directive/Memchr/# type: ignore # nosec
+                        time:   [39.192 ns 39.233 ns 39.276 ns]
+                        change: [+0.5164% +0.7456% +0.9790%] (p = 0.00 < 0.05)
+                        Change within noise threshold.
+Found 13 outliers among 100 measurements (13.00%)
+  2 (2.00%) low severe
+  4 (4.00%) low mild
+  3 (3.00%) high mild
+  4 (4.00%) high severe
+Directive/Regex/# some very long comment that # is interspersed with characters but # no directive
+                        time:   [81.460 ns 81.578 ns 81.703 ns]
+                        change: [+2093.3% +2098.8% +2104.2%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 4 outliers among 100 measurements (4.00%)
+  2 (2.00%) low mild
+  2 (2.00%) high mild
+Directive/Find/# some very long comment that # is interspersed with characters but # no directive
+                        time:   [26.284 ns 26.331 ns 26.387 ns]
+                        change: [+0.7554% +1.1027% +1.3832%] (p = 0.00 < 0.05)
+                        Change within noise threshold.
+Found 6 outliers among 100 measurements (6.00%)
+  5 (5.00%) high mild
+  1 (1.00%) high severe
+Directive/AhoCorasick/# some very long comment that # is interspersed with characters but # no direc...
+                        time:   [28.643 ns 28.714 ns 28.787 ns]
+                        change: [+1.3774% +1.6780% +2.0028%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 2 outliers among 100 measurements (2.00%)
+  2 (2.00%) high mild
+Directive/Memchr/# some very long comment that # is interspersed with characters but # no directive
+                        time:   [55.766 ns 55.831 ns 55.897 ns]
+                        change: [+1.5802% +1.7476% +1.9021%] (p = 0.00 < 0.05)
+                        Performance has regressed.
+Found 2 outliers among 100 measurements (2.00%)
+  2 (2.00%) low mild
+```
+
+While memchr is faster than aho-corasick in some of the common cases (like `# noqa: F401`), the latter is way, way faster when there _isn't_ a match (like 2x faster -- see the last two cases). Since most comments _aren't_ `noqa` comments, this felt like the right tradeoff. Note that all implementations are significantly faster than the regex version.
+
+(I know I originally reported a 10x speedup, but I ended up improving the regex version a bit in some prior PRs, so it got unintentionally faster via some refactors.)
+
+There's also one behavior change in here, which is that we now allow variable spaces, e.g., `#noqa` or `#  noqa`. Previously, we required exactly one space. This thus closes #5177.
+
+
+---
+
+_Review requested from @MichaReiser by @charliermarsh on 2023-07-06 05:45_
+
+---
+
+_Label `performance` added by @charliermarsh on 2023-07-06 05:46_
+
+---
+
+_Label `noqa` added by @charliermarsh on 2023-07-06 05:46_
+
+---
+
+_Comment by @charliermarsh on 2023-07-06 05:48_
+
+(The speed-up here is between 3x and 10x depending on the case.)
+
+---
+
+_Comment by @github-actions[bot] on 2023-07-06 06:25_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+7, -0, 0 error(s))
+
+<details><summary>airflow (+6, -0)</summary>
+<p>
+
+```diff
++ airflow/kubernetes/pod_launcher.py:25:56: F401 [*] `airflow.kubernetes.pod_launcher_deprecated.PodLauncher` imported but unused
++ airflow/kubernetes/pod_launcher.py:25:69: F401 [*] `airflow.kubernetes.pod_launcher_deprecated.PodStatus` imported but unused
++ airflow/kubernetes/volume.py:27:69: F401 [*] `airflow.providers.cncf.kubernetes.backcompat.volume.Volume` imported but unused
++ airflow/kubernetes/volume_mount.py:27:75: F401 [*] `airflow.providers.cncf.kubernetes.backcompat.volume_mount.VolumeMount` imported but unused
++ dev/breeze/src/airflow_breeze/commands/release_candidate_command.py:205:111: E501 Line too long (244 > 110 characters)
++ dev/breeze/src/airflow_breeze/commands/release_candidate_command.py:205:232: COM812 [*] Trailing comma missing
+```
+
+</p>
+</details>
+<details><summary>setuptools (+1, -0)</summary>
+<p>
+
+```diff
++ setuptools/tests/test_logging.py:23:12: F401 [*] `setuptools` imported but unused
+```
+
+</p>
+</details>
+Rules changed: 3
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| F401 | 5 | 5 | 0 |
+| E501 | 1 | 1 | 0 |
+| COM812 | 1 | 1 | 0 |
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      7.8±0.02ms     5.2 MB/sec    1.00      7.8±0.01ms     5.2 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1747.0±3.95µs     9.5 MB/sec    1.00   1741.5±2.20µs     9.6 MB/sec
+formatter/numpy/globals.py                 1.00    195.5±0.28µs    15.1 MB/sec    1.00    196.0±0.20µs    15.1 MB/sec
+formatter/pydantic/types.py                1.01      3.8±0.01ms     6.7 MB/sec    1.00      3.8±0.03ms     6.7 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.6±0.06ms     3.0 MB/sec    1.00     13.6±0.07ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.4±0.01ms     4.8 MB/sec    1.00      3.4±0.01ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.01    439.7±0.56µs     6.7 MB/sec    1.00    435.7±0.78µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.0±0.01ms     4.2 MB/sec    1.00      6.0±0.01ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.02      7.0±0.02ms     5.8 MB/sec    1.00      6.9±0.02ms     5.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1518.0±2.53µs    11.0 MB/sec    1.00   1497.2±2.71µs    11.1 MB/sec
+linter/default-rules/numpy/globals.py      1.01    172.5±0.24µs    17.1 MB/sec    1.00    170.2±0.35µs    17.3 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.1±0.01ms     8.2 MB/sec    1.00      3.1±0.01ms     8.2 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.6±0.28ms     4.2 MB/sec    1.02      9.8±0.33ms     4.2 MB/sec
+formatter/numpy/ctypeslib.py               1.01      2.1±0.06ms     8.0 MB/sec    1.00      2.1±0.05ms     8.0 MB/sec
+formatter/numpy/globals.py                 1.01   239.9±11.55µs    12.3 MB/sec    1.00    237.3±6.68µs    12.4 MB/sec
+formatter/pydantic/types.py                1.03      4.7±0.20ms     5.4 MB/sec    1.00      4.6±0.13ms     5.5 MB/sec
+linter/all-rules/large/dataset.py          1.03     17.0±0.55ms     2.4 MB/sec    1.00     16.5±0.56ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.05      4.5±0.22ms     3.7 MB/sec    1.00      4.3±0.19ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00   522.4±20.84µs     5.6 MB/sec    1.00   520.4±17.75µs     5.7 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.5±0.35ms     3.4 MB/sec    1.00      7.4±0.31ms     3.4 MB/sec
+linter/default-rules/large/dataset.py      1.01      8.5±0.25ms     4.8 MB/sec    1.00      8.4±0.31ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1794.4±56.50µs     9.3 MB/sec    1.00  1778.8±68.27µs     9.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    203.3±6.43µs    14.5 MB/sec    1.00    204.0±4.22µs    14.5 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.18ms     6.6 MB/sec    1.00      3.9±0.12ms     6.6 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Review comment by @konstin on `crates/ruff/src/noqa.rs`:50 on 2023-07-06 08:38_
+
+isn't this just the trimmed length? 
+```suggestion
+            comment_start = text[..comment_start].trim_end().len();
+```
+
+---
+
+_Review comment by @konstin on `crates/ruff/src/noqa.rs`:66 on 2023-07-06 08:39_
+
+nit
+```suggestion
+                codes_start += ":".len();
+```
+
+---
+
+_Review comment by @konstin on `crates/ruff/src/noqa.rs`:71 on 2023-07-06 08:41_
+
+How does this behave with `# noqa:                      `?
+
+---
+
+_Review comment by @konstin on `crates/ruff/src/noqa.rs`:131 on 2023-07-06 08:42_
+
+what would this code do if i did `# noqa: f401, f402`, i.e. would it silently do the wrong thing?
+
+---
+
+_@konstin reviewed on 2023-07-06 08:43_
+
+---
+
+_Comment by @konstin on 2023-07-06 08:43_
+
+that's a neat improvement!
+
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/noqa.rs`:66 on 2023-07-06 12:39_
+
+Maybe `':'.len_utf8()' which I believe is const
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/noqa.rs`:56 on 2023-07-06 12:39_
+
+```suggestion
+            comment_start -= '#'.len_utf8();
+```
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/noqa.rs`:101 on 2023-07-06 12:42_
+
+Is this check necessary or would `Directive::lex_code` return `None` anyway?
+
+---
+
+_@MichaReiser approved on 2023-07-06 12:44_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff/src/noqa.rs`:101 on 2023-07-06 15:31_
+
+I think it's necessary, otherwise we would allow: `# noqa: F401F841`.
+
+---
+
+_@charliermarsh reviewed on 2023-07-06 15:31_
+
+---
+
+_@charliermarsh reviewed on 2023-07-06 15:32_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff/src/noqa.rs`:131 on 2023-07-06 15:32_
+
+It'll treat that as if it's a code-specific noqa with no matching codes -- which I think is correct. We're going to warn on that in a subsequent PR. (Today, it would be even worse: that would be treated as a blanket noqa, equivalent to `# noqa`, to ignore _all_ errors.)
+
+---
+
+_Merged by @charliermarsh on 2023-07-06 16:03_
+
+---
+
+_Closed by @charliermarsh on 2023-07-06 16:03_
+
+---
+
+_Branch deleted on 2023-07-06 16:03_
+
+---

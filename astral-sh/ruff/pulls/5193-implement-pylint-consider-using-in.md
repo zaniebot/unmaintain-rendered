@@ -1,0 +1,382 @@
+```yaml
+number: 5193
+title: "Implement Pylint `consider-using-in`"
+type: pull_request
+state: merged
+author: tjkuson
+labels:
+  - rule
+assignees: []
+merged: true
+base: main
+head: consider-using-in
+created_at: 2023-06-19T19:47:59Z
+updated_at: 2023-07-16T11:52:08Z
+url: https://github.com/astral-sh/ruff/pull/5193
+synced_at: 2026-01-12T03:30:21Z
+```
+
+# Implement Pylint `consider-using-in`
+
+---
+
+_Pull request opened by @tjkuson on 2023-06-19 19:47_
+
+## Summary
+
+Implement Pylint rule [`consider-using-in` (`R1714`)](https://pylint.pycqa.org/en/latest/user_guide/messages/refactor/consider-using-in.html) as `repeated-equality-comparison-target` (`PLR1714`). This rule checks for expressions that can be re-written as a membership test for better readability and performance.
+
+For example,
+
+```python
+foo == "bar" or foo == "baz" or foo == "qux"
+```
+
+should be rewritten as
+
+```python
+foo in {"bar", "baz", "qux"}
+```
+
+Related to #970. Includes documentation.
+
+### Implementation quirks
+
+The implementation does not work with Yoda conditions (e.g., `"a" == foo` instead of `foo == "a"`). The Pylint version does. I couldn't find a way of supporting Yoda-style conditions without it being inefficient, so didn't (I don't think people write Yoda conditions any way).
+
+## Test Plan
+
+Added fixture.
+
+`cargo test`
+
+
+---
+
+_Comment by @github-actions[bot] on 2023-06-19 20:27_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+54, -0, 0 error(s))
+
+<details><summary>airflow (+28, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/airflow/decorators/base.py#L333'>airflow/decorators/base.py:333:16:</a> PLR1714 Consider merging multiple comparisons: `ttype in (dict, Dict)`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/airflow/decorators/task_group.py#L150'>airflow/decorators/task_group.py:150:13:</a> PLR1714 Consider merging multiple comparisons: `v.kind in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/airflow/models/dagrun.py#L704'>airflow/models/dagrun.py:704:12:</a> PLR1714 Consider merging multiple comparisons: `self._state in (DagRunState.FAILED, DagRunState.SUCCESS)`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/airflow/providers/amazon/aws/hooks/redshift_data.py#L115'>airflow/providers/amazon/aws/hooks/redshift_data.py:115:18:</a> PLR1714 Consider merging multiple comparisons: `status in ("FAILED", "ABORTED")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/airflow/providers/google/cloud/hooks/kubernetes_engine.py#L127'>airflow/providers/google/cloud/hooks/kubernetes_engine.py:127:16:</a> PLR1714 Consider merging multiple comparisons: `operation.status in (Operation.Status.RUNNING, Operation.Status.PENDING)`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/airflow/providers/google/cloud/operators/bigquery_dts.py#L373'>airflow/providers/google/cloud/operators/bigquery_dts.py:373:20:</a> PLR1714 Consider merging multiple comparisons: `state in (TransferState.FAILED, TransferState.CANCELLED)`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/airflow/providers/google/cloud/operators/bigquery_dts.py#L395'>airflow/providers/google/cloud/operators/bigquery_dts.py:395:12:</a> PLR1714 Consider merging multiple comparisons: `event["status"] in ("failed", "cancelled")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/airflow/providers/google/cloud/operators/dataflow.py#L708'>airflow/providers/google/cloud/operators/dataflow.py:708:12:</a> PLR1714 Consider merging multiple comparisons: `event["status"] in ("error", "stopped")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/airflow/providers/google/cloud/operators/dataflow.py#L893'>airflow/providers/google/cloud/operators/dataflow.py:893:12:</a> PLR1714 Consider merging multiple comparisons: `event["status"] in ("error", "stopped")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/airflow/providers/google/cloud/operators/dataproc.py#L1795'>airflow/providers/google/cloud/operators/dataproc.py:1795:12:</a> PLR1714 Consider merging multiple comparisons: `event["status"] in ("failed", "error")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/airflow/providers/google/cloud/operators/dataproc.py#L1920'>airflow/providers/google/cloud/operators/dataproc.py:1920:12:</a> PLR1714 Consider merging multiple comparisons: `event["status"] in ("failed", "error")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/airflow/providers/google/cloud/operators/kubernetes_engine.py#L166'>airflow/providers/google/cloud/operators/kubernetes_engine.py:166:12:</a> PLR1714 Consider merging multiple comparisons: `status in ("failed", "error")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/airflow/providers/google/cloud/operators/kubernetes_engine.py#L373'>airflow/providers/google/cloud/operators/kubernetes_engine.py:373:12:</a> PLR1714 Consider merging multiple comparisons: `status in ("failed", "error")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/airflow/providers/google/cloud/triggers/kubernetes_engine.py#L202'>airflow/providers/google/cloud/triggers/kubernetes_engine.py:202:22:</a> PLR1714 Consider merging multiple comparisons: `status in (Operation.Status.RUNNING, Operation.Status.PENDING)`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/airflow/providers/google/common/hooks/base_google.py#L101'>airflow/providers/google/common/hooks/base_google.py:101:16:</a> PLR1714 Consider merging multiple comparisons: `exception.resp.status in (429, 409)`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/airflow/www/fab_security/manager.py#L616'>airflow/www/fab_security/manager.py:616:12:</a> PLR1714 Consider merging multiple comparisons: `provider in ("github", "githublocal")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/airflow/www/views.py#L3992'>airflow/www/views.py:3992:24:</a> PLR1714 Consider merging multiple comparisons: `dep.dependency_type in ("dag", "dataset")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/dev/breeze/src/airflow_breeze/utils/host_info_utils.py#L38'>dev/breeze/src/airflow_breeze/utils/host_info_utils.py:38:8:</a> PLR1714 Consider merging multiple comparisons: `os in ("linux", "darwin")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/dev/breeze/src/airflow_breeze/utils/host_info_utils.py#L48'>dev/breeze/src/airflow_breeze/utils/host_info_utils.py:48:8:</a> PLR1714 Consider merging multiple comparisons: `os in ("linux", "darwin")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/dev/provider_packages/prepare_provider_packages.py#L742'>dev/provider_packages/prepare_provider_packages.py:742:12:</a> PLR1714 Consider merging multiple comparisons: `ex.returncode in (128, 2)`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/docker_tests/test_docker_compose_quick_start.py#L90'>docker_tests/test_docker_compose_quick_start.py:90:16:</a> PLR1714 Consider merging multiple comparisons: `health_status in ("healthy", "no-check")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/helm_tests/airflow_aux/test_basic_helm_chart.py#L42'>helm_tests/airflow_aux/test_basic_helm_chart.py:42:12:</a> PLR1714 Consider merging multiple comparisons: `version in ("2.3.2", "default")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/scripts/ci/pre_commit/pre_commit_check_lazy_logging.py#L44'>scripts/ci/pre_commit/pre_commit_check_lazy_logging.py:44:17:</a> PLR1714 Consider merging multiple comparisons: `self.cur_node.func.value.id in ("logger", "logging", "log")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/scripts/ci/pre_commit/pre_commit_json_schema.py#L145'>scripts/ci/pre_commit/pre_commit_json_schema.py:145:8:</a> PLR1714 Consider merging multiple comparisons: `default not in (instance, "See values.yaml")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/tests/jobs/test_backfill_job.py#L1286'>tests/jobs/test_backfill_job.py:1286:16:</a> PLR1714 Consider merging multiple comparisons: `ti.task_id in ("leave1", "leave2")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/tests/jobs/test_triggerer_job.py#L203'>tests/jobs/test_triggerer_job.py:203:16:</a> PLR1714 Consider merging multiple comparisons: `job_runner.capacity in (input_str, 1000)`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/tests/providers/elasticsearch/log/elasticmock/fake_elasticsearch.py#L372'>tests/providers/elasticsearch/log/elasticmock/fake_elasticsearch.py:372:16:</a> PLR1714 Consider merging multiple comparisons: `target in ("_all", "")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/apache/airflow/blob/ae29225ff54e8f3bc4fa6934c59b84852c93c713/tests/providers/google/cloud/operators/test_bigquery.py#L1829'>tests/providers/google/cloud/operators/test_bigquery.py:1829:16:</a> PLR1714 Consider merging multiple comparisons: `missing_param.value.args[0] in (expected, expected1)`. Use a `set` if the elements are hashable.
+</pre>
+
+</p>
+</details>
+<details><summary>bokeh (+4, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/src/bokeh/server/tornado.py#L619'>src/bokeh/server/tornado.py:619:12:</a> PLR1714 Consider merging multiple comparisons: `mode in ("server", "server-dev")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/tests/unit/bokeh/embed/test_server__embed.py#L215'>tests/unit/bokeh/embed/test_server__embed.py:215:16:</a> PLR1714 Consider merging multiple comparisons: `r in ("&foo=10&bar=baz", "&bar=baz&foo=10")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/tests/unit/bokeh/embed/test_server__embed.py#L222'>tests/unit/bokeh/embed/test_server__embed.py:222:16:</a> PLR1714 Consider merging multiple comparisons: `r in ("&foo=10&bar=baz", "&bar=baz&foo=10")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/bokeh/bokeh/blob/4ad3732a2753ac62dd3668ba8a044d11b88d86ba/tests/unit/bokeh/test_objects.py#L575'>tests/unit/bokeh/test_objects.py:575:16:</a> PLR1714 Consider merging multiple comparisons: `i in (('a', 1), ('b', 2), ('c', 3))`. Use a `set` if the elements are hashable.
+</pre>
+
+</p>
+</details>
+<details><summary>zulip (+22, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/654fb188327cf9d22fe27118c6a531146be5e247/analytics/views/user_activity.py#L63'>analytics/views/user_activity.py:63:12:</a> PLR1714 Consider merging multiple comparisons: `k in ("name", "user_profile_id")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/654fb188327cf9d22fe27118c6a531146be5e247/tools/lib/sanity_check.py#L17'>tools/lib/sanity_check.py:17:12:</a> PLR1714 Consider merging multiple comparisons: `user_name not in ("vagrant", "zulipdev")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/654fb188327cf9d22fe27118c6a531146be5e247/zerver/actions/create_realm.py#L102'>zerver/actions/create_realm.py:102:9:</a> PLR1714 Consider merging multiple comparisons: `realm.org_type in (Realm.ORG_TYPES["education_nonprofit"]["id"], Realm.ORG_TYPES["education"]["id"])`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/654fb188327cf9d22fe27118c6a531146be5e247/zerver/actions/create_realm.py#L220'>zerver/actions/create_realm.py:220:13:</a> PLR1714 Consider merging multiple comparisons: `realm.org_type in (Realm.ORG_TYPES["education_nonprofit"]["id"], Realm.ORG_TYPES["education"]["id"])`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/654fb188327cf9d22fe27118c6a531146be5e247/zerver/actions/custom_profile_fields.py#L113'>zerver/actions/custom_profile_fields.py:113:9:</a> PLR1714 Consider merging multiple comparisons: `field.field_type in (CustomProfileField.SELECT, CustomProfileField.EXTERNAL_ACCOUNT)`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/654fb188327cf9d22fe27118c6a531146be5e247/zerver/actions/custom_profile_fields.py#L65'>zerver/actions/custom_profile_fields.py:65:9:</a> PLR1714 Consider merging multiple comparisons: `custom_profile_field.field_type in (CustomProfileField.SELECT, CustomProfileField.EXTERNAL_ACCOUNT)`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/654fb188327cf9d22fe27118c6a531146be5e247/zerver/lib/email_notifications.py#L528'>zerver/lib/email_notifications.py:528:24:</a> PLR1714 Consider merging multiple comparisons: `m["trigger"] in (NotificationTriggers.MENTION, NotificationTriggers.STREAM_WILDCARD_MENTION, NotificationTriggers.STREAM_WILDCARD_MENTION_IN_FOLLOWED_TOPIC)`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/654fb188327cf9d22fe27118c6a531146be5e247/zerver/lib/logging_util.py#L155'>zerver/lib/logging_util.py:155:12:</a> PLR1714 Consider merging multiple comparisons: `module_name in (logger_name, record.name)`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/654fb188327cf9d22fe27118c6a531146be5e247/zerver/lib/onboarding.py#L46'>zerver/lib/onboarding.py:46:9:</a> PLR1714 Consider merging multiple comparisons: `user.realm.org_type in (Realm.ORG_TYPES["education_nonprofit"]["id"], Realm.ORG_TYPES["education"]["id"])`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/654fb188327cf9d22fe27118c6a531146be5e247/zerver/models.py#L2039'>zerver/models.py:2039:13:</a> PLR1714 Consider merging multiple comparisons: `self.role in (UserProfile.ROLE_REALM_ADMINISTRATOR, UserProfile.ROLE_REALM_OWNER)`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/654fb188327cf9d22fe27118c6a531146be5e247/zerver/views/custom_profile_fields.py#L83'>zerver/views/custom_profile_fields.py:83:8:</a> PLR1714 Consider merging multiple comparisons: `field_type in (CustomProfileField.LONG_TEXT, CustomProfileField.USER)`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/654fb188327cf9d22fe27118c6a531146be5e247/zerver/webhooks/clubhouse/view.py#L403'>zerver/webhooks/clubhouse/view.py:403:12:</a> PLR1714 Consider merging multiple comparisons: `entity in ("pull-request", "pull-request-comment")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/654fb188327cf9d22fe27118c6a531146be5e247/zerver/webhooks/github/view.py#L80'>zerver/webhooks/github/view.py:80:8:</a> PLR1714 Consider merging multiple comparisons: `action in ("opened", "merged")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/654fb188327cf9d22fe27118c6a531146be5e247/zerver/webhooks/gitlab/view.py#L453'>zerver/webhooks/gitlab/view.py:453:10:</a> PLR1714 Consider merging multiple comparisons: `event in ("Job Hook", "Build Hook")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/654fb188327cf9d22fe27118c6a531146be5e247/zerver/webhooks/gitlab/view.py#L478'>zerver/webhooks/gitlab/view.py:478:10:</a> PLR1714 Consider merging multiple comparisons: `event in ("Note Hook Issue", "Confidential Note Hook Issue")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/654fb188327cf9d22fe27118c6a531146be5e247/zerver/webhooks/pagerduty/view.py#L217'>zerver/webhooks/pagerduty/view.py:217:9:</a> PLR1714 Consider merging multiple comparisons: `message_type in ("incident.resolve", "incident.resolved")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/654fb188327cf9d22fe27118c6a531146be5e247/zerver/webhooks/pagerduty/view.py#L221'>zerver/webhooks/pagerduty/view.py:221:9:</a> PLR1714 Consider merging multiple comparisons: `message_type in ("incident.resolve", "incident.resolved")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/654fb188327cf9d22fe27118c6a531146be5e247/zerver/webhooks/pagerduty/view.py#L224'>zerver/webhooks/pagerduty/view.py:224:10:</a> PLR1714 Consider merging multiple comparisons: `message_type in ("incident.assign", "incident.reassigned")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/654fb188327cf9d22fe27118c6a531146be5e247/zerver/webhooks/raygun/view.py#L230'>zerver/webhooks/raygun/view.py:230:8:</a> PLR1714 Consider merging multiple comparisons: `event_type in ("NewErrorOccurred", "ErrorReoccurred")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/654fb188327cf9d22fe27118c6a531146be5e247/zerver/webhooks/raygun/view.py#L289'>zerver/webhooks/raygun/view.py:289:9:</a> PLR1714 Consider merging multiple comparisons: `event_type in ("StatusChanged", "AssignedToUser", "CommentAdded")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/654fb188327cf9d22fe27118c6a531146be5e247/zerver/webhooks/sonarr/view.py#L59'>zerver/webhooks/sonarr/view.py:59:8:</a> PLR1714 Consider merging multiple comparisons: `event_type not in ("Test", "Health")`. Use a `set` if the elements are hashable.
++ <a href='https://github.com/zulip/zulip/blob/654fb188327cf9d22fe27118c6a531146be5e247/zerver/webhooks/wordpress/view.py#L46'>zerver/webhooks/wordpress/view.py:46:8:</a> PLR1714 Consider merging multiple comparisons: `hook in ("publish_post", "publish_page")`. Use a `set` if the elements are hashable.
+</pre>
+
+</p>
+</details>
+Rules changed: 1
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| PLR1714 | 54 | 54 | 0 |
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      7.9±0.01ms     5.1 MB/sec    1.00      7.9±0.02ms     5.2 MB/sec
+formatter/numpy/ctypeslib.py               1.01   1872.1±1.32µs     8.9 MB/sec    1.00   1859.5±4.44µs     9.0 MB/sec
+formatter/numpy/globals.py                 1.00    209.4±0.43µs    14.1 MB/sec    1.00    208.6±1.12µs    14.1 MB/sec
+formatter/pydantic/types.py                1.03      4.1±0.01ms     6.3 MB/sec    1.00      4.0±0.01ms     6.5 MB/sec
+linter/all-rules/large/dataset.py          1.01     13.5±0.01ms     3.0 MB/sec    1.00     13.4±0.03ms     3.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      3.4±0.01ms     4.9 MB/sec    1.00      3.4±0.01ms     5.0 MB/sec
+linter/all-rules/numpy/globals.py          1.01    432.0±0.26µs     6.8 MB/sec    1.00    426.8±1.38µs     6.9 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.0±0.01ms     4.2 MB/sec    1.00      6.0±0.01ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.01      6.8±0.01ms     6.0 MB/sec    1.00      6.7±0.01ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1482.1±5.29µs    11.2 MB/sec    1.00   1461.1±5.21µs    11.4 MB/sec
+linter/default-rules/numpy/globals.py      1.03    170.7±0.28µs    17.3 MB/sec    1.00    165.5±3.13µs    17.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.01ms     8.3 MB/sec    1.00      3.0±0.01ms     8.4 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.02      9.0±0.08ms     4.5 MB/sec    1.00      8.9±0.14ms     4.6 MB/sec
+formatter/numpy/ctypeslib.py               1.01  1947.6±14.93µs     8.5 MB/sec    1.00  1924.8±15.10µs     8.7 MB/sec
+formatter/numpy/globals.py                 1.03    210.6±4.25µs    14.0 MB/sec    1.00    205.1±4.22µs    14.4 MB/sec
+formatter/pydantic/types.py                1.01      4.3±0.05ms     5.9 MB/sec    1.00      4.3±0.04ms     6.0 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.2±0.19ms     2.7 MB/sec    1.00     15.2±0.60ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.7±0.05ms     4.6 MB/sec    1.00      3.6±0.07ms     4.6 MB/sec
+linter/all-rules/numpy/globals.py          1.01   413.4±15.95µs     7.1 MB/sec    1.00   408.0±12.38µs     7.2 MB/sec
+linter/all-rules/pydantic/types.py         1.02      6.8±0.21ms     3.7 MB/sec    1.00      6.7±0.12ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.7±0.11ms     5.3 MB/sec    1.02      7.8±0.14ms     5.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1531.3±11.07µs    10.9 MB/sec    1.01  1539.5±12.43µs    10.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00    170.0±4.30µs    17.4 MB/sec    1.00    169.5±1.14µs    17.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.3±0.04ms     7.7 MB/sec    1.04      3.5±0.07ms     7.3 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Marked ready for review by @tjkuson on 2023-07-10 09:13_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/checkers/ast/mod.rs`:3489 on 2023-07-11 06:05_
+
+Nit: You can pass the whole `BoolOp` instead of the individual fields by changing line 3458 to 
+
+```rust
+Expr::BoolOp(bool_op @ ast::ExprBoolOp {
+	op,
+	values,
+	range: _
+}) => {
+```
+
+```suggestion
+                if self.enabled(Rule::RepeatedEqualityComparisonTarget) {
+                    pylint::rules::repeated_equality_comparison_target(self, bool_op);
+                }
+```
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/rules/pylint/rules/repeated_equality_comparison_target.rs`:61 on 2023-07-11 06:06_
+
+I don't think this is necessary. `BoolOp` is only defined as `and`/`or`
+
+```rust
+#[derive(Clone, Debug, PartialEq, is_macro::Is, Copy, Hash, Eq)]
+pub enum BoolOp {
+    And,
+    Or,
+}
+```
+```suggestion
+```
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/rules/pylint/rules/repeated_equality_comparison_target.rs`:80 on 2023-07-11 06:07_
+
+I think it could be good to combine the two loops to avoid that we iterate twice over all values
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/rules/pylint/rules/repeated_equality_comparison_target.rs`:76 on 2023-07-11 06:08_
+
+Nit: I think that should work too and I find it more readable because it tells me what the expression is converting to.
+
+```suggestion
+                matches.extend(comparators.iter().map(HashableExpr::from));
+```
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/rules/pylint/rules/repeated_equality_comparison_target.rs`:83 on 2023-07-11 06:09_
+
+We need to test if patching the rule is enabled first:
+
+```rust
+if checker.patch(rule) {
+	// generate the patch
+}
+```
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/rules/pylint/rules/repeated_equality_comparison_target.rs`:67 on 2023-07-11 06:14_
+
+Allocating a `HashSet` and then a `Vec` for every single compare operation is expensive (heap allocations are expensive operations compared to almost everything else). Doing these allocations should be fine when fixing (because that should be rare), but we should try to avoid it in the hot linting path. 
+
+Do you think it would be possible to split the rule into two:
+* A fast path that only tests if this specific code violates the rule. Ideally, without using nested Vecs (and extra points, if we don't need the Set as well)
+* The code that generates the fix. This path may need to re-do some of the work but that's fine. It should only be executed rarely. 
+
+---
+
+_@MichaReiser reviewed on 2023-07-11 06:14_
+
+---
+
+_@dhruvmanila reviewed on 2023-07-11 17:27_
+
+---
+
+_Review comment by @dhruvmanila on `crates/ruff/src/rules/pylint/rules/repeated_equality_comparison_target.rs`:83 on 2023-07-11 17:27_
+
+I think it's being used in the violation message which is the reason the condition isn't applied here. We should avoid doing that and instead guide the user in an abstract manner like "Consider merging multiple comparisons: `var in (...)`" or use the actual variable name in place of "var".
+
+---
+
+_Review comment by @dhruvmanila on `crates/ruff/resources/test/fixtures/pylint/repeated_equality_comparison_target.py`:32 on 2023-07-11 17:29_
+
+Can we add a test case for the not condition? (`foo != "a"`) I'm sure it's going to pass but just for completeness :)
+
+---
+
+_@dhruvmanila reviewed on 2023-07-11 17:32_
+
+---
+
+_Comment by @zanieb on 2023-07-11 17:35_
+
+Should we consider avoiding triggering this violation if we can tell that the compared objects are not hashable? i.e. if they are `dict`, `list`, or `set` literals?
+
+---
+
+_Comment by @trag1c on 2023-07-11 17:36_
+
+> Should we consider avoiding triggering this violation if we can tell that the compared objects are not hashable? i.e. if they are `dict`, `list`, or `set` literals?
+
+In that case you should just use a tuple instead.
+
+---
+
+_Comment by @zanieb on 2023-07-11 17:39_
+
+> > Should we consider avoiding triggering this violation if we can tell that the compared objects are not hashable? i.e. if they are `dict`, `list`, or `set` literals?
+> 
+> In that case you should just use a tuple instead.
+
+Oh of course. I guess I find the violation message a bit confusing then :) I'm not sure how I'd make it better yet though.
+
+---
+
+_Review comment by @trag1c on `crates/ruff/src/rules/pylint/rules/repeated_equality_comparison_target.rs`:18 on 2023-07-11 17:42_
+
+```suggestion
+/// If the items are hashable, use a `set` instead of a `tuple`. Membership
+```
+
+---
+
+_@trag1c reviewed on 2023-07-11 17:42_
+
+---
+
+_Comment by @tjkuson on 2023-07-11 19:13_
+
+> Oh of course. I guess I find the violation message a bit confusing then :) I'm not sure how I'd make it better yet though.
+
+Yeah, that's fair. I just copied the Pylint message IIRC. Perhaps the message could improve on the Pylint implementation by changing based on if contents are hashable are not (though I am not sure with what confidence we can determine something is hashable in ruff).
+
+---
+
+_Review comment by @tjkuson on `crates/ruff/resources/test/fixtures/pylint/repeated_equality_comparison_target.py`:32 on 2023-07-11 19:17_
+
+Good call. Added!
+
+---
+
+_@tjkuson reviewed on 2023-07-11 19:17_
+
+---
+
+_Comment by @zanieb on 2023-07-11 19:55_
+
+> I just copied the Pylint message IIRC. Perhaps the message could improve on the Pylint implementation by changing based on if contents are hashable are not (though I am not sure with what confidence we can determine something is hashable in ruff).
+
+Matching the Pylint message seems good enough for now! It's difficult for us to determine if it's hashable unless it's a literal which I don't imagine is very common.
+
+---
+
+_@tjkuson reviewed on 2023-07-12 14:24_
+
+---
+
+_Review comment by @tjkuson on `crates/ruff/src/rules/pylint/rules/repeated_equality_comparison_target.rs`:83 on 2023-07-12 14:24_
+
+> We should avoid doing that and instead guide the user in an abstract manner like "Consider merging multiple comparisons: `var in (...)`" or use the actual variable name in place of "var".
+
+This is sensible, but it would be a downgrade from the Pylint implementation of the rule, which suggests a change in its message. Would that be worthwhile?
+
+---
+
+_Comment by @charliermarsh on 2023-07-13 01:15_
+
+(Reviewing now...)
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-07-13 01:21_
+
+---
+
+_Merged by @charliermarsh on 2023-07-13 01:32_
+
+---
+
+_Closed by @charliermarsh on 2023-07-13 01:32_
+
+---
+
+_Branch deleted on 2023-07-16 11:52_
+
+---
