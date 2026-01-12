@@ -38,10 +38,80 @@
         <div class="timeline-entry">
             <div class="event">Label <span class="label">wish</span> added by @charliermarsh on 2025-05-04 12:50</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CarliJoy">@CarliJoy</a> on 2026-01-12 11:23</div>
+            <div class="timeline-body"><p>Realted to #16975</p>
+<p>I created a small wrapper around <code>uv</code> to do this and published it as https://pypi.org/project/uvrev/.</p>
+<p>Implementing this in <code>uv</code> would be still very welcome.</p>
+<p>I drafted a help text for documentation driven design:</p>
+<pre><code>--lock-vcs &lt;none|git&gt;
+    Integrate lockfile updates with your VCS.
+
+    When enabled (git), uv will record dependency-state transitions in Git whenever uv.lock is
+    updated by a uv command. The recorded state includes:
+      - pyproject.toml
+      - uv.lock
+      - uv.toml (if present)
+
+    Behavior (git):
+      - Creates a Git commit that stages only the files listed above.
+      - Tags the created commit as: uv-lock-rev-&lt;number&gt;
+        where &lt;number&gt; is a monotonically increasing revision number for the repository.
+        This tag enables fast identification and restoration of prior lock states.
+      - Uses a commit message that includes a dependency changelog describing what changed
+        since the previous lock revision, e.g. which dependencies were:
+          - added
+          - removed
+          - updated (including old → new versions where available)
+
+    Notes:
+      - If uv.lock is not modified, uv does not create a commit or tag.
+      - If the current directory is not a Git repository, or Git is unavailable, uv fails with
+        an error when --lock-vcs git is specified.
+
+    Examples:
+
+      Enable VCS integration (config):
+        [tool.uv]
+        lock-vcs = &quot;git&quot;
+
+      Show all lock revisions:
+        git log --decorate --format='%h %d%n%B%n---' --tags='uv-lock-rev-*'
+
+      Restore a prior dependency state (example: revision 12) and resync the environment:
+        git checkout uv-lock-rev-12 -- pyproject.toml uv.lock uv.toml
+        uv sync
+</code></pre>
+<p>If uv implements the tracking of change in git, the restoring and listing of version can be left to the user using aliases/small scripts. I don't think we need to implement subcommands for this in <code>uv</code>.</p>
+<p>In the end restoring/list is done much less then actually changing the lock file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CarliJoy">@CarliJoy</a> on 2026-01-12 11:36</div>
+            <div class="timeline-body"><p>Would a PR that implements and documents the suggested option be accepted?
+Or do you think this is outside the scope of <code>uv</code>  or want to make some changes (i.e. name of the option, workflow...)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2026-01-12 11:39</div>
+            <div class="timeline-body"><p>That seems better suited in a service such as dependabot or renovate, which do this though a PR workflow that also runs CI, displays changelogs, etc. uv currently doesn't make any git commits, and doing so is a big increase in scope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CarliJoy">@CarliJoy</a> on 2026-01-12 11:47</div>
+            <div class="timeline-body"><p>This feature requests comes from people migrating from conda, which has <code>conda list --revisions</code>/<code>conda install --revision</code>, wanting a similar experience with uv.
+So using Depabot or renovate are no solution for their use case, as they care about tracking changes locally.</p>
+<p>This feature is used for deployment installation, to keep track and rollback not working changes.
+Also it used by users experimenting during develop, common in the science community, who don't want to commit every time they try a new package.</p>
+<p>I can understand if this you think this is out of scope for uv.</p>
+<p>In this case please close both issues as not planned.</p>
+<p>(Even so I would be happy about this feature)</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-10 01:33:05 UTC
+        Synced at 2026-01-12 11:58:02 UTC
     </footer>
 </body>
 </html>
