@@ -8,9 +8,9 @@ labels:
   - wish
 assignees: []
 created_at: 2026-01-08T04:07:59Z
-updated_at: 2026-01-09T01:08:21Z
+updated_at: 2026-01-10T18:54:43Z
 url: https://github.com/astral-sh/ty/issues/2391
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T02:26:12Z
 ```
 
 # Feat: support `collections.abc.<Class>.register`
@@ -157,5 +157,42 @@ _Renamed from "Feat: support `collections.abc.<Class>.register` for more classes
 ---
 
 _Label `wish` added by @carljm on 2026-01-09 01:08_
+
+---
+
+_Comment by @NickCrews on 2026-01-10 17:54_
+
+How difficult would it be for ty to special case the usage of collections.abc.Mapping.register as a decorator, right above the class definition? 
+The implementation might be tricky, but at least I think the result would be well defined, eg avoid the import order/conditional pitfalls I describe above.
+
+I'm not sure of the internals of how ty works, but if it uses a lot of the same core code as ruff, I was thinking that perhaps you already had access to the info to be able to answer the question "is this class definition decorated with an abc.ABC.register"?
+
+If you special cased this one usage pattern, it would cover some fraction of use cases, idk I'm totally guessing here but maybe 30-80 percent of usages (I can do a more thorough grep over GitHub to get a more precise answer if this is important to you).
+
+I realize how unappealing it is to add these special cases to your codebase, so no pressure :)
+
+---
+
+_Comment by @NickCrews on 2026-01-10 18:06_
+
+For example, I'm guessing you want to/already support the @dataclass decorator to transform a class, so maybe it wouldn't be too bad to piggy back on that infrastructure?
+
+---
+
+_Comment by @AlexWaygood on 2026-01-10 18:18_
+
+Has ibis ever run any other type checkers in CI before? As I say, to my knowledge this isn't supported by any other type checker (am I wrong?).
+
+It's not impossible that we could support this, but it's still likely to be low-priority if we'd be the first type checker to do so. And we'd need to do some design work to think about how to make it sound. For example, we'd need to emit a diagnostic if `@collections.abc.Mapping.register` was used to decorate a class `C` that did not have all methods and attributes available on `collections.abc.Mapping` (or if any attribute on `C` did not have a compatible type with the attribute on `Mapping`). 
+
+---
+
+_Comment by @NickCrews on 2026-01-10 18:54_
+
+Ibis has never used type checkers before. I'm not even really trying to convert ibis to completely pass a type checker at this point, that is going to be too big of a task. I am running into this type error when using ibis in an app, the app is using ty. So I'm just trying to upstream a few of the best fixes so that my app sees fewer errors that it needs to ignore.
+
+I don't know of any other type checker that supports this (but I'm not familiar with them).
+
+Yes, those concerns also make sense. I won't be expecting anything. Feel free to close if you want to clean up your issues. Thanks!
 
 ---

@@ -10,9 +10,9 @@ labels:
   - overloads
 assignees: []
 created_at: 2025-07-25T01:52:19Z
-updated_at: 2026-01-06T10:47:38Z
+updated_at: 2026-01-10T16:28:24Z
 url: https://github.com/astral-sh/ty/issues/886
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T02:26:11Z
 ```
 
 # "Find references" doesn't find overloads
@@ -89,5 +89,9 @@ _Added to milestone `Pre-stable 1` by @MichaReiser on 2025-12-31 16:36_
 _Comment by @AdemFr on 2026-01-06 10:47_
 
 Not sure if also relevant / similar issue: https://github.com/astral-sh/ty/issues/2362
+
+---
+
+_Unassigned @MichaReiser by @MichaReiser on 2026-01-10 16:28_
 
 ---

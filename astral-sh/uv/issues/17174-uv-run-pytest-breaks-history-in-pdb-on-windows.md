@@ -2,16 +2,16 @@
 number: 17174
 title: uv run pytest breaks history in pdb on windows
 type: issue
-state: open
+state: closed
 author: RmStorm
 labels:
   - bug
   - windows
 assignees: []
 created_at: 2025-12-18T12:23:04Z
-updated_at: 2026-01-09T12:14:09Z
+updated_at: 2026-01-10T18:11:14Z
 url: https://github.com/astral-sh/uv/issues/17174
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T02:26:26Z
 ```
 
 # uv run pytest breaks history in pdb on windows
@@ -166,5 +166,9 @@ Thank you!
 _Comment by @zelosleone on 2026-01-09 12:14_
 
 Also if you guys can connect with pyreadline3 guys, their window build is gonna be completely broken in the future (its already broken in newer python versions) https://github.com/pyreadline3/pyreadline3/pull/44 (just to let you guys know since you guys might know one of them)
+
+---
+
+_Closed by @zanieb on 2026-01-10 18:11_
 
 ---

@@ -2,16 +2,16 @@
 number: 2319
 title: "[BUG] Incorrect type inference with `dataclass_transform` and generics / decorators"
 type: issue
-state: open
+state: closed
 author: liblaf
 labels:
   - bug
   - dataclasses
 assignees: []
 created_at: 2026-01-04T07:00:23Z
-updated_at: 2026-01-04T23:14:05Z
+updated_at: 2026-01-10T13:45:46Z
 url: https://github.com/astral-sh/ty/issues/2319
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T02:26:12Z
 ```
 
 # [BUG] Incorrect type inference with `dataclass_transform` and generics / decorators
@@ -142,5 +142,9 @@ _Label `dataclasses` added by @AlexWaygood on 2026-01-04 22:44_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2026-01-04 23:14_
+
+---
+
+_Closed by @charliermarsh on 2026-01-10 13:45_
 
 ---

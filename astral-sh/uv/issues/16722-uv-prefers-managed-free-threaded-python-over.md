@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2025-11-13T14:30:33Z
-updated_at: 2025-11-15T13:37:05Z
+updated_at: 2026-01-10T16:29:46Z
 url: https://github.com/astral-sh/uv/issues/16722
-synced_at: 2026-01-10T01:57:36Z
+synced_at: 2026-01-12T02:26:26Z
 ```
 
 # uv prefers managed free-threaded Python over unmanaged non-freethreaded Python
@@ -105,5 +105,20 @@ _Comment by @zanieb on 2025-11-15 13:37_
 Yeah @FishAlchemist is right that this is intended, though I'm sort of regretting the change.
 
 Does using `+gil` work for you?
+
+---
+
+_Comment by @AngheloAlf on 2026-01-10 16:29_
+
+I don't mind uv defaulting to the free threaded python on newer versions, but I think it is a mistake that the selected Python variant depends on whatever the user has installed and what the PATH order is.
+
+For me `+gil` didn't work because the Windows CI runner I'm using only has 3.14t installed, no gil variant available so uv errored with this instead:
+```
+error: No interpreter found for Python 3.14+gil in managed installations, search path, or registry
+```
+
+I got to install the gil version by not using `+gil` and passing ` --managed-python` to `uv venv` instead.
+
+Ideally `-p 3.14` should be deterministic, the user shouldn't need to worry about what is installed on the system.
 
 ---

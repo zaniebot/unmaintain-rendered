@@ -9,9 +9,9 @@ labels:
   - windows
 assignees: []
 created_at: 2026-01-06T02:35:50Z
-updated_at: 2026-01-11T14:10:03Z
+updated_at: 2026-01-12T02:12:43Z
 url: https://github.com/astral-sh/uv/issues/17331
-synced_at: 2026-01-11T15:05:53Z
+synced_at: 2026-01-12T02:26:26Z
 ```
 
 # Windows: `uv tool update-shell` saves but does not apply PATH change
@@ -145,5 +145,11 @@ _Label `windows` added by @samypr100 on 2026-01-11 04:34_
 ---
 
 _Closed by @charliermarsh on 2026-01-11 14:10_
+
+---
+
+_Comment by @thedewi on 2026-01-12 02:12_
+
+Thank you!!
 
 ---

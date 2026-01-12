@@ -4,12 +4,13 @@ title: Emit errors on invalid defaulted TypeVar constructions
 type: issue
 state: open
 author: MeGaGiGaGon
-labels: []
+labels:
+  - typing semantics
 assignees: []
 created_at: 2026-01-09T22:19:00Z
-updated_at: 2026-01-09T22:52:02Z
+updated_at: 2026-01-10T22:36:52Z
 url: https://github.com/astral-sh/ty/issues/2429
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T02:26:12Z
 ```
 
 # Emit errors on invalid defaulted TypeVar constructions
@@ -51,5 +52,9 @@ ty 0.0.11 (830cb9cc6 2026-01-09)
 ---
 
 _Added to milestone `Stable` by @carljm on 2026-01-09 22:52_
+
+---
+
+_Label `typing semantics` added by @AlexWaygood on 2026-01-10 22:36_
 
 ---

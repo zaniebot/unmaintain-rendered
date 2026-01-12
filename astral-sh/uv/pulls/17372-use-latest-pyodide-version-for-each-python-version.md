@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: pyodide-version-fetch
 created_at: 2026-01-09T06:40:20Z
-updated_at: 2026-01-09T11:19:41Z
+updated_at: 2026-01-11T03:40:18Z
 url: https://github.com/astral-sh/uv/pull/17372
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T02:26:33Z
 ```
 
 # Use latest Pyodide version for each python version
@@ -57,5 +57,27 @@ _Review requested from @zanieb by @konstin on 2026-01-09 11:19_
 _Comment by @konstin on 2026-01-09 11:19_
 
 CC @hoodmane
+
+---
+
+_Comment by @zanieb on 2026-01-10 16:22_
+
+The implementation here looks a bit different than the GraalPy and PyPy ones, e.g., they do something like
+
+```python
+                # Only keep the latest pypy version of each arch/platform
+                if (python_version, arch, platform) not in results:
+                    results[(python_version, arch, platform)] = download
+```
+
+It's not like that's beautiful Python, but it might be nice for the pattern to be consistent? What do you think?
+
+
+
+---
+
+_Comment by @ryanking13 on 2026-01-11 03:40_
+
+@zanieb Sounds reasonable. I update the code to make it look similar to other finders.
 
 ---

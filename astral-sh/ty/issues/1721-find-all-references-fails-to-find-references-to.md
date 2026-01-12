@@ -8,9 +8,9 @@ labels:
   - server
 assignees: []
 created_at: 2025-12-02T14:00:38Z
-updated_at: 2026-01-06T10:46:51Z
+updated_at: 2026-01-10T16:28:40Z
 url: https://github.com/astral-sh/ty/issues/1721
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T02:26:11Z
 ```
 
 # "Find all references" Fails to find references to `UserDict` in homeassistant
@@ -48,5 +48,9 @@ _Added to milestone `Stable` by @MichaReiser on 2025-12-31 15:38_
 _Comment by @AdemFr on 2026-01-06 10:46_
 
 Not sure if relevant: https://github.com/astral-sh/ty/issues/2362
+
+---
+
+_Unassigned @MichaReiser by @MichaReiser on 2026-01-10 16:28_
 
 ---

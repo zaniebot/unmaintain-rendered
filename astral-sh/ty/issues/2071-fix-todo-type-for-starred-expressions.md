@@ -7,9 +7,9 @@ author: AlexWaygood
 labels: []
 assignees: []
 created_at: 2025-12-18T14:13:15Z
-updated_at: 2025-12-18T20:42:10Z
+updated_at: 2026-01-11T16:37:44Z
 url: https://github.com/astral-sh/ty/issues/2071
-synced_at: 2026-01-10T01:54:00Z
+synced_at: 2026-01-12T02:26:12Z
 ```
 
 # Fix `Todo` type for starred expressions
@@ -27,5 +27,13 @@ _Added to milestone `Stable` by @AlexWaygood on 2025-12-18 14:13_
 ---
 
 _Assigned to @AlexWaygood by @AlexWaygood on 2025-12-18 20:42_
+
+---
+
+_Removed from milestone `Stable` by @AlexWaygood on 2026-01-11 16:37_
+
+---
+
+_Added to milestone `Pre-stable 1` by @AlexWaygood on 2026-01-11 16:37_
 
 ---

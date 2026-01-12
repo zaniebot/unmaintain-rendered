@@ -8,9 +8,9 @@ labels:
   - diagnostics
 assignees: []
 created_at: 2025-12-22T12:37:19Z
-updated_at: 2025-12-22T17:04:18Z
+updated_at: 2026-01-11T16:36:45Z
 url: https://github.com/astral-sh/ty/issues/2154
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T02:26:12Z
 ```
 
 # Improve `invalid-method-override` diagnostics for overloaded methods
@@ -60,5 +60,9 @@ _Label `diagnostics` added by @AlexWaygood on 2025-12-22 12:37_
 ---
 
 _Added to milestone `Stable` by @carljm on 2025-12-22 17:04_
+
+---
+
+_Assigned to @AlexWaygood by @AlexWaygood on 2026-01-11 16:36_
 
 ---

@@ -8,9 +8,9 @@ labels:
   - diagnostics
 assignees: []
 created_at: 2025-03-22T21:08:14Z
-updated_at: 2025-12-19T23:38:43Z
+updated_at: 2026-01-11T16:36:57Z
 url: https://github.com/astral-sh/ty/issues/163
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T02:26:11Z
 ```
 
 # Provide context on why an assignment failed
@@ -255,5 +255,9 @@ _Removed from milestone `Stable` by @carljm on 2025-12-19 23:38_
 ---
 
 _Added to milestone `M1` by @carljm on 2025-12-19 23:38_
+
+---
+
+_Assigned to @AlexWaygood by @AlexWaygood on 2026-01-11 16:36_
 
 ---

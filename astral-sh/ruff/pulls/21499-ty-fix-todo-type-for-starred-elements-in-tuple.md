@@ -2,7 +2,7 @@
 number: 21499
 title: "[ty] Fix `Todo` type for starred elements in tuple/list/set expressions"
 type: pull_request
-state: open
+state: closed
 author: AlexWaygood
 labels:
   - ty
@@ -12,9 +12,9 @@ draft: true
 base: main
 head: alex/starred-tuples
 created_at: 2025-11-17T12:03:04Z
-updated_at: 2025-12-18T14:13:32Z
+updated_at: 2026-01-11T16:36:14Z
 url: https://github.com/astral-sh/ruff/pull/21499
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T02:26:21Z
 ```
 
 # [ty] Fix `Todo` type for starred elements in tuple/list/set expressions
@@ -427,5 +427,19 @@ _Label `ecosystem-analyzer` removed by @AlexWaygood on 2025-11-27 18:06_
 ---
 
 _Label `ecosystem-analyzer` added by @AlexWaygood on 2025-11-27 18:06_
+
+---
+
+_Closed by @AlexWaygood on 2026-01-11 16:34_
+
+---
+
+_Branch deleted on 2026-01-11 16:34_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-11 16:36_
+
+This was hopelessly merge-conflicted, but I recreated it as https://github.com/astral-sh/ruff/pull/22503
 
 ---

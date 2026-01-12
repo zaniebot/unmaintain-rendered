@@ -9,9 +9,9 @@ labels:
   - narrowing
 assignees: []
 created_at: 2025-11-14T21:24:41Z
-updated_at: 2025-12-23T02:59:34Z
+updated_at: 2026-01-12T01:40:20Z
 url: https://github.com/astral-sh/ty/issues/1566
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T02:26:11Z
 ```
 
 # Consider unsafely narrowing non-literal type to literal based on equality check
@@ -114,5 +114,26 @@ _Comment by @carljm on 2025-12-23 02:59_
 We could add a diagnostic that prohibits overriding `__eq__` on subclasses of all types for which we have literal types, and then go ahead and implement this kind of narrowing. See #2171 where we plan to do this for tuples. I don't know if overriding `__eq__` on `int` or `str` subclasses is more common than on `tuple` subclasses.
 
 The advantage of this approach is that people who aren't worried about the unsoundness and want to match pyright behavior can always just turn off the "unsafe subclass" warning and still get the narrowing.
+
+---
+
+_Comment by @yilei on 2026-01-12 01:40_
+
+We have a similar use case (several tens of errors in our codebase) for `dict[Literal["a", "b", ...], T]`, something like:
+
+```python
+from typing import Literal, TypeAlias
+
+ConfigType: TypeAlias = Literal["dev", "staging", "prod"]  # Reusable alias
+CONFIGS: dict[ConfigType, int] = {"dev": 1, "staging": 2, "prod": 3}
+
+
+def get_config(name: str) -> int | None:
+    if name in CONFIGS:
+        # error[invalid-argument-type]: Method `__getitem__` of type `bound method dict[Literal["dev", "staging", "prod"], int].__getitem__(key: Literal["dev", "staging", "prod"], /) -> int` cannot be called with key of type `str` on object of type `dict[Literal["dev", "staging", "prod"], int]`
+        return CONFIGS[name]
+    # Do something else ...
+    return None
+```
 
 ---

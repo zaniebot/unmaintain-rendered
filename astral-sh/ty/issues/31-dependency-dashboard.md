@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2025-05-05T16:20:40Z
-updated_at: 2026-01-09T20:35:59Z
+updated_at: 2026-01-12T01:43:41Z
 url: https://github.com/astral-sh/ty/issues/31
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-12T02:26:11Z
 ```
 
 # Dependency Dashboard
@@ -37,14 +37,14 @@ Packages are marked as abandoned when they exceed the [`abandonmentThreshold`](h
 Unlike deprecated packages with official notices, abandonment is detected by release inactivity.
 
 
-## Awaiting Schedule
+## Open
 
-The following updates are awaiting their schedule. To get an update now, click on a checkbox below.
+The following updates have all been created. To force a retry/rebase of any, click on a checkbox below.
 
- - [ ] <!-- unschedule-branch=renovate/actions-checkout-digest -->Update actions/checkout digest to 0c366fd
- - [ ] <!-- unschedule-branch=renovate/pre-commit-dependencies -->Update pre-commit dependencies (`astral-sh/uv-pre-commit`, `crate-ci/typos`, `rhysd/actionlint`)
- - [ ] <!-- unschedule-branch=renovate/astral-sh-setup-uv-7.x -->Update astral-sh/setup-uv action to v7.2.0
- - [ ] <!-- create-all-awaiting-schedule-prs -->🔐 **Create all awaiting schedule PRs at once** 🔐
+ - [ ] <!-- rebase-branch=renovate/actions-checkout-digest -->[Update actions/checkout digest to 0c366fd](../pull/2452)
+ - [ ] <!-- rebase-branch=renovate/pre-commit-dependencies -->[Update pre-commit dependencies](../pull/2453) (`astral-sh/uv-pre-commit`, `crate-ci/typos`, `rhysd/actionlint`)
+ - [ ] <!-- rebase-branch=renovate/astral-sh-setup-uv-7.x -->[Update astral-sh/setup-uv action to v7.2.0](../pull/2454)
+ - [ ] <!-- rebase-all-open-prs -->**Click on this checkbox to rebase all open PRs at once**
 
 ## Detected Dependencies
 

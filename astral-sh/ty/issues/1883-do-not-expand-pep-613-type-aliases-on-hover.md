@@ -9,9 +9,9 @@ labels:
   - type aliases
 assignees: []
 created_at: 2025-12-14T13:46:02Z
-updated_at: 2025-12-19T12:10:50Z
+updated_at: 2026-01-11T09:31:07Z
 url: https://github.com/astral-sh/ty/issues/1883
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T02:26:11Z
 ```
 
 # Do not expand PEP-613 type aliases on hover
@@ -26,6 +26,7 @@ They could become unwieldy especially for large unions. See these two examples
 Where the tuple is defined using a type alias in the stub and
 
 <img width="839" height="281" alt="Image" src="https://github.com/user-attachments/assets/8fdeac9b-426d-4846-b2ca-5b8e941efae8" />
+
 Where the type of `value` is defines as `Scalar | ListLikeU | None` in pandas-stubs.
 
 In both cases displaying the name of the type alias would make the signature more readable. 

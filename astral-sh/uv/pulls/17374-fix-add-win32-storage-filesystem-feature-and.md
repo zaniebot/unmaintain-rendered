@@ -2,18 +2,19 @@
 number: 17374
 title: "fix: add Win32_Storage_FileSystem feature and improve handle closing logic"
 type: pull_request
-state: open
+state: merged
 author: zelosleone
 labels:
   - bug
   - windows
 assignees: []
+merged: true
 base: main
 head: fixinvalidhandlers
 created_at: 2026-01-09T12:09:24Z
-updated_at: 2026-01-09T12:12:04Z
+updated_at: 2026-01-10T19:48:49Z
 url: https://github.com/astral-sh/uv/pull/17374
-synced_at: 2026-01-10T05:49:14Z
+synced_at: 2026-01-12T02:26:33Z
 ```
 
 # fix: add Win32_Storage_FileSystem feature and improve handle closing logic
@@ -90,5 +91,27 @@ _Label `bug` added by @konstin on 2026-01-09 12:10_
 ---
 
 _Label `windows` added by @konstin on 2026-01-09 12:10_
+
+---
+
+_Comment by @samypr100 on 2026-01-10 18:03_
+
+this change seems reasonable and correct to me
+
+---
+
+_@zanieb approved on 2026-01-10 18:11_
+
+---
+
+_Merged by @zanieb on 2026-01-10 18:11_
+
+---
+
+_Closed by @zanieb on 2026-01-10 18:11_
+
+---
+
+_Branch deleted on 2026-01-10 19:48_
 
 ---

@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2025-12-14T13:36:07Z
-updated_at: 2025-12-18T00:47:50Z
+updated_at: 2026-01-11T09:29:30Z
 url: https://github.com/astral-sh/ty/issues/1882
-synced_at: 2026-01-10T01:53:59Z
+synced_at: 2026-01-12T02:26:11Z
 ```
 
 # Default parameter values should be expressions, not types
@@ -21,7 +21,7 @@ _Issue opened by @hamdanal on 2025-12-14 13:36_
 
 ### Summary
 
-Notice the default values of `Literal[False]` instead of `False`. Also `…`, which is a very common default parameter value in stub files, is rendered as `EllipsisType`.
+Notice the default value displayed as `Literal[False]` instead of `False`. Also `…`, which is a very common default parameter value in stub files, gets rendered as `EllipsisType`.
 
 <img width="461" height="221" alt="Image" src="https://github.com/user-attachments/assets/104b7f2c-5a96-4706-b28a-d34c094ce300" />
 

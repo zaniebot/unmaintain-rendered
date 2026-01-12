@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: wsl1-is-very-dead
 created_at: 2025-12-01T11:31:17Z
-updated_at: 2026-01-11T10:10:35Z
+updated_at: 2026-01-11T14:31:51Z
 url: https://github.com/astral-sh/ruff/pull/21724
-synced_at: 2026-01-12T02:12:03Z
+synced_at: 2026-01-12T02:26:21Z
 ```
 
 # Drop WSL1 special case in flake8-executable
@@ -424,5 +424,35 @@ Did you adjust your `[automount]` settings in `wsl.conf` to enable metadata and 
 _Comment by @K900 on 2026-01-11 10:10_
 
 I have `options=metadata,uid=1000,gid=100`, the uid/gid stuff is just NixOS weirdness for historical reasons.
+
+---
+
+_Comment by @MusicalNinjaDad on 2026-01-11 14:25_
+
+Thanks - think I've got it now... I see that NixOS [defaults metadata enabled](https://nix-community.github.io/NixOS-WSL/options.html#wslwslconfautomountenabled), unlike the [base WSL default](https://learn.microsoft.com/en-us/windows/wsl/wsl-config?source=recommendations#automount-options), and for various reasons you have chosen/need to keep your code on an NTFS partition rather than the native linux one.
+
+1. I'm assuming from your comments above that you usually clone with linux git. So in your case your system usually behaves like the native WSL case and either of the PRs give you valid lints, status quo gives you potentially false negatives (?)
+
+2. I don't have git for windows installed, but from looking at [your example under `d/test/chaintsu-master`](https://github.com/astral-sh/ruff/pull/21724#issuecomment-3734341168) it appears that cloning to an NTFS partition under windows doesn't add xattr info to maintain the *nix exe-bit. I'm assuming this is not your usual workflow(?)
+    - I'd expect that this could get messy quickly, as any future `git pull`s inside WSL will update file permissions for added/changed files that it retrieves from the remote, and any new files will not have 0644 perms. These perms will persist thanks to the metadata setting. **<-- _Could you confirm that easily?_**
+    - As you say, there's no decent heuristic available to help in this situation. So the only option would be a command-line-option/environment-variable. I looked into this and dropped it as doing it nicely and well documented affects a lot more code and forces the option to also be exposed via the config files. It's doable but at a higher cost to the maintainers ...
+    - There is an argument to say that anyone working this way hopefully understands the consequences of their setup choices and will be in a small minority. Personally, I never like taking that attitude if it can be avoided ...
+
+If I've understood things correctly this means we have the following situation:
+| | WSL user, WSL FS (#10084) | Linux user USB stick (#12941) | WSL user, Win FS (#3110, #5445) | WSL user, metadata (@k900) | WSL user, metadata, cloned on Win |
+| -- | -- | -- | -- | -- | -- |
+| Status Quo | :exclamation: (false negatives) | :x: (false positives) | :exclamation: (false negatives) | :exclamation: (false negatives) | :exclamation: (false negatives) |
+| #17548 | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :exclamation: (false negatives) |
+| #21724 | :white_check_mark: | :x: (false positives) | :x: (false positives) | :white_check_mark: | :exclamation: (false negatives) |
+
+---
+
+_Comment by @K900 on 2026-01-11 14:31_
+
+To be clear, this is not my actual setup that I actually use, it's a setup that I assume people ran into which led to the initial change. However, it's also yet another proof that guessing "is the filesystem broken" in the general case is impossible (even ignoring all kinds of obviously-pathological things like FileStation 9000 which returns random permission bits on every read).
+
+My normal usage of Ruff doesn't actually trigger this bug - I've run into it because I occasionally build NixOS from source on my WSL systems, and Ruff fails _in its own tests_ because those are not designed to run under WSL.
+
+Also, Git knows nothing about the NTFS Unix-permission xattrs, so it never writes or updates them for any reason, meaning newly added files (if pulled from Windows) will be 0755, and any updated files will keep their existing permissions (unless moved, possibly?). Teaching Git about these xattrs is another thing that could probably improve things a lot, but not my can and not my worms.
 
 ---

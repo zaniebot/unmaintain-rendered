@@ -8,9 +8,9 @@ labels:
   - server
 assignees: []
 created_at: 2025-12-09T00:38:26Z
-updated_at: 2025-12-09T00:49:40Z
+updated_at: 2026-01-11T09:47:33Z
 url: https://github.com/astral-sh/ty/issues/1816
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T02:26:11Z
 ```
 
 # consider type weakening some inlay-hints
@@ -49,5 +49,19 @@ Here also it seems potentially quite confusing if inlay hints do not match the t
 _Comment by @Gankra on 2025-12-09 00:49_
 
 Possibly a setting we could expose?
+
+---
+
+_Comment by @Lexicality on 2026-01-11 08:59_
+
+<img width="677" height="149" alt="Image" src="https://github.com/user-attachments/assets/b2e448fb-fc48-479c-ab46-8b1734ec4a64" />
+
+I ran into this recently and ended up having to drop a `: str` on the variable just to avoid cluttering up my screen.
+
+I agree that changing the inferred type would be potentially confusing, but maybe limiting the size of strings? eg `Literal["Lorem ipsum..."]`
+
+---
+
+_Added to milestone `Stable` by @MichaReiser on 2026-01-11 09:47_
 
 ---

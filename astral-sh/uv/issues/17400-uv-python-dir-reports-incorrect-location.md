@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-10T09:04:53Z
-updated_at: 2026-01-10T12:03:07Z
+updated_at: 2026-01-10T16:07:27Z
 url: https://github.com/astral-sh/uv/issues/17400
-synced_at: 2026-01-10T12:10:07Z
+synced_at: 2026-01-12T02:26:26Z
 ```
 
 # `uv python dir` reports incorrect location
@@ -99,5 +99,23 @@ Sorry I don't get the confusion? This is the "uv Python installation directory" 
 > I was under the impression that the uv command would give me the location of the actual binary that runs when I run Python through uv, but that is evidently not the case here.
 
 It sounds like you want `uv python find`?
+
+---
+
+_Comment by @berzi on 2026-01-10 12:03_
+
+‼️ Ok, my bad, I overlooked `uv python find` completely.
+
+It took me a moment to understand why the shown dir would not exist (= because it only stores "global", i.e. non-venv, python versions installed through uv, which may not exist because uv runs things through the python in the venv).
+
+---
+
+_Closed by @berzi on 2026-01-10 12:03_
+
+---
+
+_Comment by @zanieb on 2026-01-10 16:07_
+
+I can look at clarifying the top-level help here. I do appreciate the feedback!
 
 ---

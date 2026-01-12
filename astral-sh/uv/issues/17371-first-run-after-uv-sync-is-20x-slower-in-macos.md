@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-09T02:16:47Z
-updated_at: 2026-01-09T19:04:32Z
+updated_at: 2026-01-10T16:11:21Z
 url: https://github.com/astral-sh/uv/issues/17371
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-12T02:26:26Z
 ```
 
 # first run after `uv sync` is ~20x slower in MacOs; subsequent runs fast (not reproduced on Linux / miniconda)
@@ -282,5 +282,42 @@ For example, here's what a Developer Tools configuration might look like:
 <img width="508" height="366" alt="Image" src="https://github.com/user-attachments/assets/45793d1b-c0fe-4cc5-a195-8d417958df2b" />
 
 
+
+---
+
+_Comment by @joamatab on 2026-01-10 13:54_
+
+Hi Zanie,
+
+at least I can reduce the slowdown from ~20× to ~5×.
+
+I’m still puzzled why we don’t see this behavior on Linux; it’s been an interesting issue to dig into.
+
+
+Hi William.
+
+I tried but didn't improve the speed, thanks for the suggestion though
+
+
+
+
+---
+
+_Comment by @joamatab on 2026-01-10 15:37_
+
+I added in my .bashrc
+export UV_LINK_MODE=hardlink
+
+and now the delay is tolerable
+
+I also forgot to mention that all this started since I updated to the latest Tahoe MacOs 
+
+---
+
+_Comment by @zanieb on 2026-01-10 16:11_
+
+> I’m still puzzled why we don’t see this behavior on Linux
+
+Linux doesn't have invasive security features like this.
 
 ---
