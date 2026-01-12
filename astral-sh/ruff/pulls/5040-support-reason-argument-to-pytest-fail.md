@@ -1,0 +1,113 @@
+```yaml
+number: 5040
+title: "Support 'reason' argument to `pytest.fail`"
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+merged: true
+base: main
+head: charlie/reason
+created_at: 2023-06-13T00:47:18Z
+updated_at: 2023-06-13T01:17:55Z
+url: https://github.com/astral-sh/ruff/pull/5040
+synced_at: 2026-01-12T03:43:30Z
+```
+
+# Support 'reason' argument to `pytest.fail`
+
+---
+
+_Pull request opened by @charliermarsh on 2023-06-13 00:47_
+
+## Summary
+
+Per the [API reference](https://docs.pytest.org/en/7.1.x/reference/reference.html#pytest.fail), `reason` was added in version 7, and is equivalent to `msg` (but preferred going forward).
+
+I also grepped for `msg` usages in `flake8_pytest_style`, but found no others (apart from those that reference `unittest` APIs.)
+
+Closes #3387.
+
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-06-13 00:47_
+
+---
+
+_Merged by @charliermarsh on 2023-06-13 00:54_
+
+---
+
+_Closed by @charliermarsh on 2023-06-13 00:54_
+
+---
+
+_Branch deleted on 2023-06-13 00:54_
+
+---
+
+_Comment by @github-actions[bot] on 2023-06-13 00:56_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+1, -1, 0 error(s))
+
+<details><summary>bokeh (+1, -1)</summary>
+<p>
+
+```diff
+- src/typings/bs4.pyi:14:67: ISC001 Implicitly concatenated string literals on one line
++ src/typings/bs4.pyi:14:67: ISC001 [*] Implicitly concatenated string literals on one line
+```
+
+</p>
+</details>
+Rules changed: 1
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| ISC001 | 2 | 1 | 1 |
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      6.3±0.01ms     6.4 MB/sec    1.01      6.4±0.02ms     6.4 MB/sec
+formatter/numpy/ctypeslib.py               1.01   1328.1±6.77µs    12.5 MB/sec    1.00   1316.2±3.01µs    12.7 MB/sec
+formatter/numpy/globals.py                 1.01    128.8±0.13µs    22.9 MB/sec    1.00    128.0±0.16µs    23.0 MB/sec
+formatter/pydantic/types.py                1.00      2.6±0.01ms     9.9 MB/sec    1.00      2.6±0.02ms     9.8 MB/sec
+linter/all-rules/large/dataset.py          1.01     14.0±0.15ms     2.9 MB/sec    1.00     13.9±0.08ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.3±0.01ms     5.0 MB/sec    1.01      3.4±0.01ms     5.0 MB/sec
+linter/all-rules/numpy/globals.py          1.01    419.8±0.54µs     7.0 MB/sec    1.00    414.5±0.79µs     7.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.9±0.04ms     4.3 MB/sec    1.00      5.9±0.03ms     4.4 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.8±0.04ms     6.0 MB/sec    1.00      6.8±0.02ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1471.0±5.44µs    11.3 MB/sec    1.00   1468.2±3.60µs    11.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    163.2±0.62µs    18.1 MB/sec    1.00    163.3±0.19µs    18.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.03ms     8.3 MB/sec    1.01      3.1±0.01ms     8.3 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.10      9.6±0.33ms     4.2 MB/sec    1.00      8.7±0.30ms     4.7 MB/sec
+formatter/numpy/ctypeslib.py               1.06  1921.4±59.89µs     8.7 MB/sec    1.00  1817.4±60.65µs     9.2 MB/sec
+formatter/numpy/globals.py                 1.00    184.4±9.65µs    16.0 MB/sec    1.04   191.8±17.30µs    15.4 MB/sec
+formatter/pydantic/types.py                1.02      3.8±0.11ms     6.7 MB/sec    1.00      3.7±0.19ms     6.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     19.0±0.72ms     2.1 MB/sec    1.06     20.1±0.48ms     2.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      5.0±0.22ms     3.3 MB/sec    1.00      4.9±0.28ms     3.4 MB/sec
+linter/all-rules/numpy/globals.py          1.06   601.3±26.40µs     4.9 MB/sec    1.00   568.8±30.13µs     5.2 MB/sec
+linter/all-rules/pydantic/types.py         1.08      8.8±0.42ms     2.9 MB/sec    1.00      8.1±0.35ms     3.1 MB/sec
+linter/default-rules/large/dataset.py      1.06     10.1±0.30ms     4.0 MB/sec    1.00      9.5±0.32ms     4.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.08      2.2±0.09ms     7.5 MB/sec    1.00      2.1±0.09ms     8.1 MB/sec
+linter/default-rules/numpy/globals.py      1.10   254.8±14.42µs    11.6 MB/sec    1.00   232.5±12.13µs    12.7 MB/sec
+linter/default-rules/pydantic/types.py     1.06      4.7±0.15ms     5.5 MB/sec    1.00      4.4±0.18ms     5.8 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---

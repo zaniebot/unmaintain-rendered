@@ -1,0 +1,89 @@
+```yaml
+number: 4883
+title: Remove destructive fixes for F523
+type: pull_request
+state: merged
+author: charliermarsh
+labels: []
+assignees: []
+merged: true
+base: main
+head: charlie/format-str
+created_at: 2023-06-05T21:38:04Z
+updated_at: 2023-06-06T01:06:43Z
+url: https://github.com/astral-sh/ruff/pull/4883
+synced_at: 2026-01-12T03:43:29Z
+```
+
+# Remove destructive fixes for F523
+
+---
+
+_Pull request opened by @charliermarsh on 2023-06-05 21:38_
+
+## Summary
+
+Our current autofix for F523, in cases in which we need to rewrite the positional indexes _within_ the format string, is destructive, since it operates on the AST representation rather than a CST representation. So, e.g., it can end up replacing `\n` literals with newlines, and do other wonky things. It's also not robust enough to handle certain cases, like `("{1}" "{2}").format(0, 1, 2)`. This PR just removes that behavior. If we want to support it, we need a proper CST-like parser for format string bodies (which LibCST doesn't include).
+
+Closes #4826.
+
+
+---
+
+_Comment by @github-actions[bot] on 2023-06-05 22:08_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      5.8±0.02ms     7.1 MB/sec    1.00      5.7±0.01ms     7.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1192.6±2.30µs    14.0 MB/sec    1.00   1189.2±1.73µs    14.0 MB/sec
+formatter/numpy/globals.py                 1.00    137.4±0.18µs    21.5 MB/sec    1.00    136.8±0.25µs    21.6 MB/sec
+formatter/pydantic/types.py                1.00      2.5±0.01ms    10.0 MB/sec    1.00      2.5±0.01ms    10.0 MB/sec
+linter/all-rules/large/dataset.py          1.01     14.2±0.12ms     2.9 MB/sec    1.00     14.1±0.10ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.3±0.01ms     5.0 MB/sec    1.00      3.3±0.01ms     5.0 MB/sec
+linter/all-rules/numpy/globals.py          1.01    412.2±0.55µs     7.2 MB/sec    1.00    408.5±0.52µs     7.2 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.8±0.02ms     4.4 MB/sec    1.00      5.8±0.05ms     4.4 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.8±0.03ms     6.0 MB/sec    1.00      6.8±0.05ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1451.8±6.16µs    11.5 MB/sec    1.00   1437.5±1.88µs    11.6 MB/sec
+linter/default-rules/numpy/globals.py      1.03    161.3±0.21µs    18.3 MB/sec    1.00    157.2±0.26µs    18.8 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.0±0.01ms     8.4 MB/sec    1.00      3.0±0.00ms     8.5 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      7.1±0.18ms     5.8 MB/sec    1.03      7.3±0.34ms     5.6 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1399.2±28.62µs    11.9 MB/sec    1.06  1481.4±63.78µs    11.2 MB/sec
+formatter/numpy/globals.py                 1.00    160.1±7.92µs    18.4 MB/sec    1.01    162.3±6.05µs    18.2 MB/sec
+formatter/pydantic/types.py                1.00      3.1±0.07ms     8.4 MB/sec    1.03      3.1±0.09ms     8.1 MB/sec
+linter/all-rules/large/dataset.py          1.00     16.8±0.47ms     2.4 MB/sec    1.00     16.9±0.47ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.4±0.21ms     3.8 MB/sec    1.00      4.4±0.15ms     3.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00    491.5±7.55µs     6.0 MB/sec    1.01    494.7±7.51µs     6.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.1±0.17ms     3.6 MB/sec    1.02      7.2±0.13ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.3±0.18ms     4.9 MB/sec    1.03      8.5±0.22ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1773.4±56.76µs     9.4 MB/sec    1.02  1816.8±111.56µs     9.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    196.0±5.39µs    15.1 MB/sec    1.01    198.2±5.01µs    14.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.10ms     6.8 MB/sec    1.02      3.8±0.08ms     6.7 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Merged by @charliermarsh on 2023-06-06 00:44_
+
+---
+
+_Closed by @charliermarsh on 2023-06-06 00:44_
+
+---
+
+_Branch deleted on 2023-06-06 00:44_
+
+---

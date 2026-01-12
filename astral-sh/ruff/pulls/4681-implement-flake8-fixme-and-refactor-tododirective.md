@@ -1,0 +1,957 @@
+```yaml
+number: 4681
+title: "Implement `flake8_fixme` and refactor `TodoDirective`"
+type: pull_request
+state: merged
+author: evanrittenhouse
+labels: []
+assignees: []
+merged: true
+base: main
+head: 3859_flake8_fixme
+created_at: 2023-05-27T15:40:47Z
+updated_at: 2023-06-15T21:14:08Z
+url: https://github.com/astral-sh/ruff/pull/4681
+synced_at: 2026-01-12T03:43:29Z
+```
+
+# Implement `flake8_fixme` and refactor `TodoDirective`
+
+---
+
+_Pull request opened by @evanrittenhouse on 2023-05-27 15:40_
+
+<!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+This PR implements `flake8_fixme`. Since that ruleset is extremely closely related to `flake8_todos`, I also made some refactors in the latter linter to remove duplicated logic and expose `TodoDirectives` across the codebase.
+
+Closes #3859.
+
+## Test Plan
+
+`cargo t`
+
+
+---
+
+_Comment by @github-actions[bot] on 2023-05-27 15:50_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+560, -0, 0 error(s))
+
+<details><summary>airflow (+163, -0)</summary>
+<p>
+
+```diff
++ airflow/api_connexion/schemas/dag_schema.py:98:55: T002 Line contains TODO
++ airflow/cli/cli_config.py:277:6: T002 Line contains TODO
++ airflow/cli/cli_config.py:546:3: T002 Line contains TODO
++ airflow/cli/cli_config.py:562:3: T002 Line contains TODO
++ airflow/cli/commands/task_command.py:183:11: T002 Line contains TODO
++ airflow/cli/commands/task_command.py:224:15: T002 Line contains TODO
++ airflow/cli/commands/task_command.py:456:7: T002 Line contains TODO
++ airflow/cli/commands/task_command.py:663:11: T002 Line contains TODO
++ airflow/compat/functools.pyi:20:3: T002 Line contains TODO
++ airflow/dag_processing/manager.py:237:11: T002 Line contains TODO
++ airflow/decorators/base.py:216:11: T002 Line contains TODO
++ airflow/decorators/task_group.py:117:11: T002 Line contains TODO
++ airflow/decorators/task_group.py:124:11: T002 Line contains TODO
++ airflow/executors/base_executor.py:168:11: T002 Line contains TODO
++ airflow/executors/executor_loader.py:205:3: T002 Line contains TODO
++ airflow/jobs/backfill_job_runner.py:264:11: T002 Line contains TODO
++ airflow/jobs/backfill_job_runner.py:943:15: T002 Line contains TODO
++ airflow/jobs/job.py:191:19: T002 Line contains TODO
++ airflow/jobs/local_task_job_runner.py:79:41: T002 Line contains TODO
++ airflow/jobs/scheduler_job_runner.py:1197:11: T002 Line contains TODO
++ airflow/jobs/scheduler_job_runner.py:1337:19: T002 Line contains TODO
++ airflow/jobs/scheduler_job_runner.py:1452:11: T002 Line contains TODO
++ airflow/jobs/scheduler_job_runner.py:168:15: T002 Line contains TODO
++ airflow/jobs/scheduler_job_runner.py:189:15: T002 Line contains TODO
++ airflow/jobs/scheduler_job_runner.py:197:15: T002 Line contains TODO
++ airflow/jobs/scheduler_job_runner.py:207:15: T002 Line contains TODO
++ airflow/jobs/scheduler_job_runner.py:405:15: T002 Line contains TODO
++ airflow/jobs/scheduler_job_runner.py:601:23: T002 Line contains TODO
++ airflow/migrations/versions/0093_2_2_0_taskinstance_keyed_to_dagrun.py:223:15: T002 Line contains TODO
++ airflow/models/abstractoperator.py:499:15: T002 Line contains TODO
++ airflow/models/baseoperator.py:1233:11: T004 Line contains HACK
++ airflow/models/baseoperator.py:1235:40: T002 Line contains TODO
++ airflow/models/baseoperator.py:1601:3: T002 Line contains TODO
++ airflow/models/baseoperator.py:918:15: T002 Line contains TODO
++ airflow/models/dag.py:1012:11: T004 Line contains HACK
++ airflow/models/dag.py:1152:11: T002 Line contains TODO
++ airflow/models/dag.py:129:3: T001 Line contains FIXME
++ airflow/models/dag.py:1476:19: T002 Line contains TODO
++ airflow/models/dag.py:458:15: T002 Line contains TODO
++ airflow/models/dagbag.py:288:11: T002 Line contains TODO
++ airflow/models/dagbag.py:397:23: T002 Line contains TODO
++ airflow/models/dagrun.py:1182:15: T002 Line contains TODO
++ airflow/models/dagrun.py:318:11: T002 Line contains TODO
++ airflow/models/dagrun.py:918:19: T002 Line contains TODO
++ airflow/models/expandinput.py:137:11: T002 Line contains TODO
++ airflow/models/expandinput.py:61:11: T002 Line contains TODO
++ airflow/models/skipmixin.py:187:11: T002 Line contains TODO
++ airflow/models/taskinstance.py:147:7: T002 Line contains TODO
++ airflow/models/taskinstance.py:2394:11: T002 Line contains TODO
++ airflow/models/xcom.py:872:24: T004 Line contains HACK
++ airflow/providers/amazon/aws/hooks/redshift_cluster.py:83:7: T002 Line contains TODO
++ airflow/providers/amazon/aws/operators/emr.py:208:11: T002 Line contains TODO
++ airflow/providers/amazon/aws/operators/emr.py:324:11: T002 Line contains TODO
++ airflow/providers/amazon/aws/operators/emr.py:623:11: T002 Line contains TODO
++ airflow/providers/amazon/aws/utils/connection_wrapper.py:225:11: T002 Line contains TODO
++ airflow/providers/apache/hive/sensors/metastore_partition.py:63:11: T002 Line contains TODO
++ airflow/providers/cncf/kubernetes/decorators/kubernetes.py:80:7: T002 Line contains TODO
++ airflow/providers/cncf/kubernetes/operators/pod.py:306:11: T002 Line contains TODO
++ airflow/providers/cncf/kubernetes/operators/pod.py:313:11: T002 Line contains TODO
++ airflow/providers/cncf/kubernetes/operators/pod.py:384:50: T002 Line contains TODO
++ airflow/providers/databricks/hooks/databricks_base.py:488:11: T002 Line contains TODO
++ airflow/providers/databricks/operators/databricks_sql.py:344:11: T002 Line contains TODO
++ airflow/providers/dbt/cloud/sensors/dbt.py:59:19: T002 Line contains TODO
++ airflow/providers/docker/decorators/docker.py:139:7: T002 Line contains TODO
++ airflow/providers/elasticsearch/log/es_task_handler.py:368:11: T002 Line contains TODO
++ airflow/providers/github/hooks/github.py:60:11: T002 Line contains TODO
++ airflow/providers/google/cloud/hooks/cloud_storage_transfer_service.py:230:11: T002 Line contains TODO
++ airflow/providers/google/cloud/hooks/cloud_storage_transfer_service.py:361:11: T002 Line contains TODO
++ airflow/providers/google/cloud/hooks/compute_ssh.py:35:3: T002 Line contains TODO
++ airflow/providers/google/cloud/hooks/datacatalog.py:1013:11: T004 Line contains HACK
++ airflow/providers/google/cloud/hooks/datacatalog.py:1085:11: T004 Line contains HACK
++ airflow/providers/google/cloud/hooks/datacatalog.py:207:11: T004 Line contains HACK
++ airflow/providers/google/cloud/hooks/datacatalog.py:263:11: T004 Line contains HACK
++ airflow/providers/google/cloud/hooks/datacatalog.py:940:11: T004 Line contains HACK
++ airflow/providers/google/cloud/hooks/datafusion.py:437:11: T002 Line contains TODO
++ airflow/providers/google/cloud/hooks/gcs.py:1144:15: T002 Line contains TODO
++ airflow/providers/google/cloud/hooks/gcs.py:327:11: T002 Line contains TODO
++ airflow/providers/google/cloud/hooks/kubernetes_engine.py:108:7: T002 Line contains TODO
++ airflow/providers/google/cloud/hooks/kubernetes_engine.py:99:7: T002 Line contains TODO
++ airflow/providers/google/cloud/hooks/pubsub.py:143:15: T002 Line contains TODO
++ airflow/providers/google/cloud/log/stackdriver_task_handler.py:174:11: T002 Line contains TODO
++ airflow/providers/google/cloud/log/stackdriver_task_handler.py:38:7: T002 Line contains TODO
++ airflow/providers/google/cloud/operators/cloud_storage_transfer_service.py:547:11: T002 Line contains TODO
++ airflow/providers/google/cloud/operators/dataflow.py:1134:11: T002 Line contains TODO
++ airflow/providers/google/cloud/operators/dataflow.py:347:11: T002 Line contains TODO
++ airflow/providers/google/cloud/operators/dataproc.py:1162:11: T002 Line contains TODO
++ airflow/providers/google/cloud/operators/dataproc.py:1236:11: T002 Line contains TODO
++ airflow/providers/google/cloud/operators/dataproc.py:1311:11: T002 Line contains TODO
++ airflow/providers/google/cloud/operators/dataproc.py:1388:11: T002 Line contains TODO
++ airflow/providers/google/cloud/operators/dataproc.py:1461:11: T002 Line contains TODO
++ airflow/providers/google/cloud/operators/dataproc.py:1559:11: T002 Line contains TODO
++ airflow/providers/google/cloud/operators/dataproc.py:492:11: T002 Line contains TODO
++ airflow/providers/google/cloud/operators/dataproc.py:737:11: T002 Line contains TODO
++ airflow/providers/google/cloud/operators/gcs.py:765:15: T002 Line contains TODO
++ airflow/providers/google/cloud/operators/gcs.py:806:15: T002 Line contains TODO
++ airflow/providers/google/cloud/sensors/bigquery.py:78:15: T002 Line contains TODO
++ airflow/providers/google/cloud/sensors/tasks.py:80:11: T002 Line contains TODO
++ airflow/providers/google/cloud/transfers/gcs_to_local.py:89:11: T002 Line contains TODO
++ airflow/providers/jenkins/operators/jenkins_job_trigger.py:153:11: T002 Line contains TODO
++ airflow/providers/microsoft/azure/hooks/adx.py:120:46: T002 Line contains TODO
++ airflow/providers/microsoft/azure/hooks/cosmos.py:74:52: T002 Line contains TODO
++ airflow/providers/microsoft/azure/log/wasb_task_handler.py:135:11: T002 Line contains TODO
++ airflow/providers/microsoft/winrm/hooks/winrm.py:27:3: T002 Line contains TODO
++ airflow/providers/openlineage/extractors/manager.py:150:11: T002 Line contains TODO
++ airflow/providers/openlineage/plugins/listener.py:162:11: T002 Line contains TODO
++ airflow/providers/openlineage/utils/utils.py:348:19: T002 Line contains TODO
++ airflow/providers/openlineage/utils/utils.py:40:3: T002 Line contains TODO
++ airflow/providers/qubole/operators/qubole_check.py:126:3: T002 Line contains TODO
++ airflow/providers/sftp/hooks/sftp.py:116:15: T002 Line contains TODO
++ airflow/providers/sftp/hooks/sftp.py:82:11: T002 Line contains TODO
++ airflow/providers/sftp/operators/sftp.py:129:11: T002 Line contains TODO
++ airflow/secrets/base_secrets.py:93:11: T002 Line contains TODO
++ airflow/serialization/serde.py:165:11: T001 Line contains FIXME
++ airflow/serialization/serialized_objects.py:1049:42: T002 Line contains TODO
++ airflow/serialization/serialized_objects.py:449:15: T001 Line contains FIXME
++ airflow/serialization/serialized_objects.py:463:15: T001 Line contains FIXME
++ airflow/serialization/serialized_objects.py:647:15: T002 Line contains TODO
++ airflow/serialization/serialized_objects.py:911:15: T002 Line contains TODO
++ airflow/serialization/serialized_objects.py:969:15: T002 Line contains TODO
++ airflow/task/task_runner/cgroup_task_runner.py:171:11: T002 Line contains TODO
++ airflow/ti_deps/dependencies_deps.py:68:3: T002 Line contains TODO
++ airflow/ti_deps/deps/trigger_rule_dep.py:243:15: T002 Line contains TODO
++ airflow/utils/db.py:1783:15: T002 Line contains TODO
++ airflow/utils/db.py:1796:15: T002 Line contains TODO
++ airflow/utils/db.py:42:3: T002 Line contains TODO
++ airflow/www/api/experimental/endpoints.py:224:3: T002 Line contains TODO
++ airflow/www/fab_security/manager.py:1486:27: T002 Line contains TODO
++ airflow/www/views.py:1316:11: T002 Line contains TODO
++ airflow/www/views.py:1729:19: T004 Line contains HACK
++ airflow/www/views.py:2348:19: T002 Line contains TODO
++ airflow/www/views.py:4078:11: T002 Line contains TODO
++ airflow/www/views.py:432:19: T002 Line contains TODO
++ airflow/www/views.py:5210:21: T002 Line contains TODO
++ airflow/www/views.py:5571:24: T002 Line contains TODO
++ dev/stats/get_important_pr_candidates.py:351:25: T002 Line contains TODO
++ docs/conf.py:101:3: T004 Line contains HACK
++ docs/conf.py:525:11: T002 Line contains TODO
++ kubernetes_tests/test_kubernetes_pod_operator.py:712:63: T002 Line contains TODO
++ kubernetes_tests/test_kubernetes_pod_operator.py:896:11: T002 Line contains TODO
++ scripts/in_container/verify_providers.py:859:11: T002 Line contains TODO
++ setup.py:341:7: T002 Line contains TODO
++ setup.py:416:7: T002 Line contains TODO
++ tests/always/test_project_structure.py:60:11: T002 Line contains TODO
++ tests/api_experimental/common/test_mark_tasks.py:410:7: T002 Line contains TODO
++ tests/cli/commands/test_dag_command.py:49:3: T002 Line contains TODO
++ tests/cli/commands/test_task_command.py:74:3: T002 Line contains TODO
++ tests/core/test_stats.py:212:11: T002 Line contains TODO
++ tests/jobs/test_scheduler_job.py:1059:7: T002 Line contains TODO
++ tests/jobs/test_scheduler_job.py:2277:15: T002 Line contains TODO
++ tests/jobs/test_scheduler_job.py:2338:11: T002 Line contains TODO
++ tests/jobs/test_scheduler_job.py:4659:15: T002 Line contains TODO
++ tests/jobs/test_triggerer_job_logging.py:430:7: T002 Line contains TODO
++ tests/kubernetes/test_kubernetes_helper_functions.py:31:3: T002 Line contains TODO
++ tests/providers/cncf/kubernetes/operators/test_pod.py:250:11: T002 Line contains TODO
++ tests/providers/elasticsearch/log/elasticmock/fake_elasticsearch.py:369:11: T002 Line contains TODO
++ tests/providers/google/cloud/operators/test_cloud_memorystore.py:61:53: T002 Line contains TODO
++ tests/providers/microsoft/azure/hooks/test_azure_batch.py:149:11: T002 Line contains TODO
++ tests/providers/microsoft/azure/hooks/test_azure_batch.py:172:11: T002 Line contains TODO
++ tests/serialization/test_dag_serialization.py:309:52: T002 Line contains TODO
++ tests/serialization/test_dag_serialization.py:310:54: T002 Line contains TODO
++ tests/system/providers/snowflake/example_s3_to_snowflake.py:30:3: T002 Line contains TODO
++ tests/utils/test_config.py:27:3: T002 Line contains TODO
++ tests/www/test_security.py:877:7: T002 Line contains TODO
+```
+
+</p>
+</details>
+<details><summary>bokeh (+193, -0)</summary>
+<p>
+
+```diff
++ examples/integration/layout/plot_fixed_frame_size.py:38:3: T002 Line contains TODO
++ examples/models/legends.py:53:11: T002 Line contains TODO
++ examples/server/app/simple_hdf5/main.py:50:3: T002 Line contains TODO
++ release/credentials.py:77:7: T002 Line contains TODO
++ release/credentials.py:84:7: T002 Line contains TODO
++ src/bokeh/application/application.py:187:15: T002 Line contains TODO
++ src/bokeh/application/handlers/code.py:168:11: T002 Line contains TODO
++ src/bokeh/application/handlers/code_runner.py:225:11: T003 Line contains XXX
++ src/bokeh/application/handlers/directory.py:313:15: T002 Line contains TODO
++ src/bokeh/application/handlers/server_lifecycle.py:127:15: T002 Line contains TODO
++ src/bokeh/application/handlers/server_request_handler.py:120:15: T002 Line contains TODO
++ src/bokeh/client/connection.py:349:19: T003 Line contains XXX
++ src/bokeh/client/session.py:513:11: T002 Line contains TODO
++ src/bokeh/core/has_props.py:250:41: T002 Line contains TODO
++ src/bokeh/core/has_props.py:292:15: T002 Line contains TODO
++ src/bokeh/core/has_props.py:443:99: T002 Line contains TODO
++ src/bokeh/core/has_props.py:633:15: T002 Line contains TODO
++ src/bokeh/core/has_props.py:656:19: T002 Line contains TODO
++ src/bokeh/core/has_props.py:749:17: T002 Line contains TODO
++ src/bokeh/core/has_props.py:776:7: T002 Line contains TODO
++ src/bokeh/core/has_props.py:789:7: T002 Line contains TODO
++ src/bokeh/core/has_props.py:792:24: T002 Line contains TODO
++ src/bokeh/core/json_encoder.py:186:43: T002 Line contains TODO
++ src/bokeh/core/property/any.py:82:7: T002 Line contains TODO
++ src/bokeh/core/property/container.py:124:11: T002 Line contains TODO
++ src/bokeh/core/property/container.py:151:11: T002 Line contains TODO
++ src/bokeh/core/property/dataspec.py:471:37: T003 Line contains XXX
++ src/bokeh/core/property/pd.py:30:7: T003 Line contains XXX
++ src/bokeh/core/property/struct.py:70:87: T003 Line contains XXX
++ src/bokeh/core/property/wrappers.py:466:11: T002 Line contains TODO
++ src/bokeh/core/property_mixins.py:374:41: T003 Line contains XXX
++ src/bokeh/core/serialization.py:578:62: T002 Line contains TODO
++ src/bokeh/core/serialization.py:717:33: T003 Line contains XXX
++ src/bokeh/core/types.py:58:3: T002 Line contains TODO
++ src/bokeh/document/callbacks.py:259:11: T002 Line contains TODO
++ src/bokeh/document/document.py:390:15: T002 Line contains TODO
++ src/bokeh/document/document.py:418:11: T002 Line contains TODO
++ src/bokeh/document/document.py:433:11: T002 Line contains TODO
++ src/bokeh/document/events.py:124:47: T002 Line contains TODO
++ src/bokeh/document/json.py:53:26: T002 Line contains TODO
++ src/bokeh/document/locking.py:111:32: T002 Line contains TODO
++ src/bokeh/document/models.py:241:7: T003 Line contains XXX
++ src/bokeh/embed/bundle.py:170:11: T003 Line contains XXX
++ src/bokeh/embed/elements.py:137:7: T003 Line contains XXX
++ src/bokeh/embed/elements.py:168:11: T003 Line contains XXX
++ src/bokeh/embed/standalone.py:108:7: T002 Line contains TODO
++ src/bokeh/embed/standalone.py:137:79: T003 Line contains XXX
++ src/bokeh/embed/standalone.py:144:89: T003 Line contains XXX
++ src/bokeh/embed/standalone.py:151:90: T003 Line contains XXX
++ src/bokeh/embed/standalone.py:248:7: T003 Line contains XXX
++ src/bokeh/embed/standalone.py:255:61: T003 Line contains XXX
++ src/bokeh/embed/util.py:401:7: T002 Line contains TODO
++ src/bokeh/io/export.py:123:38: T003 Line contains XXX
++ src/bokeh/io/export.py:434:17: T003 Line contains XXX
++ src/bokeh/io/export.py:438:3: T002 Line contains TODO
++ src/bokeh/io/export.py:495:11: T003 Line contains XXX
++ src/bokeh/io/notebook.py:330:93: T003 Line contains XXX
++ src/bokeh/io/showing.py:148:48: T002 Line contains TODO
++ src/bokeh/io/util.py:110:7: T002 Line contains TODO
++ src/bokeh/io/util.py:129:7: T003 Line contains XXX
++ src/bokeh/layouts.py:194:40: T002 Line contains TODO
++ src/bokeh/layouts.py:303:3: T003 Line contains XXX
++ src/bokeh/model/util.py:40:20: T003 Line contains XXX
++ src/bokeh/models/annotations/arrows.py:71:7: T002 Line contains TODO
++ src/bokeh/models/annotations/html/toolbars.py:38:39: T002 Line contains TODO
++ src/bokeh/models/callbacks.py:224:3: T002 Line contains TODO
++ src/bokeh/models/callbacks.py:225:3: T002 Line contains TODO
++ src/bokeh/models/graphs.py:85:7: T002 Line contains TODO
++ src/bokeh/models/map_plots.py:172:7: T002 Line contains TODO
++ src/bokeh/models/renderers/graph_renderer.py:44:3: T002 Line contains TODO
++ src/bokeh/models/sources.py:224:11: T002 Line contains TODO
++ src/bokeh/models/tickers.py:322:7: T002 Line contains TODO
++ src/bokeh/models/tools.py:884:7: T002 Line contains TODO
++ src/bokeh/models/ui/dialogs.py:48:22: T002 Line contains TODO
++ src/bokeh/plotting/_docstring.py:107:7: T003 Line contains XXX
++ src/bokeh/plotting/_renderer.py:283:28: T002 Line contains TODO
++ src/bokeh/plotting/_renderer.py:287:28: T002 Line contains TODO
++ src/bokeh/plotting/_tools.py:71:3: T002 Line contains TODO
++ src/bokeh/resources.py:247:3: T003 Line contains XXX
++ src/bokeh/resources.py:342:40: T002 Line contains TODO
++ src/bokeh/resources.py:633:36: T002 Line contains TODO
++ src/bokeh/server/session.py:246:11: T002 Line contains TODO
++ src/bokeh/server/tornado.py:397:51: T002 Line contains TODO
++ src/bokeh/server/tornado.py:431:38: T002 Line contains TODO
++ src/bokeh/server/tornado.py:432:86: T002 Line contains TODO
++ src/bokeh/server/tornado.py:449:82: T002 Line contains TODO
++ src/bokeh/server/tornado.py:452:78: T002 Line contains TODO
++ src/bokeh/server/tornado.py:458:67: T002 Line contains TODO
++ src/bokeh/server/tornado.py:653:11: T002 Line contains TODO
++ src/bokeh/server/views/ws.py:325:71: T002 Line contains TODO
++ src/bokeh/settings.py:518:36: T002 Line contains TODO
++ src/bokeh/sphinxext/util.py:47:3: T002 Line contains TODO
++ src/bokeh/util/callback_manager.py:61:3: T002 Line contains TODO
++ src/bokeh/util/compiler.py:338:3: T003 Line contains XXX
++ src/bokeh/util/compiler.py:512:26: T002 Line contains TODO
++ src/bokeh/util/datatypes.py:73:49: T003 Line contains XXX
++ src/bokeh/util/logconfig.py:58:3: T002 Line contains TODO
++ src/bokeh/util/serialization.py:202:7: T003 Line contains XXX
++ src/bokeh/util/serialization.py:239:7: T003 Line contains XXX
++ src/bokeh/util/serialization.py:339:7: T003 Line contains XXX
++ src/bokeh/util/token.py:295:7: T002 Line contains TODO
++ src/typings/IPython/core/history.pyi:5:89: T003 Line contains XXX
++ src/typings/bs4.pyi:6:3: T003 Line contains XXX
++ tests/integration/models/test_plot.py:44:3: T002 Line contains TODO
++ tests/integration/tools/test_range_tool.py:36:3: T002 Line contains TODO
++ tests/integration/tools/test_range_tool.py:37:3: T002 Line contains TODO
++ tests/integration/tools/test_reset_tool.py:104:11: T003 Line contains XXX
++ tests/integration/tools/test_reset_tool.py:125:61: T003 Line contains XXX
++ tests/integration/tools/test_tap_tool.py:34:3: T002 Line contains TODO
++ tests/integration/widgets/tables/test_cell_editors.py:101:13: T002 Line contains TODO
++ tests/integration/widgets/tables/test_cell_editors.py:286:7: T003 Line contains XXX
++ tests/integration/widgets/tables/test_cell_editors.py:351:3: T003 Line contains XXX
++ tests/integration/widgets/tables/test_cell_editors.py:59:3: T003 Line contains XXX
++ tests/integration/widgets/tables/test_cell_editors.py:79:13: T002 Line contains TODO
++ tests/integration/widgets/tables/test_copy_paste.py:143:11: T003 Line contains XXX
++ tests/integration/widgets/test_color_picker.py:107:11: T003 Line contains XXX
++ tests/integration/widgets/test_daterange_slider.py:160:13: T003 Line contains XXX
++ tests/integration/widgets/test_daterange_slider.py:169:13: T003 Line contains XXX
++ tests/integration/widgets/test_daterange_slider.py:192:11: T003 Line contains XXX
++ tests/integration/widgets/test_dateslider.py:154:11: T003 Line contains XXX
++ tests/integration/widgets/test_dateslider.py:163:11: T003 Line contains XXX
++ tests/integration/widgets/test_dateslider.py:197:11: T003 Line contains XXX
++ tests/integration/widgets/test_dateslider.py:220:11: T003 Line contains XXX
++ tests/integration/widgets/test_dateslider.py:243:11: T003 Line contains XXX
++ tests/integration/widgets/test_dropdown.py:42:3: T003 Line contains XXX
++ tests/integration/widgets/test_range_slider.py:211:11: T003 Line contains XXX
++ tests/integration/widgets/test_range_slider.py:220:11: T003 Line contains XXX
++ tests/integration/widgets/test_range_slider.py:243:11: T003 Line contains XXX
++ tests/integration/widgets/test_slider.py:177:11: T003 Line contains XXX
++ tests/integration/widgets/test_slider.py:186:11: T003 Line contains XXX
++ tests/integration/widgets/test_slider.py:220:11: T003 Line contains XXX
++ tests/integration/widgets/test_slider.py:243:11: T003 Line contains XXX
++ tests/integration/widgets/test_slider.py:266:11: T003 Line contains XXX
++ tests/integration/widgets/test_spinner.py:228:11: T003 Line contains XXX
++ tests/integration/widgets/test_toggle.py:105:7: T003 Line contains XXX
++ tests/support/plugins/bokeh_server.py:103:66: T003 Line contains XXX
++ tests/support/plugins/bokeh_server.py:86:48: T003 Line contains XXX
++ tests/support/plugins/file_server.py:64:42: T002 Line contains TODO
++ tests/support/plugins/ipython.py:45:39: T003 Line contains XXX
++ tests/support/plugins/networkx.py:45:34: T003 Line contains XXX
++ tests/support/plugins/project.py:162:15: T003 Line contains XXX
++ tests/support/plugins/selenium.py:130:15: T003 Line contains XXX
++ tests/support/util/compare.py:55:37: T003 Line contains XXX
++ tests/support/util/selenium.py:320:30: T003 Line contains XXX
++ tests/unit/bokeh/core/property/test_aliases.py:78:3: T002 Line contains TODO
++ tests/unit/bokeh/core/property/test_bases.py:156:11: T003 Line contains XXX
++ tests/unit/bokeh/core/property/test_bases.py:188:11: T003 Line contains XXX
++ tests/unit/bokeh/core/property/test_bases.py:205:11: T003 Line contains XXX
++ tests/unit/bokeh/core/property/test_container.py:62:3: T002 Line contains TODO
++ tests/unit/bokeh/core/property/test_datetime.py:170:3: T002 Line contains TODO
++ tests/unit/bokeh/core/property/test_either.py:66:11: T002 Line contains TODO
++ tests/unit/bokeh/core/property/test_numeric.py:122:11: T002 Line contains TODO
++ tests/unit/bokeh/core/property/test_numeric.py:160:11: T002 Line contains TODO
++ tests/unit/bokeh/core/property/test_numeric.py:199:11: T002 Line contains TODO
++ tests/unit/bokeh/core/property/test_numeric.py:237:11: T002 Line contains TODO
++ tests/unit/bokeh/core/property/test_numeric.py:286:11: T002 Line contains TODO
++ tests/unit/bokeh/core/property/test_numeric.py:53:11: T002 Line contains TODO
++ tests/unit/bokeh/core/property/test_numeric.py:94:11: T002 Line contains TODO
++ tests/unit/bokeh/core/property/test_primitive.py:155:11: T002 Line contains TODO
++ tests/unit/bokeh/core/property/test_primitive.py:214:11: T002 Line contains TODO
++ tests/unit/bokeh/core/property/test_primitive.py:344:11: T002 Line contains TODO
++ tests/unit/bokeh/core/property/test_validation__property.py:120:7: T002 Line contains TODO
++ tests/unit/bokeh/core/property/test_validation__property.py:264:7: T002 Line contains TODO
++ tests/unit/bokeh/core/test_properties.py:152:3: T002 Line contains TODO
++ tests/unit/bokeh/core/test_properties.py:285:62: T003 Line contains XXX
++ tests/unit/bokeh/core/test_properties.py:299:62: T003 Line contains XXX
++ tests/unit/bokeh/document/test_callbacks__document.py:179:52: T003 Line contains XXX
++ tests/unit/bokeh/document/test_callbacks__document.py:378:7: T002 Line contains TODO
++ tests/unit/bokeh/document/test_callbacks__document.py:379:7: T002 Line contains TODO
++ tests/unit/bokeh/document/test_document.py:1072:7: T002 Line contains TODO
++ tests/unit/bokeh/document/test_document.py:1074:7: T002 Line contains TODO
++ tests/unit/bokeh/document/test_document.py:794:11: T002 Line contains TODO
++ tests/unit/bokeh/document/test_events__document.py:159:7: T002 Line contains TODO
++ tests/unit/bokeh/embed/test_standalone.py:282:11: T003 Line contains XXX
++ tests/unit/bokeh/io/test_saving.py:63:41: T002 Line contains TODO
++ tests/unit/bokeh/model/test_util_model.py:127:7: T002 Line contains TODO
++ tests/unit/bokeh/model/test_util_model.py:61:3: T002 Line contains TODO
++ tests/unit/bokeh/models/test_sources.py:748:11: T002 Line contains TODO
++ tests/unit/bokeh/models/test_tools.py:7:3: T002 Line contains TODO
++ tests/unit/bokeh/plotting/test__decorators.py:43:3: T002 Line contains TODO
++ tests/unit/bokeh/plotting/test__renderer.py:115:5: T002 Line contains TODO
++ tests/unit/bokeh/plotting/test_figure.py:536:7: T003 Line contains XXX
++ tests/unit/bokeh/plotting/test_figure.py:61:59: T002 Line contains TODO
++ tests/unit/bokeh/server/views/test_multi_root_static_handler.py:45:50: T002 Line contains TODO
++ tests/unit/bokeh/server/views/test_ws.py:47:7: T002 Line contains TODO
++ tests/unit/bokeh/server/views/test_ws.py:52:11: T002 Line contains TODO
++ tests/unit/bokeh/server/views/test_ws.py:53:11: T002 Line contains TODO
++ tests/unit/bokeh/server/views/test_ws.py:54:11: T003 Line contains XXX
++ tests/unit/bokeh/test___init__.py:101:7: T002 Line contains TODO
++ tests/unit/bokeh/test_client_server.py:670:58: T003 Line contains XXX
++ tests/unit/bokeh/test_objects.py:238:11: T003 Line contains XXX
++ tests/unit/bokeh/test_resources.py:81:7: T002 Line contains TODO
++ tests/unit/bokeh/test_tile_providers.py:79:3: T003 Line contains XXX
+```
+
+</p>
+</details>
+<details><summary>zulip (+204, -0)</summary>
+<p>
+
+```diff
++ analytics/lib/counts.py:111:7: T002 Line contains TODO
++ analytics/lib/counts.py:255:11: T002 Line contains TODO
++ analytics/management/commands/populate_analytics_db.py:71:11: T002 Line contains TODO
++ analytics/views/stats.py:108:11: T002 Line contains TODO
++ analytics/views/stats.py:413:11: T002 Line contains TODO
++ analytics/views/stats.py:538:11: T004 Line contains HACK
++ corporate/lib/stripe.py:1064:11: T002 Line contains TODO
++ corporate/lib/stripe.py:1069:11: T002 Line contains TODO
++ corporate/lib/stripe.py:286:19: T002 Line contains TODO
++ corporate/lib/stripe.py:603:7: T002 Line contains TODO
++ corporate/lib/stripe.py:706:7: T002 Line contains TODO
++ corporate/models.py:258:7: T002 Line contains TODO
++ corporate/tests/test_stripe.py:1706:11: T002 Line contains TODO
++ corporate/tests/test_stripe.py:2482:11: T002 Line contains TODO
++ corporate/tests/test_stripe.py:4299:11: T002 Line contains TODO
++ corporate/tests/test_stripe.py:4599:11: T002 Line contains TODO
++ corporate/tests/test_stripe.py:742:11: T002 Line contains TODO
++ scripts/lib/check_rabbitmq_queue.py:65:11: T002 Line contains TODO
++ scripts/lib/clean_node_cache.py:3:3: T002 Line contains TODO
++ scripts/lib/setup_venv.py:199:15: T002 Line contains TODO
++ scripts/lib/sharding.py:29:3: T002 Line contains TODO
++ tools/documentation_crawler/documentation_crawler/spiders/common/spiders.py:109:15: T002 Line contains TODO
++ tools/documentation_crawler/documentation_crawler/spiders/common/spiders.py:237:15: T004 Line contains HACK
++ tools/lib/capitalization.py:226:15: T004 Line contains HACK
++ tools/lib/provision.py:280:7: T004 Line contains HACK
++ tools/lib/provision.py:290:15: T002 Line contains TODO
++ tools/lib/template_parser.py:457:15: T002 Line contains TODO
++ zerver/actions/create_realm.py:193:11: T004 Line contains HACK
++ zerver/actions/invites.py:455:7: T002 Line contains TODO
++ zerver/actions/message_edit.py:1010:15: T002 Line contains TODO
++ zerver/actions/message_edit.py:731:15: T002 Line contains TODO
++ zerver/actions/message_send.py:307:11: T002 Line contains TODO
++ zerver/actions/reactions.py:28:11: T002 Line contains TODO
++ zerver/actions/user_settings.py:415:7: T002 Line contains TODO
++ zerver/actions/user_settings.py:542:15: T004 Line contains HACK
++ zerver/actions/users.py:388:7: T002 Line contains TODO
++ zerver/data_import/gitter.py:132:7: T002 Line contains TODO
++ zerver/data_import/gitter.py:206:7: T002 Line contains TODO
++ zerver/data_import/rocketchat.py:1254:7: T002 Line contains TODO
++ zerver/data_import/rocketchat.py:91:11: T002 Line contains TODO
++ zerver/data_import/slack.py:571:15: T002 Line contains TODO
++ zerver/forms.py:377:15: T002 Line contains TODO
++ zerver/lib/alert_words.py:76:7: T002 Line contains TODO
++ zerver/lib/ccache.py:194:7: T002 Line contains TODO
++ zerver/lib/compatibility.py:150:7: T002 Line contains TODO
++ zerver/lib/email_mirror.py:485:11: T002 Line contains TODO
++ zerver/lib/email_notifications.py:610:11: T002 Line contains TODO
++ zerver/lib/email_notifications.py:833:7: T002 Line contains TODO
++ zerver/lib/email_validation.py:10:3: T002 Line contains TODO
++ zerver/lib/event_schema.py:1041:3: T002 Line contains TODO
++ zerver/lib/event_schema.py:1359:3: T002 Line contains TODO
++ zerver/lib/events.py:1004:23: T002 Line contains TODO
++ zerver/lib/events.py:1489:11: T002 Line contains TODO
++ zerver/lib/events.py:334:11: T002 Line contains TODO
++ zerver/lib/events.py:466:11: T002 Line contains TODO
++ zerver/lib/events.py:571:15: T002 Line contains TODO
++ zerver/lib/events.py:668:15: T002 Line contains TODO
++ zerver/lib/events.py:877:23: T002 Line contains TODO
++ zerver/lib/export.py:1255:7: T002 Line contains TODO
++ zerver/lib/export.py:2127:7: T002 Line contains TODO
++ zerver/lib/export.py:282:3: T002 Line contains TODO
++ zerver/lib/import_realm.py:1090:11: T002 Line contains TODO
++ zerver/lib/import_realm.py:1385:7: T002 Line contains TODO
++ zerver/lib/import_realm.py:1613:7: T002 Line contains TODO
++ zerver/lib/import_realm.py:682:7: T002 Line contains TODO
++ zerver/lib/import_realm.py:802:19: T002 Line contains TODO
++ zerver/lib/integrations.py:100:11: T002 Line contains TODO
++ zerver/lib/integrations.py:163:19: T002 Line contains TODO
++ zerver/lib/integrations.py:692:21: T001 Line contains FIXME
++ zerver/lib/markdown/__init__.py:1591:11: T004 Line contains HACK
++ zerver/lib/markdown/__init__.py:1878:11: T002 Line contains TODO
++ zerver/lib/markdown/__init__.py:713:11: T002 Line contains TODO
++ zerver/lib/markdown/__init__.py:746:15: T002 Line contains TODO
++ zerver/lib/markdown/api_arguments_table_generator.py:133:15: T002 Line contains TODO
++ zerver/lib/markdown/api_arguments_table_generator.py:166:15: T002 Line contains TODO
++ zerver/lib/markdown/api_return_values_table_generator.py:70:15: T004 Line contains HACK
++ zerver/lib/message.py:1146:11: T002 Line contains TODO
++ zerver/lib/message.py:1157:35: T002 Line contains TODO
++ zerver/lib/message.py:570:15: T002 Line contains TODO
++ zerver/lib/message.py:714:15: T002 Line contains TODO
++ zerver/lib/narrow.py:278:15: T002 Line contains TODO
++ zerver/lib/presence.py:147:11: T002 Line contains TODO
++ zerver/lib/presence.py:69:7: T002 Line contains TODO
++ zerver/lib/presence.py:88:7: T002 Line contains TODO
++ zerver/lib/push_notifications.py:1049:11: T002 Line contains TODO
++ zerver/lib/push_notifications.py:155:7: T002 Line contains TODO
++ zerver/lib/push_notifications.py:227:11: T002 Line contains TODO
++ zerver/lib/push_notifications.py:580:11: T002 Line contains TODO
++ zerver/lib/request.py:381:19: T002 Line contains TODO
++ zerver/lib/request.py:465:15: T002 Line contains TODO
++ zerver/lib/rest.py:190:11: T002 Line contains TODO
++ zerver/lib/retention.py:365:32: T002 Line contains TODO
++ zerver/lib/scim.py:109:15: T002 Line contains TODO
++ zerver/lib/scim.py:211:19: T002 Line contains TODO
++ zerver/lib/scim.py:278:11: T002 Line contains TODO
++ zerver/lib/sessions.py:66:54: T002 Line contains TODO
++ zerver/lib/storage.py:30:15: T004 Line contains HACK
++ zerver/lib/templates.py:135:11: T002 Line contains TODO
++ zerver/lib/test_classes.py:880:11: T002 Line contains TODO
++ zerver/lib/test_fixtures.py:183:15: T002 Line contains TODO
++ zerver/lib/test_helpers.py:387:74: T002 Line contains TODO
++ zerver/lib/test_helpers.py:395:7: T002 Line contains TODO
++ zerver/lib/test_helpers.py:535:28: T002 Line contains TODO
++ zerver/lib/transfer.py:19:7: T002 Line contains TODO
++ zerver/lib/url_preview/preview.py:33:3: T001 Line contains FIXME
++ zerver/lib/users.py:122:15: T002 Line contains TODO
++ zerver/lib/users.py:216:7: T002 Line contains TODO
++ zerver/lib/users.py:610:11: T002 Line contains TODO
++ zerver/lib/webhooks/common.py:196:11: T002 Line contains TODO
++ zerver/management/commands/convert_gitter_data.py:46:15: T002 Line contains TODO
++ zerver/management/commands/delete_realm.py:59:11: T002 Line contains TODO
++ zerver/management/commands/list_realms.py:52:15: T004 Line contains HACK
++ zerver/middleware.py:398:19: T002 Line contains TODO
++ zerver/migrations/0206_stream_rendered_description.py:9:7: T001 Line contains FIXME
++ zerver/migrations/0239_usermessage_copy_id_to_bigint_id.py:38:8: T002 Line contains TODO
++ zerver/models.py:2485:7: T002 Line contains TODO
++ zerver/models.py:2567:7: T002 Line contains TODO
++ zerver/models.py:4037:7: T002 Line contains TODO
++ zerver/models.py:4635:11: T002 Line contains TODO
++ zerver/openapi/markdown_extension.py:214:11: T002 Line contains TODO
++ zerver/openapi/markdown_extension.py:234:11: T004 Line contains HACK
++ zerver/openapi/openapi.py:408:11: T002 Line contains TODO
++ zerver/openapi/openapi.py:413:11: T002 Line contains TODO
++ zerver/openapi/openapi.py:496:7: T002 Line contains TODO
++ zerver/openapi/python_examples.py:433:7: T002 Line contains TODO
++ zerver/tests/test_auth_backends.py:3822:15: T002 Line contains TODO
++ zerver/tests/test_bots.py:1499:11: T002 Line contains TODO
++ zerver/tests/test_decorators.py:119:11: T002 Line contains TODO
++ zerver/tests/test_decorators.py:126:11: T002 Line contains TODO
++ zerver/tests/test_decorators.py:133:11: T002 Line contains TODO
++ zerver/tests/test_docs.py:304:11: T002 Line contains TODO
++ zerver/tests/test_docs.py:445:11: T002 Line contains TODO
++ zerver/tests/test_home.py:1188:11: T002 Line contains TODO
++ zerver/tests/test_home.py:1202:7: T002 Line contains TODO
++ zerver/tests/test_home.py:1214:11: T002 Line contains TODO
++ zerver/tests/test_home.py:273:11: T002 Line contains TODO
++ zerver/tests/test_i18n.py:45:11: T002 Line contains TODO
++ zerver/tests/test_i18n.py:72:11: T002 Line contains TODO
++ zerver/tests/test_invite.py:1014:11: T002 Line contains TODO
++ zerver/tests/test_link_embed.py:909:15: T001 Line contains FIXME
++ zerver/tests/test_mattermost_importer.py:232:11: T002 Line contains TODO
++ zerver/tests/test_mattermost_importer.py:430:11: T002 Line contains TODO
++ zerver/tests/test_message_flags.py:1042:11: T002 Line contains TODO
++ zerver/tests/test_message_send.py:2206:15: T004 Line contains HACK
++ zerver/tests/test_message_topics.py:42:15: T002 Line contains TODO
++ zerver/tests/test_openapi.py:207:14: T002 Line contains TODO
++ zerver/tests/test_openapi.py:442:19: T002 Line contains TODO
++ zerver/tests/test_openapi.py:528:23: T002 Line contains TODO
++ zerver/tests/test_openapi.py:551:27: T004 Line contains HACK
++ zerver/tests/test_openapi.py:59:11: T004 Line contains HACK
++ zerver/tests/test_queue_worker.py:319:11: T004 Line contains HACK
++ zerver/tests/test_rocketchat_importer.py:855:11: T002 Line contains TODO
++ zerver/tests/test_settings.py:28:7: T002 Line contains TODO
++ zerver/tests/test_slack_importer.py:1147:15: T004 Line contains HACK
++ zerver/tests/test_subs.py:3104:34: T002 Line contains TODO
++ zerver/tests/test_tornado.py:88:11: T002 Line contains TODO
++ zerver/tests/test_urls.py:40:11: T001 Line contains FIXME
++ zerver/tornado/event_queue.py:1141:7: T002 Line contains TODO
++ zerver/tornado/event_queue.py:1153:7: T002 Line contains TODO
++ zerver/tornado/event_queue.py:116:45: T002 Line contains TODO
++ zerver/tornado/event_queue.py:1261:11: T002 Line contains TODO
++ zerver/tornado/event_queue.py:1326:11: T002 Line contains TODO
++ zerver/tornado/event_queue.py:1345:15: T002 Line contains TODO
++ zerver/tornado/event_queue.py:1360:15: T002 Line contains TODO
++ zerver/tornado/event_queue.py:245:7: T002 Line contains TODO
++ zerver/tornado/handlers.py:207:11: T002 Line contains TODO
++ zerver/tornado/views.py:62:11: T002 Line contains TODO
++ zerver/views/auth.py:1244:11: T002 Line contains TODO
++ zerver/views/auth.py:213:11: T002 Line contains TODO
++ zerver/views/auth.py:685:7: T002 Line contains TODO
++ zerver/views/custom_profile_fields.py:227:11: T004 Line contains HACK
++ zerver/views/custom_profile_fields.py:230:11: T002 Line contains TODO
++ zerver/views/documentation.py:232:11: T004 Line contains HACK
++ zerver/views/documentation.py:297:7: T001 Line contains FIXME
++ zerver/views/home.py:116:15: T002 Line contains TODO
++ zerver/views/home.py:136:11: T002 Line contains TODO
++ zerver/views/message_fetch.py:192:11: T002 Line contains TODO
++ zerver/views/message_send.py:149:11: T002 Line contains TODO
++ zerver/views/presence.py:76:7: T002 Line contains TODO
++ zerver/views/realm.py:269:7: T002 Line contains TODO
++ zerver/views/realm_icon.py:64:7: T004 Line contains HACK
++ zerver/views/realm_logo.py:67:7: T004 Line contains HACK
++ zerver/views/registration.py:316:23: T002 Line contains TODO
++ zerver/views/registration.py:525:23: T002 Line contains TODO
++ zerver/views/registration.py:554:15: T002 Line contains TODO
++ zerver/views/scheduled_messages.py:123:11: T002 Line contains TODO
++ zerver/views/scheduled_messages.py:75:11: T002 Line contains TODO
++ zerver/views/streams.py:930:11: T002 Line contains TODO
++ zerver/views/typing.py:35:11: T002 Line contains TODO
++ zerver/views/user_settings.py:81:11: T002 Line contains TODO
++ zerver/views/users.py:320:7: T004 Line contains HACK
++ zerver/views/zephyr.py:23:3: T004 Line contains HACK
++ zerver/views/zephyr.py:65:7: T002 Line contains TODO
++ zerver/worker/queue_processors.py:536:11: T002 Line contains TODO
++ zerver/worker/queue_processors.py:961:11: T002 Line contains TODO
++ zilencer/management/commands/populate_db.py:107:26: T004 Line contains HACK
++ zilencer/management/commands/populate_db.py:94:7: T004 Line contains HACK
++ zilencer/views.py:102:11: T002 Line contains TODO
++ zproject/backends.py:1043:15: T002 Line contains TODO
++ zproject/backends.py:1546:15: T002 Line contains TODO
++ zproject/backends.py:2846:7: T004 Line contains HACK
++ zproject/default_settings.py:140:3: T002 Line contains TODO
++ zproject/default_settings.py:164:3: T002 Line contains TODO
++ zproject/default_settings.py:485:3: T002 Line contains TODO
+```
+
+</p>
+</details>
+Rules changed: 4
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| T002 | 437 | 437 | 0 |
+| T003 | 78 | 78 | 0 |
+| T004 | 35 | 35 | 0 |
+| T001 | 10 | 10 | 0 |
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     15.2±0.08ms     2.7 MB/sec    1.01     15.4±0.16ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.01ms     4.6 MB/sec    1.01      3.7±0.01ms     4.5 MB/sec
+linter/all-rules/numpy/globals.py          1.00    372.7±2.10µs     7.9 MB/sec    1.01    377.8±1.34µs     7.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.3±0.10ms     4.0 MB/sec    1.01      6.4±0.04ms     4.0 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.5±0.03ms     5.4 MB/sec    1.00      7.5±0.02ms     5.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1584.2±5.96µs    10.5 MB/sec    1.01   1601.5±3.37µs    10.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    174.2±3.62µs    16.9 MB/sec    1.02    177.6±0.61µs    16.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.4±0.01ms     7.6 MB/sec    1.01      3.4±0.01ms     7.5 MB/sec
+parser/large/dataset.py                    1.02      5.8±0.00ms     7.0 MB/sec    1.00      5.7±0.01ms     7.1 MB/sec
+parser/numpy/ctypeslib.py                  1.02  1142.2±12.81µs    14.6 MB/sec    1.00   1124.9±1.67µs    14.8 MB/sec
+parser/numpy/globals.py                    1.02    117.4±0.66µs    25.1 MB/sec    1.00    115.4±0.36µs    25.6 MB/sec
+parser/pydantic/types.py                   1.02      2.5±0.00ms    10.2 MB/sec    1.00      2.5±0.00ms    10.4 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     16.3±0.12ms     2.5 MB/sec    1.01     16.5±0.10ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.2±0.07ms     4.0 MB/sec    1.00      4.2±0.05ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    498.5±6.32µs     5.9 MB/sec    1.01   501.6±10.68µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.9±0.09ms     3.7 MB/sec    1.01      7.0±0.06ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.1±0.05ms     5.0 MB/sec    1.00      8.1±0.05ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1744.2±17.26µs     9.5 MB/sec    1.01  1758.5±15.75µs     9.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    203.2±3.32µs    14.5 MB/sec    1.01    204.8±4.53µs    14.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.05ms     6.9 MB/sec    1.01      3.7±0.05ms     6.9 MB/sec
+parser/large/dataset.py                    1.00      6.4±0.04ms     6.4 MB/sec    1.02      6.5±0.03ms     6.3 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1196.1±11.26µs    13.9 MB/sec    1.03  1229.1±11.97µs    13.5 MB/sec
+parser/numpy/globals.py                    1.00    124.0±2.70µs    23.8 MB/sec    1.02    126.2±1.65µs    23.4 MB/sec
+parser/pydantic/types.py                   1.00      2.7±0.03ms     9.4 MB/sec    1.01      2.7±0.03ms     9.3 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Review comment by @JonathanPlasse on `crates/ruff/src/rules/flake8_todos/rules/todos.rs`:485 on 2023-05-27 16:10_
+
+Why remove the tests?
+
+---
+
+_@JonathanPlasse reviewed on 2023-05-27 16:10_
+
+---
+
+_Renamed from "Implement `flake8_fixme" to "Implement `flake8_fixme`" by @evanrittenhouse on 2023-05-27 16:25_
+
+---
+
+_@evanrittenhouse reviewed on 2023-05-27 16:57_
+
+---
+
+_Review comment by @evanrittenhouse on `crates/ruff/src/rules/flake8_todos/rules/todos.rs`:485 on 2023-05-27 16:57_
+
+The `detect_tag` method is removed. To implement the tests on `TodoDirective::from_comment()`, larger changes would be needed (at the minimum `#[derive(Debug...)]` etc., though I was thinking about just moving it from an enum into a struct. I think the detection logic is pretty thoroughly tested between `T00.py` and `TD00<x>.py`, but definitely open to making that change and adding the tests back if that's something we want to do.
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/checkers/tokens.rs`:214 on 2023-05-27 18:54_
+
+What do you think of only using a single vec for all directives and filtering out the unsupported directives inside the rule? 
+
+---
+
+_@MichaReiser reviewed on 2023-05-27 18:57_
+
+I'll review the rest on Tuesday. My phone screen is a bit too tiny 
+
+---
+
+_@evanrittenhouse reviewed on 2023-05-28 00:29_
+
+---
+
+_Review comment by @evanrittenhouse on `crates/ruff/src/checkers/tokens.rs`:214 on 2023-05-28 00:29_
+
+Sure, we can do that as well! I'll implement that along with the other comments.
+
+---
+
+_Comment by @Skylion007 on 2023-05-28 14:42_
+
+This is an alias for a PyLint rule, shouldn't we move the relevant rule there? https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/fixme.html
+
+---
+
+_Comment by @evanrittenhouse on 2023-05-28 14:47_
+
+Yeah, it looks like T001 and T003 are aliases for that rule. Let's wait for @charliermarsh's confirmation but they look pretty similar to me.
+
+---
+
+_Review requested from @charliermarsh by @MichaReiser on 2023-05-30 06:45_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/rules/flake8_todos/rules/todos.rs`:251 on 2023-05-30 06:50_
+
+Nit: I wonder if we could avoid the collection of the directive ranges by instead change these rules to be called for every directive:
+
+```rust
+todos(
+	comment_directive: CommentDirective,
+	indexer: &indexer,
+	locator: &Locator,
+	settings: &Settings
+) -> Vec<Diagnostic>
+```
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/checkers/tokens.rs`:199 on 2023-05-30 06:51_
+
+Nit: I think it would be good to define a new struct for `(TextRange, usize, TextRange)`  to have a name for the type and its field `CommentDirective` (I find tuples with more than two elements hard to read, particularly if they have multiple fields of the same type)
+
+
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/rules/flake8_todos/rules/todos.rs`:262 on 2023-05-30 06:55_
+
+I don't think this is a problem. I just want to call it out: 
+This will be slightly less efficient than the old implementation because we'll now try to extract the tag from the following comments again in the `comment_directive_ranges` loop. It also depends on `comment_ranges()` being a slice iter (or any iter with a `O(1)` skip). 
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/rules/flake8_todos/rules/todos.rs`:485 on 2023-05-30 06:57_
+
+I generally favor adding `#[derive(Debug)]` to all types. I think spending 15min or so trying to convert the tests to `TodoDirective::from_comment` is worth the time. Debugging unit tests is easier than debugging integration tests.
+
+---
+
+_@MichaReiser approved on 2023-05-30 06:57_
+
+---
+
+_@evanrittenhouse reviewed on 2023-05-30 12:17_
+
+---
+
+_Review comment by @evanrittenhouse on `crates/ruff/src/rules/flake8_todos/rules/todos.rs`:262 on 2023-05-30 12:17_
+
+Yeah,  I was worried about that. I think I'm going to change TodoDirective to a struct that contains the comment text and its range (similar to Tag in flake8-todo) and a kind. The kind will be the current enum. Then we can just iterate over those directives and have everything we need rather than slicing twice with the locator
+
+Will also make the implementation cleaner - @MichaReiser please let me know what you think!
+
+---
+
+_Comment by @evanrittenhouse on 2023-05-30 20:09_
+
+@MichaReiser Re-requesting review since I made some large changes. I think they should help out in the long run for future TODO-related operations as well.
+
+---
+
+_Review requested from @MichaReiser by @evanrittenhouse on 2023-05-30 20:09_
+
+---
+
+_Renamed from "Implement `flake8_fixme`" to "Implement `flake8_fixme`, refactor `TodoDirective`" by @evanrittenhouse on 2023-05-30 21:43_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/checkers/tokens.rs`:204 on 2023-05-31 06:29_
+
+Nit: It's sufficient to either annotate the type of the `tood_comments` variable or specify the type argument when calling `collect`
+```suggestion
+        let todo_comments: Vec<TodoComment> = indexer
+            .comment_ranges()
+            .iter()
+            .enumerate()
+            .filter_map(|(i, comment_range)| {
+                let comment = locator.slice(*comment_range);
+                TodoComment::from_comment(comment, comment_range, i)
+            })
+            .collect();
+```
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/directives.rs`:223 on 2023-05-31 06:30_
+
+Nit: Can we make the struct `pub(crate)`?
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/directives.rs`:269 on 2023-05-31 06:31_
+
+Is this method used?
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/directives.rs`:255 on 2023-05-31 06:35_
+
+Storing the content of every directive is kind of expensive because we need to allocate, copy, and later de-allocate the content. It is also somewhat redundant because we already store the `range`, which allows us to retrieve the text from the `Locator`. 
+
+There are two ways to avoid that: 
+* Store a reference to the `Locator` on `TodoDirective` and implement a `content(&self) -> &str` function that uses `locator.slice(self.range)` to get the content. The downside of this is that we need to store an extra pointer for every `TodoDirective` and that it now adds lifetimes everywhere. 
+* Create a `content(&self, locator: &Locator) -> &str` method that returns the content (same as above). The downside here is that `dbg!(&directive)` no longer contains the content, and that calling `directive.content(locator)` is a bit less ergonomic. 
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/directives.rs`:294 on 2023-05-31 06:37_
+
+Nit: Yuu can do
+```suggestion
+				let range = TextRange::at(string_range.start() + relative_offset, directive_length);
+                let content = string[range].to_string()
+```
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/rules/flake8_todos/rules/todos.rs`:284 on 2023-05-31 06:38_
+
+Nit: Should we rename the method `from_comment` to have similar names. 
+
+---
+
+_@MichaReiser approved on 2023-05-31 06:39_
+
+I like it!
+
+---
+
+_Review comment by @evanrittenhouse on `crates/ruff/src/directives.rs`:255 on 2023-05-31 14:24_
+
+Gotcha. I'll implement the latter way, but just for my own curiosity - is there a reason we couldn't also store the content as a `&'a str` similar to `TodoComment` other than the additional lifetimes?
+
+---
+
+_@evanrittenhouse reviewed on 2023-05-31 14:24_
+
+---
+
+_Review comment by @evanrittenhouse on `crates/ruff/src/directives.rs`:223 on 2023-05-31 14:40_
+
+I'm not sure if we can do that since it's used in `flake8_fixme/rules#todos`, which is public. Should that rule be `pub(crate)` as well?
+
+Is there a reason we're migrating towards more crate-private structs? Feels like I've seen way more of them recently.
+
+---
+
+_@evanrittenhouse reviewed on 2023-05-31 14:40_
+
+---
+
+_Renamed from "Implement `flake8_fixme`, refactor `TodoDirective`" to "Implement `flake8_fixme` and refactor `TodoDirective`" by @evanrittenhouse on 2023-05-31 15:08_
+
+---
+
+_@MichaReiser reviewed on 2023-06-01 06:51_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/directives.rs`:255 on 2023-06-01 06:51_
+
+> Gotcha. I'll implement the latter way, but just for my own curiosity - is there a reason we couldn't also store the content as a &'a str similar to TodoComment other than the additional lifetimes?
+
+Lol yeah, that would work too and is the better choice than storing a reference to `Locator`. It adds an additional 8 bytes but that's fine.
+
+---
+
+_@evanrittenhouse reviewed on 2023-06-01 11:46_
+
+---
+
+_Review comment by @evanrittenhouse on `crates/ruff/src/directives.rs`:223 on 2023-06-01 11:46_
+
+@MichaReiser wanted to bump this - I think it may be a blocker?
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/directives.rs`:223 on 2023-06-01 16:08_
+
+Sorry. I missed this notification. Thanks for the ping.
+
+If we can make the rule `pub(crate)` too, then that's what I would do. 
+
+> Is there a reason we're migrating towards more crate-private structs? Feels like I've seen way more of them recently.
+
+Restricting the visibility has the advantage that rust's dead code analysis works (disabled for all `pub` items because it may not know all downstream crates). Keeping the visibility low also has the advantage that it is easier to reasons about the code: Ah, *this* is only used in this crate, I can change this freely vs. Oh, *this* is used publicly, do I know all call sites? Which crates are using it?
+
+---
+
+_@MichaReiser reviewed on 2023-06-01 16:08_
+
+---
+
+_@evanrittenhouse reviewed on 2023-06-01 16:46_
+
+---
+
+_Review comment by @evanrittenhouse on `crates/ruff/src/directives.rs`:223 on 2023-06-01 16:46_
+
+Gotcha, thank you! Done :)
+
+---
+
+_Merged by @MichaReiser on 2023-06-02 06:18_
+
+---
+
+_Closed by @MichaReiser on 2023-06-02 06:18_
+
+---
+
+_Branch deleted on 2023-06-15 21:14_
+
+---

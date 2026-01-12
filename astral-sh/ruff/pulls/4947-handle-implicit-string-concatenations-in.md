@@ -1,0 +1,108 @@
+```yaml
+number: 4947
+title: Handle implicit string concatenations in conversion-flag rewrites
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+merged: true
+base: main
+head: charlie/implicit
+created_at: 2023-06-08T01:57:43Z
+updated_at: 2023-06-08T02:35:28Z
+url: https://github.com/astral-sh/ruff/pull/4947
+synced_at: 2026-01-12T03:43:29Z
+```
+
+# Handle implicit string concatenations in conversion-flag rewrites
+
+---
+
+_Pull request opened by @charliermarsh on 2023-06-08 01:57_
+
+Closes #4927.
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-06-08 01:57_
+
+---
+
+_Merged by @charliermarsh on 2023-06-08 02:04_
+
+---
+
+_Closed by @charliermarsh on 2023-06-08 02:04_
+
+---
+
+_Branch deleted on 2023-06-08 02:04_
+
+---
+
+_Comment by @github-actions[bot] on 2023-06-08 02:08_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+2, -2, 0 error(s))
+
+<details><summary>airflow (+2, -2)</summary>
+<p>
+
+```diff
+- airflow/providers/amazon/aws/log/cloudwatch_task_handler.py:99:40: RUF010 Use conversion in f-string
++ airflow/providers/amazon/aws/log/cloudwatch_task_handler.py:99:40: RUF010 [*] Use conversion in f-string
+- airflow/providers/grpc/hooks/grpc.py:115:33: RUF010 Use conversion in f-string
++ airflow/providers/grpc/hooks/grpc.py:115:33: RUF010 [*] Use conversion in f-string
+```
+
+</p>
+</details>
+Rules changed: 1
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| RUF010 | 4 | 2 | 2 |
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.11      7.4±0.18ms     5.5 MB/sec    1.00      6.7±0.30ms     6.1 MB/sec
+formatter/numpy/ctypeslib.py               1.10  1448.2±53.33µs    11.5 MB/sec    1.00  1311.4±48.45µs    12.7 MB/sec
+formatter/numpy/globals.py                 1.06    160.6±6.03µs    18.4 MB/sec    1.00    152.2±8.50µs    19.4 MB/sec
+formatter/pydantic/types.py                1.12      3.2±0.13ms     7.9 MB/sec    1.00      2.9±0.09ms     8.9 MB/sec
+linter/all-rules/large/dataset.py          1.01     17.7±0.50ms     2.3 MB/sec    1.00     17.5±0.59ms     2.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.2±0.15ms     4.0 MB/sec    1.00      4.1±0.12ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.02   522.4±25.17µs     5.6 MB/sec    1.00   513.1±21.38µs     5.8 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.3±0.21ms     3.5 MB/sec    1.00      7.2±0.25ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.08      8.6±0.24ms     4.7 MB/sec    1.00      8.0±0.19ms     5.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.06  1826.6±61.25µs     9.1 MB/sec    1.00  1724.1±62.16µs     9.7 MB/sec
+linter/default-rules/numpy/globals.py      1.04    208.8±8.95µs    14.1 MB/sec    1.00    201.7±7.35µs    14.6 MB/sec
+linter/default-rules/pydantic/types.py     1.04      3.8±0.11ms     6.7 MB/sec    1.00      3.7±0.14ms     7.0 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      6.6±0.05ms     6.1 MB/sec    1.01      6.7±0.05ms     6.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1278.3±20.62µs    13.0 MB/sec    1.01  1285.4±14.03µs    13.0 MB/sec
+formatter/numpy/globals.py                 1.00    142.2±4.73µs    20.7 MB/sec    1.01    143.7±3.07µs    20.5 MB/sec
+formatter/pydantic/types.py                1.00      2.9±0.05ms     8.8 MB/sec    1.01      2.9±0.04ms     8.8 MB/sec
+linter/all-rules/large/dataset.py          1.00     16.6±0.13ms     2.4 MB/sec    1.00     16.6±0.16ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.2±0.04ms     4.0 MB/sec    1.00      4.2±0.04ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.01   495.6±14.34µs     6.0 MB/sec    1.00    491.1±6.86µs     6.0 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.1±0.09ms     3.6 MB/sec    1.00      7.0±0.07ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.2±0.07ms     4.9 MB/sec    1.00      8.2±0.09ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1735.6±15.22µs     9.6 MB/sec    1.00  1742.7±13.80µs     9.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00    197.4±5.98µs    14.9 MB/sec    1.01    199.7±3.71µs    14.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.03ms     6.9 MB/sec    1.01      3.7±0.03ms     6.8 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---

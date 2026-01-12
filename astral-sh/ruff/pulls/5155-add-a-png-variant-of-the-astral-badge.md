@@ -1,0 +1,84 @@
+```yaml
+number: 5155
+title: Add a PNG variant of the Astral badge
+type: pull_request
+state: merged
+author: charliermarsh
+labels: []
+assignees: []
+merged: true
+base: main
+head: charlie/png
+created_at: 2023-06-17T03:18:06Z
+updated_at: 2023-06-17T03:44:07Z
+url: https://github.com/astral-sh/ruff/pull/5155
+synced_at: 2026-01-12T03:43:30Z
+```
+
+# Add a PNG variant of the Astral badge
+
+---
+
+_Pull request opened by @charliermarsh on 2023-06-17 03:18_
+
+_No description provided._
+
+---
+
+_Merged by @charliermarsh on 2023-06-17 03:24_
+
+---
+
+_Closed by @charliermarsh on 2023-06-17 03:24_
+
+---
+
+_Branch deleted on 2023-06-17 03:24_
+
+---
+
+_Comment by @github-actions[bot] on 2023-06-17 03:27_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      8.6±0.33ms     4.7 MB/sec    1.03      8.9±0.44ms     4.6 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1804.2±72.03µs     9.2 MB/sec    1.04  1871.1±175.55µs     8.9 MB/sec
+formatter/numpy/globals.py                 1.00   179.6±15.34µs    16.4 MB/sec    1.01   180.5±38.11µs    16.3 MB/sec
+formatter/pydantic/types.py                1.04      3.7±0.23ms     6.9 MB/sec    1.00      3.6±0.13ms     7.1 MB/sec
+linter/all-rules/large/dataset.py          1.00     18.7±0.41ms     2.2 MB/sec    1.02     19.0±0.51ms     2.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.4±0.12ms     3.8 MB/sec    1.00      4.4±0.15ms     3.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00   559.5±21.75µs     5.3 MB/sec    1.02   568.8±28.19µs     5.2 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.9±0.26ms     3.2 MB/sec    1.00      7.9±0.25ms     3.2 MB/sec
+linter/default-rules/large/dataset.py      1.01      9.2±0.26ms     4.4 MB/sec    1.00      9.1±0.25ms     4.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02  1988.5±80.43µs     8.4 MB/sec    1.00  1955.5±54.41µs     8.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00   230.2±24.06µs    12.8 MB/sec    1.00   230.4±14.59µs    12.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.1±0.18ms     6.2 MB/sec    1.01      4.2±0.18ms     6.1 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      9.1±0.37ms     4.5 MB/sec    1.19     10.8±0.37ms     3.8 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1830.1±66.93µs     9.1 MB/sec    1.19      2.2±0.15ms     7.6 MB/sec
+formatter/numpy/globals.py                 1.00    182.6±9.20µs    16.2 MB/sec    1.13   206.6±15.25µs    14.3 MB/sec
+formatter/pydantic/types.py                1.00      3.8±0.15ms     6.8 MB/sec    1.14      4.3±0.17ms     5.9 MB/sec
+linter/all-rules/large/dataset.py          1.01     18.3±0.77ms     2.2 MB/sec    1.00     18.2±0.61ms     2.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.8±0.21ms     3.5 MB/sec    1.02      4.9±0.26ms     3.4 MB/sec
+linter/all-rules/numpy/globals.py          1.01   569.5±28.72µs     5.2 MB/sec    1.00   565.9±25.95µs     5.2 MB/sec
+linter/all-rules/pydantic/types.py         1.02      8.2±0.27ms     3.1 MB/sec    1.00      8.0±0.33ms     3.2 MB/sec
+linter/default-rules/large/dataset.py      1.01      9.6±0.39ms     4.2 MB/sec    1.00      9.5±0.34ms     4.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01      2.0±0.09ms     8.2 MB/sec    1.00      2.0±0.08ms     8.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00   241.2±10.62µs    12.2 MB/sec    1.01   242.6±11.16µs    12.2 MB/sec
+linter/default-rules/pydantic/types.py     1.02      4.4±0.19ms     5.8 MB/sec    1.00      4.3±0.13ms     5.9 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---

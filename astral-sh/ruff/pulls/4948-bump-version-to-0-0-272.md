@@ -1,0 +1,84 @@
+```yaml
+number: 4948
+title: Bump version to 0.0.272
+type: pull_request
+state: merged
+author: charliermarsh
+labels: []
+assignees: []
+merged: true
+base: main
+head: charlie/bump
+created_at: 2023-06-08T02:08:54Z
+updated_at: 2023-06-08T02:41:42Z
+url: https://github.com/astral-sh/ruff/pull/4948
+synced_at: 2026-01-12T03:43:29Z
+```
+
+# Bump version to 0.0.272
+
+---
+
+_Pull request opened by @charliermarsh on 2023-06-08 02:08_
+
+_No description provided._
+
+---
+
+_Merged by @charliermarsh on 2023-06-08 02:17_
+
+---
+
+_Closed by @charliermarsh on 2023-06-08 02:17_
+
+---
+
+_Branch deleted on 2023-06-08 02:17_
+
+---
+
+_Comment by @github-actions[bot] on 2023-06-08 02:20_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      6.0±0.02ms     6.8 MB/sec    1.00      6.0±0.01ms     6.8 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1176.9±3.13µs    14.1 MB/sec    1.01   1182.8±2.42µs    14.1 MB/sec
+formatter/numpy/globals.py                 1.00    132.4±0.63µs    22.3 MB/sec    1.01    133.8±0.83µs    22.1 MB/sec
+formatter/pydantic/types.py                1.00      2.6±0.00ms     9.8 MB/sec    1.00      2.6±0.01ms     9.8 MB/sec
+linter/all-rules/large/dataset.py          1.00     14.9±0.05ms     2.7 MB/sec    1.07     16.0±0.03ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.00ms     4.6 MB/sec    1.04      3.7±0.01ms     4.4 MB/sec
+linter/all-rules/numpy/globals.py          1.00    363.3±2.89µs     8.1 MB/sec    1.03    374.3±1.59µs     7.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.2±0.03ms     4.1 MB/sec    1.05      6.6±0.01ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.4±0.01ms     5.5 MB/sec    1.12      8.3±0.03ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1531.5±3.90µs    10.9 MB/sec    1.10   1688.1±3.03µs     9.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    164.2±0.27µs    18.0 MB/sec    1.07    175.9±0.47µs    16.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.3±0.00ms     7.8 MB/sec    1.10      3.6±0.01ms     7.0 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      6.7±0.10ms     6.0 MB/sec    1.00      6.7±0.10ms     6.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1295.1±24.38µs    12.9 MB/sec    1.01  1302.3±26.20µs    12.8 MB/sec
+formatter/numpy/globals.py                 1.00    145.0±4.22µs    20.3 MB/sec    1.00    145.6±3.80µs    20.3 MB/sec
+formatter/pydantic/types.py                1.00      2.9±0.04ms     8.7 MB/sec    1.01      3.0±0.06ms     8.6 MB/sec
+linter/all-rules/large/dataset.py          1.04     17.1±0.22ms     2.4 MB/sec    1.00     16.5±0.14ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      4.3±0.08ms     3.9 MB/sec    1.00      4.2±0.09ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.02    503.3±8.95µs     5.9 MB/sec    1.00   495.5±16.11µs     6.0 MB/sec
+linter/all-rules/pydantic/types.py         1.03      7.3±0.17ms     3.5 MB/sec    1.00      7.1±0.13ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.08      8.9±0.62ms     4.6 MB/sec    1.00      8.2±0.09ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.04  1822.4±22.99µs     9.1 MB/sec    1.00  1744.3±27.56µs     9.5 MB/sec
+linter/default-rules/numpy/globals.py      1.03    206.5±6.42µs    14.3 MB/sec    1.00    200.3±6.29µs    14.7 MB/sec
+linter/default-rules/pydantic/types.py     1.05      3.9±0.08ms     6.5 MB/sec    1.00      3.7±0.06ms     6.9 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---

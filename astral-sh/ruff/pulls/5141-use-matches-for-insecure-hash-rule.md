@@ -1,0 +1,84 @@
+```yaml
+number: 5141
+title: "Use `matches!` for insecure hash rule"
+type: pull_request
+state: merged
+author: charliermarsh
+labels: []
+assignees: []
+merged: true
+base: main
+head: charlie/insecure-hash
+created_at: 2023-06-16T04:11:54Z
+updated_at: 2023-06-16T04:42:32Z
+url: https://github.com/astral-sh/ruff/pull/5141
+synced_at: 2026-01-12T03:43:30Z
+```
+
+# Use `matches!` for insecure hash rule
+
+---
+
+_Pull request opened by @charliermarsh on 2023-06-16 04:11_
+
+_No description provided._
+
+---
+
+_Merged by @charliermarsh on 2023-06-16 04:18_
+
+---
+
+_Closed by @charliermarsh on 2023-06-16 04:18_
+
+---
+
+_Branch deleted on 2023-06-16 04:18_
+
+---
+
+_Comment by @github-actions[bot] on 2023-06-16 04:21_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      7.5±0.02ms     5.4 MB/sec    1.01      7.6±0.02ms     5.4 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1583.3±11.09µs    10.5 MB/sec    1.03  1629.2±41.72µs    10.2 MB/sec
+formatter/numpy/globals.py                 1.00    156.4±5.13µs    18.9 MB/sec    1.05   164.7±15.81µs    17.9 MB/sec
+formatter/pydantic/types.py                1.00      3.1±0.04ms     8.2 MB/sec    1.04      3.2±0.07ms     7.9 MB/sec
+linter/all-rules/large/dataset.py          1.02     16.5±0.06ms     2.5 MB/sec    1.00     16.1±0.13ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.0±0.01ms     4.2 MB/sec    1.00      4.0±0.01ms     4.2 MB/sec
+linter/all-rules/numpy/globals.py          1.00    499.8±0.76µs     5.9 MB/sec    1.00    499.2±0.85µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.0±0.03ms     3.6 MB/sec    1.01      7.0±0.15ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.9±0.03ms     5.1 MB/sec    1.00      7.9±0.03ms     5.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1721.5±7.36µs     9.7 MB/sec    1.00   1714.4±3.92µs     9.7 MB/sec
+linter/default-rules/numpy/globals.py      1.01    202.1±7.45µs    14.6 MB/sec    1.00    200.2±6.85µs    14.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.01ms     7.1 MB/sec    1.00      3.6±0.01ms     7.0 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      7.8±0.04ms     5.2 MB/sec    1.00      7.8±0.04ms     5.2 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1576.5±11.71µs    10.6 MB/sec    1.00  1579.3±11.56µs    10.5 MB/sec
+formatter/numpy/globals.py                 1.00    156.4±4.76µs    18.9 MB/sec    1.01    158.3±4.18µs    18.6 MB/sec
+formatter/pydantic/types.py                1.00      3.2±0.04ms     8.0 MB/sec    1.00      3.2±0.02ms     8.0 MB/sec
+linter/all-rules/large/dataset.py          1.00     16.4±0.07ms     2.5 MB/sec    1.00     16.5±0.09ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.2±0.03ms     3.9 MB/sec    1.00      4.2±0.02ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    437.2±5.07µs     6.7 MB/sec    1.00    437.7±4.86µs     6.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.2±0.03ms     3.5 MB/sec    1.00      7.2±0.07ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.01      8.5±0.03ms     4.8 MB/sec    1.00      8.4±0.04ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1759.2±12.68µs     9.5 MB/sec    1.00   1760.8±8.64µs     9.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    189.2±1.72µs    15.6 MB/sec    1.01    190.6±1.40µs    15.5 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.8±0.02ms     6.6 MB/sec    1.00      3.8±0.02ms     6.7 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---

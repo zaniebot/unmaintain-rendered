@@ -1,0 +1,84 @@
+```yaml
+number: 5276
+title: Bump version to 0.0.275
+type: pull_request
+state: merged
+author: charliermarsh
+labels: []
+assignees: []
+merged: true
+base: main
+head: charlie/bump
+created_at: 2023-06-22T00:38:59Z
+updated_at: 2023-06-22T01:53:39Z
+url: https://github.com/astral-sh/ruff/pull/5276
+synced_at: 2026-01-12T03:43:30Z
+```
+
+# Bump version to 0.0.275
+
+---
+
+_Pull request opened by @charliermarsh on 2023-06-22 00:38_
+
+_No description provided._
+
+---
+
+_Comment by @github-actions[bot] on 2023-06-22 01:11_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      8.5±0.19ms     4.8 MB/sec    1.00      8.5±0.21ms     4.8 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1760.3±51.54µs     9.5 MB/sec    1.03  1814.5±68.61µs     9.2 MB/sec
+formatter/numpy/globals.py                 1.01   174.2±20.01µs    16.9 MB/sec    1.00    172.0±6.57µs    17.2 MB/sec
+formatter/pydantic/types.py                1.00      3.6±0.11ms     7.2 MB/sec    1.01      3.6±0.11ms     7.1 MB/sec
+linter/all-rules/large/dataset.py          1.03     17.1±0.55ms     2.4 MB/sec    1.00     16.6±0.36ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.2±0.13ms     4.0 MB/sec    1.00      4.1±0.09ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00   553.7±20.24µs     5.3 MB/sec    1.01   561.5±20.24µs     5.3 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.4±0.21ms     3.5 MB/sec    1.00      7.4±0.18ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.03      8.7±0.43ms     4.7 MB/sec    1.00      8.4±0.24ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1847.8±56.58µs     9.0 MB/sec    1.00  1840.9±54.37µs     9.0 MB/sec
+linter/default-rules/numpy/globals.py      1.01    217.3±7.54µs    13.6 MB/sec    1.00    215.1±7.48µs    13.7 MB/sec
+linter/default-rules/pydantic/types.py     1.03      3.9±0.21ms     6.5 MB/sec    1.00      3.8±0.13ms     6.6 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      9.4±0.29ms     4.3 MB/sec    1.00      9.3±0.15ms     4.4 MB/sec
+formatter/numpy/ctypeslib.py               1.02  1968.1±33.53µs     8.5 MB/sec    1.00  1938.0±23.88µs     8.6 MB/sec
+formatter/numpy/globals.py                 1.00    188.0±3.70µs    15.7 MB/sec    1.01    190.2±7.15µs    15.5 MB/sec
+formatter/pydantic/types.py                1.01      3.9±0.06ms     6.5 MB/sec    1.00      3.9±0.06ms     6.6 MB/sec
+linter/all-rules/large/dataset.py          1.01     18.2±0.29ms     2.2 MB/sec    1.00     18.1±0.16ms     2.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.9±0.08ms     3.4 MB/sec    1.01      4.9±0.08ms     3.4 MB/sec
+linter/all-rules/numpy/globals.py          1.01   605.0±23.97µs     4.9 MB/sec    1.00   599.2±10.51µs     4.9 MB/sec
+linter/all-rules/pydantic/types.py         1.01      8.2±0.17ms     3.1 MB/sec    1.00      8.1±0.12ms     3.1 MB/sec
+linter/default-rules/large/dataset.py      1.01      9.5±0.12ms     4.3 MB/sec    1.00      9.4±0.09ms     4.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.0±0.03ms     8.2 MB/sec    1.01      2.0±0.06ms     8.1 MB/sec
+linter/default-rules/numpy/globals.py      1.00    236.7±4.66µs    12.5 MB/sec    1.02    240.6±5.15µs    12.3 MB/sec
+linter/default-rules/pydantic/types.py     1.01      4.4±0.10ms     5.9 MB/sec    1.00      4.3±0.06ms     5.9 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Merged by @charliermarsh on 2023-06-22 01:53_
+
+---
+
+_Closed by @charliermarsh on 2023-06-22 01:53_
+
+---
+
+_Branch deleted on 2023-06-22 01:53_
+
+---

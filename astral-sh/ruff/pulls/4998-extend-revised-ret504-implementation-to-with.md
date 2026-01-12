@@ -1,0 +1,154 @@
+```yaml
+number: 4998
+title: "Extend revised `RET504` implementation to `with` statements"
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - rule
+assignees: []
+merged: true
+base: main
+head: charlie/return-with
+created_at: 2023-06-10T02:52:47Z
+updated_at: 2023-06-10T04:28:32Z
+url: https://github.com/astral-sh/ruff/pull/4998
+synced_at: 2026-01-12T03:43:29Z
+```
+
+# Extend revised `RET504` implementation to `with` statements
+
+---
+
+_Pull request opened by @charliermarsh on 2023-06-10 02:52_
+
+## Summary
+
+This PR extends the new `RET504` implementation to handle cases like:
+
+```py
+def foo():
+    with open("foo.txt", "r") as f:
+        x = f.read()
+    return x
+```
+
+This was originally suggested in https://github.com/astral-sh/ruff/issues/2950#issuecomment-1433441503.
+
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-06-10 02:55_
+
+---
+
+_Comment by @github-actions[bot] on 2023-06-10 03:05_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+23, -0, 0 error(s))
+
+<details><summary>airflow (+11, -0)</summary>
+<p>
+
+```diff
++ airflow/executors/celery_executor.py:183:16: RET504 Unnecessary assignment to `key_and_async_results` before `return` statement
++ airflow/models/dagcode.py:177:16: RET504 Unnecessary assignment to `code` before `return` statement
++ airflow/providers/apache/hdfs/hooks/webhdfs.py:167:16: RET504 Unnecessary assignment to `content` before `return` statement
++ airflow/utils/code_utils.py:79:12: RET504 Unnecessary assignment to `code` before `return` statement
++ dev/provider_packages/prepare_provider_packages.py:920:12: RET504 Unnecessary assignment to `provider_yaml_dict` before `return` statement
++ docs/exts/docs_build/code_utils.py:78:12: RET504 Unnecessary assignment to `code` before `return` statement
++ docs/exts/provider_yaml_utils.py:35:12: RET504 Unnecessary assignment to `content` before `return` statement
++ scripts/ci/pre_commit/pre_commit_json_schema.py:156:12: RET504 Unnecessary assignment to `schema` before `return` statement
++ scripts/in_container/run_provider_yaml_files_check.py:88:12: RET504 Unnecessary assignment to `content` before `return` statement
++ tests/conftest.py:817:16: RET504 Unnecessary assignment to `task` before `return` statement
++ tests/providers/elasticsearch/log/elasticmock/__init__.py:72:16: RET504 Unnecessary assignment to `result` before `return` statement
+```
+
+</p>
+</details>
+<details><summary>bokeh (+2, -0)</summary>
+<p>
+
+```diff
++ src/bokeh/io/export.py:280:12: RET504 Unnecessary assignment to `svgs` before `return` statement
++ src/bokeh/io/export.py:297:12: RET504 Unnecessary assignment to `svgs` before `return` statement
+```
+
+</p>
+</details>
+<details><summary>zulip (+10, -0)</summary>
+<p>
+
+```diff
++ zerver/actions/message_edit.py:176:12: RET504 Unnecessary assignment to `resolved_topic_message_id` before `return` statement
++ zerver/lib/generate_test_data.py:16:12: RET504 Unnecessary assignment to `config` before `return` statement
++ zerver/lib/generate_test_data.py:93:12: RET504 Unnecessary assignment to `paragraphs` before `return` statement
++ zerver/lib/push_notifications.py:906:12: RET504 Unnecessary assignment to `apns_data` before `return` statement
++ zerver/tests/test_auth_backends.py:1079:16: RET504 Unnecessary assignment to `result` before `return` statement
++ zerver/tests/test_auth_backends.py:1996:16: RET504 Unnecessary assignment to `result` before `return` statement
++ zerver/tests/test_auth_backends.py:3472:16: RET504 Unnecessary assignment to `result` before `return` statement
++ zerver/tests/test_auth_backends.py:3635:16: RET504 Unnecessary assignment to `result` before `return` statement
++ zerver/tests/test_auth_backends.py:5664:20: RET504 Unnecessary assignment to `result` before `return` statement
++ zerver/tests/test_home.py:484:16: RET504 Unnecessary assignment to `result` before `return` statement
+```
+
+</p>
+</details>
+Rules changed: 1
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| RET504 | 23 | 23 | 0 |
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      6.8±0.01ms     6.0 MB/sec    1.00      6.9±0.15ms     5.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00   1391.2±4.15µs    12.0 MB/sec    1.00   1397.0±2.24µs    11.9 MB/sec
+formatter/numpy/globals.py                 1.00    137.4±0.20µs    21.5 MB/sec    1.00    138.0±0.70µs    21.4 MB/sec
+formatter/pydantic/types.py                1.00      2.8±0.01ms     9.2 MB/sec    1.00      2.8±0.01ms     9.1 MB/sec
+linter/all-rules/large/dataset.py          1.00     14.7±0.02ms     2.8 MB/sec    1.00     14.7±0.02ms     2.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.01ms     4.7 MB/sec    1.00      3.6±0.00ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    369.7±1.06µs     8.0 MB/sec    1.00    369.5±1.79µs     8.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.2±0.01ms     4.1 MB/sec    1.00      6.2±0.01ms     4.1 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.4±0.01ms     5.5 MB/sec    1.00      7.4±0.01ms     5.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1534.5±2.57µs    10.9 MB/sec    1.00   1537.8±2.87µs    10.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00    165.1±0.68µs    17.9 MB/sec    1.00    165.6±0.24µs    17.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.3±0.01ms     7.7 MB/sec    1.00      3.3±0.01ms     7.7 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.07     10.3±0.44ms     4.0 MB/sec    1.00      9.6±0.35ms     4.2 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.0±0.06ms     8.3 MB/sec    1.01      2.0±0.06ms     8.2 MB/sec
+formatter/numpy/globals.py                 1.00   203.6±10.62µs    14.5 MB/sec    1.03   210.6±20.83µs    14.0 MB/sec
+formatter/pydantic/types.py                1.03      4.2±0.17ms     6.1 MB/sec    1.00      4.1±0.13ms     6.2 MB/sec
+linter/all-rules/large/dataset.py          1.06     22.0±1.62ms  1893.9 KB/sec    1.00     20.8±0.84ms  2006.4 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.04      5.4±0.18ms     3.1 MB/sec    1.00      5.2±0.15ms     3.2 MB/sec
+linter/all-rules/numpy/globals.py          1.04   634.5±16.45µs     4.7 MB/sec    1.00   611.6±16.55µs     4.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.8±0.27ms     2.9 MB/sec    1.01      8.9±0.28ms     2.9 MB/sec
+linter/default-rules/large/dataset.py      1.05     11.0±0.38ms     3.7 MB/sec    1.00     10.5±0.30ms     3.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.06      2.3±0.08ms     7.2 MB/sec    1.00      2.2±0.07ms     7.7 MB/sec
+linter/default-rules/numpy/globals.py      1.07   275.8±21.00µs    10.7 MB/sec    1.00   258.5±11.99µs    11.4 MB/sec
+linter/default-rules/pydantic/types.py     1.01      4.9±0.18ms     5.2 MB/sec    1.00      4.9±0.16ms     5.2 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Merged by @charliermarsh on 2023-06-10 04:15_
+
+---
+
+_Closed by @charliermarsh on 2023-06-10 04:15_
+
+---
+
+_Branch deleted on 2023-06-10 04:15_
+
+---

@@ -1,0 +1,314 @@
+```yaml
+number: 5032
+title: Add a rule to remove unnecessary parentheses in class definitions
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - rule
+assignees: []
+merged: true
+base: main
+head: charlie/brackets
+created_at: 2023-06-12T18:23:47Z
+updated_at: 2023-06-12T19:11:23Z
+url: https://github.com/astral-sh/ruff/pull/5032
+synced_at: 2026-01-12T03:43:30Z
+```
+
+# Add a rule to remove unnecessary parentheses in class definitions
+
+---
+
+_Pull request opened by @charliermarsh on 2023-06-12 18:23_
+
+Closes #2409.
+
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-06-12 18:23_
+
+---
+
+_Review comment by @konstin on `crates/ruff/src/rules/pyupgrade/rules/unnecessary_class_parentheses.rs`:63 on 2023-06-12 18:34_
+
+In which case would there be more than one parentheses pair in a class without bases?
+
+---
+
+_@konstin approved on 2023-06-12 18:40_
+
+---
+
+_Merged by @charliermarsh on 2023-06-12 18:43_
+
+---
+
+_Closed by @charliermarsh on 2023-06-12 18:43_
+
+---
+
+_Branch deleted on 2023-06-12 18:43_
+
+---
+
+_@charliermarsh reviewed on 2023-06-12 18:43_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff/src/rules/pyupgrade/rules/unnecessary_class_parentheses.rs`:63 on 2023-06-12 18:43_
+
+I don't think there should be, but it felt more robust to generalize to that case.
+
+---
+
+_Comment by @github-actions[bot] on 2023-06-12 18:46_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+160, -0, 0 error(s))
+
+<details><summary>airflow (+89, -0)</summary>
+<p>
+
+```diff
++ airflow/datasets/__init__.py:25:13: UP039 [*] Unnecessary parentheses after class definition
++ airflow/lineage/entities.py:26:8: UP039 [*] Unnecessary parentheses after class definition
++ airflow/lineage/entities.py:36:8: UP039 [*] Unnecessary parentheses after class definition
++ airflow/lineage/entities.py:47:8: UP039 [*] Unnecessary parentheses after class definition
++ airflow/lineage/entities.py:56:8: UP039 [*] Unnecessary parentheses after class definition
++ airflow/lineage/entities.py:78:8: UP039 [*] Unnecessary parentheses after class definition
++ airflow/models/mappedoperator.py:131:13: UP039 [*] Unnecessary parentheses after class definition
++ airflow/policies.py:179:17: UP039 [*] Unnecessary parentheses after class definition
++ airflow/providers/amazon/aws/hooks/ecr.py:31:11: UP039 [*] Unnecessary parentheses after class definition
++ airflow/serialization/serialized_objects.py:1447:11: UP039 [*] Unnecessary parentheses after class definition
++ kubernetes_tests/test_kubernetes_pod_operator.py:92:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/api_experimental/common/experimental/test_pool.py:33:28: UP039 [*] Unnecessary parentheses after class definition
++ tests/api_internal/endpoints/test_rpc_api_endpoint.py:57:20: UP039 [*] Unnecessary parentheses after class definition
++ tests/api_internal/test_internal_api_call.py:42:20: UP039 [*] Unnecessary parentheses after class definition
++ tests/api_internal/test_internal_api_call.py:74:20: UP039 [*] Unnecessary parentheses after class definition
++ tests/charts/airflow_aux/test_annotations.py:246:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/cli/commands/test_celery_command.py:146:21: UP039 [*] Unnecessary parentheses after class definition
++ tests/cli/commands/test_celery_command.py:207:21: UP039 [*] Unnecessary parentheses after class definition
++ tests/cli/commands/test_celery_command.py:225:21: UP039 [*] Unnecessary parentheses after class definition
++ tests/cli/commands/test_celery_command.py:64:21: UP039 [*] Unnecessary parentheses after class definition
++ tests/core/test_configuration.py:64:17: UP039 [*] Unnecessary parentheses after class definition
++ tests/dag_processing/test_processor.py:74:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/executors/test_dask_executor.py:172:20: UP039 [*] Unnecessary parentheses after class definition
++ tests/executors/test_dask_executor.py:57:20: UP039 [*] Unnecessary parentheses after class definition
++ tests/integration/api_experimental/auth/backend/test_kerberos_auth.py:56:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/integration/cli/commands/test_celery_command.py:30:21: UP039 [*] Unnecessary parentheses after class definition
++ tests/integration/executors/test_celery_executor.py:259:21: UP039 [*] Unnecessary parentheses after class definition
++ tests/integration/executors/test_celery_executor.py:94:21: UP039 [*] Unnecessary parentheses after class definition
++ tests/integration/providers/apache/cassandra/hooks/test_cassandra.py:36:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/integration/providers/apache/kafka/hooks/test_admin_client.py:31:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/integration/providers/apache/kafka/hooks/test_consumer.py:40:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/integration/providers/apache/kafka/hooks/test_producer.py:32:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/integration/providers/apache/kafka/operators/test_consume.py:52:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/integration/providers/apache/kafka/operators/test_produce.py:37:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/integration/providers/apache/kafka/triggers/test_await_message.py:37:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/integration/providers/apache/pinot/hooks/test_pinot.py:27:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/integration/providers/google/cloud/transfers/test_trino_to_gcs.py:49:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/integration/providers/mongo/sensors/test_mongo.py:31:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/integration/providers/redis/hooks/test_redis.py:25:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/integration/providers/redis/operators/test_redis_publish.py:32:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/integration/providers/redis/sensors/test_redis_key.py:30:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/integration/providers/redis/sensors/test_redis_pub_sub.py:33:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/integration/providers/trino/hooks/test_trino.py:27:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/integration/security/test_kerberos.py:32:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/jobs/test_backfill_job.py:80:12: UP039 [*] Unnecessary parentheses after class definition
++ tests/jobs/test_local_task_job.py:89:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/jobs/test_scheduler_job.py:122:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/kubernetes/test_kubernetes_helper_functions.py:34:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/models/test_xcom.py:310:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/models/test_xcom.py:492:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/models/test_xcom.py:559:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/models/test_xcom_arg.py:144:20: UP039 [*] Unnecessary parentheses after class definition
++ tests/operators/test_generic_transfer.py:101:21: UP039 [*] Unnecessary parentheses after class definition
++ tests/operators/test_generic_transfer.py:36:21: UP039 [*] Unnecessary parentheses after class definition
++ tests/operators/test_python.py:1137:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/amazon/aws/hooks/test_datasync.py:51:19: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/amazon/aws/operators/test_datasync.py:70:19: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/apache/drill/operators/test_drill.py:32:21: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/apache/flink/operators/test_flink_kubernetes.py:184:7: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/apache/flink/sensors/test_flink_kubernetes.py:864:7: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/apache/hive/hooks/test_hive.py:877:17: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/apache/hive/transfers/test_mssql_to_hive.py:33:21: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/apache/hive/transfers/test_mysql_to_hive.py:42:21: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/cncf/kubernetes/operators/test_pod.py:107:31: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/cncf/kubernetes/operators/test_pod.py:1221:31: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/cncf/kubernetes/operators/test_resource.py:62:7: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/cncf/kubernetes/sensors/test_spark_kubernetes.py:551:7: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/common/sql/operators/test_sql.py:561:12: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/google/cloud/operators/test_bigquery.py:975:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/google/cloud/transfers/test_bigquery_to_mssql.py:37:21: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/google/cloud/transfers/test_mssql_to_gcs.py:70:21: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/google/cloud/transfers/test_mysql_to_gcs.py:75:21: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/google/cloud/transfers/test_postgres_to_gcs.py:50:21: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/http/operators/test_http.py:28:17: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/microsoft/psrp/hooks/test_psrp.py:112:7: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/mongo/hooks/test_mongo.py:51:20: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/mysql/hooks/test_mysql.py:334:21: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/mysql/operators/test_mysql.py:38:21: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/openlineage/plugins/test_utils.py:134:12: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/postgres/hooks/test_postgres.py:259:21: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/postgres/operators/test_postgres.py:32:21: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/qubole/operators/test_qubole_check.py:39:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/snowflake/operators/test_snowflake.py:70:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/sqlite/operators/test_sqlite.py:32:21: UP039 [*] Unnecessary parentheses after class definition
++ tests/providers/yandex/hooks/test_yandexcloud_dataproc.py:68:20: UP039 [*] Unnecessary parentheses after class definition
++ tests/serialization/test_serde.py:108:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/task/task_runner/test_standard_task_runner.py:80:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/utils/test_dates.py:108:28: UP039 [*] Unnecessary parentheses after class definition
++ tests/utils/test_serve_logs.py:70:25: UP039 [*] Unnecessary parentheses after class definition
+```
+
+</p>
+</details>
+<details><summary>bokeh (+15, -0)</summary>
+<p>
+
+```diff
++ src/bokeh/core/validation/issue.py:42:11: UP039 [*] Unnecessary parentheses after class definition
++ src/bokeh/embed/bundle.py:245:11: UP039 [*] Unnecessary parentheses after class definition
++ src/bokeh/io/state.py:239:11: UP039 [*] Unnecessary parentheses after class definition
++ src/bokeh/plotting/_tools.py:198:15: UP039 [*] Unnecessary parentheses after class definition
++ src/bokeh/plotting/contour.py:100:11: UP039 [*] Unnecessary parentheses after class definition
++ src/bokeh/plotting/contour.py:273:11: UP039 [*] Unnecessary parentheses after class definition
++ src/bokeh/plotting/contour.py:284:11: UP039 [*] Unnecessary parentheses after class definition
++ src/bokeh/plotting/contour.py:58:11: UP039 [*] Unnecessary parentheses after class definition
++ src/bokeh/plotting/contour.py:65:11: UP039 [*] Unnecessary parentheses after class definition
++ src/bokeh/plotting/contour.py:72:11: UP039 [*] Unnecessary parentheses after class definition
++ tests/unit/bokeh/core/property/test_validation__property.py:260:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/unit/bokeh/test_tile_providers.py:102:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/unit/bokeh/test_tile_providers.py:121:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/unit/bokeh/test_tile_providers.py:140:25: UP039 [*] Unnecessary parentheses after class definition
++ tests/unit/bokeh/test_tile_providers.py:82:25: UP039 [*] Unnecessary parentheses after class definition
+```
+
+</p>
+</details>
+<details><summary>cibuildwheel (+14, -0)</summary>
+<p>
+
+```diff
++ bin/update_docker.py:14:11: UP039 [*] Unnecessary parentheses after class definition
++ bin/update_virtualenv.py:33:11: UP039 [*] Unnecessary parentheses after class definition
++ cibuildwheel/bashlex_eval.py:18:11: UP039 [*] Unnecessary parentheses after class definition
++ cibuildwheel/linux.py:32:11: UP039 [*] Unnecessary parentheses after class definition
++ cibuildwheel/linux.py:43:11: UP039 [*] Unnecessary parentheses after class definition
++ cibuildwheel/macos.py:68:11: UP039 [*] Unnecessary parentheses after class definition
++ cibuildwheel/oci_container.py:26:11: UP039 [*] Unnecessary parentheses after class definition
++ cibuildwheel/options.py:122:23: UP039 [*] Unnecessary parentheses after class definition
++ cibuildwheel/options.py:70:23: UP039 [*] Unnecessary parentheses after class definition
++ cibuildwheel/options.py:80:23: UP039 [*] Unnecessary parentheses after class definition
++ cibuildwheel/util.py:241:11: UP039 [*] Unnecessary parentheses after class definition
++ cibuildwheel/util.py:286:11: UP039 [*] Unnecessary parentheses after class definition
++ cibuildwheel/util.py:460:11: UP039 [*] Unnecessary parentheses after class definition
++ cibuildwheel/windows.py:67:11: UP039 [*] Unnecessary parentheses after class definition
+```
+
+</p>
+</details>
+<details><summary>scikit-build-core (+42, -0)</summary>
+<p>
+
+```diff
++ src/scikit_build_core/builder/wheel_tag.py:21:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/cmake.py:35:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/cache.py:13:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/cache.py:19:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/cache.py:27:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/cmakefiles.py:14:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/cmakefiles.py:22:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/codemodel.py:102:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/codemodel.py:108:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/codemodel.py:114:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/codemodel.py:123:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/codemodel.py:139:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/codemodel.py:147:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/codemodel.py:31:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/codemodel.py:36:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/codemodel.py:52:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/codemodel.py:61:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/codemodel.py:66:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/codemodel.py:71:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/codemodel.py:77:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/codemodel.py:83:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/codemodel.py:89:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/codemodel.py:94:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/common.py:12:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/common.py:18:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/directory.py:14:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/directory.py:20:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/directory.py:45:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/directory.py:53:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/directory.py:60:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/index.py:26:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/index.py:36:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/index.py:44:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/index.py:51:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/index.py:58:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/index.py:66:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/index.py:73:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/toolchains.py:14:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/toolchains.py:22:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/toolchains.py:31:23: UP039 [*] Unnecessary parentheses after class definition
++ src/scikit_build_core/file_api/model/toolchains.py:38:23: UP039 [*] Unnecessary parentheses after class definition
++ tests/conftest.py:185:23: UP039 [*] Unnecessary parentheses after class definition
+```
+
+</p>
+</details>
+Rules changed: 1
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| UP039 | 160 | 160 | 0 |
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.02      8.9±0.22ms     4.6 MB/sec    1.00      8.7±0.30ms     4.7 MB/sec
+formatter/numpy/ctypeslib.py               1.02  1830.8±65.42µs     9.1 MB/sec    1.00  1792.1±46.12µs     9.3 MB/sec
+formatter/numpy/globals.py                 1.00    176.5±8.99µs    16.7 MB/sec    1.01   178.0±10.04µs    16.6 MB/sec
+formatter/pydantic/types.py                1.02      3.6±0.27ms     7.0 MB/sec    1.00      3.6±0.14ms     7.1 MB/sec
+linter/all-rules/large/dataset.py          1.00     18.8±0.34ms     2.2 MB/sec    1.01     19.0±0.35ms     2.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.5±0.17ms     3.7 MB/sec    1.00      4.5±0.12ms     3.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00   566.5±15.14µs     5.2 MB/sec    1.01   574.7±23.99µs     5.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.9±0.16ms     3.2 MB/sec    1.02      8.1±0.26ms     3.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.9±0.18ms     4.6 MB/sec    1.02      9.1±0.18ms     4.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1940.4±69.54µs     8.6 MB/sec    1.00  1932.4±78.95µs     8.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00    220.6±7.17µs    13.4 MB/sec    1.01    223.7±8.55µs    13.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.1±0.09ms     6.3 MB/sec    1.02      4.1±0.11ms     6.1 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.02     11.4±0.57ms     3.6 MB/sec    1.00     11.1±0.53ms     3.7 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.2±0.10ms     7.4 MB/sec    1.03      2.3±0.39ms     7.2 MB/sec
+formatter/numpy/globals.py                 1.00   226.5±16.69µs    13.0 MB/sec    1.04   236.5±28.80µs    12.5 MB/sec
+formatter/pydantic/types.py                1.00      4.5±0.16ms     5.7 MB/sec    1.01      4.5±0.23ms     5.6 MB/sec
+linter/all-rules/large/dataset.py          1.02     25.4±0.76ms  1639.4 KB/sec    1.00     24.9±0.89ms  1671.6 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      6.3±0.29ms     2.7 MB/sec    1.00      6.2±0.23ms     2.7 MB/sec
+linter/all-rules/numpy/globals.py          1.01   709.4±39.39µs     4.2 MB/sec    1.00   702.0±49.51µs     4.2 MB/sec
+linter/all-rules/pydantic/types.py         1.00     10.6±0.41ms     2.4 MB/sec    1.00     10.6±0.45ms     2.4 MB/sec
+linter/default-rules/large/dataset.py      1.01     12.4±0.42ms     3.3 MB/sec    1.00     12.3±0.41ms     3.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.5±0.10ms     6.6 MB/sec    1.00      2.5±0.10ms     6.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00   299.5±13.93µs     9.9 MB/sec    1.00   299.5±14.78µs     9.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      5.4±0.19ms     4.7 MB/sec    1.01      5.5±0.28ms     4.7 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Comment by @charliermarsh on 2023-06-12 18:48_
+
+Oh shoot, this doesn't handle decorators, which are now part of the class range as of recently. Fixing...
+
+---
