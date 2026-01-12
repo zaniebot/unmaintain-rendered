@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[pylint] Implement misplaced-bare-raise (E0704) - astral-sh/ruff #7961</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[pylint] Implement misplaced-bare-raise (E0704)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7961">#7961</a>
+        opened by <a href="https://github.com/clemux">@clemux</a>
+        on 2023-10-14 17:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/clemux">@clemux</a> on 2023-10-14 17:46</div>
+            <div class="timeline-body"><p>Related issue: #970</p>
+<h2>Summary</h2>
+<h3>What it does</h3>
+<p>This rule triggers an error when a bare raise statement is not in an except or finally block.</p>
+<h3>Why is this bad?</h3>
+<p>If raise statement is not in an except or finally block, there is no active exception to
+re-raise, so it will fail with a <code>RuntimeError</code> exception.</p>
+<h3>Example</h3>
+<pre><code class="language-python">def validate_positive(x):
+   if x &lt;= 0:
+       raise
+</code></pre>
+<p>Use instead:</p>
+<pre><code class="language-python">def validate_positive(x):
+   if x &lt;= 0:
+       raise ValueError(f&quot;{x} is not positive&quot;)
+</code></pre>
+<h2>Test Plan</h2>
+<p>Added unit test and snapshot.
+Manually compared ruff and pylint outputs on pylint's tests.</p>
+<h2>References</h2>
+<ul>
+<li><a href="https://pylint.pycqa.org/en/stable/user_guide/messages/error/misplaced-bare-raise.html">pylint documentation</a></li>
+<li><a href="https://github.com/pylint-dev/pylint/blob/main/pylint/checkers/exceptions.py#L339">pylint implementation</a></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-14 18:38</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-14 18:49</div>
+            <div class="timeline-body"><p>Thanks! Do you mind taking a look at some of the violations flagged in the ecosystem check, and seeing how they compare to pylint's behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/clemux">@clemux</a> on 2023-10-14 21:14</div>
+            <div class="timeline-body"><p>They are the same with pylint. I had to run pylint on each file though, I'm not sure what I'm doing wrong. For example, with pip:</p>
+<pre><code>(venv) clemux@Nardole:~/dev/pip/src$ pylint --disable=all --enable=misplaced-bare-raise .
+(venv) clemux@Nardole:~/dev/pip/src$ pylint --disable=all --enable=misplaced-bare-raise pip/_internal/utils/misc.py
+************* Module pip._internal.utils.misc
+pip/_internal/utils/misc.py:157:4: E0704: The raise statement is not inside an except clause (misplaced-bare-raise)
+
+------------------------------------------------------------------
+Your code has been rated at 9.85/10 (previous run: 9.85/10, +0.00)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/clemux">@clemux</a> reviewed on 2023-10-15 16:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/clemux">@clemux</a> on <code>crates/ruff_linter/src/rules/pylint/rules/misplaced_bare_raise.rs</code>:58 on 2023-10-15 16:16</div>
+            <div class="timeline-body"><p>I wanted to use <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_ast/src/helpers.rs#L895"><code>ruff_python_ast::helpers::RaiseStatementVisitor</code></a>, but it doesn't store the raise statement itself.</p>
+<p>It's only used in two rules, so maybe I can refactor that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-16 19:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pylint/rules/misplaced_bare_raise.rs</code>:58 on 2023-10-16 19:19</div>
+            <div class="timeline-body"><p>Ah yeah -- can we change <code>RaiseStatementVisitor</code> to store <code>Vec&lt;&amp;'a ast::StmtRaise&gt;</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/clemux">@clemux</a> reviewed on 2023-10-16 19:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/clemux">@clemux</a> on <code>crates/ruff_linter/src/rules/pylint/rules/misplaced_bare_raise.rs</code>:58 on 2023-10-16 19:23</div>
+            <div class="timeline-body"><p>Shall I do that in a separate PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-16 19:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pylint/rules/misplaced_bare_raise.rs</code>:65 on 2023-10-16 19:39</div>
+            <div class="timeline-body"><p>How does this compare to checking <code>checker.semantic().in_exception_handler()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pylint/rules/misplaced_bare_raise.rs</code>:76 on 2023-10-16 19:40</div>
+            <div class="timeline-body"><p>Can you include a code example here in the comments to demonstrate the case that this is handling?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-16 19:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-16 19:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pylint/rules/misplaced_bare_raise.rs</code>:58 on 2023-10-16 19:40</div>
+            <div class="timeline-body"><p>I would be cool with including it here, but either is fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/clemux">@clemux</a> reviewed on 2023-10-16 20:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/clemux">@clemux</a> on <code>crates/ruff_linter/src/rules/pylint/rules/misplaced_bare_raise.rs</code>:65 on 2023-10-16 20:47</div>
+            <div class="timeline-body"><p>Well... see the new diff :)
+Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/clemux">@clemux</a> reviewed on 2023-10-16 20:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/clemux">@clemux</a> on <code>crates/ruff_linter/src/rules/pylint/rules/misplaced_bare_raise.rs</code>:58 on 2023-10-16 20:48</div>
+            <div class="timeline-body"><p>Not needed anymore, so I guess I won't touch <code>RaiseStatementVisitor</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/clemux">@clemux</a> reviewed on 2023-10-16 20:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/clemux">@clemux</a> on <code>crates/ruff_linter/src/rules/pylint/rules/misplaced_bare_raise.rs</code>:76 on 2023-10-16 20:49</div>
+            <div class="timeline-body"><p>Not needed anymore!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2023-10-17 02:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-10-17 02:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-10-17 03:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-17 03:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:33:17 UTC
+    </footer>
+</body>
+</html>

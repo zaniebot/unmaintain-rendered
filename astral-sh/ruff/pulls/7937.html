@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `--diff` option `ruff format` - astral-sh/ruff #7937</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>--diff</code> option <code>ruff format</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7937">#7937</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-10-13 09:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-10-13 09:31</div>
+            <div class="timeline-body"><p><strong>Summary</strong> <code>ruff format --diff</code> is similar to <code>ruff format --check</code>, but we don't only error with the list of file that would be formatted, but also show a diff between the unformatted input and the formatted output.</p>
+<pre><code class="language-console">$ ruff format --diff scratch.py scratch.pyi scratch.ipynb
+warning: `ruff format` is not yet stable, and subject to change in future versions.
+--- scratch.ipynb
++++ scratch.ipynb
+@@ -1,3 +1,4 @@
+ import numpy
+-maths = (numpy.arange(100)**2).sum()
+-stats= numpy.asarray([1,2,3,4]).median()
++
++maths = (numpy.arange(100) ** 2).sum()
++stats = numpy.asarray([1, 2, 3, 4]).median()
+--- scratch.py
++++ scratch.py
+@@ -1,3 +1,3 @@
+ x = 1
+-y=2
++y = 2
+ z = 3
+2 files would be reformatted, 1 file left unchanged
+</code></pre>
+<p>With <code>--diff</code>, the summary message gets printed to stderr to allow e.g. <code>ruff format --diff . &gt; format.patch</code>.</p>
+<p>At the moment, jupyter notebooks are formatted as code diffs, while everything else is a real diff that could be applied. This means that the diffs containing jupyter notebooks are not real diffs and can't be applied. We could change this to json diffs, but they are hard to read. We could also split the diff option into a human diff option, where we deviate from the machine readable diff constraints, and a proper machine readable, appliable diff output that you can pipe into other tools.</p>
+<p>To make the tests work, the results (and errors, if any) are sorted before printing them. Previously, the print order was random, i.e. two identical runs could have different output.</p>
+<p>Open question: Should this go into the markdown docs? Or will this be subsumed by the integration of the formatter into <code>ruff check</code>?</p>
+<p><strong>Test plan</strong> Fixtures for the change and no change cases, including a jupyter notebook and for file input and stdin.</p>
+<p>Fixes #7231</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @konstin on 2023-10-13 09:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-13 10:39</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-13 19:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/commands/format.rs</code>:211 on 2023-10-13 19:54</div>
+            <div class="timeline-body"><p>Can we make this unowned, by storing <code>&amp;Path</code>? The lifetimes should work out, as far as I can tell.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-13 19:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/commands/format.rs</code>:407 on 2023-10-13 19:56</div>
+            <div class="timeline-body"><p>Nit: can probably remove this comment, it doesn't add much on top of the match guard itself (<code>FormatResult::Diff</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-13 19:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/commands/format.rs</code>:405 on 2023-10-13 19:56</div>
+            <div class="timeline-body"><p>Why rename here, but leave <code>unformatted</code> as-is? Can we either leave them both, or rename them both, for consistency?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-13 19:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/commands/format.rs</code>:226 on 2023-10-13 19:59</div>
+            <div class="timeline-body"><p>This is making me wonder if <code>format_source</code> should take <code>&amp;SourceKind</code>, and we should change <code>Unchanged(SourceKind)</code> to just <code>Unchanged</code>, and remove <code>unformatted</code> from the <code>Formatted</code> variant. It strikes me as inflexible that the method takes ownership of <code>SourceKind</code> but only acts on references and then returns the owned <code>SourceKind</code> in all cases. But, this is minor -- if it doesn't work for whatever reason, or you disagree, it's fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-10-13 19:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-13 20:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Should this go into the markdown docs?</p>
+</blockquote>
+<p>I think it's fine to leave this as-is for now -- I will fold into the documentation when I revisit it next week.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2023-10-16 01:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/commands/format.rs</code>:109 on 2023-10-16 01:57</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    results.sort_unstable_by(|x, y| x.path.cmp(&amp;y.path));
+</code></pre>
+<p>Using <code>unstable</code> should be fine because <code>results</code> should never contain two entries with the same path. Using unstable tends to be faster than stable sorting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/commands/format.rs</code>:147 on 2023-10-16 01:59</div>
+            <div class="timeline-body"><p>Nit: To make it clear what is written to stderr. I first assumed it writes the diff to stderr.</p>
+<pre><code class="language-suggestion">                // Allow piping the diff to e.g. a file by writing the summary to stderr
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/commands/format.rs</code>:226 on 2023-10-16 02:01</div>
+            <div class="timeline-body"><p>I guess the challenge with this is that we need to move <code>SourceKind</code> out of the linter, maybe into <code>ruff_source_file</code>? I recommend investigating this as a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/commands/format.rs</code>:408 on 2023-10-16 02:03</div>
+            <div class="timeline-body"><p>Should <code>stdout</code> be locked outside of the loop?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/commands/format.rs</code>:426 on 2023-10-16 02:04</div>
+            <div class="timeline-body"><p>Nit: It feels a bit strange that the diff is written as part of the <code>FormatSummary</code>'s <code>Display</code> implementation (the diff isn't part of the summary).</p>
+<p>I would prefer moving the diff printing out of the summary implementation and handle it explicitly when the <code>FormatMode</code> is <code>Diff</code> (also allows to locking <code>stdout</code> exactly once)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-10-16 02:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-10-16 13:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/src/commands/format.rs</code>:226 on 2023-10-16 13:22</div>
+            <div class="timeline-body"><p>Thought so too but didn't want to create so much churn, changed it now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-10-16 13:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/src/commands/format.rs</code>:211 on 2023-10-16 13:23</div>
+            <div class="timeline-body"><p>I missed that we already have the path on the outer struct that we can use</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-10-16 13:25</div>
+            <div class="timeline-body"><blockquote>
+<p>I guess the challenge with this is that we need to move SourceKind out of the linter, maybe into ruff_source_file? I recommend investigating this as a separate PR.</p>
+</blockquote>
+<p>Did work without it, but i'm fine with moving it anyway</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-10-16 14:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/src/commands/format.rs</code>:426 on 2023-10-16 14:08</div>
+            <div class="timeline-body"><p>I went with renaming <code>FormatSummary</code> to <code>FormatResults</code> and giving it two different write methods. We unfortunately lose the fmt impl but we get proper separation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2023-10-18 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-10-18 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-10-18 11:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:33:17 UTC
+    </footer>
+</body>
+</html>

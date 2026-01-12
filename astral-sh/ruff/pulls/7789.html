@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show per-cell diffs when analyzing notebooks over `stdin` - astral-sh/ruff #7789</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Show per-cell diffs when analyzing notebooks over <code>stdin</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7789">#7789</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-10-03 18:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-03 18:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The implementation here differs from the non-<code>stdin</code> version -- this is now more consistent.</p>
+<h2>Test Plan</h2>
+<pre><code>❯ cat Untitled.ipynb | cargo run -p ruff_cli -- check --stdin-filename Untitled.ipynb --diff -n
+    Finished dev [unoptimized + debuginfo] target(s) in 0.11s
+     Running `target/debug/ruff check --stdin-filename Untitled.ipynb --diff -n`
+--- Untitled.ipynb:cell 2
++++ Untitled.ipynb:cell 2
+@@ -1 +0,0 @@
+-import os
+--- Untitled.ipynb:cell 4
++++ Untitled.ipynb:cell 4
+@@ -1 +0,0 @@
+-import sys
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @charliermarsh on 2023-10-03 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-10-03 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2023-10-03 18:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-10-03 18:53</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/charlie/diff">CodSpeed Performance Report</a></h2>
+<h3>Merging #7789 will <strong>improve performances by 2.58%</strong></h3>
+<p><sub>Comparing <code>charlie/diff</code> (f35e4f1) with <code>main</code> (600471e)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 24</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>charlie/diff</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/default-rules[pydantic/types.py]</code> | 39 ms | 38 ms | +2.58% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:432 on 2023-10-04 02:22</div>
+            <div class="timeline-body"><p>nit: This is repeated for stdout as well but I think the only difference is that the path is optional. Could we combine them under <code>SourceKind</code> in the same way as done in <code>FixMode::Apply</code>? That would avoid code duplication.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:496 on 2023-10-04 02:25</div>
+            <div class="timeline-body"><p>Do you think a default value of <code>-</code> (or <code>stdin</code> / <code>STDIN</code>) would be good to show as the filename for stdin? I think we do that in other places. So, the output would something like:</p>
+<pre><code>-:cell 0:
+...
+
+-:cell 2:
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2023-10-04 02:25</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:496 on 2023-10-04 13:48</div>
+            <div class="timeline-body"><p>Hmm, we don't do this in the Python case, so I'll leave it for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-04 13:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-04 13:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:432 on 2023-10-04 13:48</div>
+            <div class="timeline-body"><p>I'll take a look at this in a follow-up as its leading me to want to make some other changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-10-04 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-04 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-10-04 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-04 14:05</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:33:16 UTC
+    </footer>
+</body>
+</html>

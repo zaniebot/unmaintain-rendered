@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enable formatting for Jupyter notebooks - astral-sh/ruff #7749</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Enable formatting for Jupyter notebooks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7749">#7749</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-10-01 23:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-01 23:34</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR enables <code>ruff format</code> to format Jupyter notebooks.</p>
+<p>Most of the work is contained in a new <code>format_source</code> method that formats a generic <code>SourceKind</code>, then returns <code>Some(transformed)</code> if the source required formatting, or <code>None</code> otherwise.</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/7598.</p>
+<h2>Test Plan</h2>
+<p>Ran <code>cat foo.py | cargo run -p ruff_cli -- format --stdin-filename Untitled.ipynb</code>; verified that the console showed a reasonable error:</p>
+<pre><code class="language-console">warning: Failed to read notebook Untitled.ipynb: Expected a Jupyter Notebook, which must be internally stored as JSON, but this file isn't valid JSON: EOF while parsing a value at line 1 column 0
+</code></pre>
+<p>Ran <code>cat Untitled.ipynb | cargo run -p ruff_cli -- format --stdin-filename Untitled.ipynb</code>; verified that the JSON output contained formatted source code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @charliermarsh on 2023-10-01 23:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-10-01 23:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-10-01 23:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-01 23:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/commands/format.rs</code>:167 on 2023-10-01 23:34</div>
+            <div class="timeline-body"><p>The clunkiest thing here is the error handling. Gonna try and simplify it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-02 00:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:492 on 2023-10-02 00:04</div>
+            <div class="timeline-body"><p>I removed this, and moved the logic into <code>SourceKind</code>, so that it can be used for formatting too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-02 00:35</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/src/commands/format.rs</code>:152 on 2023-10-02 09:01</div>
+            <div class="timeline-body"><p>Isn't that an error condition?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/src/commands/format.rs</code>:183 on 2023-10-02 09:02</div>
+            <div class="timeline-body"><p>nit: Move out of the match and clone in the for loop instead</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/src/commands/format.rs</code>:200 on 2023-10-02 09:13</div>
+            <div class="timeline-body"><p>We can avoid the allocation here by only reserving once we see the first formatted cell</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/src/commands/format.rs</code>:285 on 2023-10-02 09:14</div>
+            <div class="timeline-body"><p>Could we call-by-value with <code>SourceKind</code> instead of call-by-reference or does a caller need this for error handling?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/src/commands/format_stdin.rs</code>:42 on 2023-10-02 09:16</div>
+            <div class="timeline-body"><p>Does this mean we intentionally always reject jupyter notebooks in stdin?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-10-02 09:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-02 14:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/commands/format.rs</code>:152 on 2023-10-02 14:14</div>
+            <div class="timeline-body"><p>No, it's (e.g.) a non-Python notebook. (This is the same as in the linter.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-02 14:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/commands/format_stdin.rs</code>:42 on 2023-10-02 14:17</div>
+            <div class="timeline-body"><p>No, <code>SourceType::Python</code> includes Jupyter notebooks. It's a bit confusing, but the destructured <code>source_type</code> here is a <code>PySourceType</code>, which can either be Python or Jupyter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-02 14:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/commands/format.rs</code>:285 on 2023-10-02 14:25</div>
+            <div class="timeline-body"><p>In the <code>stdin</code> case, we still need access to the unmodified source so it can't be moved. But I can make this clearer with a custom enum.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-10-02 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-02 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-10-02 14:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:33:16 UTC
+    </footer>
+</body>
+</html>

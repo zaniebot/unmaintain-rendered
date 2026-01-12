@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add the `--unsafe` option for `--fix`, `--fix-only`, and `--diff` - astral-sh/ruff #5119</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add the <code>--unsafe</code> option for <code>--fix</code>, <code>--fix-only</code>, and <code>--diff</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5119">#5119</a>
+        opened by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a>
+        on 2023-06-15 13:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-06-15 13:01</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Fixes #4185.</p>
+<p>This is a <em>breaking change</em> which will alter the rulesets fixed by <code>--fix</code>, among others. I'll update the PR description with new changes as I make them - see the issue link for the entire list.</p>
+<p>This PR depends on all <code>Fix::unspecified</code> instances being refactored to an applicable (pun intended :P ) <code>Applicability</code>. Currently, <code>ripgrep</code> says there are occurrences in:</p>
+<ol>
+<li><code>flake8_commas</code>: fixed in #5127</li>
+<li><code>flake8_logging_format</code>: fixed in #5129</li>
+<li><code>flake8_pytest_style</code>: fixed in #5389</li>
+<li><code>flake8_quotes</code>: fixed in #5130</li>
+<li><code>flake8_simpilfy</code>: fixed in #5348</li>
+<li><code>flake8_tidy_imports</code>: fixed in #5131</li>
+<li><code>flynt</code>: fixed in #5160</li>
+<li><code>isort</code>: fixed in #5161</li>
+<li><code>pandas_vet</code>: fixed in #5252</li>
+<li><code>pycodestyle</code>: fixed in #5282</li>
+<li><code>pydocstyle</code>: fixed in #5390</li>
+<li><code>pyflakes</code>: fixed in #5253</li>
+<li><code>pylint</code>: fixed in #5251</li>
+<li><code>pyupgrade</code>: fixed in #5162</li>
+</ol>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p><code>C410</code> is <code>Applicability::unspecified</code>. I made a new file:</p>
+<pre><code class="language-python">list([1, 2, 3])
+</code></pre>
+<p>and ran Ruff against it. The file was not fixed. I then changed the rule to have <code>Applicability::automatic</code> and ran it again - this time, it was fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-06-15 13:33</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      8.4±0.07ms     4.8 MB/sec    1.06      8.9±0.06ms     4.6 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1649.2±25.56µs    10.1 MB/sec    1.05  1728.1±41.31µs     9.6 MB/sec
+formatter/numpy/globals.py                 1.00    185.3±2.42µs    15.9 MB/sec    1.02    188.3±1.62µs    15.7 MB/sec
+formatter/pydantic/types.py                1.00      3.5±0.11ms     7.3 MB/sec    1.05      3.7±0.07ms     6.9 MB/sec
+linter/all-rules/large/dataset.py          1.00     11.0±0.12ms     3.7 MB/sec    1.00     11.0±0.06ms     3.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      2.9±0.03ms     5.8 MB/sec    1.00      2.9±0.04ms     5.8 MB/sec
+linter/all-rules/numpy/globals.py          1.01    402.7±6.75µs     7.3 MB/sec    1.00    399.1±1.13µs     7.4 MB/sec
+linter/all-rules/pydantic/types.py         1.02      5.7±0.08ms     4.5 MB/sec    1.00      5.6±0.05ms     4.5 MB/sec
+linter/default-rules/large/dataset.py      1.00      5.6±0.03ms     7.3 MB/sec    1.02      5.7±0.03ms     7.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1231.6±19.27µs    13.5 MB/sec    1.01  1242.6±10.99µs    13.4 MB/sec
+linter/default-rules/numpy/globals.py      1.01    146.5±4.14µs    20.1 MB/sec    1.00    144.5±2.54µs    20.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.5±0.03ms    10.2 MB/sec    1.02      2.6±0.02ms    10.0 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.1±0.11ms     4.0 MB/sec    1.00     10.1±0.12ms     4.0 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1937.5±18.08µs     8.6 MB/sec    1.01  1960.5±43.33µs     8.5 MB/sec
+formatter/numpy/globals.py                 1.00    218.5±5.41µs    13.5 MB/sec    1.00    218.0±6.51µs    13.5 MB/sec
+formatter/pydantic/types.py                1.00      4.2±0.06ms     6.0 MB/sec    1.01      4.2±0.06ms     6.0 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.8±0.16ms     3.2 MB/sec    1.01     12.9±0.15ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.04ms     4.7 MB/sec    1.01      3.5±0.03ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00   443.1±14.05µs     6.7 MB/sec    1.01    447.6±9.91µs     6.6 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.6±0.07ms     3.8 MB/sec    1.01      6.7±0.11ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.9±0.06ms     5.9 MB/sec    1.01      7.0±0.08ms     5.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1480.3±23.45µs    11.2 MB/sec    1.01  1501.1±23.79µs    11.1 MB/sec
+linter/default-rules/numpy/globals.py      1.00    176.3±4.32µs    16.7 MB/sec    1.01    178.4±3.74µs    16.5 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.05ms     8.1 MB/sec    1.00      3.1±0.04ms     8.1 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-06-15 14:42</div>
+            <div class="timeline-body"><p>@evanrittenhouse I suspect there are probably too many outstanding <code>Applicability::unspecified</code> fixes for us to stop fixing those automatically yet — although I have not checked in a bit.</p>
+<p>I think we may want <code>Applicability::suggested</code> fixes to require a separate opt-in?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-06-15 14:56</div>
+            <div class="timeline-body"><p>Yeah, so by default we'll apply <code>Applicability::Automatic</code> (<code>suggested</code> will in fact require a separate opt-in).. After getting this done (the code part), I'm going to go through and categorize the rest of the fixes. Once the fixes are done, I'll rebase this and then mark it as complete.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-06-15 19:51</div>
+            <div class="timeline-body"><p>I've begun categorizing some of the rules (#5129, #5130, #5127). I plan on doing some more later tonight or tomorrow. This PR depends on all <code>Fix::unspecified</code> instances being refactored</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-06-21 13:18</div>
+            <div class="timeline-body"><p>What's the consensus on opting into suggested fixes? I was thinking we could either:</p>
+<ol>
+<li>Have it be an option in the relevant <code>.toml</code> file</li>
+<li>Have it be a CLI option (e.g. <code>--fix</code> would only implement <code>Applicability::Automatic</code> fixes, while <code>--fix --include-suggested</code> would implement <code>Applicability::Automatic|Suggested</code>.</li>
+</ol>
+<p>Or both!</p>
+<p>cc @zanieb @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-22 06:03</div>
+            <div class="timeline-body"><p>I don't think we have a consensus yet and is something we should discuss:</p>
+<p>Adding a new CLI option seems reasonable to me. I would suggest to prefix the option with <code>--fix</code>, e.g. <code>--fix-suggested</code>, to make its relation clear. We may want to be more explicit about their potential <em>unsafe</em> nature by naming the option <code>--fix-unsafe</code>. However, this has the downside that the wording in the diagnostic and the CLI option do not align. Clippy uses a <code>YOLO</code> environment (not the exact name) to enable all fixes. An alternative is that <code>--fix</code> optionally accepts <code>automatic|yolo</code> (no idea what to call the value xD)</p>
+<p>I'm unsure how to support this in the configuration best. I would expect that adding a rule to <em>fixable</em> promotes it to  <em>automatic</em> (only when applying, not for rendering diagnostics). Adding a rule to <em>unfixable</em> demotes it to manual. The challenge with this approach is that promoting a single <em>suggested</em> fix requires adding <em>all</em> automatic fixes to <em>fixable</em>, which is rather annoying. We could deprecate the existing <em>fixable</em> and <em>unfixable</em> in favor of adding new options <code>fix.automatic</code> (fixable), <code>fix.suggested</code>, and <code>fix.manual</code> (unfixable).</p>
+<p>We should also think about what changes are necessary in the VS code extension and I'm probably missing a few details here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-06-22 14:55</div>
+            <div class="timeline-body"><blockquote>
+<p>However, this has the downside that the wording in the diagnostic and the CLI option do not align</p>
+</blockquote>
+<p>Why did we move away from <code>safe/unsafe</code>, etc. to the current model? Could/should we switch back?</p>
+<blockquote>
+<p>An alternative is that --fix optionally accepts automatic|yolo (no idea what to call the value xD)</p>
+</blockquote>
+<p>I like this! We could default to <code>automatic</code>, then allow for <code>suggested</code> and <code>manual</code> (or <code>yolo</code> :P) options to be passed which would adjust the &quot;base&quot; applicability that gets fixed.</p>
+<blockquote>
+<p>would expect that adding a rule to fixable promotes it to automatic (only when applying, not for rendering diagnostics). Adding a rule to unfixable demotes it to manual. The challenge with this approach is that promoting a single suggested fix requires adding all automatic fixes to fixable, which is rather annoying.</p>
+</blockquote>
+<p>I like this approach, though I think we could smooth the implementation by providing an <code>applicability_override</code> field on <code>Fix</code> that gets populated <strong>only if</strong> the fix is in <code>fixable</code> or <code>unfixable</code>. Then, regardless of applicability level, we could check if the fix's safety level should be overridden. That would allow us to pass a &quot;<code>suggested</code>&quot; diagnostic to <code>fixable</code> and, when we generate a fix for it, check the override and include it in the default fixable set regardless. Does that sound fair?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-06-26 21:11</div>
+            <div class="timeline-body"><p>cc @MichaReiser wondering if the above design makes sense - I plan on wrapping up the remaining linters tonight, then I'll be able to come back to this and implement the rest of the selection logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-26 21:21</div>
+            <div class="timeline-body"><p>@evanrittenhouse - Micha's gonna be out tomorrow so feel free to ping again on Wednesday if he doesn't get back to you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-06-26 23:04</div>
+            <div class="timeline-body"><p>@evanrittenhouse you can see the discussion about the names in https://github.com/astral-sh/ruff/issues/4183</p>
+<p>I think since the display is &quot;Fix&quot; and &quot;Suggested fix&quot; (as implemented in #4303 but we could change this) users would understand <code>--fix-suggested</code>. <code>--fix-unsafe</code> would not make it clear to me that the &quot;Manual fixes&quot; would not be applied. I also don't mind the idea of <code>--fix [applicability]</code> but I'm not sure how discoverable it is — seems like the way to go if we want to add more applicability levels but that doesn't seem particularly likely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-06-27 12:22</div>
+            <div class="timeline-body"><p>@zanieb Interesting. So if we were to go with <code>--fix</code> only doing automatic and <code>--fix-suggested</code> doing suggested + automatic, how would the user see manual fixes? Just via <code>--diff</code>?</p>
+<p>Also, I'm curious how we want to handle the configuration file for this. In my opinion, adding a rule (regardless of applicability level) to <code>fixable</code> should make it get fixed. Adding a rule (again, regardless of applicability) to <code>unfixable</code> should leave it alone. To avoid changing the <code>Applicability</code> enum, I think that it makes sense to add an <code>applicability_ovverride</code> field to <code>Fix</code> which:</p>
+<ol>
+<li>Gets parsed at runtime from the appropriate .TOML file</li>
+<li>Supersedes the <code>Applicability</code> level assigned to the fix</li>
+<li>Joins/excludes it from the fixable set</li>
+</ol>
+<p>What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-28 12:14</div>
+            <div class="timeline-body"><blockquote>
+<p>I like this approach, though I think we could smooth the implementation by providing an applicability_override field on Fix that gets populated only if the fix is in fixable or unfixable. Then, regardless of applicability level, we could check if the fix's safety level should be overridden. That would allow us to pass a &quot;suggested&quot; diagnostic to fixable and, when we generate a fix for it, check the override and include it in the default fixable set regardless. Does that sound fair?</p>
+</blockquote>
+<p>I'm a bit hesitant from adding new fields to <code>Fix</code> because:</p>
+<ul>
+<li>It increases the memory consumption of every fix.</li>
+<li>Fixes are currently constructed manually by linters. Passing and initializing a field requires changing every single <code>Fix</code> call, increasing the complexity for authoring lint rules.</li>
+</ul>
+<p>I'm unsure if I understand your motivation for adding the override field. Is it to avoid generating unnecessary fixes?</p>
+<blockquote>
+<p>how would the user see manual fixes? Just via --diff?</p>
+</blockquote>
+<p>That's correct. Manual fixes should not be applied automatically. I wonder if it even makes sense allowing users to promote manual fixes because it is intentional that manual fixes can be incomplete, always or sometimes resulting in invalid syntax.</p>
+<blockquote>
+<p>To avoid changing the Applicability enum, I think that it makes sense to add an applicability_ovverride field to Fix which:</p>
+</blockquote>
+<p>Would this be initialized depending on whether the rule is in the <code>fixable</code> or <code>unfixable</code>? What are your thoughts on renaming the configuration options to use a single terminology?</p>
+<blockquote>
+<p>Gets parsed at runtime from the appropriate .TOML file</p>
+</blockquote>
+<p>What do you mean by appropriate toml file. Reading it from the closest pyproject toml or is this another configuration file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-06-28 12:33</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm unsure if I understand your motivation for adding the override field. Is it to avoid generating unnecessary fixes?</p>
+</blockquote>
+<p>Yes, an attempt to keep the current configuration option setup with <code>fixable</code>/<code>unfixable</code>. If the user passes <code>--fix</code> (e.g., selecting <code>Automatic</code> fixes), but a <code>Suggested</code> rule is in <code>fixable</code>, we need a way to show that the suggested rule should be fixed. As far as the creation goes, I don't actually think it's that bad. The <code>override</code> field would be private and defaulted to whatever <code>Applicability</code> the Fix's construtor specifies. My proposal about the <code>override</code> field was really only in case we wanted to keep the existing setup. For example, how do we handle the case where the user selects <code>fix.automatic</code> but additionally wants to fix only one <code>Applicability::Suggested</code> rule? Do we even want to?</p>
+<p>I believe above you also mentioned:</p>
+<blockquote>
+<p>We could deprecate the existing fixable and unfixable in favor of adding new options fix.automatic (fixable), fix.suggested, and fix.manual (unfixable).</p>
+</blockquote>
+<p>Which would also definitely work (and I think is better), but I'm not sure how we'd handle the above case.</p>
+<blockquote>
+<p>That's correct. Manual fixes should not be applied automatically. I wonder if it even makes sense allowing users to promote manual fixes because it is intentional that manual fixes can be incomplete, always or sometimes resulting in invalid syntax.</p>
+</blockquote>
+<p>That's fine with me. I think the important thing is that we make it clear that <code>Manual</code> isn't a typical Fix level, and that we can only show them, never implement them. That's easily done though. :)</p>
+<blockquote>
+<p>What do you mean by appropriate toml file. Reading it from the closest pyproject toml or is this another configuration file?</p>
+</blockquote>
+<p>Yeah, closest <code>pyproject.toml</code> (or <code>ruff.toml</code>, if applicable I guess).</p>
+<p>@MichaReiser let me know what you think!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-30 08:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Yes, an attempt to keep the current configuration option setup with fixable/unfixable. If the user passes --fix (e.g., selecting Automatic fixes), but a Suggested rule is in fixable, we need a way to show that the suggested rule should be fixed. As far as the creation goes, I don't actually think it's that bad. The override field would be private and defaulted to whatever Applicability the Fix's construtor specifies.</p>
+</blockquote>
+<p>Which code would be responsible for changing/setting the <code>override</code> field?</p>
+<blockquote>
+<p>My proposal about the override field was really only in case we wanted to keep the existing setup. For example, how do we handle the case where the user selects fix.automatic but additionally wants to fix only one Applicability::Suggested rule? Do we even want to?</p>
+</blockquote>
+<p>Can you elaborate how this would work with the <code>override</code> field?</p>
+<p>What I had in mind is that ruff generates all fixes and then filter out the fixes where the Applicability doesn't match. This has the downside that we'll generate more fixes than what's strictly necessary but I don't think I'm too concerned about that. An alternative would be to change <code>Checker.patch</code> to accept an <code>Applicability</code> but we don't always know the applicability ahead of time and it would be easy to change the applicability when generating the fix but not when checking whether a patch needs to be created.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-06-30 13:18</div>
+            <div class="timeline-body"><p>@MichaReiser This is basically how I'm imagining the entire feature.</p>
+<h2>CLI</h2>
+<ol>
+<li><code>--fix</code> - changed to fix only <code>Automatic</code> fixes and rules in the <code>fixable</code> set</li>
+<li><code>--fix-unsafe</code> - new option, will fix <code>Automatic</code> and <code>Suggested</code> fixes. While it differs from the implementation's naming conventions, as a user &quot;safe&quot; and &quot;unsafe&quot; make more sense, IMO. From the <em>fixer's</em> perspective, an &quot;automatic&quot; or &quot;suggested&quot; fix makes sense. I think it's clearer for users to consider fixes as &quot;this is safe to implement&quot; or &quot;this is unsafe&quot;. <code>Manual</code> changes will never be fixed</li>
+<li><code>--diff</code> - will output only <code>Automatic</code> fixes and rules in the <code>fixable</code> set</li>
+<li><code>--fix-only</code> - will only fix <code>Automatic</code> fixes and rules in the <code>fixable</code> set</li>
+</ol>
+<p>Rules with a <code>Manual</code> applicability will never be fixed, nor will rules in the <code>unfixable</code> set.</p>
+<h2>Configuration File</h2>
+<p><code>fixable</code>/<code>unfixable</code> remain as normal, preserving backwards compatibility.</p>
+<h2>Implementation</h2>
+<p>Consider the example where we're enforcing default rules (e.g., <code>E</code>, <code>F</code>) and F841 (unused variable).</p>
+<p>The <code>Fix</code> gets generated <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff/src/rules/pyflakes/rules/unused_variable.rs#L191">here</a> - assume that we're going with the <code>override</code> field as well. The <code>Fix::suggested()</code> constructor would assign an <code>override: None</code>. The user then runs <code>--fix</code>. Ruff goes out and fixes all <code>Automatic</code> fixes, leaving F841 untouched.</p>
+<p>Now assume that the user wants to fix all Automatic fixes, with F841 added. They F841 into the <code>fixable</code> set in their <code>pyproject.toml</code> file. The <code>fixable</code>/<code>unfixable</code> tables would essentially operate as ways to say &quot;I always want this fixed&quot; or &quot;I never want this fixed&quot;.</p>
+<p>We need to somehow tell F841 that its <code>Applicability</code> has to be overridden. This can be done in a few ways (and thanks for pushing back, I think the override field is worse):</p>
+<ol>
+<li>An <code>override</code> field. We could add a <code>set_override()</code> method to <code>Fix</code> which allows you to pass an <code>Applicability</code>, setting <code>override: Some(new_applicability)</code>. The downside here is going through and adding <code>set_override()</code> calls everywhere, and it adds memory, like you said.</li>
+<li><strong>preferred</strong>: <code>Checker</code> handles all fixing logic itself, now based on the CLI command and the contents of <code>fixable</code>/<code>unfixable</code>. The upside here is no change is required on a per-rule basis - <code>checker.patch(Rule::UnusedVariable)</code> would remain true and generate the fix.</li>
+</ol>
+<p>If we go with the second option, <code>Checker</code> would see that the &quot;base applicability&quot; (determined by seeing that the user ran <code>--fix</code> and not <code>--fix-unsafe</code>) is <code>Automatic</code>, and that <code>fixable</code> contains F841. Regardless of applicability, <code>patch()</code> would therefore return true, and we'd generate the fix. All fix generation would be gated through <code>Checker.patch()</code>.</p>
+<p>What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-03 09:14</div>
+            <div class="timeline-body"><p>Thanks for the in-depth elaboration. This helped.
+I think it would be good to create a discussion for the feature. What we're discussing is unrelated to the code changes and
+the lack of topics makes the discussion less efficient.</p>
+<p>Inputs/Questions from my side:</p>
+<ul>
+<li><code>--fix-unsafe</code>: I think its good to have the option. We can align on the final naming later.</li>
+<li><code> --fix-only</code>: Should <code>--fix-unsafe</code> enable fixing the <em>suggested</em> fixes too?</li>
+<li><code>--diff</code>: Should <code>--fix-unsafe</code> enable the suggested fixes? I think it should be aligned with <code>--fix-only</code>, considering that <code>--diff</code> implies <code>--fix-only</code>.</li>
+<li><code>--diff</code>: We could show diffs for manual fixes. I'm not recommending that we should do this. We may decide to only show the fixes as part of the <code>MessageEmitter</code>s in the future.</li>
+<li>Configuration: How would I promote a single suggested rule?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-07-03 13:21</div>
+            <div class="timeline-body"><p>@MichaReiser <a href="https://github.com/astral-sh/ruff/discussions/5476">Done!</a> I'll be out most of today but will be able to get to your feedback by tonight or tomorrow morning probably.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Autofix Automatic/Suggested fixes with --fix" to "Add the `--unsafe` option for `--fix`, `--fix-only`, and `--diff`" by @evanrittenhouse on 2023-07-13 21:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-07-13 21:49</div>
+            <div class="timeline-body"><p>@MichaReiser @charliermarsh Opening this up for review, though I expect we'll have to iterate a bit</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @evanrittenhouse on 2023-07-13 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-14 06:11</div>
+            <div class="timeline-body"><p>Thx for working on this. I don't think I'll get to review this before the weekend, but hope to get to it on Monday.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @MichaReiser on 2023-07-17 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/autofix/mod.rs</code>:47 on 2023-07-17 11:40</div>
+            <div class="timeline-body"><p>Nit: I think it would be good if we add this as a method to <code>Fix</code>: <code>fix.applies(applicability)</code> (I'm not super happy with the name, maybe you can come up with something better).</p>
+<pre><code class="language-suggestion">    let required_applicability = if fix_unsafe ? Applicability::Suggested : Applicability::Automatic;
+    let mut with_fixes = diagnostics
+        .iter()
+        .filter(|diagnostic| {
+            diagnostic.fix.map_or(false, |fix| fix.applies(required_applicability))
+        })
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/settings/configuration.rs</code>:57 on 2023-07-17 11:41</div>
+            <div class="timeline-body"><p>Nit: Whether we want to add <code>unsafe</code> is still open for debate. An alternatie would be to have a <code>suggested</code> and <code>automatic</code> settings (see discussion)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/settings/flags.rs</code>:5 on 2023-07-17 11:45</div>
+            <div class="timeline-body"><p>The <code>bool</code> field is difficult to understand. I think it would be good to add a meaningful enum instead (and pass to e.g. <code>fix</code>)</p>
+<pre><code class="language-rust">enum SuggestedFixes {
+    Apply,
+    Disable,
+}
+
+impl SuggestedFixes {
+    fn required_applicability(self) -&gt; Applicability {
+        match self {
+            ...
+        }
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/settings/flags.rs</code>:3 on 2023-07-17 11:46</div>
+            <div class="timeline-body"><p>Can you explain why the <code>suggested</code> is required for <code>Generate</code>? Aren't we always generating all diagnostics?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/settings/options.rs</code>:214 on 2023-07-17 11:47</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// by the `--fix` and `--no-fix` command-line flags). This will only apply &quot;safe&quot; fixes
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/settings/options.rs</code>:216 on 2023-07-17 11:47</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// existing code.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/printer.rs</code>:192 on 2023-07-17 11:52</div>
+            <div class="timeline-body"><p>My expectations would be that the emitters always show all diagnostics, regardless of the fix level specified. Mainly because they are unrelated from applying fixes. Diff shows only the fixes with the specified applicability because it is used as a preview mode for <code>--fix</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_diagnostics/src/fix.rs</code>:28 on 2023-07-17 11:56</div>
+            <div class="timeline-body"><p>Is it now possible to remove <code>Unspecified</code> (and all other related code) in a separate PR?</p>
+<p>If not, make sure you test what happens with unspecfieid fixes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_diagnostics/src/fix.rs</code>:24 on 2023-07-17 12:01</div>
+            <div class="timeline-body"><p>Nit: <code>-1</code> feels weird and I wonder if Rust change's the underlying type because of it. You can change your tests to use less than instead of greater than instead of assigning explicit values.</p>
+<p>Would you, in turn, document the ordering of the values</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/printer.rs</code>:123 on 2023-07-17 12:04</div>
+            <div class="timeline-body"><p>I think it would be good to compute the diagnostic counts once instead of once in <code>write_summary_text</code> and once in <code>write_once</code> to avoid iterating the diagnostics twice (could be good to run the cpython benchmark before/after your change)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/printer.rs</code>:392 on 2023-07-17 12:06</div>
+            <div class="timeline-body"><p>Hmm... I'm not convinced by <code>unsafe</code> because it now results in mixed up terminology (should you use &quot;unsafe&quot; or suggested). I think we should either explicitly use suggested or unsafe (also externally to avoid confusion). @zanie what do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/printer.rs</code>:398 on 2023-07-17 12:11</div>
+            <div class="timeline-body"><p>I think it would help readability and reusability if you move the logic into its own struct and split into smaller functions (again, naming is hard)</p>
+<pre><code class="language-rust">struct FixableStatistics {
+    automatic: u32,
+    suggested: u32,
+}
+
+impl FixableStatistics {
+    fn from_slice(diagnostic: &amp;[Diagnostic]) -&gt; Self {
+        // count
+    }
+
+    fn has_applicable_fixes(suggested_fixes: SuggestedFixes) -&gt; bool {
+        // returns true if there are any applicable fixes
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/printer.rs</code>:409 on 2023-07-17 12:12</div>
+            <div class="timeline-body"><p>Nit: I think a simple for loop is easier to read, except if you use filter first</p>
+<pre><code class="language-suggestion">    for message in diagnsotics.messages {
+        if let Some(fix) = &amp;msg.fix {
+            if fix.applicability() == Applicability::Suggested {
+                unsafe_remaining += 1;
+            } else if fix.applicability() == Applicability::Automatic {
+                safe_remaining += 1;
+            }
+        }
+    }
+
+    // OR
+    diagnostics.messages.iter().filter_map(|msg| &amp;msg.fix).for_each(|fix| {
+        if fix.applicability() == Applicability::Suggested {
+            unsafe_remaining += 1;
+        } else if fix.applicability() == Applicability::Automatic {
+            safe_remaining += 1;
+        }
+    });
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/printer.rs</code>:487 on 2023-07-17 12:13</div>
+            <div class="timeline-body"><p>The count cannot be negative.</p>
+<pre><code class="language-suggestion">fn display_violations(safe_remaining: u32, unsafe_remaining: u32) -&gt; String {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/printer.rs</code>:468 on 2023-07-17 12:14</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    if safe_remaining &gt; 0 {
+        format!(&quot;{prefix} {safe_remaining} potentially fixable with the --fix option.&quot;)
+    }
+    if unsafe_remaining &gt; 0 {
+        let (line_break, extra_prefix) = if safe_remaining &gt; 0 {
+            // Avoid re-allocating prefix.
+            (&quot;\n&quot;, format!(&quot;[{}]&quot;, &quot;*&quot;.cyan()))
+        } else {
+            (&quot;&quot;, String::new())
+        };
+
+        let total = safe_remaining + unsafe_remaining;
+        format!(
+            &quot;{prefix}{line_break}{extra_prefix} {total} potentially fixable with the --fix --unsafe options.&quot;
+        )
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/printer.rs</code>:497 on 2023-07-17 12:14</div>
+            <div class="timeline-body"><p>Can you explain what you mean by <em>avoid re-allocating prefix</em>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-17 12:18</div>
+            <div class="timeline-body"><p>This looks pretty good to me and surprisingly few changes. I've a few nit comments. The main outstanding questions for me are:</p>
+<ul>
+<li><code>unsafe</code> setting: I would still prefer another way of promoting / demoting rules instead. Let's continue on the discussion</li>
+<li><code>unsafe</code> vs <code>suggested</code> wording. I think we should decide to use either wording. Using both in our code base will ultimately spread into user documentation and cause confusion. I'm more leaning towards suggested, although I like the  cautionary effect that<code>unsafe</code> has.</li>
+<li>Please extend your test plan, ideally by including screen shots of the different commands.</li>
+</ul>
+<p>Fast follow up: We also need to update the documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-07-17 12:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @MichaReiser on 2023-07-17 12:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> reviewed on 2023-07-17 14:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on <code>crates/ruff/src/settings/flags.rs</code>:3 on 2023-07-17 14:59</div>
+            <div class="timeline-body"><p>Since Apply and Diff take a single argument, the compiler requires that Generate does as well. After implementing some of the comments you've suggested that hack (ish) should go away though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on <code>crates/ruff_cli/src/printer.rs</code>:497 on 2023-07-17 15:04</div>
+            <div class="timeline-body"><p>Sorry, should be a TODO there - I want to see if there's a way that I can construct the status such that I can avoid extra allocations. I was looking into .push_str() but I'm pretty sure that won't work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> reviewed on 2023-07-17 15:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-07-17 20:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/printer.rs</code>:192 on 2023-07-17 20:40</div>
+            <div class="timeline-body"><p>I now understand your change. Nice touch with showing the different numbers.</p>
+<p>I would probably go with a single message that is the same regardless of the specified --unsafe option (I'm on my phone and looking up the original message is too cumbersome. But something along the following lines):</p>
+<ul>
+<li>10 automatic fixes</li>
+<li>5 automatic and 5 suggested fixes</li>
+<li>10 suggested fixes</li>
+</ul>
+<p>Or as a single message</p>
+<p>10 (5 out of 10 suggested) fixes</p>
+<p>This has the advantage that the normal lint phase is entirely independent of the new cli options (we could even land this change independently)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-07-18 04:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_cli/src/printer.rs</code>:392 on 2023-07-18 04:40</div>
+            <div class="timeline-body"><p>I'm leaning towards &quot;suggested&quot; for overall coherence. I'll try to take some time tomorrow (Tuesday) to play with it and see how different options feel.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> reviewed on 2023-07-18 04:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on <code>crates/ruff_cli/src/printer.rs</code>:392 on 2023-07-18 04:51</div>
+            <div class="timeline-body"><p>Cool! Excited to hear your thoughts</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @evanrittenhouse on 2023-07-19 04:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on <code>crates/ruff_cli/src/printer.rs</code>:392 on 2023-07-31 03:14</div>
+            <div class="timeline-body"><p>@MichaReiser did you guys decide on a way forward here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> reviewed on 2023-07-31 03:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> reviewed on 2023-08-01 03:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on <code>crates/ruff_diagnostics/src/fix.rs</code>:28 on 2023-08-01 03:04</div>
+            <div class="timeline-body"><p>That's the plan as a follow-up to this one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-03 15:17</div>
+            <div class="timeline-body"><p>Hey @evanrittenhouse</p>
+<p>I just want to let you know that I'm working on our CLI design right now and I expect it to overlap a bit with our plans for this feature. For that reason, I expect it to be a bit before we're ready to merge this breaking change. I'll be back with some guidance soon hopefully.</p>
+<p>Let me know if you have any questions or concerns!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-08-03 16:44</div>
+            <div class="timeline-body"><p>@zanieb no worries, thanks for the heads up! I'll just work on implementing the changes mentioned and leave the CLI option stuff for later. Should be able to get the underlying implementation down at least.</p>
+<p>I might go back and see what I can do about the Markdown parser...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> reviewed on 2023-08-04 03:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on <code>crates/ruff_cli/src/printer.rs</code>:392 on 2023-08-04 03:14</div>
+            <div class="timeline-body"><p>Resolving, waiting for @zanieb's clarification</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> reviewed on 2023-08-04 03:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on <code>crates/ruff_cli/src/printer.rs</code>:468 on 2023-08-04 03:15</div>
+            <div class="timeline-body"><p>I don't think this will work - we have to allocate <code>fix_status</code> so that we can carry through the first option if there are fixes fixable by both <code>--fix</code> and <code>--fix-unsafe</code> . If we go with one message instead of 2, then this would work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-09-24 14:35</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/evanrittenhouse:4185_cli_respect_applicability">CodSpeed Performance Report</a></h2>
+<h3>Merging #5119 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>evanrittenhouse:4185_cli_respect_applicability</code> (05462ce) with <code>main</code> (f32b0ee)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 25</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-09-24 15:02</div>
+            <div class="timeline-body"><p>Finally getting around to rebasing this, hoping to have it done either early this week.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-19 13:59</div>
+            <div class="timeline-body"><p>Replaced by #7769 which used the commits from here. Thanks so much Evan for driving this forward!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-10-19 13:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:33:16 UTC
+    </footer>
+</body>
+</html>

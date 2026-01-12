@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[pylint] Implement unnecessary-lambda (W0108) - astral-sh/ruff #7953</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[pylint] Implement unnecessary-lambda (W0108)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7953">#7953</a>
+        opened by <a href="https://github.com/clemux">@clemux</a>
+        on 2023-10-13 19:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/clemux">@clemux</a> on 2023-10-13 19:19</div>
+            <div class="timeline-body"><p>This is my first PR and I'm new at rust, so feel free to ask me to rewrite everything if needed ;)</p>
+<p>The rule must be called after deferred lambas have been visited because of the last check (whether the lambda parameters are used in the body of the function that's being called). I didn't know where to do it, so I did what I could to be able to work on the rule itself:</p>
+<ul>
+<li>added a <code>ruff_linter::checkers::ast::analyze::lambda</code> module</li>
+<li>build a vec of visited lambdas in <code>visit_deferred_lambdas</code></li>
+<li>call <code>analyze::lambda</code> on the vec after they all have been visited</li>
+</ul>
+<p>Building that vec of visited lambdas was necessary so that bindings could be properly resolved in the case of nested lambdas.</p>
+<p>Note that there is an open issue in pylint for some false positives, do we need to fix that before merging the rule? https://github.com/pylint-dev/pylint/issues/8192</p>
+<p>Also, I did not provide any fixes (yet), maybe we want do avoid merging new rules without fixes?</p>
+<h2>Summary</h2>
+<p>Checks for lambdas whose body is a function call on the same arguments as the lambda itself.</p>
+<h3>Bad</h3>
+<pre><code class="language-python">df.apply(lambda x: str(x))
+</code></pre>
+<h3>Good</h3>
+<pre><code class="language-python">df.apply(str)
+</code></pre>
+<h2>Test Plan</h2>
+<p>Added unit test and snapshot.
+Manually compared pylint and ruff output on pylint's test cases.</p>
+<h2>References</h2>
+<ul>
+<li><a href="https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/unnecessary-lambda.html">pylint documentation</a></li>
+<li><a href="https://github.com/pylint-dev/pylint/blob/main/pylint/checkers/base/basic_checker.py#L521-L587">pylint implementation</a></li>
+<li>https://github.com/astral-sh/ruff/issues/970</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-13 19:39</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-14 18:54</div>
+            <div class="timeline-body"><p>Before I get deep into the review, do you mind skimming through some of the ecosystem checks and confirming that the implemented behavior matches Pylint's?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/clemux">@clemux</a> on 2023-10-14 23:23</div>
+            <div class="timeline-body"><p>There are a few less errors with ruff than with pylint in pandas. For example, <a href="https://github.com/pandas-dev/pandas/blob/b5b8be04b2a63fc02e89650a740779e718d7a99b/pandas/tests/window/test_base_indexer.py#L178">this</a>:</p>
+<pre><code class="language-python">    expected2 = frame_or_series(rolling.apply(lambda x: np_func(x, **np_kwargs)))
+</code></pre>
+<p>I might be missing something but I'd say it's a bug in pylint. I'll look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/clemux">@clemux</a> on 2023-10-15 01:31</div>
+            <div class="timeline-body"><p>Issue submitted on pylint side: https://github.com/pylint-dev/pylint/issues/9148</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/clemux">@clemux</a> reviewed on 2023-10-15 16:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/clemux">@clemux</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1864 on 2023-10-15 16:45</div>
+            <div class="timeline-body"><p>I don't expect you to accept that, but I couldn't figure out how to make it work otherwise :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-16 18:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/codes.rs</code>:257 on 2023-10-16 18:41</div>
+            <div class="timeline-body"><p>New rules should be added in <code>RuleGroup::Preview</code> then stabilized in a later release. We can improve the naming of the stable rule group :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/clemux">@clemux</a> reviewed on 2023-10-16 18:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/clemux">@clemux</a> on <code>crates/ruff_linter/src/codes.rs</code>:257 on 2023-10-16 18:46</div>
+            <div class="timeline-body"><p>Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2023-10-20 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-20 16:22</div>
+            <div class="timeline-body"><p>Gonna review this today, sorry for the delay.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-10-20 17:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_lambda.rs</code>:179 on 2023-10-20 17:04</div>
+            <div class="timeline-body"><p>So the reason that <code>lookup_symbol</code> didn't work here is a bit hard to explain, but consider:</p>
+<pre><code class="language-python">_ = lambda x: f(lambda x: x)(x)
+</code></pre>
+<p>Here, we're trying to see if <code>f(lambda x: x)</code> contains any references to the <code>x</code> in <code>_ = lambda x</code>. If we use <code>lookup_symbol</code>, it will try to resolve the inner <code>x</code> relative to the outer scope, that of <code>_ = lambda x</code>, so it thinks it's a reference to the outer <code>x</code>. Using <code>resolve_name</code> ensures that we use the correct binding which was already computed in the binding phase.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-20 17:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-10-20 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-20 17:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1864 on 2023-10-20 17:11</div>
+            <div class="timeline-body"><p>Going to tweak this a bit, but the idea makes sense :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-10-20 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-20 17:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:33:17 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add caching to formatter - astral-sh/ruff #8089</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add caching to formatter</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8089">#8089</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-10-20 05:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-20 05:45</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Implement caching for <code>ruff format</code></p>
+<p>The formatter caching is relatively simple. All we need to track is the formatted files. This PR extends our <code>Cache</code> implementation to instead track the changes to the cache instead of the new &quot;file cache&quot; contents (similar to an event store). Meaning, the cache now stores a <code>changes</code> collection instead of <code>new_files</code> and a <code>Change</code> either sets the <code>formatted</code> flag or updates the <code>lint</code> results.</p>
+<h2>Test Plan</h2>
+<p>Manual testing:</p>
+<ul>
+<li>Checked a file with E701 (Multiple statements on same line): Diagnostic is shown</li>
+<li>Formatted the code</li>
+<li>Ran check: Diagnostic is gone (cache invalidation)</li>
+</ul>
+<p>The speedup from the benchmarking shows that caching is working.</p>
+<h2>Benchmarking</h2>
+<p><strong>Hot formatter cache, no changes</strong></p>
+<pre><code>hyperfine  --warmup 10  \
+                    &quot;../ruff/target/release/ruff format . -s&quot; \
+                    &quot;../ruff/ruff-main format ../airflow -s&quot;
+Benchmark 1: ../ruff/target/release/ruff format . -s
+  Time (mean ± σ):     111.9 ms ±   3.6 ms    [User: 67.3 ms, System: 154.8 ms]
+  Range (min … max):   104.1 ms … 121.2 ms    27 runs
+ 
+Benchmark 2: ../ruff/ruff-main format ../airflow -s
+  Time (mean ± σ):     312.7 ms ±   2.8 ms    [User: 1815.5 ms, System: 163.4 ms]
+  Range (min … max):   308.8 ms … 316.7 ms    10 runs
+ 
+Summary
+  ../ruff/target/release/ruff format . -s ran
+    2.80 ± 0.09 times faster than ../ruff/ruff-main format ../airflow -s
+</code></pre>
+<p><strong>Hot formatter and linter cache, no changes</strong></p>
+<p>slightly slower for projects with many diagnostics</p>
+<pre><code>../ruff/target/release/ruff check . -s
+hyperfine  --warmup 10  \
+                    &quot;../ruff/target/release/ruff format . -s&quot; \
+                    &quot;../ruff/ruff-main format ../airflow -s&quot;
+Benchmark 1: ../ruff/target/release/ruff format . -s
+  Time (mean ± σ):     118.4 ms ±   3.1 ms    [User: 76.7 ms, System: 160.9 ms]
+  Range (min … max):   109.7 ms … 122.9 ms    24 runs
+ 
+Benchmark 2: ../ruff/ruff-main format ../airflow -s
+  Time (mean ± σ):     313.5 ms ±   5.5 ms    [User: 1819.3 ms, System: 163.6 ms]
+  Range (min … max):   308.2 ms … 323.7 ms    10 runs
+ 
+Summary
+  ../ruff/target/release/ruff format . -s ran
+    2.65 ± 0.08 times faster than ../ruff/ruff-main format ../airflow -s
+</code></pre>
+<p><strong>No cache</strong></p>
+<pre><code>hyperfine  --warmup 10  \
+                    &quot;../ruff/target/release/ruff format . -s --no-cache&quot; \
+                    &quot;../ruff/ruff-main format ../airflow -s&quot;
+Benchmark 1: ../ruff/target/release/ruff format . -s --no-cache
+  Time (mean ± σ):     321.4 ms ±   5.1 ms    [User: 1839.7 ms, System: 165.1 ms]
+  Range (min … max):   317.7 ms … 332.9 ms    10 runs
+ 
+Benchmark 2: ../ruff/ruff-main format ../airflow -s
+  Time (mean ± σ):     320.9 ms ±  10.0 ms    [User: 1807.1 ms, System: 166.3 ms]
+  Range (min … max):   310.9 ms … 343.8 ms    10 runs
+ 
+Summary
+  ../ruff/ruff-main format ../airflow -s ran
+    1.00 ± 0.04 times faster than ../ruff/target/release/ruff format . -s --no-cache
+</code></pre>
+<p><strong>Cold cache</strong> (slower)</p>
+<pre><code>hyperfine --prepare &quot;rm -rf .ruff_cache&quot; --warmup 10 \
+                          &quot;../ruff/target/release/ruff format . -s&quot; \
+                          &quot;../ruff/ruff-main format ../airflow -s&quot;
+Benchmark 1: ../ruff/target/release/ruff format . -s
+  Time (mean ± σ):     342.4 ms ±  13.1 ms    [User: 1842.5 ms, System: 234.0 ms]
+  Range (min … max):   328.8 ms … 367.2 ms    10 runs
+ 
+Benchmark 2: ../ruff/ruff-main format ../airflow -s
+  Time (mean ± σ):     319.9 ms ±  16.0 ms    [User: 1816.3 ms, System: 166.7 ms]
+  Range (min … max):   307.5 ms … 363.1 ms    10 runs
+ 
+Summary
+  ../ruff/ruff-main format ../airflow -s ran
+    1.07 ± 0.07 times faster than ../ruff/target/release/ruff format . -s
+</code></pre>
+<p><strong>Cold cache with changes</strong> (slower)</p>
+<pre><code>hyperfine --prepare &quot;rm -rf .ruff_cache &amp;&amp; git reset --hard -q&quot; --warmup 10 \
+                          &quot;../ruff/target/release/ruff format . -s&quot; \
+                          &quot;../ruff/ruff-main format ../airflow -s&quot;
+Benchmark 1: ../ruff/target/release/ruff format . -s
+  Time (mean ± σ):     389.0 ms ±  12.0 ms    [User: 1763.3 ms, System: 354.7 ms]
+  Range (min … max):   376.6 ms … 416.2 ms    10 runs
+ 
+Benchmark 2: ../ruff/ruff-main format ../airflow -s
+  Time (mean ± σ):     363.5 ms ±   4.7 ms    [User: 1732.4 ms, System: 297.8 ms]
+  Range (min … max):   358.1 ms … 370.9 ms    10 runs
+ 
+Summary
+  ../ruff/ruff-main format ../airflow -s ran
+    1.07 ± 0.04 times faster than ../ruff/target/release/ruff format . -s
+</code></pre>
+<p><strong>Hot cache with changes</strong> (e.g. when switching between branches)</p>
+<pre><code>hyperfine --prepare &quot;git reset --hard -q&quot; --warmup 10 \
+                          &quot;../ruff/target/release/ruff format . -s&quot; \
+                          &quot;../ruff/ruff-main format ../airflow -s&quot;
+Benchmark 1: ../ruff/target/release/ruff format . -s
+  Time (mean ± σ):     220.1 ms ±   8.1 ms    [User: 653.7 ms, System: 323.0 ms]
+  Range (min … max):   212.3 ms … 234.1 ms    10 runs
+ 
+Benchmark 2: ../ruff/ruff-main format ../airflow -s
+  Time (mean ± σ):     365.4 ms ±   6.2 ms    [User: 1722.6 ms, System: 294.4 ms]
+  Range (min … max):   359.1 ms … 375.0 ms    10 runs
+ 
+Summary
+  ../ruff/target/release/ruff format . -s ran
+    1.66 ± 0.07 times faster than ../ruff/ruff-main format ../airflow -s
+</code></pre>
+<p><strong>Linting with caching</strong></p>
+<pre><code>hyperfine --warmup 10 --setup &quot;rm -rf ./.ruff_cache&quot; \
+                          &quot;../ruff/target/release/ruff check -s -e .&quot; \
+                          &quot;../ruff/ruff-main check -s -e .&quot;
+Benchmark 1: ../ruff/target/release/ruff check -s -e .
+  Time (mean ± σ):      95.7 ms ±   1.4 ms    [User: 69.3 ms, System: 87.6 ms]
+  Range (min … max):    92.1 ms … 101.0 ms    30 runs
+ 
+Benchmark 2: ../ruff/ruff-main check -s -e .
+  Time (mean ± σ):      95.8 ms ±   2.3 ms    [User: 68.9 ms, System: 87.5 ms]
+  Range (min … max):    92.6 ms … 107.0 ms    30 runs
+ 
+  Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet system without any interferences from other programs. It might help to use the '--warmup' or '--prepare' options.
+ 
+Summary
+  ../ruff/target/release/ruff check -s -e . ran
+    1.00 ± 0.03 times faster than ../ruff/ruff-main check -s -e .
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-20 05:46</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #8089</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8089" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/8089?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-10-20 06:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/cache.rs</code>:172 on 2023-10-20 06:45</div>
+            <div class="timeline-body"><p>I don't think supporting different cache keys for a single cache instance is a good idea. It can lead to key collisions and is prone to mixing different keys (which has the unexpected result that a stored value can not be retrieved).</p>
+<p>E.g. I accidentally passed the hashed <code>u64</code> instead of the <code>FileCacheKey</code>. Rust was happy because <code>u64</code> implements <code>CacheKey</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2023-10-20 07:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-10-20 07:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-21 01:55</div>
+            <div class="timeline-body"><p>This generally looks good to me. Is it ready for review / approval?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-21 11:05</div>
+            <div class="timeline-body"><blockquote>
+<p>This generally looks good to me. Is it ready for review / approval?</p>
+</blockquote>
+<p>Not yet</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-10-23 02:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-23 02:46</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_cli/src/args.rs</code>:374 on 2023-10-23 03:02</div>
+            <div class="timeline-body"><p>I think we would need to have different environment variables (<code>RUFF_CHECK_CACHE_DIR</code>, <code>RUFF_FORMAT_CACHE_DIR</code>) since one could potentially provide different path to the <code>check</code> / <code>format</code> subcommand.</p>
+<p>Or, could make this a global flag?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-10-23 03:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-10-23 03:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/args.rs</code>:374 on 2023-10-23 03:28</div>
+            <div class="timeline-body"><p>I would wait until we have a specific request to store the caches in different locations. I also don't know how to support different cache locations when <code>check</code> lints and formats.</p>
+<p>The alternative would be to have two different caches (the implementation I had before this morning) where <code>format</code> and <code>lint</code> store their results in different files. Different jobs could then cache the specific sub-directories only. However, the overall design of the <code>Cache</code> API felt more fragile and would probably require a more drastic refactor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/args.rs</code>:374 on 2023-10-23 03:43</div>
+            <div class="timeline-body"><p>Not necessary IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-23 03:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/cache.rs</code>:172 on 2023-10-23 03:45</div>
+            <div class="timeline-body"><p>Yeah this should be generic on the instance, right? (Looks like it was made non-generic which is also fine with me.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/commands/format.rs</code>:104 on 2023-10-23 03:48</div>
+            <div class="timeline-body"><p>Why this change, then cloning the path below?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/commands/format.rs</code>:158 on 2023-10-23 03:48</div>
+            <div class="timeline-body"><p>Assuming we keep the <code>par_iter</code>, perhaps <code>path.to_path_buf()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-10-23 03:54</div>
+            <div class="timeline-body"><p>Looks great.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-10-23 08:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/commands/format.rs</code>:104 on 2023-10-23 08:42</div>
+            <div class="timeline-body"><p><code>package_roots</code> borrows <code>paths</code> until the end of the function. That means we can no longer use <code>into_iter</code>. I don't expect this to be meaningful, considering that we only hit the <code>clone</code> part when an error occurred.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-10-23 08:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-10-23 08:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-10-23 08:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-10-23 08:50</div>
+            <div class="timeline-body"><p>Did you profile what the time is spent on with a hot cache? 100ms sounds a lot to me for just checking modification timestamps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-23 09:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Did you profile what the time is spent on with a hot cache? 100ms sounds a lot to me for just checking modification timestamps.</p>
+</blockquote>
+<p>I did not. I assume it's the python file discovery as well as detecting the python packages, loading of the cache etc. Linting without changes takes 96ms. So it's about the same.</p>
+<p>I agree, that we could probably improve our caching overall.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:33:17 UTC
+    </footer>
+</body>
+</html>

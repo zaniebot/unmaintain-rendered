@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pylint`] Implement Pylint `abstract-class-instantiated` (`E0110`) - astral-sh/ruff #5685</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pylint</code>] Implement Pylint <code>abstract-class-instantiated</code> (<code>E0110</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/5685">#5685</a>
+        opened by <a href="https://github.com/silvanocerza">@silvanocerza</a>
+        on 2023-07-11 12:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/silvanocerza">@silvanocerza</a> on 2023-07-11 12:42</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Relates to #970.</p>
+<p>I made a draft PR as this doesn't fully implement the <code>abstract-class-instantiated</code> rule.</p>
+<p>I didn't implement it fully as I couldn't find a reliable way of getting <code>StmtClassDef</code> of imported classes and builtins.</p>
+<p>That makes impossible to verify if classes that inherit from <code>abc.ABC</code> and have abstract methods are abstract as we can't find definition of <code>abc.ABC</code> in the <code>SemanticModel</code>'s <code>definitions</code>.</p>
+<p><code>FifthBadClass</code> in <code>abstract_class_instantiated.py</code> is the perfect example for this limitation.</p>
+<h2>Test Plan</h2>
+<p>Added new snapshot.</p>
+<p><code>abstract_class_instantiated.py</code> has been adapted from <code>pylint</code>'s test file that is used to verify this same rule. All errors, apart from <code>FifthBadClass</code> as specified above, that <code>pylint</code> reports are also reported by <code>ruff</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`pylint`] Implement Pylint abstract-class-instantiated (`E0110`)" to "[`pylint`] Implement Pylint `abstract-class-instantiated` (`E0110`)" by @silvanocerza on 2023-07-11 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-07-11 13:34</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00     10.3±0.36ms     3.9 MB/sec    1.21     12.5±0.65ms     3.3 MB/sec
+formatter/numpy/ctypeslib.py               1.00      2.4±0.18ms     7.0 MB/sec    1.12      2.7±0.18ms     6.3 MB/sec
+formatter/numpy/globals.py                 1.00   277.9±20.04µs    10.6 MB/sec    1.03   285.4±20.19µs    10.3 MB/sec
+formatter/pydantic/types.py                1.00      5.0±0.21ms     5.1 MB/sec    1.14      5.8±0.35ms     4.4 MB/sec
+linter/all-rules/large/dataset.py          1.00     19.5±0.78ms     2.1 MB/sec    1.03     20.0±0.91ms     2.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.5±0.22ms     3.7 MB/sec    1.06      4.7±0.23ms     3.5 MB/sec
+linter/all-rules/numpy/globals.py          1.05   612.8±62.82µs     4.8 MB/sec    1.00   583.1±25.52µs     5.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.2±0.35ms     3.1 MB/sec    1.50     12.3±4.74ms     2.1 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.6±0.38ms     4.7 MB/sec    1.22     10.5±0.47ms     3.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1938.9±90.59µs     8.6 MB/sec    1.11      2.2±0.11ms     7.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00    229.8±9.77µs    12.8 MB/sec    1.09   250.9±18.64µs    11.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.1±0.24ms     6.3 MB/sec    1.14      4.6±0.27ms     5.5 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.06     12.8±0.56ms     3.2 MB/sec    1.00     12.1±0.43ms     3.4 MB/sec
+formatter/numpy/ctypeslib.py               1.04      2.9±0.24ms     5.7 MB/sec    1.00      2.8±0.14ms     6.0 MB/sec
+formatter/numpy/globals.py                 1.01   317.9±22.57µs     9.3 MB/sec    1.00   313.9±20.94µs     9.4 MB/sec
+formatter/pydantic/types.py                1.00      6.1±0.26ms     4.2 MB/sec    1.00      6.1±0.29ms     4.2 MB/sec
+linter/all-rules/large/dataset.py          1.01     21.1±0.61ms  1969.7 KB/sec    1.00     21.0±0.50ms  1988.2 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      5.6±0.26ms     3.0 MB/sec    1.00      5.5±0.28ms     3.0 MB/sec
+linter/all-rules/numpy/globals.py          1.04   673.5±42.73µs     4.4 MB/sec    1.00   648.1±28.43µs     4.6 MB/sec
+linter/all-rules/pydantic/types.py         1.01      9.6±0.45ms     2.7 MB/sec    1.00      9.5±0.35ms     2.7 MB/sec
+linter/default-rules/large/dataset.py      1.02     10.8±0.63ms     3.8 MB/sec    1.00     10.6±0.36ms     3.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02      2.2±0.12ms     7.4 MB/sec    1.00      2.2±0.10ms     7.6 MB/sec
+linter/default-rules/numpy/globals.py      1.03   267.6±13.45µs    11.0 MB/sec    1.00   260.6±11.94µs    11.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.7±0.25ms     5.4 MB/sec    1.00      4.7±0.17ms     5.4 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-13 00:10</div>
+            <div class="timeline-body"><p>I think this may be too hard to support (yet) due to the limitations you describe: we don't have any way to resolve symbols across files. I've been thinking a bit about this problem lately, we have many of the pieces that we'd need to support it, but it does require a pretty significant rethinking of Ruff's overall compilation pipeline.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/silvanocerza">@silvanocerza</a> on 2023-07-13 09:21</div>
+            <div class="timeline-body"><p>I thought the same, I just realized way too late while implementing this. 😅
+I'll keep the PR open in any case, as soon as we have the possibility to implement it properly I'll update it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> added by @zanieb on 2023-10-19 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-19 16:13</div>
+            <div class="timeline-body"><p>I'm going to close this since multifile analysis isn't something I see happening soon.</p>
+<p>Thanks for contributing though! I hope this is useful once we add the necessary functionality.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-10-19 16:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:33:16 UTC
+    </footer>
+</body>
+</html>

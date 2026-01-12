@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>perf(parser): use memchr for lexing comments - astral-sh/ruff #8193</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>perf(parser): use memchr for lexing comments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8193">#8193</a>
+        opened by <a href="https://github.com/sno2">@sno2</a>
+        on 2023-10-25 01:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sno2">@sno2</a> on 2023-10-25 01:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This might improve the performance of lexing. Not sure, though.</p>
+<h2>Test Plan</h2>
+<p>This was tested using the existing tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-25 01:59</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "perf(parser): use memchr to improve parsing" to "perf(parser): use memchr for lexing comments" by @sno2 on 2023-10-25 02:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sno2">@sno2</a> on 2023-10-25 02:01</div>
+            <div class="timeline-body"><p>Improvements seem neglible: https://codspeed.io/astral-sh/ruff/branches/sno2:main</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sno2 on 2023-10-25 02:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:414 on 2023-10-25 02:04</div>
+            <div class="timeline-body"><p>I think <code>memchr</code> handl this automatically and not having the configuration ensures that newly supported platforms automatically profit from a faster <code>memchr</code> routine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-10-25 02:05</div>
+            <div class="timeline-body"><p>It gives us a small speed up for the lexer. I didn't expect parsing to improve, because it performs way too many allocations. However, this could speed up things once we improve our parser.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sno2">@sno2</a> reviewed on 2023-10-25 02:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sno2">@sno2</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:414 on 2023-10-25 02:07</div>
+            <div class="timeline-body"><p>True, will look into this more.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @sno2 on 2023-10-25 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-10-25 04:17</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/sno2:main">CodSpeed Performance Report</a></h2>
+<h3>Merging #8193 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>sno2:main</code> (0d3717f) with <code>main</code> (6f31e9c)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 25</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sno2 on 2023-10-25 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sno2">@sno2</a> on 2023-10-25 15:18</div>
+            <div class="timeline-body"><p>I've given up on trying to optimize the String creation so this is ready for review :^) It seems that the only way we could get a performance boost from comment string allocation in the lexer is to not do it at all and use lifetimes and <code>&amp;str</code>s.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-27 01:06</div>
+            <div class="timeline-body"><blockquote>
+<p>I've given up on trying to optimize the String creation so this is ready for review :^) It seems that the only way we could get a performance boost from comment string allocation in the lexer is to not do it at all and use lifetimes and <code>&amp;str</code>s.</p>
+</blockquote>
+<p>I once had a pr that used <code>SmolStr</code> instead of <code>String</code> in the lexer to speed up things, but it didn't improve performance. I suspected that it was mainly because our string parsing is so slow (and allocates all over the place). It might be worth to give this another try after the string parsing rework lands</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @MichaReiser on 2023-10-27 01:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-10-27 01:07</div>
+            <div class="timeline-body"><p>Thank you :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-10-27 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-10-27 01:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:33:17 UTC
+    </footer>
+</body>
+</html>

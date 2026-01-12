@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate changelog from GitHub releases - astral-sh/ruff #6077</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Generate changelog from GitHub releases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6077">#6077</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2023-07-25 19:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-25 19:19</div>
+            <div class="timeline-body"><p>Not a commitment to doing this, but exploring the option of using a <code>CHANGELOG</code> file.</p>
+<p><a href="https://github.com/astral-sh/ruff/blob/changelog/CHANGELOG.md">Rendered preview</a></p>
+<p>Generated with the following</p>
+<pre><code class="language-python">#!/usr/bin/env python
+#
+# Generate a changelog file from existing GitHub releases.
+#
+# Usage:
+#
+#   generate-changelog &lt;repo&gt;
+#
+# Example: 
+#
+#   generate-changelog astral-sh/ruff &gt; CHANGELOG.md
+#
+
+import os
+import re
+import sys
+
+from github import Github
+from github.GitRelease import GitRelease
+
+# Header for each release tag
+RELEASE_HEADER = &quot;## {release.tag_name}&quot;
+
+# Substitutations for items in the body of the release
+# Applied in-order (a previous replacement can be further modified by a later one)
+# Expects a regular expression pattern / replacement tuple
+BODY_SUBS: tuple[tuple[str, str]] = (
+    # Indent these headers
+    (&quot;## New Contributors&quot;, &quot;### New Contributors&quot;),
+    (&quot;## Summary&quot;, &quot;### Summary&quot;),
+    # Remove this header
+    (&quot;\n## What's Changed&quot;, &quot;&quot;),
+    # In some older releases, the first match will not exist and all of the changes
+    # will be in a single header
+    (&quot;## What's Changed&quot;, &quot;\n\n### Changes&quot;),
+    # Remove the generated note
+    (
+        &quot;&lt;!-- Release notes generated using configuration in .github/release.yml at .* --&gt;&quot;, 
+        &quot;&quot;
+    ),
+)
+
+def format_release(release: GitRelease) -&gt; str:
+    &quot;&quot;&quot;Convert a release into formatted notes.&quot;&quot;&quot;
+    formatted_notes = RELEASE_HEADER.format(release=release)
+    formatted_notes += &quot;\n\n&quot;
+
+    body = release.body
+    for pattern, replacement in BODY_SUBS:
+        body = re.sub(pattern, replacement, body)
+    
+    # Remove an excessive whitespace blocks
+    while &quot;\r\n\r\n\r\n&quot; in body:
+        body = body.replace(&quot;\r\n\r\n\r\n&quot;, &quot;\n\n&quot;)
+    while &quot;\n\n\n&quot; in body:
+        body = body.replace(&quot;\n\n\n&quot;, &quot;\n\n&quot;)
+    
+    formatted_notes += body.lstrip()
+    formatted_notes += &quot;\n\n&quot;
+    return formatted_notes
+
+def main(repository_name: str, token: str, limit: int | None = None):
+    gh = Github(token)
+    repo = gh.get_repo(repository_name)
+
+    yield &quot;# Changelog\n\n&quot;
+
+    for i, release in enumerate(repo.get_releases()):
+        if limit is not None and i &gt; limit:
+            return
+        if not release.body:
+            # Empty release, exclude it from the changelog
+            continue
+        yield format_release(release)
+
+
+if __name__ == &quot;__main__&quot;:
+    token = os.environ.get(&quot;GITHUB_TOKEN&quot;)
+    name = sys.argv[1] if len(sys.argv) &gt; 1 else None
+    if name is None:
+        print(&quot;A repository must be provided.&quot;)
+        exit(1)
+
+    for line in main(name, token):
+        print(line, end=&quot;&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-25 19:24</div>
+            <div class="timeline-body"><p>I previously authored a script to generate the release notes for a CHANGELOG file using GitHub's generator https://github.com/PrefectHQ/prefect/blob/main/scripts/generate-release-notes.py which we could adapt here allowing us to continue using GitHub labeling to reduce the maintenance burden of writing notes while allowing for peer review of notes. Releases can link to the header in the CHANGELOG file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-07-26 12:49</div>
+            <div class="timeline-body"><p>I looked for a project that we could reuse instead of maintaining our own script and found <a href="https://github.com/rhysd/changelog-from-release">rhysd/changelog-from-release</a>, which also has github action. With <code>changelog-from-release -r https://github.com/astral-sh/ruff &gt; CHANGELOG.md</code> i got <a href="https://github.com/astral-sh/ruff/blob/konsti-rhysd-changelog-from-release/CHANGELOG.md">this markdown changelog</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-26 16:02</div>
+            <div class="timeline-body"><p>Hm while I'm into using existing projects, I don't like the output of that one and I've not seen any real maintenance burden for having my own previously. For clarity, I'm proposing:</p>
+<ol>
+<li>Running the above script <em>once</em> to generate a changelog file</li>
+<li>Combine the above script with the one I linked to append generated release notes to the changelog file on demand</li>
+<li>Use pull requests to publish changelog entries for each release</li>
+<li>Consider writing an simple internal script to create a GitHub release that links to the proper changelog entry</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-27 13:56</div>
+            <div class="timeline-body"><p>I'm cool with the general approach of using a script (and this one specifically) to create the changelog, what I don't fully understand is when this would happen and how it would relate to the rest of the release process. We write the release notes when we convert the release from Draft, so the changelog itself wouldn't end up being <em>part</em> of the release at present.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-10-06 14:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:33:16 UTC
+    </footer>
+</body>
+</html>

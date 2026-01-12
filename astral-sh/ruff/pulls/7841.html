@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add settings for promoting and demoting fixes - astral-sh/ruff #7841</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add settings for promoting and demoting fixes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7841">#7841</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2023-10-06 19:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-06 19:46</div>
+            <div class="timeline-body"><p>Adds two configuration-file only settings <code>extend-safe-fixes</code> and <code>extend-unsafe-fixes</code> which can be used to promote and demote the applicability of fixes for rules.</p>
+<p>Fixes with <code>Never</code> applicability cannot be promoted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/linter.rs</code>:273 on 2023-10-06 19:47</div>
+            <div class="timeline-body"><p>Does this clone matter? Is there a better way to do this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-06 19:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-06 19:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_cli/tests/integration_test.rs</code>:1221 on 2023-10-06 19:54</div>
+            <div class="timeline-body"><p>I copied this testing strategy from the formatter integration tests. Do we have a better place to do this? I'd test more cases (e.g. prefixes, rules in both sets, etc.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-06 21:54</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_linter/src/linter.rs</code>:273 on 2023-10-09 09:36</div>
+            <div class="timeline-body"><p>This would work:</p>
+<pre><code class="language-rust">            if let Some(fix) = diagnostic.fix.take() {
+                // Check unsafe before safe so if someone puts a rule in both we are conservative
+                if settings
+                    .extend_unsafe_fixes
+                    .contains(diagnostic.kind.rule())
+                    &amp;&amp; fix.applicability().is_always()
+                {
+                    diagnostic.set_fix(fix.with_applicability(Applicability::Sometimes));
+                } else if settings.extend_safe_fixes.contains(diagnostic.kind.rule())
+                    &amp;&amp; fix.applicability().is_sometimes()
+                {
+                    diagnostic.set_fix(fix.with_applicability(Applicability::Always));
+                } else {
+                    diagnostic.set_fix(fix);
+                }
+            }
+</code></pre>
+<p>There's no <code>Fix::set_applicability(&amp;mut self, ...)</code> (only a <code>mut self</code> method), so usual the <code>if let Some(fix) = &amp;mut diagnostic.fix</code> trick doesn't work here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-10-09 09:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-10 16:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/linter.rs</code>:273 on 2023-10-10 16:11</div>
+            <div class="timeline-body"><p>Thanks!</p>
+<p>Should I have made <code>set_applicability</code> take <code>&amp;mut self</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2023-10-10 16:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @zanieb on 2023-10-10 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/linter.rs</code>:271 on 2023-10-10 18:05</div>
+            <div class="timeline-body"><p>I think it's worth inverting the order of the <code>&amp;&amp;</code> here, since the second condition is much cheaper.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/linter.rs</code>:280 on 2023-10-10 18:10</div>
+            <div class="timeline-body"><p>I think you could also write this section like:</p>
+<pre><code class="language-rust">if let Some(fix) = &amp;mut diagnostic.fix {
+    // Check unsafe before safe so if someone puts a rule in both we are conservative
+    if settings
+        .extend_unsafe_fixes
+        .contains(diagnostic.kind.rule())
+        &amp;&amp; fix.applicability().is_safe()
+    {
+        fix.applicability = Applicability::Unsafe;
+    } else if settings.extend_safe_fixes.contains(diagnostic.kind.rule())
+        &amp;&amp; fix.applicability().is_unsafe()
+    {
+        fix.applicability = Applicability::Safe;
+    }
+}
+</code></pre>
+<p>If <code>applicability</code> is <code>pub(crate)</code>, or more likely with something like <code>set_applicability(&amp;mut self, applicability: Applicability)</code> on <code>Fix</code>. But I think I prefer what you have.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-10-10 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-10 18:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/linter.rs</code>:271 on 2023-10-10 18:29</div>
+            <div class="timeline-body"><p>Hm I thought I was being careful to do the cheaper option first but it sure doesn't look like it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-10 19:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_linter/src/linter.rs</code>:280 on 2023-10-10 19:57</div>
+            <div class="timeline-body"><p>Thanks for explaining!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2023-10-10 20:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-10-10 20:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-10-10 20:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-10-11 12:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_linter/src/linter.rs</code>:280 on 2023-10-11 12:04</div>
+            <div class="timeline-body"><p>To add one more alternative:</p>
+<pre><code class="language-rust">            diagnostic.fix = diagnostic.fix.take().map(|fix| {
+                // Enforce demotions over promotions so if someone puts a rule in both we are conservative
+                if fix.applicability().is_safe()
+                    &amp;&amp; settings
+                        .extend_unsafe_fixes
+                        .contains(diagnostic.kind.rule())
+                {
+                    fix.with_applicability(Applicability::Unsafe)
+                } else if fix.applicability().is_unsafe()
+                    &amp;&amp; settings.extend_safe_fixes.contains(diagnostic.kind.rule())
+                {
+                    fix.with_applicability(Applicability::Safe)
+                } else {
+                    // Retain the existing fix (will be dropped from `.take()` otherwise)
+                    fix
+                }
+            });
+</code></pre>
+<p>(it's annoying that the compiler doesn't accept this without <code>.take()</code>)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:33:16 UTC
+    </footer>
+</body>
+</html>

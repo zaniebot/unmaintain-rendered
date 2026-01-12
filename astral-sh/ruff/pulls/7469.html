@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replace num_bigint with malachite - astral-sh/ruff #7469</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Replace num_bigint with malachite</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7469">#7469</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-09-17 18:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-09-17 18:54</div>
+            <div class="timeline-body"><p><a href="https://www.malachite.rs/">malachite</a> is an arbitrary precision crate that unlike num_bigint implement as small integer optimization. This avoids allocating a <code>Vec</code> for every single number parse and instead only allocates for rare unusually large numbers.</p>
+<p>This is also a correctness improvement since we'd previously just ignore the higher parts of unreasonably large numbers.</p>
+<p>The disadvantage is that malachite is slow to compile.</p>
+<p>TODO: Is the LGPL that malachite uses ok for ruff?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @konstin on 2023-09-17 18:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-17 19:22</div>
+            <div class="timeline-body"><p>My understanding is that we <em>can</em> use LGPL dependencies, but we need to provide the copyright notice (as always) and make the source code of our LGPL dependencies available (it sounds like providing a link to the source is sufficient to satisfy this). If we modify the underlying library, those modifications would need to be licensed under LGPL.</p>
+<p>(I'm not a lawyer, this is based off my own research just now.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-17 19:32</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-09-18 09:07</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/malachite">CodSpeed Performance Report</a></h2>
+<h3>Merging #7469 will <strong>improve performances by 5.76%</strong></h3>
+<p><sub>Comparing <code>malachite</code> (6bd83d3) with <code>main</code> (94b68f2)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 2</code> improvements
+<code>✅ 23</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>malachite</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>lexer[unicode/pypinyin.py]</code> | 620 µs | 604.1 µs | +2.62% |
+| ⚡ | <code>lexer[large/dataset.py]</code> | 9.8 ms | 9.3 ms | +5.76% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-18 15:15</div>
+            <div class="timeline-body"><p>The formatter result looks wrong. The formatting performance can only be regressed by this PR if the lexing performance regresses too.</p>
+<p>It seems that malachite's parse method allocates internally?</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/1203881/078ed46e-7a07-4cb4-a768-ba5f07d07cae" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-09-18 15:23</div>
+            <div class="timeline-body"><blockquote>
+<p>It seems that malachite's parse method allocates internally?</p>
+</blockquote>
+<p>i've added the fast path for that reason, i'm rather certain it should not allocate or at least not sufficiently often to show up in the flamegraph. Could the flamegraph be outdated?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-18 15:27</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>It seems that malachite's parse method allocates internally?</p>
+</blockquote>
+<p>i've added the fast path for that reason, i'm rather certain it should not allocate or at least not sufficiently often to show up in the flamegraph. Could the flamegraph be outdated?</p>
+</blockquote>
+<p>You can run a lexer profile locally</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:269 on 2023-09-18 15:29</div>
+            <div class="timeline-body"><p>This method is never called with <code>Radix::Decimal</code>. You need to add your fast path to <code>lex_decimal_number</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-18 15:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-09-18 15:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:269 on 2023-09-18 15:34</div>
+            <div class="timeline-body"><p>:facepalm: thanks that makes much more sense</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-09-18 15:35</div>
+            <div class="timeline-body"><blockquote>
+<p>You can run a lexer profile locally</p>
+</blockquote>
+<p>i know, but the build takes so long and then i have to make sure i have a quiet environment for running the benchmarks, but in this case i will</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-18 16:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:348 on 2023-09-18 16:09</div>
+            <div class="timeline-body"><p>Nit: We should know if the number is negative, meaning we can have different paths for integers and unsigned integers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-18 16:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:359 on 2023-09-18 16:10</div>
+            <div class="timeline-body"><p>Nit: This check is a bit awkward, but you have to make sure your code still passes it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-09-18 17:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:348 on 2023-09-18 17:03</div>
+            <div class="timeline-body"><p>i don't think it's worth the complexity</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-09-18 17:04</div>
+            <div class="timeline-body"><p>The lexer now improves consistently, not sure about that formatter regression</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/6826232/96948829-fd2d-4d99-92c9-488a07cd6c6f" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2023-09-18 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-18 17:07</div>
+            <div class="timeline-body"><p><code>formatter[large/dataset.py]</code> has been really flakey lately. I'm not sure why. It's oscillating ~5% on a bunch of PRs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-18 17:16</div>
+            <div class="timeline-body"><p>Yeah. I think something with baselines is wrong...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-09-18 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2023-09-18 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>Cargo.lock</code>:1419 on 2023-09-18 18:52</div>
+            <div class="timeline-body"><p>It's unfortunate that it pulls in all these dependencies without an option to disable them</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_bandit/rules/bad_file_permissions.rs</code>:123 on 2023-09-18 19:00</div>
+            <div class="timeline-body"><p>Nit: What's the reason for returning an <code>Integer</code> here? Converting to a <code>u16</code> seems reasonable (because anything larger isn't a valid file permission anyway)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/ruff/rules/pairwise_over_zipped.rs</code>:92 on 2023-09-18 19:04</div>
+            <div class="timeline-body"><p>A <code>i64</code> was probably sufficient to represent any reasonable value (any value outside of that range certainly results in an out of memory exception, assuming Python can even handle it)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-09-18 19:06</div>
+            <div class="timeline-body"><p>Have you considered other arbitrary precision crates like e.g. rug?</p>
+<p>https://github.com/tczajka/bigint-benchmark-rs (all of these seem to have very few downloads, except num bigint)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>Cargo.lock</code>:1419 on 2023-09-19 09:37</div>
+            <div class="timeline-body"><p>https://github.com/mhogrefe/malachite/issues/26</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-09-19 09:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-09-19 09:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Have you considered other arbitrary precision crates like e.g. rug?</p>
+</blockquote>
+<p>i quickly looked but i found none that looked better than malachite. it seems there's num_bigint and than there's a lot of crates with low usage numbers. i find malachite to be much more ergonomic than num_bigint</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-09-19 09:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/flake8_bandit/rules/bad_file_permissions.rs</code>:123 on 2023-09-19 09:45</div>
+            <div class="timeline-body"><p>the diagnostic would be incorrect if we truncated the number</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-09-19 09:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/ruff/rules/pairwise_over_zipped.rs</code>:92 on 2023-09-19 09:50</div>
+            <div class="timeline-body"><p>python is perfectly happy to do <code>list(range(10))[:2**10000]</code>. it's not reasonable from a user perspective but there's also no reason not to support it in ruff</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2023-09-19 10:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-09-19 10:03</div>
+            <div class="timeline-body"><p>CC @charliermarsh are you fine with merging given that this is LGPL?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-19 12:47</div>
+            <div class="timeline-body"><p>@konstin - Looking into it...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-09-21 14:57</div>
+            <div class="timeline-body"><p>We've decided that it's not worth adding an LPGL dependency just for bigint support which don't really need, we don't have any cases where we need a large number parsed. Instead, we plan on something like the following:</p>
+<pre><code class="language-rust">enum BigInt {
+    Small(i64),
+    Large(Box&lt;str&gt;)
+}
+</code></pre>
+<p>We parse only small numbers and keep the large numbers as a (normalized) string. Comparisons like <code>num == 0</code> only need to check against the small variant, but we still keep the large variant around for correct diagnostics and unparsing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-09-21 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-21 15:08</div>
+            <div class="timeline-body"><p>For posterity: our assessment is that we <em>can</em> add an LGPL dependency, with the requirements being that we (1) include the license for the dependency, (2) provide access to the LGPL library's source code, and (3) provide a means by which users can replace the LGPL dependency in the compiled binary. My understanding is that (3) can be satisfied by providing access to the Ruff source code itself, since users can then download the source code, swap out the library and re-compile. In practice, I believe that the crates.io link would also satisfy (2).</p>
+<p>So, anyway, I do believe we can add LGPL dependencies while remaining MIT licensed ourselves. But it doesn't feel worth it to me to introduce these requirements and any uncertainties for a minor improvement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cmpute">@cmpute</a> on 2023-10-23 09:28</div>
+            <div class="timeline-body"><p>I might come late but I would like to advertise the <a href="https://github.com/cmpute/dashu"><code>dashu</code></a> crate created by me. It's Apache-MIT licensed, and it has small integer optimizations.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:33:16 UTC
+    </footer>
+</body>
+</html>

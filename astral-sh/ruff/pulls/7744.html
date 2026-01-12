@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid printing continuations within import identifiers - astral-sh/ruff #7744</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid printing continuations within import identifiers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7744">#7744</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-10-01 18:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-01 18:22</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>It turns out that <em>some</em> identifiers can contain newlines -- specifically, dot-delimited import identifiers, like:</p>
+<pre><code class="language-python">import foo\
+    .bar
+</code></pre>
+<p>At present, we print all identifiers verbatim, which causes us to retain the <code>\</code> in the formatted output. This also leads to violating some debug assertions (see the linked issue, though that's a symptom of this formatting failure).</p>
+<p>This PR adds detection for import identifiers that contain newlines, and formats them via <code>text</code> (slow) rather than <code>source_code_slice</code> (fast) in those cases.</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/7734.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-10-01 18:32</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/charlie/continuation">CodSpeed Performance Report</a></h2>
+<h3>Merging #7744 will <strong>improve performances by 2.02%</strong></h3>
+<p><sub>Comparing <code>charlie/continuation</code> (a307da9) with <code>main</code> (d8a6279)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 24</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>charlie/continuation</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/default-rules[numpy/ctypeslib.py]</code> | 19 ms | 18.6 ms | +2.02% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-10-02 09:51</div>
+            <div class="timeline-body"><p>I think that fundamentally that is bug in our AST: Indentifiers in python can not contain dots, and <code>import foo.bar</code> consists of two dot-separated keywords, not one.</p>
+<p>I think we should merge this fix and then solve this properly with https://github.com/astral-sh/ruff/issues/7760</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-10-02 13:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-02 13:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-10-02 13:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:33:16 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `ruff version` with long version display - astral-sh/ruff #8034</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>ruff version</code> with long version display</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8034">#8034</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2023-10-18 01:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-18 01:51</div>
+            <div class="timeline-body"><p>Adds a new <code>ruff version</code> sub-command which displays long version information in the style of <code>cargo</code> and <code>rustc</code>. We include the number of commits since the last release tag if its a development build, in the style of Python's versioneer.</p>
+<pre><code>❯ ruff version
+ruff 0.1.0+14 (947940e91 2023-10-18)
+</code></pre>
+<pre><code>❯ ruff version --output-format json
+{
+  &quot;version&quot;: &quot;0.1.0&quot;,
+  &quot;commit_info&quot;: {
+    &quot;short_commit_hash&quot;: &quot;947940e91&quot;,
+    &quot;commit_hash&quot;: &quot;947940e91269f20f6b3f8f8c7c63f8e914680e80&quot;,
+    &quot;commit_date&quot;: &quot;2023-10-18&quot;,
+    &quot;last_tag&quot;: &quot;v0.1.0&quot;,
+    &quot;commits_since_last_tag&quot;: 14
+  }
+}%
+</code></pre>
+<pre><code>❯ cargo version
+cargo 1.72.1 (103a7ff2e 2023-08-15)
+</code></pre>
+<h2>Test plan</h2>
+<p>I've tested this manually locally, but want to at least add unit tests for the message formatting. We'd also want to check the next release to ensure the information is correct.</p>
+<p>I checked build behavior with a detached head and branches.</p>
+<h2>Future work</h2>
+<p>We could include rustc and cargo versions from the build, the current Python version, and other diagnostic information for bug reports.</p>
+<p>The <code>--version</code> and <code>-V</code> output is unchanged. However, we could update it to display the long ruff version without the rust and cargo versions (this is what cargo does). We'll need to be careful to ensure this does not break downstream packages which parse our version string.</p>
+<pre><code>❯ ruff --version
+ruff 0.1.0
+</code></pre>
+<p>The LSP should be updated to use <code>ruff version --output-format json</code> instead of parsing <code>ruff --version</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-18 02:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_cli/src/lib.rs</code>:1 on 2023-10-18 02:01</div>
+            <div class="timeline-body"><p>Seems bad; required for</p>
+<pre><code>warning: use of `println!`
+    --&gt; /Users/mz/eng/src/astral-sh/ruff/target/debug/build/ruff_cli-05d917f7674e2fe3/out/shadow.rs:1008:2
+     |
+1008 |     println!(&quot;CLAP_LONG_VERSION:{CLAP_LONG_VERSION}\n&quot;);
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#print_stdout
+</code></pre>
+<p>These are for a shadow utility that prints all the variables — we don't use it. Will need to investigate a better workaround.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-18 02:06</div>
+            <div class="timeline-body"><p>I'm not sure I'm into shadow-rs for this — I think I may prefer to do something like <code>cargo</code>'s implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-18 02:09</div>
+            <div class="timeline-body"><p>I haven't looked at the code yet, but one thing to note is that we do parse the <code>ruff version</code> output in the LSP:</p>
+<pre><code class="language-python">from packaging.version import Version
+
+
+def version(executable: str) -&gt; Version:
+    &quot;&quot;&quot;Returns the version of the executable at the given path.&quot;&quot;&quot;
+    output = subprocess.check_output([executable, &quot;--version&quot;]).decode().strip()
+    version = output.replace(&quot;ruff &quot;, &quot;&quot;)  # no removeprefix in 3.7 :/
+    return Version(version)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-18 02:15</div>
+            <div class="timeline-body"><p>This doesn't change any existing behavior — great note though it may be a good reason not to change <code>--version</code> to be long-form.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-10-18 09:40</div>
+            <div class="timeline-body"><p>I'd like to switch the lsp to use the json instead</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-18 15:12</div>
+            <div class="timeline-body"><p>That's a great idea!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-18 17:18</div>
+            <div class="timeline-body"><p>I'm really pleased with the handwritten implementation. I adapted the version and commit information from https://github.com/zanieb/poetry-relax/blob/main/scripts/version, https://github.com/rust-lang/cargo/blob/master/build.rs, and https://github.com/rust-lang/cargo/blob/master/src/cargo/version.rs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/build.rs</code>:48 on 2023-10-18 17:21</div>
+            <div class="timeline-body"><p>How does this work caching wise, i.e. how do we avoid cargo using a cache old hash? I think the only solution is https://doc.rust-lang.org/cargo/reference/build-scripts.html#rerun-if-changed with <code>.git/HEAD</code>, which is also slightly annoying because it invalidates the cache everytime you do something with git.</p>
+<p>I'd prefer to read files over subcommands (they have an overhead and weird os failure modes), but that might be to hard with git.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-10-18 17:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-18 17:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_cli/build.rs</code>:48 on 2023-10-18 17:24</div>
+            <div class="timeline-body"><p>I think it should be fine for release builds. For local builds, yes it may be incorrect unless you <code>cargo clean</code>. I'm not sure if it's worth adding the rerun-if-changed?</p>
+<p>I've only ever seen git subcommand used for this, it definitely seems hard to read files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-18 17:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_cli/build.rs</code>:48 on 2023-10-18 17:33</div>
+            <div class="timeline-body"><p>We could use https://doc.rust-lang.org/cargo/reference/build-scripts.html#rerun-if-env-changed and set an environment variable in CI on release builds for safety? Could be used to force a refresh locally too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-10-18 17:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/build.rs</code>:48 on 2023-10-18 17:43</div>
+            <div class="timeline-body"><p>That sounds like a good workaround</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-18 17:47</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-18 21:55</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd like to switch the lsp to use the json instead</p>
+</blockquote>
+<p>How would we detect if the ruff version is new enough to support the new json output without using <code>--version</code> first?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-18 22:28</div>
+            <div class="timeline-body"><p>Hah yes that’s true. Maintaining compatibility between Ruff and the LSP feels increasingly annoying.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-18 23:50</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I'd like to switch the lsp to use the json instead</p>
+</blockquote>
+<p>How would we detect if the ruff version is new enough to support the new json output without using <code>--version</code> first?</p>
+</blockquote>
+<p>True, that's pretty funny. We can go the &quot;try and fail&quot; way at the cost of some speed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-10-19 08:18</div>
+            <div class="timeline-body"><blockquote>
+<p>How would we detect if the ruff version is new enough to support the new json output without using --version first?</p>
+</blockquote>
+<p>We don't, we have to wait until a ruff with a json version is the oldest supported version plus a bit of buffer for better error messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_cli/build.rs</code>:48 on 2023-10-19 17:05</div>
+            <div class="timeline-body"><p><code>.git/HEAD</code> only contains a pointer to the current branch so I don't think that would work (unless git sets a new mtime on the file on each operation)</p>
+<blockquote>
+<p>Normally build scripts are re-run if any file inside the crate root changes, but this can be used to scope changes to just a small set of files.</p>
+</blockquote>
+<p>It seems like we'd only be reducing scope by doing this?</p>
+<p>Unfortunately the environment variable one is not &quot;if set&quot; it's &quot;if changes&quot; so it'd work well in CI but not so much for local resets.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-19 17:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_cli/build.rs</code>:48 on 2023-10-19 18:10</div>
+            <div class="timeline-body"><p>Addressed in https://github.com/astral-sh/ruff/pull/8034/commits/1208df9f40687c7a58aec301723919bd15087d3e</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-19 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-19 18:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_cli/build.rs</code>:45 on 2023-10-19 18:12</div>
+            <div class="timeline-body"><p>Okay this is a little bit much but i tested this out and basically without this, if you change <em>any</em> file in the <code>ruff_cli</code> crate e.g. add a file <code>foo</code> to the crate root then a rebuild is forced — this is entirely unnecessary so, here, if a git directory is present we will use commit information from it to determine if rebuilding should occur.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-19 20:35</div>
+            <div class="timeline-body"><p>Just needs some snapshot tests for the version formatting now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-20 15:35</div>
+            <div class="timeline-body"><p>I wish we could test the <code>ruff version</code> command output but it would change per commit and redacting it would be meaningless.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2023-10-20 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-10-20 15:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2023-10-20 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-10-20 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-10-20 19:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:33:17 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lazily evaluate all PEP 695 type alias values - astral-sh/ruff #8033</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Lazily evaluate all PEP 695 type alias values</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/8033">#8033</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-10-18 01:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-18 01:23</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>In https://github.com/astral-sh/ruff/pull/7968, I introduced a regression whereby we started to treat imports used <em>only</em> in type annotation bounds (with <code>__future__</code> annotations) as unused.</p>
+<p>The root of the issue is that I started using <code>visit_annotation</code> for these bounds. So we'd queue up the bound in the list of deferred type parameters, then when visiting, we'd further queue it up in the list of deferred type annotations... Which we'd then never visit, since deferred type annotations are visited <em>before</em> deferred type parameters.</p>
+<p>Anyway, the better solution here is to use a dedicated flag for these, since they have slightly different behavior than type annotations.</p>
+<p>I've also fixed what I <em>think</em> is a bug whereby we previously failed to resolve <code>Callable</code> in:</p>
+<pre><code class="language-python">type RecordCallback[R: Record] = Callable[[R], None]
+
+from collections.abc import Callable
+</code></pre>
+<p>IIUC, the values in type aliases should be evaluated lazily, like type parameters.</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/8017.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2023-10-18 01:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-10-18 01:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-18 01:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/resources/test/fixtures/pyflakes/F821_20.py</code>:3 on 2023-10-18 01:26</div>
+            <div class="timeline-body"><p><code>Record</code> should be undefined, but <code>Callable</code> should resolve.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-18 01:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/resources/test/fixtures/pyflakes/F401_19.py</code>:11 on 2023-10-18 01:26</div>
+            <div class="timeline-body"><p>Both of these should be considered &quot;used&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-18 01:42</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2023-10-18 01:45</div>
+            <div class="timeline-body"><p>Thanks for fixing this! I was going to look into it but ya beat me to it (which is good because I would have been confused)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-10-18 01:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-18 01:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-10-18 01:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:33:17 UTC
+    </footer>
+</body>
+</html>

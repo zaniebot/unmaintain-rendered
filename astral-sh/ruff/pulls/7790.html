@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update fix summary message in `check --diff` to include unsafe fix hints - astral-sh/ruff #7790</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Update fix summary message in <code>check --diff</code> to include unsafe fix hints</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7790">#7790</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2023-10-03 18:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-03 18:42</div>
+            <div class="timeline-body"><p>Requires #7769</p>
+<p>Updates the CLI display for <code>ruff check --fix</code> to hint availability of unsafe fixes.</p>
+<pre><code>❯ ruff check example.py --select F601,T201 --diff --no-cache
+No errors fixed (1 fix available with `--unsafe-fixes`).
+</code></pre>
+<pre><code>❯ ruff check example.py --select F601,T201,W292 --diff --no-cache
+--- example.py
++++ example.py
+@@ -1,2 +1,2 @@
+ x = {'a': 1, 'a': 1}
+-print(('foo'))
++print(('foo'))
+\ No newline at end of file
+
+Would fix 1 error (1 additional fix available with `--unsafe-fixes`).
+</code></pre>
+<pre><code>❯ ruff check example.py --select F601,T201,W292 --diff --no-cache --unsafe-fixes
+--- example.py
++++ example.py
+@@ -1,2 +1,2 @@
+-x = {'a': 1}
+-print(('foo'))
++x = {'a': 1, 'a': 1}
++print(('foo'))
+\ No newline at end of file
+
+Would fix 2 errors.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @zanieb on 2023-10-03 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-03 18:54</div>
+            <div class="timeline-body"><p>Might be worth omitting &quot;additional&quot; from the no error case</p>
+<pre><code>❯ ruff check example.py --select F601,T201 --diff --no-cache
+No errors fixed (1 fix available with `--fix-suggested`).
+</code></pre>
+<pre><code class="language-diff">diff --git a/crates/ruff_cli/src/printer.rs b/crates/ruff_cli/src/printer.rs
+index 8e8f7c88a..906d7d1ac 100644
+--- a/crates/ruff_cli/src/printer.rs
++++ b/crates/ruff_cli/src/printer.rs
+@@ -136,17 +136,15 @@ impl Printer {
+ 
+                 if remaining_suggested &gt; 0 {
+                     let es = if remaining_suggested == 1 { &quot;&quot; } else { &quot;es&quot; };
+-                    let omitted =
+-                        format!(&quot;({remaining_suggested} additional fix{es} available with `--fix-suggested`)&quot;);
+                     if fixed &gt; 0 {
+                         let s = if fixed == 1 { &quot;&quot; } else { &quot;s&quot; };
+                         if self.fix_mode.is_apply() {
+-                            writeln!(writer, &quot;Fixed {fixed} error{s} {omitted}.&quot;)?;
++                            writeln!(writer, &quot;Fixed {fixed} error{s} ({remaining_suggested} additional fix{es} available with `--fix-suggested`).&quot;)?;
+                         } else {
+-                            writeln!(writer, &quot;Would fix {fixed} error{s} {omitted}.&quot;)?;
++                            writeln!(writer, &quot;Would fix {fixed} error{s} ({remaining_suggested}additional fix{es} available with `--fix-suggested`).&quot;)?;
+                         }
+                     } else {
+-                        writeln!(writer, &quot;No errors fixed {omitted}.&quot;)?;
++                        writeln!(writer, &quot;No errors fixed ({remaining_suggested} fix{es} available with `--fix-suggested`).&quot;)?;
+                     }
+                 } else {
+                     if fixed &gt; 0 {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-10-03 19:09</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/zanie/applicability-summary">CodSpeed Performance Report</a></h2>
+<h3>Merging #7790 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>zanie/applicability-summary</code> (67e1782) with <code>main</code> (3c25d26)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 25</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-10-03 19:10</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2023-10-03 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_cli/src/printer.rs</code>:128 on 2023-10-06 15:20</div>
+            <div class="timeline-body"><p>This is all unchanged and pulled out of <code>FixableStatistics.fmt</code> because I don't think it makes sense to have it on the struct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-06 15:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_cli/src/printer.rs</code>:481 on 2023-10-06 15:20</div>
+            <div class="timeline-body"><p>I don't think this belongs here, this is one specific message derived from this struct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-06 15:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Update fix summary message in `check --diff` to include suggested fix notes" to "Update fix summary message in `check --diff` to include unsafe fix hints" by @zanieb on 2023-10-06 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-06 15:24</div>
+            <div class="timeline-body"><p>I'd like integration test coverage for this but the messages are omitted there ~for some reason~; see https://github.com/astral-sh/ruff/pull/7838.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2023-10-06 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-10-06 17:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/printer.rs</code>:180 on 2023-10-06 17:07</div>
+            <div class="timeline-body"><p>If the fix mode is not apply (i.e., in the diff case), should we word this differently? Like &quot;No errors would be fix&quot; or &quot;No fixable errors&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff_cli/src/printer.rs</code>:180 on 2023-10-06 19:36</div>
+            <div class="timeline-body"><p>I guess we should use the &quot;Would be fixed&quot; wording from below — just an oversight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-10-06 19:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-10-08 14:49</div>
+            <div class="timeline-body"><blockquote>
+<p>I guess we should use the &quot;Would be fixed&quot; wording from below — just an oversight.</p>
+</blockquote>
+<p>I think this still needs to be addressed but otherwise all good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-10-09 09:54</div>
+            <div class="timeline-body"><blockquote>
+<p>(1 additional fix available with <code>--unsafe-fixes</code>)</p>
+</blockquote>
+<p>This to me sounds a lot like &quot;please enable unsafe fixes to make this message go away&quot;. Maybe something like &quot;(Excluding 1 unsafe fix)`?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-09 14:33</div>
+            <div class="timeline-body"><p>My qualm with &quot;excluding&quot; is it makes it sound like you've turned it off but it's just off by default. Hm..</p>
+<p>One possibility is that we could change <code>unsafe-fixes</code> to be <code>Optional</code> throughout our settings and if it's not set we use these messages but if it's set to <code>false</code> explicitly we hide the suggestion?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2023-10-10 13:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2023-10-10 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-10-10 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-10-10 15:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:33:16 UTC
+    </footer>
+</body>
+</html>
