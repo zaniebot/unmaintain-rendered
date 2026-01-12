@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extend `RUF005` to recursive and literal-literal concatenations - astral-sh/ruff #4557</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Extend <code>RUF005</code> to recursive and literal-literal concatenations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4557">#4557</a>
+        opened by <a href="https://github.com/hoel-bagard">@hoel-bagard</a>
+        on 2023-05-21 03:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/hoel-bagard">@hoel-bagard</a> on 2023-05-21 03:44</div>
+            <div class="timeline-body"><p>This attempts to fix https://github.com/charliermarsh/ruff/issues/3496.</p>
+<p><strong>It introduces the following changes:</strong></p>
+<ul>
+<li>The building of the new suggested expression is moved to a recursive function to handle cases with multiple concatenations on a single line.</li>
+<li>The rule now also checks for concatenations of lists/tuples (for example <code>a = [1] + [2]</code>).  (I'm not sure if this behavior is desired, it's not directly related to the issue).</li>
+<li>New tests to check the new behavior.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-21 03:56</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>ℹ️ ecosystem check <strong>detected changes</strong>. (+10, -5, 0 error(s))</p>
+<details><summary>airflow (+9, -5)</summary>
+<p>
+
+<pre><code class="language-diff">+ airflow/providers/apache/beam/hooks/beam.py:262:30: RUF005 [*] Consider `[py_interpreter, *py_options, py_file]` instead of concatenation
+- airflow/providers/apache/beam/hooks/beam.py:262:30: RUF005 [*] Consider `[py_interpreter, *py_options]` instead of concatenation
++ airflow/providers/apache/hive/hooks/hive.py:170:16: RUF005 [*] Consider `[hive_bin, *cmd_extra, *hive_params_list]` instead of concatenation
+- airflow/providers/apache/hive/hooks/hive.py:170:16: RUF005 [*] Consider `[hive_bin, *cmd_extra]` instead of concatenation
++ airflow/providers/apache/hive/operators/hive_stats.py:172:13: RUF005 [*] Consider `(self.ds, self.dttm, self.table, part_json, r[0][0], r[0][1], r[1])` instead of concatenation
++ airflow/utils/python_virtualenv.py:43:11: RUF005 [*] Consider `[f&quot;{tmp_dir}/bin/pip&quot;, &quot;install&quot;, *pip_install_options, &quot;-r&quot;]` instead of concatenation
+- airflow/utils/python_virtualenv.py:43:11: RUF005 [*] Consider `[f&quot;{tmp_dir}/bin/pip&quot;, &quot;install&quot;, *pip_install_options]` instead of concatenation
++ tests/providers/amazon/aws/hooks/test_eks.py:1170:17: RUF005 Consider `[POD_EXECUTION_ROLE_ARN, (ClusterAttributes.CLUSTER_NAME, cluster_name), (FargateProfileAttributes.FARGATE_PROFILE_NAME, fargate_profile_name), (FargateProfileAttributes.SELECTORS, selectors)]` instead of concatenation
+- tests/providers/amazon/aws/hooks/test_eks.py:754:17: RUF005 Consider `[*NodegroupInputs.REQUIRED, (ClusterAttributes.CLUSTER_NAME, generated_test_data.existing_cluster_name), (NodegroupAttributes.NODEGROUP_NAME, nodegroup_name)]` instead of concatenation
++ tests/providers/apache/hive/operators/test_hive_stats.py:155:13: RUF005 [*] Consider `(hive_stats_collection_operator.ds, hive_stats_collection_operator.dttm, hive_stats_collection_operator.table, mock_json_dumps.return_value, r[0][0], r[0][1], r[1])` instead of concatenation
++ tests/providers/apache/hive/operators/test_hive_stats.py:203:13: RUF005 [*] Consider `(hive_stats_collection_operator.ds, hive_stats_collection_operator.dttm, hive_stats_collection_operator.table, mock_json_dumps.return_value, r[0][0], r[0][1], r[1])` instead of concatenation
++ tests/providers/apache/hive/operators/test_hive_stats.py:251:13: RUF005 [*] Consider `(hive_stats_collection_operator.ds, hive_stats_collection_operator.dttm, hive_stats_collection_operator.table, mock_json_dumps.return_value, r[0][0], r[0][1], r[1])` instead of concatenation
++ tests/utils/test_python_virtualenv.py:64:13: RUF005 [*] Consider `[&quot;/VENV/bin/pip&quot;, &quot;install&quot;, *pip_install_options, &quot;apache-beam[gcp]&quot;]` instead of concatenation
+- tests/utils/test_python_virtualenv.py:64:13: RUF005 [*] Consider `[&quot;/VENV/bin/pip&quot;, &quot;install&quot;, *pip_install_options]` instead of concatenation
+</code></pre>
+</p>
+</details>
+<details><summary>scikit-build (+1, -0)</summary>
+<p>
+
+<pre><code class="language-diff">+ tests/test_issue342_cmake_osx_args_in_setup.py:178:44: RUF005 [*] Consider `[&quot;build&quot;, *cli_setup_args, &quot;--&quot;, *cli_cmake_args]` instead of concatenation
+</code></pre>
+</p>
+</details>
+Rules changed: 1
+
+<p>| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| RUF005 | 15 | 10 | 5 |</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     16.7±0.22ms     2.4 MB/sec    1.00     16.7±0.15ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.0±0.02ms     4.2 MB/sec    1.00      4.0±0.04ms     4.2 MB/sec
+linter/all-rules/numpy/globals.py          1.00    494.0±2.97µs     6.0 MB/sec    1.01   499.0±18.17µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.9±0.05ms     3.7 MB/sec    1.00      6.8±0.08ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.0±0.04ms     5.1 MB/sec    1.00      8.0±0.09ms     5.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1722.6±19.07µs     9.7 MB/sec    1.00  1714.7±18.93µs     9.7 MB/sec
+linter/default-rules/numpy/globals.py      1.01   207.8±11.11µs    14.2 MB/sec    1.00    205.3±9.97µs    14.4 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.7±0.12ms     6.9 MB/sec    1.00      3.7±0.09ms     7.0 MB/sec
+parser/large/dataset.py                    1.00      6.2±0.03ms     6.6 MB/sec    1.01      6.2±0.03ms     6.6 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1216.0±6.28µs    13.7 MB/sec    1.00   1219.4±8.27µs    13.7 MB/sec
+parser/numpy/globals.py                    1.00    124.9±0.69µs    23.6 MB/sec    1.00    124.5±0.99µs    23.7 MB/sec
+parser/pydantic/types.py                   1.00      2.7±0.01ms     9.6 MB/sec    1.00      2.7±0.02ms     9.6 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     16.3±0.09ms     2.5 MB/sec    1.00     16.3±0.05ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.2±0.02ms     4.0 MB/sec    1.00      4.2±0.02ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    423.9±4.29µs     7.0 MB/sec    1.00    425.3±5.02µs     6.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.0±0.05ms     3.6 MB/sec    1.00      7.0±0.02ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.2±0.04ms     5.0 MB/sec    1.00      8.2±0.02ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1683.0±7.76µs     9.9 MB/sec    1.00   1686.9±7.08µs     9.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    181.0±1.08µs    16.3 MB/sec    1.01    183.0±6.98µs    16.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.02ms     6.9 MB/sec    1.00      3.7±0.01ms     6.9 MB/sec
+parser/large/dataset.py                    1.00      6.7±0.01ms     6.1 MB/sec    1.01      6.8±0.03ms     6.0 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1268.7±7.42µs    13.1 MB/sec    1.01   1276.7±5.69µs    13.0 MB/sec
+parser/numpy/globals.py                    1.00    129.9±0.98µs    22.7 MB/sec    1.01    131.2±0.62µs    22.5 MB/sec
+parser/pydantic/types.py                   1.00      2.8±0.01ms     9.0 MB/sec    1.00      2.8±0.01ms     9.0 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/ruff/rules/collection_literal_concatenation.rs</code>:57 on 2023-05-22 09:00</div>
+            <div class="timeline-body"><p>Please add a comment what this function does</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/ruff/rules/collection_literal_concatenation.rs</code>:134 on 2023-05-22 09:26</div>
+            <div class="timeline-body"><p>In what case would <code>splat_at_left</code> be true here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/ruff/rules/collection_literal_concatenation.rs</code>:128 on 2023-05-22 09:28</div>
+            <div class="timeline-body"><p>How would this deal with <code>(1,) + [2]</code> or <code>[1] + (2,)</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-05-22 09:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hoel-bagard">@hoel-bagard</a> reviewed on 2023-05-22 12:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hoel-bagard">@hoel-bagard</a> on <code>crates/ruff/src/rules/ruff/rules/collection_literal_concatenation.rs</code>:128 on 2023-05-22 12:59</div>
+            <div class="timeline-body"><p>Running ruff on a file with:</p>
+<pre><code class="language-python">a = (1,) + [2]
+b = (1, 2, 3) + (4,)
+c = (7, 8, 9) + b
+</code></pre>
+<p>The current version outputs a warning only for the last line, whereas the PR in its current state outputs a warning for all three lines. While a warning on the first line is clearly undesired (that's a typing error), should the one on the second line be kept ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hoel-bagard">@hoel-bagard</a> reviewed on 2023-05-22 13:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hoel-bagard">@hoel-bagard</a> on <code>crates/ruff/src/rules/ruff/rules/collection_literal_concatenation.rs</code>:134 on 2023-05-22 13:10</div>
+            <div class="timeline-body"><p>It seems like it's always true indeed, I've removed the <code>if</code>, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @konstin on 2023-05-22 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-22 13:35</div>
+            <div class="timeline-body"><p>Do you mind adding some information to the PR summary around what needed to change, and why?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoel-bagard">@hoel-bagard</a> on 2023-05-22 14:02</div>
+            <div class="timeline-body"><p>To be honest I'm not sure I went about it the right way, so if you think that there is a better way to solve the issue I don't mind redoing it another way or trying to tackle a different issue.</p>
+<p>On another note, I have a question about the formatting of the test fixture. The following test always gets formatted by black during the pre-commit verify:</p>
+<pre><code class="language-python">foo + [  # This will be preserved, but doesn't prevent the fix
+]
+</code></pre>
+<p>Should I remove this test (and maybe include a replacement one), or if it better to use <code>--no-verify</code> when making a commit modifying the test fixture file ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/ruff/rules/collection_literal_concatenation.rs</code>:51 on 2023-05-23 06:28</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+</code></pre>
+<p>Adding <code>Eq</code> here should be fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-23 06:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hoel-bagard">@hoel-bagard</a> on <code>crates/ruff/src/rules/ruff/rules/collection_literal_concatenation.rs</code>:51 on 2023-05-23 07:28</div>
+            <div class="timeline-body"><p>@MichaReiser Thank you for the comment.</p>
+<p>Adding <code>Eq</code> does not cause any issue indeed. I'm a bit new to Rust, is it good practice to add <code>Eq</code> along with <code>PartialEq</code> wherever possible ?</p>
+<p>Edit: nvm, I found out that it's even a <a href="https://rust-lang.github.io/rust-clippy/master/index.html#derive_partial_eq_without_eq">clippy lint</a> (with an explanation).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hoel-bagard">@hoel-bagard</a> reviewed on 2023-05-23 07:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-05-23 15:04</div>
+            <div class="timeline-body"><p>Could you check with <code>checker.semantic_model().expr_parent()</code> if we already generated a diagnostic and fix for the parent node and then omit the diagnostic for the current node? https://github.com/charliermarsh/ruff/blob/74effb40b965ea99f92d5096a49a17bbfaf34add/crates/ruff/src/checkers/ast/mod.rs#L1521-L1528 is an example for a similar problem</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoel-bagard">@hoel-bagard</a> on 2023-05-23 15:24</div>
+            <div class="timeline-body"><p>Thank you for the suggestion, I've done that and it got rid of the unwanted warnings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-05-23 20:17</div>
+            <div class="timeline-body"><p>This needs to be updated with the changes from main and a <code>cargo test</code> <code>cargo insta review</code>, otherwise i think it's ready</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-23 22:58</div>
+            <div class="timeline-body"><p>I'll take a look at this tonight and (hopefully) merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix ruf005" to "Extend `RUF005` to recursive and literal-literal concatenations" by @charliermarsh on 2023-05-24 01:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-05-24 01:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-24 01:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:50:42 UTC
+    </footer>
+</body>
+</html>

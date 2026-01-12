@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow shebang comments at start-of-file - astral-sh/ruff #4473</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow shebang comments at start-of-file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4473">#4473</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-05-17 14:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-17 14:56</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>pycodestyle includes some logic to allow shebang comments at the start of the file, like:</p>
+<pre><code>#!/usr/local/python
+# This is fine.
+#! This is an error.
+</code></pre>
+<p>Our existing logic didn't quite work as expected here, for a few reasons.</p>
+<p>(1) We used <code>prev_line</code> to detect whether we're in the &quot;first logical line&quot;, but <code>prev_line</code> isn't set for comment-only lines:</p>
+<pre><code class="language-rust">if !line.is_comment_only() {
+    prev_line = Some(line);
+    prev_indent_level = Some(indent_level);
+}
+</code></pre>
+<p>(2) The actual enforcement is such that the shebang needs to be the first <em>physical</em> line, not the first <em>logical</em> line. So we'd allow shebangs that were preceded by arbitrary whitespace.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-05-17 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-17 15:04</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.1±0.05ms     2.9 MB/sec    1.00     14.1±0.10ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.01ms     4.9 MB/sec    1.00      3.4±0.01ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    424.5±0.86µs     7.0 MB/sec    1.00    422.5±0.93µs     7.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.8±0.04ms     4.4 MB/sec    1.00      5.8±0.03ms     4.4 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.7±0.02ms     6.1 MB/sec    1.00      6.7±0.02ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1454.3±3.55µs    11.4 MB/sec    1.00   1455.0±1.30µs    11.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    164.1±1.34µs    18.0 MB/sec    1.01    165.1±2.79µs    17.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.01ms     8.4 MB/sec    1.00      3.0±0.01ms     8.4 MB/sec
+parser/large/dataset.py                    1.00      5.3±0.01ms     7.6 MB/sec    1.05      5.6±0.01ms     7.2 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1047.2±0.65µs    15.9 MB/sec    1.01   1060.6±0.97µs    15.7 MB/sec
+parser/numpy/globals.py                    1.00    108.2±0.17µs    27.3 MB/sec    1.02    110.6±0.22µs    26.7 MB/sec
+parser/pydantic/types.py                   1.00      2.3±0.00ms    11.2 MB/sec    1.01      2.3±0.00ms    11.1 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     21.1±0.48ms  1973.5 KB/sec    1.07     22.6±1.29ms  1839.7 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.3±0.16ms     3.1 MB/sec    1.04      5.5±0.31ms     3.0 MB/sec
+linter/all-rules/numpy/globals.py          1.01   640.2±29.06µs     4.6 MB/sec    1.00   632.9±25.16µs     4.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.8±0.26ms     2.9 MB/sec    1.00      8.9±0.34ms     2.9 MB/sec
+linter/default-rules/large/dataset.py      1.01     10.5±0.33ms     3.9 MB/sec    1.00     10.4±0.35ms     3.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01      2.3±0.09ms     7.4 MB/sec    1.00      2.2±0.08ms     7.5 MB/sec
+linter/default-rules/numpy/globals.py      1.03   265.3±29.28µs    11.1 MB/sec    1.00   256.7±14.68µs    11.5 MB/sec
+linter/default-rules/pydantic/types.py     1.05      5.0±0.21ms     5.1 MB/sec    1.00      4.7±0.27ms     5.4 MB/sec
+parser/large/dataset.py                    1.00      8.5±0.16ms     4.8 MB/sec    1.00      8.5±0.31ms     4.8 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1621.5±59.84µs    10.3 MB/sec    1.03  1673.0±123.60µs    10.0 MB/sec
+parser/numpy/globals.py                    1.00    165.5±5.90µs    17.8 MB/sec    1.00    165.3±5.93µs    17.9 MB/sec
+parser/pydantic/types.py                   1.01      3.6±0.11ms     7.1 MB/sec    1.00      3.5±0.13ms     7.2 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-05-17 15:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-05-17 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-17 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-05-17 16:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:50:42 UTC
+    </footer>
+</body>
+</html>

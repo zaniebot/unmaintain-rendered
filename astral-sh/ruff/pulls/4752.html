@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignore __setattr__ in FBT003 - astral-sh/ruff #4752</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ignore <strong>setattr</strong> in FBT003</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4752">#4752</a>
+        opened by <a href="https://github.com/alexfikl">@alexfikl</a>
+        on 2023-05-31 11:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/alexfikl">@alexfikl</a> on 2023-05-31 11:13</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is a fairly common pattern</p>
+<pre><code>object.__setattr__(self, &quot;flag&quot;, True)
+</code></pre>
+<p>that's not covered by the current special case for <code>setattr</code>.</p>
+<h2>Test Plan</h2>
+<p>Added a little test for this in <code>FBT.py</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/resources/test/fixtures/flake8_boolean_trap/FBT.py</code>:72 on 2023-05-31 11:22</div>
+            <div class="timeline-body"><p>Python noob here. Is this a realistic example? Why not use <code>setattr(object, &quot;flag&quot;, true)</code> or <code>object.flag = True</code>? If not, can we add a realistic example where the use of <code>__setattr__</code> over <code>setattr</code> is recommended?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-31 11:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alexfikl">@alexfikl</a> reviewed on 2023-05-31 11:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/alexfikl">@alexfikl</a> on <code>crates/ruff/resources/test/fixtures/flake8_boolean_trap/FBT.py</code>:72 on 2023-05-31 11:30</div>
+            <div class="timeline-body"><p>In that example, <code>object</code> would be the python base class for all classes, so basically</p>
+<pre><code>object.__setattr__(self, &quot;flag&quot;, True)
+</code></pre>
+<p>will call the implementation of <code>setattr</code> of the <code>object</code> class, while</p>
+<pre><code>self.flag = True
+setattr(self, &quot;flag&quot;, True)
+self.__setattr__(self, &quot;flag&quot;, True)
+</code></pre>
+<p>all call the implementation of the <code>self</code> class (here that's <code>Registry</code>). This is sometimes used when you want to bypass any custom user implementation of <code>__setattr__</code> and just call the default from <code>object</code>.</p>
+<p>We can add another class with an overwritten <code>__setattr__</code> to highlight the difference, but not sure it's worth it (?).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/alexfikl">@alexfikl</a> reviewed on 2023-05-31 11:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/alexfikl">@alexfikl</a> on <code>crates/ruff/resources/test/fixtures/flake8_boolean_trap/FBT.py</code>:72 on 2023-05-31 11:36</div>
+            <div class="timeline-body"><p>For my real-life example, I used this pattern to memoize some properties on a frozen <a href="https://docs.python.org/3/library/dataclasses.html">dataclass</a> and called <code>object.__setattr__(self, &quot;cache_dict&quot;, {})</code>, which would be impossible with <code>setattr</code>. (maybe debatable how hacky that is?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-31 11:39</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     15.1±0.06ms     2.7 MB/sec    1.01     15.3±0.07ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.7±0.02ms     4.5 MB/sec    1.00      3.7±0.01ms     4.5 MB/sec
+linter/all-rules/numpy/globals.py          1.00    375.3±1.46µs     7.9 MB/sec    1.00    374.9±2.47µs     7.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.3±0.01ms     4.0 MB/sec    1.00      6.3±0.02ms     4.0 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.5±0.02ms     5.5 MB/sec    1.01      7.5±0.02ms     5.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1591.0±3.99µs    10.5 MB/sec    1.01   1600.6±4.78µs    10.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    172.1±0.28µs    17.1 MB/sec    1.01    174.4±0.20µs    16.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.4±0.01ms     7.5 MB/sec    1.00      3.4±0.01ms     7.5 MB/sec
+parser/large/dataset.py                    1.01      5.7±0.00ms     7.1 MB/sec    1.00      5.7±0.01ms     7.1 MB/sec
+parser/numpy/ctypeslib.py                  1.02   1139.0±1.11µs    14.6 MB/sec    1.00   1121.6±1.63µs    14.8 MB/sec
+parser/numpy/globals.py                    1.01    115.8±0.38µs    25.5 MB/sec    1.00    114.6±0.37µs    25.7 MB/sec
+parser/pydantic/types.py                   1.01      2.5±0.00ms    10.3 MB/sec    1.00      2.4±0.01ms    10.4 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     17.0±0.20ms     2.4 MB/sec    1.00     16.7±0.17ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.3±0.06ms     3.9 MB/sec    1.00      4.2±0.06ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    502.7±7.11µs     5.9 MB/sec    1.01    505.2±6.74µs     5.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.1±0.09ms     3.6 MB/sec    1.00      7.1±0.08ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.2±0.07ms     4.9 MB/sec    1.01      8.3±0.09ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1762.8±16.92µs     9.4 MB/sec    1.02  1789.5±21.65µs     9.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    203.8±4.60µs    14.5 MB/sec    1.01    205.2±6.04µs    14.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.04ms     6.8 MB/sec    1.01      3.8±0.05ms     6.7 MB/sec
+parser/large/dataset.py                    1.00      6.4±0.05ms     6.3 MB/sec    1.01      6.5±0.08ms     6.3 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1215.2±18.33µs    13.7 MB/sec    1.01  1229.0±13.60µs    13.5 MB/sec
+parser/numpy/globals.py                    1.01    126.4±2.75µs    23.3 MB/sec    1.00    125.5±2.40µs    23.5 MB/sec
+parser/pydantic/types.py                   1.00      2.7±0.03ms     9.3 MB/sec    1.00      2.8±0.03ms     9.2 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-05-31 14:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-05-31 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-31 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-05-31 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-31 15:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/resources/test/fixtures/flake8_boolean_trap/FBT.py</code>:72 on 2023-05-31 15:35</div>
+            <div class="timeline-body"><p>Thx, that helped</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:50:43 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a `Snapshot` abstraction for deferring and restoring visitor context - astral-sh/ruff #4353</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a <code>Snapshot</code> abstraction for deferring and restoring visitor context</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4353">#4353</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-05-10 16:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-10 16:17</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>In the <code>Checker</code>, a common pattern we have is that we see something like a function definition, then we add it to a queue for deferred processing (since, e.g., we don't parse function bodies until we've parsed the rest of the containing scope). When we defer these traversals, we have to save some of the <code>Checker</code> state (e.g., the current scope), which we then restore later on.</p>
+<p>This PR formalizes that pattern using a <code>Snapshot</code> struct, along with <code>Context::snapshot</code> and <code>Context::restore</code> methods.</p>
+<p>Honestly, there's more state that we <em>should</em> be saving and restoring in the <code>Snapshot</code>, namely all of the boolean flags. We should revisit those omissions, but it's no different than on <code>main</code> and it tends not to matter in practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-05-10 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-05-10 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/context.rs</code>:29 on 2023-05-10 16:19</div>
+            <div class="timeline-body"><p>This is a combination of what was previously called <code>deferred::Context</code> and <code>ast::AnnotationContext</code>. We're now storing <em>more</em> data than before, since we're now storing <code>in_type_checking_block</code> and <code>in_annotation</code> for all deferrals, whereas before, we only stored these for deferred type definitions. But I think it's wrong <em>not</em> to snapshot and restore these.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-10 16:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:2032 on 2023-05-10 16:19</div>
+            <div class="timeline-body"><p><code>visible_scope</code> and <code>scope.visibility</code> are going to be removed in a future PR, so I didn't both preserving them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-10 16:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-10 16:32</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-05-10 16:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-05-10 16:43</div>
+            <div class="timeline-body"><p>comments i would add after reading, not sure where to put them:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_python_semantic/src/context.rs b/crates/ruff_python_semantic/src/context.rs
+index 9b2fd4fb..f4a2d694 100644
+--- a/crates/ruff_python_semantic/src/context.rs
++++ b/crates/ruff_python_semantic/src/context.rs
+@@ -18,6 +18,7 @@ use crate::binding::{
+ use crate::node::{NodeId, Nodes};
+ use crate::scope::{Scope, ScopeId, ScopeKind, Scopes};
+ 
++/// A subset of a [`Context`] that we store for deferred processing
+ #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+ pub struct Snapshot {
+     scope_id: ScopeId,
+diff --git a/crates/ruff_python_semantic/src/node.rs b/crates/ruff_python_semantic/src/node.rs
+index 7d84e034..f009e529 100644
+--- a/crates/ruff_python_semantic/src/node.rs
++++ b/crates/ruff_python_semantic/src/node.rs
+@@ -30,6 +30,7 @@ impl From&lt;NodeId&gt; for usize {
+     }
+ }
+ 
++/// A node represents a statement and a link to its parent, if any
+ #[derive(Debug)]
+ struct Node&lt;'a&gt; {
+     /// The statement this node represents.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-05-10 16:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-10 16:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-05-10 16:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/context.rs</code>:23 on 2023-05-10 16:54</div>
+            <div class="timeline-body"><p>Do we need all these implementations. E.g is it meaningful to compare to snapshot? From what I understand is that the Snapshot is likely to increase in size over time. Should we remove the Copy implementation?</p>
+<p>One benefit of removing the Copy implementation could also be to consume the snapshot in restore. That can be useful if applying the same snapshot should be discouraged</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/context.rs</code>:460 on 2023-05-10 16:55</div>
+            <div class="timeline-body"><p>Nit: It could make sense to destructure the snapshot here so that rust will give us compile errors when adding new fields</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-05-10 16:55</div>
+            <div class="timeline-body"><p>Neat!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-10 16:57</div>
+            <div class="timeline-body"><p>Will address these in a small follow-up PR.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:50:41 UTC
+    </footer>
+</body>
+</html>

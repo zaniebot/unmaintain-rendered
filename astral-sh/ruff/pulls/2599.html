@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autofix for RET504 UnnecessaryAssign - astral-sh/ruff #2599</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Autofix for RET504 UnnecessaryAssign</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/2599">#2599</a>
+        opened by <a href="https://github.com/Sawbez">@Sawbez</a>
+        on 2023-02-06 01:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Sawbez">@Sawbez</a> on 2023-02-06 01:37</div>
+            <div class="timeline-body"><p>Works on #2263</p>
+<p>The only problem that I'm not too sure how to work around is how to add multiple fixes to a single violation. Additionally, I would like to remove the usage of <code>.clone</code> on the <code>Located&lt;ExprKind&gt;</code>, but I cannot seem to figure out how.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sawbez">@Sawbez</a> on 2023-02-06 01:40</div>
+            <div class="timeline-body"><p>For more context, currently my fix only changes the return, and doesn't remove the variable assignment (and thus I haven't changed the snap tests). E.x:</p>
+<pre><code class="language-py">def f():
+    var = 2
+    return var
+</code></pre>
+<p>becomes</p>
+<pre><code class="language-py">def f():
+    var = 2
+    return 2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_return/rules.rs</code>:344 on 2023-02-06 18:03</div>
+            <div class="timeline-body"><p>I think the framing here should be that we want to replace the <code>Assign</code> statement and the <code>Return</code> statement with the <code>return ${value}</code>.</p>
+<p>Something like:</p>
+<pre><code class="language-rust">diagnostic.amend(Fix::replacement(
+    unparse_expr(assign_expr, checker.stylist),
+    assign_stmt.location,
+    return_stmt.end_location.unwrap(),
+));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-06 18:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-06 18:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_return/visitor.rs</code>:18 on 2023-02-06 18:03</div>
+            <div class="timeline-body"><p>As a tip, we never need to use <code>Located&lt;T&gt;</code>. Instead, you can do <code>Expr</code> (which is equivalent to <code>Located&lt;ExprKind&gt;</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Sawbez">@Sawbez</a> reviewed on 2023-02-06 22:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Sawbez">@Sawbez</a> on <code>src/rules/flake8_return/rules.rs</code>:344 on 2023-02-06 22:56</div>
+            <div class="timeline-body"><p>The only issue with this is that it won't work for something that is multi-line.
+For example:</p>
+<pre><code class="language-py">def f(x):
+    val = 2
+    print(x)
+    return val
+</code></pre>
+<p>Would fail and produce:</p>
+<pre><code class="language-py">def f(x):
+    return 2
+</code></pre>
+<p>Unless we are tracking everything between those two with <code>source_slicer</code> or <code>source_locator</code> (something along those lines, I've seen it in other checkers). Additionally, do we want to leave behind empty space? The start of the expression is after the indentation, according to the AST.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Sawbez">@Sawbez</a> on <code>src/rules/flake8_return/visitor.rs</code>:18 on 2023-02-06 22:57</div>
+            <div class="timeline-body"><p>Thanks for the tip!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Sawbez">@Sawbez</a> reviewed on 2023-02-06 22:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Sawbez">@Sawbez</a> reviewed on 2023-02-07 01:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Sawbez">@Sawbez</a> on <code>src/rules/flake8_return/rules.rs</code>:344 on 2023-02-07 01:03</div>
+            <div class="timeline-body"><p>Another thing I'm slightly confused on is this code I'm trying:</p>
+<pre><code class="language-rust">if let Some(assign_loc) = stack.assigns.get(id.as_str()){
+    println!(&quot;return {:?}&quot;, assign_loc.last().unwrap());
+    diagnostic.amend(Fix::replacement(
+        unparse_expr(assign_expr, checker.stylist),
+        *assign_loc.last().unwrap(),
+        expr.end_location.unwrap(),
+    ));
+}
+</code></pre>
+<p>This code causes ruff to hang, and the prints show why:</p>
+<pre><code class="language-console">return Location { row: 5, column: 4 }
+return Location { row: 12, column: 4 }
+return Location { row: 20, column: 4 }
+return Location { row: 19, column: 4 }
+return Location { row: 21, column: 4 }
+return Location { row: 25, column: 4 }
+return Location { row: 33, column: 4 }
+... (this pattern repeats for a LOT of lines)
+</code></pre>
+<p>any clue why this could be happening?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-07 16:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_return/rules.rs</code>:344 on 2023-02-07 16:37</div>
+            <div class="timeline-body"><p>I think for now we limit this to the version in which the assignment and the return are consecutive statements, if we can.</p>
+<p>If we want to support fixes in which there are interleaving statements, we have to do something clever like structure the fix as a replacement with &quot;all the content before the statement, followed by the new return&quot; (rather than two separate fixes).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-07 16:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_return/rules.rs</code>:344 on 2023-02-07 16:38</div>
+            <div class="timeline-body"><p>(I can help debug - what file / command are you running to get that output?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Sawbez">@Sawbez</a> on <code>src/rules/flake8_return/rules.rs</code>:344 on 2023-02-07 23:27</div>
+            <div class="timeline-body"><p>@charliermarsh
+This is the command:</p>
+<pre><code class="language-console">&gt; cargo run resources/test/fixtures/flake8_return/RET504.py --ignore=ALL --extend-select RET504 --no-cache --fix
+</code></pre>
+<p>The only difference in the code is adding the <code>*assign_loc.last().unwrap(),</code> and <code>if let Some(assign_loc) = stack.assigns.get(id.as_str())</code> with the <code>println</code>. I don't see why this would be called multiple times - perhaps I am simply unfamiliar with the <code>ruff</code> internals. The location and fix is correct, but then it gets called over and over and gets stuck.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Sawbez">@Sawbez</a> reviewed on 2023-02-07 23:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-08 01:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_return/rules.rs</code>:344 on 2023-02-08 01:52</div>
+            <div class="timeline-body"><p>I haven't invested whether it handles all the cases we care about, but this version doesn't suffer from whatever recursion issue was being hit previously:</p>
+<pre><code class="language-rust">if checker.patch(diagnostic.kind.rule()) {
+    if let Some(assign_expr) = stack.assign_values.get(id.as_str()) {
+        if let Some(assign_loc) = stack.assigns.get(id.as_str()) {
+            diagnostic.amend(Fix::replacement(
+                unparse_stmt(
+                    &amp;create_stmt(StmtKind::Return {
+                        value: Some(Box::new(assign_expr.clone())),
+                    }),
+                    checker.stylist,
+                ),
+                *assign_loc.last().unwrap(),
+                expr.end_location.unwrap(),
+            ));
+        }
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-08 01:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_return/rules.rs</code>:344 on 2023-02-08 01:54</div>
+            <div class="timeline-body"><p>As an aside, this:</p>
+<pre><code class="language-py">def f(x):
+    val = 2
+    print(x)
+    return val
+</code></pre>
+<p>Actually doesn't trigger <code>RET504</code> if I'm not mistaken, since we treat any function calls between the assignment and the return (even if they don't involve the variable) as negating the rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Sawbez">@Sawbez</a> on <code>src/rules/flake8_return/rules.rs</code>:344 on 2023-02-08 04:05</div>
+            <div class="timeline-body"><p>Ah, I think you're right -- I should have this finished by tomorrow. My only other thought is how to work with the <code>Assign</code> statement being on another line, how would you ensure that there is just the assignment + whitespace/comment on the next few lines, would you have loop through the source code directly and check if each line is whitespace/comment or is there a better way?</p>
+<p>What I'm talking about is something like this:</p>
+<pre><code class="language-py">def safe_average(lst):
+    &quot;&quot;&quot;There is a extra newline and extra indentation after the assignment&quot;&quot;&quot;
+    return_value = 2.4
+    # This is also a comment explaining why we need to check for comments, and there is indentation on the next line too!
+    
+    
+    &quot;&quot;&quot;
+    Also, the next comment has *critical* information, but would the autofix remove it?
+    I presume we would have to keep track of this, or just ignore this for now and 
+    put it in an issue somewhere.
+    &quot;&quot;&quot;
+    # We return this function in this manner because if the length was zero we would raise a ZeroDivisionError
+    return sum(lst) / len(lst) if len(lst) &gt; 0 else 0 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Sawbez">@Sawbez</a> reviewed on 2023-02-08 04:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-08 04:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_return/rules.rs</code>:344 on 2023-02-08 04:39</div>
+            <div class="timeline-body"><p>So here's what I'd try to do (though it'll require more bookkeeping than we do now)...</p>
+<p>When we track the assignment, track the start and end locations of the entire assignment statement.</p>
+<p>Then, when we create the fix, structure it as: &quot;Replace all the content from the start of the assignment with: (1) the content from the end of the assignment to the start of the return + (2) the modified return statement.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_return/rules.rs</code>:344 on 2023-02-08 04:45</div>
+            <div class="timeline-body"><p>We also have the ability to skip the fix if there's a comment between the assign and the return -- we have a <code>has_comments_in</code> utility that takes a range as input, and returns true if there are any comments. So we could do that instead.</p>
+<p>Or we could even really restrictive and say that we're only going to do this fix if it's purely whitespace between the assignment and the return. That's actually pretty reasonable IMO!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-08 04:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Sawbez">@Sawbez</a> on <code>src/rules/flake8_return/rules.rs</code>:344 on 2023-02-08 05:21</div>
+            <div class="timeline-body"><p>I'll try for the first option, if it seems a bit too difficult (shouldn't be, but will require a bit more restructuring and there's also a whitespace issue, but Black would fix that... not sure what the policy is for that) it's a bit late for me right now so I'll get to it by tomorrow. Sorry if I've asked too many questions or been a hassle, but thanks for helping me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Sawbez">@Sawbez</a> reviewed on 2023-02-08 05:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-08 16:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>src/rules/flake8_return/rules.rs</code>:344 on 2023-02-08 16:54</div>
+            <div class="timeline-body"><p>No apology needed at all. I wish I could be even more helpful! Just trying to juggle a few things at once. Appreciate your effort on the issue :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sawbez">@Sawbez</a> on 2023-02-09 02:48</div>
+            <div class="timeline-body"><p>This is nearly finished - all it needs is to dedent the output if it isn't already. @charliermarsh How would you recommend going about this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @Sawbez on 2023-02-10 00:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sawbez">@Sawbez</a> on 2023-02-10 00:59</div>
+            <div class="timeline-body"><p>The code is working but it does have a false positive that changes the function of the code. I'm unsure how you would work around that -- the false positive originates from the check itself, and the autofix runs under the assumption that the check isn't a false positive.</p>
+<p>We could patch the check, as it appears the problem in question isn't really refactor-able (thus why it's a false-positive in my opinion) unless you use a ternary statement, which is not the focus of this check. On the linked issue, it appears this was actually patched (no longer raises <code>RET504</code>) on the original plugin.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 01:11</div>
+            <div class="timeline-body"><blockquote>
+<p>On the linked issue, it appears this was actually patched</p>
+</blockquote>
+<p>Where can I find the linked issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sawbez">@Sawbez</a> on 2023-02-10 03:01</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>On the linked issue, it appears this was actually patched</p>
+</blockquote>
+<p>Where can I find the linked issue?</p>
+</blockquote>
+<p>@charliermarsh It’s linked in the test</p>
+<pre><code class="language-python"># Can be refactored false positives
+# https://github.com/afonasev/flake8-return/issues/47#issuecomment-1122571066
+def get_bar_if_exists(obj):
+    result = &quot;&quot;
+    if hasattr(obj, &quot;bar&quot;):
+        result = str(obj.bar)
+    return result
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 03:39</div>
+            <div class="timeline-body"><p>Hmm, I think those issues still exist upstream -- I see them when I run <code>flake8-return</code> locally, and we have that same patch in our own code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 03:47</div>
+            <div class="timeline-body"><p>Spent a little time trying to fix that issue but it's really tough without more rigorous branch analysis.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 03:48</div>
+            <div class="timeline-body"><p>I think we should try to be really conservative here, and only fix if they're consecutive statements -- otherwise, we risk breaking code, like above. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sawbez">@Sawbez</a> on 2023-02-10 04:30</div>
+            <div class="timeline-body"><p>@charliermarsh I think there are pretty much three valid options here:</p>
+<ol>
+<li>Only fix if there are strictly comments.</li>
+<li>Only fix if there are no if statements, reassignments, or other complicated constructs.</li>
+<li>Only fix if there is nothing between</li>
+</ol>
+<p>I can probably implement any of these. Personally, I think the strictly comments (1) is probably the best in-between that will not cause breaking fixes and still fix most of the cases that <code>RET504</code> was directly supposed to catch. If you would rather opt for one of the other options I can do so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 13:18</div>
+            <div class="timeline-body"><p>I think (1) makes sense. Do you wanna give that a try?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sawbez">@Sawbez</a> on 2023-02-10 15:52</div>
+            <div class="timeline-body"><p>Yep. I’ll do it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sawbez">@Sawbez</a> on 2023-02-11 04:36</div>
+            <div class="timeline-body"><p>This is very close to done. All I need to do is add one more check before going through the autofix, it will also probably fail CI because it's in the middle of being completed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sawbez">@Sawbez</a> on 2023-02-12 00:42</div>
+            <div class="timeline-body"><p>@charliermarsh This is finished. You can take a look - the implementation isn't pretty but if you have any better ideas they would be well appreciated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-12 00:47</div>
+            <div class="timeline-body"><p>@Sawbez - Awesome, thank you for all the work! I likely won't get to this tonight, but will review as soon as I can.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Sawbez on 2023-02-13 00:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-02-13 00:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch restored on 2023-02-13 00:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @Sawbez on 2023-02-13 00:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sawbez">@Sawbez</a> on 2023-02-13 00:12</div>
+            <div class="timeline-body"><p>Whoops- ignore that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-16 04:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_return/rules.rs</code>:385 on 2023-02-16 04:30</div>
+            <div class="timeline-body"><p>For some reason I'm having trouble pushing edits but these need to change to <code>.slice(...)</code> now instead of <code>. slice_source_code_range(...)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-16 04:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_return/rules.rs</code>:390 on 2023-02-16 04:31</div>
+            <div class="timeline-body"><p>I think we need a more rigorous way to detect this, if I'm interpreting the comment correctly. Indentation isn't a totally &quot;safe&quot; way to detect whether we have control flow like <code>if</code> or <code>while</code> etc., since users could do <code>if x: y</code> on a single line.</p>
+<p>What's this logic guarding against? Maybe we can track this condition in some other way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-16 04:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_return/rules.rs</code>:378 on 2023-02-16 04:32</div>
+            <div class="timeline-body"><p>When would this be <code>None</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-16 04:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_return/helpers.rs</code>:49 on 2023-02-16 04:32</div>
+            <div class="timeline-body"><p>Could we perhaps use the <code>indentation</code> helper in <code>crates/ruff/src/ast/whitespace.rs</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_return/rules.rs</code>:376 on 2023-02-16 04:33</div>
+            <div class="timeline-body"><p>Can we add some comments about what <code>assign_expr</code>, <code>assign_locations</code>, etc. represent here? I wrote some of this originally and even I can't remember what they mean and how they apply to this fix heh.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-16 04:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-16 04:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_return/visitor.rs</code>:19 on 2023-02-16 04:33</div>
+            <div class="timeline-body"><p>Can this be <code>FxHashMap&lt;&amp;'a str, &amp;'a Expr&gt;</code>? Would that let you avoid the clone?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_return/visitor.rs</code>:42 on 2023-02-16 04:51</div>
+            <div class="timeline-body"><p>Is this the same as the previous version? I know we have the logic in <code>// This is hacky ...</code>, but what if we visit a tuple here? Then we'd iterate over the names as part of <em>this</em> method via the recursive call above. In the current version,  the <code>self.visit_assign_target</code> in the <code>Tuple</code> case above would have no effect, I think? Given <code>(a, b, c)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-02-16 04:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sawbez">@Sawbez</a> on 2023-02-16 15:56</div>
+            <div class="timeline-body"><p>I will start working on this later today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sawbez">@Sawbez</a> on 2023-02-16 15:56</div>
+            <div class="timeline-body"><p>Thanks for the tips!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-16 17:00</div>
+            <div class="timeline-body"><p>@Sawbez - I'm sorry for the slow review here. The autofix stuff has to be very carefully done, and the <code>flake8-return</code> logic is always really hard for me to reason about, so I struggled to find time to really dig into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Sawbez">@Sawbez</a> reviewed on 2023-02-16 23:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Sawbez">@Sawbez</a> on <code>crates/ruff/src/rules/flake8_return/rules.rs</code>:390 on 2023-02-16 23:53</div>
+            <div class="timeline-body"><p>Yeah, I see what you mean with the one-liner. The main problem is that there's no <code>Dedent</code> token during the code that ensures it's comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Sawbez">@Sawbez</a> reviewed on 2023-02-17 00:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Sawbez">@Sawbez</a> on <code>crates/ruff/src/rules/flake8_return/rules.rs</code>:378 on 2023-02-17 00:02</div>
+            <div class="timeline-body"><p>If you return an undefined variable (a problem in itself, but shouldn't cause a panic). The second <code>if let</code> can be removed however the third one is also important because it would fail if the variable was assigned to, but only <em>after</em> the return statement (similar problem). In my earlier testing it appeared that every assignment would be in the vector even if they were after the return statement (which was against an assumption I had made and was causing that infinite loop error because it was slicing the wrong way)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Sawbez">@Sawbez</a> reviewed on 2023-02-17 00:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Sawbez">@Sawbez</a> on <code>crates/ruff/src/rules/flake8_return/rules.rs</code>:390 on 2023-02-17 00:06</div>
+            <div class="timeline-body"><p>I might have to be checking the line itself too (e.g. slicing the line and checking if there is any tokens there)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Sawbez">@Sawbez</a> on <code>crates/ruff/src/rules/flake8_return/helpers.rs</code>:49 on 2023-02-17 00:17</div>
+            <div class="timeline-body"><p>Maybe? But I would guess it would be slower because I would have to create a bunch of useless intermediate objects because of the way that the function takes in input as a <code>Located&lt;T&gt;</code>, and I mainly just have a <code>&amp;str</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Sawbez">@Sawbez</a> reviewed on 2023-02-17 00:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Sawbez">@Sawbez</a> reviewed on 2023-02-17 00:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Sawbez">@Sawbez</a> on <code>crates/ruff/src/rules/flake8_return/helpers.rs</code>:49 on 2023-02-17 00:18</div>
+            <div class="timeline-body"><p>It would also be kind of inconvenient. I might have to iterate through it in a sliding window fashion manually (it would also be more performant).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Sawbez">@Sawbez</a> reviewed on 2023-02-17 00:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Sawbez">@Sawbez</a> on <code>crates/ruff/src/rules/flake8_return/helpers.rs</code>:49 on 2023-02-17 00:19</div>
+            <div class="timeline-body"><p>To clarify, the function you are referring to would be inconvenient (and quite possibly slower) either way, and rewriting without <code>TupleWindows</code> would be faster either way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Sawbez">@Sawbez</a> reviewed on 2023-02-17 00:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Sawbez">@Sawbez</a> on <code>crates/ruff/src/rules/flake8_return/rules.rs</code>:376 on 2023-02-17 00:23</div>
+            <div class="timeline-body"><p>Will do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Sawbez">@Sawbez</a> on <code>crates/ruff/src/rules/flake8_return/visitor.rs</code>:19 on 2023-02-17 00:23</div>
+            <div class="timeline-body"><p>I will try this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Sawbez">@Sawbez</a> reviewed on 2023-02-17 00:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Sawbez">@Sawbez</a> on <code>crates/ruff/src/rules/flake8_return/visitor.rs</code>:42 on 2023-02-17 00:27</div>
+            <div class="timeline-body"><p>I'm confused on what you mean here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Sawbez">@Sawbez</a> reviewed on 2023-02-17 00:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Sawbez">@Sawbez</a> on 2023-02-17 00:36</div>
+            <div class="timeline-body"><p>@charliermarsh No problem. As long as you get to it eventually, then I'm good. Take as long (or as little) time as you would like.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-24 02:25</div>
+            <div class="timeline-body"><p>I take responsibility for not getting this merged, but I suspect the code has changed enough that we'd want to revisit from scratch. Having seen more bugs and issues related to the <code>flake8-return</code> rules, I'd probably only want to support this behavior for trivial cases (e.g., return immediately following an assignment).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-24 02:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:50:41 UTC
+    </footer>
+</body>
+</html>

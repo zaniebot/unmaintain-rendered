@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add PYI024 for `flake8-pyi` plugin - astral-sh/ruff #4756</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add PYI024 for <code>flake8-pyi</code> plugin</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4756">#4756</a>
+        opened by <a href="https://github.com/qdegraaf">@qdegraaf</a>
+        on 2023-05-31 14:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-05-31 14:08</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Implements <a href="https://github.com/PyCQA/flake8-pyi/blob/ceab86d16b822d12abae1d8087850d0bc66d2f52/pyi.py#L2062">Y024</a> from <code>flake8-pyi</code> with autofix</p>
+<p>Implemented as <code>flake8-pyi</code> implemented it by checking the import. Does not catch e.g.:</p>
+<pre><code class="language-python">import collections
+
+some_named_tuple = collections.namedtuple(&quot;foo&quot;, [&quot;x&quot;, &quot;y&quot;])
+</code></pre>
+<p>Can change the implementation to check for calls to <code>collections.namedtuple</code> instead of import if we prefer to deviate from upstream implementation.</p>
+<p>For autofix, went with <code>Fix::suggested</code> as typing import may already exist and any calls to <code>collections.namedtuple</code> need to be fixed as well. If manual (or no autofix) is better in this scenario let me know and I will change/remove.</p>
+<h2>Test Plan</h2>
+<p>Added stub and non-stub files with the offending import</p>
+<h2>Issues</h2>
+<p>Refers: https://github.com/charliermarsh/ruff/issues/848</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/qdegraaf">@qdegraaf</a> reviewed on 2023-05-31 14:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on <code>crates/ruff/src/rules/flake8_pyi/rules/incorrect_named_tuple.rs</code>:58 on 2023-05-31 14:11</div>
+            <div class="timeline-body"><p>Tried adding a check here similar to  <code>is_builtin</code> to check if we have the core python module and not some local import. Could not get it to work (found <code>resolve_imported_module_path</code> and tried something similar to <code>/// PLW0406</code> but no success).</p>
+<p>Any input on this is more than welcome.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-31 14:49</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.2±0.07ms     2.9 MB/sec    1.01     14.4±0.18ms     2.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.4±0.01ms     4.9 MB/sec    1.00      3.4±0.01ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    424.4±0.63µs     7.0 MB/sec    1.00    426.1±0.69µs     6.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.9±0.03ms     4.3 MB/sec    1.00      5.9±0.05ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.01      6.9±0.04ms     5.9 MB/sec    1.00      6.8±0.02ms     5.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1508.2±5.55µs    11.0 MB/sec    1.00   1502.4±3.97µs    11.1 MB/sec
+linter/default-rules/numpy/globals.py      1.00    170.9±0.68µs    17.3 MB/sec    1.00    171.5±1.20µs    17.2 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.1±0.01ms     8.2 MB/sec    1.00      3.1±0.01ms     8.2 MB/sec
+parser/large/dataset.py                    1.00      5.2±0.01ms     7.8 MB/sec    1.07      5.6±0.01ms     7.3 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1020.7±0.44µs    16.3 MB/sec    1.05   1071.8±0.61µs    15.5 MB/sec
+parser/numpy/globals.py                    1.00    106.1±0.39µs    27.8 MB/sec    1.03    109.8±1.76µs    26.9 MB/sec
+parser/pydantic/types.py                   1.00      2.2±0.00ms    11.4 MB/sec    1.06      2.4±0.00ms    10.8 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     19.7±0.90ms     2.1 MB/sec    1.00     19.7±0.69ms     2.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.1±0.28ms     3.3 MB/sec    1.01      5.2±0.35ms     3.2 MB/sec
+linter/all-rules/numpy/globals.py          1.03   613.1±32.03µs     4.8 MB/sec    1.00   595.4±29.22µs     5.0 MB/sec
+linter/all-rules/pydantic/types.py         1.01      8.4±0.35ms     3.0 MB/sec    1.00      8.3±0.38ms     3.1 MB/sec
+linter/default-rules/large/dataset.py      1.00      9.9±0.38ms     4.1 MB/sec    1.00     10.0±0.43ms     4.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01      2.1±0.10ms     8.0 MB/sec    1.00      2.1±0.09ms     8.1 MB/sec
+linter/default-rules/numpy/globals.py      1.01   256.4±11.29µs    11.5 MB/sec    1.00   253.7±18.69µs    11.6 MB/sec
+linter/default-rules/pydantic/types.py     1.04      4.7±0.21ms     5.5 MB/sec    1.00      4.5±0.21ms     5.7 MB/sec
+parser/large/dataset.py                    1.01      7.8±0.29ms     5.2 MB/sec    1.00      7.8±0.23ms     5.2 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1511.9±74.95µs    11.0 MB/sec    1.01  1521.4±63.97µs    10.9 MB/sec
+parser/numpy/globals.py                    1.04    160.0±9.68µs    18.4 MB/sec    1.00    153.9±9.47µs    19.2 MB/sec
+parser/pydantic/types.py                   1.00      3.4±0.28ms     7.5 MB/sec    1.00      3.4±0.15ms     7.5 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-05-31 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-05-31 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-31 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-05-31 16:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:50:43 UTC
+    </footer>
+</body>
+</html>

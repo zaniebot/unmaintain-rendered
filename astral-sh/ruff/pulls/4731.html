@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a `ruff_textwrap` crate - astral-sh/ruff #4731</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a <code>ruff_textwrap</code> crate</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4731">#4731</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-05-30 17:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-30 17:10</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>The <code>textwrap</code> crate doesn't respect the existing newlines present on a given string, instead always rejoining the lines with LF line endings (<code>\n</code>). This PR adds our own <code>textwrap</code> crate that uses our universal newline handler to preserve the existing line ends.</p>
+<p>Closes #1510.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-30 17:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_newlines/src/lib.rs</code>:267 on 2023-05-30 17:11</div>
+            <div class="timeline-body"><p>Should we just add <code>LineEnding</code> to <code>Line</code>, and save it when we extract during the iterator?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-30 17:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_textwrap/src/lib.rs</code>:120 on 2023-05-30 17:14</div>
+            <div class="timeline-body"><p>Unlike the source crate, this doesn't between mixed whitespace styles. For example, the original crate has this test, which I removed:</p>
+<pre><code class="language-rust">#[test]
+#[rustfmt::skip]
+fn dedent_mixed_whitespace() {
+    let x = [
+        &quot;\tfoo&quot;,
+        &quot;  bar&quot;,
+    ].join(&quot;\n&quot;);
+    let y = [
+        &quot;\tfoo&quot;,
+        &quot;  bar&quot;,
+    ].join(&quot;\n&quot;);
+    assert_eq!(dedent(&amp;x), y);
+}
+</code></pre>
+<p>It's trickier, because you have to compare each prefix, rather than tracking the prefix <em>length</em> alone. But Python doesn't support mixed indentation anyway, so I biased towards leaving it alone.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-30 17:15</div>
+            <div class="timeline-body"><p>(FYI: I need to use this functionality for the flake8-type-checking autofixes, and I don't want to propagate this newline issue any further.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-05-30 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-30 18:17</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.0±0.03ms     2.9 MB/sec    1.00     14.0±0.04ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.00ms     4.9 MB/sec    1.00      3.4±0.00ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    424.6±2.96µs     6.9 MB/sec    1.00    425.8±1.06µs     6.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.9±0.01ms     4.4 MB/sec    1.00      5.9±0.02ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.8±0.06ms     6.0 MB/sec    1.00      6.8±0.01ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1497.9±5.92µs    11.1 MB/sec    1.01   1507.5±3.55µs    11.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00    169.6±0.28µs    17.4 MB/sec    1.02    172.5±1.39µs    17.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.01ms     8.3 MB/sec    1.00      3.1±0.01ms     8.2 MB/sec
+parser/large/dataset.py                    1.00      5.2±0.01ms     7.9 MB/sec    1.00      5.2±0.00ms     7.9 MB/sec
+parser/numpy/ctypeslib.py                  1.01   1017.1±0.49µs    16.4 MB/sec    1.00   1006.3±0.83µs    16.5 MB/sec
+parser/numpy/globals.py                    1.01    105.9±0.26µs    27.9 MB/sec    1.00    104.4±0.12µs    28.3 MB/sec
+parser/pydantic/types.py                   1.00      2.2±0.00ms    11.5 MB/sec    1.00      2.2±0.00ms    11.5 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     17.0±0.17ms     2.4 MB/sec    1.01     17.1±0.16ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.3±0.03ms     3.9 MB/sec    1.01      4.4±0.05ms     3.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00    446.4±4.91µs     6.6 MB/sec    1.02    457.4±6.16µs     6.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.3±0.17ms     3.5 MB/sec    1.01      7.3±0.08ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.5±0.05ms     4.8 MB/sec    1.01      8.6±0.10ms     4.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1791.2±14.03µs     9.3 MB/sec    1.02  1824.8±13.56µs     9.1 MB/sec
+linter/default-rules/numpy/globals.py      1.00    197.7±1.40µs    14.9 MB/sec    1.02    201.0±4.87µs    14.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.9±0.04ms     6.5 MB/sec    1.00      3.9±0.04ms     6.5 MB/sec
+parser/large/dataset.py                    1.00      6.6±0.05ms     6.1 MB/sec    1.00      6.6±0.03ms     6.1 MB/sec
+parser/numpy/ctypeslib.py                  1.01   1257.2±8.85µs    13.2 MB/sec    1.00   1247.6±8.34µs    13.3 MB/sec
+parser/numpy/globals.py                    1.01    131.3±0.90µs    22.5 MB/sec    1.00    130.4±1.40µs    22.6 MB/sec
+parser/pydantic/types.py                   1.00      2.8±0.02ms     9.0 MB/sec    1.00      2.8±0.02ms     9.1 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_newlines/src/lib.rs</code>:279 on 2023-05-31 06:50</div>
+            <div class="timeline-body"><p>Nit: We can change <code>as_str</code> to use this new <code>newline_str</code> method:</p>
+<pre><code class="language-rust">let newline_len = self.newline_str.len();
+&amp;self.text[..self.text.len() - newline_len]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_newlines/src/lib.rs</code>:267 on 2023-05-31 06:53</div>
+            <div class="timeline-body"><p>It depends on the frequency <code>newline_str</code> is called. Adding <code>LineEnding</code> increases the size of <code>Line</code> by 4 bytes (2 bytes for <code>LineEnding</code> + 2 bytes padding). Re-computing the <code>newline_str</code> is relatively cheap. It only requires looking at two characters in the worst case.</p>
+<p>I started to prefer re-computing information to storing it because it reduces memory usage and can often be faster. But again, this depends on the usage patterns.</p>
+<p>But you can do some profiling or set-up a microbenchmark to see if it changes performance in a meaningful way</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_newlines/src/lib.rs</code>:267 on 2023-05-31 06:55</div>
+            <div class="timeline-body"><p>This may not work because of dependencies, but should we rename the method to <code>line_ending</code> and change the return type to <code>Option&lt;LineEnding&gt;</code>. It would allow to match on the line ending more easily.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_textwrap/src/lib.rs</code>:1 on 2023-05-31 06:56</div>
+            <div class="timeline-body"><p>Is this code, except for the usage of <code>universal_newlines</code>, identical to <code>textwrap</code> or did you make changes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_textwrap/src/lib.rs</code>:120 on 2023-05-31 07:03</div>
+            <div class="timeline-body"><p>Python does support mixed indentation, rust python doesn't.</p>
+<blockquote>
+<p>Indentation is rejected as inconsistent if a source file mixes tabs and spaces in a way that makes the meaning dependent on the worth of a tab in spaces; a <a href="https://docs.python.org/3/library/exceptions.html#TabError">TabError</a> is raised in that case. [<a href="https://docs.python.org/3/reference/lexical_analysis.html#indentation">source</a>]</p>
+</blockquote>
+<p>It took me a long time to understand what that means. My understanding (from looking at the CPython source is that) the column (respecting the tab width) and the character (counting tabs as 1) of two indentations must be the same. But <code>\t </code> and <code> \t</code> are equal indents.</p>
+<p>I assume what you mean by mixed whitespace styles is to use <code>\t</code> and <code>  </code> which would not be equal because it's 1 character vs 2.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_textwrap/src/lib.rs</code>:92 on 2023-05-31 07:04</div>
+            <div class="timeline-body"><p>Nit: rename to <code>prefix_len</code>. It's not the prefix itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_textwrap/src/lib.rs</code>:96 on 2023-05-31 07:06</div>
+            <div class="timeline-body"><p>Nit: You can do</p>
+<pre><code>let leading_whitespace_len = line.len() - line.trim_start().len();
+prefix_len = Some(cmp::min(prefix_len.unwrap_or(prefix_len, leading_whitespace_len));
+</code></pre>
+<p>But both works equally well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_textwrap/src/lib.rs</code>:100 on 2023-05-31 07:08</div>
+            <div class="timeline-body"><p>What do you think of initializing <code>prefix</code> with <code>usize::MAX</code> as marker for 'no prefix'. Any non-empty string will change the value to a lower value</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_textwrap/src/lib.rs</code>:59 on 2023-05-31 07:09</div>
+            <div class="timeline-body"><p>Does the original crate use <code>with_capacity * 2</code>. Seems a very pessimistic capacity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-05-31 07:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-31 16:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_textwrap/src/lib.rs</code>:59 on 2023-05-31 16:01</div>
+            <div class="timeline-body"><p>Yes lol</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-31 16:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_textwrap/src/lib.rs</code>:1 on 2023-05-31 16:23</div>
+            <div class="timeline-body"><p>I made changes -- the API is the same (except we return <code>Cow</code> as an optimization), but the functions needed to be almost entirely rewritten to use our <code>universal_newlines</code> API. The test suite is the same though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-31 16:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_textwrap/src/lib.rs</code>:120 on 2023-05-31 16:24</div>
+            <div class="timeline-body"><p>Woah, I did not realize this -- I thought it was always a <code>TabError</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-05-31 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-31 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-05-31 16:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:50:43 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement Pylint `bad-super-call` as `PLE1003` - astral-sh/ruff #4459</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement Pylint <code>bad-super-call</code> as <code>PLE1003</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4459">#4459</a>
+        opened by <a href="https://github.com/nunokaeru">@nunokaeru</a>
+        on 2023-05-16 21:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/nunokaeru">@nunokaeru</a> on 2023-05-16 21:38</div>
+            <div class="timeline-body"><p>Made an attempt at implementing <code>E1003</code>.</p>
+<p>Awaiting for changes that will let us see the path of inheritance</p>
+<p>https://github.com/charliermarsh/ruff/issues/970</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nunokaeru">@nunokaeru</a> reviewed on 2023-05-16 21:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/nunokaeru">@nunokaeru</a> on <code>crates/ruff/resources/test/fixtures/pylint/bad_super_call.py</code>:32 on 2023-05-16 21:38</div>
+            <div class="timeline-body"><p>will fix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/nunokaeru">@nunokaeru</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:2668 on 2023-05-16 21:39</div>
+            <div class="timeline-body"><p>Temporary place for it.</p>
+<p>Might keep it here, but if I do I will comment <code>//pylint</code> here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nunokaeru">@nunokaeru</a> reviewed on 2023-05-16 21:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/nunokaeru">@nunokaeru</a> on <code>crates/ruff/src/rules/pylint/rules/bad_super_call.rs</code>:71 on 2023-05-16 21:40</div>
+            <div class="timeline-body"><p>This is where I have found the difficulty. I do not know how to get the <code>base_class</code> name of the current class. Otherwise it should be quite simple</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nunokaeru">@nunokaeru</a> reviewed on 2023-05-16 21:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/nunokaeru">@nunokaeru</a> on <code>crates/ruff/src/rules/pylint/snapshots/ruff__rules__pylint__tests__PLE1003_bad_super_call.py.snap.new</code>:14 on 2023-05-16 21:40</div>
+            <div class="timeline-body"><p>Will be regenerated when the code works</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nunokaeru">@nunokaeru</a> reviewed on 2023-05-16 21:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nunokaeru">@nunokaeru</a> reviewed on 2023-05-16 21:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/nunokaeru">@nunokaeru</a> on <code>crates/ruff/src/rules/pylint/rules/bad_super_call.rs</code>:83 on 2023-05-16 21:41</div>
+            <div class="timeline-body"><p>A fixer will be implemented after I know how to get the base class</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/nunokaeru">@nunokaeru</a> on <code>crates/ruff/src/rules/pylint/rules/bad_super_call.rs</code>:13 on 2023-05-16 21:41</div>
+            <div class="timeline-body"><p>Documentation will also be made before finished the PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nunokaeru">@nunokaeru</a> reviewed on 2023-05-16 21:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @nunokaeru on 2023-05-16 21:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pylint/rules/bad_super_call.rs</code>:71 on 2023-05-16 22:18</div>
+            <div class="timeline-body"><p>Where you have this:</p>
+<pre><code class="language-rust">// Find the enclosing class definition (if any).
+let Some(Stmt::ClassDef(ast::StmtClassDef {
+    name: parent_name, ..
+})) = parents
+    .find(|stmt| matches!(stmt, Stmt::ClassDef (_))) else {
+    return;
+};
+</code></pre>
+<p>You should be able to add the <code>bases</code>:</p>
+<pre><code class="language-rust">// Find the enclosing class definition (if any).
+let Some(Stmt::ClassDef(ast::StmtClassDef {
+    name: parent_name, ..
+    bases: bases,
+})) = parents
+    .find(|stmt| matches!(stmt, Stmt::ClassDef (_))) else {
+    return;
+};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-16 22:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-16 22:19</div>
+            <div class="timeline-body"><p>Hmm, I don't think we have the infrastructure we need to support this rule reliably. The issue is that Pylint correctly allows you to do this:</p>
+<pre><code class="language-py">class Animal:
+    pass
+
+
+class Feline(Animal):
+    pass
+
+
+class Cat(Feline):
+    def __init__(self):
+        super(Animal, self).__init__()
+</code></pre>
+<p>Which requires that you're able to traverse up the inheritance chain, even across files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nunokaeru">@nunokaeru</a> on 2023-05-17 00:21</div>
+            <div class="timeline-body"><blockquote>
+<p>Which requires that you're able to traverse up the inheritance chain, even across files.</p>
+</blockquote>
+<p>Unfortunate. I got the rule working with the first idea (not multiple inheritance), however I am lacking the knowledge to make the unit-test pass even though now the behaviour is correct. I do not know what I am missing to declare which line should fail and which one should pass.</p>
+<p>Anyway, I will leave this PR on-hold for now, since to implement Pylint you will be looking into traversing across files. Can look into it whenever I have the GO signal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "add PLE1003 'bad-super-call' from pylint 'E1003'" to "add PLE1003 'bad-super-call' from pylint `E1003`" by @nunokaeru on 2023-05-18 10:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "add PLE1003 'bad-super-call' from pylint `E1003`" to "Implement Pylint E1003 `bad-super-call` as`PLE1003`" by @nunokaeru on 2023-05-18 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Implement Pylint E1003 `bad-super-call` as`PLE1003`" to "Implement Pylint E1003 `bad-super-call` as `PLE1003`" by @nunokaeru on 2023-05-18 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Implement Pylint E1003 `bad-super-call` as `PLE1003`" to "Implement Pylint `bad-super-call` as `PLE1003`" by @nunokaeru on 2023-05-18 10:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nunokaeru">@nunokaeru</a> reviewed on 2023-05-18 10:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/nunokaeru">@nunokaeru</a> on <code>crates/ruff/src/rules/pylint/rules/bad_super_call.rs</code>:83 on 2023-05-18 10:52</div>
+            <div class="timeline-body"><p>Regarding a fix, there are a few ways we can go about it.</p>
+<p>Example:</p>
+<pre><code class="language-python">
+class Animal:
+    pass
+
+
+class Tree:
+    pass
+
+
+class Cat(Animal):
+    def __init__(self):
+        super(Tree, self).__init__()
+</code></pre>
+<p>The super call could be to the correct class the user wants and the error is in the inheritance class.</p>
+<p>So <code>Animal</code> could be the wrong class and the fix should instead make <code>Tree</code> the parent class.</p>
+<p>So for this rule, either <code>Animal</code> or <code>Tree</code> could be the problem, depending on what the user wants to do. Imo that means this violation cannot be auto-fixable, unless we look at context (but I'd rather the user be the one looking at context).</p>
+<p>I prefer violations that are auto-fixable, so looking for opinions if I should just implement something that changes <code>Tree</code> to <code>Animal</code> in the super call, or not do anything for the fixing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-18 15:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pylint/rules/bad_super_call.rs</code>:83 on 2023-05-18 15:03</div>
+            <div class="timeline-body"><p>I think it's too difficult to know what the &quot;correct&quot; behavior is here. It's also possible that neither <code>Tree</code> nor <code>Animal</code> are the intended argument to <code>super</code> -- the user could be trying to invoke <code>super</code> on some other parent class in the chain. My advice would be to avoid implementing a fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-18 20:45</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     17.0±0.04ms     2.4 MB/sec    1.09     18.5±0.06ms     2.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.1±0.01ms     4.0 MB/sec    1.05      4.4±0.01ms     3.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00    512.5±2.55µs     5.8 MB/sec    1.03    526.2±1.12µs     5.6 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.0±0.02ms     3.6 MB/sec    1.07      7.6±0.02ms     3.4 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.1±0.01ms     5.0 MB/sec    1.18      9.6±0.02ms     4.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1758.6±6.04µs     9.5 MB/sec    1.14   1996.4±6.10µs     8.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    194.7±1.16µs    15.2 MB/sec    1.10    214.2±1.73µs    13.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.01ms     6.9 MB/sec    1.14      4.2±0.01ms     6.1 MB/sec
+parser/large/dataset.py                    1.00      6.5±0.01ms     6.3 MB/sec    1.00      6.5±0.01ms     6.3 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1271.8±1.25µs    13.1 MB/sec    1.00   1268.6±2.23µs    13.1 MB/sec
+parser/numpy/globals.py                    1.00    131.4±1.90µs    22.5 MB/sec    1.00    131.0±3.39µs    22.5 MB/sec
+parser/pydantic/types.py                   1.00      2.8±0.01ms     9.2 MB/sec    1.00      2.8±0.00ms     9.3 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     18.7±0.61ms     2.2 MB/sec    1.01     18.8±0.58ms     2.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      5.0±0.21ms     3.4 MB/sec    1.00      4.8±0.20ms     3.4 MB/sec
+linter/all-rules/numpy/globals.py          1.03   601.5±59.97µs     4.9 MB/sec    1.00   584.6±27.23µs     5.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.0±0.33ms     3.2 MB/sec    1.01      8.2±0.30ms     3.1 MB/sec
+linter/default-rules/large/dataset.py      1.01      9.4±0.37ms     4.3 MB/sec    1.00      9.4±0.37ms     4.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02      2.0±0.08ms     8.3 MB/sec    1.00  1974.2±65.32µs     8.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00   227.7±13.06µs    13.0 MB/sec    1.02   231.7±11.66µs    12.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.3±0.22ms     6.0 MB/sec    1.00      4.3±0.17ms     6.0 MB/sec
+parser/large/dataset.py                    1.00      7.6±0.22ms     5.3 MB/sec    1.02      7.8±0.25ms     5.2 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1470.3±67.97µs    11.3 MB/sec    1.01  1485.8±60.16µs    11.2 MB/sec
+parser/numpy/globals.py                    1.00    149.2±9.86µs    19.8 MB/sec    1.01    150.9±8.70µs    19.6 MB/sec
+parser/pydantic/types.py                   1.00      3.2±0.13ms     7.9 MB/sec    1.02      3.3±0.13ms     7.7 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nunokaeru">@nunokaeru</a> on 2023-05-18 20:49</div>
+            <div class="timeline-body"><p>Something seems to have changed. CI is running now on my draft when it didnt a few days ago</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-20 15:26</div>
+            <div class="timeline-body"><p>(I'm going to close for now as I like to keep the PR list actionable to the degree that I can. We can always re-open later, it will continue to exist in the project history here.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-20 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nunokaeru">@nunokaeru</a> on 2023-05-20 19:46</div>
+            <div class="timeline-body"><p>Alright with me</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:50:42 UTC
+    </footer>
+</body>
+</html>

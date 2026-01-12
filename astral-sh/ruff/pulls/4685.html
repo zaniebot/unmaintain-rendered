@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handle dotted alias imports to check for implicit imports - astral-sh/ruff #4685</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Handle dotted alias imports to check for implicit imports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4685">#4685</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-05-27 19:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-27 19:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Dotted alias import such as <code>import foo.bar as f</code> are presented as <code>Importation</code> instead of <code>SubmoduleImportation</code>. Thus, they were compared like <code>foo == foo.bar</code> which would conclude that it's not an implicit import (which is incorrect).</p>
+<p>The implemented solution differentiates between a dotted alias import and a plain import, takes care of the former by zipping over every module part. The <code>starts_with</code> method cannot be used as it could yield false positive (<code>foo</code> vs <code>foobar</code>, substrings aren't the same).</p>
+<h3>Alternative</h3>
+<p>We could implement a new binding kind for this <code>SubmoduleAliasImportation</code>:</p>
+<pre><code class="language-rust">pub struct SubmoduleAliasImportation&lt;'a&gt; {
+	pub name: &amp;'a str,
+	pub full_name: &amp;'a str,
+	pub alias: &amp;'a str,
+}
+</code></pre>
+<p>Taking the below import as an example, the <code>name</code>, <code>full_name</code> and <code>alias</code> fields would be <code>foo</code>, <code>foo.bar</code> and <code>b</code> respectively.</p>
+<pre><code class="language-python">import foo.bar as b
+</code></pre>
+<h2>Analysis</h2>
+<p>So, the problem here is that a dotted alias import is represented using <code>Binding::Importation</code>:</p>
+<pre><code class="language-python">import libcst.matchers as m
+#      |-------------|    |
+#        full_name       name
+</code></pre>
+<p>This means that the comparison is done with <code>libcst</code> and <code>libcst.matchers</code> which are not the same, thus the former is not considered to be an implicit import of the latter even though it is.</p>
+<p>The problem arises with multiple dotted alias import as well:</p>
+<pre><code class="language-python">import libcst.matchers as m  # this
+import libcst.matches._visitors as v  # that
+</code></pre>
+<p>Here, the same thing happens where <code>this</code> is not considered an implicit import of <code>that</code>.</p>
+<p>Another case:</p>
+<pre><code class="language-python">import libcst
+import libcst.matches._visitors as v
+</code></pre>
+<h2>Test Plan</h2>
+<p>Test cases as provided in the Python files.</p>
+<p>fixes: #4667</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Handle dotted alias to check for implicit imports" to "Handle dotted alias imports to check for implicit imports" by @dhruvmanila on 2023-05-27 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-27 19:36</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     15.0±0.05ms     2.7 MB/sec    1.01     15.2±0.06ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.7±0.01ms     4.6 MB/sec    1.00      3.7±0.01ms     4.5 MB/sec
+linter/all-rules/numpy/globals.py          1.00    376.3±1.96µs     7.8 MB/sec    1.01    378.7±0.73µs     7.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.3±0.02ms     4.1 MB/sec    1.01      6.3±0.02ms     4.0 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.5±0.01ms     5.4 MB/sec    1.00      7.5±0.02ms     5.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1603.7±2.78µs    10.4 MB/sec    1.00   1604.7±4.38µs    10.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    176.4±2.37µs    16.7 MB/sec    1.01    178.2±1.35µs    16.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.4±0.01ms     7.5 MB/sec    1.01      3.4±0.01ms     7.5 MB/sec
+parser/large/dataset.py                    1.00      5.7±0.00ms     7.1 MB/sec    1.00      5.7±0.00ms     7.1 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1125.9±1.57µs    14.8 MB/sec    1.00   1128.5±1.07µs    14.8 MB/sec
+parser/numpy/globals.py                    1.00    115.1±1.77µs    25.6 MB/sec    1.00    114.9±0.62µs    25.7 MB/sec
+parser/pydantic/types.py                   1.00      2.5±0.00ms    10.4 MB/sec    1.01      2.5±0.01ms    10.3 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     17.0±0.23ms     2.4 MB/sec    1.01     17.2±0.24ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.3±0.05ms     3.9 MB/sec    1.01      4.3±0.05ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.01    507.2±6.84µs     5.8 MB/sec    1.00    503.4±7.97µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.2±0.11ms     3.6 MB/sec    1.00      7.1±0.11ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.02      8.4±0.09ms     4.9 MB/sec    1.00      8.2±0.07ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1786.5±22.33µs     9.3 MB/sec    1.00  1767.3±24.54µs     9.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    205.7±3.77µs    14.3 MB/sec    1.01    208.7±8.43µs    14.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.04ms     6.7 MB/sec    1.00      3.8±0.05ms     6.8 MB/sec
+parser/large/dataset.py                    1.01      6.5±0.05ms     6.2 MB/sec    1.00      6.5±0.08ms     6.3 MB/sec
+parser/numpy/ctypeslib.py                  1.01  1240.2±14.13µs    13.4 MB/sec    1.00  1225.3±14.06µs    13.6 MB/sec
+parser/numpy/globals.py                    1.00    126.3±2.05µs    23.4 MB/sec    1.00    125.7±1.79µs    23.5 MB/sec
+parser/pydantic/types.py                   1.00      2.8±0.04ms     9.1 MB/sec    1.00      2.8±0.03ms     9.2 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs</code>:194 on 2023-05-27 19:47</div>
+            <div class="timeline-body"><p>Could we <em>just</em> use this condition, since it will yield true when <code>this_name == that_name</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-27 19:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs</code>:194 on 2023-05-28 02:47</div>
+            <div class="timeline-body"><p>Not really. <code>foo</code> is not the same as <code>foo.bar</code> but it is an implicit import. The <code>zip</code> will stop when it can't move further making it an ideal choice of comparison.</p>
+<p>(Unless you mean something else?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-05-28 02:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs</code>:194 on 2023-05-28 02:57</div>
+            <div class="timeline-body"><p>Right, but why do we need the <code>if that_name == that_alias { this_name == that_name }</code> portion? The tests seem to pass without it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-28 02:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-28 02:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs</code>:194 on 2023-05-28 02:57</div>
+            <div class="timeline-body"><p>In other words: is this alone not sufficiently general to handle all cases?</p>
+<pre><code class="language-rust">BindingKind::Importation(Importation {
+    full_name: that_name,
+    ..
+}) =&gt; {
+    // Submodule importation with an alias: `import pkg.A as B`
+    this_name
+        .split('.')
+        .zip(that_name.split('.'))
+        .all(|(this_part, that_part)| this_part == that_part)
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs</code>:194 on 2023-05-28 02:58</div>
+            <div class="timeline-body"><p>Ah yes. That will work, I just thought to split it out to avoid doing this computation and take the fast path directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-05-28 02:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-28 03:14</div>
+            <div class="timeline-body"><p>Oh, I actually found one more case where this doesn't work (here both are dotted alias imports):</p>
+<pre><code class="language-python">import pkg.bar as B
+import pkg.foo as F
+
+
+def test(value: F.Foo):
+    return B.Bar()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-28 03:16</div>
+            <div class="timeline-body"><p>Is it sufficient to just compare up to the first dot? Like:</p>
+<pre><code class="language-rust">this_name.split('.').first() == that_name.split('.').first()
+</code></pre>
+<p>Or comparable. When would this fail?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-28 03:22</div>
+            <div class="timeline-body"><p>Yes, I'm thinking of the same thing. I don't see any edge cases as if the root module is same, then it's an implicit import.</p>
+<p>(It turns out <code>Split</code> doesn't have a <code>first</code> method)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-28 03:23</div>
+            <div class="timeline-body"><p>Ok cool -- yeah, I just prefer one check here if we can find a sufficiently general rule :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-28 03:24</div>
+            <div class="timeline-body"><p>(You can probably do it with <code>.find('.')</code> or something.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-05-28 03:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-28 03:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-28 03:58</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-05-28 03:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-05-28 08:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:50:43 UTC
+    </footer>
+</body>
+</html>

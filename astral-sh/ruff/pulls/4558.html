@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change TODO directive detection to work with multiple pound signs on the same line - astral-sh/ruff #4558</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Change TODO directive detection to work with multiple pound signs on the same line</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4558">#4558</a>
+        opened by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a>
+        on 2023-05-21 03:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-05-21 03:59</div>
+            <div class="timeline-body"><p>Should fix #4549.</p>
+<p>Basically, the initial implementation of <code>flake8-todos</code> hinged on a regex anchoring the <code>#</code> in a Python comment to the start of a line. If no TODO tags were found just after that <code>#</code>, the line would not throw a diagnostic.</p>
+<p>In the case of something like <code># noqa: A003 # TODO: something</code>, the TODO is actually demarcated by a second <code>#</code>. As such, we need to check the characters after each <code>#</code> in the comment in order to find <code>Directives</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on <code>crates/ruff/src/rules/flake8_todos/rules.rs</code>:245 on 2023-05-21 04:00</div>
+            <div class="timeline-body"><p>Is there a more idiomatic way to do this? I think we have to move away from match since the first comment (#-delimited section) could be of variable length, but not sure if this if block is a best practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> reviewed on 2023-05-21 04:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @evanrittenhouse on 2023-05-21 04:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-21 04:09</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>ℹ️ ecosystem check <strong>detected changes</strong>. (+95, -105, 0 error(s))</p>
+<details><summary>airflow (+15, -11)</summary>
+<p>
+
+<pre><code class="language-diff">- airflow/cli/commands/task_command.py:456:7: TD005 Missing issue description after `TODO`
+- airflow/cli/commands/task_command.py:663:11: TD005 Missing issue description after `TODO`
+- airflow/decorators/base.py:216:11: TD005 Missing issue description after `TODO`
+- airflow/jobs/local_task_job_runner.py:79:41: TD005 Missing issue description after `TODO`
++ airflow/jobs/scheduler_job_runner.py:1183:11: TD004 Missing colon in TODO
++ airflow/jobs/scheduler_job_runner.py:1427:11: TD004 Missing colon in TODO
++ airflow/jobs/scheduler_job_runner.py:402:15: TD004 Missing colon in TODO
++ airflow/jobs/scheduler_job_runner.py:592:19: TD004 Missing colon in TODO
+- airflow/models/baseoperator.py:1235:40: TD005 Missing issue description after `TODO`
+- airflow/models/dag.py:1477:19: TD005 Missing issue description after `TODO`
++ airflow/models/dagrun.py:1184:15: TD004 Missing colon in TODO
++ airflow/providers/google/cloud/sensors/tasks.py:80:11: TD004 Missing colon in TODO
+- airflow/providers/google/cloud/sensors/tasks.py:80:11: TD007 Missing space after colon in TODO
+- airflow/providers/jenkins/operators/jenkins_job_trigger.py:153:11: TD005 Missing issue description after `TODO`
+- airflow/task/task_runner/cgroup_task_runner.py:171:11: TD005 Missing issue description after `TODO`
+- airflow/www/views.py:4091:11: TD005 Missing issue description after `TODO`
++ airflow/www/views.py:5196:22: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
++ airflow/www/views.py:5196:22: TD003 Missing issue link on the line following this TODO
++ airflow/www/views.py:5196:22: TD006 [*] Invalid TODO capitalization: `todo` should be `TODO`
++ airflow/www/views.py:5223:21: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
++ airflow/www/views.py:5223:21: TD003 Missing issue link on the line following this TODO
++ airflow/www/views.py:5223:21: TD006 [*] Invalid TODO capitalization: `todo` should be `TODO`
++ airflow/www/views.py:5594:22: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
++ airflow/www/views.py:5594:22: TD003 Missing issue link on the line following this TODO
++ airflow/www/views.py:5594:22: TD006 [*] Invalid TODO capitalization: `todo` should be `TODO`
+- tests/utils/test_config.py:27:3: TD005 Missing issue description after `TODO`
+</code></pre>
+</p>
+</details>
+<details><summary>bokeh (+62, -84)</summary>
+<p>
+
+<pre><code class="language-diff">- release/credentials.py:77:7: TD005 Missing issue description after `TODO`
+- release/credentials.py:84:7: TD005 Missing issue description after `TODO`
+- src/bokeh/application/application.py:187:15: TD005 Missing issue description after `TODO`
+- src/bokeh/application/handlers/code.py:168:11: TD005 Missing issue description after `TODO`
+- src/bokeh/application/handlers/directory.py:313:15: TD005 Missing issue description after `TODO`
+- src/bokeh/application/handlers/server_lifecycle.py:127:15: TD005 Missing issue description after `TODO`
+- src/bokeh/application/handlers/server_request_handler.py:120:15: TD005 Missing issue description after `TODO`
+- src/bokeh/client/connection.py:349:19: TD005 Missing issue description after `TODO`
++ src/bokeh/core/has_props.py:440:99: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
++ src/bokeh/core/has_props.py:440:99: TD003 Missing issue link on the line following this TODO
+- src/bokeh/core/has_props.py:630:15: TD005 Missing issue description after `TODO`
+- src/bokeh/core/property/wrappers.py:466:11: TD005 Missing issue description after `TODO`
+- src/bokeh/core/property_mixins.py:374:41: TD005 Missing issue description after `TODO`
+- src/bokeh/document/document.py:401:11: TD005 Missing issue description after `TODO`
+- src/bokeh/document/models.py:241:7: TD005 Missing issue description after `TODO`
++ src/bokeh/embed/standalone.py:137:79: TD001 Invalid TODO tag: `XXX`
++ src/bokeh/embed/standalone.py:137:79: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
++ src/bokeh/embed/standalone.py:137:79: TD003 Missing issue link on the line following this TODO
++ src/bokeh/embed/standalone.py:144:89: TD001 Invalid TODO tag: `XXX`
++ src/bokeh/embed/standalone.py:144:89: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
++ src/bokeh/embed/standalone.py:144:89: TD003 Missing issue link on the line following this TODO
++ src/bokeh/embed/standalone.py:151:90: TD001 Invalid TODO tag: `XXX`
++ src/bokeh/embed/standalone.py:151:90: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
++ src/bokeh/embed/standalone.py:151:90: TD003 Missing issue link on the line following this TODO
++ src/bokeh/embed/standalone.py:255:61: TD001 Invalid TODO tag: `XXX`
++ src/bokeh/embed/standalone.py:255:61: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
++ src/bokeh/embed/standalone.py:255:61: TD003 Missing issue link on the line following this TODO
+- src/bokeh/io/showing.py:148:48: TD005 Missing issue description after `TODO`
++ src/bokeh/layouts.py:303:3: TD004 Missing colon in TODO
+- src/bokeh/layouts.py:303:3: TD007 Missing space after colon in TODO
+- src/bokeh/models/map_plots.py:172:7: TD005 Missing issue description after `TODO`
+- src/bokeh/models/sources.py:224:11: TD005 Missing issue description after `TODO`
+- src/bokeh/models/tools.py:884:7: TD005 Missing issue description after `TODO`
+- src/bokeh/plotting/_docstring.py:107:7: TD005 Missing issue description after `TODO`
++ src/bokeh/server/tornado.py:432:86: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
++ src/bokeh/server/tornado.py:432:86: TD003 Missing issue link on the line following this TODO
++ src/bokeh/server/tornado.py:449:82: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
++ src/bokeh/server/tornado.py:449:82: TD003 Missing issue link on the line following this TODO
++ src/bokeh/server/tornado.py:452:78: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
++ src/bokeh/server/tornado.py:452:78: TD003 Missing issue link on the line following this TODO
++ src/bokeh/server/tornado.py:458:67: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
++ src/bokeh/server/tornado.py:458:67: TD003 Missing issue link on the line following this TODO
+- src/bokeh/server/tornado.py:653:11: TD005 Missing issue description after `TODO`
+- src/bokeh/sphinxext/util.py:47:3: TD005 Missing issue description after `TODO`
+- src/bokeh/util/callback_manager.py:61:3: TD005 Missing issue description after `TODO`
+- src/bokeh/util/serialization.py:202:7: TD005 Missing issue description after `TODO`
+- src/bokeh/util/serialization.py:239:7: TD005 Missing issue description after `TODO`
++ src/typings/IPython/core/history.pyi:5:89: TD001 Invalid TODO tag: `XXX`
++ src/typings/IPython/core/history.pyi:5:89: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
++ src/typings/IPython/core/history.pyi:5:89: TD003 Missing issue link on the line following this TODO
+- tests/integration/tools/test_range_tool.py:36:3: TD005 Missing issue description after `TODO`
+- tests/integration/tools/test_range_tool.py:37:3: TD005 Missing issue description after `TODO`
+- tests/integration/tools/test_reset_tool.py:104:11: TD005 Missing issue description after `TODO`
+- tests/integration/tools/test_reset_tool.py:125:61: TD005 Missing issue description after `TODO`
+- tests/integration/tools/test_tap_tool.py:34:3: TD007 Missing space after colon in TODO
++ tests/integration/widgets/tables/test_cell_editors.py:101:13: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
++ tests/integration/widgets/tables/test_cell_editors.py:101:13: TD003 Missing issue link on the line following this TODO
++ tests/integration/widgets/tables/test_cell_editors.py:101:13: TD004 Missing colon in TODO
++ tests/integration/widgets/tables/test_cell_editors.py:101:13: TD005 Missing issue description after `TODO`
+- tests/integration/widgets/tables/test_cell_editors.py:351:3: TD005 Missing issue description after `TODO`
+- tests/integration/widgets/tables/test_cell_editors.py:59:3: TD005 Missing issue description after `TODO`
++ tests/integration/widgets/tables/test_cell_editors.py:79:13: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
++ tests/integration/widgets/tables/test_cell_editors.py:79:13: TD003 Missing issue link on the line following this TODO
++ tests/integration/widgets/tables/test_cell_editors.py:79:13: TD004 Missing colon in TODO
++ tests/integration/widgets/tables/test_cell_editors.py:79:13: TD005 Missing issue description after `TODO`
+- tests/integration/widgets/tables/test_copy_paste.py:143:11: TD005 Missing issue description after `TODO`
++ tests/integration/widgets/test_color_picker.py:107:11: TD004 Missing colon in TODO
+- tests/integration/widgets/test_color_picker.py:107:11: TD007 Missing space after colon in TODO
++ tests/integration/widgets/test_daterange_slider.py:160:13: TD001 Invalid TODO tag: `XXX`
++ tests/integration/widgets/test_daterange_slider.py:160:13: TD003 Missing issue link on the line following this TODO
++ tests/integration/widgets/test_daterange_slider.py:160:13: TD004 Missing colon in TODO
++ tests/integration/widgets/test_daterange_slider.py:169:13: TD001 Invalid TODO tag: `XXX`
++ tests/integration/widgets/test_daterange_slider.py:169:13: TD003 Missing issue link on the line following this TODO
++ tests/integration/widgets/test_daterange_slider.py:169:13: TD004 Missing colon in TODO
++ tests/integration/widgets/test_daterange_slider.py:192:11: TD004 Missing colon in TODO
+- tests/integration/widgets/test_daterange_slider.py:192:11: TD007 Missing space after colon in TODO
+- tests/integration/widgets/test_dateslider.py:154:11: TD005 Missing issue description after `TODO`
++ tests/integration/widgets/test_dateslider.py:163:11: TD004 Missing colon in TODO
+- tests/integration/widgets/test_dateslider.py:163:11: TD007 Missing space after colon in TODO
++ tests/integration/widgets/test_dateslider.py:197:11: TD004 Missing colon in TODO
+- tests/integration/widgets/test_dateslider.py:197:11: TD007 Missing space after colon in TODO
++ tests/integration/widgets/test_dateslider.py:220:11: TD004 Missing colon in TODO
+- tests/integration/widgets/test_dateslider.py:220:11: TD007 Missing space after colon in TODO
++ tests/integration/widgets/test_dateslider.py:243:11: TD004 Missing colon in TODO
+- tests/integration/widgets/test_dateslider.py:243:11: TD007 Missing space after colon in TODO
+- tests/integration/widgets/test_dropdown.py:42:3: TD005 Missing issue description after `TODO`
+- tests/integration/widgets/test_range_slider.py:211:11: TD005 Missing issue description after `TODO`
++ tests/integration/widgets/test_range_slider.py:220:11: TD004 Missing colon in TODO
+- tests/integration/widgets/test_range_slider.py:220:11: TD007 Missing space after colon in TODO
++ tests/integration/widgets/test_range_slider.py:243:11: TD004 Missing colon in TODO
+- tests/integration/widgets/test_range_slider.py:243:11: TD007 Missing space after colon in TODO
+- tests/integration/widgets/test_slider.py:177:11: TD005 Missing issue description after `TODO`
++ tests/integration/widgets/test_slider.py:186:11: TD004 Missing colon in TODO
+- tests/integration/widgets/test_slider.py:186:11: TD007 Missing space after colon in TODO
++ tests/integration/widgets/test_slider.py:220:11: TD004 Missing colon in TODO
+- tests/integration/widgets/test_slider.py:220:11: TD007 Missing space after colon in TODO
++ tests/integration/widgets/test_slider.py:243:11: TD004 Missing colon in TODO
+- tests/integration/widgets/test_slider.py:243:11: TD007 Missing space after colon in TODO
++ tests/integration/widgets/test_slider.py:266:11: TD004 Missing colon in TODO
+- tests/integration/widgets/test_slider.py:266:11: TD007 Missing space after colon in TODO
++ tests/integration/widgets/test_spinner.py:228:11: TD004 Missing colon in TODO
+- tests/integration/widgets/test_spinner.py:228:11: TD007 Missing space after colon in TODO
+- tests/integration/widgets/test_toggle.py:105:7: TD005 Missing issue description after `TODO`
++ tests/support/plugins/bokeh_server.py:103:66: TD001 Invalid TODO tag: `XXX`
++ tests/support/plugins/bokeh_server.py:103:66: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
++ tests/support/plugins/bokeh_server.py:103:66: TD003 Missing issue link on the line following this TODO
++ tests/support/plugins/bokeh_server.py:86:48: TD001 Invalid TODO tag: `XXX`
++ tests/support/plugins/bokeh_server.py:86:48: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
++ tests/support/plugins/bokeh_server.py:86:48: TD003 Missing issue link on the line following this TODO
++ tests/support/plugins/project.py:162:15: TD004 Missing colon in TODO
+- tests/support/plugins/project.py:162:15: TD007 Missing space after colon in TODO
+- tests/unit/bokeh/core/property/test_aliases.py:78:3: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/core/property/test_bases.py:156:11: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/core/property/test_bases.py:188:11: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/core/property/test_bases.py:205:11: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/core/property/test_container.py:62:3: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/core/property/test_datetime.py:170:3: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/core/property/test_either.py:66:11: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/core/property/test_numeric.py:122:11: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/core/property/test_numeric.py:160:11: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/core/property/test_numeric.py:199:11: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/core/property/test_numeric.py:237:11: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/core/property/test_numeric.py:286:11: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/core/property/test_numeric.py:53:11: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/core/property/test_numeric.py:94:11: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/core/property/test_primitive.py:155:11: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/core/property/test_primitive.py:214:11: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/core/property/test_primitive.py:344:11: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/core/property/test_validation__property.py:120:7: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/core/property/test_validation__property.py:264:7: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/core/test_properties.py:152:3: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/document/test_callbacks__document.py:179:52: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/document/test_callbacks__document.py:378:7: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/document/test_callbacks__document.py:379:7: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/document/test_document.py:1014:7: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/document/test_document.py:1016:7: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/document/test_events__document.py:159:7: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/model/test_util_model.py:127:7: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/model/test_util_model.py:61:3: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/models/test_tools.py:7:3: TD005 Missing issue description after `TODO`
++ tests/unit/bokeh/plotting/test__renderer.py:115:5: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
++ tests/unit/bokeh/plotting/test__renderer.py:115:5: TD003 Missing issue link on the line following this TODO
+- tests/unit/bokeh/plotting/test_figure.py:536:7: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/test___init__.py:101:7: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/test_client_server.py:670:58: TD005 Missing issue description after `TODO`
+- tests/unit/bokeh/test_tile_providers.py:79:3: TD005 Missing issue description after `TODO`
+</code></pre>
+</p>
+</details>
+<details><summary>zulip (+18, -10)</summary>
+<p>
+
+<pre><code class="language-diff">- corporate/lib/stripe.py:603:7: TD005 Missing issue description after `TODO`
+- corporate/models.py:264:7: TD005 Missing issue description after `TODO`
+- tools/lib/provision.py:290:15: TD005 Missing issue description after `TODO`
+- zerver/data_import/gitter.py:132:7: TD005 Missing issue description after `TODO`
+- zerver/data_import/slack.py:570:15: TD005 Missing issue description after `TODO`
++ zerver/lib/compatibility.py:150:7: TD004 Missing colon in TODO
++ zerver/lib/email_notifications.py:610:11: TD004 Missing colon in TODO
++ zerver/lib/events.py:470:11: TD004 Missing colon in TODO
+- zerver/lib/import_realm.py:682:7: TD005 Missing issue description after `TODO`
++ zerver/lib/message.py:1157:35: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
++ zerver/lib/message.py:1157:35: TD003 Missing issue link on the line following this TODO
++ zerver/lib/narrow.py:278:15: TD004 Missing colon in TODO
++ zerver/lib/push_notifications.py:1049:11: TD004 Missing colon in TODO
+- zerver/lib/push_notifications.py:155:7: TD005 Missing issue description after `TODO`
+- zerver/lib/push_notifications.py:227:11: TD005 Missing issue description after `TODO`
++ zerver/lib/retention.py:365:32: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
++ zerver/lib/retention.py:365:32: TD003 Missing issue link on the line following this TODO
++ zerver/lib/retention.py:365:32: TD004 Missing colon in TODO
++ zerver/lib/retention.py:365:32: TD005 Missing issue description after `TODO`
++ zerver/lib/sessions.py:66:54: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
++ zerver/lib/sessions.py:66:54: TD003 Missing issue link on the line following this TODO
+- zerver/lib/test_helpers.py:535:28: TD005 Missing issue description after `TODO`
+- zerver/management/commands/convert_gitter_data.py:46:15: TD005 Missing issue description after `TODO`
++ zerver/tornado/event_queue.py:1141:7: TD004 Missing colon in TODO
++ zerver/tornado/event_queue.py:1153:7: TD004 Missing colon in TODO
++ zerver/tornado/event_queue.py:1326:11: TD004 Missing colon in TODO
++ zerver/tornado/event_queue.py:1345:15: TD004 Missing colon in TODO
++ zerver/tornado/event_queue.py:1360:15: TD004 Missing colon in TODO
+</code></pre>
+</p>
+</details>
+Rules changed: 7
+
+<p>| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| TD005 | 91 | 3 | 88 |
+| TD004 | 36 | 36 | 0 |
+| TD003 | 23 | 23 | 0 |
+| TD002 | 21 | 21 | 0 |
+| TD007 | 17 | 0 | 17 |
+| TD001 | 9 | 9 | 0 |
+| TD006 | 3 | 3 | 0 |</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.9±0.03ms     2.7 MB/sec    1.01     15.1±0.09ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.7±0.01ms     4.5 MB/sec    1.00      3.7±0.01ms     4.6 MB/sec
+linter/all-rules/numpy/globals.py          1.00    375.8±1.55µs     7.9 MB/sec    1.00    375.8±0.96µs     7.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.3±0.02ms     4.1 MB/sec    1.00      6.3±0.01ms     4.1 MB/sec
+linter/default-rules/large/dataset.py      1.01      7.5±0.01ms     5.4 MB/sec    1.00      7.4±0.01ms     5.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02   1616.3±4.32µs    10.3 MB/sec    1.00   1590.0±3.30µs    10.5 MB/sec
+linter/default-rules/numpy/globals.py      1.01    177.3±0.99µs    16.6 MB/sec    1.00    175.8±0.21µs    16.8 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.4±0.01ms     7.5 MB/sec    1.00      3.4±0.01ms     7.6 MB/sec
+parser/large/dataset.py                    1.01      5.8±0.01ms     7.0 MB/sec    1.00      5.7±0.01ms     7.1 MB/sec
+parser/numpy/ctypeslib.py                  1.01   1135.6±1.94µs    14.7 MB/sec    1.00   1123.6±0.54µs    14.8 MB/sec
+parser/numpy/globals.py                    1.01    115.7±0.25µs    25.5 MB/sec    1.00    114.6±0.34µs    25.7 MB/sec
+parser/pydantic/types.py                   1.01      2.5±0.00ms    10.2 MB/sec    1.00      2.5±0.00ms    10.4 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     17.3±0.27ms     2.3 MB/sec    1.00     17.1±0.26ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.3±0.06ms     3.9 MB/sec    1.00      4.3±0.07ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    508.4±9.85µs     5.8 MB/sec    1.00   510.6±11.45µs     5.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.2±0.12ms     3.5 MB/sec    1.00      7.2±0.12ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.5±0.10ms     4.8 MB/sec    1.00      8.5±0.11ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1806.0±27.22µs     9.2 MB/sec    1.00  1811.4±59.24µs     9.2 MB/sec
+linter/default-rules/numpy/globals.py      1.02    210.4±4.30µs    14.0 MB/sec    1.00    205.4±4.83µs    14.4 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.8±0.04ms     6.7 MB/sec    1.00      3.8±0.05ms     6.7 MB/sec
+parser/large/dataset.py                    1.07      7.0±0.05ms     5.8 MB/sec    1.00      6.5±0.07ms     6.2 MB/sec
+parser/numpy/ctypeslib.py                  1.05  1316.9±30.12µs    12.6 MB/sec    1.00  1251.7±21.56µs    13.3 MB/sec
+parser/numpy/globals.py                    1.05    132.0±2.41µs    22.3 MB/sec    1.00    126.3±2.38µs    23.4 MB/sec
+parser/pydantic/types.py                   1.06      3.0±0.04ms     8.6 MB/sec    1.00      2.8±0.06ms     9.0 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sladyn98">@sladyn98</a> reviewed on 2023-05-22 07:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sladyn98">@sladyn98</a> on <code>crates/ruff/src/rules/flake8_todos/rules.rs</code>:245 on 2023-05-22 07:28</div>
+            <div class="timeline-body"><p>An alternative approach could be to split the comment into sections, then iterate over those sections. We can also use a HashMap to map the directive strings to their corresponding variants, which allows us to eliminate the if else chain.</p>
+<pre><code>impl FromStr for Directive {
+    type Err = ();
+
+    fn from_str(s: &amp;str) -&gt; Result&lt;Self, Self::Err&gt; {
+        match s {
+            &quot;fixme&quot; =&gt; Ok(Directive::Fixme),
+            &quot;xxx&quot; =&gt; Ok(Directive::Xxx),
+            &quot;todo&quot; =&gt; Ok(Directive::Todo),
+            _ =&gt; Err(()),
+        }
+    }
+}
+
+fn from_comment(comment: &amp;str) -&gt; Option&lt;(Directive, TextSize)&gt; {
+    let comment_parts = comment.split('#').collect::&lt;Vec&lt;&amp;str&gt;&gt;();
+
+    let mut total_offset = TextSize::new(0);
+
+    for part in comment_parts {
+        let trimmed = part.trim().to_lowercase();
+        total_offset += TextSize::of_str(&quot;#&quot;) + TextSize::try_from(trimmed.len()).unwrap();
+        
+        match trimmed.parse::&lt;Directive&gt;() {
+            Ok(directive) =&gt; return Some((directive, total_offset)),
+            Err(_) =&gt; continue,
+        }
+    }
+
+    None
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-22 08:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_todos/rules.rs</code>:245 on 2023-05-22 08:40</div>
+            <div class="timeline-body"><p>I liked that. I think we could avoid collecting into a <code>Vec</code> since we're only iterating once.</p>
+<p>Using <code>spilt</code> is probably slightly slower because it iterates twice over the string but I wouldn't mind that in favor of readability.</p>
+<p>Nit: You can replace <code>TextSize::of_str(&quot;#&quot;)</code> with <code>'#'.text_len()</code> and <code>TextSize::try_from(trimmed.len()).unwrap()</code> with <code>trimmed.text_len()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-22 08:41</div>
+            <div class="timeline-body"><p>Would you mind adding a short description to your summary of what this PR fixes. I read the issue and I believe I know what it is about, but I'm unsure.</p>
+<p>@evanrittenhouse did you review the ecosystem checks. Do the new violations look legit?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on <code>crates/ruff/src/rules/flake8_todos/rules.rs</code>:245 on 2023-05-22 12:42</div>
+            <div class="timeline-body"><p>Yeah, was thinking about splitting but I didn't want to iterate over the string twice which is how I got to the approach in this PR. If we're fine with the slowdown, I can change it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> reviewed on 2023-05-22 12:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-05-22 13:25</div>
+            <div class="timeline-body"><p>@MichaReiser PR updated!</p>
+<p>I reviewed some of the violations yesterday, but finished looking at them today. The only one that looks slightly wonky is <a href="https://github.com/bokeh/bokeh/blob/branch-3.2/tests/integration/widgets/test_daterange_slider.py#L160">this one</a>, where <code>MissingSpaceAfterColon</code> is thrown in a URL <em>when there's no colon after the author block</em>. It's technically correct, since the first colon after the author block isn't followed by a colon, but obviously incorrect in spirit. This could also occur outside of URLs: <code># TODO (evanrittenhouse) fruits:apple, banana, cranberry</code>.</p>
+<p>The line causing the issue is <a href="https://github.com/charliermarsh/ruff/blob/main/crates/ruff/src/rules/flake8_todos/rules.rs#L417">here</a>, where we <code>split_once()</code> after the author block is concluded. I'm thinking that, for a fix, we could check the first non-whitespace character after the author block's closing <code>)</code>. That character has to a be colon in a valid TODO. We could then treat that byte offset as we do the current <code>split_once()</code> call results. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-23 06:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_todos/rules.rs</code>:245 on 2023-05-23 06:20</div>
+            <div class="timeline-body"><p>I wouldn't expect the slowdown to be that significant because it only runs on comments but I'm okay either way</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-23 06:27</div>
+            <div class="timeline-body"><p>@evanrittenhouse thanks for the explanation. To double check. Do you mean this line https://github.com/bokeh/bokeh/blob/f4c7a9787f0fd93db6987cfbb46409098ddb3107/tests/integration/widgets/test_daterange_slider.py#L169 ?</p>
+<blockquote>
+<p>The line causing the issue is <a href="https://github.com/charliermarsh/ruff/blob/main/crates/ruff/src/rules/flake8_todos/rules.rs?rgh-link-date=2023-05-22T13%3A25%3A37Z#L417">here</a>, where we split_once() after the author block is concluded. I'm thinking that, for a fix, we could check the first non-whitespace character after the author block's closing )</p>
+</blockquote>
+<p>That makes sense. Trimming the leading whitespace and then testing the character should give us better results.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-05-23 14:20</div>
+            <div class="timeline-body"><p>@MichaReiser Yep, that's the one! Sorry, misclicked the copy-paste.</p>
+<p>I've pushed a fix to this PR just now. Seems like there have been some changes, so I'll have to investigate them after work and make sure that they're valid</p>
+<p>E: Seems like the big issue is a bunch of <code>TD005</code> (missing issue link) rules are disappearing now. Have to figure out why that's the case since the changes here shouldn't touch any of the logic around detecting the issue...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Change tag detection to work with multiple pound signs on the same line" to "Change TODO directive detection to work with multiple pound signs on the same line" by @evanrittenhouse on 2023-05-23 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-05-23 21:14</div>
+            <div class="timeline-body"><p>Hmm. So I copied one of the files that changed according to the ecosystem check (<a href="https://github.com/bokeh/bokeh/blob/branch-3.2/release/credentials.py"><code>credentials.py</code></a>) locally to see if I could reproduce the issues. The ecosystem checks report that the TD003 diagnostics on lines 77 and 84 are both gone. When I run <code>cargo run -p ruff_cli -- test.py --select ALL</code>, they both show up as expected.</p>
+<p>@MichaReiser do you have any idea what could be happening?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-24 06:48</div>
+            <div class="timeline-body"><p>@evanrittenhouse the results from the ecosystem check seem correct.</p>
+<p>On <a href="https://github.com/charliermarsh/ruff/pull/4558/commits/7b07e7665c0ea55016e6b5f1f0ffc52b2ad3f776">Add test for colons that don't terminate the tag/author block</a>.</p>
+<pre><span style="color:#005FD7">cargo</span> <span style="color:#00AFFF">run</span> <span style="color:#00AFFF">--bin</span> <span style="color:#00AFFF">ruff</span> <span style="color:#00AFFF">--</span> <span style="color:#00AFFF">check</span> <span style="color:#00AFFF">--no-cache</span> <span style="color:#00A6B2"><u style="text-decoration-style:single">~</u></span><span style="color:#00AFFF"><u style="text-decoration-style:single">/Downloads/credentials.py</u></span> <span style="color:#00AFFF">--select</span> <span style="color:#00AFFF">TD</span>
+<span style="color:#26A269"><b>    Finished</b></span> dev [unoptimized + debuginfo] target(s) in 0.10s
+<span style="color:#26A269"><b>     Running</b></span> `target/debug/ruff check --no-cache /home/micha/Downloads/credentials.py --select TD`
+/home/micha/Downloads/credentials.py:77:7: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
+/home/micha/Downloads/credentials.py:77:7: TD003 Missing issue link on the line following this TODO
+/home/micha/Downloads/credentials.py:77:7: TD004 Missing colon in TODO
+/home/micha/Downloads/credentials.py:77:7: TD005 Missing issue description after `TODO`
+/home/micha/Downloads/credentials.py:84:7: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
+/home/micha/Downloads/credentials.py:84:7: TD003 Missing issue link on the line following this TODO
+/home/micha/Downloads/credentials.py:84:7: TD004 Missing colon in TODO
+/home/micha/Downloads/credentials.py:84:7: TD005 Missing issue description after `TODO`
+Found 8 errors.
+</pre>
+
+<p>On the latest commit</p>
+<pre><span style="color:#005FD7">cargo</span> <span style="color:#00AFFF">run</span> <span style="color:#00AFFF">--bin</span> <span style="color:#00AFFF">ruff</span> <span style="color:#00AFFF">--</span> <span style="color:#00AFFF">check</span> <span style="color:#00AFFF">--no-cache</span> <span style="color:#00A6B2"><u style="text-decoration-style:single">~</u></span><span style="color:#00AFFF"><u style="text-decoration-style:single">/Downloads/credentials.py</u></span> <span style="color:#00AFFF">--select</span> <span style="color:#00AFFF">TD</span>
+<span style="color:#26A269"><b>   Compiling</b></span> ruff v0.0.269 (/home/micha/astral/ruff/crates/ruff)
+<span style="color:#26A269"><b>   Compiling</b></span> ruff_cli v0.0.269 (/home/micha/astral/ruff/crates/ruff_cli)
+<span style="color:#26A269"><b>    Finished</b></span> dev [unoptimized + debuginfo] target(s) in 6.78s
+<span style="color:#26A269"><b>     Running</b></span> `target/debug/ruff check --no-cache /home/micha/Downloads/credentials.py --select TD`
+/home/micha/Downloads/credentials.py:77:7: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
+/home/micha/Downloads/credentials.py:77:7: TD003 Missing issue link on the line following this TODO
+/home/micha/Downloads/credentials.py:77:7: TD004 Missing colon in TODO
+/home/micha/Downloads/credentials.py:84:7: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
+/home/micha/Downloads/credentials.py:84:7: TD003 Missing issue link on the line following this TODO
+/home/micha/Downloads/credentials.py:84:7: TD004 Missing colon in TODO
+Found 6 errors.
+</pre>
+
+<p>You can see that the diagnostics for TD005 are missing. I think this is correct because there's a description.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_todos/rules.rs</code>:446 on 2023-05-24 06:51</div>
+            <div class="timeline-body"><p>Nit: I find the use of the <code>let Some(char)</code> with a second branching on <code>char == ':'</code> more difficult to reason about than using a single match (also because it requires an early <code>return</code>).</p>
+<pre><code class="language-rust">    match post_author_chars.next() {
+        Some(':') =&gt; {
+            match post_author_chars.peek() {
+                Some(' ') =&gt; (),
+                // TD-007
+                Some(_) =&gt; diagnostics.push(Diagnostic::new(MissingSpaceAfterTodoColon, tag.range)),
+                None =&gt; diagnostics.push(Diagnostic::new(MissingTodoDescription, tag.range)),
+            }
+        }
+        Some(_) =&gt; {
+            diagnostics.push(Diagnostic::new(MissingTodoColon, tag.range));
+        }
+        None =&gt; {
+            // TD-004
+            diagnostics.push(Diagnostic::new(MissingTodoColon, tag.range));
+            // TD-005
+            diagnostics.push(Diagnostic::new(MissingTodoDescription, tag.range));
+        }
+    }
+</code></pre>
+<p>The <code>match</code> makes it clear to me that there are three different branches and they are exclusive to each other.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_todos/rules.rs</code>:437 on 2023-05-24 06:52</div>
+            <div class="timeline-body"><p>Do we need to test if all remaining characters are whitespace and if so, emit a <code>MissingTodoDescription</code> diagnostic?</p>
+<p>I think we can do this with:</p>
+<pre><code class="language-rust">    let post_author = post_tag[usize::from(author_end)..].trim_start();
+
+    if let Some(after) = post_author.strip_prefix(':') {
+        if after.trim_start().is_empty() {
+            diagnostics.push(Diagnostic::new(MissingTodoDescription, tag.range))
+        } else if !after.starts_with(char::is_whitespace) {
+            diagnostics.push(Diagnostic::new(MissingSpaceAfterTodoColon, tag.range))
+        }
+    } else {
+        diagnostics.push(Diagnostic::new(MissingTodoColon, tag.range));
+
+        if post_author.is_empty() {
+            diagnostics.push(Diagnostic::new(MissingTodoDescription, tag.range));
+        }
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_todos/rules.rs</code>:436 on 2023-05-24 06:53</div>
+            <div class="timeline-body"><p>I think we can use <code>next</code> here because we aren't using <code>post_author_chars</code> after this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_todos/rules.rs</code>:424 on 2023-05-24 07:08</div>
+            <div class="timeline-body"><p>Is the <code>to_owned</code> call necessary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-05-24 07:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on <code>crates/ruff/src/rules/flake8_todos/rules.rs</code>:437 on 2023-05-25 13:13</div>
+            <div class="timeline-body"><p>Will use this. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> reviewed on 2023-05-25 13:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-05-25 13:22</div>
+            <div class="timeline-body"><p>@MichaReiser Thanks for the suggestions!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-05-25 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-05-25 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-05-25 17:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:50:42 UTC
+    </footer>
+</body>
+</html>

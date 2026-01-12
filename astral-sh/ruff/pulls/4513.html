@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replace token iteration with Indexer/Locator lookups for relevant rules - astral-sh/ruff #4513</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Replace token iteration with Indexer/Locator lookups for relevant rules</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4513">#4513</a>
+        opened by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a>
+        on 2023-05-19 02:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-05-19 02:20</div>
+            <div class="timeline-body"><p><a href="https://github.com/charliermarsh/ruff/pull/3921#discussion_r1181461746">This comment</a> raised the idea of using <code>Indexer</code>/<code>Locator</code> for comment-related rules based on token checks. I went through the rules examined in <code>checkers/tokens.rs</code> and changed it out for the ones I identified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> reviewed on 2023-05-19 02:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on <code>crates/ruff/src/rules/flake8_todos/rules.rs</code>:409 on 2023-05-19 02:22</div>
+            <div class="timeline-body"><p>Not directly related to this PR, but I didn't feel like it was worth raising a new one entirely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_todos/rules.rs</code>:308 on 2023-05-19 06:42</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">            let next_comment = locator.slice(*next_comment_range);
+</code></pre>
+<p>I think this should work because <code>TextRange</code> is copy or you might need to use <code>**next_comment_range</code> in case it is a <code>&amp;&amp;TextRange</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_todos/rules.rs</code>:327 on 2023-05-19 06:47</div>
+            <div class="timeline-body"><p>I think we still need some handling that tests whether the two comments are next to each other (or have only trivia in between). We can do this by testing whether the range between <code>range.end()</code> and <code>next_comment_range.start()</code> only contains whitespace.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_todos/rules.rs</code>:308 on 2023-05-19 06:50</div>
+            <div class="timeline-body"><p>Unrelated to this PR. Do we need multipeek here or could we rewrite this as</p>
+<pre><code>while let Some(next_comment_range) = iter.peek() {
+    let next_comment = locator.slice(*next_comment_range);
+    if detect_tag(...).is_some() {
+        break;
+    }
+
+    if ISSUE_LINK_REGEX_SET.is_matcch(next_comment) {
+        has_issue_link = true;
+        // Should we call `next()` here too because it is guaranteed that this comment has no tag
+        // so it will fail the check on line 299
+        break;
+    }
+
+    // skip over that comment because it neither has a tag nor link. It's not worth testing in the next iteration if it has a tag.
+    iter.next();
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-19 06:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-19 06:51</div>
+            <div class="timeline-body"><p>Nice, thanks for working on this. Will be interesting to see by how much this improves performance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2023-05-19 06:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> reviewed on 2023-05-19 13:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on <code>crates/ruff/src/rules/flake8_todos/rules.rs</code>:308 on 2023-05-19 13:00</div>
+            <div class="timeline-body"><p>I'm curious, is double deref a best practice in this situation? It is indeed a &amp;&amp;TextRange but thought that double deref was weird, which is why I said <code>to_owned()</code>. Though I guess that results in unnecessary heap allocation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> reviewed on 2023-05-19 13:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on <code>crates/ruff/src/rules/flake8_todos/rules.rs</code>:327 on 2023-05-19 13:01</div>
+            <div class="timeline-body"><p>RE this comment and below</p>
+<p>I just wanted to change the arguments to the respective checkers and get the PR up - still need to remove tokens from use. Should have made it a draft!</p>
+<p>Sorry though, what's trivia?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-19 16:45</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     17.2±0.17ms     2.4 MB/sec    1.00     16.9±0.09ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      4.1±0.01ms     4.0 MB/sec    1.00      4.1±0.02ms     4.1 MB/sec
+linter/all-rules/numpy/globals.py          1.01    507.9±2.40µs     5.8 MB/sec    1.00    502.6±2.23µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.0±0.05ms     3.6 MB/sec    1.00      7.0±0.04ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.01      8.1±0.03ms     5.0 MB/sec    1.00      8.0±0.02ms     5.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1756.5±9.27µs     9.5 MB/sec    1.00   1736.9±7.33µs     9.6 MB/sec
+linter/default-rules/numpy/globals.py      1.01    195.4±1.65µs    15.1 MB/sec    1.00    193.5±1.29µs    15.2 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.7±0.02ms     7.0 MB/sec    1.00      3.6±0.01ms     7.0 MB/sec
+parser/large/dataset.py                    1.00      6.5±0.06ms     6.3 MB/sec    1.02      6.6±0.02ms     6.2 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1268.7±3.83µs    13.1 MB/sec    1.01   1279.7±5.09µs    13.0 MB/sec
+parser/numpy/globals.py                    1.00    130.0±0.62µs    22.7 MB/sec    1.01    131.8±0.70µs    22.4 MB/sec
+parser/pydantic/types.py                   1.00      2.8±0.02ms     9.3 MB/sec    1.01      2.8±0.03ms     9.2 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.04     17.3±0.39ms     2.4 MB/sec    1.00     16.6±0.26ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      4.3±0.10ms     3.8 MB/sec    1.00      4.2±0.07ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.02    505.7±9.47µs     5.8 MB/sec    1.00   497.1±12.88µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.03      7.2±0.14ms     3.5 MB/sec    1.00      7.0±0.12ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.03      8.5±0.20ms     4.8 MB/sec    1.00      8.3±0.10ms     4.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1768.3±28.70µs     9.4 MB/sec    1.00  1774.0±36.38µs     9.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    197.5±3.85µs    14.9 MB/sec    1.03    202.7±9.80µs    14.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.05ms     6.8 MB/sec    1.00      3.8±0.09ms     6.8 MB/sec
+parser/large/dataset.py                    1.01      6.8±0.05ms     6.0 MB/sec    1.00      6.7±0.05ms     6.1 MB/sec
+parser/numpy/ctypeslib.py                  1.01  1289.7±15.11µs    12.9 MB/sec    1.00  1277.5±17.31µs    13.0 MB/sec
+parser/numpy/globals.py                    1.02    134.3±4.21µs    22.0 MB/sec    1.00    131.7±2.39µs    22.4 MB/sec
+parser/pydantic/types.py                   1.01      2.9±0.03ms     8.8 MB/sec    1.00      2.8±0.03ms     9.0 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-05-20 19:05</div>
+            <div class="timeline-body"><p>@MichaReiser ready for final review!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_todos/rules.rs</code>:327 on 2023-05-22 07:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Sorry though, what's trivia?</p>
+</blockquote>
+<p>Sorry for the late reply. Trivia are tokens that have no semantic meaning, e.g. whitespace, newlines (Python is a bit awkward because some newlines have semantic meaning), comments etc. I think in this context it is sufficient to test if there's any content between the two comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-05-22 07:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-22 07:56</div>
+            <div class="timeline-body"><p>Awesome! Looks great and it seems to improve performance by a percent!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-05-22 07:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-05-22 07:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-05-22 15:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:50:42 UTC
+    </footer>
+</body>
+</html>

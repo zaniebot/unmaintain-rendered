@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pylint`] Implement `nested-min-max` (`W3301`) - astral-sh/ruff #4200</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pylint</code>] Implement <code>nested-min-max</code> (<code>W3301</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4200">#4200</a>
+        opened by <a href="https://github.com/mccullocht">@mccullocht</a>
+        on 2023-05-03 05:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mccullocht">@mccullocht</a> on 2023-05-03 05:10</div>
+            <div class="timeline-body"><p>Detect nested calls to <code>min()</code> or <code>max()</code> and generate fixes for these, e.g. <code>min(1, min(2, 3)) =&gt; min(1, 2, 3)</code></p>
+<p>Behavior differs from pylint when keyword args are present -- we skip analysis in these cases as it may not
+actually be correct to to merge the nested statements. The following statements would not receive a diagnostic
+in this implementation, but do in pylint:</p>
+<pre><code>min(1, min(2, 3), key=test) =&gt; min(1, 2, 3, key=test)
+min(1, min(2, 3, key=test)) =&gt; min(1, 2, 3)
+</code></pre>
+<p>This is part of #970</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-03 05:25</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.02     19.3±0.53ms     2.1 MB/sec    1.00     19.0±0.44ms     2.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.5±0.14ms     3.7 MB/sec    1.00      4.5±0.16ms     3.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00   553.0±18.69µs     5.3 MB/sec    1.00   552.1±16.14µs     5.3 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.9±0.34ms     3.2 MB/sec    1.00      7.8±0.20ms     3.3 MB/sec
+linter/default-rules/large/dataset.py      1.03      9.5±0.35ms     4.3 MB/sec    1.00      9.3±0.20ms     4.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02  1977.6±60.81µs     8.4 MB/sec    1.00  1931.5±37.35µs     8.6 MB/sec
+linter/default-rules/numpy/globals.py      1.03    229.2±9.10µs    12.9 MB/sec    1.00   223.0±10.00µs    13.2 MB/sec
+linter/default-rules/pydantic/types.py     1.02      4.2±0.10ms     6.1 MB/sec    1.00      4.1±0.17ms     6.2 MB/sec
+parser/large/dataset.py                    1.00      7.3±0.12ms     5.6 MB/sec    1.01      7.4±0.15ms     5.5 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1419.0±34.02µs    11.7 MB/sec    1.02  1443.3±42.07µs    11.5 MB/sec
+parser/numpy/globals.py                    1.00    139.3±4.63µs    21.2 MB/sec    1.02    141.8±6.26µs    20.8 MB/sec
+parser/pydantic/types.py                   1.00      3.1±0.07ms     8.2 MB/sec    1.01      3.2±0.08ms     8.0 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     21.1±0.74ms  1970.3 KB/sec    1.00     21.2±0.74ms  1967.9 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      5.3±0.27ms     3.2 MB/sec    1.00      5.2±0.18ms     3.2 MB/sec
+linter/all-rules/numpy/globals.py          1.01   627.7±26.18µs     4.7 MB/sec    1.00   620.9±29.63µs     4.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.7±0.31ms     2.9 MB/sec    1.00      8.7±0.31ms     2.9 MB/sec
+linter/default-rules/large/dataset.py      1.00     10.2±0.33ms     4.0 MB/sec    1.01     10.3±0.28ms     4.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.2±0.09ms     7.7 MB/sec    1.01      2.2±0.12ms     7.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00   259.8±18.49µs    11.4 MB/sec    1.01   262.6±13.47µs    11.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.6±0.30ms     5.5 MB/sec    1.00      4.6±0.18ms     5.5 MB/sec
+parser/large/dataset.py                    1.00      8.4±0.22ms     4.8 MB/sec    1.00      8.4±0.17ms     4.8 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1618.7±64.56µs    10.3 MB/sec    1.00  1613.7±66.96µs    10.3 MB/sec
+parser/numpy/globals.py                    1.01    167.7±9.26µs    17.6 MB/sec    1.00    165.9±8.30µs    17.8 MB/sec
+parser/pydantic/types.py                   1.02      3.7±0.15ms     7.0 MB/sec    1.00      3.6±0.11ms     7.1 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pylint/rules/nested_min_max.rs</code>:1 on 2023-05-03 09:21</div>
+            <div class="timeline-body"><p>Delete?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pylint/rules/nested_min_max.rs</code>:83 on 2023-05-03 09:29</div>
+            <div class="timeline-body"><p>We should assert that <code>min</code> and <code>max</code> are indeed the built-in <code>min</code> and <code>max</code> function. You can test this by calling <code>checker.ctx.is_builtin(&quot;min&quot;);</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pylint/rules/nested_min_max.rs</code>:73 on 2023-05-03 09:35</div>
+            <div class="timeline-body"><p>What happens if there are any comments attached to the arguments</p>
+<pre><code class="language-python">min(
+	# Important 
+	min(2, 3),
+	# more comments
+	5,
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-03 09:36</div>
+            <div class="timeline-body"><p>Thank you for working on this. This is looking good to me. I think we should improve the error messages to make them more actionable and we should ensure to not flag any user defined <code>min</code> or <code>max</code> function calls.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pylint/rules/nested_min_max.rs</code>:73 on 2023-05-04 02:45</div>
+            <div class="timeline-body"><p>They'll get removed. Any fix that goes through <code>unparse_expr</code> will remove comments. We often skip autofixes when expressions do contain comments for this reason -- you can grep for <code>has_comments_in</code> to see examples of that pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-04 02:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mccullocht">@mccullocht</a> on <code>crates/ruff/src/rules/pylint/rules/nested_min_max.rs</code>:73 on 2023-05-05 04:52</div>
+            <div class="timeline-body"><p>No longer provides a fix if there are comments within expr and added a test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pylint/rules/nested_min_max.rs</code>:45 on 2023-05-05 06:56</div>
+            <div class="timeline-body"><p>This rule should no longer implement <code>AlwaysAutofixableViolation</code> because it doesn't provide a fix if there are comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-05 06:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mccullocht">@mccullocht</a> on <code>crates/ruff/src/rules/pylint/rules/nested_min_max.rs</code>:83 on 2023-05-06 04:48</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mccullocht">@mccullocht</a> on <code>crates/ruff/src/rules/pylint/rules/nested_min_max.rs</code>:45 on 2023-05-06 20:13</div>
+            <div class="timeline-body"><p>Fixed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mccullocht">@mccullocht</a> reviewed on 2023-05-06 20:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @mccullocht on 2023-05-06 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @mccullocht on 2023-05-06 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Implement pylint `nested-min-max / W3301`" to "[`pylint`] Implement `nested-min-max` (`W3301`)" by @charliermarsh on 2023-05-07 03:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-05-07 03:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-07 03:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nijel">@nijel</a> on 2023-05-15 14:35</div>
+            <div class="timeline-body"><p>Automatic fix breaks when iterables are involved, see https://github.com/charliermarsh/ruff/issues/4440</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:50:41 UTC
+    </footer>
+</body>
+</html>

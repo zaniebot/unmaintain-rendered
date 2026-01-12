@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement DUO104, DUO105, DUO110, DUO119, DUO120 for Dlint plugin - astral-sh/ruff #4482</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement DUO104, DUO105, DUO110, DUO119, DUO120 for Dlint plugin</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4482">#4482</a>
+        opened by <a href="https://github.com/qdegraaf">@qdegraaf</a>
+        on 2023-05-17 22:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-05-17 22:02</div>
+            <div class="timeline-body"><p>Rules are listed below. Some still need to be checked for relevance, already filtered out some Python 2 modules. Putting them here to keep track of work while availability is scattered.</p>
+<p>EDIT: As discussed with @MichaReiser it's probably best to split this up in multiple PRs for ease of collaboration, review and speedy addition of improvements. This PR will add the first 5 rules as marked below. I will move the tasklist to the issue once merged</p>
+<p>EDIT 2: Moved task list to issue</p>
+<ul>
+<li>[x] DUO104: EvalUse</li>
+<li>[x] DUO105: ExecUse</li>
+<li>[x] DUO110: CompileUse</li>
+<li>[x] DUO119: ShelveUse</li>
+<li>[x] DUO120: MarshalUse</li>
+</ul>
+<p>Relates to: https://github.com/charliermarsh/ruff/issues/4479</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @qdegraaf on 2023-05-17 22:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-17 22:37</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>ℹ️ ecosystem check <strong>detected changes</strong>. (+9, -0, 0 error(s))</p>
+<details><summary>airflow (+3, -0)</summary>
+<p>
+
+<pre><code class="language-diff">+ airflow/policies.py:174:16: DUO110 Use of the `compile` command should be avoided
++ airflow/policies.py:176:9: DUO105 Use of the `exec` command should be avoided
++ dev/stats/get_important_pr_candidates.py:148:27: DUO104 Use of the `eval` command should be avoided
+</code></pre>
+</p>
+</details>
+<details><summary>bokeh (+4, -0)</summary>
+<p>
+
+<pre><code class="language-diff">+ src/bokeh/application/handlers/code_runner.py:105:26: DUO110 Use of the `compile` command should be avoided
++ src/bokeh/application/handlers/code_runner.py:229:13: DUO105 Use of the `exec` command should be avoided
++ src/bokeh/sphinxext/bokeh_palette.py:107:9: DUO105 Use of the `exec` command should be avoided
++ src/bokeh/sphinxext/bokeh_palette.py:134:1: DUO105 Use of the `exec` command should be avoided
+</code></pre>
+</p>
+</details>
+<details><summary>zulip (+2, -0)</summary>
+<p>
+
+<pre><code class="language-diff">+ scripts/lib/setup_path.py:15:13: DUO105 Use of the `exec` command should be avoided
++ tools/lib/provision.py:457:9: DUO105 Use of the `exec` command should be avoided
+</code></pre>
+</p>
+</details>
+Rules changed: 3
+
+<p>| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| DUO105 | 6 | 6 | 0 |
+| DUO110 | 2 | 2 | 0 |
+| DUO104 | 1 | 1 | 0 |</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     14.2±0.03ms     2.9 MB/sec    1.00     14.0±0.02ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.4±0.01ms     4.9 MB/sec    1.00      3.4±0.00ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.01    423.7±0.73µs     7.0 MB/sec    1.00    419.2±1.00µs     7.0 MB/sec
+linter/all-rules/pydantic/types.py         1.01      5.9±0.01ms     4.3 MB/sec    1.00      5.8±0.01ms     4.4 MB/sec
+linter/default-rules/large/dataset.py      1.01      6.8±0.01ms     6.0 MB/sec    1.00      6.7±0.01ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1471.8±3.90µs    11.3 MB/sec    1.00   1460.2±5.33µs    11.4 MB/sec
+linter/default-rules/numpy/globals.py      1.01    164.7±0.81µs    17.9 MB/sec    1.00    162.6±0.89µs    18.1 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.1±0.01ms     8.3 MB/sec    1.00      3.0±0.01ms     8.4 MB/sec
+parser/large/dataset.py                    1.01      5.4±0.00ms     7.5 MB/sec    1.00      5.4±0.00ms     7.6 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1061.3±0.62µs    15.7 MB/sec    1.00   1059.6±1.03µs    15.7 MB/sec
+parser/numpy/globals.py                    1.00    108.8±1.20µs    27.1 MB/sec    1.00    108.7±0.24µs    27.1 MB/sec
+parser/pydantic/types.py                   1.00      2.3±0.00ms    11.1 MB/sec    1.00      2.3±0.00ms    11.1 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     14.3±0.24ms     2.9 MB/sec    1.00     14.2±0.21ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.5±0.09ms     4.7 MB/sec    1.00      3.5±0.04ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00    355.8±4.74µs     8.3 MB/sec    1.03    365.2±7.01µs     8.1 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.9±0.11ms     4.3 MB/sec    1.00      5.9±0.14ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.1±0.10ms     5.7 MB/sec    1.01      7.2±0.10ms     5.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1435.5±21.85µs    11.6 MB/sec    1.01  1448.6±47.92µs    11.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    154.4±2.09µs    19.1 MB/sec    1.02    158.0±3.75µs    18.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.03ms     8.2 MB/sec    1.00      3.1±0.04ms     8.2 MB/sec
+parser/large/dataset.py                    1.00      5.9±0.10ms     6.9 MB/sec    1.00      5.9±0.05ms     6.9 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1101.9±9.51µs    15.1 MB/sec    1.01   1110.3±7.63µs    15.0 MB/sec
+parser/numpy/globals.py                    1.00    111.2±1.34µs    26.5 MB/sec    1.02    113.4±1.63µs    26.0 MB/sec
+parser/pydantic/types.py                   1.00      2.4±0.02ms    10.5 MB/sec    1.02      2.5±0.02ms    10.3 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/dlint/rules/bad_shelve_use.rs</code>:40 on 2023-05-19 07:12</div>
+            <div class="timeline-body"><p>You can now define your own enum to avoid having to use <code>panic</code></p>
+<pre><code class="language-rust">#[derive(Debug, Copy, Clone)]
+enum AnyStmtImport&lt;'a&gt; {
+	Import(&amp;'a ast::StmtImport),
+	ImportFrom(&amp;'a ast::StmtImportFrom)
+}
+
+impl AnyStmtImport&lt;'_&gt; {
+	pub fn cast&lt;'a&gt;(stmt: &amp;'a Stmt) -&gt; Option&lt;Self&lt;'a&gt;&gt; {
+		match stmt {
+			Stmt::Import(import) =&gt; Some(Self::Import(import)),
+			Stmt::ImportFrom(import_from) =&gt; Some(Self::ImportFrom(import_from)),
+			_ =&gt; None,
+		}
+	}
+}
+
+impl&lt;'a From&lt;&amp;'a ast::StmtImport&gt; for AnyStmtImport&lt;'a&gt; {
+	pub fn from(value: &amp;'a ast::StmtImport) -&gt; Self { Self::Import(value) }
+}
+
+impl&lt;'a From&lt;&amp;'a ast::StmtImportFrom&gt; for AnyStmtImport&lt;'a&gt; {
+	pub fn from(value: &amp;'a ast::StmtImportFrom) -&gt; Self { Self::ImportFrom(value) }
+}
+
+pub(crate) fn bad_shelve_use(checker: &amp;mut Checker, import: AnyStmtImport) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/dlint/snapshots/ruff__rules__dlint__tests__DUO119_DUO119.py.snap</code>:6 on 2023-05-19 07:13</div>
+            <div class="timeline-body"><p>Nit: Can we only highlight the module name?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-19 07:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-19 07:14</div>
+            <div class="timeline-body"><p>I think it would be good if we have a separate PR for every rule. It eases reviewing and ensures that we merge improvements quickly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-05-19 08:18</div>
+            <div class="timeline-body"><blockquote>
+<p>I think it would be good if we have a separate PR for every rule. It eases reviewing and ensures that we merge improvements quickly</p>
+</blockquote>
+<p>Ah that's fair. Was unsure whether that was preferred over doing as much as possible in one batch. I'll polish up what's here and process your comments then move the task list to the issue and this PR can be reviewed/merged</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[WIP] Add Dlint plugin" to "[WIP] Implement DUO104, DUO105, DUO110, DUO119, DUO120 for Dlint plugin" by @qdegraaf on 2023-05-19 08:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/qdegraaf">@qdegraaf</a> reviewed on 2023-05-19 09:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on <code>crates/ruff/src/rules/dlint/rules/bad_shelve_use.rs</code>:40 on 2023-05-19 09:46</div>
+            <div class="timeline-body"><p>Thanks, gave it a go, let me know if I have implemented this correctly. Ran into some lifetime issues and did some trial-and-erroring to get it all to compile. Still fairly new to rust so happy for any feedback on implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @qdegraaf on 2023-05-19 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[WIP] Implement DUO104, DUO105, DUO110, DUO119, DUO120 for Dlint plugin" to "Implement DUO104, DUO105, DUO110, DUO119, DUO120 for Dlint plugin" by @qdegraaf on 2023-05-19 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-19 10:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/dlint/rules/bad_compile_use.rs</code>:22 on 2023-05-19 10:45</div>
+            <div class="timeline-body"><p>Nit: It could make sense to first test if the function called by <code>func</code> matches the name &quot;compile&quot; to avoid the somewhat expensive <code>resolve_call_path</code> call.</p>
+<p>Do I understand correctly that the rule is about the built-in <code>compile</code> function? If so, you can use checker.ctx.is_builtin(name)` to check if the name is not a user-defined function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-19 10:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:1069 on 2023-05-19 10:48</div>
+            <div class="timeline-body"><p>Nit: You already now here that you're in a <code>ImportFrom</code> so you can write</p>
+<pre><code>Stmt::ImportFrom(import_from @ ast::StmtImportFrom {
+                names,
+                module,
+                level,
+                range: _,
+}) =&gt; {
+	...
+	
+	if self.settings.rules.enabled(Rule::BadShelveUse) {
+         dlint::rules::bad_shelve_use(self, AnyStmtImport::from(stmt));
+	}
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/qdegraaf">@qdegraaf</a> reviewed on 2023-05-19 16:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:1069 on 2023-05-19 16:10</div>
+            <div class="timeline-body"><p>It does not seem to like this. When I try for example:</p>
+<pre><code>Stmt::Import(ast::StmtImport { names, range: _ }) =&gt; {
+...
+  //dlint
+  if self.settings.rules.enabled(Rule::BadShelveUse) {
+         dlint::rules::bad_shelve_use(self, dlint::helpers::AnyStmtImport::from(stmt));
+  }
+  if self.settings.rules.enabled(Rule::BadMarshalUse) {
+         dlint::rules::bad_marshal_use(self, dlint::helpers::AnyStmtImport::from(stmt));
+  }
+</code></pre>
+<p>Compiler complains:</p>
+<pre><code>error[E0277]: the trait bound `AnyStmtImport&lt;'_&gt;: std::convert::From&lt;&amp;rustpython_parser::rustpython_ast::Stmt&gt;` is not satisfied
+   --&gt; crates/ruff/src/checkers/ast/mod.rs:776:76
+    |
+776 |                     dlint::rules::bad_shelve_use(self, AnyStmtImport::from(stmt));
+    |                                                        ------------------- ^^^^ the trait `std::convert::From&lt;&amp;rustpython_parser::rustpython_ast::Stmt&gt;` is not implemented for `AnyStmtImport&lt;'_&gt;`
+    |                                                        |
+    |                                                        required by a bound introduced by this call
+    |
+    = help: the following other types implement trait `std::convert::From&lt;T&gt;`:
+              &lt;AnyStmtImport&lt;'a&gt; as std::convert::From&lt;&amp;'a StmtImport&gt;&gt;
+              &lt;AnyStmtImport&lt;'a&gt; as std::convert::From&lt;&amp;'a StmtImportFrom&gt;&gt;
+</code></pre>
+<p>It seems to want a convert implementation from all of <code>rustpython_ast::Stmt</code> even though it's only called in cases of <code>Stmt</code> being either <code>StmtImport</code> or <code>StmtImportFrom</code>. Am I missing anything?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/qdegraaf">@qdegraaf</a> reviewed on 2023-05-19 16:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on <code>crates/ruff/src/rules/dlint/rules/bad_compile_use.rs</code>:22 on 2023-05-19 16:11</div>
+            <div class="timeline-body"><p>It is, so I'll use <code>is_builtin</code> method. But good to know, I'll open a PR soon with a micro optimization for my previous implementations of similar funcs and keep it in mind for future changes!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:1069 on 2023-05-19 16:24</div>
+            <div class="timeline-body"><p>Dang, I messed up the code. I'm sorry.</p>
+<p>You have to bind the <code>StmtImportFrom</code> in the <code>match</code> arm with <code>import_from @ ast::StmtImportFrom { ... }</code> and then pass that to the from call:</p>
+<pre><code class="language-rust">Stmt::ImportFrom(import_from @ ast::StmtImportFrom {
+                names,
+                module,
+                level,
+                range: _,
+}) =&gt; {
+	...
+	
+	if self.settings.rules.enabled(Rule::BadShelveUse) {
+         dlint::rules::bad_shelve_use(self, AnyStmtImport::from(import_from));
+	}
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-19 16:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/qdegraaf">@qdegraaf</a> reviewed on 2023-05-19 20:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:1069 on 2023-05-19 20:30</div>
+            <div class="timeline-body"><p>Ah funny I wrote that during trial-and-erroring and my IDE's Rust plugin complained about <code>use of a moved value</code> so I didn't build it, but it does seem to work despite those complaints 🤷. Thanks for the feedback and pushed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-05-19 21:36</div>
+            <div class="timeline-body"><p>Docstrings added and comments processed. Will wait until this is merged or gets further comments before moving rules to issue and picking up in separate PRs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/dlint/rules/bad_compile_use.rs</code>:26 on 2023-05-22 07:41</div>
+            <div class="timeline-body"><p>I think we should rename the rule to simply <code>compile</code>, <code>eval</code> etc. because the bad seems redundant, all lint rules capture something &quot;bad&quot;. This ensures that the rule reads nicely in the <code>allow compile</code> or <code>deny compile</code> context</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/dlint/rules/bad_compile_use.rs</code>:24 on 2023-05-22 07:42</div>
+            <div class="timeline-body"><p>This example (and also for other rules) isn't semantically equivalent. I think we should either remove it or have a meaningful alternative.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/dlint/rules/bad_exec_use.rs</code>:14 on 2023-05-22 07:43</div>
+            <div class="timeline-body"><p>It may be good to add some explanation about what <code>exec</code> does. The real problem here is if the string passed comes from an untrusted source (or contains parts from an untrusted source)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/dlint/rules/bad_compile_use.rs</code>:32 on 2023-05-22 07:45</div>
+            <div class="timeline-body"><p>Nit: We could change the method signature to only except <code>call_expressions</code> to avoid this additional check</p>
+<pre><code class="language-suggestion">pub(crate) fn bad_compile_use(checker: &amp;mut Checker, expr: &amp;ast::ExprCall) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/dlint/rules/bad_eval_use.rs</code>:31 on 2023-05-22 07:45</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">pub(crate) fn bad_eval_use(checker: &amp;mut Checker, expr: &amp;ast::ExprCall) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/dlint/rules/bad_exec_use.rs</code>:31 on 2023-05-22 07:46</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">pub(crate) fn bad_exec_use(checker: &amp;mut Checker, expr: &amp;ast::ExprCall) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/dlint/snapshots/ruff__rules__dlint__tests__DUO119_DUO119.py.snap</code>:12 on 2023-05-22 07:47</div>
+            <div class="timeline-body"><p>The range here looks wrong. Are we now highlighting the import name rather than the module name?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-22 07:47</div>
+            <div class="timeline-body"><p>@charliermarsh could you share your view on the phrasing and naming of the diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/qdegraaf">@qdegraaf</a> reviewed on 2023-05-22 08:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on <code>crates/ruff/src/rules/dlint/rules/bad_compile_use.rs</code>:26 on 2023-05-22 08:36</div>
+            <div class="timeline-body"><p>Names are straight copies from DLint. Happy to deviate from those if alright for straight plugin ports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/qdegraaf">@qdegraaf</a> reviewed on 2023-05-22 08:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on <code>crates/ruff/src/rules/dlint/snapshots/ruff__rules__dlint__tests__DUO119_DUO119.py.snap</code>:12 on 2023-05-22 08:49</div>
+            <div class="timeline-body"><p>Ah my bad. Misunderstood what you meant by https://github.com/charliermarsh/ruff/pull/4482#discussion_r1198625178 . Will fix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/qdegraaf">@qdegraaf</a> reviewed on 2023-05-22 08:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on <code>crates/ruff/src/rules/dlint/rules/bad_compile_use.rs</code>:26 on 2023-05-22 08:53</div>
+            <div class="timeline-body"><p>Only problem is there is already an Eval rule in <code>rules::pygrep_hooks::rules::Eval</code>. For consistency's sake: <code>EvalUse</code>, <code>ExecUse</code>, etc.?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/qdegraaf">@qdegraaf</a> reviewed on 2023-05-22 09:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on <code>crates/ruff/src/rules/dlint/snapshots/ruff__rules__dlint__tests__DUO119_DUO119.py.snap</code>:12 on 2023-05-22 09:42</div>
+            <div class="timeline-body"><p>Is there a way to locate that module name efficiently from the <code>StmtImportFrom</code>? If I print the AST of for example DUO119 I get (among other stuff):</p>
+<pre><code>StmtImportFrom {
+            range: 16..46,
+            module: Some(
+                Identifier(
+                    &quot;shelve&quot;,
+                ),
+            ),
+            names: [
+                Alias {
+                    range: 35..39,
+                    name: Identifier(
+                        &quot;open&quot;,
+                    ),
+                    asname: None,
+                },
+                Alias {
+                    range: 41..46,
+                    name: Identifier(
+                        &quot;Shelf&quot;,
+                    ),
+                    asname: None,
+                },
+            ],
+            level: Some(
+                Int(
+                    0,
+                ),
+            ),
+        },
+</code></pre>
+<p>Which gives me easy access to the individual import ranges, as well as the whole import statement range, but not the module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-22 10:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/dlint/snapshots/ruff__rules__dlint__tests__DUO119_DUO119.py.snap</code>:12 on 2023-05-22 10:31</div>
+            <div class="timeline-body"><p>Hmm, I forgot about that. No, I don't think there is. At least, not before we include range information for <code>Identifier</code> too (by making it a proper <code>Node</code>.</p>
+<p>We have a specific helper for classes and functions to extract the identifier name. We could introduce a similar helper for <code>StmtImportFrom</code> or we go back to highlighting the whole statement, since we can't really do better now</p>
+<p>https://github.com/charliermarsh/ruff/blob/45fc49773753388984f65dfa0f54bc71cf779a41/crates/ruff_python_ast/src/helpers.rs#L1092-L1108</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/qdegraaf">@qdegraaf</a> reviewed on 2023-05-22 11:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on <code>crates/ruff/src/rules/dlint/snapshots/ruff__rules__dlint__tests__DUO119_DUO119.py.snap</code>:12 on 2023-05-22 11:34</div>
+            <div class="timeline-body"><p>Addded a helper using almost identical logic and it seems to do the trick! Could be folded into <code>identifier_range</code> due to almost identical logic but was unsure whether to keep separate for functional scope (i.e <code>ClassDef</code>, <code>FunctionDef</code> and <code>AsyncFunctionDef</code> are a sensible grouping. Adding a <code>StmtImportFrom</code> less so). Left it separate for now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-22 13:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/dlint/rules/bad_compile_use.rs</code>:26 on 2023-05-22 13:33</div>
+            <div class="timeline-body"><p>I agree with Micha on the rule renaming.</p>
+<p>Though think the biggest question with this PR is that most of these rules are already implemented under different names and categorizations: <code>rules::pygrep_hooks::rules::Eval</code>, <code>rules::flake8_bandit::rules::ExecBuiltin</code>, and then the various rules in <code>rules/flake8_bandit/rules/suspicious_function_call.rs</code> which cover <code>marshal</code> and <code>shelve</code>. I don't think we have a rule for <code>compile</code>, but otherwise, these are already mostly covered, so I'm hesitant to add duplicate implementations of the same violation enforcement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on <code>crates/ruff/src/rules/dlint/rules/bad_compile_use.rs</code>:26 on 2023-05-22 15:00</div>
+            <div class="timeline-body"><p>Sounds good, should probably have done that before diving in. Have asked requester if they already have one or more rules they use from DLint not covered by other plugins in Ruff. Don't think I have time to cross reference the issue lists for the next few days.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/qdegraaf">@qdegraaf</a> reviewed on 2023-05-22 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-22 15:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/dlint/rules/bad_compile_use.rs</code>:26 on 2023-05-22 15:05</div>
+            <div class="timeline-body"><p>I wish I'd noticed it and called it out earlier -- sorry to only do that now. It's hard for me to keep up with and proactively vet issues like that before they make it to PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/qdegraaf">@qdegraaf</a> reviewed on 2023-05-22 15:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on <code>crates/ruff/src/rules/dlint/rules/bad_compile_use.rs</code>:26 on 2023-05-22 15:42</div>
+            <div class="timeline-body"><p>No worries. It's a busy repo, I learned a lot from @MichaReiser 's very thorough review (thanks for that!) about Rust and Ruff which I can bring with me to future edits even if this never gets to main.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-24 02:16</div>
+            <div class="timeline-body"><p>I'm going to tentatively close for now given the discussion in the comments -- sorry for the mixup, but I'd love to find ways to keep you contributing if you're open to it, I appreciate your work :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-24 02:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-05-24 07:56</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm going to tentatively close for now given the discussion in the comments -- sorry for the mixup, but I'd love to find ways to keep you contributing if you're open to it, I appreciate your work :)</p>
+</blockquote>
+<p>That's cool! And no worries again. A bit busy with the dayjob this week but I'll see if I can do some more autofixes to get comfortable with that and then maybe move on to something a little more complex (also to leave some of the &quot;good first issues&quot; to others interested in contributing and looking for an easy way in).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:50:42 UTC
+    </footer>
+</body>
+</html>

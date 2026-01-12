@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add autofix for flake8-type-checking - astral-sh/ruff #4742</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add autofix for flake8-type-checking</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4742">#4742</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-05-31 03:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-31 03:17</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This PR enables autofix for the most useful flake8-type-checking rules -- those that detect imports that are <em>only</em> used in type-checking contexts, and suggests that users move them into <code>if TYPE_CHECKING:</code> blocks. In the end, it's not a <em>ton</em> of code (most of this diff is tests + snapshots), but there's a large chain of changes that were required to support this.</p>
+<p>The general flow is as follows. When we detect a typing-only import, we generate a new fixes, which consists of up to three edits: (1) an edit to remove the imported member from the import statement; (2) an edit to import <code>TYPE_CHECKING</code> from <code>typing</code>; and (3) an edit to add the imported member to the <code>TYPE_CHECKING</code> block, which could also require creating an entirely new <code>TYPE_CHECKING</code> block.</p>
+<p>For example, given:</p>
+<pre><code class="language-py">from __future__ import annotations
+
+import pandas as pd
+
+def f(x: pd.DataFrame):
+    pass
+</code></pre>
+<p>We need to make all three of those changes, in order to get to:</p>
+<pre><code class="language-py">from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import pandas as pd
+
+def f(x: pd.DataFrame):
+    pass
+</code></pre>
+<p>The exact edit depends on the ordering and existence of the <code>typing</code> import, and/or the <code>if TYPE_CHECKING</code> blocks, and their positions relative to the first runtime usage -- but in typical usages, the edit looks something like the above.</p>
+<p>Closes #2329.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Ran <code>cargo run -p ruff_cli -- check ../airflow --select TCH -n --fix</code>; verified by eye that the edits looked reasonable and correct, and that there were no panics.</li>
+<li>Ran <code>cargo run -p ruff_cli -- check ../rotki --select TCH -n --fix</code>; verified by eye that the edits looked reasonable and correct, and that there were no panics.</li>
+<li>Ran <code>cargo run -p ruff_cli -- check ../&lt;project&gt; --select TCH -n --fix</code> over a few of my personal projects for which I have <code>mypy</code> setup, and verified that <code>mypy</code> passed without error before and after.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-05-31 03:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-05-31 03:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/autofix/codemods.rs</code>:130 on 2023-05-31 03:18</div>
+            <div class="timeline-body"><p>(This is effectively the inverse of <code>remove_imports</code>, above.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-31 03:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/autofix/codemods.rs</code>:201 on 2023-05-31 03:18</div>
+            <div class="timeline-body"><p>Using LibCST here means we should generally retain comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-31 03:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs</code>:372 on 2023-05-31 03:21</div>
+            <div class="timeline-body"><p>Note that we're generating an edit for every diagnostic, so we're generating an edit for every member in an <code>StmtKind::ImportFrom</code> statement. We may want to generate one edit for the entire statement, like we do for unused imports... But this does work correctly in practice. The main issue is that if you have:</p>
+<pre><code class="language-py">from foo import bar, bar
+</code></pre>
+<p>Then after the fixes, we'll probably give you:</p>
+<pre><code class="language-py">if TYPE_CHECKING:
+    from foo import bar
+    from foo import baz
+</code></pre>
+<p>These will get merged when you run the <code>isort</code> rules, so most users will never see this state (or will have it immediately corrected), but I guess it's not ideal (and it does mean that if you're using the LSP, you need to take one Code Action per member).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-31 03:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-31 03:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_diagnostics/src/fix.rs</code>:132 on 2023-05-31 03:21</div>
+            <div class="timeline-body"><p>Open to suggestions, but given that we're generating three edits for the fix, and they can come in almost any order, this feels like the easiest solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-31 03:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs</code>:372 on 2023-05-31 03:22</div>
+            <div class="timeline-body"><p>The alternative, as hinted above, is that we generate one edit for the entire import statement. We may also want to then generate one <em>diagnostic</em> for the entire import statement? So this would take some refactoring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/importer/mod.rs</code>:83 on 2023-05-31 07:43</div>
+            <div class="timeline-body"><p>Nit: I would expect <code>to_typing_import</code> to return a <code>TypingImport</code>. Maybe <code>to_typing_import_edits</code>?</p>
+<p>Can we document the return type? Why does it return a tuple? What's the first/second edit? Or maybe return a struct here with named fields (and call it <code>TypingImport</code> and you're good with <code>to_typing_import</code> ;))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_type_checking/mod.rs</code>:275 on 2023-05-31 07:44</div>
+            <div class="timeline-body"><p>Can you add a test that contains some comments in the type checking block?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs</code>:375 on 2023-05-31 07:45</div>
+            <div class="timeline-body"><p>Please document why calling <code>unwrap</code> here is safe</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs</code>:376 on 2023-05-31 07:45</div>
+            <div class="timeline-body"><p>This code looks (identical?) to your other PR. Is there an opportunity to share some of the logic?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_diagnostics/src/fix.rs</code>:132 on 2023-05-31 07:46</div>
+            <div class="timeline-body"><p>I think I would prefer storing the <code>Edit</code>s in sorted order internally if this is a constraint that must be uphold. Pushing the responsibility onto rule authors leaks abstraction in my view</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs</code>:372 on 2023-05-31 07:48</div>
+            <div class="timeline-body"><p>Merging the diagnostics on a per-statement level seems desirable to me but we can do this as a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-05-31 07:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/autofix/codemods.rs</code>:163 on 2023-05-31 08:35</div>
+            <div class="timeline-body"><p>nit: can you move this match one scope higher so it's outside the iterator?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/autofix/codemods.rs</code>:206 on 2023-05-31 09:02</div>
+            <div class="timeline-body"><p>https://github.com/charliermarsh/ruff/pull/4749</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/importer/mod.rs</code>:333 on 2023-05-31 09:29</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Return the type checking block that precedes the given position, if any.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/importer/mod.rs</code>:338 on 2023-05-31 09:31</div>
+            <div class="timeline-body"><p>Are there cases where we want to use anything but the first type checking block? Type checking blocks don't suffer from circular imports. Shadowing could be a thing but i'm not aware of any cases</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/flake8_type_checking/snapshots/ruff__rules__flake8_type_checking__tests__exempt_modules.snap</code>:18 on 2023-05-31 09:47</div>
+            <div class="timeline-body"><p>nit: is there a reason why we have blank line after the top level import but not after the type checking block? (Seems to work everywhere but here anyway)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/flake8_type_checking/snapshots/ruff__rules__flake8_type_checking__tests__import_from.snap</code>:25 on 2023-05-31 09:48</div>
+            <div class="timeline-body"><p>really cool that you manage to keep those comments around</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/flake8_type_checking/snapshots/ruff__rules__flake8_type_checking__tests__type_checking_block_after_usage.snap</code>:4 on 2023-05-31 09:52</div>
+            <div class="timeline-body"><p>nit: we could name those <code>type_checking_block_after_usage.py</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-05-31 09:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-05-31 10:07</div>
+            <div class="timeline-body"><p>ecosystem ci looks good (https://gist.github.com/konstin/cf6f633a73a701bc94b089d2066e4675), most interesting case was https://github.com/apache/airflow/blob/27001a23718d6b8b5118eb130be84713af9a4477/airflow/models/<strong>init</strong>.py (module level <code>__getattr__</code> with mypy)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_diagnostics/src/fix.rs</code>:132 on 2023-05-31 17:18</div>
+            <div class="timeline-body"><p>https://github.com/charliermarsh/ruff/pull/4762</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-31 17:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-31 17:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/autofix/codemods.rs</code>:163 on 2023-05-31 17:38</div>
+            <div class="timeline-body"><p>I thought we could, but it turns out we can't because we need to resolve relative imports within the block.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-31 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/importer/mod.rs</code>:338 on 2023-05-31 17:40</div>
+            <div class="timeline-body"><p>Hmm, I guess not. Changed it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-31 17:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_type_checking/rules/typing_only_runtime_import.rs</code>:376 on 2023-05-31 17:45</div>
+            <div class="timeline-body"><p>We have these everywhere that we do statement deletion :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-05-31 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-31 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-05-31 17:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:50:43 UTC
+    </footer>
+</body>
+</html>

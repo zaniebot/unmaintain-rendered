@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use a separate `PrinterFlag` for including fix diffs - astral-sh/ruff #4615</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use a separate <code>PrinterFlag</code> for including fix diffs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4615">#4615</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-05-24 02:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-24 02:43</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Follow-up to my review of #4528 -- I got confused about how the various flags interacted with one another, so opted to change <code>ecosystem_ci</code> from a printer argument, to something that sets a new, dedicated flag within <code>Printer</code>.</p>
+<h2>Test Plan</h2>
+<pre><code class="language-console">❯ cargo run -p ruff_cli -- check --no-cache --select F841 crates/ruff/resources/test/fixtures/flake8_pyi/PYI001.pyi --show-fixes
+    Finished dev [unoptimized + debuginfo] target(s) in 0.11s
+     Running `target/debug/ruff check --no-cache --select F841 crates/ruff/resources/test/fixtures/flake8_pyi/PYI001.pyi --show-fixes`
+crates/ruff/resources/test/fixtures/flake8_pyi/PYI001.pyi:16:5: F841 [*] Local variable `T` is assigned to but never used
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+staging on  charlie/flags:main [$⇡] is 📦 v0.0.269 via 🐍 v3.8.16 via 🦀 v1.69.0
+❯ cargo run -p ruff_cli -- check --no-cache --select F841 crates/ruff/resources/test/fixtures/flake8_pyi/PYI001.pyi --show-fixes --ecosystem-ci
+    Finished dev [unoptimized + debuginfo] target(s) in 0.11s
+     Running `target/debug/ruff check --no-cache --select F841 crates/ruff/resources/test/fixtures/flake8_pyi/PYI001.pyi --show-fixes --ecosystem-ci`
+warning: The formatting of fixes emitted by this option is a work-in-progress, subject to change at any time, and intended only for internal use.
+crates/ruff/resources/test/fixtures/flake8_pyi/PYI001.pyi:16:5: F841 [*] Local variable `T` is assigned to but never used
+ℹ Suggested fix
+13 13 | _P = ParamSpec(&quot;_P&quot;)  # OK
+14 14 |
+15 15 | def f():
+16    |-    T = TypeVar(&quot;T&quot;)  # OK
+   16 |+    TypeVar(&quot;T&quot;)  # OK
+
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-05-24 02:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-24 02:55</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     17.1±0.74ms     2.4 MB/sec    1.00     17.0±0.67ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.0±0.17ms     4.2 MB/sec    1.00      4.0±0.17ms     4.2 MB/sec
+linter/all-rules/numpy/globals.py          1.00   525.3±21.09µs     5.6 MB/sec    1.02   536.0±29.19µs     5.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.2±0.43ms     3.5 MB/sec    1.01      7.3±0.34ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.9±0.23ms     5.1 MB/sec    1.02      8.1±0.33ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1723.5±82.78µs     9.7 MB/sec    1.03  1783.0±72.59µs     9.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00   207.9±12.69µs    14.2 MB/sec    1.02   211.5±10.63µs    14.0 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.8±0.18ms     6.7 MB/sec    1.00      3.8±0.13ms     6.8 MB/sec
+parser/large/dataset.py                    1.00      6.5±0.38ms     6.3 MB/sec    1.02      6.6±0.26ms     6.2 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1243.2±54.14µs    13.4 MB/sec    1.05  1301.4±56.05µs    12.8 MB/sec
+parser/numpy/globals.py                    1.00    123.8±4.66µs    23.8 MB/sec    1.00    124.2±6.01µs    23.8 MB/sec
+parser/pydantic/types.py                   1.00      2.7±0.11ms     9.3 MB/sec    1.02      2.8±0.12ms     9.2 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     16.3±0.15ms     2.5 MB/sec    1.01     16.5±0.30ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.1±0.05ms     4.0 MB/sec    1.00      4.1±0.07ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.01   491.9±11.75µs     6.0 MB/sec    1.00    488.0±5.47µs     6.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.9±0.06ms     3.7 MB/sec    1.01      6.9±0.12ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.01      8.1±0.08ms     5.1 MB/sec    1.00      7.9±0.06ms     5.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02  1701.4±26.64µs     9.8 MB/sec    1.00  1666.2±17.65µs    10.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00    188.4±3.43µs    15.7 MB/sec    1.01    190.3±6.03µs    15.5 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.6±0.04ms     7.1 MB/sec    1.00      3.6±0.08ms     7.1 MB/sec
+parser/large/dataset.py                    1.00      6.5±0.06ms     6.3 MB/sec    1.00      6.5±0.05ms     6.3 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1234.1±13.08µs    13.5 MB/sec    1.00  1232.4±19.95µs    13.5 MB/sec
+parser/numpy/globals.py                    1.01    125.9±3.70µs    23.4 MB/sec    1.00    124.9±2.11µs    23.6 MB/sec
+parser/pydantic/types.py                   1.00      2.8±0.03ms     9.3 MB/sec    1.00      2.8±0.03ms     9.2 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-05-24 06:34</div>
+            <div class="timeline-body"><p>Looks good to me. I think @konstin's rational for adding an explicit boolean argument was to insentivise that this is a dev only feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-05-24 07:16</div>
+            <div class="timeline-body"><p>given that we eventually want this to be part of ruff proper, this is a good idea</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-05-24 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-24 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-05-24 14:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:50:43 UTC
+    </footer>
+</body>
+</html>

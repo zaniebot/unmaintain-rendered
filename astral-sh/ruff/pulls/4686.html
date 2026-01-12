@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove globals table from `Scope` - astral-sh/ruff #4686</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove globals table from <code>Scope</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4686">#4686</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-05-27 20:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-27 20:02</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is a follow-up to #4648 to further reduce the size of <code>Scope</code>.</p>
+<p>At present, on each <code>Scope</code>, we store an optional <code>globals</code> hash map, which enumerates all the symbols declared as &quot;global&quot; in the scope. (We need to store these persistently and prior to traversal, since as we encountered bindings through the scope body, we need to know if they're declared as global <em>later on</em>.) Most scopes don't have any globals, so storing a hash map per scope unnecessarily increases the size of a very common struct.</p>
+<p>This PR instead uses an arena to store a vector of hash maps, and stores the <code>Option&lt;GlobalsId&gt;</code> on <code>Scope</code> instead, as suggested by @MichaReiser in the aforementioned PR. It should reduce the size by 40 bytes per allocation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-27 20:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:554 on 2023-05-27 20:03</div>
+            <div class="timeline-body"><p><code>set_*</code> feels bad, it'd be nice to instead provide these when we push the <code>Scope</code>, but that API only accepts a <code>ScopeKind</code> right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-27 20:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/globals.rs</code>:41 on 2023-05-27 20:03</div>
+            <div class="timeline-body"><p>I may have over-abstracted this a bit, here + with <code>GlobalsBuilder</code>? Curious to get reactions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-27 20:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/globals.rs</code>:41 on 2023-05-27 20:12</div>
+            <div class="timeline-body"><p>I think it makes sense. I would rename it to GlobalsVisitor because it implements visitor and doesn't really provide builder methods (other than finish)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/globals.rs</code>:44 on 2023-05-27 20:14</div>
+            <div class="timeline-body"><p>Nit: what do you think to returning an option here that is none if there are no globals? Would it allow to remove len and is empty?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:577 on 2023-05-27 20:16</div>
+            <div class="timeline-body"><p>Nit: rename to 'global'? The rust convention is to prefix the setter with set but use the name alone for the getter</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-05-27 20:17</div>
+            <div class="timeline-body"><p>Neat. Let's see if this improves performance</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-27 20:30</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.1±0.05ms     2.9 MB/sec    1.00     14.0±0.10ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.00ms     4.9 MB/sec    1.00      3.4±0.01ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.01    425.5±0.82µs     6.9 MB/sec    1.00    423.4±0.53µs     7.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.9±0.01ms     4.3 MB/sec    1.00      5.9±0.01ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.7±0.01ms     6.1 MB/sec    1.02      6.8±0.02ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1485.3±1.56µs    11.2 MB/sec    1.02   1510.0±3.37µs    11.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00    167.5±0.25µs    17.6 MB/sec    1.03    171.8±0.98µs    17.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.01ms     8.3 MB/sec    1.02      3.1±0.01ms     8.2 MB/sec
+parser/large/dataset.py                    1.00      5.2±0.00ms     7.9 MB/sec    1.16      6.0±0.01ms     6.8 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1021.8±0.41µs    16.3 MB/sec    1.13   1153.1±0.46µs    14.4 MB/sec
+parser/numpy/globals.py                    1.00    106.0±1.11µs    27.8 MB/sec    1.09    115.9±0.29µs    25.5 MB/sec
+parser/pydantic/types.py                   1.00      2.2±0.00ms    11.4 MB/sec    1.13      2.5±0.01ms    10.1 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     17.1±0.32ms     2.4 MB/sec    1.00     17.1±0.24ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.3±0.08ms     3.9 MB/sec    1.01      4.3±0.10ms     3.8 MB/sec
+linter/all-rules/numpy/globals.py          1.02   512.5±11.23µs     5.8 MB/sec    1.00    503.1±6.84µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.3±0.17ms     3.5 MB/sec    1.00      7.2±0.17ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.4±0.11ms     4.8 MB/sec    1.00      8.4±0.14ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1798.2±30.67µs     9.3 MB/sec    1.00  1782.4±23.68µs     9.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    204.5±4.90µs    14.4 MB/sec    1.03   211.2±12.89µs    14.0 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.06ms     6.8 MB/sec    1.01      3.8±0.07ms     6.7 MB/sec
+parser/large/dataset.py                    1.01      6.5±0.08ms     6.2 MB/sec    1.00      6.5±0.07ms     6.3 MB/sec
+parser/numpy/ctypeslib.py                  1.01  1243.4±17.61µs    13.4 MB/sec    1.00  1231.2±28.31µs    13.5 MB/sec
+parser/numpy/globals.py                    1.01    128.0±9.76µs    23.1 MB/sec    1.00    126.5±2.74µs    23.3 MB/sec
+parser/pydantic/types.py                   1.00      2.8±0.06ms     9.1 MB/sec    1.00      2.8±0.07ms     9.1 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/globals.rs</code>:41 on 2023-05-27 21:08</div>
+            <div class="timeline-body"><p>Java Java Java</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-27 21:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-27 21:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_semantic/src/globals.rs</code>:41 on 2023-05-27 21:09</div>
+            <div class="timeline-body"><p>Builder all the things</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-05-28 02:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-28 02:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-05-28 02:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:50:43 UTC
+    </footer>
+</body>
+</html>

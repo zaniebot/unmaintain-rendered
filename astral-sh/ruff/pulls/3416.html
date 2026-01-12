@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[pylint] unspecified-encoding (W1514) - astral-sh/ruff #3416</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[pylint] unspecified-encoding (W1514)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/3416">#3416</a>
+        opened by <a href="https://github.com/csko">@csko</a>
+        on 2023-03-09 10:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/csko">@csko</a> on 2023-03-09 10:20</div>
+            <div class="timeline-body"><p>Partially addresses https://github.com/charliermarsh/ruff/issues/3278</p>
+<p>Implements the core features for w1514, including having <code>&quot;b&quot;</code> in the <code>mode</code> arg.</p>
+<p>Not all fixtures work properly, in particular:</p>
+<ul>
+<li>this only covers the builtin <code>open()</code></li>
+<li>variables are not inferred; <code>open(x, encoding=y)</code></li>
+<li>this does not handle class type arguments</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pylint/rules/unspecified_encoding.rs</code>:62 on 2023-03-13 08:08</div>
+            <div class="timeline-body"><p>Nit: I recommend switching the <code>is_builtin</code> check and testing the function name because testing <code>is_builtin</code> is more expensive than comparing two strings</p>
+<pre><code class="language-suggestion">    // Look for open().
+    if !matches!(&amp;func.node, ExprKind::Name {id, ..} if id == OPEN_FUNC_NAME) {
+        return;
+    }
+    
+    // If `open` has been rebound, skip this check entirely.
+    if !checker.ctx.is_builtin(OPEN_FUNC_NAME) {
+        return;
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/pylint/rules/unspecified_encoding.rs</code>:80 on 2023-03-13 08:10</div>
+            <div class="timeline-body"><p>Nit: I recommend inlining the <code>ENCODING_KEYWORD_ARGUMENT</code> constant because it is only used once and it can break the reading flow if I have to jump to the top to understand what the value of the constant is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-03-13 08:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-03-17 03:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/resources/test/fixtures/pylint/unspecified_encoding.py</code>:12 on 2023-03-17 03:48</div>
+            <div class="timeline-body"><p>One issue here is that this rule is in conflict with <code>UP015</code>, which removes redundant open modes (so, e.g., it changes <code>open(&quot;foo&quot;, &quot;r&quot;)</code> to <code>open(&quot;foo&quot;)</code>). We'd have to mark these rules as incompatible in the <code>INCOMPATIBLE_CODES</code> slice in <code>crates/ruff/src/registry.rs</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-03-17 03:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-12 01:33</div>
+            <div class="timeline-body"><p>Closing to keep the pull request queue up-to-date -- we'd have to resolve some incompatibilities with existing rules here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-12 01:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:50:41 UTC
+    </footer>
+</body>
+</html>

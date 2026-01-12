@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invert quote-style when generating code within f-strings - astral-sh/ruff #4487</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Invert quote-style when generating code within f-strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4487">#4487</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-05-18 02:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-18 02:47</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>When we generate source code from an AST (via <code>Generator</code>), we have a preferred quote style, based on the inferred quote style in the file. Unfortunately, when we try to generate autofixes within f-strings, the <code>Generator</code> is unaware of the fact that we're &quot;inside&quot; an f-string, and so continues to use that preferred quote style, which often leads to syntax errors.</p>
+<p>This PR modifies our logic to detect when we're inside a single-quoted f-string, and then pass in the &quot;inverted&quot; quote style based on whatever was used to quote that f-string. This in turn requires that we track all f-strings, and are able to map from the current expression to the surrounding f-strings.</p>
+<p>Two considerations here:</p>
+<ol>
+<li>The quote style that we provide to <code>Generator</code> is really a &quot;preferred&quot; quote style. The <code>Generator</code> will &quot;ignore&quot; that preference if, e.g., it lets us avoid escaping a quote within a string, similar to Black's preferences. This would be problematic within f-strings. However, f-strings can't contain backslashes (it's a syntax error?), so... it might be fine?</li>
+<li>This doesn't really deal with <em>nested</em> f-strings. I'm not sure what we want to do in those cases. The grammar is so limiting and complicated. We may want to avoid fixing issues within nested f-strings altogether?</li>
+</ol>
+<p>Closes #4322.</p>
+<p>Closes #4324.</p>
+<p>Closes #4323.</p>
+<p>Closes #4321.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-05-18 02:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-05-18 02:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-18 02:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:140 on 2023-05-18 02:48</div>
+            <div class="timeline-body"><p>I don't know where this belongs -- it requires the <code>Context</code>, <code>Indexer</code>, <code>Locator</code>, and <code>Stylist</code>, so right now it lives on <code>Checker</code>...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-18 02:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/flake8_bandit/rules/hardcoded_sql_expression.rs</code>:65 on 2023-05-18 02:48</div>
+            <div class="timeline-body"><p>These are all mechanical.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-18 02:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/source_code/indexer.rs</code>:81 on 2023-05-18 02:48</div>
+            <div class="timeline-body"><p>We now track f-string ranges, which lets us do a binary search to find the containing f-string whenever we need to fix within an f-string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-18 02:49</div>
+            <div class="timeline-body"><p>As part of this effort... we may want to consider <code>Generator</code> to be deprecated, or an anti-pattern. In addition to this problem (it's context-independent), it also removes trivia, like comments. It is very useful, and we don't have a great replacement for it, but...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-18 02:58</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.2±0.13ms     2.9 MB/sec    1.00     14.2±0.05ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.01ms     4.9 MB/sec    1.00      3.4±0.02ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00    424.9±0.94µs     6.9 MB/sec    1.00    426.7±1.27µs     6.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.9±0.04ms     4.3 MB/sec    1.00      5.9±0.03ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.8±0.03ms     6.0 MB/sec    1.00      6.8±0.02ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1461.2±4.43µs    11.4 MB/sec    1.00   1460.5±3.69µs    11.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    164.5±0.29µs    17.9 MB/sec    1.00    164.6±1.07µs    17.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.01ms     8.4 MB/sec    1.01      3.1±0.04ms     8.3 MB/sec
+parser/large/dataset.py                    1.00      5.4±0.01ms     7.6 MB/sec    1.01      5.4±0.01ms     7.5 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1053.8±1.00µs    15.8 MB/sec    1.01   1062.5±7.26µs    15.7 MB/sec
+parser/numpy/globals.py                    1.00    108.3±0.51µs    27.2 MB/sec    1.00    108.8±0.33µs    27.1 MB/sec
+parser/pydantic/types.py                   1.00      2.3±0.00ms    11.2 MB/sec    1.01      2.3±0.00ms    11.1 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     16.5±0.10ms     2.5 MB/sec    1.00     16.3±0.14ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.2±0.05ms     4.0 MB/sec    1.00      4.2±0.04ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    494.4±5.36µs     6.0 MB/sec    1.00    496.7±5.31µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.9±0.06ms     3.7 MB/sec    1.00      6.9±0.04ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.2±0.16ms     5.0 MB/sec    1.00      8.2±0.04ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1705.3±16.01µs     9.8 MB/sec    1.02  1732.8±13.39µs     9.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00    194.9±2.44µs    15.1 MB/sec    1.02    199.2±4.24µs    14.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.6±0.03ms     7.0 MB/sec    1.01      3.7±0.03ms     7.0 MB/sec
+parser/large/dataset.py                    1.00      7.2±0.08ms     5.7 MB/sec    1.00      7.1±0.04ms     5.7 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1345.3±13.25µs    12.4 MB/sec    1.00  1341.8±16.59µs    12.4 MB/sec
+parser/numpy/globals.py                    1.00    137.0±3.22µs    21.5 MB/sec    1.00    137.0±2.34µs    21.5 MB/sec
+parser/pydantic/types.py                   1.00      3.0±0.03ms     8.5 MB/sec    1.00      3.0±0.03ms     8.5 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-18 12:16</div>
+            <div class="timeline-body"><blockquote>
+<p>This PR modifies our logic by &quot;inverting&quot; the preferred quote style whenever we're inside a single-quoted f-string. This in turn requires that we track all f-strings, and are able to map from the current expression to the surrounding f-strings.</p>
+</blockquote>
+<p>My understanding is that the preferred quote style only reflects the most used quote sign. This does not guarantee that the source code contains no fstrings with the <em>not preferred</em> fstring.</p>
+<p>Edit: Your implementation handles this correctly, I think.</p>
+<blockquote>
+<p>This doesn't really deal with nested f-strings. I'm not sure what we want to do in those cases. The grammar is so limiting and complicated. We may want to avoid fixing issues within nested f-strings altogether?</p>
+</blockquote>
+<p>An alternative would be to make this a <code>manual</code> fix. This won't be very helpful now because our default text renderer doesn't show fixes (we should improve our diagnostics).</p>
+<p>How difficult do you think would it be to add source map support to the <code>Generator</code>? We could then generate the code for the enclosing expression or statement and then extract the fstring range. They way this could work is that the generator writes a source map entry at the start and end of every node, mapping the node's start/end offset to the offset in the generated source (similar to the Printer in the formatter)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:163 on 2023-05-18 12:18</div>
+            <div class="timeline-body"><p>Nit: I think it would be good to move this logic to the <code>Indexer</code>. It makes very explicit assumption about <code>string_ranges</code> and it may not be obvious to someone working on <code>Indexer</code> that some code is making these assumptions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/source_code/indexer.rs</code>:118 on 2023-05-18 12:19</div>
+            <div class="timeline-body"><p>I would prefer to avoid exposing too much of the assumption on how the ranges is stored and instead provide semantic methods to find an fstring, given a range.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/source_code/indexer.rs</code>:80 on 2023-05-18 12:20</div>
+            <div class="timeline-body"><p>Can an fstring be triple quoted? If not, use an <code>else if</code> or use two separate <code>match</code> arms, one for triple-quoted strings and another for fstrings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:24 on 2023-05-18 12:22</div>
+            <div class="timeline-body"><p>For another PR: Should we move these methods to <code>Generator</code> instead, now that they always require a generator.</p>
+<pre><code>generator.unparse_expr(expr) 
+// or
+
+generator.generate_expr(expr)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-05-18 12:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-18 13:03</div>
+            <div class="timeline-body"><blockquote>
+<p>Edit: Your implementation handles this correctly, I think.</p>
+</blockquote>
+<p>👍 Yeah, sorry, the implementation does do this correctly, but I'll improve the summary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/source_code/indexer.rs</code>:80 on 2023-05-18 13:05</div>
+            <div class="timeline-body"><p>It can! We actually don't need to use those anywhere since we only care about single-quoted f-strings... But it seems strange to omit them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-18 13:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/source_code/indexer.rs</code>:118 on 2023-05-18 13:05</div>
+            <div class="timeline-body"><p>Good idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-18 13:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-18 13:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:163 on 2023-05-18 13:05</div>
+            <div class="timeline-body"><p>Good idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-18 13:06</div>
+            <div class="timeline-body"><blockquote>
+<p>How difficult do you think would it be to add source map support to the Generator? We could then generate the code for the enclosing expression or statement and then extract the fstring range. They way this could work is that the generator writes a source map entry at the start and end of every node, mapping the node's start/end offset to the offset in the generated source (similar to the Printer in the formatter)</p>
+</blockquote>
+<p>Can you elaborate on this a bit more? What does this buy us? (Genuinely asking, not objecting.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-05-18 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-18 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-05-18 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-05-19 07:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/pyupgrade/snapshots/ruff__rules__pyupgrade__tests__UP018.py.snap</code>:139 on 2023-05-19 07:25</div>
+            <div class="timeline-body"><p>that suggestion looks wrong</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-19 07:26</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you elaborate on this a bit more? What does this buy us? (Genuinely asking, not objecting.)</p>
+</blockquote>
+<p>I wrote this before I understood that your fix solves the problem. The main benefit would be that it would make the Generator context aware. You won't need any special handling because you generate on a statement level.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:50:42 UTC
+    </footer>
+</body>
+</html>

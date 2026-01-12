@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Include empty success test in JUnit output - astral-sh/ruff #4537</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Include empty success test in JUnit output</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4537">#4537</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-05-20 03:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-20 03:33</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>When Jenkins encounters a JUnit XML file that doesn't contain <em>any</em> test results, by default, it errors. You can configure Jenkins to treat empty files as &quot;successful&quot;, but that opens the door to silently ignoring valid errors in your configuration or test running.</p>
+<p>This PR modifies the JUnit reporter to include a single successful test if Ruff doesn't find any valid diagnostics.</p>
+<p>Closes #4502.</p>
+<h2>Test Plan</h2>
+<p>Ran <code>cargo run -p ruff_cli -- check foo.py --format junit --select F</code> on an empty file:</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;testsuites name=&quot;ruff&quot; tests=&quot;1&quot; failures=&quot;0&quot; errors=&quot;0&quot;&gt;
+    &lt;testsuite name=&quot;ruff&quot; tests=&quot;1&quot; disabled=&quot;0&quot; errors=&quot;0&quot; failures=&quot;0&quot; package=&quot;org.ruff&quot;&gt;
+        &lt;testcase name=&quot;No errors found&quot; classname=&quot;ruff&quot;&gt;
+        &lt;/testcase&gt;
+    &lt;/testsuite&gt;
+&lt;/testsuites&gt;
+</code></pre>
+<p>I also uploaded this to a JUnit result visualizer online, and it looked reasonable:</p>
+<img width="1792" alt="Screen Shot 2023-05-19 at 11 34 15 PM" src="https://github.com/charliermarsh/ruff/assets/1309177/79d6c876-ec0d-473d-9c49-5675133f6801">
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-05-20 03:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-20 03:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-05-20 03:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-20 03:42</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.2±0.07ms     2.9 MB/sec    1.00     14.2±0.10ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.01ms     4.9 MB/sec    1.00      3.4±0.01ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00    421.6±1.75µs     7.0 MB/sec    1.01    424.5±1.27µs     7.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.8±0.01ms     4.4 MB/sec    1.00      5.9±0.03ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.7±0.01ms     6.1 MB/sec    1.01      6.8±0.01ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1451.7±1.74µs    11.5 MB/sec    1.00   1453.2±1.49µs    11.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    161.0±0.73µs    18.3 MB/sec    1.00    161.5±1.28µs    18.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.01ms     8.5 MB/sec    1.01      3.1±0.01ms     8.4 MB/sec
+parser/large/dataset.py                    1.00      5.4±0.00ms     7.6 MB/sec    1.21      6.5±0.01ms     6.3 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1062.6±0.76µs    15.7 MB/sec    1.16   1235.2±8.63µs    13.5 MB/sec
+parser/numpy/globals.py                    1.00    109.1±0.23µs    27.0 MB/sec    1.12    122.8±0.13µs    24.0 MB/sec
+parser/pydantic/types.py                   1.00      2.3±0.01ms    11.0 MB/sec    1.16      2.7±0.00ms     9.5 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     17.4±0.43ms     2.3 MB/sec    1.00     17.4±0.39ms     2.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.02      4.4±0.15ms     3.8 MB/sec    1.00      4.3±0.12ms     3.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00   504.0±18.78µs     5.9 MB/sec    1.02   514.7±23.72µs     5.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.2±0.17ms     3.5 MB/sec    1.01      7.3±0.20ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.5±0.21ms     4.8 MB/sec    1.00      8.5±0.22ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1770.5±49.87µs     9.4 MB/sec    1.00  1770.7±36.91µs     9.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    198.5±6.84µs    14.9 MB/sec    1.04   206.1±13.03µs    14.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.09ms     6.7 MB/sec    1.00      3.8±0.08ms     6.7 MB/sec
+parser/large/dataset.py                    1.01      6.9±0.11ms     5.9 MB/sec    1.00      6.8±0.10ms     6.0 MB/sec
+parser/numpy/ctypeslib.py                  1.02  1322.6±55.20µs    12.6 MB/sec    1.00  1299.3±33.89µs    12.8 MB/sec
+parser/numpy/globals.py                    1.01    135.1±5.09µs    21.8 MB/sec    1.00    133.3±4.24µs    22.1 MB/sec
+parser/pydantic/types.py                   1.01      2.9±0.08ms     8.8 MB/sec    1.00      2.9±0.07ms     8.8 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:50:42 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid enforcing native-literals rule within nested f-strings - astral-sh/ruff #4488</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid enforcing native-literals rule within nested f-strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/4488">#4488</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-05-18 02:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-18 02:59</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The permitted grammar within a nested f-string is really hard to work with. For example, there's typically no way to include quotation marks, unless one of the surrounding strings is triple-quoted? Or something like that. So, again, for example, our rule that flags usages of <code>str()</code> can run into problems when it sees <code>f&quot;{f'{str()}'}&quot;</code> -- there's no way to rewrite <code>str()</code> as <code>&quot;&quot;</code> or <code>''</code>.</p>
+<p>This PR turns off that rule specifically within nested f-strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-05-18 03:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-05-18 03:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-05-18 03:11</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.0±0.27ms     2.9 MB/sec    1.00     14.0±0.29ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.12ms     4.9 MB/sec    1.00      3.4±0.18ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.01   435.5±10.13µs     6.8 MB/sec    1.00   432.4±16.64µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.9±0.13ms     4.3 MB/sec    1.01      5.9±0.20ms     4.3 MB/sec
+linter/default-rules/large/dataset.py      1.02      6.8±0.23ms     6.0 MB/sec    1.00      6.7±0.19ms     6.1 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1477.7±46.73µs    11.3 MB/sec    1.01  1490.7±62.35µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    175.3±5.07µs    16.8 MB/sec    1.03   180.8±12.00µs    16.3 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.1±0.10ms     8.2 MB/sec    1.00      3.1±0.11ms     8.3 MB/sec
+parser/large/dataset.py                    1.02      5.4±0.13ms     7.6 MB/sec    1.00      5.2±0.15ms     7.8 MB/sec
+parser/numpy/ctypeslib.py                  1.02  1047.7±22.71µs    15.9 MB/sec    1.00  1027.2±29.96µs    16.2 MB/sec
+parser/numpy/globals.py                    1.05    108.1±4.80µs    27.3 MB/sec    1.00    103.4±3.50µs    28.5 MB/sec
+parser/pydantic/types.py                   1.03      2.3±0.07ms    11.0 MB/sec    1.00      2.2±0.07ms    11.4 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     17.3±0.74ms     2.4 MB/sec    1.02     17.6±0.31ms     2.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.3±0.13ms     3.9 MB/sec    1.01      4.4±0.11ms     3.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00   510.4±20.36µs     5.8 MB/sec    1.01   515.3±20.77µs     5.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.2±0.25ms     3.5 MB/sec    1.02      7.3±0.17ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.5±0.26ms     4.8 MB/sec    1.10      9.4±0.28ms     4.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1802.5±57.31µs     9.2 MB/sec    1.08  1942.4±67.37µs     8.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00   211.3±11.44µs    14.0 MB/sec    1.06   224.7±15.55µs    13.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.9±0.10ms     6.6 MB/sec    1.08      4.2±0.15ms     6.1 MB/sec
+parser/large/dataset.py                    1.01      6.7±0.12ms     6.1 MB/sec    1.00      6.7±0.13ms     6.1 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1254.2±32.48µs    13.3 MB/sec    1.01  1262.4±53.73µs    13.2 MB/sec
+parser/numpy/globals.py                    1.02    129.0±6.44µs    22.9 MB/sec    1.00    127.0±3.90µs    23.2 MB/sec
+parser/pydantic/types.py                   1.01      2.9±0.09ms     8.9 MB/sec    1.00      2.8±0.08ms     9.0 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-18 12:26</div>
+            <div class="timeline-body"><blockquote>
+<p>This is a pretty bad fix, since we'll still end up using unparse_expr within nested f-strings to format some diagnostics, which means we'll show users code and suggestions that won't quite work. But, our options are pretty limited here.</p>
+</blockquote>
+<p>That seems like a good use case for the <code>Applicability::Manual</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-18 12:53</div>
+            <div class="timeline-body"><p>Would this require that we go through every rule and add a check for <code>ctx.in_nested_f_string()</code>, and use the appropriate applicability method if so?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-18 13:23</div>
+            <div class="timeline-body"><blockquote>
+<p>Would this require that we go through every rule and add a check for <code>ctx.in_nested_f_string()</code>, and use the appropriate applicability method if so?</p>
+</blockquote>
+<p>Hmm yeah. That sounds annoying and very fragile</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:119 on 2023-05-19 07:09</div>
+            <div class="timeline-body"><p>non specific nit, is there a reason why we always do backticks inside links?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:120 on 2023-05-19 07:42</div>
+            <div class="timeline-body"><p>Adding additional logic here is problematic because we might now no-longer generate fixes for rules that are otherwise marked as <code>AutofixKind::Always</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-19 07:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-05-19 08:21</div>
+            <div class="timeline-body"><p>I checked 3 of the remaining autofix errors and it seems none of them were f-string related :tada:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2023-05-19 12:52</div>
+            <div class="timeline-body"><p>One note to add here is that most of these will valid syntax with <a href="https://peps.python.org/pep-0701/">PEP 701</a> implemented, currently targeted for python 3.12, i.e. we could very ambitiously allow autofixes in f-strings for projects with minimum python version 3.12.</p>
+<p><em>Originally posted by @konstin in https://github.com/charliermarsh/ruff/issues/4324#issuecomment-1540775994</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:120 on 2023-05-19 18:16</div>
+            <div class="timeline-body"><p>Yeah. I'm not sure how else to enforce this though. Any ideas? :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-05-19 18:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-05-22 08:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/checkers/ast/mod.rs</code>:120 on 2023-05-22 08:02</div>
+            <div class="timeline-body"><p>Not really. The most ideal solution in my view would be to automatically downgrade all fixes to <code>Manual</code> but this is hard today because ruff has no centralized logic collecting all diagnostics (every rule has the liberty to manipulate the <code>diagnostics</code> vec).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Avoid autofixing within nested f-strings" to "Avoid enforcing native-literals rule within nested f-strings" by @charliermarsh on 2023-06-02 03:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-06-02 04:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-02 04:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-06-02 04:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 03:50:42 UTC
+    </footer>
+</body>
+</html>
