@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add TOML files to `SourceType` - astral-sh/ruff #6929</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add TOML files to <code>SourceType</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6929">#6929</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-28 01:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-28 01:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a higher-level enum (<code>SourceType</code>) around <code>PySourceType</code> to allow us to use the same detection path to handle TOML files. Right now, we have ad hoc <code>is_pyproject_toml</code> checks littered around, and some codepaths are omitting that logic altogether (like <code>add_noqa</code>). Instead, we should always be required to check the source type and handle TOML files as appropriate.</p>
+<p>This PR will also help with our pre-commit capabilities. If we add <code>toml</code> to pre-commit (to support <code>pyproject.toml</code>), pre-commit will start to pass <em>other</em> files to Ruff (along with <code>poetry.lock</code> and <code>Pipfile</code> -- see <a href="https://github.com/pre-commit/identify/blob/b59996304fea80025d32abc3ac8f7212a9e7380d/identify/extensions.py#L355">identify</a>). By detecting those files and handling those cases, we avoid attempting to parse them as Python files, which would lead to pre-commit errors. (We tried to add <code>toml</code> to pre-commit here (https://github.com/astral-sh/ruff-pre-commit/pull/44), but had to revert here (https://github.com/astral-sh/ruff-pre-commit/pull/45) as it led to the pre-commit hook attempting to parse <code>poetry.lock</code> files as Python files.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-28 01:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2023-08-28 01:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-28 01:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_stdlib/src/path.rs</code>:4 on 2023-08-28 01:58</div>
+            <div class="timeline-body"><p>Unused.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-28 01:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/lib.rs</code>:86 on 2023-08-28 01:58</div>
+            <div class="timeline-body"><p>It's slightly problematic that we assume any other files are Python files, but it's the only way to support custom Python file extensions right now. (This is an unchanged behavior.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-28 02:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:559 on 2023-08-28 02:01</div>
+            <div class="timeline-body"><p>It'd be nice to remove this, but <code>SourceKind</code> is in <code>ruff</code> and the <code>try_from_path</code> method relies on a lot of things that are in <code>ruff_cli</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-28 02:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:443 on 2023-08-28 02:02</div>
+            <div class="timeline-body"><p>This is the kind of thing I'm trying to prevent with this PR. Previously, this code ignored <code>pyproject.toml</code> entirely and would've ended up trying to parse <code>pyproject.toml</code> files as Python files... Now, we're at least forced to ignore them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:254 on 2023-08-28 02:03</div>
+            <div class="timeline-body"><p>Ignore other TOML files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-28 02:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-28 07:25</div>
+            <div class="timeline-body"><p>This seems to be an improvement overall but I do find it confusing that <code>SourceType</code> now mixes identifying dedicated file types / dialects AND identifying files by name.</p>
+<p>My longterm goal to untangle this would be to move the whole Toml handling out of <code>ruff</code> (or at least, <code>ruff_python_linter</code>) by:</p>
+<ul>
+<li>Introducing a new <code>ExtensionHandler</code> trait similar to rome https://github.com/rome/tools/blob/1dcd62b169e875b7048f63efb5f6636d2152334c/crates/rome_service/src/file_handlers/mod.rs#L249-L273</li>
+<li>Moving the toml linting to its own crate with its own <code>ExtensionHandler</code>.</li>
+<li>The CLI uses the extension handlers to find the right handler, then calls <code>lint</code> if the handler supports linting.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-28 14:35</div>
+            <div class="timeline-body"><p>I feel similarly, which is that this is an improvement but the abstractions are lacking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-28 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-28 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-28 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-28 15:02</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:46:15 UTC
+    </footer>
+</body>
+</html>

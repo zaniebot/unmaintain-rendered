@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove some indexing - astral-sh/ruff #6728</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove some indexing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6728">#6728</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-08-21 14:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-08-21 14:41</div>
+            <div class="timeline-body"><p><strong>Summary</strong> A common pattern in the code used to be</p>
+<pre><code class="language-rust">if statements.len() != 1 {
+    return;
+}
+use_single_entry(statements[0])?;
+</code></pre>
+<p>which can be better expressed as</p>
+<pre><code class="language-rust">let [statement] = statements else {
+    return;
+};
+use_single_entry(statements)?;
+</code></pre>
+<p>Direct indexing can cause panics if you don't manually take care of checking the length, while matching (such as if-let or let-else) can never panic.</p>
+<p>This isn't a complete refactor, i've just removed some of the obvious cases. I've specifically looked for <code>.len() != 1</code> and fixed those.</p>
+<p><strong>Test Plan</strong> No functional changes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @konstin on 2023-08-21 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-08-21 14:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2023-08-21 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-08-21 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-21 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-21 14:56</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      3.3±0.02ms    12.2 MB/sec    1.00      3.4±0.02ms    12.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00    701.5±3.11µs    23.7 MB/sec    1.01    705.6±2.83µs    23.6 MB/sec
+formatter/numpy/globals.py                 1.00     73.5±0.29µs    40.1 MB/sec    1.01     74.2±1.04µs    39.8 MB/sec
+formatter/pydantic/types.py                1.00  1366.8±14.55µs    18.7 MB/sec    1.01  1383.7±23.86µs    18.4 MB/sec
+linter/all-rules/large/dataset.py          1.00     10.1±0.02ms     4.0 MB/sec    1.00     10.1±0.03ms     4.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      2.7±0.01ms     6.1 MB/sec    1.00      2.7±0.01ms     6.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00    389.5±2.23µs     7.6 MB/sec    1.01    394.1±1.06µs     7.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.3±0.03ms     4.8 MB/sec    1.00      5.3±0.01ms     4.8 MB/sec
+linter/default-rules/large/dataset.py      1.01      5.4±0.01ms     7.5 MB/sec    1.00      5.4±0.02ms     7.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1204.6±7.65µs    13.8 MB/sec    1.00   1200.9±2.76µs    13.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    140.8±0.72µs    21.0 MB/sec    1.00    140.4±2.57µs    21.0 MB/sec
+linter/default-rules/pydantic/types.py     1.01      2.5±0.01ms    10.4 MB/sec    1.00      2.4±0.01ms    10.4 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      4.4±0.12ms     9.3 MB/sec    1.02      4.4±0.12ms     9.2 MB/sec
+formatter/numpy/ctypeslib.py               1.00   904.2±26.38µs    18.4 MB/sec    1.00   906.6±24.96µs    18.4 MB/sec
+formatter/numpy/globals.py                 1.00     93.8±3.18µs    31.5 MB/sec    1.03     96.2±5.22µs    30.7 MB/sec
+formatter/pydantic/types.py                1.00  1811.5±48.96µs    14.1 MB/sec    1.03  1858.8±57.54µs    13.7 MB/sec
+linter/all-rules/large/dataset.py          1.00     14.2±0.27ms     2.9 MB/sec    1.07     15.2±0.20ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.9±0.10ms     4.3 MB/sec    1.06      4.1±0.10ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.01   531.1±18.46µs     5.6 MB/sec    1.00   527.8±15.36µs     5.6 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.6±0.29ms     3.3 MB/sec    1.04      7.9±0.11ms     3.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.3±0.14ms     4.9 MB/sec    1.03      8.6±0.16ms     4.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1771.4±39.48µs     9.4 MB/sec    1.03  1818.3±39.18µs     9.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    204.4±5.40µs    14.4 MB/sec    1.03    211.5±5.03µs    14.0 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.7±0.10ms     6.8 MB/sec    1.02      3.8±0.07ms     6.7 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:46:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Format empty lines in stub files like black's preview style - astral-sh/ruff #7206</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Format empty lines in stub files like black's preview style</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7206">#7206</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-09-06 17:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-09-06 17:17</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fix all but one empty line differences with the black preview style in typeshed. The remaining differences are breaking with type comments and trailing commas in function definitions.</p>
+<p>I compared the empty line differences with the preview mode of black since stable has some oddities that would have been hard to replicate (https://github.com/psf/black/issues/3861). Additionally, it assumes the style proposed in https://github.com/psf/black/issues/3862.</p>
+<p>An edge case that also surfaced with typeshed are newline before trailing module comments.</p>
+<p><strong>main</strong></p>
+<p>| project      | similarity index  | total files       | changed files     |
+|--------------|------------------:|------------------:|------------------:|
+| cpython      |           0.76083 |              1789 |              1632 |
+| django       |           0.99966 |              2760 |                58 |
+| transformers |           0.99930 |              2587 |               447 |
+| twine        |           1.00000 |                33 |                 0 |
+| <strong>typeshed</strong>     |           0.99978 |              3496 |              <strong>2173</strong> |
+| warehouse    |           0.99825 |               648 |                22 |
+| zulip        |           0.99950 |              1437 |                27 |</p>
+<p><strong>PR</strong>
+| project      | similarity index  | total files       | changed files     |
+|--------------|------------------:|------------------:|------------------:|
+| cpython      |           0.76083 |              1789 |              1632 |
+| django       |           0.99966 |              2760 |                58 |
+| transformers |           0.99930 |              2587 |               447 |
+| twine        |           1.00000 |                33 |                 0 |
+| <strong>typeshed</strong>     |           0.99983 |              3496 |                <strong>18</strong> |
+| warehouse    |           0.99825 |               648 |                22 |
+| zulip        |           0.99950 |              1437 |                27 |</p>
+<p>Closes #6723</p>
+<h2>Test Plan</h2>
+<p>The main driver was the typeshed diff. I added new test cases for all kinds of possible empty line combinations in stub files, test cases for newlines before trailing module comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @konstin on 2023-09-06 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @konstin on 2023-09-06 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Empty line rules for stub files" to "Format empty lines in stub files closer to black's preview style" by @konstin on 2023-09-08 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-09-08 15:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/statement/stmt_class_def.rs</code>:135 on 2023-09-08 15:26</div>
+            <div class="timeline-body"><p>it's a bit counterintuitive that the exceptions are the named cases</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2023-09-08 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Format empty lines in stub files closer to black's preview style" to "Format empty lines in stub files like black's preview style" by @konstin on 2023-09-08 16:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_class_def.rs</code>:135 on 2023-09-11 07:28</div>
+            <div class="timeline-body"><p>Should <code>empty_lines</code> be inlined into <code>empty_lines_before_trailing_comments</code>. It seems the function is only used in <code>stmt_function_def</code> and <code>stmt_class_def</code> and both use the same implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/suite.rs</code>:366 on 2023-09-11 07:32</div>
+            <div class="timeline-body"><p>Can we make the formatter readonly. The function doesn't seem to call into <code>fmt</code></p>
+<pre><code class="language-suggestion">fn stub_suite_can_omit_empty_line(preceding: &amp;Stmt, following: &amp;Stmt, f: &amp;PyFormatter) -&gt; bool {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-09-11 07:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/statement/suite.rs</code>:366 on 2023-09-11 07:44</div>
+            <div class="timeline-body"><p>huh thanks good catch, strange that clippy didn't pick that up</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-09-11 07:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2023-09-11 08:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-09-11 08:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-11 08:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:46:16 UTC
+    </footer>
+</body>
+</html>

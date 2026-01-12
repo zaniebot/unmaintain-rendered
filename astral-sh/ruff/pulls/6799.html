@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement `FormatPatternMatchValue` - astral-sh/ruff #6799</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement <code>FormatPatternMatchValue</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6799">#6799</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-23 01:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-23 01:41</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is effectively #6608, but with additional tests.</p>
+<p>We aren't properly handling parenthesized patterns, but that needs to be dealt with separately as it's somewhat involved.</p>
+<p>Closes #6555</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-08-23 01:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-23 01:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @charliermarsh on 2023-08-23 01:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-23 02:34</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                    pr
+-----                                      ----                                    --
+formatter/large/dataset.py                 1.11      4.6±0.33ms     8.9 MB/sec     1.00      4.1±0.18ms     9.8 MB/sec
+formatter/numpy/ctypeslib.py               1.00   903.6±29.21µs    18.4 MB/sec     1.00   904.3±48.37µs    18.4 MB/sec
+formatter/numpy/globals.py                 1.00     92.6±5.07µs    31.9 MB/sec     1.04     96.2±7.78µs    30.7 MB/sec
+formatter/pydantic/types.py                1.04  1845.3±158.22µs    13.8 MB/sec    1.00  1774.4±71.10µs    14.4 MB/sec
+linter/all-rules/large/dataset.py          1.00     14.4±0.55ms     2.8 MB/sec     1.02     14.7±0.52ms     2.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.8±0.15ms     4.4 MB/sec     1.02      3.9±0.16ms     4.3 MB/sec
+linter/all-rules/numpy/globals.py          1.01   554.2±27.89µs     5.3 MB/sec     1.00   548.5±26.61µs     5.4 MB/sec
+linter/all-rules/pydantic/types.py         1.04      7.6±0.32ms     3.4 MB/sec     1.00      7.3±0.24ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.5±0.27ms     5.4 MB/sec     1.01      7.5±0.28ms     5.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1606.5±70.52µs    10.4 MB/sec     1.04  1678.7±73.66µs     9.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00   203.3±10.89µs    14.5 MB/sec     1.03   208.4±16.81µs    14.2 MB/sec
+linter/default-rules/pydantic/types.py     1.05      3.6±0.20ms     7.1 MB/sec     1.00      3.4±0.14ms     7.4 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.11      5.4±0.35ms     7.5 MB/sec    1.00      4.9±0.34ms     8.4 MB/sec
+formatter/numpy/ctypeslib.py               1.11  1098.3±70.43µs    15.2 MB/sec    1.00   990.2±58.52µs    16.8 MB/sec
+formatter/numpy/globals.py                 1.08    107.5±9.34µs    27.4 MB/sec    1.00     99.7±6.68µs    29.6 MB/sec
+formatter/pydantic/types.py                1.09      2.2±0.11ms    11.6 MB/sec    1.00      2.0±0.10ms    12.8 MB/sec
+linter/all-rules/large/dataset.py          1.00     18.7±0.50ms     2.2 MB/sec    1.04     19.3±0.95ms     2.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      5.0±0.25ms     3.3 MB/sec    1.00      5.0±0.25ms     3.4 MB/sec
+linter/all-rules/numpy/globals.py          1.00   630.6±47.48µs     4.7 MB/sec    1.03   647.9±41.48µs     4.6 MB/sec
+linter/all-rules/pydantic/types.py         1.00      9.5±0.34ms     2.7 MB/sec    1.05      9.9±0.51ms     2.6 MB/sec
+linter/default-rules/large/dataset.py      1.00     10.4±0.64ms     3.9 MB/sec    1.04     10.9±0.55ms     3.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.2±0.15ms     7.7 MB/sec    1.03      2.2±0.15ms     7.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00   257.9±15.72µs    11.4 MB/sec    1.06   272.6±15.68µs    10.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.5±0.20ms     5.6 MB/sec    1.05      4.8±0.18ms     5.3 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__match.py.snap</code>:513 on 2023-08-23 04:01</div>
+            <div class="timeline-body"><p>What would the formatting be like after the fix for double parentheses? Would it still keep the parentheses from the original code i.e., format is as <code>(1)</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2023-08-23 04:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-23 04:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@statement__match.py.snap</code>:513 on 2023-08-23 04:46</div>
+            <div class="timeline-body"><p>Ah nevermind, it's answered in your other PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_value.rs</code>:4 on 2023-08-23 06:30</div>
+            <div class="timeline-body"><p>Nit: <code>use crate::prelude::*</code>. It should allow removing <code>Buffer</code>, <code>FormatResult</code>, <code>PyFormatter</code>, and <code>AsFormat</code> (and it makes it easier to change the code in the future without having to add a ton of imports)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_value.rs</code>:14 on 2023-08-23 06:30</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        value.format().fmt(f)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-23 06:31</div>
+            <div class="timeline-body"><p>Nice, this will make testing of other match patterns much easier.</p>
+<p>I'm not sure if you saw this, but @evanrittenhouse was working on this https://github.com/astral-sh/ruff/pull/6608</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/statement/match.py</code>:245 on 2023-08-23 08:47</div>
+            <div class="timeline-body"><p>Could you add a double parentheses test case?</p>
+<pre><code class="language-suggestion">    case (1):
+        y = 1
+    case ((&quot;a&quot;)):
+        y = 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-08-23 08:49</div>
+            <div class="timeline-body"><p>I added <code>Closes #6555</code> to the description</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-23 13:36</div>
+            <div class="timeline-body"><p>Thanks! I did see the other PR but I wanted to push these along so that I could start working on some of the other problems around comments and parentheses without so many <code>NOT_IMPLEMENTED</code> nodes in the test. I'd hoped to just update and merge that PR but I didn't have write permissions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-23 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-23 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-23 14:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:46:15 UTC
+    </footer>
+</body>
+</html>

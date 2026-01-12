@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unset `after_class_docstring` state on every iteration - astral-sh/ruff #7001</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unset <code>after_class_docstring</code> state on every iteration</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7001">#7001</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-30 03:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-30 03:17</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes a small deviation in Django. Given:</p>
+<pre><code class="language-python">class QuerySet(AltersData):
+    &quot;&quot;&quot;Represent a lazy database lookup for a set of objects.&quot;&quot;&quot;
+
+    def as_manager(cls):
+        # Address the circular dependency between `Queryset` and `Manager`.
+        from django.db.models.manager import Manager
+
+        manager = Manager.from_queryset(cls)()
+        manager._built_with_as_manager = True
+        return manager
+
+    as_manager.queryset_only = True
+    as_manager = classmethod(as_manager)
+</code></pre>
+<p>We weren't setting <code>after_class_docstring = false</code> on all branches, and so we were incorrectly inserting a blank line between the two statements at the end, like:</p>
+<pre><code class="language-python">class QuerySet(AltersData):
+    &quot;&quot;&quot;Represent a lazy database lookup for a set of objects.&quot;&quot;&quot;
+
+    def as_manager(cls):
+        # Address the circular dependency between `Queryset` and `Manager`.
+        from django.db.models.manager import Manager
+
+        manager = Manager.from_queryset(cls)()
+        manager._built_with_as_manager = True
+        return manager
+
+    as_manager.queryset_only = True
+
+    as_manager = classmethod(as_manager)
+</code></pre>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-08-30 03:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-30 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-08-30 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-30 06:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-30 06:20</div>
+            <div class="timeline-body"><p>The similarity index remain unchanged but I manually verified that it fixes a few divergences for django without introducing any new ones.</p>
+<p>| project      | similarity index |
+|--------------|------------------|
+| cpython      | 0.76082          |
+| django       | 0.99921          |
+| transformers | 0.99854          |
+| twine        | 0.99982          |
+| typeshed     | 0.99953          |
+| warehouse    | 0.99648          |
+| zulip        | 0.99928          |</p>
+<p>| project      | similarity index |
+|--------------|------------------|
+| cpython      | 0.76082          |
+| django       | 0.99921          |
+| transformers | 0.99854          |
+| twine        | 0.99982          |
+| typeshed     | 0.99953          |
+| warehouse    | 0.99648          |
+| zulip        | 0.99928          |</p>
+<pre><code class="language-diff">&lt; index 6472412c14..958f037f6e 100644
+---
+&gt; index 6472412c14..79c287202d 100644
+764,772c764
+&lt; @@ -329,6 +329,7 @@ class QuerySet(AltersData):
+&lt;          return manager
+&lt;  
+&lt;      as_manager.queryset_only = True
+&lt; +
+&lt;      as_manager = classmethod(as_manager)
+&lt;  
+&lt;      ########################
+&lt; @@ -1388,9 +1389,7 @@ class QuerySet(AltersData):
+---
+&gt; @@ -1388,9 +1388,7 @@ class QuerySet(AltersData):
+783c775
+&lt; @@ -1795,9 +1794,8 @@ class QuerySet(AltersData):
+---
+&gt; @@ -1795,9 +1793,8 @@ class QuerySet(AltersData):
+1183,1194d1174
+&lt; diff --git a/django/utils/datastructures.py b/django/utils/datastructures.py
+&lt; index ded606d02a..e0f6401e1c 100644
+&lt; --- a/django/utils/datastructures.py
+&lt; +++ b/django/utils/datastructures.py
+&lt; @@ -240,6 +240,7 @@ class ImmutableList(tuple):
+&lt;  
+&lt;      # All list mutation functions complain.
+&lt;      __delitem__ = complain
+&lt; +
+&lt;      __delslice__ = complain
+&lt;      __iadd__ = complain
+&lt;      __imul__ = complain
+1963,1974d1942
+&lt; diff --git a/tests/model_formsets_regress/tests.py b/tests/model_formsets_regress/tests.py
+&lt; index 0ccc2c0490..733cb962e0 100644
+&lt; --- a/tests/model_formsets_regress/tests.py
+&lt; +++ b/tests/model_formsets_regress/tests.py
+&lt; @@ -442,6 +442,7 @@ class FormfieldShouldDeleteFormTests(TestCase):
+&lt;      NormalFormset = modelformset_factory(
+&lt;          User, form=CustomDeleteUserForm, can_delete=True
+&lt;      )
+&lt; +
+&lt;      DeleteFormset = modelformset_factory(
+&lt;          User, form=CustomDeleteUserForm, formset=BaseCustomDeleteModelFormSet
+&lt;      )
+2034c2002
+&lt; index 604136b5ac..972befcba4 100644
+---
+&gt; index 604136b5ac..92c6a879fc 100644
+2045,2052d2012
+&lt; @@ -55,6 +56,7 @@ class MyPerson(Person):
+&lt;          permissions = ((&quot;display_users&quot;, &quot;May display users information&quot;),)
+&lt;  
+&lt;      objects = SubManager()
+&lt; +
+&lt;      other = PersonManager()
+&lt;  
+&lt;      def has_special_name(self):
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-08-30 06:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-08-30 06:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-30 06:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:46:15 UTC
+    </footer>
+</body>
+</html>

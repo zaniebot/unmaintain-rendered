@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pylint`] Implement `no-self-use` (`R6301`) - astral-sh/ruff #6574</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pylint</code>] Implement <code>no-self-use</code> (<code>R6301</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6574">#6574</a>
+        opened by <a href="https://github.com/LaBatata101">@LaBatata101</a>
+        on 2023-08-14 22:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2023-08-14 22:10</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Checks for the presence of unused <code>self</code> parameter in methods definitions.</p>
+<p>ref: #970</p>
+<p>ref: #6582</p>
+<h2>Test Plan</h2>
+<p>Snapshots and manual runs of  <code>pylint</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-17 01:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pylint/rules/no_self_use.rs</code>:47 on 2023-08-17 01:16</div>
+            <div class="timeline-body"><p>I think this should probably exclude abstract methods. We may also want to omit functions whose body is &quot;empty&quot; (which we typically define as just a <code>pass</code> or <code>...</code>, with or without a docstring). You can see <code>unused_arguments</code> for an example: in the method case, we omit abstract methods, overloads, empty bodies, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-17 01:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pylint/rules/no_self_use.rs</code>:61 on 2023-08-17 01:16</div>
+            <div class="timeline-body"><p>Can we use <code>function_type::classify</code> instead here, similar to how <code>unused_arguments</code> works?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pylint/rules/no_self_use.rs</code>:74 on 2023-08-17 01:17</div>
+            <div class="timeline-body"><p>I think I'd suggest just taking the first argument, regardless of the name, since if we know this is an instance method, then the first argument is <code>self</code> regardless of whether it's named <code>self</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-17 01:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-17 01:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/pylint/rules/no_self_use.rs</code>:47 on 2023-08-17 01:17</div>
+            <div class="timeline-body"><p>Ideally, we'd keep this as similar to <code>unused_arguments</code> as possible, to make it easier to maintain and so that the logic stays in-sync. We could even consider making this rule a codepath in the <code>unused_arguments</code> method?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LaBatata101">@LaBatata101</a> reviewed on 2023-08-17 19:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on <code>crates/ruff/src/rules/pylint/rules/no_self_use.rs</code>:74 on 2023-08-17 19:33</div>
+            <div class="timeline-body"><p>That's right! I completely forgot about this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LaBatata101">@LaBatata101</a> reviewed on 2023-08-17 19:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on <code>crates/ruff/src/rules/pylint/rules/no_self_use.rs</code>:47 on 2023-08-17 19:40</div>
+            <div class="timeline-body"><blockquote>
+<p>Ideally, we'd keep this as similar to <code>unused_arguments</code> as possible, to make it easier to maintain and so that the logic stays in-sync. We could even consider making this rule a codepath in the <code>unused_arguments</code> method?</p>
+</blockquote>
+<p>Yeah, it's probably better to make it a codepath in <code>unused_arguments</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2023-08-18 21:25</div>
+            <div class="timeline-body"><p>So I decided to keep it in <code>no_self_use</code>  instead of adding in <code>unused_arguments</code> because I couldn't find a clear way of adding it in <code>unused_arguments</code>.  The new implementation is basically the same of  <code>unused_arguments</code>, only with the checking logic (for abstract methods, overloads, empty bodies, etc.)  changed, so we can early return.</p>
+<p>I think there is a bug in <code>visibility::is_override</code>, it's returning false for this function:</p>
+<pre><code class="language-python">class Sub(Base):
+    @override
+    def abstract_method(self):
+        print(&quot;concret method&quot;)
+</code></pre>
+<p>But I didn't find the cause, so it's generating a false positive for that code.</p>
+<p>Should we extend this rule for class methods too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @LaBatata101 on 2023-08-18 21:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-22 01:37</div>
+            <div class="timeline-body"><p>I think the issue there is that <code>@override</code> has to be imported from <code>typing</code> -- it's not a builtin.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-08-22 02:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-22 03:22</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      3.4±0.02ms    11.9 MB/sec    1.00      3.4±0.02ms    11.9 MB/sec
+formatter/numpy/ctypeslib.py               1.00    713.8±3.69µs    23.3 MB/sec    1.00    715.9±2.18µs    23.3 MB/sec
+formatter/numpy/globals.py                 1.00     77.0±0.28µs    38.3 MB/sec    1.01     77.9±4.13µs    37.9 MB/sec
+formatter/pydantic/types.py                1.00  1383.9±11.96µs    18.4 MB/sec    1.01   1398.8±6.42µs    18.2 MB/sec
+linter/all-rules/large/dataset.py          1.01     10.1±0.04ms     4.0 MB/sec    1.00     10.0±0.05ms     4.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      2.7±0.01ms     6.1 MB/sec    1.00      2.7±0.01ms     6.1 MB/sec
+linter/all-rules/numpy/globals.py          1.00    387.6±1.00µs     7.6 MB/sec    1.00    386.2±0.58µs     7.6 MB/sec
+linter/all-rules/pydantic/types.py         1.01      5.3±0.06ms     4.8 MB/sec    1.00      5.3±0.02ms     4.9 MB/sec
+linter/default-rules/large/dataset.py      1.01      5.4±0.01ms     7.5 MB/sec    1.00      5.4±0.02ms     7.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1200.8±3.04µs    13.9 MB/sec    1.00   1189.1±1.37µs    14.0 MB/sec
+linter/default-rules/numpy/globals.py      1.01    138.3±0.88µs    21.3 MB/sec    1.00    137.5±0.23µs    21.5 MB/sec
+linter/default-rules/pydantic/types.py     1.02      2.5±0.02ms    10.3 MB/sec    1.00      2.4±0.01ms    10.5 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      3.7±0.06ms    10.9 MB/sec    1.01      3.8±0.06ms    10.8 MB/sec
+formatter/numpy/ctypeslib.py               1.00   772.4±10.76µs    21.6 MB/sec    1.00   772.4±10.85µs    21.6 MB/sec
+formatter/numpy/globals.py                 1.00     80.2±1.16µs    36.8 MB/sec    1.01     81.4±1.85µs    36.3 MB/sec
+formatter/pydantic/types.py                1.00  1531.6±23.43µs    16.7 MB/sec    1.01  1545.8±19.42µs    16.5 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.4±0.14ms     3.3 MB/sec    1.01     12.5±0.11ms     3.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.04ms     4.9 MB/sec    1.01      3.5±0.03ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00    434.3±6.01µs     6.8 MB/sec    1.00    434.5±6.12µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.5±0.06ms     3.9 MB/sec    1.01      6.5±0.11ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.0±0.09ms     5.8 MB/sec    1.00      7.0±0.06ms     5.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1481.3±21.22µs    11.2 MB/sec    1.00  1487.5±18.02µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    170.0±2.46µs    17.4 MB/sec    1.04    176.0±2.87µs    16.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.03ms     8.1 MB/sec    1.00      3.1±0.03ms     8.1 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-22 03:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-22 03:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-25 20:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:46:14 UTC
+    </footer>
+</body>
+</html>

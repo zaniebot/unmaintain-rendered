@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for PatternMatchMapping formatting - astral-sh/ruff #6836</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for PatternMatchMapping formatting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6836">#6836</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-24 04:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-24 04:36</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Adds support for <code>PatternMatchMapping</code> -- i.e., cases like:</p>
+<pre><code class="language-python">match foo:
+    case {&quot;a&quot;: 1, &quot;b&quot;: 2, **rest}:
+        pass
+</code></pre>
+<p>Unfortunately, this node has <em>three</em> kinds of dangling comments:</p>
+<pre><code class="language-python">{  # &quot;open parenthesis comment&quot;
+   key: pattern,
+   **  # end-of-line &quot;double star comment&quot;
+   # own-line &quot;double star comment&quot;
+   rest  # end-of-line &quot;after rest comment&quot;
+   # own-line &quot;after rest comment&quot;
+}
+</code></pre>
+<p>Some of the complexity comes from the fact that in <code>**rest</code>, <code>rest</code> is an <em>identifier</em>, not a node, so we have to handle comments <em>after</em> it as dangling on the enclosing node, rather than trailing on <code>**rest</code>. (We could change the AST to use <code>PatternMatchAs</code> there, which would be more permissive than the grammar but not totally crazy -- <code>PatternMatchAs</code> is used elsewhere to mean &quot;a single identifier&quot;.)</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/6644.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-08-24 04:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-24 04:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @charliermarsh on 2023-08-24 04:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-24 04:48</div>
+            <div class="timeline-body"><p>We may want to instead change the <code>rest</code> in <code>**rest</code> to a <code>Pattern</code>, to simplify the comment handling -- I've put that change up here (https://github.com/astral-sh/ruff/pull/6838). If that seems like a reasonable idea, I'll merge that first, then rework this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-24 05:18</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      4.5±0.13ms     9.1 MB/sec    1.00      4.5±0.11ms     9.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00   947.3±28.18µs    17.6 MB/sec    1.00   946.5±43.83µs    17.6 MB/sec
+formatter/numpy/globals.py                 1.00     87.4±3.65µs    33.8 MB/sec    1.02     89.1±3.84µs    33.1 MB/sec
+formatter/pydantic/types.py                1.00  1852.6±57.87µs    13.8 MB/sec    1.02  1885.8±97.98µs    13.5 MB/sec
+linter/all-rules/large/dataset.py          1.04     12.5±0.27ms     3.2 MB/sec    1.00     12.1±0.22ms     3.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.03      3.3±0.07ms     5.0 MB/sec    1.00      3.2±0.07ms     5.2 MB/sec
+linter/all-rules/numpy/globals.py          1.02   472.4±18.36µs     6.2 MB/sec    1.00   462.7±15.09µs     6.4 MB/sec
+linter/all-rules/pydantic/types.py         1.04      6.5±0.14ms     3.9 MB/sec    1.00      6.3±0.10ms     4.1 MB/sec
+linter/default-rules/large/dataset.py      1.05      6.7±0.14ms     6.0 MB/sec    1.00      6.4±0.12ms     6.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1440.8±27.79µs    11.6 MB/sec    1.01  1454.9±97.40µs    11.4 MB/sec
+linter/default-rules/numpy/globals.py      1.05    177.8±5.98µs    16.6 MB/sec    1.00    169.6±3.12µs    17.4 MB/sec
+linter/default-rules/pydantic/types.py     1.02      3.0±0.08ms     8.4 MB/sec    1.00      3.0±0.06ms     8.6 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      4.7±0.06ms     8.6 MB/sec    1.02      4.8±0.07ms     8.5 MB/sec
+formatter/numpy/ctypeslib.py               1.00   970.0±18.87µs    17.2 MB/sec    1.01   980.3±19.30µs    17.0 MB/sec
+formatter/numpy/globals.py                 1.00     92.9±1.92µs    31.7 MB/sec    1.04     96.3±4.72µs    30.6 MB/sec
+formatter/pydantic/types.py                1.00  1937.4±25.48µs    13.2 MB/sec    1.01  1960.0±36.18µs    13.0 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.0±0.15ms     3.1 MB/sec    1.00     13.0±0.16ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.04ms     4.7 MB/sec    1.01      3.5±0.04ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    436.9±5.45µs     6.8 MB/sec    1.00    438.1±6.38µs     6.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.6±0.09ms     3.9 MB/sec    1.01      6.7±0.10ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.0±0.07ms     5.8 MB/sec    1.01      7.1±0.09ms     5.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1508.7±23.86µs    11.0 MB/sec    1.01  1524.4±17.70µs    10.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    175.7±2.63µs    16.8 MB/sec    1.00    176.2±3.73µs    16.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.04ms     7.9 MB/sec    1.00      3.2±0.04ms     7.9 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_mapping.rs</code>:32 on 2023-08-24 07:22</div>
+            <div class="timeline-body"><p>Lol, Our DSL sometimes is too powerful. I was like, whoot, since when does <code>&amp;[SourceComment]</code> implement <code>Format</code> but it's <code>empty_parenthesized</code> that accepts comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_mapping.rs</code>:69 on 2023-08-24 07:24</div>
+            <div class="timeline-body"><p>Nit: I prefer to use <code>if_else</code> to reduce the nesting (or else, but our pedantic rules don't allow me to)</p>
+<pre><code class="language-suggestion">        let (open_parenthesis_comments, double_star_comments, after_rest_comments) = if let Some((double_star, rest)) = 
+            find_double_star(item, f.context().source()) {
+            	let (open_parenthesis_comments, dangling) =
+                        dangling.split_at(dangling.partition_point(|comment| {
+                            comment.line_position().is_end_of_line()
+                                &amp;&amp; comment.start() &lt; double_star.start()
+                        }));
+                    let (double_star_comments, after_rest_comments) = dangling.split_at(
+                        dangling.partition_point(|comment| comment.start() &lt; rest.start()),
+                    );
+                    (
+                        open_parenthesis_comments,
+                        double_star_comments,
+                        after_rest_comments,
+                    )
+            } else {
+            	(&amp;[], &amp;[], &amp;[])
+          	};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_mapping.rs</code>:53 on 2023-08-24 07:25</div>
+            <div class="timeline-body"><p>Nit: This confused me a bit. Like, why repeat the same comments three times. Using empty slices may be less confusing</p>
+<pre><code class="language-suggestion">                (&amp;[], &amp;[] &amp;[])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_mapping.rs</code>:91 on 2023-08-24 07:26</div>
+            <div class="timeline-body"><p>NIt</p>
+<pre><code class="language-suggestion">            trailing_comments(after_rest_comments).fmt(f)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_mapping.rs</code>:176 on 2023-08-24 07:27</div>
+            <div class="timeline-body"><p>You can tell which methods you or I wrote by the name of <code>contents</code>/<code>source</code> :laughing: (or <code>type_</code> vs <code>type_expression</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-24 07:28</div>
+            <div class="timeline-body"><p>I love it how you came in and are pushing match formatting over the line!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1229 on 2023-08-24 07:32</div>
+            <div class="timeline-body"><p>imo we can skip this since we pass the pattern in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1298 on 2023-08-24 09:46</div>
+            <div class="timeline-body"><p>When would we hit this case? I tried</p>
+<pre><code class="language-python">match x:
+    case {1: (2 # a
+    # b
+    ), **rest}:
+        pass
+</code></pre>
+<p>but i only get trailing comments on the 2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-08-24 09:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-24 13:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_mapping.rs</code>:53 on 2023-08-24 13:23</div>
+            <div class="timeline-body"><p>I totally agree but I can't get <code>(dangling, &amp;[], &amp;[])</code> to compile :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_mapping.rs</code>:53 on 2023-08-24 13:30</div>
+            <div class="timeline-body"><p><code>([].as_slice(), [].as_slice(), [].as_slice()),</code> works</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-24 13:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-25 04:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_mapping.rs</code>:91 on 2023-08-25 04:15</div>
+            <div class="timeline-body"><p>I find that I tend to write it this way because it reduces diffs. E.g., it's odd that the <em>last</em> format call omits <code>?;</code> &quot;just because&quot; it's the last, unlike the others (reminds me of trailing commas). But I will change :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_mapping.rs</code>:176 on 2023-08-25 04:15</div>
+            <div class="timeline-body"><p>I'm trying to do <code>source</code> now everywhere!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-25 04:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-25 04:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1298 on 2023-08-25 04:24</div>
+            <div class="timeline-body"><p>Yes you're right -- thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-25 04:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-25 04:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-25 04:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:46:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maybe parenthesize long constants and names - astral-sh/ruff #6816</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Maybe parenthesize long constants and names</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6816">#6816</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-08-23 12:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-23 12:10</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR implements https://github.com/astral-sh/ruff/issues/6271 for string, fstring, and number literals as well as for names. The stacked PR implements the behavior for non-fluent call expressions (Doing the changes separately helps to understand the compatibility and performance implications).</p>
+<p>This PR is about parenthesizing unsplittable expressions if it makes them fit on a line, but the formatter should omit the parentheses if they still don't.</p>
+<pre><code class="language-python">x = aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+x_aaaa = aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+# Exceeds the line width even when parenthesizing
+x = aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+# Fits after parenthesizing
+x_aaaa = (
+    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+)
+</code></pre>
+<h2>Test Plan</h2>
+<p>I added a few new test cases.</p>
+<p>The similarity index improves for all projects except typeshed.</p>
+<p><strong>Main</strong>
+| project      | similarity index |
+|--------------|------------------|
+| cpython      | 0.76038          |
+| django       | 0.99833          |
+| transformers | 0.99804          |
+| twine        | 0.99876          |
+| typeshed     | 0.99953          |
+| warehouse    | 0.99612          |
+| zulip        | 0.99732          |</p>
+<p><strong>This PR</strong></p>
+<p>| project      | similarity index |
+|--------------|------------------|
+| cpython      | 0.76058          |
+| django       | 0.99894          |
+| transformers | 0.99842          |
+| twine        | 0.99929          |
+| typeshed     | 0.99953          |
+| warehouse    | 0.99632          |
+| zulip        | 0.99909          |</p>
+<h2>Performance</h2>
+<p>The performance implication of this should be limited because constants and single names are rarely used in clause headers (<code>if &quot;string&quot;:</code>). However, constant are used frequently in assignments where this assignment applies as well and using <code>BestFitting</code> has a considerable cost:</p>
+<ul>
+<li><code>BestFitting</code> allocates a <code>Vec</code> for each variant + one vec for itself</li>
+<li>It requires using <code>memoized</code>, which allocates too</li>
+<li><code>propagate_expands</code> requires special handling for interned (used by memoized) to avoid visiting the document multiple times.</li>
+<li>Handling Interned (memoized) FormatElements means the printer can no longer iterate over a flat Vec.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-23 12:10</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #6814</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6814" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.svg" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #6815</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6815" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.svg" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #6816</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6816" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.svg" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #6817</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6817" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.svg" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #6848</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6848" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.svg" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #6819</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6819" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.svg" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6816?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-23 12:44</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.01      3.6±0.04ms    11.4 MB/sec    1.00      3.5±0.02ms    11.5 MB/sec
+formatter/numpy/ctypeslib.py               1.00    748.1±9.00µs    22.3 MB/sec    1.00    747.4±8.37µs    22.3 MB/sec
+formatter/numpy/globals.py                 1.00     78.4±0.30µs    37.7 MB/sec    1.00     78.6±1.49µs    37.6 MB/sec
+formatter/pydantic/types.py                1.00  1543.3±10.99µs    16.5 MB/sec    1.00  1543.5±12.35µs    16.5 MB/sec
+linter/all-rules/large/dataset.py          1.02     10.6±0.07ms     3.8 MB/sec    1.00     10.4±0.08ms     3.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      2.9±0.01ms     5.8 MB/sec    1.00      2.8±0.01ms     5.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00    322.2±0.80µs     9.2 MB/sec    1.00    321.2±1.79µs     9.2 MB/sec
+linter/all-rules/pydantic/types.py         1.01      5.4±0.02ms     4.7 MB/sec    1.00      5.4±0.04ms     4.7 MB/sec
+linter/default-rules/large/dataset.py      1.04      5.7±0.01ms     7.2 MB/sec    1.00      5.5±0.02ms     7.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.02   1195.8±7.83µs    13.9 MB/sec    1.00   1170.4±4.35µs    14.2 MB/sec
+linter/default-rules/numpy/globals.py      1.02    125.4±0.33µs    23.5 MB/sec    1.00    122.8±0.30µs    24.0 MB/sec
+linter/default-rules/pydantic/types.py     1.03      2.6±0.02ms    10.0 MB/sec    1.00      2.5±0.01ms    10.3 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      4.3±0.06ms     9.5 MB/sec    1.01      4.4±0.06ms     9.3 MB/sec
+formatter/numpy/ctypeslib.py               1.00   886.2±14.52µs    18.8 MB/sec    1.01   896.5±12.95µs    18.6 MB/sec
+formatter/numpy/globals.py                 1.00     90.3±1.98µs    32.7 MB/sec    1.03     93.1±4.25µs    31.7 MB/sec
+formatter/pydantic/types.py                1.00  1842.8±23.84µs    13.8 MB/sec    1.01  1861.2±21.54µs    13.7 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.7±0.18ms     3.2 MB/sec    1.03     13.0±0.20ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.05ms     4.8 MB/sec    1.01      3.5±0.04ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00    434.6±7.22µs     6.8 MB/sec    1.01    439.9±6.52µs     6.7 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.5±0.10ms     3.9 MB/sec    1.03      6.8±0.11ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.0±0.06ms     5.8 MB/sec    1.02      7.2±0.09ms     5.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1510.7±36.21µs    11.0 MB/sec    1.01  1523.8±18.49µs    10.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    174.5±2.64µs    16.9 MB/sec    1.02    178.8±5.87µs    16.5 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.03ms     8.1 MB/sec    1.02      3.2±0.04ms     7.9 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:254 on 2023-08-23 13:29</div>
+            <div class="timeline-body"><p>This is similar to Prettier's/Rome's formatting of type assertion expressions
+https://github.com/rome/tools/blob/2655264565608e29229490101f7abbfa89a35598/crates/rome_js_formatter/src/ts/expressions/type_assertion_expression.rs#L46-L60</p>
+<p>I added some more documentation in the following PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-23 13:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_formatter/src/builders.rs</code>:2542 on 2023-08-23 13:54</div>
+            <div class="timeline-body"><p>Let's always initialize the vector with a non-zero capacity because it always writes at least 3 entries, and lets double it to avoid resizing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-23 13:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-23 13:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_formatter/src/format_element/document.rs</code>:128 on 2023-08-23 13:55</div>
+            <div class="timeline-body"><p>This helped to improve performance quiet a bit. I haven't done any science but our groups very likely form a tree, the depth of a balanced binary tree is probably not the worst approximation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-23 13:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@simple_cases__remove_parens.py.snap</code>:83 on 2023-08-23 13:59</div>
+            <div class="timeline-body"><p>TODO handle fstrings</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-23 15:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@miscellaneous__long_strings_flag_disabled.py.snap</code>:323 on 2023-08-23 15:22</div>
+            <div class="timeline-body"><p>The <code>assert</code> above will be tricky. Because both the left and the right shouldn't have parentheses by default if it doesn't make them fit. Which is given, because the string is simply way too long, making it never fit. But we should then still break the expression.. hum. A Problem for another day</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-08-23 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-08-23 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @MichaReiser on 2023-08-23 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-08-23 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-23 21:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/expr_name.rs</code>:44 on 2023-08-23 21:57</div>
+            <div class="timeline-body"><p>Is 4 the length of <code>if (</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-23 22:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/expr_f_string.rs</code>:34 on 2023-08-23 22:00</div>
+            <div class="timeline-body"><p>This is always going to indented if it's parenthesized, right? So could we subtract the indent size from <code>context.options().line_width().value()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:241 on 2023-08-23 22:01</div>
+            <div class="timeline-body"><p>Ah okay, so this looks for newlines in the IR, interesting. How does <code>will_break</code> deal with things that might break conditionally?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-23 22:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-08-23 22:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-24 09:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_name.rs</code>:44 on 2023-08-24 09:20</div>
+            <div class="timeline-body"><p>This is a rather arbitrary number and a heuristic to avoid the cost of using best fitting for most literals and common names like <code>self</code>. It can result in the formatted text exceeding the line width even if parenthesizing would make it fit but IMO, I probably rather have a 4-character name exceed the line width by 2 than add parentheses and expand it vertically.</p>
+<p>How did I come up with the number. I exclude the constants <code>True</code>, <code>False</code> and <code>None</code> and... I assumed that they all have a length of 4. So you see, I'm not good at math nor counting :rofl:</p>
+<p>I'll factor this method out and add a comment of why 4... uhm 5.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-24 09:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_f_string.rs</code>:34 on 2023-08-24 09:21</div>
+            <div class="timeline-body"><p>We could, but we don't have an indent size option yet (only available in the printer). Let me add it in a follow up PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-24 09:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:241 on 2023-08-24 09:23</div>
+            <div class="timeline-body"><p>It looks for things that make group expand for certain: Like hard line breaks or <code>expand_parent</code>. The logic ignores any conditions (it returns <code>true</code> if content in <code>if_group_breaks</code> or <code>if_group_fits</code> contains a hard line break). It showed that conditions can mostly be ignored, especially because it is uncommon or even unneeded to have hard line breaks or expand parent inside of conditional content.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-08-24 09:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-08-24 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-08-24 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-24 09:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:46:15 UTC
+    </footer>
+</body>
+</html>

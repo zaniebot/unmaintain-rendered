@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expand if-expressions with leading and trailing comments - astral-sh/ruff #7082</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Expand if-expressions with leading and trailing comments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7082">#7082</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-09-03 15:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-03 15:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Black appears to expand if-expressions when they contain leading or trailing own-line comments, if they're the only expression in a set of brackets (parenthesized, or the only element in a list or tuple) -- see the <a href="https://black.vercel.app/?version=main&amp;state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4ALtAKtdAD2IimZxl1N_WlTWs6ra1iDKWjAPAF8A1eA3JJuhoRcrxg1GcFUyUKdBgvXAKf9vb2b2GNeOKaqRVL99qLhz_7CFFeh2p2wszSTX0xlzDVNKB5fS1mxpy8SWRl56WbjlWd1hmvliVVZomrrTLj3M3Xyu0RL7AZkbyqHEmsw9aiZ62mj0ufah9LqO-SCSCXgKLE-XDbDdUO1w3hw8Ou6v1uLDy_tFArdKueDmAAAAbEf-eL11oJwAAccB7gUAAIEns8KxxGf7AgAAAAAEWVo=">playground</a>.</p>
+<p>This PR applies the same logic to our own if-expression formatting.</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/7066.</p>
+<p>No change in similarity:</p>
+<p>| project      | similarity index  | total files       | changed files     |
+|--------------|------------------:|------------------:|------------------:|
+| cpython      |           0.76083 |              1789 |              1632 |
+| django       |           0.99957 |              2760 |                67 |
+| transformers |           0.99927 |              2587 |               468 |
+| twine        |           0.99982 |                33 |                 1 |
+| typeshed     |           0.99978 |              3496 |              2173 |
+| warehouse    |           0.99818 |               648 |                24 |
+| zulip        |           0.99942 |              1437 |                32 |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-09-03 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2023-09-03 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-03 16:01</div>
+            <div class="timeline-body"><p>It appears that this only applies when the <code>if-exp</code> is the only expression within the brackets (i.e., it's a single argument, or a single element in a list literal).</p>
+<p>Black's preview style seems more consistent in that it always expands them, but it also parenthesizes whenever they expand (even if it's, e.g., a single function argument).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-03 16:01</div>
+            <div class="timeline-body"><p>This probably needs a decision then as to whether we want to implement the preview style (always expand, as we are here, but also parenthesize) or the non-preview style (only expand like this if there are no other elements in the brackets).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-09-03 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-03 16:15</div>
+            <div class="timeline-body"><p>Alright, I went with Black's non-preview style.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2023-09-03 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-03 18:06</div>
+            <div class="timeline-body"><p>Here's the change that modified Black's handling in preview mode, to parenthesize these more aggressively: https://github.com/psf/black/pull/2278. (We don't yet implement this, but we could.)</p>
+<p>Note that if we implement Black's preview style, we should be sure to avoid a few of these cases of &quot;unnecessary parentheses&quot;, which look like they plan to change in Black too: https://github.com/psf/black/issues/3545.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-09-03 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-09-03 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_if_exp.rs</code>:69 on 2023-09-04 07:14</div>
+            <div class="timeline-body"><p>We already track whether we are inside of parentheses in <code>NodeLevel</code></p>
+<pre><code class="language-suggestion">                &amp;&amp; f.context().node_level().is_parenthesized()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_if_exp.rs</code>:157 on 2023-09-04 07:15</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-04 07:19</div>
+            <div class="timeline-body"><p>The code change looks good to me but I'm not convinced that we want to implement this behavior.</p>
+<p>Our principal is to only expand nodes if their content contain any comments. This isn't the case here because the comment belongs to the <code>ExprIf</code> and not the value. Meaning, we now format <code>ExprIf</code> inconsistently with any other node. I also don't see a reason why splitting helps with readability except if you argue that conditionals should always be split over multiple lines.</p>
+<p>This makes me wonder if this is just unintentional formatting in black and whether it is worth aligning our formatting .</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/expr_if_exp.rs</code>:69 on 2023-09-04 08:10</div>
+            <div class="timeline-body"><p>I don’t think this is quite the same — the condition here is “parenthesized or the only item in a set of brackets (e.g., the only item in a tuple literal or list literal or call).”</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-04 08:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-04 08:11</div>
+            <div class="timeline-body"><p>Yeah, you’re probably right and I don’t feel strongly, I just biased towards fixing a deviation. We can close.</p>
+<p>Should we implement Black’s preview style to always parenthesize these when split? It seems like a significant improvement for default function parameters. (Can consider separately.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-04 08:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-04 08:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Should we implement Black’s preview style to always parenthesize these when split? It seems like a significant improvement for default function parameters. (Can consider separately.)</p>
+</blockquote>
+<p>Preview style formatting is tracked here https://github.com/astral-sh/ruff/issues/6935 and should generally be gated behind a preview flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-04 08:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:46:15 UTC
+    </footer>
+</body>
+</html>

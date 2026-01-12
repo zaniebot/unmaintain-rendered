@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't trigger `eq-without-hash` when `__hash__` is explicitly set to `None` - astral-sh/ruff #6739</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't trigger <code>eq-without-hash</code> when <code>__hash__</code> is explicitly set to <code>None</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6739">#6739</a>
+        opened by <a href="https://github.com/LaBatata101">@LaBatata101</a>
+        on 2023-08-21 20:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2023-08-21 20:41</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes #6701</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-21 20:52</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      3.8±0.08ms    10.6 MB/sec    1.03      3.9±0.05ms    10.3 MB/sec
+formatter/numpy/ctypeslib.py               1.00   816.7±13.68µs    20.4 MB/sec    1.02   830.7±10.04µs    20.0 MB/sec
+formatter/numpy/globals.py                 1.00     88.4±2.47µs    33.4 MB/sec    1.01     89.2±1.13µs    33.1 MB/sec
+formatter/pydantic/types.py                1.00  1581.2±29.75µs    16.1 MB/sec    1.02  1617.8±25.86µs    15.8 MB/sec
+linter/all-rules/large/dataset.py          1.01     11.8±0.21ms     3.4 MB/sec    1.00     11.8±0.13ms     3.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.2±0.04ms     5.2 MB/sec    1.00      3.2±0.03ms     5.2 MB/sec
+linter/all-rules/numpy/globals.py          1.00    445.2±6.68µs     6.6 MB/sec    1.02    453.0±6.17µs     6.5 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.1±0.10ms     4.2 MB/sec    1.01      6.1±0.08ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.3±0.10ms     6.5 MB/sec    1.01      6.3±0.06ms     6.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1384.5±19.39µs    12.0 MB/sec    1.01  1396.5±18.96µs    11.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    161.6±2.84µs    18.3 MB/sec    1.03    166.9±1.87µs    17.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.8±0.04ms     9.0 MB/sec    1.01      2.9±0.04ms     8.9 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      3.8±0.06ms    10.7 MB/sec    1.00      3.8±0.08ms    10.7 MB/sec
+formatter/numpy/ctypeslib.py               1.00   775.5±11.87µs    21.5 MB/sec    1.00   777.3±21.25µs    21.4 MB/sec
+formatter/numpy/globals.py                 1.00     81.8±1.91µs    36.1 MB/sec    1.00     81.7±1.72µs    36.1 MB/sec
+formatter/pydantic/types.py                1.00  1559.0±36.91µs    16.4 MB/sec    1.00  1566.1±32.72µs    16.3 MB/sec
+linter/all-rules/large/dataset.py          1.00     13.0±0.22ms     3.1 MB/sec    1.01     13.2±0.25ms     3.1 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.6±0.08ms     4.7 MB/sec    1.00      3.5±0.07ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    444.6±7.64µs     6.6 MB/sec    1.01    447.3±9.42µs     6.6 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.8±0.15ms     3.7 MB/sec    1.02      7.0±0.17ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.3±0.11ms     5.6 MB/sec    1.00      7.2±0.11ms     5.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1534.2±23.75µs    10.9 MB/sec    1.00  1522.9±21.49µs    10.9 MB/sec
+linter/default-rules/numpy/globals.py      1.02    178.9±7.60µs    16.5 MB/sec    1.00    174.8±3.96µs    16.9 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.3±0.05ms     7.8 MB/sec    1.00      3.2±0.06ms     7.9 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/pylint/rules/eq_without_hash.rs</code>:82 on 2023-08-21 20:53</div>
+            <div class="timeline-body"><p>Does this need to be <code>None</code> or would assignment work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-08-21 20:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/LaBatata101">@LaBatata101</a> reviewed on 2023-08-21 21:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on <code>crates/ruff/src/rules/pylint/rules/eq_without_hash.rs</code>:82 on 2023-08-21 21:33</div>
+            <div class="timeline-body"><blockquote>
+<p>While the purpose of PLW1641 is exactly to check for when <code>__eq__</code> is defined and <code>__hash__</code> is None (the default when <code>__eq__</code> is defined but <code>__hash__</code> is not), I think that if the code explicitly sets <code>__hash__ = None</code> then the lint should not trigger since the programmer explicitly asks for it.</p>
+</blockquote>
+<p>It needs to be <code>None</code> according to the issue description.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2023-08-21 22:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/ruff/src/rules/pylint/rules/eq_without_hash.rs</code>:82 on 2023-08-21 22:20</div>
+            <div class="timeline-body"><p>👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-08-21 23:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-21 23:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-21 23:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-22 00:28</div>
+            <div class="timeline-body"><p>Thanks @LaBatata101!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-25 20:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:46:15 UTC
+    </footer>
+</body>
+</html>

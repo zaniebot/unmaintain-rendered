@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use the unicode-ident crate - astral-sh/ruff #7212</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use the unicode-ident crate</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7212">#7212</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-09-07 08:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-07 08:06</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This PR replaces the <code>unic-ucd-ident</code> with the much faster and smaller <code>unicode-ident</code> crate.</p>
+<p>I don't expect this PR to improve performance in our benchmarks because</p>
+<p>a) We have no test files with unicode identifiers
+b) Our lexer has a fast path that bypasses the <code>is_identifier_start</code> for ascii characters.</p>
+<p>This PR further removes the emoji identifier support which is not part of <a href="https://docs.python.org/3/reference/lexical_analysis.html#identifiers">Python's identifier specification</a></p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+<p>Wait for the ecosystem check</p>
+<h2>Performance</h2>
+<p>I extended the <code>unicode-ident</code> 's benchmark to also include <code>unic-ucd-ident</code> . <code>unicode-ident</code> outperforms it significantly</p>
+<pre><code>Running benches/ident.rs (target/release/deps/ident-ad9d9d2d593f7661)
+Gnuplot not found, using plotters backend
+0%-nonascii/baseline    time:   [217.56 µs 217.84 µs 218.14 µs]
+0%-nonascii/unicode-ident
+                        time:   [417.51 µs 418.02 µs 418.55 µs]
+Found 2 outliers among 100 measurements (2.00%)
+  1 (1.00%) high mild
+  1 (1.00%) high severe
+0%-nonascii/unicode-xid time:   [1.5056 ms 1.5061 ms 1.5066 ms]
+Found 2 outliers among 100 measurements (2.00%)
+  1 (1.00%) high mild
+  1 (1.00%) high severe
+0%-nonascii/unic-ucd-ident
+                        time:   [9.8530 ms 9.8653 ms 9.8804 ms]
+Found 7 outliers among 100 measurements (7.00%)
+  3 (3.00%) high mild
+  4 (4.00%) high severe
+
+1%-nonascii/baseline    time:   [239.63 µs 240.05 µs 240.60 µs]
+1%-nonascii/unicode-ident
+                        time:   [442.01 µs 443.87 µs 446.10 µs]
+1%-nonascii/unicode-xid time:   [1.5937 ms 1.5941 ms 1.5946 ms]
+Found 5 outliers among 100 measurements (5.00%)
+  3 (3.00%) high mild
+  2 (2.00%) high severe
+1%-nonascii/unic-ucd-ident
+                        time:   [10.102 ms 10.145 ms 10.187 ms]
+
+10%-nonascii/baseline   time:   [493.61 µs 493.94 µs 494.35 µs]
+Found 14 outliers among 100 measurements (14.00%)
+  1 (1.00%) low mild
+  9 (9.00%) high mild
+  4 (4.00%) high severe
+10%-nonascii/unicode-ident
+                        time:   [671.83 µs 672.38 µs 673.02 µs]
+Found 5 outliers among 100 measurements (5.00%)
+  3 (3.00%) high mild
+  2 (2.00%) high severe
+Benchmarking 10%-nonascii/unicode-xid: Warming up for 3.0000 s
+Warning: Unable to complete 100 samples in 10.0s. You may wish to increase target time to 13.7s, enable flat sampling, or reduce sample count to 60.
+10%-nonascii/unicode-xid
+                        time:   [2.6001 ms 2.6043 ms 2.6094 ms]
+10%-nonascii/unic-ucd-ident
+                        time:   [10.434 ms 10.448 ms 10.460 ms]
+Found 7 outliers among 100 measurements (7.00%)
+  4 (4.00%) low severe
+  1 (1.00%) high mild
+  2 (2.00%) high severe
+
+100%-nonascii/baseline  time:   [609.36 µs 611.90 µs 614.95 µs]
+Found 25 outliers among 100 measurements (25.00%)
+  25 (25.00%) low mild
+100%-nonascii/unicode-ident
+                        time:   [1.4087 ms 1.4127 ms 1.4161 ms]
+Found 14 outliers among 100 measurements (14.00%)
+  12 (12.00%) low severe
+  2 (2.00%) low mild
+100%-nonascii/unicode-xid
+                        time:   [11.733 ms 11.742 ms 11.754 ms]
+Found 6 outliers among 100 measurements (6.00%)
+  3 (3.00%) high mild
+  3 (3.00%) high severe
+100%-nonascii/unic-ucd-ident
+                        time:   [10.895 ms 10.897 ms 10.900 ms]
+Found 2 outliers among 100 measurements (2.00%)
+  2 (2.00%) low mild
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-07 08:06</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #7212</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7212" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7212?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @MichaReiser on 2023-09-07 08:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @MichaReiser on 2023-09-07 08:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-09-07 08:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-09-07 08:13</div>
+            <div class="timeline-body"><blockquote>
+<p>This PR further removes the emoji identifier support which is not part of <a href="https://docs.python.org/3/reference/lexical_analysis.html#identifiers">Python's identifier specification</a></p>
+</blockquote>
+<p>A test for that would be good</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-09-07 08:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-09-07 08:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-07 08:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-07 08:25</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:46:16 UTC
+    </footer>
+</body>
+</html>

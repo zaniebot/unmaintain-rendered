@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[refurb] Implement `repeated-append` rule (`FURB113`) - astral-sh/ruff #6702</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[refurb] Implement <code>repeated-append</code> rule (<code>FURB113</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6702">#6702</a>
+        opened by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a>
+        on 2023-08-20 12:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on 2023-08-20 12:35</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>As an initial effort with replicating <code>refurb</code> rules (#1348 ), this PR adds support for <a href="https://github.com/dosisod/refurb/blob/master/refurb/checks/builtin/list_extend.py">FURB113</a> and adds a new category of checks.</p>
+<h2>Test Plan</h2>
+<p>I included a new test + checked that all other tests pass.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-20 12:54</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-26 21:18</div>
+            <div class="timeline-body"><p>@SavchenkoValeriy - Thanks for this. Regarding the limitation that we can't perform inference across files (or full static inference in general), I'm still open to merging these kinds of rules, for two reasons...</p>
+<ol>
+<li>The lack of inference means we'll have false negatives rather than false positives, which is preferable, especially because...</li>
+<li>These rules are nice-to-haves, and so missing a few is more acceptable than it would be if the rule were aimed at preventing production issues (like detecting undefined variables).</li>
+</ol>
+<p>So, I think it's still reasonable to pursue implementing and merging these. It may take me a bit of time to do a proper review though since it is admittedly quite a bit of code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-26 21:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:43 on 2023-08-26 21:23</div>
+            <div class="timeline-body"><p>Can you take a look at the <code>SourceCodeSnippet</code> abstraction and use it here? Otherwise, if the input code is long or breaks over multiple lines, we end up with really long diagnostics. We should support a generic, truncated message here based on the <code>SourceCodeSnippet</code> concept.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-26 21:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:61 on 2023-08-26 21:24</div>
+            <div class="timeline-body"><p>Nit: convention is to name these identically to the rule (like <code>repeated_append</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-26 21:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:120 on 2023-08-26 21:25</div>
+            <div class="timeline-body"><p>Nit: can we use an empty <code>Vec</code> rather than the <code>Option</code> state?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-26 21:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:138 on 2023-08-26 21:26</div>
+            <div class="timeline-body"><p>Maybe we can add a method to <code>traversal</code> to support iterating over the siblings? We already have <code>next_sibling</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:172 on 2023-08-26 21:26</div>
+            <div class="timeline-body"><p>Hmm, it would be nice if <code>traversal</code> did the right thing here... But, it can be a TODO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-26 21:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-26 21:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:160 on 2023-08-26 21:27</div>
+            <div class="timeline-body"><p>Consider using a mutable iterator over <code>appends</code> with <code>iter.next()</code> to get the first, then iterating over the remainder with <code>for appends in iter</code>? That way, you don't have the implicit coupling between this line and line 164 (and you avoid the unwrap).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-26 21:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:251 on 2023-08-26 21:28</div>
+            <div class="timeline-body"><p>For any methods here that only rely on <code>checker.semantic()</code>, I'd prefer to pass in <code>semantic: &amp;'a SemanticModel</code> rather than the entire checker.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-26 21:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:259 on 2023-08-26 21:28</div>
+            <div class="timeline-body"><p>Can we add rustdoc for some of these more involved methods? Just to outline its purpose.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-26 21:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:221 on 2023-08-26 21:29</div>
+            <div class="timeline-body"><p>Can you include an example here of the Python code this should catch? (I think I understand but it would be useful to see.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> reviewed on 2023-08-26 21:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:160 on 2023-08-26 21:30</div>
+            <div class="timeline-body"><p>Sounds good, will do!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-26 21:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:179 on 2023-08-26 21:30</div>
+            <div class="timeline-body"><p>Nit: wonder if this should be the responsibility of the caller.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-26 21:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:286 on 2023-08-26 21:31</div>
+            <div class="timeline-body"><p>We generally prefer:</p>
+<pre><code class="language-rust">let [binding] = bindings.as_slice() else {
+    return;
+};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-26 21:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:263 on 2023-08-26 21:31</div>
+            <div class="timeline-body"><p>We'd generally prefer:</p>
+<pre><code class="language-rust">let [arg] = arguments.args.as_slice() else {
+    return;
+}
+</code></pre>
+<p>Which lets us avoid the unwrap further down.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-26 21:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:303 on 2023-08-26 21:32</div>
+            <div class="timeline-body"><p>This got folded into a more general trait in a future PR, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-26 21:32</div>
+            <div class="timeline-body"><p>Nice work, this is impressive!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> reviewed on 2023-08-26 21:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:179 on 2023-08-26 21:32</div>
+            <div class="timeline-body"><p>Agree, it creates a better separation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-26 21:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:133 on 2023-08-26 21:33</div>
+            <div class="timeline-body"><p>It would be nice to document what each of these fields means with a Python example, similar to the style of documentation you see on <code>BindingKind</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-26 21:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:80 on 2023-08-26 21:33</div>
+            <div class="timeline-body"><p>Consider implementing <code>Ranged</code> on <code>AppendGroup</code>? Then you could just do <code>group.start()</code> and <code>group.end()</code>, and make this part of the struct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> reviewed on 2023-08-26 21:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:221 on 2023-08-26 21:34</div>
+            <div class="timeline-body"><p>Sure!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> reviewed on 2023-08-26 21:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:259 on 2023-08-26 21:35</div>
+            <div class="timeline-body"><p>Sure, I just didn't know what's the official policy on private functions and documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:251 on 2023-08-26 21:35</div>
+            <div class="timeline-body"><p>No problem!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> reviewed on 2023-08-26 21:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-26 21:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:186 on 2023-08-26 21:36</div>
+            <div class="timeline-body"><p>It would be nice to find a way to avoid this lookup if the current statement <em>isn't</em> an append, since the iterator at the end will be empty anyway, and I think <code>traversal::suite</code> has some cost.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> reviewed on 2023-08-26 21:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:138 on 2023-08-26 21:37</div>
+            <div class="timeline-body"><p>Do you want me to extend traversal to include the logic about the global scope statements?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> reviewed on 2023-08-26 21:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:120 on 2023-08-26 21:38</div>
+            <div class="timeline-body"><p>Sure!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> reviewed on 2023-08-26 21:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:61 on 2023-08-26 21:39</div>
+            <div class="timeline-body"><p>I even thought about it when implementing next checkers 😅 will do!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> reviewed on 2023-08-26 21:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:43 on 2023-08-26 21:41</div>
+            <div class="timeline-body"><p>I wondered about that, good to know that there is a centralized solution for that. Will do!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> reviewed on 2023-08-26 21:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:133 on 2023-08-26 21:44</div>
+            <div class="timeline-body"><p>Yeah, I guess this checker is a bit more complex than an average checker, so it totally makes sense to describe these internals. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> reviewed on 2023-08-26 21:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:80 on 2023-08-26 21:44</div>
+            <div class="timeline-body"><p>That's nice 🙂 will do</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> reviewed on 2023-08-26 21:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:186 on 2023-08-26 21:46</div>
+            <div class="timeline-body"><p>I thought about it and didn't figure out an elegant solution to do so. On the other hand, I'm a Rust newbie, so it's very likely that I'm missing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> reviewed on 2023-08-26 21:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:303 on 2023-08-26 21:50</div>
+            <div class="timeline-body"><p>Yep, the next PR folds it and adds is_dict, and the one after that is_set</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> reviewed on 2023-08-26 21:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:263 on 2023-08-26 21:51</div>
+            <div class="timeline-body"><p>Yep, I started using this pattern only later 😅 thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-26 22:07</div>
+            <div class="timeline-body"><p>@SavchenkoValeriy - Specifically, I am very impressed by how you were able to navigate the semantic model!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-26 22:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:186 on 2023-08-26 22:09</div>
+            <div class="timeline-body"><p>Hmm... We could perhaps do something like:</p>
+<pre><code class="language-rust">// Match the current statement, to see if it's an append.
+let append = match_append(checker, stmt)?;
+
+// Then do the rest of the work that this function already does today, and end with...
+std::iter::once(append).chain(
+    siblings
+        .iter()
+         // Skip the current statement, since we already tested it...
+        .skip(stmt_index + 1)
+        .map_while(|next| match_append(checker, next))
+).collect()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> reviewed on 2023-08-27 08:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:186 on 2023-08-27 08:17</div>
+            <div class="timeline-body"><p>That's pretty cool! Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> reviewed on 2023-08-27 10:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:138 on 2023-08-27 10:11</div>
+            <div class="timeline-body"><p><code>traversal::suite</code> already returns siblings, but doesn't handle the situation with the top level statements. Right now traversal is part of AST, but in order to resolve this issue, it needs access to semantics. I can move it to a different crate and make that change.</p>
+<p>It can probably be a separate PR, though. What do you think it should be?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-08-27 10:17</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/SavchenkoValeriy:refurb/furb113">CodSpeed Performance Report</a></h2>
+<h3>Merging #6702 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>SavchenkoValeriy:refurb/furb113</code> (b387921) with <code>main</code> (f33277a)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 16</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-08-28 22:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-28 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-28 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-28 22:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:165 on 2023-08-28 22:52</div>
+            <div class="timeline-body"><p>@SavchenkoValeriy - I ended up reverting to <code>Option</code>, your initial version was better :joy:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-28 22:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:88 on 2023-08-28 22:52</div>
+            <div class="timeline-body"><p>Writing this as a map felt a bit more idiomatic to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-28 22:53</div>
+            <div class="timeline-body"><p>Thanks @SavchenkoValeriy!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> reviewed on 2023-08-29 10:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on <code>crates/ruff/src/rules/refurb/rules/repeated_append.rs</code>:88 on 2023-08-29 10:38</div>
+            <div class="timeline-body"><p>Looks better, agree!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-29 10:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:46:15 UTC
+    </footer>
+</body>
+</html>

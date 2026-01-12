@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `LineSuffix` reserved width - astral-sh/ruff #6830</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>LineSuffix</code> reserved width</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6830">#6830</a>
+        opened by <a href="https://github.com/cnpryer">@cnpryer</a>
+        on 2023-08-23 23:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/cnpryer">@cnpryer</a> on 2023-08-23 23:00</div>
+            <div class="timeline-body"><p>Closes #5630</p>
+<h3>Summary</h3>
+<p>Currently a trailing, end-of-line comment considered a line suffix element is not measured during formatting. This change introduces a reserved width field to the <code>ruff_formatter</code> crate for line suffix elements in order to allow formatter clients to opt-into this behavior.</p>
+<h3>Test Plan</h3>
+<p>Currently just doctest</p>
+<hr />
+<p><em>Outdated</em>; See <a href="https://github.com/astral-sh/ruff/pull/6830#issuecomment-1694420801">(comment)</a>
+TODO:</p>
+<ul>
+<li>[x] Add <code>LineSuffix</code> reserved width <a href="https://github.com/astral-sh/ruff/issues/5630#issuecomment-1682406504">(comment)</a></li>
+<li>[x] Add to IR display <a href="https://github.com/astral-sh/ruff/pull/6830#discussion_r1303853539">(comment)</a></li>
+<li>[x] Doctest example(s) <a href="https://github.com/astral-sh/ruff/pull/6830#discussion_r1306500539">(comment)</a></li>
+</ul>
+<p>TODO(optional):</p>
+<ul>
+<li>Use <code>TextWidth</code> instead of internal <code>LineSuffix</code> <a href="https://github.com/astral-sh/ruff/pull/6830#discussion_r1303856995">(comment)</a></li>
+<li>Add benchmark report (this shouldn't impact perf, but see <a href="https://github.com/astral-sh/ruff/pull/6819">#6819</a> for example)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-08-23 23:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_formatter/src/format_element/document.rs</code>:454 on 2023-08-23 23:04</div>
+            <div class="timeline-body"><p>Maybe <code>&quot;line_suffix&lt;width&gt;(&quot;</code>. That might look confusing though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-08-23 23:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_python_formatter/src/comments/format.rs</code>:175 on 2023-08-23 23:05</div>
+            <div class="timeline-body"><p>~~collapsed~~</p>
+<p>I believe I will need to address this</p>
+<blockquote>
+<p>crates/ruff_python_formatter/resources/test/fixtures/black/simple_cases/power_op_spacing.py</p>
+</blockquote>
+<pre><code class="language-diff">--- Black
++++ Ruff
+@@ -55,9 +55,11 @@
+         view.variance,  # type: ignore[union-attr]
+         view.sum_of_weights,  # type: ignore[union-attr]
+         out=np.full(view.sum_of_weights.shape, np.nan),  # type: ignore[union-attr]
+-        where=view.sum_of_weights**2 &gt; view.sum_of_weights_squared,  # type: ignore[union-attr]
++        where=view.sum_of_weights**2
++        &gt; view.sum_of_weights_squared,  # type: ignore[union-attr]
+     )
+ 
+ return np.divide(
+-    where=view.sum_of_weights_of_weight_long**2 &gt; view.sum_of_weights_squared,  # type: ignore
++    where=view.sum_of_weights_of_weight_long**2
++    &gt; view.sum_of_weights_squared,  # type: ignore
+ )
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-23 23:36</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.10      4.5±0.01ms     9.1 MB/sec    1.00      4.1±0.01ms    10.0 MB/sec
+formatter/numpy/ctypeslib.py               1.04    886.8±4.31µs    18.8 MB/sec    1.00    850.0±2.79µs    19.6 MB/sec
+formatter/numpy/globals.py                 1.01     83.7±1.56µs    35.3 MB/sec    1.00     82.5±0.82µs    35.8 MB/sec
+formatter/pydantic/types.py                1.00  1673.8±11.25µs    15.2 MB/sec    1.00   1674.9±4.73µs    15.2 MB/sec
+linter/all-rules/large/dataset.py          1.02     10.3±0.09ms     3.9 MB/sec    1.00     10.1±0.03ms     4.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      2.7±0.01ms     6.1 MB/sec    1.00      2.7±0.01ms     6.2 MB/sec
+linter/all-rules/numpy/globals.py          1.00    381.0±0.63µs     7.7 MB/sec    1.00    379.5±1.22µs     7.8 MB/sec
+linter/all-rules/pydantic/types.py         1.01      5.3±0.04ms     4.8 MB/sec    1.00      5.2±0.03ms     4.9 MB/sec
+linter/default-rules/large/dataset.py      1.01      5.5±0.03ms     7.4 MB/sec    1.00      5.4±0.02ms     7.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1205.0±8.86µs    13.8 MB/sec    1.00   1187.9±5.21µs    14.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00    138.8±0.27µs    21.3 MB/sec    1.01    140.0±2.91µs    21.1 MB/sec
+linter/default-rules/pydantic/types.py     1.01      2.5±0.02ms    10.3 MB/sec    1.00      2.4±0.02ms    10.5 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.08      5.1±0.04ms     8.0 MB/sec    1.00      4.7±0.05ms     8.6 MB/sec
+formatter/numpy/ctypeslib.py               1.03   986.4±11.57µs    16.9 MB/sec    1.00   960.0±11.73µs    17.3 MB/sec
+formatter/numpy/globals.py                 1.00     91.1±1.34µs    32.4 MB/sec    1.03     93.5±5.23µs    31.5 MB/sec
+formatter/pydantic/types.py                1.00  1892.6±19.35µs    13.5 MB/sec    1.02  1939.0±29.01µs    13.2 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.2±0.10ms     3.3 MB/sec    1.01     12.3±0.10ms     3.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.4±0.03ms     4.9 MB/sec    1.01      3.4±0.03ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    419.0±5.31µs     7.0 MB/sec    1.02    427.1±5.93µs     6.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.4±0.05ms     4.0 MB/sec    1.01      6.4±0.06ms     4.0 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.8±0.04ms     6.0 MB/sec    1.00      6.8±0.04ms     6.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1433.8±11.88µs    11.6 MB/sec    1.01  1455.1±20.07µs    11.4 MB/sec
+linter/default-rules/numpy/globals.py      1.00    166.3±2.32µs    17.7 MB/sec    1.04    172.4±2.43µs    17.1 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.03ms     8.4 MB/sec    1.00      3.0±0.04ms     8.4 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add reserved width to `LineSuffix`" to "Add and use reserved width to `LineSuffix`" by @cnpryer on 2023-08-23 23:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add and use reserved width to `LineSuffix`" to "Add and use `LineSuffix` reserved width" by @cnpryer on 2023-08-23 23:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add and use `LineSuffix` reserved width" to "Use `LineSuffix` reserved width" by @cnpryer on 2023-08-24 00:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-08-24 01:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_python_formatter/src/comments/format.rs</code>:189 on 2023-08-24 01:53</div>
+            <div class="timeline-body"><p>Will update this to dup the width calculation to include configured tab width.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-24 06:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_formatter/src/format_element/document.rs</code>:454 on 2023-08-24 06:21</div>
+            <div class="timeline-body"><p>The most common pattern is to write the property keys first</p>
+<pre><code>conditional_group(condition: if_group_breaks(&quot;#1&quot;), [
+  conditional_group(condition: if_group_breaks(&quot;#1&quot;), [
+    fits_expanded(propagate_expand: true, condition: if_group_fits_on_line(&quot;#1&quot;), [
+      group(expand: propagated, [
+</code></pre>
+<p>https://play.ruff.rs/81156166-0f8b-4f66-b66e-ca5039fca5b1?secondary=FIR</p>
+<p>Edit: I would find the information useful because it explains why pragma comments will fit (width 0), but other comments may not (width &gt; 0)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_formatter/src/format_element/tag.rs</code>:403 on 2023-08-24 06:25</div>
+            <div class="timeline-body"><p>Nit: We don't have named structs for most tag variants because this is mostly an internal API, but being able to extract the fields can be useful. But I do see how <code>StartLineSuffix(u32)</code> isn't very meaningful.</p>
+<p>We could introduce a <code>TextWidth(u32)</code> newtype wrapper that also offers <code>from_text</code>, <code>from_char</code> methods that then allow code-reuse between the Printer and client code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-24 06:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-24 06:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_formatter/src/printer/mod.rs</code>:1182 on 2023-08-24 06:30</div>
+            <div class="timeline-body"><p>This seems correct. <code>fits</code> runs when trying to see if groups (and the more advanced best fitting and fill elements) fit before printing. For every group (that has mode =Flat, which is true for most), the printer calls fits to see if it fits on the line. If yes, then the printer prints the group in flat mode, otherwise in expanded mode. The fact that <code>fits</code> performs a lookahead means that all state changes are reverted when fits end to ensure that the printer continues printing with the same state as when it called into fits.</p>
+<p>The printer has a few optimisations to avoid re-measuring the same groups over and over if it already knows that all of them fit anyway. But for reasoning, it's easiest to assume that the printer does this for every group.</p>
+<p>I hope this helps.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-24 06:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_formatter/src/printer/mod.rs</code>:1699 on 2023-08-24 06:32</div>
+            <div class="timeline-body"><p>These tests tend to be very painful to write. I like to add examples with doctests to the builders (@charliermarsh's dying because of slow doctests but they are very useful for this) to demonstrate the functioning of IR changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-24 06:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/format.rs</code>:159 on 2023-08-24 06:33</div>
+            <div class="timeline-body"><p>It may be worth documenting why using 0 here is fine (because it doesn't matter, so we can avoid doing the computation)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-24 06:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/format.rs</code>:175 on 2023-08-24 06:34</div>
+            <div class="timeline-body"><p>The behavior you have is fine. We want to respect the line width for all comments, but we'll exclude trailing pragma comments in a follow up PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-24 06:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/format.rs</code>:273 on 2023-08-24 06:35</div>
+            <div class="timeline-body"><p>What's the reason for excluding the line width here or is this just for the moment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-24 06:35</div>
+            <div class="timeline-body"><p>This is exciting. Thanks for taking the time to work on this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-08-24 06:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-08-24 11:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_formatter/src/format_element/tag.rs</code>:403 on 2023-08-24 11:20</div>
+            <div class="timeline-body"><p>Yea this did feel out of place when I added it. Thanks for the feedback! I really like the <code>TextWidth</code> idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-08-24 11:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_formatter/src/printer/mod.rs</code>:1699 on 2023-08-24 11:22</div>
+            <div class="timeline-body"><p>It was a bit tough when I tried adding one. Good to know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_python_formatter/src/comments/format.rs</code>:273 on 2023-08-24 11:25</div>
+            <div class="timeline-body"><p>I started by isolating the change to the <code>ruff_formatter</code> crate. So, yea, this is likely leftover from that (did this after I struggled with adding a printer test). Thanks for pointing it out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-08-24 11:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-08-24 13:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_python_formatter/src/comments/format.rs</code>:159 on 2023-08-24 13:11</div>
+            <div class="timeline-body"><p>Makes sense.</p>
+<blockquote>
+<p>because it doesn't matter</p>
+</blockquote>
+<p>To make sure I'm on the same page as you, it doesn't matter because there are no cases where an own-line comment's width needs to be measured, correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/format.rs</code>:159 on 2023-08-24 13:14</div>
+            <div class="timeline-body"><p>Yes, because we don't split comments, and the empty lines expand any enclosing group.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-24 13:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-08-24 13:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_formatter/src/printer/mod.rs</code>:1182 on 2023-08-24 13:31</div>
+            <div class="timeline-body"><p>Helps a lot. Seems like really interesting logic too, so I'll check it out anyway. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-08-24 13:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_python_formatter/src/comments/format.rs</code>:175 on 2023-08-24 13:39</div>
+            <div class="timeline-body"><p>Removed the comment in 9385e63a278f5e0fbd8f6d78f15605d92e6ba18c</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-08-24 13:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_python_formatter/src/comments/format.rs</code>:159 on 2023-08-24 13:41</div>
+            <div class="timeline-body"><p>Added a comment in 9385e63a278f5e0fbd8f6d78f15605d92e6ba18c but I kinda want to include the detail about splitting as well</p>
+<p>EDIT: Updated in 7ae5c3070606eaa992424e9df6a5793f9d7d2d3b</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cnpryer">@cnpryer</a> on 2023-08-24 13:44</div>
+            <div class="timeline-body"><p>I started updating the PR description to reflect feedback (see todo list).</p>
+<p>As discussed on Discord we can also split this PR up if needed in order to unblock dependent work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-08-24 13:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_formatter/src/printer/mod.rs</code>:1699 on 2023-08-24 13:50</div>
+            <div class="timeline-body"><p>I'll mark this as resolved and take note of this. If I land any other printer PRs I'd like to try this again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_formatter/src/format_element/tag.rs</code>:403 on 2023-08-25 14:33</div>
+            <div class="timeline-body"><p>Would this be something we'd want to add to <code>ruff_text_size</code> or similar? Not sure if I'm overthinking it, but I'm trying to understand the <code>TextSize</code> struct and how <code>TextWidth</code> might relate.</p>
+<p>https://github.com/astral-sh/ruff/blob/15b7525464e3f7bd1d28d69a5feb0d50913906e2/crates/ruff_text_size/src/size.rs#L12-L27</p>
+<p>This caught my eye
+https://github.com/astral-sh/ruff/blob/15b7525464e3f7bd1d28d69a5feb0d50913906e2/crates/ruff_text_size/src/lib.rs#L9-L15</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-08-25 14:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-08-25 15:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/comments/format.rs</code>:165 on 2023-08-25 15:39</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-25 15:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_formatter/src/format_element/tag.rs</code>:403 on 2023-08-25 15:48</div>
+            <div class="timeline-body"><p>I would keep it in <code>ruff_formatter</code> for now because it will need access to <code>TabWidth</code> which is formatter specific too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-08-25 15:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_formatter/src/format_element/tag.rs</code>:403 on 2023-08-25 15:53</div>
+            <div class="timeline-body"><p>Removed the named struct for <code>StartLineSuffix(u32)</code> for now. I do want to implement <code>TextWidth</code>, but it's possible I'll try to shoot to land a minimum PR instead. If that changes I'll scoop it up here.</p>
+<p>In 266c0695d434560e0cb6f55083ebf4ded99ae84a</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-08-25 15:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_formatter/src/format_element/document.rs</code>:454 on 2023-08-25 15:55</div>
+            <div class="timeline-body"><p>Added using <code>dynamic_text</code> in 266c0695d434560e0cb6f55083ebf4ded99ae84a. I'll mark this as resolved, but if there's a better way to do it than <code>std::format!</code> and the pattern I used I can revise.</p>
+<p>Could do <code>line_suffix(reserved_width: ...)</code> as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-08-25 17:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_python_formatter/src/comments/format.rs</code>:175 on 2023-08-25 17:35</div>
+            <div class="timeline-body"><p>I see. Didn't realize it flat out ignores all pragmas. Just assumed a format-ignore pragma is what we wanted to handle.  I forgot the pragma placement needs to be retained in order for it to function.</p>
+<p>What I imagined was the functionality would be retained with something like this</p>
+<pre><code class="language-py">def fn():
+    return np.divide(
+        view.variance,
+        view.sum_of_weights,
+        out=np.full(view.sum_of_weights.shape, np.nan),
+        where=(
+            view.sum_of_weights**2 &gt; view.sum_of_weights_squared
+        ),  # pragma
+    )
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-08-26 00:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_python_formatter/src/comments/format.rs</code>:273 on 2023-08-26 00:00</div>
+            <div class="timeline-body"><p>Added a <code>measure_text</code> helper in 686f3da95e45326e45ac2237b0e6322c3c89f78a.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_python_formatter/src/comments/format.rs</code>:189 on 2023-08-26 00:01</div>
+            <div class="timeline-body"><p>Duplicated what should be enough for the relevant text in 686f3da95e45326e45ac2237b0e6322c3c89f78a.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-08-26 00:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cnpryer">@cnpryer</a> on 2023-08-26 00:32</div>
+            <div class="timeline-body"><p>Was looking at the ecosystem checks. This is unstable atm.</p>
+<p>Pulled from the transformers repo:</p>
+<pre><code class="language-py">class BaseMixedInt8Test(unittest.TestCase):
+    # ...
+    EXPECTED_RELATIVE_DIFFERENCE = (
+        1.540025  # This was obtained on a Quadro RTX 8000 so the number might slightly change
+    )
+</code></pre>
+<pre><code>2023-08-26T00:22:39.664102Z ERROR Unstable formatting /Users/chrispryer/github/ruff/scratch.py
+@@ -92,7 +92,9 @@
+-    EXPECTED_RELATIVE_DIFFERENCE = 1.540025  # This was obtained on a Quadro RTX 8000 so the number might slightly change
++    EXPECTED_RELATIVE_DIFFERENCE = (
++        1.540025
++    )  # This was obtained on a Quadro RTX 8000 so the number might slightly change
+</code></pre>
+<p>From django the same instability occurs with:</p>
+<pre><code class="language-py">class Field:
+    hidden_widget = (
+        HiddenInput  # Default widget to use when rendering this as &quot;hidden&quot;.
+    )
+</code></pre>
+<p>Would this imply that <code>black</code> considers optional parentheses by using the <em>entire</em> line-width, including the line-suffix?</p>
+<p>FWIW I wanted to just see if this would fix it and it does.</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_python_formatter/src/expression/mod.rs b/crates/ruff_python_formatter/src/expression/mod.rs
+index 52255ec4f..89121e38d 100644
+--- a/crates/ruff_python_formatter/src/expression/mod.rs
++++ b/crates/ruff_python_formatter/src/expression/mod.rs
+@@ -183,11 +183,12 @@ impl Format&lt;PyFormatContext&lt;'_&gt;&gt; for MaybeParenthesizeExpression&lt;'_&gt; {
+         } = self;
+ 
+         let comments = f.context().comments();
+-        let preserve_parentheses = parenthesize.is_optional()
+-            &amp;&amp; is_expression_parenthesized((*expression).into(), f.context().source());
++        let has_parentheses = is_expression_parenthesized((*expression).into(), f.context().source());
++        let preserve_parentheses = parenthesize.is_optional() &amp;&amp; has_parentheses;
+ 
+-        let has_comments =
+-            comments.has_leading(*expression) || comments.has_trailing_own_line(*expression);
++        let has_comments = comments.has_leading(*expression)
++            || comments.has_trailing_own_line(*expression)
++            || (has_parentheses &amp;&amp; comments.has_trailing(*expression));
+</code></pre>
+<details>
+
+<pre><code>2023-08-26T01:29:46.973674Z  INFO Finished /Users/chrispryer/github/ruff/target/progress_projects/typeshed: 0 stability errors, 3496 files, similarity index 0.99947), took 1.44s, 0 input files contained syntax errors 
+2023-08-26T01:29:48.560901Z  INFO Finished /Users/chrispryer/github/ruff/target/progress_projects/zulip: 0 stability errors, 1437 files, similarity index 0.99938), took 1.59s, 0 input files contained syntax errors 
+2023-08-26T01:29:53.443121Z  INFO Finished /Users/chrispryer/github/ruff/target/progress_projects/cpython: 0 stability errors, 1789 files, similarity index 0.76074), took 4.88s, 2 input files contained syntax errors 
+2023-08-26T01:29:59.402318Z  INFO Finished /Users/chrispryer/github/ruff/target/progress_projects/transformers: 0 stability errors, 2587 files, similarity index 0.99913), took 5.96s, 13 input files contained syntax errors 
+2023-08-26T01:30:00.243994Z  INFO Finished /Users/chrispryer/github/ruff/target/progress_projects/warehouse: 0 stability errors, 648 files, similarity index 0.99657), took 0.84s, 0 input files contained syntax errors 
+2023-08-26T01:30:02.818237Z  INFO Finished /Users/chrispryer/github/ruff/target/progress_projects/django: 0 stability errors, 2760 files, similarity index 0.99926), took 2.57s, 1 input files contained syntax errors 
+2023-08-26T01:30:02.862987Z  INFO Finished /Users/chrispryer/github/ruff/target/progress_projects/twine: 0 stability errors, 33 files, similarity index 0.99911), took 0.04s, 0 input files contained syntax errors 
+2023-08-26T01:30:02.863148Z  INFO Finished: 0 stability errors, 12750 files, tool 17.326796s, 16 input files contained syntax errors 
+
+real	0m34.871s
+user	2m9.043s
+sys	0m2.703s
++ cat /Users/chrispryer/github/ruff/target/progress_projects_stats.txt
+| project      | similarity index |
+|--------------|------------------|
+| cpython      | 0.76074          |
+| django       | 0.99926          |
+| transformers | 0.99913          |
+| twine        | 0.99911          |
+| typeshed     | 0.99947          |
+| warehouse    | 0.99657          |
+| zulip        | 0.99938          |
+</code></pre>
+</details>
+
+<p>Maybe that's #6771?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-26 11:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Would this imply that <code>black</code> considers optional parentheses by using the <em>entire</em> line-width, including the line-suffix?</p>
+</blockquote>
+<p>It seems to me that Black removes the parentheses always. This is a file that I used to play around with the formatting.</p>
+<pre><code class="language-python">class BaseMixedInt8Test(unittest.TestCase):
+    # ...
+    EXPECTED_RELATIVE_DIFFERENCE = (
+        1.540025  # This was obtained on a Quadro RTX 8000 so the number might slightly change
+    )
+
+    EXPECTED_RELATIVE_DIFFERENCE = 1.540025  # This was obtained on a Quadro RTX 8000 so the number might slightly change
+
+    
+    EXPECTED_RELATIVE_DIFFERENCE = (
+        1.540025  
+    ) # This was obtained on a Quadro RTX 8000 so the number might slightly change
+
+    # ...
+    EXPECTED_RELATIVE_DIFFERENCE = (
+        1.5  # This was obtained on a Quadro RTX 8000 so the number might slightly change
+    )
+
+    EXPECTED_RELATIVE_DIFFERENCE = 1.5  # This was obtained on a Quadro RTX 8000 so the number might slightly change
+
+    
+    EXPECTED_RELATIVE_DIFFERENCE = (
+        1.5  
+    ) # This was obtained on a Quadro RTX 8000 so the number might slightly change
+    
+
+    # ...
+    EXPECTED_RELATIVE_DIFFERENCE = (
+        1.540025  # This was 
+    )
+
+    EXPECTED_RELATIVE_DIFFERENCE = 1.540025  # This was
+
+    
+    EXPECTED_RELATIVE_DIFFERENCE = (
+        1.540025  
+    ) # This was
+    
+
+    (
+        EXPECTED_RELATIVE_DIFFERENCE # This was obtained on a Quadro RTX 8000 so the number might slightly change
+    )= (
+        1.540025  
+    ) # This was
+
+</code></pre>
+<p>I haven't come to a conclusion yet what the best behavior is but we have a few options:</p>
+<ul>
+<li><p>Keep parentheses if the expression has any trailing comment. This would ensure that comments never move and has low complexity</p>
+</li>
+<li><p>Only add parentheses here
+https://github.com/astral-sh/ruff/blob/813d7da7ec8ab03d397b1496e0c0e99025a72161/crates/ruff_python_formatter/src/expression/mod.rs#L246-L253
+by changing it to</p>
+<pre><code class="language-rust">      group(&amp;format_args![
+        text(&quot;(&quot;),
+        soft_block_indent(&amp;format_expression),
+        text(&quot;)&quot;)
+    ])
+    .with_group_id(Some(group_id))
+    .fmt(f)
+</code></pre>
+<p>This gives us black's formatting in most cases.</p>
+</li>
+<li><p>Use your implementation</p>
+</li>
+</ul>
+<p>We'll need to play around with this a little more.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-08-26 15:49</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/cnpryer:line-suffix">CodSpeed Performance Report</a></h2>
+<h3>Merging #6830 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>cnpryer:line-suffix</code> (f32624c) with <code>main</code> (f33277a)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 16</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cnpryer">@cnpryer</a> on 2023-08-26 16:09</div>
+            <div class="timeline-body"><p>Ah I see. I think I was too focused on dealing with the instability. You're right. <code>black</code> will remove the parentheses. Now I want to understand the expected behavior a bit better (<code>black</code>'s behavior).</p>
+<p>So is it specific nodes that are given the &quot;break if line suffix exceeds line-lengths&quot; treatment? On first glance it looks like it occurs where some kind of <em>parentheses</em> are present. When I say <em>parentheses</em> I mean <code>{}</code>, <code>[]</code>, or <code>()</code>. I'm kind of curious how <code>black</code> implements this. I've been kicking the can on reading <code>black</code>'s source, so maybe it's time.</p>
+<p>Marking as ready to invite some discussion around the solution. I'll continue tinkering.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @cnpryer on 2023-08-26 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cnpryer">@cnpryer</a> on 2023-08-26 17:44</div>
+            <div class="timeline-body"><p>I've decided to split this into two PRs. One (this one) will be for adding the new <code>reserved_width</code> field to <code>LineSuffix</code>. The other (pending) will be for layering in the <code>ruff_python_formatter</code> changes.</p>
+<p>I wanted to do this because the <code>LineSuffix</code> change doesn't need to wait for the remaining decisions here. This would also unblock anyone else from working off the change to close out some of the Alpha work remaining. The <code>TextWidth</code> implementation would be a great followup PR that I might throw up in parallel to reading <code>black</code> source. And all of this can occur in parallel to the child PR I've split half of this work into.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_formatter/src/format_element/tag.rs</code>:67 on 2023-08-26 17:57</div>
+            <div class="timeline-body"><p>Let's use a named field and add some documentation</p>
+<pre><code class="language-suggestion">    StartLineSuffix { reserved_width: u32 },
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-26 17:57</div>
+            <div class="timeline-body"><p>Looks good to me. My only ask is to use the <code>struct </code>syntax for <code>StartLineSuffix</code> and document the field.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-26 17:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_formatter/src/builders.rs</code>:535 on 2023-08-26 17:58</div>
+            <div class="timeline-body"><p>Oh, something else. Could we add a doctest here that demonstrates the reserved width functionality?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Use `LineSuffix` reserved width" to "Add `LineSuffix` reserved width" by @cnpryer on 2023-08-26 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-08-26 18:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_formatter/src/format_element/tag.rs</code>:67 on 2023-08-26 18:01</div>
+            <div class="timeline-body"><p>Oh nice. Definitely better. Added in 999a9a9a35f0d187c21b4adfd519a8b46e7b78b8.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-08-26 22:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_formatter/src/builders.rs</code>:535 on 2023-08-26 22:45</div>
+            <div class="timeline-body"><p>I'd really like something that's essentially &quot;print the current example with the line suffix on a new line due to its reserved width&quot;. Is this possible with something simpler than the following test:</p>
+<pre><code class="language-rust">    #[test]
+    fn line_suffix_reserved_width() {
+        let options = PrinterOptions {
+            print_width: PrintWidth::new(2),
+            ..PrinterOptions::default()
+        };
+
+        let printed = format_with_options(&amp;format_args![
+            group(&amp;format_args![
+                &amp;format_with(|f| {
+                    f.fill()
+                        .entry(
+                            &amp;soft_line_break(),
+                            &amp;format_args![text(&quot;a&quot;), text(&quot;b&quot;)],
+                        )
+                        .entry(
+                            &amp;soft_line_break(),
+                            &amp;line_suffix(&amp;text(&quot;c&quot;), 1),
+                        )
+                        .finish()
+                }),
+            ]),
+        ], options);
+
+        assert_eq!(printed.as_code(), &quot;ab\nc&quot;);
+    }
+</code></pre>
+<p>Added both a doctest and a regular printer test in d67165e92989b10479ecb9509b6cb2aba1be61e9.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-27 09:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_formatter/src/builders.rs</code>:535 on 2023-08-27 09:18</div>
+            <div class="timeline-body"><p>A very minimalistic line width :D Fill seems a bit overkill. I would create something that's close to what you want when building your own formatter: E.g. adding parentheses when it has a comment:</p>
+<pre><code class="language-rust">let mut context = SimplFormatContext {
+	options: SimpleFormatOptions {
+		print_width: PrintWidth::try_from(10).unwrap(),
+		..SimpleFormatOptions::default()
+	},
+	..SimpleFormatContext::default()
+};
+
+let formatted = format!(context, 	[
+	// Breaks
+	group(&amp;format_args![
+		if_group_breaks(&amp;text(&quot;(&quot;)),
+		soft_block_indent(&amp;format_args![text(&quot;a&quot;), line_suffix(&amp;text(&quot; // a comment&quot;), 13]),
+		if_group_breaks(&amp;text(&quot;)&quot;)
+	]),
+
+	// Fits
+	group(&amp;format_args![
+		if_group_breaks(&amp;text(&quot;(&quot;)),
+		soft_block_indent(&amp;format_args![text(&quot;a&quot;), line_suffix(&amp;text(&quot; // a comment&quot;), 0]),
+		if_group_breaks(&amp;text(&quot;)&quot;)
+	]),
+])?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cnpryer">@cnpryer</a> reviewed on 2023-08-27 12:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cnpryer">@cnpryer</a> on <code>crates/ruff_formatter/src/builders.rs</code>:535 on 2023-08-27 12:53</div>
+            <div class="timeline-body"><p>Fair :) f32624c09e6501b4278b67fc61da5edc737e42ec</p>
+<p>FWIW my thought process was if I'm reading the docs I'd be following the example of &quot;push 'c' to end of line using line suffix&quot; to &quot;now push c to end of line if only two characters can fit and see what happens&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-28 05:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-08-28 05:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-08-28 05:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-28 11:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:46:15 UTC
+    </footer>
+</body>
+</html>

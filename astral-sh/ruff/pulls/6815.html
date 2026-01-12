@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Printer group modes - astral-sh/ruff #6815</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix Printer group modes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6815">#6815</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-08-23 12:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-23 12:10</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This fixes a bug in the Printer where the mode for a group was stale when testing if some content fits.</p>
+<p>The input must have been of the form</p>
+<pre><code>group(1, 
+	...
+)
+... (as long as no line break)
+group(2, 
+	if_group_breaks(2, text(&quot;()),
+	...
+)
+</code></pre>
+<p>What happened is:</p>
+<ul>
+<li>The printer measured if group 1 fits<ul>
+<li>The printer sees no line break up to group 2 and, therefore, starts measuring group 2</li>
+<li>But the printer first writes that the group 2 is printed in <code>Expanded</code> mode to the <code>print_modes</code> state that is shared between printing and measuring</li>
+<li>The printer return <code>Fits::No</code>, because the line ultimately doesn't fit, but it doesn't undo the written <code>group_modes[2] = Expand</code></li>
+</ul>
+</li>
+<li>The printer now tests if at least the group 2 fits<ul>
+<li>The <code>if_group_breaks</code> looks up the value of group <code>2</code> in <code>group_modes</code> which still contains the stale <code>Expand</code> entry (it breaks)</li>
+<li>The printer, incorrectly assumes that it will have to print the <code>(</code>. It won't print the <code>(</code>, but it assumes the layout as if group 2 breaks when measuring if it fits</li>
+<li>The printer decides that the group fits (when it shouldn't), and renders it in flat mode</li>
+</ul>
+</li>
+</ul>
+<p>This PR implements a fix by always writing <code>group_modes[group_id] = Flat</code> of the current group that should be measured. We already do this <strong>after</strong> measuring and inside of <code>fits_groups</code>. This only extends it to override any stale entry for the outermost group too.</p>
+<p>This seems to come at a performance cost because there's now one additional write for every group (and there are many!). What would be nice is if there's a cheap way to restore <code>group_modes</code> after measuring fits but that would require that the group ids in the document are monotonic. While it's true that group ids are always increasing, it isn't guaranteed that their groups are written in the same order as the ids have been created.</p>
+<p>I used the chance to remove the (last?) <code>unwrap</code> in the <code>Printer</code> by returning gan <code>Err</code> if a document uses a <code>group_id</code> that hasn't been seen to this point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-23 12:10</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #6814</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6814" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.svg" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #6815</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6815" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.svg" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #6816</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6816" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.svg" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #6817</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6817" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.svg" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #6848</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6848" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.svg" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #6819</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6819" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.svg" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6815?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-23 12:43</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                    pr
+-----                                      ----                                    --
+formatter/large/dataset.py                 1.00      4.2±0.13ms     9.7 MB/sec     1.00      4.2±0.21ms     9.7 MB/sec
+formatter/numpy/ctypeslib.py               1.00   859.6±28.32µs    19.4 MB/sec     1.02   875.4±55.38µs    19.0 MB/sec
+formatter/numpy/globals.py                 1.04     88.5±5.11µs    33.3 MB/sec     1.00     85.2±4.07µs    34.7 MB/sec
+formatter/pydantic/types.py                1.00  1717.0±35.70µs    14.9 MB/sec     1.00  1710.8±69.81µs    14.9 MB/sec
+linter/all-rules/large/dataset.py          1.02     13.0±0.41ms     3.1 MB/sec     1.00     12.7±0.56ms     3.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.3±0.09ms     5.1 MB/sec     1.04      3.4±0.11ms     4.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00   484.6±13.25µs     6.1 MB/sec     1.01   487.5±21.99µs     6.1 MB/sec
+linter/all-rules/pydantic/types.py         1.01      6.6±0.22ms     3.8 MB/sec     1.00      6.6±0.25ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.8±0.24ms     6.0 MB/sec     1.05      7.1±0.33ms     5.7 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1464.0±130.36µs    11.4 MB/sec    1.01  1478.6±49.64µs    11.3 MB/sec
+linter/default-rules/numpy/globals.py      1.01    182.9±8.64µs    16.1 MB/sec     1.00    181.2±8.70µs    16.3 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.0±0.06ms     8.5 MB/sec     1.07      3.2±0.11ms     8.0 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      4.8±0.21ms     8.5 MB/sec    1.01      4.8±0.23ms     8.5 MB/sec
+formatter/numpy/ctypeslib.py               1.04   979.6±70.68µs    17.0 MB/sec    1.00   946.0±53.84µs    17.6 MB/sec
+formatter/numpy/globals.py                 1.00     92.6±5.63µs    31.9 MB/sec    1.04    96.2±10.59µs    30.7 MB/sec
+formatter/pydantic/types.py                1.00  1936.2±84.49µs    13.2 MB/sec    1.00  1934.1±100.69µs    13.2 MB/sec
+linter/all-rules/large/dataset.py          1.00     15.9±0.61ms     2.6 MB/sec    1.00     15.9±0.54ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.4±0.18ms     3.8 MB/sec    1.00      4.4±0.16ms     3.8 MB/sec
+linter/all-rules/numpy/globals.py          1.02   551.3±32.45µs     5.4 MB/sec    1.00   541.6±30.36µs     5.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      8.2±0.29ms     3.1 MB/sec    1.01      8.3±0.38ms     3.1 MB/sec
+linter/default-rules/large/dataset.py      1.04      9.2±0.66ms     4.4 MB/sec    1.00      8.8±0.39ms     4.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1883.2±74.42µs     8.8 MB/sec    1.01  1910.0±90.43µs     8.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00   232.6±36.87µs    12.7 MB/sec    1.01   235.3±13.48µs    12.5 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.9±0.14ms     6.6 MB/sec    1.05      4.1±0.23ms     6.3 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-08-23 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-08-23 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-08-23 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_formatter/src/diagnostics.rs</code>:92 on 2023-08-23 21:44</div>
+            <div class="timeline-body"><p>Nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-08-23 21:48</div>
+            <div class="timeline-body"><p>I'm out of my depth here as I've never grappled with the printer -- but I did spend 10 minutes or so reading the PR summary and the code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-08-24 06:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-08-24 06:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-24 06:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:46:15 UTC
+    </footer>
+</body>
+</html>

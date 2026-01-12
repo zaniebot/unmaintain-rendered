@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attach trailing `WithItem` comments to the optional variable - astral-sh/ruff #6625</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Attach trailing <code>WithItem</code> comments to the optional variable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6625">#6625</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-16 17:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-16 17:33</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR modifies our comment handling of <code>WithItem</code> nodes by attaching trailing comments to the optional variable rather than the <code>WithItem</code> itself, if there are no clear delimiters between the comment and the optional variable.</p>
+<p>As a concrete example, given:</p>
+<pre><code class="language-python">with (
+    (a
+    # trailing own line comment
+    )
+    as # trailing as same line comment
+    b # trailing b same line comment
+): ...
+</code></pre>
+<p>We now format as:</p>
+<pre><code class="language-python">with (
+    a
+    # trailing own line comment
+) as (  # trailing as same line comment
+    b  # trailing b same line comment
+):
+    ...
+</code></pre>
+<p>Prior to this PR, we formatted as:</p>
+<pre><code class="language-python">with (
+    a
+    # trailing own line comment
+) as (  # trailing as same line comment
+    b
+):  # trailing b same line comment
+    ...
+</code></pre>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-08-16 17:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-08-16 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-16 18:02</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                    pr
+-----                                      ----                                    --
+formatter/large/dataset.py                 1.00      3.3±0.17ms    12.4 MB/sec     1.06      3.5±0.18ms    11.7 MB/sec
+formatter/numpy/ctypeslib.py               1.00   655.2±29.05µs    25.4 MB/sec     1.14   744.5±48.64µs    22.4 MB/sec
+formatter/numpy/globals.py                 1.00     69.2±4.72µs    42.6 MB/sec     1.10     76.1±5.82µs    38.8 MB/sec
+formatter/pydantic/types.py                1.00  1303.1±101.72µs    19.6 MB/sec    1.11  1441.8±102.50µs    17.7 MB/sec
+linter/all-rules/large/dataset.py          1.04     11.1±0.25ms     3.7 MB/sec     1.00     10.7±0.30ms     3.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.03      3.0±0.05ms     5.6 MB/sec     1.00      2.9±0.09ms     5.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00   416.0±21.30µs     7.1 MB/sec     1.13   471.1±19.95µs     6.3 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.7±0.39ms     4.5 MB/sec     1.06      6.0±0.39ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      5.5±0.13ms     7.4 MB/sec     1.13      6.2±0.30ms     6.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1231.9±49.76µs    13.5 MB/sec     1.08  1333.6±57.93µs    12.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    152.8±8.21µs    19.3 MB/sec     1.08    165.7±7.63µs    17.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.5±0.09ms    10.0 MB/sec     1.10      2.8±0.11ms     9.1 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      3.7±0.02ms    11.1 MB/sec    1.00      3.7±0.02ms    11.1 MB/sec
+formatter/numpy/ctypeslib.py               1.00    726.3±8.27µs    22.9 MB/sec    1.00    727.1±8.20µs    22.9 MB/sec
+formatter/numpy/globals.py                 1.01     74.1±0.90µs    39.8 MB/sec    1.00     73.5±1.27µs    40.2 MB/sec
+formatter/pydantic/types.py                1.00  1505.0±13.33µs    16.9 MB/sec    1.00  1504.2±16.96µs    17.0 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.5±0.07ms     3.2 MB/sec    1.00     12.6±0.10ms     3.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.5±0.02ms     4.7 MB/sec    1.00      3.5±0.01ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00    371.6±8.67µs     7.9 MB/sec    1.00    373.4±4.38µs     7.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.6±0.07ms     3.9 MB/sec    1.00      6.6±0.07ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.0±0.05ms     5.8 MB/sec    1.01      7.1±0.04ms     5.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1472.4±11.00µs    11.3 MB/sec    1.00  1472.6±12.35µs    11.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    151.4±1.55µs    19.5 MB/sec    1.00    151.9±2.23µs    19.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.2±0.02ms     8.1 MB/sec    1.01      3.2±0.02ms     8.0 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-16 22:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1333 on 2023-08-17 06:35</div>
+            <div class="timeline-body"><p>Nit: We could integrate this into the <code>if let Some(...)</code> below</p>
+<pre><code class="language-rust">if let Some(AnyNodeRef::WithItem(...) = comment.preceding_node() {
+	
+} else if let Some(following) = comment.following_node() {
+	// First with item
+	if comment.start() &lt; with_item.start() {
+		return CommentPlacement::dangling(comment.enclosing_node(), comment);
+	}
+}
+
+CommentPlacement::Default(comment)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1314 on 2023-08-17 06:39</div>
+            <div class="timeline-body"><p>Does this work as intended if you have</p>
+<pre><code class="language-python">with (
+	a as 
+	(((b))	 # comment
+    )
+	, c as d
+): ...
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-17 06:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-18 03:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1314 on 2023-08-18 03:25</div>
+            <div class="timeline-body"><p>So, that <em>already</em> gets associated as a trailing comment on <code>b</code>. I believe because the range of the <code>WithItem</code> starts at the <code>a</code> and goes until the parenthesis <em>after</em> the <code>b</code>. The case we care about is that in which the comment trails the range of the <code>WithItem</code>, like:</p>
+<pre><code class="language-python">with (
+    a
+    as
+    # comment
+    b  # leading comment
+): ...
+</code></pre>
+<p>Which makes me think: perhaps this condition should ignore <code>RParen</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1333 on 2023-08-18 03:28</div>
+            <div class="timeline-body"><p>Doesn't the following node need to be the first <code>WithItem</code> though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-18 03:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-18 06:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1333 on 2023-08-18 06:05</div>
+            <div class="timeline-body"><p>I thought that we could make use of the fact that the preceding node is <code>None</code>. It then should be the first item?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-18 15:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1333 on 2023-08-18 15:24</div>
+            <div class="timeline-body"><p>Hmm... I think there are some issues with the ranges on these <code>WithItem</code>s. Need to look into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2023-08-20 23:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-20 23:24</div>
+            <div class="timeline-body"><p>Converting to draft until we figure out how to fix the <code>WithItem</code> ranges for the parenthesized, non-<code>as</code> case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1333 on 2023-08-30 17:58</div>
+            <div class="timeline-body"><p>Okay, this finally works :joy:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-30 17:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-08-30 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-08-30 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-30 17:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1314 on 2023-08-30 17:59</div>
+            <div class="timeline-body"><p>This now gets formatted as:</p>
+<pre><code class="language-python">with (
+    a as b,  # comment
+    c as d,
+):
+    ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/statement/with.py</code>:263 on 2023-08-31 06:32</div>
+            <div class="timeline-body"><p>Leading comment is confusing, aren't these all trailing comments?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-31 06:35</div>
+            <div class="timeline-body"><p>What exact problem is this PR solving? Does it solve some instability? I think I prefer the current formatting</p>
+<pre><code>with (
+    a as b,  # leading comment
+    c as d,
+):
+    ...
+
+
+with (
+    a as b,  # leading comment
+    c as d,
+):
+    ...
+</code></pre>
+<p>Attaching the comments to the optional vars instead of the with item (if there are no tokens in between) also deviates from our practice to always attach comments to the outer most node.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-31 07:35</div>
+            <div class="timeline-body"><p>I think the motivation here (per PR summary) was to ensure that the “# trailing b same line comment” wasn’t moved “off” of the with-item as in the demonstrated example (where it’s moved to the next line, after the colon, rather than remaining as a same-line comment the b). I don’t know that attaching as a trailing comment on the optional var is actually the right solution though. I’m tempted to just close this and move on. However I don’t fully understand your most recent comment. What is the code snippet you’d included there intended to communicate? Is that not the formatting we achieve before and after this PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-31 07:39</div>
+            <div class="timeline-body"><p>Okay I see. That means this is specific for cases where the <code>as</code> is parenthesized.</p>
+<p>I would be okay changing the logic so that the comment becomes a trailing comment of the optional var if it is inside the parentheses.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2023-08-31 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-31 21:04</div>
+            <div class="timeline-body"><p>I'm gonna close this for now. The proposed change is actually <em>less</em> consistent in some cases -- for example, it treats the comments after <code>b</code> very differently in these two cases:</p>
+<pre><code class="language-python">with (
+    a
+    as
+    # leading comment
+    b  # trailing comment
+): ...
+
+with (
+    a
+    as
+    # leading comment
+    b,  # trailing comment
+    c as d
+): ...
+</code></pre>
+<p>We can revisit if it comes up in practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-31 21:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:46:15 UTC
+    </footer>
+</body>
+</html>

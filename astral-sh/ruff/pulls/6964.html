@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run cargo update - astral-sh/ruff #6964</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Run cargo update</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6964">#6964</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-29 03:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-29 03:11</div>
+            <div class="timeline-body"><p><em>No description provided.</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-08-29 03:23</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/charlie/update">CodSpeed Performance Report</a></h2>
+<h3>Merging #6964 will <strong>degrade performances by 2.97%</strong></h3>
+<p><sub>Comparing <code>charlie/update</code> (11e1d17) with <code>main</code> (68f605e)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1</code> regressions
+<code>✅ 19</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/charlie/update">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>charlie/update</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>linter/default-rules[pydantic/types.py]</code> | 38.2 ms | 39.4 ms | -2.97% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-29 03:27</div>
+            <div class="timeline-body"><p>Huh, could that possibly be correct? I'll have to run these manually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-29 03:36</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2023-08-29 04:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2023-08-29 04:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-29 05:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Huh, could that possibly be correct? I'll have to run these manually.</p>
+</blockquote>
+<p>The reports have been very accurate this far. Maybe force push again to trigger a new run. I otherwise recommend upgrading in smaller batches (eg only memchar)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-29 06:19</div>
+            <div class="timeline-body"><p>I ran the benchmarks locally. All <code>linter/all-rules</code> tests are regressing, but <code>types.py</code> and <code>ctypeslib</code> by in a very bad way</p>
+<pre><code>linter/all-rules/numpy/globals.py
+                        time:   [196.32 µs 197.08 µs 197.93 µs]
+                        thrpt:  [14.907 MiB/s 14.972 MiB/s 15.030 MiB/s]
+                 change:
+                        time:   [+6.1293% +6.5304% +6.9420%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-6.4913% -6.1300% -5.7753%]
+                        Performance has regressed.
+Benchmarking linter/all-rules/pydantic/types.py: Warming up for 3.0000 s
+Warning: Unable to complete 100 samples in 20.0s. You may wish to increase target time to 25.5s, enable flat sampling, or reduce sample count to 60.
+linter/all-rules/pydantic/types.py
+                        time:   [5.0083 ms 5.0100 ms 5.0121 ms]
+                        thrpt:  [5.0884 MiB/s 5.0904 MiB/s 5.0922 MiB/s]
+                 change:
+                        time:   [+69.055% +69.334% +69.599%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-41.037% -40.945% -40.848%]
+                        Performance has regressed.
+Found 3 outliers among 100 measurements (3.00%)
+  2 (2.00%) high mild
+  1 (1.00%) high severe
+linter/all-rules/numpy/ctypeslib.py
+                        time:   [2.1310 ms 2.1330 ms 2.1365 ms]
+                        thrpt:  [7.7938 MiB/s 7.8065 MiB/s 7.8139 MiB/s]
+                 change:
+                        time:   [+38.913% +39.053% +39.233%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-28.178% -28.085% -28.013%]
+                        Performance has regressed.
+Found 12 outliers among 100 measurements (12.00%)
+  7 (7.00%) high mild
+  5 (5.00%) high severe
+linter/all-rules/large/dataset.py
+                        time:   [6.6676 ms 6.6977 ms 6.7216 ms]
+                        thrpt:  [6.0525 MiB/s 6.0741 MiB/s 6.1015 MiB/s]
+                 change:
+                        time:   [+8.3097% +8.8593% +9.3198%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-8.5252% -8.1383% -7.6722%]
+                        Performance has regressed.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-29 09:49</div>
+            <div class="timeline-body"><p>It seems like libCST hits some bad case for aho-corasick</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/1203881/b675d02e-03aa-4427-9328-65b51542c79c" alt="image" /></p>
+<p><a href="https://share.firefox.dev/3sxr40A">Profile</a></p>
+<p>For comparison, the <code>types</code> benchmark on main <a href="https://share.firefox.dev/3EflJ0j">Profile</a></p>
+<p><img src="https://github.com/astral-sh/ruff/assets/1203881/0796cf2f-2a42-445a-a46c-3d221691329d" alt="image" /></p>
+<p>where the Regex construction &quot;only&quot; accounts for 3% of the overall time</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/1203881/62eed3c1-9fcc-4338-96dc-85538863ba9c" alt="image" /></p>
+<p>The easiest fix is to change libCST to either cache the Regex in <code>Whitespace::new</code>. Even better, use <code>memchr2</code> directly instead of building a Regex for this</p>
+<p>https://github.com/Instagram/LibCST/blob/c91655fbba7c27db05423673609f10203316b9c0/native/libcst/src/tokenizer/whitespace_parser.rs#L76-L80</p>
+<p>CC: @BurntSushi you might be interested in the regression. It seems that building a <code>Regex</code> has become more expensive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-29 09:58</div>
+            <div class="timeline-body"><p>It seems this is &quot;fixed&quot; in the latest version of LibCST.</p>
+<p>https://github.com/Instagram/LibCST/pull/996</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-08-29 13:28</div>
+            <div class="timeline-body"><p>I don't think this is related to the <code>aho-corasick</code> upgrade specifically. From master:</p>
+<pre><code>$ cargo bench --bench linter linter/all-rules/numpy/globals.py
+    Finished bench [optimized] target(s) in 0.08s
+     Running benches/linter.rs (target/release/deps/linter-48c46d225533251a)
+Gnuplot not found, using plotters backend
+linter/all-rules/numpy/globals.py
+                        time:   [131.16 µs 131.23 µs 131.29 µs]
+                        thrpt:  [22.475 MiB/s 22.485 MiB/s 22.496 MiB/s]
+                 change:
+                        time:   [-0.9577% -0.8264% -0.7114%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+0.7165% +0.8333% +0.9670%]
+                        Change within noise threshold.
+Found 6 outliers among 100 measurements (6.00%)
+  2 (2.00%) low mild
+  2 (2.00%) high mild
+  2 (2.00%) high severe
+
+$ cargo update -p aho-corasick@1.0.2
+    Updating crates.io index
+    Updating aho-corasick v1.0.2 -&gt; v1.0.4
+
+$ cargo bench --bench linter linter/all-rules/numpy/globals.py
+    Finished bench [optimized] target(s) in 1m 50s
+     Running benches/linter.rs (target/release/deps/linter-bed0760206629487)
+Gnuplot not found, using plotters backend
+linter/all-rules/numpy/globals.py
+                        time:   [131.35 µs 131.40 µs 131.44 µs]
+                        thrpt:  [22.449 MiB/s 22.456 MiB/s 22.464 MiB/s]
+                 change:
+                        time:   [+0.0104% +0.1040% +0.1955%] (p = 0.03 &lt; 0.05)
+                        thrpt:  [-0.1951% -0.1039% -0.0104%]
+                        Change within noise threshold.
+Found 6 outliers among 100 measurements (6.00%)
+  3 (3.00%) low mild
+  2 (2.00%) high mild
+  1 (1.00%) high severe
+</code></pre>
+<p>I also tried to check whether it might be a change in the <code>regex</code> (or related) crates:</p>
+<pre><code>$ cargo update -p regex -p regex-automata@0.3.0 -p regex-syntax@0.7.3 -p memchr
+    Updating crates.io index
+    Updating memchr v2.5.0 -&gt; v2.6.0
+    Updating regex v1.9.0 -&gt; v1.9.4
+    Updating regex-automata v0.3.0 -&gt; v0.3.7
+    Updating regex-syntax v0.7.3 -&gt; v0.7.5
+
+$ cargo bench --bench linter linter/all-rules/numpy/globals.py
+    Finished bench [optimized] target(s) in 1m 51s
+     Running benches/linter.rs (target/release/deps/linter-142801da0ac5da00)
+Gnuplot not found, using plotters backend
+linter/all-rules/numpy/globals.py
+                        time:   [133.43 µs 133.47 µs 133.51 µs]
+                        thrpt:  [22.101 MiB/s 22.107 MiB/s 22.114 MiB/s]
+                 change:
+                        time:   [+1.5378% +1.6424% +1.7609%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-1.7304% -1.6158% -1.5145%]
+                        Performance has regressed.
+Found 3 outliers among 100 measurements (3.00%)
+  1 (1.00%) low mild
+  2 (2.00%) high severe
+</code></pre>
+<p>It looks like @MichaReiser found that it might be an issue in LibCST? Basically, one possible cause for this is that something changed not in regex compilation but in the frequency of regex compilation. If that happened, you'd expect to see the most expensive parts of regex compilation pop up in a profile.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-29 14:23</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks like @MichaReiser found that it might be an issue in LibCST? Basically, one possible cause for this is that something changed not in regex compilation but in the frequency of regex compilation.</p>
+</blockquote>
+<p>Hmm, interesting find. We didn't update LibCST as part of this PR, so it must be a shared dependency OR we now run the LibCST code paths more often but I then would expect the ecosystem check to fail (because we have more or fewer diagnostics). Anyway, thanks for chiming in and the best way to narrow it down is probably to upgrade the dependencies incrementally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-08-29 14:32</div>
+            <div class="timeline-body"><p>@MichaReiser Aye. Note that there <a href="https://github.com/BurntSushi/aho-corasick/pull/121">were big changes to <code>AhoCorasick</code> construction in the 1.0.4 release</a>, so I would still treat it as a candidate to be suspicious of. (That was released a few weeks ago and I haven't yet received any reports of major regressions though.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-29 14:34</div>
+            <div class="timeline-body"><p>Woah nice memory improvements. Maybe we should do some memory profiling too ;)</p>
+<p>@BurntSushi I took the same steps you mentioned above but with the <code>linter/all-rules/pydantic/types.py</code> benchmark, which seems most impacted, and I can reproduce (x86). (Note: I ran the command on main)</p>
+<pre><code>❯ cargo update -p aho-corasick@1.0.2
+    Updating crates.io index
+    Updating aho-corasick v1.0.2 -&gt; v1.0.4
+
+ruff on  main [$!] is 📦 v0.0.286 via 🐍 v3.11.3 via 🦀 v1.74.0-nightly took 2s 
+❯ cargo bench --bench linter linter/all-rules/pydantic/types.py -- --baseline main
+   Compiling aho-corasick v1.0.4
+   Compiling regex-automata v0.3.0
+   Compiling regex v1.9.0
+   Compiling bstr v1.6.0
+   Compiling criterion v0.5.1
+   Compiling globset v0.4.10
+   Compiling ruff_cache v0.0.0 (/home/micha/astral/ruff/crates/ruff_cache)
+   Compiling ruff_benchmark v0.0.0 (/home/micha/astral/ruff/crates/ruff_benchmark)
+   Compiling pep440_rs v0.3.11
+   Compiling libcst v0.1.0 (https://github.com/Instagram/LibCST.git?rev=3cacca1a1029f05707e50703b49fe3dd860aa839#3cacca1a)
+   Compiling pep508_rs v0.2.1
+   Compiling pyproject-toml v0.6.1
+   Compiling ruff v0.0.286 (/home/micha/astral/ruff/crates/ruff)
+    Finished bench [optimized] target(s) in 1m 51s
+     Running benches/linter.rs (target/release/deps/linter-e9767e92860b0320)
+Gnuplot not found, using plotters backend
+Benchmarking linter/all-rules/pydantic/types.py: Warming up for 3.0000 s
+Warning: Unable to complete 100 samples in 20.0s. You may wish to increase target time to 25.0s, enable flat sampling, or reduce sample count to 60.
+linter/all-rules/pydantic/types.py
+                        time:   [4.9141 ms 4.9162 ms 4.9187 ms]
+                        thrpt:  [5.1849 MiB/s 5.1875 MiB/s 5.1898 MiB/s]
+                 change:
+                        time:   [+59.590% +59.758% +59.925%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-37.471% -37.405% -37.339%]
+</code></pre>
+<p>But then, the main issue is the way LibCST uses/used a Regex (which ideally wouldn't be a regex in the first place) and updating / patching our branch is the way to go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-08-29 18:12</div>
+            <div class="timeline-body"><p>Higher level: yeah totally agree that code should just be using <code>memchr2</code> or something. It also just seems like something is compiling a regex over and over, so there might be a bug somewhere there too. But maybe not. Anyway, the fact that you saw the regression by just updating <code>aho-corasick</code> made me investigate this more to make sure there weren't any issues on my end. Indeed, there is a regression! The fix and details are at: https://github.com/BurntSushi/aho-corasick/pull/126</p>
+<p>To confirm it's fixed, starting from master:</p>
+<pre><code>$ cargo bench --bench linter linter/all-rules/pydantic/types.py
+    Finished bench [optimized] target(s) in 2m 03s
+     Running benches/linter.rs (target/release/deps/linter-48c46d225533251a)
+Gnuplot not found, using plotters backend
+linter/all-rules/pydantic/types.py
+                        time:   [2.3441 ms 2.3445 ms 2.3449 ms]
+                        thrpt:  [10.876 MiB/s 10.878 MiB/s 10.880 MiB/s]
+                 change:
+                        time:   [-0.0075% +0.0318% +0.0705%] (p = 0.12 &gt; 0.05)
+                        thrpt:  [-0.0705% -0.0318% +0.0075%]
+                        No change in performance detected.
+Found 8 outliers among 100 measurements (8.00%)
+  1 (1.00%) low severe
+  2 (2.00%) low mild
+  4 (4.00%) high mild
+  1 (1.00%) high severe
+</code></pre>
+<p>Bump to <code>aho-corasick 1.0.4</code> to observe the regression:</p>
+<pre><code>$ cargo update -p aho-corasick@1.0.2 --precise 1.0.4
+    Updating crates.io index
+    Updating aho-corasick v1.0.2 -&gt; v1.0.4
+$ cargo bench --bench linter linter/all-rules/pydantic/types.py
+    Finished bench [optimized] target(s) in 1m 50s
+     Running benches/linter.rs (target/release/deps/linter-bed0760206629487)
+Gnuplot not found, using plotters backend
+Benchmarking linter/all-rules/pydantic/types.py: Warming up for 3.0000 s
+Warning: Unable to complete 100 samples in 20.0s. You may wish to increase target time to 22.4s, enable flat sampling, or reduce sample count to 60.
+linter/all-rules/pydantic/types.py
+                        time:   [4.4151 ms 4.4161 ms 4.4174 ms]
+                        thrpt:  [5.7733 MiB/s 5.7750 MiB/s 5.7764 MiB/s]
+                 change:
+                        time:   [+88.299% +88.363% +88.422%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-46.928% -46.911% -46.893%]
+                        Performance has regressed.
+Found 9 outliers among 100 measurements (9.00%)
+  2 (2.00%) low mild
+  1 (1.00%) high mild
+  6 (6.00%) high severe
+</code></pre>
+<p>And now bump to recently released <code>aho-corasick 1.0.5</code> to observe that it is fixed:</p>
+<pre><code>$ cargo update -p aho-corasick@1.0.4 --precise 1.0.5
+    Updating crates.io index
+    Updating aho-corasick v1.0.4 -&gt; v1.0.5
+$ cargo bench --bench linter linter/all-rules/pydantic/types.py
+    Finished bench [optimized] target(s) in 1m 50s
+     Running benches/linter.rs (target/release/deps/linter-748d94d5650895b1)
+Gnuplot not found, using plotters backend
+linter/all-rules/pydantic/types.py
+                        time:   [2.3391 ms 2.3395 ms 2.3399 ms]
+                        thrpt:  [10.899 MiB/s 10.901 MiB/s 10.903 MiB/s]
+                 change:
+                        time:   [-47.036% -47.022% -47.009%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+88.711% +88.758% +88.808%]
+                        Performance has improved.
+Found 3 outliers among 100 measurements (3.00%)
+  1 (1.00%) low mild
+  2 (2.00%) high mild
+</code></pre>
+<p>Thanks for catching this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-30 07:55</div>
+            <div class="timeline-body"><blockquote>
+<p>To confirm it's fixed, starting from master:</p>
+</blockquote>
+<p>Oh wow, thank you and I'm glad we were able to help catching the regression. But I'm sorry that I pushed some extra work on your shoulders. I should have created a minimized repro benchmark and open an issue on the aho-corasick repository instead. Thanks again.</p>
+<p>Edit: <a href="https://github.com/Instagram/LibCST/pull/1007">Upstream patch for LibCST</a> to remove the Regex use (there are more, but this replaces at least one)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-31 17:41</div>
+            <div class="timeline-body"><p>That <code>linter/default-rules</code> benchmark has been all over the place so it may just be noise here. The rest of the changes seem to be resolved after updating to latest <code>aho-corasick</code> (which, if I read the discussion correctly, is expected).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-08-31 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2023-08-31 18:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2023-08-31 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-08-31 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-31 18:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:46:15 UTC
+    </footer>
+</body>
+</html>

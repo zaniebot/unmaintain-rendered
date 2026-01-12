@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handle bracketed comments on sequence patterns - astral-sh/ruff #6801</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Handle bracketed comments on sequence patterns</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6801">#6801</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-23 03:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-23 03:11</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR ensures that we handle bracketed comments on sequences, like <code># comment</code> here:</p>
+<pre><code class="language-python">match x:
+    case [ # comment
+        1, 2
+    ]:
+        pass
+</code></pre>
+<p>The handling is very similar to other, similar nodes, except that we do need some special logic to determine whether the sequence is parenthesized, similar to our logic for tuples.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-08-23 03:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-23 04:03</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      4.1±0.02ms    10.0 MB/sec    1.00      4.1±0.02ms    10.0 MB/sec
+formatter/numpy/ctypeslib.py               1.00    848.9±3.25µs    19.6 MB/sec    1.00    850.4±2.93µs    19.6 MB/sec
+formatter/numpy/globals.py                 1.00     78.9±0.42µs    37.4 MB/sec    1.04     81.7±0.37µs    36.1 MB/sec
+formatter/pydantic/types.py                1.00   1651.5±2.53µs    15.4 MB/sec    1.00   1653.5±8.27µs    15.4 MB/sec
+linter/all-rules/large/dataset.py          1.00     10.1±0.05ms     4.0 MB/sec    1.00     10.1±0.02ms     4.0 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      2.7±0.01ms     6.1 MB/sec    1.01      2.8±0.03ms     6.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    386.1±0.84µs     7.6 MB/sec    1.00    387.8±1.11µs     7.6 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.3±0.05ms     4.8 MB/sec    1.00      5.3±0.02ms     4.8 MB/sec
+linter/default-rules/large/dataset.py      1.00      5.4±0.02ms     7.5 MB/sec    1.00      5.4±0.01ms     7.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1205.3±4.44µs    13.8 MB/sec    1.00   1206.0±9.55µs    13.8 MB/sec
+linter/default-rules/numpy/globals.py      1.00    140.2±1.19µs    21.0 MB/sec    1.00    140.3±0.61µs    21.0 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.5±0.03ms    10.3 MB/sec    1.00      2.5±0.04ms    10.3 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      5.2±0.38ms     7.8 MB/sec    1.00      5.2±0.11ms     7.8 MB/sec
+formatter/numpy/ctypeslib.py               1.00   999.5±64.21µs    16.7 MB/sec    1.07  1065.5±50.11µs    15.6 MB/sec
+formatter/numpy/globals.py                 1.00     88.8±3.18µs    33.2 MB/sec    1.09     97.0±8.32µs    30.4 MB/sec
+formatter/pydantic/types.py                1.00  1938.4±92.54µs    13.2 MB/sec    1.09      2.1±0.09ms    12.0 MB/sec
+linter/all-rules/large/dataset.py          1.24     15.4±1.08ms     2.6 MB/sec    1.00     12.4±0.38ms     3.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.25      4.4±0.31ms     3.8 MB/sec    1.00      3.5±0.12ms     4.7 MB/sec
+linter/all-rules/numpy/globals.py          1.19   522.9±24.13µs     5.6 MB/sec    1.00   441.0±20.86µs     6.7 MB/sec
+linter/all-rules/pydantic/types.py         1.22      8.2±0.60ms     3.1 MB/sec    1.00      6.7±0.25ms     3.8 MB/sec
+linter/default-rules/large/dataset.py      1.18      8.5±0.47ms     4.8 MB/sec    1.00      7.2±0.51ms     5.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.36      2.1±0.18ms     8.0 MB/sec    1.00  1517.5±64.48µs    11.0 MB/sec
+linter/default-rules/numpy/globals.py      1.08   224.8±11.07µs    13.1 MB/sec    1.00   207.5±14.47µs    14.2 MB/sec
+linter/default-rules/pydantic/types.py     1.20      4.0±0.19ms     6.5 MB/sec    1.00      3.3±0.31ms     7.7 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_sequence.rs</code>:82 on 2023-08-23 05:01</div>
+            <div class="timeline-body"><p>Can you give an example of what this means? From what I understand, there are no patterns but it does start with an opening parentheses i.e., is this an empty tuple <code>()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_sequence.rs</code>:109 on 2023-08-23 05:08</div>
+            <div class="timeline-body"><p>I'm not able to follow this. Can you add an example/test cases for the 2 cases here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-23 05:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_sequence.rs</code>:79 on 2023-08-23 06:54</div>
+            <div class="timeline-body"><p>This seems to be the same as <code>is_tuple_parenthesized</code>. It may make sense to make the code reusable (as it is somewhat tricky). It would also be helpful to add an example of why the complex <code>open &gt; close</code> paren path is necessary. I already forgot and had to look it up on the PR https://github.com/astral-sh/ruff/commit/95f78821adff8ee8b8d35158309c070bc2a00dfe</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_sequence.rs</code>:93 on 2023-08-23 06:57</div>
+            <div class="timeline-body"><p>The terminology we used so far is:</p>
+<ul>
+<li>parentheses: <code>(</code>, <code>)</code> or all kind of parentheses (e.g. <code>has_own_parentheses</code>)</li>
+<li>brackets: <code>[</code>, <code>]</code></li>
+<li>braces: <code>{</code>, <code>}</code></li>
+</ul>
+<p>We can avoid the terminology altogether by changing it to <code>is_parenthesized</code>.</p>
+<pre><code class="language-suggestion">    pub(crate) fn is_parenthesized(self) -&gt; bool {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-08-23 06:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_sequence.rs</code>:29 on 2023-08-23 09:24</div>
+            <div class="timeline-body"><p>How would an empty <code>TupleNoParens</code> look like?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-08-23 09:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-23 13:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_sequence.rs</code>:79 on 2023-08-23 13:32</div>
+            <div class="timeline-body"><p>Haha ok. I can try. It felt difficult to DRY it up without making the types much more permissive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-23 15:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/pattern/pattern_match_sequence.rs</code>:79 on 2023-08-23 15:28</div>
+            <div class="timeline-body"><p>Yeah, don't try too hard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-08-25 04:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-25 04:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-08-25 04:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:46:15 UTC
+    </footer>
+</body>
+</html>
