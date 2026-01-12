@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>invalid syntax error with something that looks like a `match` statement - astral-sh/ruff #22528</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>invalid syntax error with something that looks like a <code>match</code> statement</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/22528">#22528</a>
+        opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a>
+        on 2026-01-12 08:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2026-01-12 08:42</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<pre><code class="language-py">from re import *
+
+def main(x, y, z):
+    match [x, y, z]:                        {   #&lt;--- load bearing brace
+        case [0, 1, 2]: print(&quot;a&quot;),
+        case [3, 4, 5]: print(&quot;b&quot;),
+        case [_, _, _]: exit(1)
+                                            }   #&lt;--- load bearing brace
+    print(&quot;all good&quot;)
+
+main(4, 2, 0)
+</code></pre>
+<p><a href="https://play.ruff.rs/516ccd06-b6b5-436a-8dd7-a86420a746c1">playground</a></p>
+<p><code>Expected newline, found </code>{<code> (invalid-syntax) [Ln 4, Col 45]</code></p>
+<p>finders scredit to @decorator-factory</p>
+<details><summary>Solution</summary>
+<p>
+
+<pre><code class="language-py">from re import match
+
+match[0]: int  # Expected newline, found name(invalid-syntax)
+</code></pre>
+</p>
+</details> 
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-12 08:50</div>
+            <div class="timeline-body"><p>wow...</p>
+<p>In case anyone else wonders as what this is supposed to parse. It's an annotated assignment (the target is a subscript expression)</p>
+<pre><code>Module(
+   body=[
+      ImportFrom(
+         module='re',
+         names=[
+            alias(name='*')],
+         level=0),
+      FunctionDef(
+         name='main',
+         args=arguments(
+            args=[
+               arg(arg='x'),
+               arg(arg='y'),
+               arg(arg='z')]),
+         body=[
+            AnnAssign(
+               target=Subscript(
+                  value=Name(id='match', ctx=Load()),
+                  slice=Tuple(
+                     elts=[
+                        Name(id='x', ctx=Load()),
+                        Name(id='y', ctx=Load()),
+                        Name(id='z', ctx=Load())],
+                     ctx=Load()),
+                  ctx=Store()),
+               annotation=Dict(
+                  keys=[
+                     Subscript(
+                        value=Name(id='case', ctx=Load()),
+                        slice=Tuple(
+                           elts=[
+                              Constant(value=0),
+                              Constant(value=1),
+                              Constant(value=2)],
+                           ctx=Load()),
+                        ctx=Load()),
+                     Subscript(
+                        value=Name(id='case', ctx=Load()),
+                        slice=Tuple(
+                           elts=[
+                              Constant(value=3),
+                              Constant(value=4),
+                              Constant(value=5)],
+                           ctx=Load()),
+                        ctx=Load()),
+                     Subscript(
+                        value=Name(id='case', ctx=Load()),
+                        slice=Tuple(
+                           elts=[
+                              Name(id='_', ctx=Load()),
+                              Name(id='_', ctx=Load()),
+                              Name(id='_', ctx=Load())],
+                           ctx=Load()),
+                        ctx=Load())],
+                  values=[
+                     Call(
+                        func=Name(id='print', ctx=Load()),
+                        args=[
+                           Constant(value='a')]),
+                     Call(
+                        func=Name(id='print', ctx=Load()),
+                        args=[
+                           Constant(value='b')]),
+                     Call(
+                        func=Name(id='exit', ctx=Load()),
+                        args=[
+                           Constant(value=1)])]),
+               simple=0),
+            Expr(
+               value=Call(
+                  func=Name(id='print', ctx=Load()),
+                  args=[
+                     Constant(value='all good')]))]),
+      Expr(
+         value=Call(
+            func=Name(id='main', ctx=Load()),
+            args=[
+               Constant(value=4),
+               Constant(value=2),
+               Constant(value=0)]))])
+
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 08:53:43 UTC
+    </footer>
+</body>
+</html>
