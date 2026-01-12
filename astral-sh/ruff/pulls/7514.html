@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rename `format` option to `output-format` - astral-sh/ruff #7514</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rename <code>format</code> option to <code>output-format</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7514">#7514</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-09-19 10:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-19 10:03</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR renames the <code>check --format</code> option to <code>--output-format</code>, the <code>RUFF_FORMAT</code> environment variable to <code>RUFF_OUTPUT_FORMAT</code>, and the <code>format</code> configuration option to <code>output-format</code> to avoid ambiguity and make the <code>format</code> option available for the formatter.</p>
+<p>The issue https://github.com/astral-sh/ruff/issues/7354 suggests building support in our configuration macro. I decided against it because it requires multiple manual edits anyway (CLI, add warning, when loading the configuration from options, another warning).</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/7354</p>
+<h2>Test Plan</h2>
+<p>New option works</p>
+<pre><code class="language-bash">❯ cargo run --bin ruff -- check  . --no-cache --output-format=grouped
+    Finished dev [unoptimized + debuginfo] target(s) in 0.14s
+     Running `target/debug/ruff check . --no-cache --output-format=grouped`
+crates/ruff_cli/resources/test/fixtures/cache_remove_old_files/source.py:
+  4:1 F822 Undefined name `b` in `__all__`
+
+crates/ruff_python_resolver/resources/test/airflow/airflow/api/common/mark_tasks.py:
+   2:8  F401 [*] `os` imported but unused
+   5:47 F401 [*] `airflow.jobs.scheduler_job_runner.SchedulerJobRunner` imported but unused
+   8:38 F401 [*] `airflow.compat.functools.cached_property` imported but unused
+  11:54 F401 [*] `airflow.providers.google.cloud.hooks.gcs.GCSHook` imported but unused
+  14:28 F401 [*] `sqlalchemy.orm.Query` imported but unused
+
+Found 6 errors.
+[*] 5 potentially fixable with the --fix option.
+</code></pre>
+<p>The <code>--format</code> option works but prints a warning</p>
+<pre><code class="language-bash">❯ cargo run --bin ruff -- check  . --no-cache --format=grouped
+    Finished dev [unoptimized + debuginfo] target(s) in 0.10s
+     Running `target/debug/ruff check . --no-cache --format=grouped`
+warning: The argument `--format=&lt;FORMAT&gt;` is deprecated. Use `--output-format=&lt;FORMAT&gt;` instead.
+crates/ruff_cli/resources/test/fixtures/cache_remove_old_files/source.py:
+  4:1 F822 Undefined name `b` in `__all__`
+
+crates/ruff_python_resolver/resources/test/airflow/airflow/api/common/mark_tasks.py:
+   2:8  F401 [*] `os` imported but unused
+   5:47 F401 [*] `airflow.jobs.scheduler_job_runner.SchedulerJobRunner` imported but unused
+   8:38 F401 [*] `airflow.compat.functools.cached_property` imported but unused
+  11:54 F401 [*] `airflow.providers.google.cloud.hooks.gcs.GCSHook` imported but unused
+  14:28 F401 [*] `sqlalchemy.orm.Query` imported but unused
+
+Found 6 errors.
+[*] 5 potentially fixable with the --fix option.
+</code></pre>
+<p>Using both options prints an error</p>
+<pre><code class="language-bash">❯ cargo run --bin ruff -- check  . --no-cache --format=grouped --output-format=text
+    Finished dev [unoptimized + debuginfo] target(s) in 0.10s
+     Running `target/debug/ruff check . --no-cache --format=grouped --output-format=text`
+error: the argument '--format &lt;FORMAT&gt;' cannot be used with '--output-format &lt;OUTPUT_FORMAT&gt;'
+
+Usage: ruff check --no-cache &lt;FILES&gt;...
+
+For more information, try '--help'.
+</code></pre>
+<p>Using the old environment variable prints a warning but applies the format</p>
+<pre><code class="language-bash">❯ RUFF_FORMAT=grouped cargo run --bin ruff -- check  . --no-cache
+    Finished dev [unoptimized + debuginfo] target(s) in 0.10s
+     Running `target/debug/ruff check . --no-cache`
+warning: The environment variable `RUFF_FORMAT` is deprecated. Use `RUFF_OUTPUT_FORMAT` instead.
+crates/ruff_cli/resources/test/fixtures/cache_remove_old_files/source.py:
+  4:1 F822 Undefined name `b` in `__all__`
+
+crates/ruff_python_resolver/resources/test/airflow/airflow/api/common/mark_tasks.py:
+   2:8  F401 [*] `os` imported but unused
+   5:47 F401 [*] `airflow.jobs.scheduler_job_runner.SchedulerJobRunner` imported but unused
+   8:38 F401 [*] `airflow.compat.functools.cached_property` imported but unused
+  11:54 F401 [*] `airflow.providers.google.cloud.hooks.gcs.GCSHook` imported but unused
+  14:28 F401 [*] `sqlalchemy.orm.Query` imported but unused
+
+Found 6 errors.
+[*] 5 potentially fixable with the --fix option.
+</code></pre>
+<p>Using the new environment variable works</p>
+<pre><code class="language-bash">❯ RUFF_OUTPUT_FORMAT=grouped cargo run --bin ruff -- check  . --no-cache
+    Finished dev [unoptimized + debuginfo] target(s) in 0.10s
+     Running `target/debug/ruff check . --no-cache`
+crates/ruff_cli/resources/test/fixtures/cache_remove_old_files/source.py:
+  4:1 F822 Undefined name `b` in `__all__`
+
+crates/ruff_python_resolver/resources/test/airflow/airflow/api/common/mark_tasks.py:
+   2:8  F401 [*] `os` imported but unused
+   5:47 F401 [*] `airflow.jobs.scheduler_job_runner.SchedulerJobRunner` imported but unused
+   8:38 F401 [*] `airflow.compat.functools.cached_property` imported but unused
+  11:54 F401 [*] `airflow.providers.google.cloud.hooks.gcs.GCSHook` imported but unused
+  14:28 F401 [*] `sqlalchemy.orm.Query` imported but unused
+
+Found 6 errors.
+[*] 5 potentially fixable with the --fix option.
+</code></pre>
+<p>Using both environment variables emits an error</p>
+<pre><code class="language-bash">❯ RUFF_FORMAT=text RUFF_OUTPUT_FORMAT=grouped cargo run --bin ruff -- check  . --no-cache
+    Finished dev [unoptimized + debuginfo] target(s) in 0.10s
+     Running `target/debug/ruff check . --no-cache`
+error: the argument '--format &lt;FORMAT&gt;' cannot be used with '--output-format &lt;OUTPUT_FORMAT&gt;'
+
+Usage: ruff check --no-cache &lt;FILES&gt;...
+
+For more information, try '--help'.
+</code></pre>
+<p>Using the <code>format</code> option prints a warning but applies the format</p>
+<pre><code class="language-toml">[tool.ruff]
+format = &quot;grouped&quot;
+</code></pre>
+<pre><code class="language-bash">❯ cargo run --bin ruff -- check  . --no-cache
+    Finished dev [unoptimized + debuginfo] target(s) in 0.14s
+     Running `target/debug/ruff check . --no-cache`
+warning: The option `format` has been deprecated to avoid ambiguity with Ruff's upcoming formatter. Use `format-output` instead.
+crates/ruff_cli/resources/test/fixtures/cache_remove_old_files/source.py:
+  4:1 F822 Undefined name `b` in `__all__`
+
+crates/ruff_python_resolver/resources/test/airflow/airflow/api/common/mark_tasks.py:
+   2:8  F401 [*] `os` imported but unused
+   5:47 F401 [*] `airflow.jobs.scheduler_job_runner.SchedulerJobRunner` imported but unused
+   8:38 F401 [*] `airflow.compat.functools.cached_property` imported but unused
+  11:54 F401 [*] `airflow.providers.google.cloud.hooks.gcs.GCSHook` imported but unused
+  14:28 F401 [*] `sqlalchemy.orm.Query` imported but unused
+
+Found 6 errors.
+[*] 5 potentially fixable with the --fix option.
+</code></pre>
+<p>Using the new <code>output-format</code> option applies the format</p>
+<pre><code class="language-toml">[tool.ruff]
+output-format = &quot;grouped&quot;
+</code></pre>
+<pre><code class="language-bash">❯ cargo run --bin ruff -- check  . --no-cache
+    Finished dev [unoptimized + debuginfo] target(s) in 0.13s
+     Running `target/debug/ruff check . --no-cache`
+crates/ruff_cli/resources/test/fixtures/cache_remove_old_files/source.py:
+  4:1 F822 Undefined name `b` in `__all__`
+
+crates/ruff_python_resolver/resources/test/airflow/airflow/api/common/mark_tasks.py:
+   2:8  F401 [*] `os` imported but unused
+   5:47 F401 [*] `airflow.jobs.scheduler_job_runner.SchedulerJobRunner` imported but unused
+   8:38 F401 [*] `airflow.compat.functools.cached_property` imported but unused
+  11:54 F401 [*] `airflow.providers.google.cloud.hooks.gcs.GCSHook` imported but unused
+  14:28 F401 [*] `sqlalchemy.orm.Query` imported but unused
+
+Found 6 errors.
+[*] 5 potentially fixable with the --fix option.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-19 10:03</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #7514</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7514" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7514?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-09-19 10:04</div>
+            <div class="timeline-body"><p>extra snapshot, otherwise i really like this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-19 10:07</div>
+            <div class="timeline-body"><p>@charliermarsh should we mark this PR as breaking or only when we remove the option entirely?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @MichaReiser on 2023-09-19 10:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2023-09-19 10:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-09-19 10:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-19 10:21</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-19 12:18</div>
+            <div class="timeline-body"><p>For how long do you anticipate leaving these deprecation warnings in place?</p>
+<blockquote>
+<p>@charliermarsh should we mark this PR as breaking or only when we remove the option entirely?</p>
+</blockquote>
+<p>Only when removing the option but we should call it out explicitly at the top of the release notes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> removed by @MichaReiser on 2023-09-19 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-09-20 06:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-09-20 12:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-09-20 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-09-20 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-20 13:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:47 UTC
+    </footer>
+</body>
+</html>

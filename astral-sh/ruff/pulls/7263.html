@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disallow non-parenthesized lambda expr in f-string - astral-sh/ruff #7263</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Disallow non-parenthesized lambda expr in f-string</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7263">#7263</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-09-11 06:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-11 06:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates the handling of disallowing non-parenthesized lambda expr in
+f-strings.</p>
+<p>Previously, the lexer was used to emit an empty <code>FStringMiddle</code> token in certain
+cases for which there's no pattern in the parser to match. That would then raise
+an unexpected token error while parsing.</p>
+<p>This PR adds a new f-string error type <code>LambdaWithoutParentheses</code>. In cases
+where the parser still can't detect the error, it's guaranteed to be caught by
+the fact that there's no <code>FStringMiddle</code> token in the pattern.</p>
+<h2>Test Plan</h2>
+<p>Add test cases wherever we throw the <code>LambdaWithoutParentheses</code> error.</p>
+<h2>Benchmarks</h2>
+<p>As this is the final PR for the parser, I'm putting the parser benchmarks here:</p>
+<pre><code>group                         fstring-parser                         main
+-----                         --------------                         ----
+parser/large/dataset.py       1.00      4.7±0.24ms     8.7 MB/sec    1.03      4.8±0.25ms     8.4 MB/sec
+parser/numpy/ctypeslib.py     1.03   921.8±39.00µs    18.1 MB/sec    1.00   897.6±39.03µs    18.6 MB/sec
+parser/numpy/globals.py       1.01     90.4±5.23µs    32.6 MB/sec    1.00     89.6±6.24µs    32.9 MB/sec
+parser/pydantic/types.py      1.00  1899.5±94.78µs    13.4 MB/sec    1.03  1954.4±105.88µs    13.0 MB/sec
+parser/unicode/pypinyin.py    1.03   292.3±21.14µs    14.4 MB/sec    1.00   283.2±13.16µs    14.8 MB/sec
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-11 06:07</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #7035</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7035" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7013</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7013" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #6659</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6659" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7041</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7041" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7211</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7211" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7263</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7263" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈
+* <strong>PR #7331</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7331" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7325</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7325" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7326</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7326" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7327</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7327" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7328</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7328" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7329</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7329" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7263?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/python.lalrpop</code>:1354 on 2023-09-11 06:09</div>
+            <div class="timeline-body"><p>I tried to add the <code>fstring_middle</code> optional token after the body but that creates conflict when generating. This makes sense and I guess the solution would be to modify <code>Test&lt;&quot;all&quot;&gt;</code> as you suggested in Discord but I don't think it's worth the complexity right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-11 06:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2023-09-11 06:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2023-09-11 06:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3258 on 2023-09-11 06:42</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Returns `true` if the expression is parenthesized.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer/fstring.rs</code>:133 on 2023-09-11 06:43</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            self.format_spec_depth -= 1;
+</code></pre>
+<p><code>is_in_formt_spec</code> guarantees that <code>format_spec_depth &gt;= 1</code> -&gt; subtracting can never overflow</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/python.lalrpop</code>:1598 on 2023-09-11 06:44</div>
+            <div class="timeline-body"><p>Nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:312 on 2023-09-11 06:45</div>
+            <div class="timeline-body"><p>Nit: Maybe move part of this description to the lambda parse rule?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:503 on 2023-09-11 06:46</div>
+            <div class="timeline-body"><p>Nit: This comment is confusing IMO because I understand that our Parser + Lexer accepts invalid input. I don't think that's the case. What you're trying to say is that the parser only accepts some of it. Maybe move the other comment from the Lexer here and explain which errors are captured by the lexer and which errors are captured by the parser.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:520 on 2023-09-11 06:47</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                write!(f, &quot;lambda expressions are not allowed in f-strings without parentheses&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-09-11 06:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-12 05:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/string.rs</code>:520 on 2023-09-12 05:03</div>
+            <div class="timeline-body"><p>All variants of <code>FStringErrorType</code> gets prefixed with &quot;f-string: &quot;, so the message would be:</p>
+<pre><code>f-string: lambda expressions are not allowed without parentheses
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-12 05:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/string.rs</code>:503 on 2023-09-12 05:18</div>
+            <div class="timeline-body"><p>I'm not sure if that's the case. What I mean here is that in all cases the parser won't accept a lambda expression without parentheses inside a f-string. It'll always throw an error in such scenarios. The problem I'm highlighting here is that the parser won't give an appropriate error in all scenarios but only in a few of them while in the others it'll just give &quot;an unexpected token&quot; error. I'll update the comment though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">python312</span> added by @dhruvmanila on 2023-09-12 11:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2023-09-14 02:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-09-14 02:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-14 02:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-09-14 02:23</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/fstring-parser-3">CodSpeed Performance Report</a></h2>
+<h3>Merging #7263 will <strong>degrade performances by 10.1%</strong></h3>
+<p><sub>:warning: No base runs were found</sub></p>
+<p><sub>Falling back to comparing <code>dhruv/fstring-parser-3</code> (85e5c01) with <code>main</code> (04183b0)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 8</code> regressions
+<code>✅ 17</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/fstring-parser-3">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>dhruv/fstring-parser-3</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>lexer[pydantic/types.py]</code> | 4.1 ms | 4.6 ms | -10.1% |
+| ❌ | <code>lexer[numpy/ctypeslib.py]</code> | 2 ms | 2.1 ms | -8.07% |
+| ❌ | <code>parser[large/dataset.py]</code> | 68.4 ms | 70.2 ms | -2.59% |
+| ❌ | <code>lexer[unicode/pypinyin.py]</code> | 620.2 µs | 676.3 µs | -8.29% |
+| ❌ | <code>parser[numpy/ctypeslib.py]</code> | 12.4 ms | 12.7 ms | -2.62% |
+| ❌ | <code>lexer[large/dataset.py]</code> | 9.8 ms | 10.8 ms | -8.8% |
+| ❌ | <code>lexer[numpy/globals.py]</code> | 233.2 µs | 253.9 µs | -8.17% |
+| ❌ | <code>parser[unicode/pypinyin.py]</code> | 4.3 ms | 4.4 ms | -2.8% |</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:46 UTC
+    </footer>
+</body>
+</html>

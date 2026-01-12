@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a `NotebookError` type to avoid returning `Diagnostics` on error - astral-sh/ruff #7035</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a <code>NotebookError</code> type to avoid returning <code>Diagnostics</code> on error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7035">#7035</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-31 22:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-31 22:17</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR refactors the error-handling cases around Jupyter notebooks to use errors rather than <code>Box&lt;Diagnostics&gt;</code>, which creates some oddities in the downstream handling. So, instead of formatting errors as diagnostics <em>eagerly</em> (in the notebook methods), we now return errors and convert those errors to diagnostics at the last possible moment (in <code>diagnostics.rs</code>). This is more ergonomic, as errors can be composed and reported-on in different ways, whereas diagnostics require a <code>Printer</code>, etc.</p>
+<p>See, e.g., https://github.com/astral-sh/ruff/pull/7013#discussion_r1311136301.</p>
+<h2>Test Plan</h2>
+<p>Ran <code>cargo run</code> over a Python file labeled with a <code>.ipynb</code> suffix, and saw:</p>
+<pre><code>foo.ipynb:1:1: E999 SyntaxError: Expected a Jupyter Notebook, which must be internally stored as JSON, but found a Python source file: expected value at line 1 column 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-08-31 22:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @charliermarsh on 2023-08-31 22:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2023-08-31 22:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-08-31 22:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:140 on 2023-08-31 22:17</div>
+            <div class="timeline-body"><p>Return <code>Result&lt;Option&lt;Notebook&gt;&gt;</code> instead of using empty <code>Diagnostics</code> to indicate the &quot;we parsed the notebook, but it's not a Python notebook, so it should be skipped&quot; case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-31 22:19</div>
+            <div class="timeline-body"><p>The <code>jupyter</code> module no longer depends on much in the <code>ruff</code> crate -- just the source map stuff in <code>autofix</code>. This PR removes the dependency on diagnostics, specific rules, etc. So we could move it into its own crate, if we want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-31 22:31</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/jupyter/notebook.rs</code>:162 on 2023-09-01 04:12</div>
+            <div class="timeline-body"><p>nit: we can remove this comment now that the error isn't being converted to a diagnostic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2023-09-01 04:20</div>
+            <div class="timeline-body"><p>Thanks a ton! This is much better :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-01 04:21</div>
+            <div class="timeline-body"><blockquote>
+<p>So we could move it into its own crate, if we want.</p>
+</blockquote>
+<p>Yeah, that's nice. I think once we establish some abstraction around linting multiple filetypes it would be good to move this into it's own crate (<code>ruff_notebook</code>, <code>ruff_ipython_notebook</code>?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-01 05:05</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #7035</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7035" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #7013</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7013" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #6659</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6659" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7041</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7041" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7211</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7211" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7263</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7263" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7331</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7331" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7325</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7325" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7326</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7326" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7327</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7327" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7328</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7328" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7329</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7329" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7035?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:140 on 2023-09-01 06:20</div>
+            <div class="timeline-body"><p>Should this function (and <code>notebook_from_source_code</code>) be methods on <code>Notebook</code> instead.</p>
+<pre><code>Notebook::from_path(path)?.as_python_notebook()
+Notebook::from_source_code(code)?.as_python_notebook()
+</code></pre>
+<p>What I don't know is where to move  the debug logging, assuming is necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-09-01 06:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-01 10:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:140 on 2023-09-01 10:13</div>
+            <div class="timeline-body"><p>Yeah they should. I bet this was hard before when it relied on <code>Diagnostics</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-09-01 11:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-01 11:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-01 11:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:46 UTC
+    </footer>
+</body>
+</html>

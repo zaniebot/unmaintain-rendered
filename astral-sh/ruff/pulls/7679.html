@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document next round of intentional formatter deviations - astral-sh/ruff #7679</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Document next round of intentional formatter deviations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7679">#7679</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-09-27 20:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-27 20:18</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Based on today's triage with @MichaReiser.</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/7652.
+Closes https://github.com/astral-sh/ruff/issues/7320.
+Closes https://github.com/astral-sh/ruff/issues/7052.
+Closes https://github.com/astral-sh/ruff/issues/7314.
+Closes https://github.com/astral-sh/ruff/issues/7317.
+Closes https://github.com/astral-sh/ruff/issues/7323.
+Closes https://github.com/astral-sh/ruff/issues/7320.
+Closes https://github.com/astral-sh/ruff/issues/7315.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-09-27 20:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2023-09-27 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-09-27 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-09-27 20:27</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/charlie/format">CodSpeed Performance Report</a></h2>
+<h3>Merging #7679 will <strong>improve performances by 4.05%</strong></h3>
+<p><sub>Comparing <code>charlie/format</code> (57068bf) with <code>main</code> (974262a)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 24</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>charlie/format</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/default-rules[large/dataset.py]</code> | 95.7 ms | 92 ms | +4.05% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/README.md</code>:329 on 2023-09-28 07:23</div>
+            <div class="timeline-body"><p>I don't think black is preserving the line breaks. What black does is it tries to fit the entire logical line:</p>
+<pre><code class="language-python">print(&quot;aaaaaaa {:.2f}% &quot; &quot;aaaaaaaaaaaaaaaa&quot;.format((((df_aaaaaaaaaaa[&quot;key&quot;].isna()) | (df_aaaaaaaaaaa[&quot;key&quot;] == 0)).sum() / len(df_aaaaaaaaaaa)) * 100))
+</code></pre>
+<p>Which is way too long. First, it expands the outermost call</p>
+<pre><code class="language-python">print(
+    &quot;aaaaaaa {:.2f}% &quot; &quot;aaaaaaaaaaaaaaaa&quot;.format((((df_aaaaaaaaaaa[&quot;key&quot;].isna()) | (df_aaaaaaaaaaa[&quot;key&quot;] == 0)).sum() / len(df_aaaaaaaaaaa)) * 100)
+)
+</code></pre>
+<p>But the argument line is still too long. So black searches for the operator with the highest split precedence which in this case is the implicit string concatenation and it splits between the parts</p>
+<pre><code class="language-python">print(
+    &quot;aaaaaaa {:.2f}% &quot;
+    &quot;aaaaaaaaaaaaaaaa&quot;.format((((df_aaaaaaaaaaa[&quot;key&quot;].isna()) | (df_aaaaaaaaaaa[&quot;key&quot;] == 0)).sum() / len(df_aaaaaaaaaaa)) * 100)
+)
+</code></pre>
+<p>This makes the first argument-line fit, but not the second. So black continues splitting that one by iteratively searching the highest precedence operator in the line and splitting around all operators with the given priority.</p>
+<p>I think the &quot;easiest&quot; explanation is that Black gives implicit concatenated a high split priority which makes sense in binary like expressions but IMO leads to undesired results in attribute chains.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/README.md</code>:357 on 2023-09-28 07:27</div>
+            <div class="timeline-body"><p>We should try to minimize all the examples to make them easier to understand:</p>
+<ul>
+<li>Remove unnecessary arguments</li>
+<li>Replace complex-expressions with simple expressions</li>
+<li>Remove code that's unnecessary for the example</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/README.md</code>:390 on 2023-09-28 07:36</div>
+            <div class="timeline-body"><p>I think this applies to all tuples, not just in assignment expressions (or maybe all tuples except in for positions?)</p>
+<pre><code class="language-python">(0.0, 0.0), (0.0, 0.0,)
+
+# Ruffed
+(
+    (0.0, 0.0),
+    (
+        0.0,
+        0.0,
+    ),
+)
+
+# Blacked
+(0.0, 0.0), (
+    0.0,
+    0.0,
+)
+</code></pre>
+<p>There's also another difference where Ruff always parenthesizes single element tuples where Black does not</p>
+<pre><code class="language-python">(0.0, 0.0),
+
+# Ruffed
+((0.0, 0.0),)
+
+# Blacked
+(0.0, 0.0),
+</code></pre>
+<p>This is to avoid accidental tuple expressions (e.g. you delete the second element but forget to remove the <code>,</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/README.md</code>:490 on 2023-09-28 07:37</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">### Type annotations may be parenthesized when expanded ([#7315](https://github.com/astral-sh/ruff/issues/7315))
+</code></pre>
+<p>IMO, This applies to all type annotations</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-28 07:37</div>
+            <div class="timeline-body"><p>Thank you!</p>
+<p>Please take a look at the performance regression 😂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-09-28 18:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-28 18:30</div>
+            <div class="timeline-body"><p>@MichaReiser - Ready for another round!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/README.md</code>:329 on 2023-09-28 18:31</div>
+            <div class="timeline-body"><p>Thanks, this is tricky but I did my best. I appreciate the clarification here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-28 18:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-28 18:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/README.md</code>:390 on 2023-09-28 18:31</div>
+            <div class="timeline-body"><p>Thank you. I moved the single-element tuple thing to its own deviation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/README.md</code>:327 on 2023-09-29 09:37</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">### Implicit string concatenations attribute access ([#7052](https://github.com/astral-sh/ruff/issues/7052))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/README.md</code>:462 on 2023-09-29 09:39</div>
+            <div class="timeline-body"><p>Do we want to explain the reasoning (to make it clear that it is a one-element tuple because missing the trailing <code>,</code> is easy and you may end up with structs like <code>assertEquals(a, b), </code> which most certainly is unintended (see konsti's PR that removed most these unintended tuple uses from the django project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-09-29 09:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-09-29 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-29 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-29 17:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:47 UTC
+    </footer>
+</body>
+</html>

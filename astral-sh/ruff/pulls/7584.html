@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement our own small-integer optimization - astral-sh/ruff #7584</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement our own small-integer optimization</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7584">#7584</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-09-21 21:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-21 21:56</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is a follow-up to #7469 that attempts to achieve similar gains, but without introducing malachite. Instead, this PR removes the <code>BigInt</code> type altogether, instead opting for a simple enum that allows us to store small integers directly and only allocate for values greater than <code>i64</code>:</p>
+<pre><code class="language-rust">/// A Python integer literal. Represents both small (fits in an `i64`) and large integers.
+#[derive(Clone, PartialEq, Eq, Hash)]
+pub struct Int(Number);
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub enum Number {
+    /// A &quot;small&quot; number that can be represented as an `i64`.
+    Small(i64),
+    /// A &quot;large&quot; number that cannot be represented as an `i64`.
+    Big(Box&lt;str&gt;),
+}
+
+impl std::fmt::Display for Number {
+    fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+        match self {
+            Number::Small(value) =&gt; write!(f, &quot;{value}&quot;),
+            Number::Big(value) =&gt; write!(f, &quot;{value}&quot;),
+        }
+    }
+}
+</code></pre>
+<p>We typically don't care about numbers greater than <code>isize</code> -- our only uses are comparisons against small constants (like <code>1</code>, <code>2</code>, <code>3</code>, etc.), so there's no real loss of information, except in one or two rules where we're now a little more conservative (with the worst-case being that we don't flag, e.g., an <code>itertools.pairwise</code> that uses an extremely large value for the slice start constant). For simplicity, a few diagnostics now show a dedicated message when they see integers that are out of the supported range (e.g., <code>outdated-version-block</code>).</p>
+<p>An additional benefit here is that we get to remove a few dependencies, especially <code>num-bigint</code>.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-09-21 22:09</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/charlie/lex">CodSpeed Performance Report</a></h2>
+<h3>Merging #7584 will <strong>improve performances by 8.58%</strong></h3>
+<p><sub>Comparing <code>charlie/lex</code> (afeb2c7) with <code>main</code> (65aebf1)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 5</code> improvements
+<code>✅ 20</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>charlie/lex</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>lexer[numpy/globals.py]</code> | 233.8 µs | 228.6 µs | +2.26% |
+| ⚡ | <code>lexer[large/dataset.py]</code> | 9.8 ms | 9 ms | +8.58% |
+| ⚡ | <code>lexer[unicode/pypinyin.py]</code> | 621.3 µs | 592 µs | +4.96% |
+| ⚡ | <code>lexer[pydantic/types.py]</code> | 4.1 ms | 4 ms | +3.98% |
+| ⚡ | <code>lexer[numpy/ctypeslib.py]</code> | 2 ms | 1.9 ms | +2.91% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-21 22:16</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-09-21 22:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-09-21 22:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-09-21 22:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-21 22:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:2589 on 2023-09-21 22:55</div>
+            <div class="timeline-body"><p>The choice of <code>isize</code> is semi-arbitrary, but the reasoning is laid out above. We could even use <code>i64</code>, it shouldn't matter much.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-22 03:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bandit/rules/bad_file_permissions.rs</code>:119 on 2023-09-22 03:14</div>
+            <div class="timeline-body"><p>So this truncates to <code>isize</code> (that is, we don't flag bad file permissions that exceed <code>isize</code>). Which seems not ideal. But it actually looks like an improvement, since before, we only flagged file permissions that could be cast to <code>u16</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-22 03:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>foo.py</code>:1 on 2023-09-22 03:46</div>
+            <div class="timeline-body"><p>I think this got added accidentally?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-22 03:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>foo.py</code>:1 on 2023-09-22 03:57</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_linter/src/rules/flake8_2020/rules/compare.rs</code>:238 on 2023-09-22 05:45</div>
+            <div class="timeline-body"><p>I'd implement <code>PartialEq&lt;isize&gt;</code> instead:</p>
+<pre><code class="language-rust">#[derive(PartialEq)]
+enum Int {
+    Small(isize),
+    Large(Box&lt;str&gt;)
+}
+
+impl PartialEq&lt;isize&gt; for Int {
+    fn eq(&amp;self, other: &amp;isize) -&gt; bool {
+        self == &amp;Int::Small(*other)
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_linter/src/rules/flake8_bandit/rules/bad_file_permissions.rs</code>:119 on 2023-09-22 05:52</div>
+            <div class="timeline-body"><p>yeah the before one was incorrect. Could we handle this with something like <code>is_small_and(FnOnce(isize) -&gt; bool)</code> and <code>is_large_or(FnOnce(isize) -&gt; bool)</code>? Alternatively emit the diagnostic on an else branch on <code>if let Some(mask) = int_value(mode_arg, checker.semantic())</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:2589 on 2023-09-22 06:10</div>
+            <div class="timeline-body"><p>I think we should use <code>i64</code> here and not <code>isize</code>. The size types are intended for pointer-like numbers: The length of an array or string. This use case is different because we don't want to represent a length but an absolute number.</p>
+<p>Not having to think about whether its an <code>i64</code> or <code>i32</code> depending on the target platform will make our life easier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:2586 on 2023-09-22 06:13</div>
+            <div class="timeline-body"><p>We should use <code>Box&lt;str&gt;</code> since the value is never mutated and the size will be 2 pointers instead of 3.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:2581 on 2023-09-22 06:13</div>
+            <div class="timeline-body"><p>I like the new abstraction but I think we should hide its internal to make it easier to change the internals in the future (e.g. using tagged pointers).</p>
+<ul>
+<li>Make <code>Int</code> a <code>struct</code> with one inner field</li>
+<li>Create a private enum that represents the two different states</li>
+<li>Implement <code>Eq</code>, <code>PartialEq</code> for all types for which it is safe (<code>i8..i64</code>, <code>u8..u32</code>).</li>
+<li>Implement <code>as_*</code> helpers that either return <code>T</code> if the conversion is safe or <code>Option&lt;T&gt;</code> if the value falls into the <code>&gt; i64</code> range.</li>
+<li>Implement <code>Debug</code> to hide the internal representation (should always serialize to the value)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:376 on 2023-09-22 06:15</div>
+            <div class="timeline-body"><p>Can we add a test for a very long sequence of <code>0</code>: <code>000000000000000000000000000000000000000000000000000....</code> to ensure it gets catched by line 355?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-09-22 06:15</div>
+            <div class="timeline-body"><p>this is neat</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_bandit/rules/bad_file_permissions.rs</code>:119 on 2023-09-22 06:18</div>
+            <div class="timeline-body"><p>Shouldn't all non <code>i64</code> values be reported as a bad file permissions? They're certainly wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/outdated_version_block.rs</code>:377 on 2023-09-22 06:21</div>
+            <div class="timeline-body"><p>I would remove this warning message as it is not helpful to users. They do not indicate where the unsupported version number appears in their source. It ends up being one of those warnings that you can't get rid of and end up wasting a ton of time on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/outdated_version_block.rs</code>:108 on 2023-09-22 06:23</div>
+            <div class="timeline-body"><p>What's preventing us from matching on <code>Int</code> directly and create a diagnostic if the value is too large (because the <code>CmpOp::GtE</code> likely fails?</p>
+<p>Which brings up a good point. We should implement <code>PartialOrd</code> and <code>Ord</code> for all types for which we can safely support it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:354 on 2023-09-22 06:24</div>
+            <div class="timeline-body"><p>Let us implement <code>FromStr</code> (or is it Parse?) on the <code>Int</code> type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2023-09-22 06:25</div>
+            <div class="timeline-body"><p>I really like the direction this is going and it seems sufficient for our use case.</p>
+<p>But I think we should abstract away our internal representation to allow changing it in the future and using <code>i64</code> instead of <code>isize</code> is important for consistent results across architectures.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-22 19:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/outdated_version_block.rs</code>:108 on 2023-09-22 19:46</div>
+            <div class="timeline-body"><p>I don't think you can implement <code>Ord</code> for mixed types, only <code>PartialOrd</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-22 19:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/outdated_version_block.rs</code>:108 on 2023-09-22 19:48</div>
+            <div class="timeline-body"><p>Also, I don't think <code>CmpOp::GtE</code> would be likely to fail, since Python does support numbers larger than this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-22 20:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_bandit/rules/bad_file_permissions.rs</code>:119 on 2023-09-22 20:36</div>
+            <div class="timeline-body"><p>I added a diagnostic for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-09-22 21:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-22 21:09</div>
+            <div class="timeline-body"><p>Okay, I think this contains all of the desired feedback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-22 21:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:2625 on 2023-09-22 21:14</div>
+            <div class="timeline-body"><p>These are sort of random but they allow you to pattern match against <code>0</code> and <code>1</code>, which end up being the only values that we pattern-match against.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-22 21:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:2635 on 2023-09-22 21:14</div>
+            <div class="timeline-body"><p>These are private, we could just remove them and call the constructor directly in the <code>parse</code> methods.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-22 21:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:2805 on 2023-09-22 21:15</div>
+            <div class="timeline-body"><p>@MichaReiser - I don't know if you had anything fancier than this in mind. I just did <code>From</code>, <code>as_*</code>, and <code>PartialEq</code> for <code>u8</code>, <code>u16</code>, <code>u32</code>, <code>i8</code>, <code>i16</code>, <code>i32</code>, and <code>i64</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/outdated_version_block.rs</code>:133 on 2023-09-23 08:12</div>
+            <div class="timeline-body"><p>i really like this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-09-23 08:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-09-23 08:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_linter/src/rules/flake8_bandit/rules/snmp_insecure_version.rs</code>:56 on 2023-09-23 08:12</div>
+            <div class="timeline-body"><p>that's a neat trick</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2023-09-25 07:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:2581 on 2023-09-25 07:25</div>
+            <div class="timeline-body"><p>Nit: make <code>Number</code> private (it's an implementation detail</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:2630 on 2023-09-25 07:27</div>
+            <div class="timeline-body"><p>Nit: You get <code>parse</code> for free if you implement <code>FromStr</code>. You can then call <code>let num: Int = str.parse()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:2623 on 2023-09-25 07:28</div>
+            <div class="timeline-body"><p>Nit: May be worth to move the type into its own <code>int.rs</code>. I didn't expect it in <code>nodes.rs</code> (e.g. it's also used by tokens)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:2698 on 2023-09-25 07:29</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    pub const fn as_i64(&amp;self) -&gt; Option&lt;i64&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:2805 on 2023-09-25 07:30</div>
+            <div class="timeline-body"><p>Nope. It's very boring code but it improves the API. Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-09-25 07:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2023-09-25 07:41</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-09-25 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-25 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-25 15:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:47 UTC
+    </footer>
+</body>
+</html>

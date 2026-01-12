@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for the new f-string tokens per PEP 701 - astral-sh/ruff #6659</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for the new f-string tokens per PEP 701</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6659">#6659</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-08-17 19:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-08-17 19:24</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support in the lexer for the newly added f-string tokens as per PEP 701. The following new tokens are added:</p>
+<ul>
+<li><code>FStringStart</code>: Token value for the start of an f-string. This includes the <code>f</code>/<code>F</code>/<code>fr</code> prefix and the opening quote(s).</li>
+<li><code>FStringMiddle</code>: Token value that includes the portion of text inside the f-string that's not part of the expression part and isn't an opening or closing brace.</li>
+<li><code>FStringEnd</code>: Token value for the end of an f-string. This includes the closing quote.</li>
+</ul>
+<p>Additionally, a new <code>Exclamation</code> token is added for conversion (<code>f&quot;{foo!s}&quot;</code>) as that's part of an expression.</p>
+<h2>Test Plan</h2>
+<p>New test cases are added to for various possibilities using snapshot testing. The output has been verified using python/cpython@f2cc00527e.</p>
+<h2>Benchmarks</h2>
+<p><em>I've put the number of f-strings for each of the following files after the file name</em></p>
+<pre><code>lexer/large/dataset.py (1)       1.05   612.6±91.60µs    66.4 MB/sec    1.00   584.7±33.72µs    69.6 MB/sec
+lexer/numpy/ctypeslib.py (0)     1.01    131.8±3.31µs   126.3 MB/sec    1.00    130.9±5.37µs   127.2 MB/sec
+lexer/numpy/globals.py (1)       1.02     13.2±0.43µs   222.7 MB/sec    1.00     13.0±0.41µs   226.8 MB/sec
+lexer/pydantic/types.py (8)      1.13   285.0±11.72µs    89.5 MB/sec    1.00   252.9±10.13µs   100.8 MB/sec
+lexer/unicode/pypinyin.py (0)    1.03     32.9±1.92µs   127.5 MB/sec    1.00     31.8±1.25µs   132.0 MB/sec
+</code></pre>
+<p>It seems that overall the lexer has regressed. I profiled every file mentioned above and I saw one improvement which is done in (098ee5d493ca83238754a8cb4629fa1b91144b84). But otherwise I don't see anything else. A few notes by isolating the f-string part in the profile:</p>
+<ul>
+<li>As we're adding new tokens and functionality to emit them, I expect the lexer to take more time because of more code.</li>
+<li>The <code>lex_fstring_middle_or_end</code> takes the most amount of time followed by the <code>current_mut</code> line when lexing the <code>:</code> token. The latter is to check if we're at the start of a format spec or not.</li>
+<li>In a f-string heavy file such as https://github.com/python/cpython/blob/main/Lib/test/test_fstring.py [^1] (293), most of the time in <code>lex_fstring_middle_or_end</code> is accounted by string allocation for the string literal part of <code>FStringMiddle</code> token (https://share.firefox.dev/3ErEa1W)</li>
+</ul>
+<p>I don't see anything out of ordinary for <code>pydantic/types</code> profile (https://share.firefox.dev/45XcLRq)</p>
+<p>fixes: #7042</p>
+<p>[^1]: We could add this in lexer and parser benchmark</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-08-17 19:24</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #7035</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7035" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7013</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7013" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #6659</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6659" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #7041</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7041" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7211</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7211" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7263</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7263" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7331</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7331" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7325</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7325" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7326</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7326" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7327</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7327" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7328</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7328" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7329</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7329" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6659?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @MichaReiser on 2023-08-18 06:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:55 on 2023-08-18 06:06</div>
+            <div class="timeline-body"><p>Is there a technical reason why we want to limit the fstring nesting?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:546 on 2023-08-18 06:08</div>
+            <div class="timeline-body"><p>Could we pass the fstring context instead of using an <code>unwrap</code> here? It isn't just safer but also guarantees that we don't have a panic branch in release builds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:634 on 2023-08-18 06:10</div>
+            <div class="timeline-body"><p>Why do we need to clone chars?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:627 on 2023-08-18 06:12</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        if self.cursor.first() == context.quote_char() {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1422 on 2023-08-18 06:14</div>
+            <div class="timeline-body"><p>Nit: Maybe <code>Kind</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-18 06:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-18 13:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:55 on 2023-08-18 13:11</div>
+            <div class="timeline-body"><p>No, PEP says that the lower bound is 2. While there's no upper bound, CPython implementation itself have an <a href="https://github.com/python/cpython/blob/fd195092204aa7fc9f13c5c6d423bc723d0b3520/Parser/tokenizer.h#L43">upper bound of 3</a> and <a href="https://github.com/python/cpython/blob/fd195092204aa7fc9f13c5c6d423bc723d0b3520/Parser/tokenizer.c#L2650-L2652">here's</a> where they throw an error if it goes beyond that. Currently, we have an upper bound of 2</p>
+<p>https://github.com/astral-sh/ruff/blob/0cea4975fcfe09716c084c0a18d1b4c4cd9b8f05/crates/ruff_python_parser/src/string.rs#L420-L422</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-18 13:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:546 on 2023-08-18 13:13</div>
+            <div class="timeline-body"><p>Not really. The <code>self.try_lex_fstring</code> functions borrow <code>self</code> as mutable but then we pass in an immutable borrow of <code>FStringContext</code> which belongs to <code>self</code>:</p>
+<pre><code>error[E0502]: cannot borrow `*self` as mutable because it is also borrowed as immutable
+   --&gt; crates/ruff_python_parser/src/lexer.rs:730:36
+    |
+727 |         if let Some(fstring_context) = self.fstring_stack.last() {
+    |                                        ------------------------- immutable borrow occurs here
+...
+730 |                 if let Some(tok) = self.try_lex_fstring_middle(fstring_context)? {
+    |                                    ^^^^^----------------------^^^^^^^^^^^^^^^^^
+    |                                    |    |
+    |                                    |    immutable borrow later used by call
+    |                                    mutable borrow occurs here
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-18 13:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1422 on 2023-08-18 13:14</div>
+            <div class="timeline-body"><p>There's a similar implementation for the string quote and size in the <code>tokenizer.rs</code> file where <code>SimpleTokenizer</code> is present. But, we can't really depend on <code>ruff_python_trivia</code>. Currently, I've added an additional implementation here but maybe it could be possible to move it to a common place like <code>ruff_python_ast</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-08-18 13:15</div>
+            <div class="timeline-body"><p>@MichaReiser Thanks for your initial review even though the PR is still in draft :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-18 13:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:627 on 2023-08-18 13:17</div>
+            <div class="timeline-body"><p>We actually need the <code>quote</code> for the lookaheads if it's a triple quoted string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:55 on 2023-08-18 13:20</div>
+            <div class="timeline-body"><p>I would remove the bound because different interpreter implementations may use different limits. However, it would be a good idea to have a lint rule that warns about too deeply nested FString depending on your target runtime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-18 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-18 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:634 on 2023-08-18 13:20</div>
+            <div class="timeline-body"><p>Oh right, we don't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-18 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:627 on 2023-08-18 13:20</div>
+            <div class="timeline-body"><p>Could we use <code>context.quote_char</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:561 on 2023-08-21 13:37</div>
+            <div class="timeline-body"><p>We could avoid the <code>StringQuoteChar</code> abstraction and store the quote <code>char</code> directly as the only use case is as comparing against the ending quote <code>char</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:580 on 2023-08-21 17:50</div>
+            <div class="timeline-body"><p>Do we want to add <code>eat_if</code> and <code>eat_if2</code> methods?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-08-21 17:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:580 on 2023-08-22 04:40</div>
+            <div class="timeline-body"><p>Actually, we could use <code>eat_char</code> in the same order as it will short circuit if the first char isn't <code>N</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-22 04:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-22 18:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:55 on 2023-08-22 18:15</div>
+            <div class="timeline-body"><p>There's also the limitation of nested f-strings itself, so <code>f&quot;foo {f&quot;bar {f&quot;baz&quot;}&quot;}&quot;</code> which is also <a href="https://github.com/python/cpython/blob/0cb0c238d520a8718e313b52cffc356a5a7561bf/Parser/tokenizer.h#L15">limited to 150</a>. I'm avoiding that in our implementation for the same reason.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-23 05:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:714 on 2023-08-23 05:38</div>
+            <div class="timeline-body"><p>I'm thinking of removing the <code>StringKind::FString</code> and <code>StringKind::RawFString</code> as that is an invalid representation now that we'll be emitting different tokens for f-strings. Instead, I'm thinking of updating the <code>lex_identifier</code> to directly check for <code>f</code> (and related <code>F</code>, <code>r</code>, <code>R</code>) and call <code>lex_fstring_start</code> directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2023-08-23 05:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-08-23 05:39</div>
+            <div class="timeline-body"><p>(This is ready for review, but not to be merged)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2023-08-23 05:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/token.rs</code>:49 on 2023-08-23 07:01</div>
+            <div class="timeline-body"><p>We'll need to go through all logical line rules to make sure they handle f-strings correctly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1365 on 2023-08-23 07:04</div>
+            <div class="timeline-body"><p>Nit: This method name sounds like an accessor, but it actually updates the parentheses count</p>
+<pre><code class="language-suggestion">    fn inc_open_parentheses(&amp;mut self) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1391 on 2023-08-23 07:07</div>
+            <div class="timeline-body"><p>Nit: It's rather unexpected that a <code>is_</code> function mutates self. Maybe <code>try_start_format_spec</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1392 on 2023-08-23 07:08</div>
+            <div class="timeline-body"><p>This could potentially overflow, or is it guaranteed that <code>parentheses_count</code> is always larger than <code>format_spec_count</code> (even for invalid input)?</p>
+<p>Edit: This doesn't seem to be given, see <code>is_in_expression</code>. We need to use <code>saturating_sub</code> here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1433 on 2023-08-23 07:09</div>
+            <div class="timeline-body"><p>Can we document these fields and why tracking them in the state is necessary? E.g. why do we need to track both <code>parenthesis_count</code> and <code>format_spec_count</code> (Should it be <code>format_spec_depth</code>?). What are the different possible states?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1395 on 2023-08-23 07:14</div>
+            <div class="timeline-body"><p>Nit: Implement <code>Copy</code> for these value enums. Rust will then tell you that it's more performant to pass <code>StringQuoteChar</code> by value rather by reference (1 byte vs 8 byte + dereferencing)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1086 on 2023-08-23 07:15</div>
+            <div class="timeline-body"><p>It is unfortunate that we now need to increment open parentheses twice if inside of an <code>fstring</code> context (and we have more branching inside a hot function.</p>
+<p>Would it be possible to store the initial <code>parentheses_count</code> on the <code>FStringContext</code> instead? You can then compute the fstring parentheses by doing <code>self.nesting.saturating_sub(self.initial_count)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:164 on 2023-08-23 07:18</div>
+            <div class="timeline-body"><p>Nit: Have you considered introducing a <code>FStringStack</code> newtype wrapper around <code>Vec</code>? Could that reduce some repetitive code inside of the lexer? Similar to <code>Indentations</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1124 on 2023-08-23 07:19</div>
+            <div class="timeline-body"><p>Is this because <code>:=</code> has a different meaning inside of a format spec?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1434 on 2023-08-23 07:21</div>
+            <div class="timeline-body"><p>Nit: We could potentially squeeze <code>quote_char</code>, <code>quote_size</code> and <code>raw</code> (3 bytes) into a single byte by using bitflags. It won't give us any space-saving because of padding but may be easier to expand.</p>
+<p>You would have three flags:</p>
+<ul>
+<li>TRIPLE (missing implies single)</li>
+<li>DOUBLE (missing implies single)</li>
+<li>RAW (missing implies non-raw)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:772 on 2023-08-23 07:26</div>
+            <div class="timeline-body"><p>Nit: I wonder if it would make sense to refactor <code>next_token</code> a bit so that we could call into a <code>lex_fstring_expression</code> that:</p>
+<ul>
+<li>Doesn't handle indentation</li>
+<li>overrides the lexing for fstring- specific tokens</li>
+</ul>
+<p>But I'm not sure if its worth the complexity (and work)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:615 on 2023-08-23 07:34</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">        self.cursor.start_token();
+        loop {
+            match self.cursor.first() {
+                EOF_CHAR =&gt; {
+                    let error = if context.allow_multiline() {
+                        FStringErrorType::UnterminatedTripleQuotedString
+                    } else {
+                        FStringErrorType::UnterminatedString
+                    };
+                    self.fstring_stack.pop();
+                    return Err(LexicalError {
+                        error: LexicalErrorType::FStringError(error),
+                        location: self.offset(),
+                    });
+                }
+                '\n' if !context.allow_multiline() =&gt; {
+                    self.fstring_stack.pop();
+                    return Err(LexicalError {
+                        error: LexicalErrorType::FStringError(FStringErrorType::UnterminatedString),
+                        location: self.offset(),
+                    });
+                }
+                '\\' =&gt; {
+                    self.cursor.bump(); // '\'
+                    if matches!(self.cursor.first(), '{' | '}') {
+                        // Don't consume `{` or `}` as we want them to be consumed as tokens.
+                        break;
+                    } else if !context.is_raw_string {
+                        if self.cursor.eat_char('N') &amp;&amp; self.cursor.eat_char('{') {
+                            in_named_unicode = true;
+                            continue;
+                        }
+                    }
+                    // Consume the escaped character.
+                    self.cursor.bump();
+                }
+                quote @ ('\'' | '&quot;') if quote == context.quote_char() =&gt; {
+                    match context.quote_size {
+                        StringQuoteSize::Single =&gt; break,
+                        StringQuoteSize::Triple =&gt; {
+                            let mut remaining = self.cursor.rest().chars().skip(1);
+                            if remaining.next() == Some(quote) &amp;&amp; remaining.next() == Some(quote) {
+                                break;
+                            }
+                        }
+                    }
+                    self.cursor.bump();
+                }
+                '{' =&gt; {
+                    if self.cursor.second() == '{' {
+                        self.cursor.bump();
+                        self.cursor.bump();
+                    } else {
+                        break;
+                    }
+                }
+                '}' =&gt; {
+                    if in_named_unicode {
+                        in_named_unicode = false;
+                        self.cursor.bump();
+                    } else if self.cursor.second() == '}' &amp;&amp; !context.is_in_format_spec() {
+                        self.cursor.bump();
+                        self.cursor.bump();
+                    } else {
+                        break;
+                    }
+                }
+                _ =&gt; {
+                    self.cursor.bump();
+                }
+            }
+        }
+        let range = self.token_range():
+
+        if range.is_empty() {
+            return Ok(None);
+        }
+
+        let value = self.source[range]
+            .to_string()
+            .replace(&quot;{{&quot;, &quot;{&quot;)
+            .replace(&quot;}}&quot;, &quot;}&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:613 on 2023-08-23 07:36</div>
+            <div class="timeline-body"><p>The <code>to_string</code> call here is unnecessary. <code>replace</code> always allocates a new string already</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:615 on 2023-08-23 07:40</div>
+            <div class="timeline-body"><p>Calling replace twice is <code>O(2N)</code> on the string length. This may not matter much considering that most strings are small but can add up. It is also unfortunate that we do this even for strings that we know never contain a <code>{{</code> or <code>}}</code> sequence. There are two ways of how we can avoid this additional pass over the string:</p>
+<ul>
+<li>Track whether the string contained any <code>{{</code> or <code>}}</code> and only then call replace</li>
+<li>Implement your own <code>replace</code> that replaces both sequences in a single loop</li>
+<li>Create a normalized string, but only initialize it when you see a <code>{{</code> or <code>}}</code>. Otherwise use the full text range, see https://github.com/astral-sh/ruff/blob/0cea4975fcfe09716c084c0a18d1b4c4cd9b8f05/crates/ruff_python_formatter/src/expression/string.rs#L607-L679</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:619 on 2023-08-23 07:45</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    fn eat_fstring_end(&amp;mut self) -&gt; Option&lt;Tok&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:659 on 2023-08-23 07:51</div>
+            <div class="timeline-body"><p>I prefer to use <code>eat</code> whenever possible because it avoids bugs where I accidentally forgot to call <code>bump</code>, which results in an infinite loop:</p>
+<pre><code class="language-suggestion">        match context.quote_size {
+            StringQuoteSize::Single =&gt; {
+                if self.cursor.eat_char(context.quote_char()) {
+                    return Some(Tok::FStringEnd);
+                }
+            }
+            StringQuoteSize::Triple =&gt; {
+                let expected = match context.quote_char {
+                    StringQuoteChar::Single =&gt; &quot;'''&quot;,
+                    StringQuoteChar::Double =&gt; r#&quot;&quot;&quot;&quot;&quot;#,
+                };
+                if self.cursor.rest().starts_with(expected) {
+                    self.cursor.bump();
+                    self.cursor.bump();
+                    self.cursor.bump();
+                    return Some(Tok::FStringEnd);
+                }
+            }
+        }
+</code></pre>
+<p>I like @konstin's suggestion to add a <code>eat_char2</code> and <code>eat_char3</code> that only eat if all two or three chars match.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:771 on 2023-08-23 07:55</div>
+            <div class="timeline-body"><p>For which tokens does fstring_middle<code>and</code>fstring_end` both return None? Could we instead branch early on these tokens and unconditionally either return the middle or end part?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:758 on 2023-08-23 07:56</div>
+            <div class="timeline-body"><p>I dislike adding a stack lookup into the hot path but I don't see a way of how we could avoid it :(</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-23 07:57</div>
+            <div class="timeline-body"><p>This is impressive work. I left a few follow-up questions and I want to wait to approve this PR until we have the first benchmarks in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1433 on 2023-08-24 03:26</div>
+            <div class="timeline-body"><p>There are 3 reasons to track these fields:</p>
+<ol>
+<li>To check if we're in a f-string expression <code>f&quot;{&lt;here&gt;}&quot;</code></li>
+<li>To check if we're in a format spec within a f-string expression <code>f&quot;{foo:&lt;here&gt;}&quot;</code></li>
+<li>To check if the <code>:</code> is to start a format spec or is it part of, for example, named expression <code>:=</code>:<ul>
+<li>For <code>f&quot;{x:=1}&quot;</code>, the colon is to indicate the format spec start</li>
+<li>For <code>f&quot;{(x:=1)}&quot;</code>, the colon is part of <code>:=</code> named expression because the colon is not at the same level of parentheses. Another example is <code>f&quot;{x,{y:=1}}&quot;</code> where the colon is part of <code>:=</code> named expression</li>
+</ul>
+</li>
+</ol>
+<p>From <a href="https://peps.python.org/pep-0701/#how-to-produce-these-new-tokens">PEP 701: How to produce these new tokens</a>:</p>
+<blockquote>
+<ol start="3">
+<li>[..] This mode tokenizes as the “Regular Python tokenization” until a <code>:</code> or a <code>}</code> character is encountered with the same level of nesting as the opening bracket token that was pushed when we enter the f-string part. [..]</li>
+</ol>
+</blockquote>
+<p>With this explanation, do you think <code>_depth</code> is a better suffix?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-24 03:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-24 03:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1124 on 2023-08-24 03:27</div>
+            <div class="timeline-body"><p>Does https://github.com/astral-sh/ruff/pull/6659#discussion_r1303742193 answer your question here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-24 03:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1086 on 2023-08-24 03:37</div>
+            <div class="timeline-body"><p>This is a good point! This would mean that to get the <code>parentheses_count</code> inside any method of <code>FStringContext</code>, the <code>self.nesting</code> needs to be passed to these methods.</p>
+<p>Also, note that for closing parentheses we still need to call the method to decrement the format spec count.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-24 04:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:771 on 2023-08-24 04:13</div>
+            <div class="timeline-body"><p>So, <code>maybe_lex_fstring_middle</code> will return <code>None</code> when:</p>
+<ol>
+<li>The first character is <code>{</code> not followed by another <code>{</code> which is the start of f-string expression. For example, <code>f&quot;{foo}&quot;</code> and not <code>f&quot;{{foo}}&quot;</code></li>
+<li>Empty f-string which means that we should directly consume the f-string end. For example, <code>f&quot;&quot;</code>, <code>f''</code>, <code>f&quot;&quot;&quot;&quot;&quot;&quot;</code>, <code>f''''''</code>.</li>
+</ol>
+<p>I think you're referring to (1) then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-24 04:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:659 on 2023-08-24 04:22</div>
+            <div class="timeline-body"><p>Oh yes, I can totally relate to the part where we forgot to call <code>bump</code> :)</p>
+<p>I've added these methods.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-24 04:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:771 on 2023-08-24 04:31</div>
+            <div class="timeline-body"><p>This is a really good suggestion. Thanks, I've added it here <a href="https://github.com/astral-sh/ruff/pull/6659/commits/5b41241b0f37d7539439c93a3408d91f69c29861"><code>5b41241</code> (#6659)</a> with some test cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-24 04:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:771 on 2023-08-24 04:38</div>
+            <div class="timeline-body"><p>I've added <code>unreachable</code> to check in what other cases this happens.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-24 04:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:771 on 2023-08-24 04:55</div>
+            <div class="timeline-body"><p>There's another case as well:</p>
+<p>We're in format specifier mode and we've reached the end i.e., the next character is <code>}</code> which should be emitted as RBrace.</p>
+<p>For example, in <code>f&quot;{foo:.3f}&quot;</code>, the format specifier <code>.3f</code> is emitted as <code>FStringMiddle</code>, then in the next iteration we need to emit <code>}</code> (RBrace) but as we're still in f-string context we'll try to lex f-string middle (returns <code>None</code>) and f-string end (not there yet).</p>
+<p>I'm unable to find any other case which reaches <code>unreachable</code>. This means we can avoid branching but I would need to make sure that (maybe <code>debug_assertion</code>?) that the invariant holds true.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-24 05:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:615 on 2023-08-24 05:26</div>
+            <div class="timeline-body"><p>Thanks! I've implemented this in <a href="https://github.com/astral-sh/ruff/pull/6659/commits/2de590d2341dfd7f2f5b86458dc1bcba097ab99d"><code>2de590d</code> (#6659)</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">python312</span> added by @zanieb on 2023-08-24 20:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-25 11:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:164 on 2023-08-25 11:23</div>
+            <div class="timeline-body"><p>We can introduce that abstraction but can you expand on &quot;Could that reduce some repetitive code inside of the lexer?&quot;. What part is repetitive?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-25 11:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:758 on 2023-08-25 11:50</div>
+            <div class="timeline-body"><p>Maybe we could utilize <code>State</code>? The problem here is that it'll get updated when inside a f-string expression as it's not persistent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-25 11:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:743 on 2023-08-25 11:56</div>
+            <div class="timeline-body"><p>I don't really like this that much. I think we're sacrificing readability a bit. Without this, the <code>lex_fstring_middle_or_end</code> function would return <code>Result&lt;Option&lt;Tok&gt;, ...&gt;</code> and this condition will be identified initially in the function loop itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-25 11:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:771 on 2023-08-25 11:57</div>
+            <div class="timeline-body"><p>I do like this idea but it sacrifices readability a bit (https://github.com/astral-sh/ruff/pull/6659#discussion_r1305569804). I'll give it a bit of thought but I'm mostly leaning towards reverting the change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:183 on 2023-08-29 02:47</div>
+            <div class="timeline-body"><p>This separation is because the <code>StringKind::FString</code> and <code>StringKind::RawFString</code> variants will be removed after all the linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:538 on 2023-08-29 02:50</div>
+            <div class="timeline-body"><p>This is repetitive from the <code>lex_string</code> function, maybe we could define a <code>consume_open_quote</code> function:</p>
+<pre><code class="language-rust">fn consume_open_quote(&amp;mut self, quote: char) -&gt; (StringQuoteChar, StringQuoteSize) {
+	// ...
+}
+</code></pre>
+<p>Or, return bitflags?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:695 on 2023-08-29 02:51</div>
+            <div class="timeline-body"><p>This is required for the parser changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:704 on 2023-08-29 02:52</div>
+            <div class="timeline-body"><p>Source: https://github.com/python/cpython/blob/21a7420190778fb6e9237bf12e029a26cd18d82d/Parser/tokenizer.c#L2444-L2455</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser.rs</code>:704 on 2023-08-29 02:55</div>
+            <div class="timeline-body"><p>The tests are for <code>try ... except ...</code> so let's use normal strings to avoid putting the test behind feature flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser.rs</code>:720 on 2023-08-29 02:55</div>
+            <div class="timeline-body"><p>The tests are for <code>try ... except ...</code> so let's use normal strings to avoid putting the test behind feature flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-29 02:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-29 02:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:743 on 2023-08-29 02:56</div>
+            <div class="timeline-body"><p>I've reverted this change although I'm open to suggestions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-08-29 04:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1434 on 2023-08-29 04:32</div>
+            <div class="timeline-body"><p>This is a good idea! I've implemented it and it makes the code which uses the <code>FStringContext</code> better to reason about. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:561 on 2023-09-04 12:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // We have to decode `{{` and `}}` into `{` and `}` respectively. As an optimization, we 
+        // only allocate a new string we find any escaped curly braces, otherwise this string will
+        // remain empty and we'll use a source slice instead.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-09-04 12:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-05 01:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:714 on 2023-09-05 01:43</div>
+            <div class="timeline-body"><p>This will be done after the linter changes are complete.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:1086 on 2023-09-05 01:46</div>
+            <div class="timeline-body"><p>I've made this change. It turns out that the <code>last_mut</code> part was taking on average 10% of the lexing time. I think this is because we were performing this check for <em>every</em> parentheses irrespective of whether we're inside a f-string or not. This has improved the benchmarks. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-05 01:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2023-09-05 04:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-05 04:26</div>
+            <div class="timeline-body"><h2>Major changes since last review:</h2>
+<ul>
+<li>Combine lexing of <code>FStringMiddle</code> and <code>FStringEnd</code> tokens (earlier they were separate).</li>
+<li>Added <code>FStrings</code> (similar to <code>Indentations</code>), <code>FStringContextFlags</code> and related changes in the lexer.</li>
+<li>Emit empty <code>FStringMiddle</code> token for special case to signal the lexer that we're in a lambda expression without parentheses so that the parser throws an error instead.</li>
+<li>Avoid multiple increment/decrement for nesting. Instead store the initial nesting in <code>FStringContext</code> and pass in the current nesting to compute the f-string open parentheses on demand.</li>
+</ul>
+<p>For other changes, refer to the last review comment threads.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-09-06 08:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2023-09-06 08:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:178 on 2023-09-06 08:22</div>
+            <div class="timeline-body"><p>I'm undecided if it makes it easier but we could instead branch on the string kind instead of adding more match arms:</p>
+<pre><code>return if string_kind.is_any_fstring() {
+    Ok(self.lex_fstring_start(quote, string_kind.is_raw()));
+} else {
+    self.lex_string(string_kind, quote)
+};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:538 on 2023-09-06 08:23</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer/fstring.rs</code>:7 on 2023-09-06 08:25</div>
+            <div class="timeline-body"><p><code>pub(super)</code> should be sufficient for all the types in this module and this can be an <code>u8</code></p>
+<pre><code class="language-suggestion">    pub(crate) struct FStringContextFlags: u8 {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer/fstring.rs</code>:47 on 2023-09-06 08:26</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    pub(crate) const fn quote_char(&amp;self) -&gt; char {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer/fstring.rs</code>:38 on 2023-09-06 08:26</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    pub(crate) const fn new(flags: FStringContextFlags, nesting: u32) -&gt; Self {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer/fstring.rs</code>:56 on 2023-09-06 08:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    pub(crate) const fn quote_size(&amp;self) -&gt; TextSize {
+</code></pre>
+<p>and use <code>TextSize::new</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer/fstring.rs</code>:92 on 2023-09-06 08:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    pub(crate) const fn is_raw_string(&amp;self) -&gt; bool {
+        self.flags.contains(FStringContextFlags::RAW)
+    }
+
+    /// Returns `true` if the current f-string is a triple-quoted f-string.
+    pub(crate) const fn is_triple_quoted(&amp;self) -&gt; bool {
+        self.flags.contains(FStringContextFlags::TRIPLE)
+    }
+</code></pre>
+<p>And many other functions of this type</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:767 on 2023-09-06 08:39</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">                    if tok == Tok::FStringEnd {
+                        self.fstrings.pop();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer/fstring.rs</code>:88 on 2023-09-06 08:52</div>
+            <div class="timeline-body"><p>Rename <code>parentheses</code> to <code>curly</code> if you mean <code>{</code> <code>}</code> parentheses to align with the terminology used througout the parser/lexer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:754 on 2023-09-06 08:59</div>
+            <div class="timeline-body"><p>I see some improvements by storing a <code>in_fstring</code> boolean and pass that to <code>consume_ascii_char</code> and use it before performing any <code>self.fstrings</code> lookups (and then use unwrap). Could you take a look if the improvements are meaningful (You have a better understanding on how stable the lexer benchmarks are.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:792 on 2023-09-06 09:05</div>
+            <div class="timeline-body"><p>Nit: We can make this an <code>else if</code> branch of the above. Intentation handling isn't necessary inside of fstrings.  This together with #7184 could speed up lexing when inside of an fstring</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-09-06 09:27</div>
+            <div class="timeline-body"><p>I've a few more nit comments but this looks good to me. I'm not too worried about the performance regression because we move logic from the parser to the lexer, meaning these changes should ultimately lead to a perf improvement in the parser (at least for files with fstrings. There will be a regression for lexing non-fstring code)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-06 09:33</div>
+            <div class="timeline-body"><p>To add some more context on the perf regression. The size of <code>next_token</code> increases by about 40% from 6KB to 10KB. That obviously has a negative impact. In addition, <code>lex_identifier</code> increases by 33% from 3KB to 4KB which has a negative impact too because identifiers are the most common tokens.</p>
+<p>I don't see a way of reducing <code>next_token</code> but maybe there's a way to simplify <code>lex_identifier</code>? For example, could we match on <code>f</code>, <code>F</code> and <code>r</code> |<code>R</code> in <code>consume_ascii_char</code> to avoid matching on the first identifier character twice?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-06 13:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:178 on 2023-09-06 13:41</div>
+            <div class="timeline-body"><p>My reasoning behind this change is that the <code>FString</code> variant would be an invalid state as there won't be any <code>String</code> token of that kind. It just becomes an intermediate state to determine whether we want to lex a string or f-string start token. So, I was planning to remove it once all the linter changes are complete because they still use this variant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-06 13:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer/fstring.rs</code>:88 on 2023-09-06 13:44</div>
+            <div class="timeline-body"><p>This actually includes all the three types of parentheses: <code>(</code>, <code>{</code> and <code>[</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-11 17:55</div>
+            <div class="timeline-body"><p><em><strong>The implementation have been removed in #7263. Keeping this here for posterity:</strong></em></p>
+<blockquote>
+<h3>Empty <code>FStringMiddle</code> token</h3>
+<p><code>FStringMiddle</code> includes the portion of text inside the f-string that's not part of the expression and isn't an opening or closing brace which also includes the format spec. For example, in <code>f&quot;foo {bar:.3{x}f} bar&quot;</code>, the <code>foo </code>, <code>.3</code>, <code>f</code> and <code> bar</code> are <code>FStringMiddle</code> tokens (4 in total).</p>
+<p>In the lambda example (<code>f&quot;{lambda x: {x}&quot;</code>) as there's a whitespace after <code>:</code> and before the <code>{</code> token, that is a <code>FStringMiddle</code> token whose content is a single space character. The lambda pattern in LALRPOP doesn't contain <code>FStringMiddle</code> token which means it'll error with an unexpected token. But, if you remove the space (<code>f&quot;{lambda x:{x}}&quot;</code>), there won't be a <code>FStringMiddle</code> token anywhere and it'll match the lambda pattern in LALRPOP definition.</p>
+<p>We'll emit an empty <code>FStringMiddle</code> token so that the parser will throw an error and disallow non-parenthesized lambda expressions. The way it is done is:</p>
+<ol>
+<li>A <code>}</code> token while lexing for <code>FStringMiddle</code> is only encountered when we're inside a format spec (the part after the <code>:</code>).</li>
+<li>We'll emit an empty <code>FStringMiddle</code> token when we encounter <code>}</code> and reduce the format spec depth to avoid going into infinite mode where the lexer then keeps emitting the empty token.</li>
+</ol>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2023-09-14 01:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-09-14 01:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-14 01:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:46 UTC
+    </footer>
+</body>
+</html>

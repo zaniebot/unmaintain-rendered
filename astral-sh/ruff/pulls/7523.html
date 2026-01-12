@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignore TODO tags in `commented-out-code` - astral-sh/ruff #7523</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ignore TODO tags in <code>commented-out-code</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7523">#7523</a>
+        opened by <a href="https://github.com/tjkuson">@tjkuson</a>
+        on 2023-09-19 15:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-09-19 15:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Extend the <code>task-tags</code> checking logic to ignore TODO tags (with or without parentheses). For example,</p>
+<pre><code class="language-python"># TODO(tjkuson): Rewrite in Rust
+</code></pre>
+<p>is no longer flagged as commented-out code.</p>
+<p>Closes #7031.</p>
+<p>I also updated the documentation to inform users that the rule is prone to false positives like this!</p>
+<p>EDIT: Accidentally linked to the wrong issue when first opening this PR, now corrected.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-19 16:00</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-19 16:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/eradicate/detection.rs</code>:9 on 2023-09-19 16:58</div>
+            <div class="timeline-body"><p>Can we find a way to do this generically, for all <code>task_tags</code>? Since this wouldn't extend to <code>FIXME</code>, etc. I'm wondering if we can instead split on parentheses on line 53, where we iterate over the task tags?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-09-20 13:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> requested changes on 2023-09-20 13:28</div>
+            <div class="timeline-body"><p>No rush, just bumping out of my queue :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-20 16:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/eradicate/detection.rs</code>:9 on 2023-09-20 16:13</div>
+            <div class="timeline-body"><p>We should probably also make sure to respect https://docs.astral.sh/ruff/settings/#task-tags</p>
+<p>It may also be possible to implement this without using a regex, but could be a bit of a pain.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-20 16:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff/src/rules/eradicate/detection.rs</code>:9 on 2023-09-20 16:15</div>
+            <div class="timeline-body"><p>We do respect task tags but it's not part of the regex, it's down on line 53.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-09-21 07:07</div>
+            <div class="timeline-body"><p>Moved the tag checking logic to before the regex matching, as I believe it is less expensive. Also, now checks for lowercase tags (for example, <code># todo(tom): Rewrite in Rust</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @tjkuson on 2023-09-21 07:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-09-28 23:03</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/eradicate/detection.rs</code>:46 on 2023-09-28 23:04</div>
+            <div class="timeline-body"><p>I ended up removing the uppercase check here because it requires an allocation (would be expensive give how often this runs), and is probably rare.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-28 23:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-09-28 23:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-28 23:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tjkuson">@tjkuson</a> reviewed on 2023-09-29 09:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tjkuson">@tjkuson</a> on <code>crates/ruff_linter/src/rules/eradicate/detection.rs</code>:46 on 2023-09-29 09:45</div>
+            <div class="timeline-body"><p>Makes sense, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-29 10:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:47 UTC
+    </footer>
+</body>
+</html>

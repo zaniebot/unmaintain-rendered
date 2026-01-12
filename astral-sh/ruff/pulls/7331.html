@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix curly brace escape handling in f-strings - astral-sh/ruff #7331</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix curly brace escape handling in f-strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7331">#7331</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-09-13 09:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-13 09:45</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes the escape handling of curly braces inside a f-string. There are 2
+main changes:</p>
+<h3>Lexer</h3>
+<p>The lexer change was actually a bug. Instead of breaking as soon as we find a
+curly brace after the <code>\</code> character, we'll continue and let the next iteration
+handle it in the curly brace branch. This fixes the following case:</p>
+<pre><code class="language-python">f&quot;\{{foo}}&quot;
+#  ^ use the curly brace branch to handle this character instead of breaking
+</code></pre>
+<h3>Parser</h3>
+<p>We can encounter a <code>\</code> as the last character in a <code>FStringMiddle</code> token which is
+valid in this context[^1]. For example,</p>
+<pre><code class="language-python">f&quot;\{foo} \{bar:\}&quot;
+# ^     ^^     ^
+# The marked characters are part of 3 different `FStringMiddle` token
+</code></pre>
+<p>Here, the <code>FStringMiddle</code> token content will be <code>&quot;\&quot;</code> and <code>&quot; \&quot;</code> which is invalid in
+a regular string literal. However, it's valid here because it's a substring of a
+f-string. Even though curly braces cannot be escaped, it's a valid syntax.</p>
+<p>[^1]: Refer to point 3 in https://peps.python.org/pep-0701/#rejected-ideas</p>
+<h2>Test Plan</h2>
+<p>Verified that existing test cases are passing and add new test cases for the lexer and parser.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-13 09:46</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #7035</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7035" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7013</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7013" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #6659</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6659" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7041</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7041" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7211</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7211" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7263</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7263" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7331</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7331" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈
+* <strong>PR #7325</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7325" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7326</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7326" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7327</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7327" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7328</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7328" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7329</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7329" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7331?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2023-09-13 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2023-09-13 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">python312</span> added by @dhruvmanila on 2023-09-13 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-09-13 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:575 on 2023-09-13 11:44</div>
+            <div class="timeline-body"><p>Nit: Update the comment to explain that these are handled in the next iteration?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:219 on 2023-09-13 11:46</div>
+            <div class="timeline-body"><p>This section doesn't explain why it is valid. It only explains why it isn't an escape sequence. I assume it is valid because allows invalid escape sequences in general (Do we have a lint rule for that, does it need updating?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-09-13 11:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-13 12:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/string.rs</code>:219 on 2023-09-13 12:33</div>
+            <div class="timeline-body"><p>I actually noticed this while I was working on https://github.com/astral-sh/ruff/pull/7327/files#diff-739ef20efc60adce8f2acfaeda1005a932c58536433cbb895b323d335fffdd63 where at the end of the test file, the following was mentioned:</p>
+<pre><code class="language-python"># To be fixed
+# Error: f-string: single '}' is not allowed at line 41 column 8
+# f&quot;\{{x}}&quot;
+</code></pre>
+<p>So, then I started looking into it and realize that we don't parse this as a valid syntax. Python parses it as a valid syntax pre 3.12 as well although with 3.12 it produces a syntax warning:</p>
+<pre><code class="language-console">$ python3.12-dev fstring.py
+/Users/dhruv/playground/ruff/fstring.py:2: SyntaxWarning: invalid escape sequence '\{'
+  f&quot;\{foo}&quot;
+</code></pre>
+<blockquote>
+<p>(Do we have a lint rule for that, does it need updating?)</p>
+</blockquote>
+<p>We do have <code>W605</code> (<a href="https://github.com/astral-sh/ruff/issues/7295">tracking issue</a>) but as we didn't parse the syntax before, we didn't raise any warning. Now, we have the ability to raise that warning and I think we should do it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2023-09-14 02:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-09-14 02:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-14 02:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-09-14 02:26</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/fstring-parser-4">CodSpeed Performance Report</a></h2>
+<h3>Merging #7331 will <strong>degrade performances by 9.55%</strong></h3>
+<p><sub>:warning: No base runs were found</sub></p>
+<p><sub>Falling back to comparing <code>dhruv/fstring-parser-4</code> (a8e4218) with <code>main</code> (04183b0)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 8</code> regressions
+<code>✅ 17</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/fstring-parser-4">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>dhruv/fstring-parser-4</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>lexer[unicode/pypinyin.py]</code> | 620.2 µs | 672.2 µs | -7.73% |
+| ❌ | <code>lexer[large/dataset.py]</code> | 9.8 ms | 10.7 ms | -8.22% |
+| ❌ | <code>lexer[numpy/globals.py]</code> | 233.2 µs | 252.8 µs | -7.74% |
+| ❌ | <code>lexer[numpy/ctypeslib.py]</code> | 2 ms | 2.1 ms | -7.55% |
+| ❌ | <code>parser[large/dataset.py]</code> | 68.4 ms | 70.2 ms | -2.56% |
+| ❌ | <code>parser[numpy/ctypeslib.py]</code> | 12.4 ms | 12.7 ms | -2.57% |
+| ❌ | <code>parser[unicode/pypinyin.py]</code> | 4.3 ms | 4.4 ms | -2.78% |
+| ❌ | <code>lexer[pydantic/types.py]</code> | 4.1 ms | 4.5 ms | -9.55% |</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:46 UTC
+    </footer>
+</body>
+</html>

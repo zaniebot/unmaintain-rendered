@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move `Settings` and `ResolverSettings` to `ruff_workspace` - astral-sh/ruff #7544</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Move <code>Settings</code> and <code>ResolverSettings</code> to <code>ruff_workspace</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7544">#7544</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-09-20 12:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-20 12:23</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<h2>Stack Summary</h2>
+<p>This stack splits <code>Settings</code> into <code>FormatterSettings</code> and <code>LinterSettings</code> and moves it into <code>ruff_workspace</code>. This change is necessary to add the <code>FormatterSettings</code> to <code>Settings</code> without adding <code>ruff_python_formatter</code> as a dependency to <code>ruff_linter</code> (and the linter should not contain the formatter settings).</p>
+<p>A quick overview of our settings struct at play:</p>
+<ul>
+<li><code>Options</code>: 1:1 representation of the options in the <code>pyproject.toml</code> or <code>ruff.toml</code>.  Used for deserialization.</li>
+<li><code>Configuration</code>: Resolved <code>Options</code>, potentially merged from multiple configurations (when using <code>extend</code>). The representation is very close if not identical to the <code>Options</code>.</li>
+<li><code>Settings</code>: The resolved configuration that uses a data format optimized for reading. Optional fields are initialized with their default values. Initialized by <code>Configuration::into_settings</code> .</li>
+</ul>
+<p>The goal of this stack is to split <code>Settings</code> into tool-specific resolved <code>Settings</code> that are independent of each other. This comes at the advantage that the individual crates don't need to know anything about the other tools. The downside is that information gets duplicated between <code>Settings</code>. Right now the duplication is minimal (<code>line-length</code>, <code>tab-width</code>) but we may need to come up with a solution if more expensive data needs sharing.</p>
+<p>This stack focuses on <code>Settings</code>. Splitting <code>Configuration</code> into some smaller structs is something I'll follow up on later.</p>
+<h2>PR Summary</h2>
+<p>This PR moves the <code>ResolverSettings</code> and <code>Settings</code> struct to <code>ruff_workspace</code>. <code>LinterSettings</code> remains in <code>ruff_linter</code> because it gets passed to lint rules, the <code>Checker</code> etc.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-20 12:23</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #7532</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7532" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7542</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7542" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7543</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7543" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7544</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7544" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #7545</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7545" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7548</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7548" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7549</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7549" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>PR #7536</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7536" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7544?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-09-20 12:41</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/move-settings-to-ruff-workspace">CodSpeed Performance Report</a></h2>
+<h3>Merging #7544 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>move-settings-to-ruff-workspace</code> (1ebf2ea) with <code>main</code> (b34278e)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 25</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-20 12:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/Cargo.toml</code>:37 on 2023-09-20 12:45</div>
+            <div class="timeline-body"><p>TODO use workspace version</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-09-20 12:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-09-20 12:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2023-09-20 12:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-09-20 13:11</div>
+            <div class="timeline-body"><p>Makes sense, that's an impressive refactor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-20 15:05</div>
+            <div class="timeline-body"><h3>Merge Activity</h3>
+<ul>
+<li><strong>Sep 20, 11:05 AM</strong>: <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7544">Graphite</a> rebased this pull request after merging its parent, because this pull request is set to merge when ready.</li>
+<li><strong>Sep 20, 11:24 AM</strong>: @MichaReiser merged this pull request with <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7544">Graphite</a>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-20 15:23</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-09-20 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-09-20 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-20 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samschlegel">@samschlegel</a> on 2023-09-20 21:34</div>
+            <div class="timeline-body"><p>One followup here is that I think the paths in CONTRIBUTING.md need to be updated to reference these structs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-20 21:49</div>
+            <div class="timeline-body"><p>@samschlegel - Great catch, thanks! PR welcome or I can fix it up :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samschlegel">@samschlegel</a> on 2023-09-20 21:50</div>
+            <div class="timeline-body"><blockquote>
+<p>@samschlegel - Great catch, thanks! PR welcome or I can fix it up :)</p>
+</blockquote>
+<p>I ran into it while reading it and I'm not entirely sure what's moved where so would probably be easier for you to do at the moment 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-20 21:52</div>
+            <div class="timeline-body"><p>It looks like a few things are out-of-date in that section so I'll do some clean-up.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:47 UTC
+    </footer>
+</body>
+</html>

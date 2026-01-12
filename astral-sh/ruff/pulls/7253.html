@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[refurb] Implement `reimplemented-starmap` rule (`FURB140`) - astral-sh/ruff #7253</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[refurb] Implement <code>reimplemented-starmap</code> rule (<code>FURB140</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7253">#7253</a>
+        opened by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a>
+        on 2023-09-09 14:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on 2023-09-09 14:45</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR is part of a bigger effort of re-implementing <code>refurb</code> rules #1348. It adds support for <a href="https://github.com/dosisod/refurb/blob/master/refurb/checks/itertools/use_starmap.py">FURB140</a></p>
+<h2>Test Plan</h2>
+<p>I included a new test + checked that all other tests pass.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-09 15:52</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/refurb/rules/reimplemented_starmap.rs</code>:77 on 2023-09-11 07:06</div>
+            <div class="timeline-body"><p>The get prefix isn't common in Rust. Instead, it is best practice to omit it</p>
+<pre><code class="language-suggestion">    fn element(&amp;self) -&gt; &amp;Expr;
+    /// Get generator comprehensions.
+    fn generators(&amp;self) -&gt; &amp;[ast::Comprehension];
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/refurb/rules/reimplemented_starmap.rs</code>:85 on 2023-09-11 07:08</div>
+            <div class="timeline-body"><p>The use of a generic here means that Rust generates a dedicated implementation for each <code>T</code> instantiation.</p>
+<p>I think it may be better to define a <code>AnyComprehension</code> enum (or similar) with a variant for each node that you want to support instead of using a trait.  See</p>
+<p>https://github.com/astral-sh/ruff/blob/c05e4628b1d385d106e7e3d355f5d1d76fbfe401/crates/ruff_python_formatter/src/expression/expr_yield.rs#L10-L35</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/refurb/rules/reimplemented_starmap.rs</code>:130 on 2023-09-11 07:09</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">    let mut diagnostic = Diagnostic::new(ReimplementedStarmap, generator.range());
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/rules/refurb/rules/reimplemented_starmap.rs</code>:131 on 2023-09-11 07:11</div>
+            <div class="timeline-body"><p>Nit: Could <code>check_fix_possibility</code> and <code>make_suggestion</code> be combined so that the enum has a method <code>try_fix</code> which returns an <code>Option</code> instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-11 07:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-11 07:12</div>
+            <div class="timeline-body"><p>I have a few coding nits. Leaving it to @charliermarsh to review the rule logic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> reviewed on 2023-09-11 22:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on <code>crates/ruff/src/rules/refurb/rules/reimplemented_starmap.rs</code>:130 on 2023-09-11 22:00</div>
+            <div class="timeline-body"><p>Gotcha!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on <code>crates/ruff/src/rules/refurb/rules/reimplemented_starmap.rs</code>:77 on 2023-09-11 22:00</div>
+            <div class="timeline-body"><p>Will do</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> reviewed on 2023-09-11 22:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on <code>crates/ruff/src/rules/refurb/rules/reimplemented_starmap.rs</code>:131 on 2023-09-11 22:01</div>
+            <div class="timeline-body"><p>Yeah, I see what you mean. Will do!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> reviewed on 2023-09-11 22:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> reviewed on 2023-09-11 22:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/SavchenkoValeriy">@SavchenkoValeriy</a> on <code>crates/ruff/src/rules/refurb/rules/reimplemented_starmap.rs</code>:85 on 2023-09-11 22:10</div>
+            <div class="timeline-body"><p>I'm not a huge fan of such a solution. With the trait, we don't need to perform any runtime checks for the given type. With the enum, we do them 4 times: <code>element</code>, <code>generators</code>, <code>range</code>, and <code>try_fix</code>. These seem not critical in any way, but one can argue that bloating from instantiating the same (rather small) generic 3 times is kind of similar.</p>
+<p>I guess I can see how an enum solution is better for decoupling, if I remove <code>try_fix</code> from that interface altogether. Then it can be used in other places that share comprehensions. On the other hand, this interface can't include <code>DictComprehension</code> without making <code>element</code> optional and adding more runtime checks.</p>
+<p>Sorry, for the rant. If you insist, I can change it, but I hope you see my point here 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-09-11 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-09-16 18:27</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/SavchenkoValeriy:refurb/furb140">CodSpeed Performance Report</a></h2>
+<h3>Merging #7253 will <strong>degrade performances by 2.38%</strong></h3>
+<p><sub>Comparing <code>SavchenkoValeriy:refurb/furb140</code> (ea69b1c) with <code>main</code> (c6ba7df)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1</code> regressions
+<code>✅ 24</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/SavchenkoValeriy:refurb/furb140">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>SavchenkoValeriy:refurb/furb140</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>linter/all-rules[numpy/ctypeslib.py]</code> | 34.2 ms | 35.1 ms | -2.38% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-09-19 02:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-19 02:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:46 UTC
+    </footer>
+</body>
+</html>

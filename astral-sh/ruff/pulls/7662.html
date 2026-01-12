@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use 1-based cell indices consistently for Notebooks - astral-sh/ruff #7662</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use 1-based cell indices consistently for Notebooks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7662">#7662</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-09-26 06:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-26 06:25</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes the bug where the cell indices displayed in the <code>--diff</code> output
+and the ones in the normal output were different. This was due to the fact that
+the <code>--diff</code> output was using the <code>enumerate</code> function to iterate over the
+cells which starts at 0.</p>
+<h2>Test Plan</h2>
+<p>Ran the following command with and without the <code>--diff</code> flag:</p>
+<pre><code class="language-console">cargo run --bin ruff -- check --no-cache --isolated ~/playground/ruff/notebooks/test.ipynb
+</code></pre>
+<h3><code>main</code></h3>
+<details><summary>Diagnostics output:</summary>
+<p>
+
+<pre><code class="language-console">$ cargo run --bin ruff -- check --no-cache --isolated ~/playground/ruff/notebooks/test.ipynb       
+/Users/dhruv/playground/ruff/notebooks/test.ipynb:cell 3:2:8: F401 [*] `math` imported but unused
+/Users/dhruv/playground/ruff/notebooks/test.ipynb:cell 5:1:8: F811 Redefinition of unused `random` from line 1
+/Users/dhruv/playground/ruff/notebooks/test.ipynb:cell 5:2:8: F401 [*] `pprint` imported but unused
+/Users/dhruv/playground/ruff/notebooks/test.ipynb:cell 6:2:4: F632 [*] Use `==` to compare constant literals
+/Users/dhruv/playground/ruff/notebooks/test.ipynb:cell 6:3:38: F632 [*] Use `==` to compare constant literals
+Found 5 errors.
+[*] 4 potentially fixable with the --fix option.
+</code></pre>
+</p>
+</details>
+
+<details><summary>Diff output:</summary>
+<p>
+
+<pre><code class="language-console">$ cargo run --bin ruff -- check --no-cache --isolated ~/playground/ruff/notebooks/test.ipynb --diff
+--- /Users/dhruv/playground/ruff/notebooks/test.ipynb:cell 2
++++ /Users/dhruv/playground/ruff/notebooks/test.ipynb:cell 2
+@@ -1,2 +1 @@
+-import random
+-import math
++import random
+--- /Users/dhruv/playground/ruff/notebooks/test.ipynb:cell 4
++++ /Users/dhruv/playground/ruff/notebooks/test.ipynb:cell 4
+@@ -1,4 +1,3 @@
+ import random
+-import pprint
+ 
+ random.randint(10, 20)
+--- /Users/dhruv/playground/ruff/notebooks/test.ipynb:cell 5
++++ /Users/dhruv/playground/ruff/notebooks/test.ipynb:cell 5
+@@ -1,3 +1,3 @@
+ foo = 1
+-if foo is 2:
+-    raise ValueError(f&quot;Invalid foo: {foo is 1}&quot;)
++if foo == 2:
++    raise ValueError(f&quot;Invalid foo: {foo == 1}&quot;)
+
+Would fix 4 errors.
+</code></pre>
+</p>
+</details> 
+
+<h3><code>dhruv/consistent-cell-indices</code></h3>
+<details><summary>Diagnostic output:</summary>
+<p>
+
+<pre><code class="language-console">$ cargo run --bin ruff -- check --no-cache --isolated ~/playground/ruff/notebooks/test.ipynb           
+/Users/dhruv/playground/ruff/notebooks/test.ipynb:cell 3:2:8: F401 [*] `math` imported but unused
+/Users/dhruv/playground/ruff/notebooks/test.ipynb:cell 5:1:8: F811 Redefinition of unused `random` from line 1
+/Users/dhruv/playground/ruff/notebooks/test.ipynb:cell 5:2:8: F401 [*] `pprint` imported but unused
+/Users/dhruv/playground/ruff/notebooks/test.ipynb:cell 6:2:4: F632 [*] Use `==` to compare constant literals
+/Users/dhruv/playground/ruff/notebooks/test.ipynb:cell 6:3:38: F632 [*] Use `==` to compare constant literals
+Found 5 errors.
+[*] 4 potentially fixable with the --fix option.
+</code></pre>
+</p>
+</details> 
+
+<details><summary>Diff output:</summary>
+<p>
+
+<pre><code class="language-console">$ cargo run --bin ruff -- check --no-cache --isolated ~/playground/ruff/notebooks/test.ipynb --diff
+--- /Users/dhruv/playground/ruff/notebooks/test.ipynb:cell 3
++++ /Users/dhruv/playground/ruff/notebooks/test.ipynb:cell 3
+@@ -1,2 +1 @@
+-import random
+-import math
++import random
+--- /Users/dhruv/playground/ruff/notebooks/test.ipynb:cell 5
++++ /Users/dhruv/playground/ruff/notebooks/test.ipynb:cell 5
+@@ -1,4 +1,3 @@
+ import random
+-import pprint
+ 
+ random.randint(10, 20)
+--- /Users/dhruv/playground/ruff/notebooks/test.ipynb:cell 6
++++ /Users/dhruv/playground/ruff/notebooks/test.ipynb:cell 6
+@@ -1,3 +1,3 @@
+ foo = 1
+-if foo is 2:
+-    raise ValueError(f&quot;Invalid foo: {foo is 1}&quot;)
++if foo == 2:
++    raise ValueError(f&quot;Invalid foo: {foo == 1}&quot;)
+
+Would fix 4 errors.
+</code></pre>
+</p>
+</details> 
+
+<p>fixes: #6673</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-26 06:25</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #7662</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7662" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #7663</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7663" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7664</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7664" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7662?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2023-09-26 06:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-26 06:42</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @dhruvmanila on 2023-09-26 06:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2023-09-26 06:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-09-26 09:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:260 on 2023-09-26 11:04</div>
+            <div class="timeline-body"><p>Should we use a type like <code>OneIndexed</code> to make it clear in the API which indices are one or zero indexed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-26 11:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_cli/src/diagnostics.rs</code>:260 on 2023-09-26 11:24</div>
+            <div class="timeline-body"><p>Yes, I'm planning on making that refactor for <code>NotebookIndex</code> which will be a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-26 11:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-09-26 11:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2023-09-26 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-09-26 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-26 14:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:47 UTC
+    </footer>
+</body>
+</html>

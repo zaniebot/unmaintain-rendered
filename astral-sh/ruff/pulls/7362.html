@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove `ExprContext` from `ComparableExpr` - astral-sh/ruff #7362</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove <code>ExprContext</code> from <code>ComparableExpr</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7362">#7362</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-09-13 19:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-13 19:07</div>
+            <div class="timeline-body"><p><code>ComparableExpr</code> includes the <code>ExprContext</code> field on an expression, so, e.g., the two tuples in <code>(a, b) = (a, b)</code> won't be considered equal. Similarly, the tuples in <code>[(a, b) for (a, b) in c]</code> <em>also</em> wouldn't be considered equal. I find this behavior surprising, since <code>ComparableExpr</code> is intended to allow you to compare two ASTs, but <code>ExprContext</code> is really encoding information about the broader context for the expression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2023-09-13 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-13 19:12</div>
+            <div class="timeline-body"><p>Before I review this PR. Can we use this as a chance to document what equality under <code>CompareExpr</code> means? I never fully understood how the equality is defined. Is it: that the two expressions are likely to evaluate to the same value, considering that they run in the same context, the trees have the same shape, the source is identical, or some other equality?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-13 19:33</div>
+            <div class="timeline-body"><p>Two expressions are considered equal if &quot;the trees have the same shape&quot;. They do not have to be source-identical, and they can even differ in their ASTs in ways that don't affect the resulting <em>value</em> (for example, we already ignore the <code>is_implicit_concatenated</code> field when comparing strings).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-09-13 22:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-13 23:13</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/comparable.rs</code>:6 on 2023-09-14 06:29</div>
+            <div class="timeline-body"><p>Thanks. Can we be a bit more explicit about the same shape. Let's say we change our string types to store the implicit concatenation parts. Would two strings with different parts then be considered unequal because the AST now has a different shape?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-09-14 06:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-09-14 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-14 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-14 15:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:46 UTC
+    </footer>
+</body>
+</html>

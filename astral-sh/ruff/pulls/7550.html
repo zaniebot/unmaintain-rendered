@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treat parameters-with-newline as empty in function formatting - astral-sh/ruff #7550</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Treat parameters-with-newline as empty in function formatting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7550">#7550</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-09-20 17:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-20 17:02</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>If a function has no parameters (and no comments within the parameters' <code>()</code>), we're supposed to wrap the return annotation <em>whenever</em> it breaks. However, our <code>empty_parameters</code> test didn't properly account for the case in which the parameters include a newline (but no other content), like:</p>
+<pre><code class="language-python">def get_dashboards_hierarchy(
+) -&gt; Dict[Type['BaseDashboard'], List[Type['BaseDashboard']]]:
+    &quot;&quot;&quot;Get hierarchy of dashboards classes.
+
+    Returns:
+        Dict of dashboards classes.
+    &quot;&quot;&quot;
+    dashboards_hierarchy = {}
+</code></pre>
+<p>This PR fixes that detection. Instead of lexing, it now checks if the parameters itself is empty (or if it contains comments).</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/7457.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-09-20 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-09-20 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-09-20 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-20 17:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/statement/stmt_function_def.rs</code>:185 on 2023-09-20 17:02</div>
+            <div class="timeline-body"><p>I ditched the tokenizer in favor of <code>parameters.is_empty() &amp;&amp; !comments.ranges().intersects(parameters.range())</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-20 17:18</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/statement/stmt_function_def.rs</code>:150 on 2023-09-20 19:38</div>
+            <div class="timeline-body"><p>What's the reason for using comment.ranges instead of comments.has_comments(paramteters)?</p>
+<p>I would prefer if we use comments as the source of truth to ensure it's in sync with what we format and don't start relying on multiple sources</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-20 19:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-20 19:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/statement/stmt_function_def.rs</code>:150 on 2023-09-20 19:48</div>
+            <div class="timeline-body"><p>Ah I just forgot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-20 19:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/statement/stmt_function_def.rs</code>:150 on 2023-09-20 19:49</div>
+            <div class="timeline-body"><p>Ah I just forgot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-20 19:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/statement/stmt_function_def.rs</code>:150 on 2023-09-20 19:49</div>
+            <div class="timeline-body"><p>Fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-09-20 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-09-20 20:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-09-20 20:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-20 20:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-20 20:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:47 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve performance of `commented-out-code` (~50-80%) - astral-sh/ruff #7706</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve performance of <code>commented-out-code</code> (~50-80%)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7706">#7706</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-09-29 03:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-29 03:21</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR implements a variety of optimizations to improve performance of the Eradicate rule, which always shows up in all-rules benchmarks and bothers me. (These improvements are not hugely important, but it was kind of a fun Friday thing to spent a bit of time on.)</p>
+<p>The improvements include:</p>
+<ul>
+<li>Doing cheaper work first (checking for some explicit substrings upfront).</li>
+<li>Using <code>aho-corasick</code> to speed an exact substring search.</li>
+<li>Merging multiple regular expressions using a <code>RegexSet</code>.</li>
+<li>Removing some unnecessary <code>\s*</code> and other pieces from the regular expressions (since we already trim strings before matching on them).</li>
+</ul>
+<h2>Test Plan</h2>
+<p>I benchmarked this function in a standalone crate using a variety of cases. Criterion reports that this version is up to 80% faster, and almost every case is at least 50% faster:</p>
+<pre><code>Eradicate/Detection/# Warn if we are installing over top of an existing installation. This can
+                        time:   [101.84 ns 102.32 ns 102.82 ns]
+                        change: [-77.166% -77.062% -76.943%] (p = 0.00 &lt; 0.05)
+                        Performance has improved.
+Found 3 outliers among 100 measurements (3.00%)
+  3 (3.00%) high mild
+Eradicate/Detection/#from foo import eradicate
+                        time:   [74.872 ns 75.096 ns 75.314 ns]
+                        change: [-84.180% -84.131% -84.079%] (p = 0.00 &lt; 0.05)
+                        Performance has improved.
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high mild
+Eradicate/Detection/# encoding: utf8
+                        time:   [46.522 ns 46.862 ns 47.237 ns]
+                        change: [-29.408% -28.918% -28.471%] (p = 0.00 &lt; 0.05)
+                        Performance has improved.
+Found 7 outliers among 100 measurements (7.00%)
+  6 (6.00%) high mild
+  1 (1.00%) high severe
+Eradicate/Detection/# Issue #999
+                        time:   [16.942 ns 16.994 ns 17.058 ns]
+                        change: [-57.243% -57.064% -56.815%] (p = 0.00 &lt; 0.05)
+                        Performance has improved.
+Found 3 outliers among 100 measurements (3.00%)
+  2 (2.00%) high mild
+  1 (1.00%) high severe
+Eradicate/Detection/# type: ignore
+                        time:   [43.074 ns 43.163 ns 43.262 ns]
+                        change: [-17.614% -17.390% -17.152%] (p = 0.00 &lt; 0.05)
+                        Performance has improved.
+Found 5 outliers among 100 measurements (5.00%)
+  3 (3.00%) high mild
+  2 (2.00%) high severe
+Eradicate/Detection/# user_content_type, _ = TimelineEvent.objects.using(db_alias).get_or_create(
+                        time:   [209.40 ns 209.81 ns 210.23 ns]
+                        change: [-32.806% -32.630% -32.470%] (p = 0.00 &lt; 0.05)
+                        Performance has improved.
+Eradicate/Detection/# this is = to that :(
+                        time:   [72.659 ns 73.068 ns 73.473 ns]
+                        change: [-68.884% -68.775% -68.655%] (p = 0.00 &lt; 0.05)
+                        Performance has improved.
+Found 9 outliers among 100 measurements (9.00%)
+  7 (7.00%) high mild
+  2 (2.00%) high severe
+Eradicate/Detection/#except Exception:
+                        time:   [92.063 ns 92.366 ns 92.691 ns]
+                        change: [-64.204% -64.052% -63.909%] (p = 0.00 &lt; 0.05)
+                        Performance has improved.
+Found 4 outliers among 100 measurements (4.00%)
+  2 (2.00%) high mild
+  2 (2.00%) high severe
+Eradicate/Detection/#print(1)
+                        time:   [68.359 ns 68.537 ns 68.725 ns]
+                        change: [-72.424% -72.356% -72.278%] (p = 0.00 &lt; 0.05)
+                        Performance has improved.
+Found 2 outliers among 100 measurements (2.00%)
+  1 (1.00%) low mild
+  1 (1.00%) high mild
+Eradicate/Detection/#'key': 1 + 1,
+                        time:   [79.604 ns 79.865 ns 80.135 ns]
+                        change: [-69.787% -69.667% -69.549%] (p = 0.00 &lt; 0.05)
+                        Performance has improved.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-29 03:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/eradicate/detection.rs</code>:45 on 2023-09-29 03:22</div>
+            <div class="timeline-body"><p>Put the cheapest and most discriminant step first. This should exclude most comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-29 03:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/eradicate/detection.rs</code>:23 on 2023-09-29 03:22</div>
+            <div class="timeline-body"><p>Combine into a single regex, rather than five separate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-29 03:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/eradicate/detection.rs</code>:14 on 2023-09-29 03:23</div>
+            <div class="timeline-body"><p>I actually don't know how much this improves performance over a manual iteration. Having trouble getting this function to show up in Instruments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-09-29 03:31</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/charlie/eradicate">CodSpeed Performance Report</a></h2>
+<h3>Merging #7706 will <strong>improve performances by 3.56%</strong></h3>
+<p><sub>Comparing <code>charlie/eradicate</code> (91aede8) with <code>main</code> (e9f8b91)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 24</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>charlie/eradicate</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/default-rules[large/dataset.py]</code> | 95.7 ms | 92.4 ms | +3.56% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-29 03:32</div>
+            <div class="timeline-body"><p>Think I need to run the benchmarks locally with just this rule or something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-29 03:40</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/eradicate/detection.rs</code>:66 on 2023-09-29 08:35</div>
+            <div class="timeline-body"><p>Not sure if it helps performance but some of the above regex could be combined with https://docs.rs/regex/latest/regex/struct.RegexSet.html . But we may also be able to join the Regex by simply ORing them together (A | B | C) instead of having multiple regex expressions</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-29 08:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-29 08:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/eradicate/detection.rs</code>:14 on 2023-09-29 08:36</div>
+            <div class="timeline-body"><p>You may need a test file with a ton of comments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-09-29 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-29 19:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/eradicate/detection.rs</code>:153 on 2023-09-29 19:18</div>
+            <div class="timeline-body"><p>This is Python 2 code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/eradicate/detection.rs</code>:130 on 2023-09-29 19:19</div>
+            <div class="timeline-body"><p>The method assumes you pass a comment, so this test doesn't really make sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-29 19:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-29 19:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/eradicate/detection.rs</code>:72 on 2023-09-29 19:19</div>
+            <div class="timeline-body"><p>Interestingly, combining <code>HASH_NUMBER</code> and <code>ALLOWLIST_REGEX</code> into a single regex ended up <em>hurting</em> performance, so I left those as two separate passes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_linter/Cargo.toml</code>:74 on 2023-09-29 19:43</div>
+            <div class="timeline-body"><p>which of these styles do we want (my preference is <code>&lt;pkg&gt; = &quot;x.y.z&quot;</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2023-09-29 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-09-29 20:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/Cargo.toml</code>:74 on 2023-09-29 20:02</div>
+            <div class="timeline-body"><p>Oh I prefer the <code>version</code> one but I broke my rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-29 20:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Improve performance of commented-out-code rule" to "Improve performance of commented-out-code rule by 50-80%" by @charliermarsh on 2023-09-29 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Improve performance of commented-out-code rule by 50-80%" to "Improve performance of `commented-out-code` (50-80% improvement)" by @charliermarsh on 2023-09-29 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Improve performance of `commented-out-code` (50-80% improvement)" to "Improve performance of `commented-out-code` (~50-80%)" by @charliermarsh on 2023-09-29 20:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-09-29 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-29 20:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-29 20:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:47 UTC
+    </footer>
+</body>
+</html>

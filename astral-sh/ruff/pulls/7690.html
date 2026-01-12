@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update logical line rules for the new f-string tokens - astral-sh/ruff #7690</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Update logical line rules for the new f-string tokens</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7690">#7690</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-09-28 03:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-28 03:58</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates the logical line rules for the new f-string tokens.</p>
+<p>Specifically, it tries to ignore the rules for which it might be hard to differentiate between different usages inside f-strings. For some tokens, the whitespace addition or removal could change the semantics so they're ignored for every scenario inside f-string.</p>
+<ul>
+<li>Ignore <code>E225</code> for the <code>=</code> operator. For example, <code>f&quot;{x=}&quot;</code> we don't want to add whitespace as the output will then be different than what the user indended.</li>
+<li>Ignore <code>E231</code> for the <code>:</code> operator. For example, <code>f&quot;{x:.3f}&quot;</code> we don't want to add whitespace as the output will be different:</li>
+</ul>
+<pre><code>In [1]: a = 100
+
+In [2]: f'{a: .3f}'
+Out[2]: ' 100.000'
+
+In [3]: f'{a:.3f}'
+Out[3]: '100.000'
+</code></pre>
+<ul>
+<li>Ignore <code>E201</code>, <code>E202</code> for <code>{</code> and <code>}</code> tokens. The double braces are used as an escape mechanism to include the raw character (<code>f&quot;{{foo}}&quot;</code>) but if a dictionary is being used then the whitespace is required (<code>f&quot;{ {'a': 1} }&quot;</code>).</li>
+</ul>
+<h2>Test Plan</h2>
+<p>Add new test cases for f-strings along with nested f-strings and update the snapshots.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-28 03:59</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #7376</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7376" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7690</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7690" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+<li><strong>PR #7667</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7667" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7597</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7597" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7588</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7588" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7589</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7589" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+<li><strong>PR #7586</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7586" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7515</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7515" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7477</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7477" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7387</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7387" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7378</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7378" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7329</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7329" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7328</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7328" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7327</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7327" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7326</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7326" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7325</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7325" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7690?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-28 03:59</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #7376</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7376" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7690</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7690" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+<li><strong>PR #7667</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7667" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7597</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7597" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7588</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7588" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7589</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7589" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+<li><strong>PR #7586</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7586" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7515</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7515" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7477</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7477" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7387</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7387" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7378</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7378" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7329</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7329" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7328</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7328" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7327</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7327" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7326</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7326" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7325</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7325" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7690?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2023-09-28 04:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @dhruvmanila on 2023-09-28 04:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2023-09-28 04:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">python312</span> added by @dhruvmanila on 2023-09-28 04:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/logical_lines/extraneous_whitespace.rs</code>:148 on 2023-09-28 04:08</div>
+            <div class="timeline-body"><p>It looks like we're not setting <code>prev_token</code> because we're continuing. Is that ok?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-28 04:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/logical_lines/extraneous_whitespace.rs</code>:146 on 2023-09-28 04:08</div>
+            <div class="timeline-body"><p>Should we just skip all of this when we're inside an f-string?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-28 04:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-09-28 04:08</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/fstring-logical-line-rules">CodSpeed Performance Report</a></h2>
+<h3>Merging #7690 will <strong>degrade performances by 2.28%</strong></h3>
+<p><sub>Comparing <code>dhruv/fstring-logical-line-rules</code> (11e27da) with <code>dhruv/pep-701</code> (d60f30e)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1</code> regressions
+<code>✅ 24</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/fstring-logical-line-rules">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>dhruv/pep-701</code> | <code>dhruv/fstring-logical-line-rules</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>linter/default-rules[large/dataset.py]</code> | 93.4 ms | 95.6 ms | -2.28% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-28 04:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/logical_lines/missing_whitespace_around_operator.rs</code>:162 on 2023-09-28 04:10</div>
+            <div class="timeline-body"><p>Again, should we just have something like:</p>
+<pre><code class="language-rust">if fstrings &gt; 0 {
+    continue;
+}
+</code></pre>
+<p>Or is it important that we run this body logic?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/logical_lines/missing_whitespace_around_operator.rs</code>:162 on 2023-09-28 04:11</div>
+            <div class="timeline-body"><p>Oh, so we're trying to catch <em>some</em> of these errors within f-strings, but not all -- is that right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-28 04:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-28 04:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/logical_lines/extraneous_whitespace.rs</code>:165 on 2023-09-28 04:11</div>
+            <div class="timeline-body"><p>Again we're not setting <code>prev_token</code> due to the use of <code>continue</code>, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-28 04:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/logical_lines/extraneous_whitespace.rs</code>:146 on 2023-09-28 04:12</div>
+            <div class="timeline-body"><p>Oh, or actually, we <em>do</em> want to catch some errors within f-strings -- is that right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-28 04:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/logical_lines/extraneous_whitespace.rs</code>:148 on 2023-09-28 04:12</div>
+            <div class="timeline-body"><p>Good point. I think it's ok but I'll remove it. It might also make sense to remove the <code>continue;</code> as pointed out in the other comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-28 04:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-28 04:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/logical_lines/extraneous_whitespace.rs</code>:146 on 2023-09-28 04:14</div>
+            <div class="timeline-body"><p>Removing whitespaces before the punctuations should be fine. It's only when they're removed after when the semantics changes.</p>
+<p>So, <code>f&quot;{foo   :.3f}&quot;</code> and <code>f&quot;{foo:.3f}&quot;</code> are equivalent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/logical_lines/extraneous_whitespace.rs</code>:148 on 2023-09-28 04:14</div>
+            <div class="timeline-body"><p>Is the goal to detect <em>some</em> violations in f-strings, but skip others that could be false positives? Or is it to avoid flagging <em>anything</em> in f-strings (as happens today on <code>main</code>, IIUC)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-28 04:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/logical_lines/missing_whitespace_around_operator.rs</code>:162 on 2023-09-28 04:16</div>
+            <div class="timeline-body"><p>Yes, it's only when the equal sign is present which in f-string context will be used as debug expression. So, <code>f&quot;{x=}</code> and <code>f&quot;{x = }&quot;</code> gives different output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-28 04:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/logical_lines/extraneous_whitespace.rs</code>:146 on 2023-09-28 04:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh, or actually, we <em>do</em> want to catch some errors within f-strings -- is that right?</p>
+</blockquote>
+<p>Yes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-28 04:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pycodestyle/rules/logical_lines/extraneous_whitespace.rs</code>:148 on 2023-09-28 04:17</div>
+            <div class="timeline-body"><p>The former, but only in cases where it's easier to differentiate between usages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-28 04:18</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>ℹ️ ecosystem check <strong>detected changes</strong>. (+0, -105, 0 error(s))</p>
+<details><summary>rotki (+0, -37)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/base.py#L148'>rotkehlchen/accounting/structures/base.py:148:37:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/base.py#L149'>rotkehlchen/accounting/structures/base.py:149:35:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/base.py#L150'>rotkehlchen/accounting/structures/base.py:150:30:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/base.py#L151'>rotkehlchen/accounting/structures/base.py:151:29:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/base.py#L152'>rotkehlchen/accounting/structures/base.py:152:31:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/base.py#L153'>rotkehlchen/accounting/structures/base.py:153:34:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/base.py#L154'>rotkehlchen/accounting/structures/base.py:154:26:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/base.py#L155'>rotkehlchen/accounting/structures/base.py:155:28:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/base.py#L156'>rotkehlchen/accounting/structures/base.py:156:35:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/base.py#L157'>rotkehlchen/accounting/structures/base.py:157:26:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/base.py#L158'>rotkehlchen/accounting/structures/base.py:158:31:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/eth2.py#L139'>rotkehlchen/accounting/structures/eth2.py:139:58:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/eth2.py#L139'>rotkehlchen/accounting/structures/eth2.py:139:77:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/eth2.py#L265'>rotkehlchen/accounting/structures/eth2.py:265:139:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/eth2.py#L265'>rotkehlchen/accounting/structures/eth2.py:265:53:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/eth2.py#L265'>rotkehlchen/accounting/structures/eth2.py:265:72:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/eth2.py#L394'>rotkehlchen/accounting/structures/eth2.py:394:55:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/eth2.py#L394'>rotkehlchen/accounting/structures/eth2.py:394:74:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/eth2.py#L394'>rotkehlchen/accounting/structures/eth2.py:394:91:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/evm_event.py#L261'>rotkehlchen/accounting/structures/evm_event.py:261:28:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/evm_event.py#L262'>rotkehlchen/accounting/structures/evm_event.py:262:33:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/evm_event.py#L263'>rotkehlchen/accounting/structures/evm_event.py:263:28:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/evm_event.py#L264'>rotkehlchen/accounting/structures/evm_event.py:264:28:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/accounting/structures/evm_event.py#L265'>rotkehlchen/accounting/structures/evm_event.py:265:31:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/chain/ethereum/modules/aave/v2/decoder.py#L175'>rotkehlchen/chain/ethereum/modules/aave/v2/decoder.py:175:126:</a> E231 [*] Missing whitespace after ':'
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/fval.py#L159'>rotkehlchen/fval.py:159:31:</a> E231 [*] Missing whitespace after ':'
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/fval.py#L49'>rotkehlchen/fval.py:49:27:</a> E231 [*] Missing whitespace after ':'
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/tests/conftest.py#L140'>rotkehlchen/tests/conftest.py:140:47:</a> E231 [*] Missing whitespace after ':'
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/tests/unit/test_defi_oracles.py#L44'>rotkehlchen/tests/unit/test_defi_oracles.py:44:102:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/rotkehlchen/tests/unit/test_defi_oracles.py#L44'>rotkehlchen/tests/unit/test_defi_oracles.py:44:84:</a> E225 Missing whitespace around operator
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/tools/profiling/cpu.py#L12'>tools/profiling/cpu.py:12:35:</a> E231 [*] Missing whitespace after ':'
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/tools/profiling/cpu.py#L13'>tools/profiling/cpu.py:13:33:</a> E231 [*] Missing whitespace after ':'
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/tools/profiling/cpu.py#L30'>tools/profiling/cpu.py:30:36:</a> E231 [*] Missing whitespace after ':'
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/tools/profiling/graph.py#L219'>tools/profiling/graph.py:219:33:</a> E231 [*] Missing whitespace after ':'
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/tools/profiling/sampler.py#L64'>tools/profiling/sampler.py:64:30:</a> E231 [*] Missing whitespace after ':'
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/tools/profiling/sampler.py#L64'>tools/profiling/sampler.py:64:43:</a> E231 [*] Missing whitespace after ':'
+- <a href='https://github.com/rotki/rotki/blob/3a9f74fdf8a0f4cfe76b72db05d72b93296010c3/tools/profiling/trace.py#L26'>tools/profiling/trace.py:26:28:</a> E231 [*] Missing whitespace after ':'
+</pre>
+
+</p>
+</details>
+<details><summary>sphinx (+0, -68)</summary>
+<p>
+
+<pre>
+- 
+-      = help: Added missing whitespace after ':'
+-      |
+-      |                                                                                   ^ E231
+-     = help: Added missing whitespace after ':'
+-     |
+-     |                                                                    ^ E231
+-     |                                                      ^ E231
+-     |                                                   ^ E231
+-     |                                   ^ E231
+-     |                                  ^ E231
+-     |                                 ^ E231
+-    = help: Added missing whitespace after ':'
+-    |
+-    |                                                                         ^ E231
+-    |                                                                 ^ E231
+-    |                                                         ^ E231
+-    |                                                 ^ E231
+-    |                                 ^ E231
+-    |                         ^ E231
+- 1202 |     """Return an RFC 3339 formatted string representing the given timestamp."""
+- 1203 |     seconds, fraction = divmod(timestamp, 1)
+- 1204 |     return time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(seconds)) + f'.{fraction:.3f}'
+- 130 |     if total <= 0:
+- 131 |         return _('no translated elements!')
+- 132 |     return f'{translated / total:.2%}'
+- 144 |     if not content:
+- 145 |         return ''
+- 146 |     return f'{zlib.crc32(content):08x}'
+- 22 |     weekday_name = _WEEKDAY_NAME[wd]
+- 23 |     month = _MONTH_NAME[mn]
+- 24 |     return f'{weekday_name}, {dd:02} {month} {yr:04} {hh:02}:{mm:02}:{ss:02} GMT'
+- 282 |             res = r"%.5f\linewidth" % (amount_float / 100.0)
+- 283 |         else:
+- 284 |             res = f"{amount_float:.5f}{unit}"
+- 285 |     return res
+- 293 |         table.append([
+- 294 |             'TOTAL',
+- 295 |             f'{100 * len(all_documented_objects) / len(all_objects):.2f}%',
+- 296 |             f'{len(all_objects) - len(all_documented_objects)}',
+- 297 |         ])
+- 341 |         c = f'<img class="math" src="{img_src}"' + get_tooltip(self, node)
+- 342 |         if depth is not None:
+- 343 |             c += f' style="vertical-align: {-depth:d}px"'
+- 344 |         self.body.append(c + '/>')
+- 345 |     raise nodes.SkipNode
+- 725 |             for entry, (_proj, _ver, url_path, display_name) in inv_entries:
+- 726 |                 display_name = display_name * (display_name != '-')
+- 727 |                 print(f'    {entry:<40} {display_name:<40}: {url_path}')
+- 728 |     except ValueError as exc:
+- 729 |         print(exc.args[0] % exc.args[1:], file=sys.stderr)
+- 76 |     logger.info(__('====================== slowest reading durations ======================='))
+- 77 |     for docname, d in islice(durations, 5):
+- 78 |         logger.info(f'{d:.3f} {docname}')  # NoQA: G004
+- <a href='https://github.com/sphinx-doc/sphinx/blob/b9c85984d2f4863e4c09932c746d915e3233507b/sphinx/builders/html/__init__.py#L1204'>sphinx/builders/html/__init__.py:1204:83:</a> E231 Missing whitespace after ':'
+- <a href='https://github.com/sphinx-doc/sphinx/blob/b9c85984d2f4863e4c09932c746d915e3233507b/sphinx/builders/html/_assets.py#L146'>sphinx/builders/html/_assets.py:146:34:</a> E231 Missing whitespace after ':'
+- <a href='https://github.com/sphinx-doc/sphinx/blob/b9c85984d2f4863e4c09932c746d915e3233507b/sphinx/ext/coverage.py#L295'>sphinx/ext/coverage.py:295:68:</a> E231 Missing whitespace after ':'
+- <a href='https://github.com/sphinx-doc/sphinx/blob/b9c85984d2f4863e4c09932c746d915e3233507b/sphinx/ext/duration.py#L78'>sphinx/ext/duration.py:78:25:</a> E231 Missing whitespace after ':'
+- <a href='https://github.com/sphinx-doc/sphinx/blob/b9c85984d2f4863e4c09932c746d915e3233507b/sphinx/ext/imgmath.py#L343'>sphinx/ext/imgmath.py:343:51:</a> E231 Missing whitespace after ':'
+- <a href='https://github.com/sphinx-doc/sphinx/blob/b9c85984d2f4863e4c09932c746d915e3233507b/sphinx/ext/intersphinx.py#L727'>sphinx/ext/intersphinx.py:727:35:</a> E231 Missing whitespace after ':'
+- <a href='https://github.com/sphinx-doc/sphinx/blob/b9c85984d2f4863e4c09932c746d915e3233507b/sphinx/ext/intersphinx.py#L727'>sphinx/ext/intersphinx.py:727:54:</a> E231 Missing whitespace after ':'
+- <a href='https://github.com/sphinx-doc/sphinx/blob/b9c85984d2f4863e4c09932c746d915e3233507b/sphinx/transforms/__init__.py#L132'>sphinx/transforms/__init__.py:132:33:</a> E231 Missing whitespace after ':'
+- <a href='https://github.com/sphinx-doc/sphinx/blob/b9c85984d2f4863e4c09932c746d915e3233507b/sphinx/util/http_date.py#L24'>sphinx/util/http_date.py:24:33:</a> E231 Missing whitespace after ':'
+- <a href='https://github.com/sphinx-doc/sphinx/blob/b9c85984d2f4863e4c09932c746d915e3233507b/sphinx/util/http_date.py#L24'>sphinx/util/http_date.py:24:49:</a> E231 Missing whitespace after ':'
+- <a href='https://github.com/sphinx-doc/sphinx/blob/b9c85984d2f4863e4c09932c746d915e3233507b/sphinx/util/http_date.py#L24'>sphinx/util/http_date.py:24:57:</a> E231 Missing whitespace after ':'
+- <a href='https://github.com/sphinx-doc/sphinx/blob/b9c85984d2f4863e4c09932c746d915e3233507b/sphinx/util/http_date.py#L24'>sphinx/util/http_date.py:24:65:</a> E231 Missing whitespace after ':'
+- <a href='https://github.com/sphinx-doc/sphinx/blob/b9c85984d2f4863e4c09932c746d915e3233507b/sphinx/util/http_date.py#L24'>sphinx/util/http_date.py:24:73:</a> E231 Missing whitespace after ':'
+- <a href='https://github.com/sphinx-doc/sphinx/blob/b9c85984d2f4863e4c09932c746d915e3233507b/sphinx/writers/latex.py#L284'>sphinx/writers/latex.py:284:34:</a> E231 Missing whitespace after ':'
+</pre>
+
+</p>
+</details>
+Rules changed: 3
+
+<p>| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| E225 | 26 | 0 | 26 |
+| E231 | 25 | 0 | 25 |
+| G004 | 1 | 0 | 1 |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-09-28 04:24</div>
+            <div class="timeline-body"><p>This looks good to me -- lets just make sure we're setting <code>prev_token</code> in any of those <code>continue</code> blocks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-28 04:25</div>
+            <div class="timeline-body"><blockquote>
+<p>This looks good to me -- lets just make sure we're setting <code>prev_token</code> in any of those <code>continue</code> blocks.</p>
+</blockquote>
+<p>Thanks! I'll look at that in a bit</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-28 04:28</div>
+            <div class="timeline-body"><p>How did you identify this specific subset of logical line rules? Did they show up in the ecosystem CI on the PEP 701 PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-28 04:54</div>
+            <div class="timeline-body"><blockquote>
+<p>How did you identify this specific subset of logical line rules? Did they show up in the ecosystem CI on the PEP 701 PR?</p>
+</blockquote>
+<p>Yes, then I thought of checking out all the relevant operators and trivia tokens specific to f-string usages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2023-09-28 05:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-09-28 05:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-28 05:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch restored on 2023-09-29 02:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-29 02:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:47 UTC
+    </footer>
+</body>
+</html>

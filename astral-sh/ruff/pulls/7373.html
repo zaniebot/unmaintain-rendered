@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid re-parenthesizing call chains whose inner values are parenthesized - astral-sh/ruff #7373</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid re-parenthesizing call chains whose inner values are parenthesized</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7373">#7373</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-09-14 00:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-14 00:21</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Given a statement like:</p>
+<pre><code class="language-python">result = (
+    f(111111111111111111111111111111111111111111111111111111111111111111111111111111111)
+    + 1
+)()
+</code></pre>
+<p>When we go to parenthesize the target of the assignment, we use <code>maybe_parenthesize_expression</code> with <code>Parenthesize::IfBreaks</code>. This then checks if the call on the right-hand side needs to be parenthesized, the implementation of which looks like:</p>
+<pre><code class="language-rust">impl NeedsParentheses for ExprCall {
+    fn needs_parentheses(
+        &amp;self,
+        _parent: AnyNodeRef,
+        context: &amp;PyFormatContext,
+    ) -&gt; OptionalParentheses {
+        if CallChainLayout::from_expression(self.into(), context.source())
+            == CallChainLayout::Fluent
+        {
+            OptionalParentheses::Multiline
+        } else if context.comments().has_dangling(self) {
+            OptionalParentheses::Always
+        } else {
+            self.func.needs_parentheses(self.into(), context)
+        }
+    }
+}
+</code></pre>
+<p>Checking for <code>self.func.needs_parentheses(self.into(), context)</code> is problematic, since, as in the example above, <code>self.func</code> may <em>already</em> be parenthesized -- in which case, we <em>don't</em> want to parenthesize the entire expression. If we do, we end up with this non-ideal formatting:</p>
+<pre><code class="language-python">result = (
+    (
+        f(
+            111111111111111111111111111111111111111111111111111111111111111111111111111111111
+        )
+        + 1
+    )()
+)
+</code></pre>
+<p>This PR modifies the <code>NeedsParentheses</code> implementations for call chain expressions to return <code>Never</code> if the inner expression has its own parentheses, in which case, the formatting implementations for those expressions will preserve them anyway.</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/7370.</p>
+<h2>Test Plan</h2>
+<p>Zulip improves a bit, everything else is unchanged.</p>
+<p>Before:</p>
+<p>| project      | similarity index  | total files       | changed files     |
+|--------------|------------------:|------------------:|------------------:|
+| cpython      |           0.76083 |              1789 |              1632 |
+| django       |           0.99981 |              2760 |                40 |
+| transformers |           0.99944 |              2587 |               413 |
+| twine        |           1.00000 |                33 |                 0 |
+| typeshed     |           0.99983 |              3496 |                18 |
+| warehouse    |           0.99834 |               648 |                20 |
+| zulip        |           0.99956 |              1437 |                23 |</p>
+<p>After:</p>
+<p>| project      | similarity index  | total files       | changed files     |
+|--------------|------------------:|------------------:|------------------:|
+| cpython      |           0.76083 |              1789 |              1632 |
+| django       |           0.99981 |              2760 |                40 |
+| transformers |           0.99944 |              2587 |               413 |
+| twine        |           1.00000 |                33 |                 0 |
+| typeshed     |           0.99983 |              3496 |                18 |
+| warehouse    |           0.99834 |               648 |                20 |
+| <strong>zulip</strong>        |           <strong>0.99962</strong> |              <strong>1437</strong> |                <strong>22</strong> |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-09-14 00:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-09-14 00:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-09-14 06:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-09-14 06:33</div>
+            <div class="timeline-body"><p>:guitar:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-09-14 07:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-09-14 09:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-14 09:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-14 09:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:46 UTC
+    </footer>
+</body>
+</html>

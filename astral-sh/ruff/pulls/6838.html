@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use `PatternMatchAs` for mapping pattern's `rest` node - astral-sh/ruff #6838</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use <code>PatternMatchAs</code> for mapping pattern's <code>rest</code> node</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/6838">#6838</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-08-24 04:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-24 04:47</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>In the mapping pattern match, you can have a rest argument to capture the remaining fields, like:</p>
+<pre><code class="language-python">match foo:
+    case {&quot;a&quot;: 1, &quot;b&quot;: 2, **rest}:
+        pass
+</code></pre>
+<p>The <code>rest</code> argument has to be an identifier, and has to come last, and can't be <code>_</code>. Right now, we represent it as an identifier; this PR instead changes it to a <code>Pattern</code>, using <code>PatternMatchAs</code> with an empty <code>pattern</code> (which is equivalent to an identifier, and appears elsewhere in the pattern matching AST -- this is the pattern you get when you do <code>case x:</code> to match a wildcard and assign it to <code>x</code>).</p>
+<p>The nice thing about this change is that the <code>rest</code> in <code>**rest</code> is now a node, not just an identifier, which I believe will significantly simplify some of the comment handling in https://github.com/astral-sh/ruff/pull/6836 (and will also enable that comment handling to look a <em>lot</em> more like the dictionary comment handling).</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-08-24 05:00</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+<h3>Benchmark</h3>
+<h4>Linux</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      3.6±0.04ms    11.4 MB/sec    1.00      3.6±0.04ms    11.4 MB/sec
+formatter/numpy/ctypeslib.py               1.00    714.2±6.55µs    23.3 MB/sec    1.00   716.6±12.62µs    23.2 MB/sec
+formatter/numpy/globals.py                 1.00     74.5±0.30µs    39.6 MB/sec    1.01     75.1±1.13µs    39.3 MB/sec
+formatter/pydantic/types.py                1.00  1433.6±11.89µs    17.8 MB/sec    1.01  1446.9±22.46µs    17.6 MB/sec
+linter/all-rules/large/dataset.py          1.00     10.4±0.02ms     3.9 MB/sec    1.01     10.4±0.02ms     3.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      2.9±0.00ms     5.8 MB/sec    1.00      2.9±0.01ms     5.8 MB/sec
+linter/all-rules/numpy/globals.py          1.01    319.7±0.87µs     9.2 MB/sec    1.00    317.2±0.78µs     9.3 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.4±0.01ms     4.7 MB/sec    1.00      5.4±0.02ms     4.7 MB/sec
+linter/default-rules/large/dataset.py      1.00      5.5±0.01ms     7.4 MB/sec    1.00      5.5±0.01ms     7.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1176.1±6.71µs    14.2 MB/sec    1.01   1186.1±4.80µs    14.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00    123.7±0.42µs    23.8 MB/sec    1.00    123.2±0.49µs    24.0 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.5±0.01ms    10.2 MB/sec    1.01      2.5±0.02ms    10.1 MB/sec
+</code></pre>
+<h4>Windows</h4>
+<pre><code>group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      5.1±0.13ms     8.0 MB/sec    1.02      5.2±0.15ms     7.8 MB/sec
+formatter/numpy/ctypeslib.py               1.00  1021.7±39.10µs    16.3 MB/sec    1.03  1050.4±47.48µs    15.9 MB/sec
+formatter/numpy/globals.py                 1.00    105.2±9.08µs    28.1 MB/sec    1.05    110.2±9.28µs    26.8 MB/sec
+formatter/pydantic/types.py                1.00      2.1±0.11ms    12.3 MB/sec    1.03      2.1±0.08ms    12.0 MB/sec
+linter/all-rules/large/dataset.py          1.02     16.2±0.45ms     2.5 MB/sec    1.00     16.0±0.35ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.4±0.16ms     3.8 MB/sec    1.00      4.4±0.17ms     3.7 MB/sec
+linter/all-rules/numpy/globals.py          1.01   557.5±29.41µs     5.3 MB/sec    1.00   549.2±22.30µs     5.4 MB/sec
+linter/all-rules/pydantic/types.py         1.02      8.4±0.30ms     3.0 MB/sec    1.00      8.3±0.30ms     3.1 MB/sec
+linter/default-rules/large/dataset.py      1.01      9.0±0.33ms     4.5 MB/sec    1.00      8.9±0.21ms     4.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1882.5±57.22µs     8.8 MB/sec    1.02  1914.1±68.33µs     8.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00    221.4±8.06µs    13.3 MB/sec    1.00    221.8±8.64µs    13.3 MB/sec
+linter/default-rules/pydantic/types.py     1.02      4.0±0.12ms     6.3 MB/sec    1.00      3.9±0.12ms     6.5 MB/sec
+</code></pre>
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-08-24 06:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> removed by @MichaReiser on 2023-08-24 06:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-08-24 06:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @MichaReiser on 2023-08-24 06:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:1889 on 2023-08-24 07:14</div>
+            <div class="timeline-body"><p>Why <code>Box&lt;Pattern&gt;</code> and not limiting it to the specific node?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-08-24 07:18</div>
+            <div class="timeline-body"><p>This is interesting for two reasons:</p>
+<ul>
+<li>I don't understand why there's a dedicated node for <code>*name</code> but not <code>**name</code></li>
+<li>It would be similar to <code>arguments</code> and <code>parameters</code></li>
+</ul>
+<p>The main downside that I see is that the AST now allows representing more invalid syntaxes (assuming someone mutates the AST).</p>
+<p>Other than that, there's a limitation that <code>**_</code> isn't valid syntax. The PEP only mentionts in the quick intro...</p>
+<blockquote>
+<p>Mapping patterns: {&quot;bandwidth&quot;: b, &quot;latency&quot;: l} captures the &quot;bandwidth&quot; and &quot;latency&quot; values from a dict. Unlike sequence patterns, extra keys are ignored. A wildcard **rest is also supported. (But **_ would be redundant, so it is not allowed.) [<a href="https://peps.python.org/pep-0636/#appendix-a-quick-intro">source</a>]</p>
+</blockquote>
+<pre><code>...     case {&quot;a&quot;: 1, &quot;b&quot;: 2, **_}: ...
+  File &quot;&lt;stdin&gt;&quot;, line 2
+    case {&quot;a&quot;: 1, &quot;b&quot;: 2, **_}: ...
+                            ^
+SyntaxError: invalid syntax
+</code></pre>
+<p>Our parser silently parsed this before (and continues to do so now).  So this isn't a specific to this PR</p>
+<p>Nevertheless, I'm a bit hesitant from making this change because I wonder why Python decided on their AST structure. Did you do some research to find why Python structured their AST the way they did?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-08-24 10:44</div>
+            <div class="timeline-body"><p>that's a good idea</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-24 13:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Nevertheless, I'm a bit hesitant from making this change because I wonder why Python decided on their AST structure. Did you do some research to find why Python structured their AST the way they did?</p>
+</blockquote>
+<p>No, I can look into it. I assume it's because you <em>can't</em> have arbitrary patterns on the right-hand side of a <code>**</code>, it <em>has</em> to be an identifier, so it makes sense to represent it as an identifier. This is different from kwargs, where <code>**(1 + 2)</code> and so on are all valid.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-24 18:36</div>
+            <div class="timeline-body"><p>I can't find much on it, after searching through the Discuss and the CPython repo itself, but it's hard to Google for it since there were a bunch of PEPs that went through a lot of iteration (some rejected, some superseded, etc.).</p>
+<p>However, I did notice that in the PEP, they use <code>capture_pattern</code> for double star: https://peps.python.org/pep-0634/#mapping-patterns.</p>
+<pre><code>mapping_pattern: '{' [items_pattern] '}'
+items_pattern: ','.key_value_pattern+ ','?
+key_value_pattern:
+    | (literal_pattern | value_pattern) ':' pattern
+    | double_star_pattern
+double_star_pattern: '**' capture_pattern
+</code></pre>
+<p>But we resolve <code>capture_pattern</code> to a <code>PatternMatchAs</code> with no <code>as</code> attribute:</p>
+<pre><code class="language-rust">CapturePattern: ast::Pattern = {
+    &lt;location:@L&gt; &lt;name:Identifier&gt; &lt;end_location:@R&gt; =&gt; ast::PatternMatchAs {
+        pattern: None,
+        name: if name.as_str() == &quot;_&quot; { None } else { Some(name) },
+        range: (location..end_location).into()
+    }.into(),
+}
+</code></pre>
+<p>This is the pattern we match when we see <code>case x</code> in:</p>
+<pre><code class="language-python">match foo:
+    case x:
+        ...
+</code></pre>
+<p>(Python also parses this as a <code>MatchAs</code> with no <code>as</code> attribute.)</p>
+<p>And subsequently, we <em>don't</em> use <code>CapturePattern</code> for <code>double_star_pattern</code> -- instead, we match a name identifier directly:</p>
+<pre><code class="language-rust">MappingPattern: ast::Pattern = {
+    &lt;location:@L&gt; &quot;{&quot; &quot;**&quot; &lt;rest:Identifier&gt; &quot;,&quot;? &quot;}&quot; &lt;end_location:@R&gt; =&gt; {
+        ast::PatternMatchMapping {
+            keys: vec![],
+            patterns: vec![],
+            rest: Some(rest),
+            range: (location..end_location).into()
+        }.into()
+    },
+}
+</code></pre>
+<p>Anyway, I'm not really sure either way on this one. I think this will make our lives easier, but it is a deviation from the CPython AST.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-24 18:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Our parser silently parsed this before (and continues to do so now). So this isn't a specific to this PR</p>
+</blockquote>
+<p>Separately: we can fix that by validating the name -- we already do that for <code>AsPattern</code>:</p>
+<pre><code class="language-rust">AsPattern: ast::Pattern = {
+    &lt;location:@L&gt; &lt;pattern:OrPattern&gt; &quot;as&quot; &lt;name:Identifier&gt; &lt;end_location:@R&gt; =&gt;? {
+        if name.as_str() == &quot;_&quot; {
+            Err(LexicalError {
+                error: LexicalErrorType::OtherError(&quot;cannot use '_' as a target&quot;.to_string()),
+                location,
+            })?
+        } else {
+            Ok(ast::Pattern::MatchAs(
+                ast::PatternMatchAs {
+                   pattern: Some(Box::new(pattern)),
+                   name: Some(name),
+                   range: (location..end_location).into()
+                },
+            ))
+        }
+    },
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-25 18:59</div>
+            <div class="timeline-body"><p>Thinking on this more, though it is a formatter-centric change, I still find it odd that <code>rest</code> is not an AST node... I think I would expect it to be.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-25 21:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Thinking on this more, though it is a formatter-centric change, I still find it odd that <code>rest</code> is not an AST node... I think I would expect it to be.</p>
+</blockquote>
+<p>Maybe Identifier should be a node? It already has a range</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-25 21:43</div>
+            <div class="timeline-body"><p>That's an interesting idea, I wouldn't mind it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-26 10:20</div>
+            <div class="timeline-body"><blockquote>
+<p>That's an interesting idea, I wouldn't mind it.</p>
+</blockquote>
+<p>For me, changing Identifier to a node is easier to assess than whether we should change the pattern structure. I'm just not familiar enough with its representation and I would need to spend some time to get up to speed.</p>
+<p>Having a dedicated node for Identifiers would move toward my long-term goal of having a <code>ReferenceIdentifier</code> (when reading a value), and a <code>BindingIdentifier</code> (when declaring or re-declaring a binding). Having separate nodes should can be neat when querying only uses or writes.</p>
+<p>In the meantime, having <code>Identifier</code> as a node could be neat for other use cases too: E.g. finding all used names in a program.</p>
+<p>I'll leave it up to you to decide whether you want to change pattern or identifier because you have more context than I.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-26 13:43</div>
+            <div class="timeline-body"><p>@MichaReiser - That makes sense, I will convert to draft until I have time to try it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2023-08-26 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-14 18:11</div>
+            <div class="timeline-body"><p>Not a priority right now, will revisit eventually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-14 18:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:46 UTC
+    </footer>
+</body>
+</html>

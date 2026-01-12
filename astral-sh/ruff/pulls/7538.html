@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix gitignore to not ignore files that are required - astral-sh/ruff #7538</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix gitignore to not ignore files that are required</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7538">#7538</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-09-20 10:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-09-20 10:13</div>
+            <div class="timeline-body"><p>It is apparently possible to add files to the git index, even if they are part of the gitignore (see e.g. https://stackoverflow.com/questions/45400361/why-is-gitignore-not-ignoring-my-files, even though it's strange that the gitignore entries existed before the files were added, i wouldn't know how to get them added in that case). I ran</p>
+<pre><code>git rm -r --cached .
+</code></pre>
+<p>then change the gitignore not actually ignore those files with the exception of <code>crates/ruff_cli/resources/test/fixtures/cache_mutable/source.py</code>, which is actually a generated file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @konstin on 2023-09-20 10:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">?̶̡̦̼̬̹̜̭̹̮͗̈̍̐̆̚̚?̵̧̹̤̠̪̥̯̼̫̖͙͔̤͘ͅ?̵͉̬̖͙̣̄͆́͝</span> added by @konstin on 2023-09-20 10:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-20 12:59</div>
+            <div class="timeline-body"><p>I haven't looked into this deeply but I think we need most of these files?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-09-20 13:28</div>
+            <div class="timeline-body"><p>yes i think i have to fix the gitignore (and then figure out testing, because the files locally still exist, so the tests still pass, they are just deleted from what git tracks)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`git rm -r --cached . && git add .`" to "Fix gitignore to not ignore files that are required" by @konstin on 2023-09-21 07:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-09-21 07:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>.gitignore</code>:55 on 2023-09-21 07:58</div>
+            <div class="timeline-body"><p>personally, i'd just remove everything from gitignore we don't explicitly need. in this case, <code>lib</code> would ignore part of the resolver test case (and nobody should be writing e.g. eggs anymore anyway)</p>
+<p>Also good news, venvs created by <code>python -m venv</code> will gitignore themselves from python 3.13 on: https://github.com/python/cpython/pull/108125. venvs created by <code>virtualenv</code> already gitignore themselves for a while already (https://github.com/pypa/virtualenv/pull/1825)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2023-09-21 07:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-21 13:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_cli/resources/test/fixtures/cache_mutable/source.py</code>:3 on 2023-09-21 13:21</div>
+            <div class="timeline-body"><p>What's the deal with this file? Is it just not used at all?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-21 13:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>.gitignore</code>:55 on 2023-09-21 13:23</div>
+            <div class="timeline-body"><p>I personally find this useful because it matches the exact GitHub-recommended <code>.gitignore</code>, so it's easy to maintain and update in the future if needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-21 13:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>.gitignore</code>:152 on 2023-09-21 13:24</div>
+            <div class="timeline-body"><p>Can we move this up to the project-specific ignores at the top?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-09-21 15:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_cli/resources/test/fixtures/cache_mutable/source.py</code>:3 on 2023-09-21 15:32</div>
+            <div class="timeline-body"><p>The test cases create this file</p>
+<p>https://github.com/astral-sh/ruff/blob/7f1456a2c9019f543fde71493aa476f132c84a57/crates/ruff_cli/src/cache.rs#L471</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-09-21 15:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>.gitignore</code>:152 on 2023-09-21 15:32</div>
+            <div class="timeline-body"><p>unfortunately not, the reinclusion needs to happen after the exclusion</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-09-21 15:33</div>
+            <div class="timeline-body"><p>I've changed it to a minimal diff</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-09-21 15:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2023-09-21 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-09-21 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-21 19:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:47 UTC
+    </footer>
+</body>
+</html>

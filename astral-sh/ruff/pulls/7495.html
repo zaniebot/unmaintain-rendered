@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add dangling comment handling to dictionary key-value pairs - astral-sh/ruff #7495</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add dangling comment handling to dictionary key-value pairs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7495">#7495</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-09-18 16:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-18 16:24</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes a formatting instability by changing the comment handling around the <code>:</code> in a dictionary to mirror that of the <code>:</code> in a lambda: we treat comments around the <code>:</code> as dangling, then format them after the <code>:</code>.</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/7458.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+<p>No change in similarity.</p>
+<p>Before:</p>
+<p>| project      | similarity index  | total files       | changed files     |
+|--------------|------------------:|------------------:|------------------:|
+| cpython      |           0.76083 |              1789 |              1631 |
+| django       |           0.99983 |              2760 |                36 |
+| transformers |           0.99956 |              2587 |               404 |
+| twine        |           1.00000 |                33 |                 0 |
+| typeshed     |           0.99983 |              3496 |                18 |
+| warehouse    |           0.99929 |               648 |                16 |
+| zulip        |           0.99969 |              1437 |                21 |</p>
+<p>After:</p>
+<p>| project      | similarity index  | total files       | changed files     |
+|--------------|------------------:|------------------:|------------------:|
+| cpython      |           0.76083 |              1789 |              1631 |
+| django       |           0.99983 |              2760 |                36 |
+| transformers |           0.99956 |              2587 |               404 |
+| twine        |           1.00000 |                33 |                 0 |
+| typeshed     |           0.99983 |              3496 |                18 |
+| warehouse    |           0.99929 |               648 |                16 |
+| zulip        |           0.99969 |              1437 |                21 |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-09-18 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-09-18 17:24</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/charlie/dict">CodSpeed Performance Report</a></h2>
+<h3>Merging #7495 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>charlie/dict</code> (86f3d0e) with <code>main</code> (b792140)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 25</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-09-18 17:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-09-18 17:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1260 on 2023-09-18 19:33</div>
+            <div class="timeline-body"><p>I wonder if this gets comments wrong, when the value or <code>key</code> are perenthesized.</p>
+<p>I lean towards making comments before <code>:</code> trailing comments of <code>key</code> and all other comments leading comments of value. You may need to force hard line break in the dictionary formatting when the value has any leading comments or the key has a trailing comment end of line comment)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-18 19:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-18 19:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1260 on 2023-09-18 19:54</div>
+            <div class="timeline-body"><p>It does in some cases but not all -- some cases are already handled by <code>handle_parenthesized_comment</code>. I will fix the others.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1260 on 2023-09-18 20:00</div>
+            <div class="timeline-body"><p>I guess I can try this but candidly it feels more complicated. I will almost certainly need to change the <code>trailing_comments</code> implementation -- otherwise, this:</p>
+<pre><code class="language-python">{
+    x:  # comment
+    y
+}
+</code></pre>
+<p>Will get formatted as:</p>
+<pre><code class="language-python">{
+    x:# comment
+    y
+}
+</code></pre>
+<p>Let's see how it goes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-18 20:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-18 20:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1260 on 2023-09-18 20:02</div>
+            <div class="timeline-body"><p>We will also have to be able to differentiate between these cases when formatting the dictionary:</p>
+<pre><code class="language-python">{
+    x:  # comment
+    y
+}
+{
+    x: (  # comment
+        y
+    )
+}
+</code></pre>
+<p>Since in the first case, we don't want to insert any spaces after the <code>:</code> (<code>trailing_comments</code> would need to do this), whereas in the second case we do. I like that the current solution gets this right automatically, since the parenthesized comment is a leading comment but the unparenthesized comment is dangling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-18 20:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1260 on 2023-09-18 20:03</div>
+            <div class="timeline-body"><p>I'm actually not quite sure how to support that second case (of the unparenthesized vs. parenthesized leading end-of-line comment).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-18 20:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1260 on 2023-09-18 20:11</div>
+            <div class="timeline-body"><p>Unless we are comfortable making <code># comment</code> an own-line comment? Pushing it to the next line? But that feels off.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-09-19 07:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-19 19:11</div>
+            <div class="timeline-body"><p>I'm gonna move forward with this -- I think it's an improvement, and I find the dangling comments approach easier to reason about than the alternatives right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-09-19 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-19 19:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-19 19:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:47 UTC
+    </footer>
+</body>
+</html>

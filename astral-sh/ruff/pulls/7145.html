@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split implicit concatenated strings before binary expressions - astral-sh/ruff #7145</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Split implicit concatenated strings before binary expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7145">#7145</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-09-05 09:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-05 09:53</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR improves Black compatibility by breaking implicit concatenated string before any binary expression.</p>
+<pre><code class="language-python">(
+    b + c + d + &quot;aaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;
+    &quot;bbbbbbbbbbbbbbbbbbbbbbbbbbbbb&quot;
+    &quot;cccccccccccccccccccccccccc&quot; % aaaaaaaaaaaa + x
+)
+</code></pre>
+<p>You can see how Black inserts line breaks between the implicit concatenated string parts but it keeps the binary expression operators and operands on the same line.</p>
+<p>The challenge with implementing this formatting is that it is necessary that the outermost group is the group around the implicit concatenated strings but this doesn't match our AST structure: The strings are leaf nodes in the AST.  See the tree for a very basic example <code>a + 'b' 'c'</code></p>
+<pre><code class="language-mermaid">graph
+	+ --&gt; a
+	+ --&gt; A
+    A[&quot;'b' 'c'&quot;]
+</code></pre>
+<p>The existing implementation used a custom layout for when the implicit concatenated string is on the left side but it isn't able to handle implicit concatenated strings on the right or in nested binary expressions.</p>
+<p>This PR solves this by <em>flattening</em> the binary expression. From the code documentation</p>
+<pre><code class="language-rust">/// Binary chain represented as a flat vector where operands are stored at even indices and operators
+/// add odd indices.
+///
+/// ```python
+/// a + 5 * 3 + 2
+/// ```
+///
+/// Gets parsed as:
+///
+/// ```text
+/// graph
+/// +
+/// ├──a
+/// ├──*
+/// │   ├──b
+/// │   └──c
+/// └──d
+/// ```
+///
+/// The slice representation of the above is closer to what you have in source. It's a simple sequence of operands and operators,
+/// entirely ignoring operator precedence (doesn't flatten parenthesized expressions):
+///
+/// ```text
+/// -----------------------------
+/// | a | + | 5 | * | 3 | + | 2 |
+/// -----------------------------
+/// ```
+///
+/// The advantage of a flat structure are:
+/// * It becomes possible to adjust the operator / operand precedence. E.g splitting implicit concatenated strings before `+` operations.
+/// * It allows arbitrary slicing of binary expressions for as long as a slice always starts and ends with an operand.
+///
+/// A slice is guaranteed to always start and end with an operand. The smallest valid slice is a slice containing a single operand.
+/// Operands in multi-operand slices are separated by operators.
+</code></pre>
+<p>The flat representation allows to first split the binary expression by implicit concatenated strings and only then, operator by operator based on the operator precedence.</p>
+<h2>Test Plan</h2>
+<p>I added new tests, reviewed that the changes now match Black's formatting.</p>
+<p>The PR improves the black compatibility</p>
+<p><strong>PR</strong>
+| project      | similarity index  | total files       | changed files     |
+|--------------|------------------:|------------------:|------------------:|
+| cpython      |           0.76083 |              1789 |              1633 |
+| <strong>django</strong>       |           0.99966 |              2760 |                58 |
+| <strong>transformers</strong> |           0.99928 |              2587 |               454 |
+| twine        |           0.99982 |                33 |                 1 |
+| typeshed     |           0.99978 |              3496 |              2173 |
+| <strong>warehouse</strong>    |           0.99823 |               648 |                23 |
+| <strong>zulip</strong>        |           0.99948 |              1437 |                28 |</p>
+<p><strong>Base</strong>
+| project      | similarity index  | total files       | changed files     |
+|--------------|------------------:|------------------:|------------------:|
+| cpython      |           0.76083 |              1789 |              1632 |
+| django       |           0.99957 |              2760 |                67 |
+| transformers |           0.99928 |              2587 |               456 |
+| twine        |           0.99982 |                33 |                 1 |
+| typeshed     |           0.99978 |              3496 |              2173 |
+| warehouse    |           0.99818 |               648 |                24 |
+| zulip        |           0.99942 |              1437 |                32 |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-05 09:53</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #7145</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7145" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #7193</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7193" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7215</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7215" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7217</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7217" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7219</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7219" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7242</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7242" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7567</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7567" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7145?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-09-05 10:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/format.rs</code>:119 on 2023-09-06 12:22</div>
+            <div class="timeline-body"><p>I removed the <code>Node</code> variance because this PR removes the last <code>trailing_node_comments</code> reference</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/operator.rs</code>:6 on 2023-09-06 12:23</div>
+            <div class="timeline-body"><p>I moved this out of the <code>bin_expr</code> formatting because it is also used in augmented assign and it removes the size of the <code>bin_expr</code> file a bit. The code itself is unchanged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/lib.rs</code>:171 on 2023-09-06 12:24</div>
+            <div class="timeline-body"><p>This is not strictly related to the PR but I ran into situations where I missed to format some comments but was unable to see the comments in the playground because it extracted them from the formatted output...</p>
+<p>This change now allows to see the comments even if the formatting itself fails.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@expression__binary_implicit_string.py.snap</code>:269 on 2023-09-06 12:25</div>
+            <div class="timeline-body"><p>I'll add support for compare expressions in a separate PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_bin_op.rs</code>:35 on 2023-09-06 12:26</div>
+            <div class="timeline-body"><p>I'll add support for f-strings in a separate PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_bin_op.rs</code>:32 on 2023-09-06 12:27</div>
+            <div class="timeline-body"><p>The <code>LeftString</code> was a &quot;cheap&quot; implementation of the new formatting logic that only supported implicit concatenated strings at the left of a binary expression. The new formatting supports implicit concatenated strings in arbitrary positions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_bin_op.rs</code>:419 on 2023-09-06 12:28</div>
+            <div class="timeline-body"><p>Using the same layout is necessary to implement <code>Deref</code> on <code>BinaryChain</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-06 12:36</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Beta" by @MichaReiser on 2023-09-06 12:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-09-06 12:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-06 12:43</div>
+            <div class="timeline-body"><p>The performance benchmarks look off. This should not improve performance. I would be happy if it doesn't regress performance</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-06 12:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-09-06 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @MichaReiser on 2023-09-06 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/expr_bin_op.rs</code>:391 on 2023-09-06 13:09</div>
+            <div class="timeline-body"><p>Clever.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/expr_bin_op.rs</code>:569 on 2023-09-06 13:10</div>
+            <div class="timeline-body"><p>Doesn't it need to hold at least one <em>operand</em>? That's the debug assertion in the constructor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/expr_bin_op.rs</code>:553 on 2023-09-06 13:11</div>
+            <div class="timeline-body"><p>Is this accidental or intended as documentation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/expr_bin_op.rs</code>:607 on 2023-09-06 13:11</div>
+            <div class="timeline-body"><p>Nit: remove?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/expr_bin_op.rs</code>:765 on 2023-09-06 13:12</div>
+            <div class="timeline-body"><p>Nice. This in turn ensures that the unsafe constructor is valid?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/expr_bin_op.rs</code>:445 on 2023-09-06 13:15</div>
+            <div class="timeline-body"><p>Should <code>end.0.get()</code> be exposed as a method instead of accessing the wrapped type?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-09-06 13:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_bin_op.rs</code>:569 on 2023-09-06 13:57</div>
+            <div class="timeline-body"><p>I extended the comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-06 13:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_bin_op.rs</code>:765 on 2023-09-06 13:58</div>
+            <div class="timeline-body"><p>I don't think it's a 100% guaranteed but the unsafe code is invalid for sure if these constraints are violated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-06 13:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-06 14:08</div>
+            <div class="timeline-body"><p>I moved the formatting to its own file as preparation for re-using it for <code>ExprCompare</code>. It makes rebasing and reviewing the followup PR easier</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-09-06 14:20</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/flatten-binary-expression">CodSpeed Performance Report</a></h2>
+<h3>Merging #7145 will <strong>degrade performances by 2.44%</strong></h3>
+<p><sub>Comparing <code>flatten-binary-expression</code> (668d1c4) with <code>main</code> (fa0b6f4)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1</code> regressions
+<code>✅ 24</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/flatten-binary-expression">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>flatten-binary-expression</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>linter/all-rules[numpy/ctypeslib.py]</code> | 32.9 ms | 33.8 ms | -2.44% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-06 14:34</div>
+            <div class="timeline-body"><blockquote>
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/flatten-binary-expression">CodSpeed Performance Report</a></h2>
+<h3>Merging #7145 will <strong>degrade performances by 2.44%</strong></h3>
+<p>Comparing <code>flatten-binary-expression</code> (<a href="https://github.com/astral-sh/ruff/commit/668d1c4948406b6ff8df48b2067e87b8095031f9">668d1c4</a>) with <code>main</code> (<a href="https://github.com/astral-sh/ruff/commit/fa0b6f4813944af7b765fe4bc3705e75eae5acc0">fa0b6f4</a>)</p>
+<h3>Summary</h3>
+<p><code>❌ 1</code> regressions <code>✅ 24</code> untouched benchmarks</p>
+<blockquote>
+<p>⚠️ <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/flatten-binary-expression">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>Benchmark 	<code>main</code> 	<code>flatten-binary-expression</code> 	Change
+❌ 	<code>linter/all-rules[numpy/ctypeslib.py]</code> 	32.9 ms 	33.8 ms 	-2.44%</p>
+</blockquote>
+<p>I doubt that ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-09-08 06:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-09-08 06:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-08 06:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:46 UTC
+    </footer>
+</body>
+</html>

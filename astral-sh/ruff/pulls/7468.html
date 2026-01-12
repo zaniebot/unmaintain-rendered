@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect parentheses for precedence in `await` - astral-sh/ruff #7468</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Respect parentheses for precedence in <code>await</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7468">#7468</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-09-17 18:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-17 18:41</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>We were using <code>Parenthesize::IfBreaks</code> universally for <code>await</code>, but dropping parentheses can change the AST due to precedence. It turns out that Black's rules aren't <em>exactly</em> the same as operator precedence (e.g., they leave parentheses around <code>await ([1, 2, 3])</code>, although they aren't strictly required).</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/7467.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+<p>No change in similarity.</p>
+<p>Before:</p>
+<p>| project      | similarity index  | total files       | changed files     |
+|--------------|------------------:|------------------:|------------------:|
+| cpython      |           0.76083 |              1789 |              1632 |
+| django       |           0.99982 |              2760 |                37 |
+| transformers |           0.99957 |              2587 |               398 |
+| twine        |           1.00000 |                33 |                 0 |
+| typeshed     |           0.99983 |              3496 |                18 |
+| warehouse    |           0.99929 |               648 |                16 |
+| zulip        |           0.99962 |              1437 |                22 |</p>
+<p>After:</p>
+<p>| project      | similarity index  | total files       | changed files     |
+|--------------|------------------:|------------------:|------------------:|
+| cpython      |           0.76083 |              1789 |              1632 |
+| django       |           0.99982 |              2760 |                37 |
+| transformers |           0.99957 |              2587 |               398 |
+| twine        |           1.00000 |                33 |                 0 |
+| typeshed     |           0.99983 |              3496 |                18 |
+| warehouse    |           0.99929 |               648 |                16 |
+| zulip        |           0.99962 |              1437 |                22 |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-09-17 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-09-17 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-09-17 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-09-17 18:50</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/charlie/await">CodSpeed Performance Report</a></h2>
+<h3>Merging #7468 will <strong>degrade performances by 4.6%</strong></h3>
+<p><sub>Comparing <code>charlie/await</code> (165b7dd) with <code>main</code> (c4d85d6)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1</code> regressions
+<code>✅ 24</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/charlie/await">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>charlie/await</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>formatter[large/dataset.py]</code> | 58.9 ms | 61.8 ms | -4.6% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-17 19:08</div>
+            <div class="timeline-body"><p>The similarity numbers look incorrect. Django should only have like 20 files with changes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_await.rs</code>:51 on 2023-09-17 19:09</div>
+            <div class="timeline-body"><p>Why Optional and not always if they're required to maintain the same precedence?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-17 19:10</div>
+            <div class="timeline-body"><p>They are copied exactly from the CI output here and on main.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-17 19:11</div>
+            <div class="timeline-body"><p>It looks like it changed at some point (although the similarity score did not), I'm bisecting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_await.rs</code>:22 on 2023-09-17 19:11</div>
+            <div class="timeline-body"><p>I see how this is somewhat easier to implement but wonder it it should instead be moved into NeedsParentheses of the individual expressions to better align with the overall design</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-17 19:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-17 19:13</div>
+            <div class="timeline-body"><blockquote>
+<p>They are copied exactly from the CI output here and on main.</p>
+</blockquote>
+<p>My preferred way to get this numbers is to just run the script locally</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-17 19:13</div>
+            <div class="timeline-body"><p>@MichaReiser - It looks like the number changed with your most recent PR (https://github.com/astral-sh/ruff/actions/runs/6214254837/job/16866021385). The preceding commit shows 37 changed files (https://github.com/astral-sh/ruff/actions/runs/6209449877/job/16856667858).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/expr_await.rs</code>:51 on 2023-09-17 19:15</div>
+            <div class="timeline-body"><p>Only some of these &quot;always&quot; need parentheses (like boolean operators). For some of these (like lists, tuples, etc.), we only want to preserve parentheses if present. I could separate the two cases if preferred.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/expr_await.rs</code>:22 on 2023-09-17 19:18</div>
+            <div class="timeline-body"><p>Hmm... I'm torn? This feels so much easier to understand since it's in a centralized place that's coupled to the <code>await</code> formatting, but I can understand why moving this into the individual expressions adheres more closely to the overall design.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-17 19:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-17 19:18</div>
+            <div class="timeline-body"><blockquote>
+<p>My preferred way to get this numbers is to just run the script locally</p>
+</blockquote>
+<p>Are you saying this is what you prefer to do, or what you consider to be a better practice? :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-17 20:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/expr_await.rs</code>:22 on 2023-09-17 20:13</div>
+            <div class="timeline-body"><p>On the other hand, this feels more consistent with how (e.g.) <code>expr_yield</code> works? We always preserve parentheses (<code>Parenthesize::Optional</code>), and so don't require that expressions encode yield precedence in their own <code>NeedsParentheses</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-17 20:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_await.rs</code>:22 on 2023-09-17 20:26</div>
+            <div class="timeline-body"><blockquote>
+<p>On the other hand, this feels more consistent with how (e.g.) <code>expr_yield</code> works? We always preserve parentheses (<code>Parenthesize::Optional</code>), and so don't require that expressions encode yield precedence in their own <code>NeedsParentheses</code>.</p>
+</blockquote>
+<p>Isn't that different because <code>yield</code> always preserve parentheses for all kind of expressions whereas <code>await</code> only preserves for some (which is what <code>NeedsParentheses</code> is for).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-17 20:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/expr_await.rs</code>:22 on 2023-09-17 20:30</div>
+            <div class="timeline-body"><p>Yes but isn't it strange that the <code>NeedsParentheses</code> for (e.g.) boolean operators would need to take into account whether we always preserve parentheses for <code>yield</code> vs. only sometimes do so for <code>await</code>? Parentheses are required in both cases, but the suggestion here is that we add a condition for <code>await</code> to the <code>NeedsParentheses</code> implementation.</p>
+<p>(Perhaps the &quot;correct&quot; solution would be to include both <code>await</code> and <code>yield</code> and whatever else in that <code>NeedsParentheses</code> implementation, even though it would be redundant for <code>yield</code> in practice due to the fact that we preserve parentheses in the parent.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-18 04:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/src/expression/expr_await.rs</code>:51 on 2023-09-18 04:27</div>
+            <div class="timeline-body"><p>To give some context around <code>IpyEscapeCommand</code>, they should never be parenthesized and can only be present on the right side of an assignment statement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-09-18 07:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-18 11:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_await.rs</code>:22 on 2023-09-18 11:48</div>
+            <div class="timeline-body"><p>Maybe <code>Yield</code> should be changed too ;) Altough I think <code>yield</code> is different because the parentheses are always preserves (as far as I understand).</p>
+<p>This is different from <code>await</code> where the use is a &quot;hack&quot; to get the <code>Always</code> because it simply relies on the fact that the parentheses are already there. This is also slightly slower because the formatter has to test whether the expression is parenthesized in the source.</p>
+<p>We could include <code>yield</code> in <code>NeedsParentheses</code> but it ends up being untested code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-09-18 11:48</div>
+            <div class="timeline-body"><p>Still leaning towards moving this inside <code>NeedsParantheses</code> for consistency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-18 13:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/expression/expr_await.rs</code>:22 on 2023-09-18 13:45</div>
+            <div class="timeline-body"><p>Changed the various <code>NeedsParentheses</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-09-18 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-18 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-18 13:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:46 UTC
+    </footer>
+</body>
+</html>

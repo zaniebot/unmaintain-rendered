@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for parsing f-string as per PEP 701 - astral-sh/ruff #7041</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for parsing f-string as per PEP 701</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7041">#7041</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-09-01 13:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-01 13:05</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for PEP 701 in the parser to use the new tokens emitted by the lexer to construct the f-string node.</p>
+<h3>Grammar</h3>
+<p>Without an official grammar, the f-strings were parsed manually. Now that we've the specification, that is being used in the LALRPOP to parse the f-strings.</p>
+<h3><code>string.rs</code></h3>
+<p>This file includes the logic for parsing string literals and joining the implicit string concatenation. Now that we don't require parsing f-strings manually a lot of code involving the same is removed.</p>
+<p>Earlier, there were 2 entry points to this module:</p>
+<ul>
+<li><code>parse_string</code>: Used to parse a single string literal</li>
+<li><code>parse_strings</code>: Used to parse strings which were implicitly concatenated</li>
+</ul>
+<p>Now, there are 3 entry points:</p>
+<ul>
+<li><code>parse_string_literal</code>: Renamed from <code>parse_string</code></li>
+<li><code>parse_fstring_middle</code>: Used to parse a <code>FStringMiddle</code> token which is basically a string literal without the quotes</li>
+<li><code>concatenate_strings</code>: Renamed from <code>parse_strings</code> but now it takes the parsed nodes instead. So, we just need to concatenate them into a single node.</li>
+</ul>
+<blockquote>
+<p>A short primer on <code>FStringMiddle</code> token: This includes the portion of text inside the f-string that's not part of the expression and isn't an opening or closing brace. For example, in <code>f&quot;foo {bar:.3f{x}} bar&quot;</code>, the <code>foo </code>, <code>.3f</code> and <code> bar</code> are <code>FStringMiddle</code> token content.</p>
+</blockquote>
+<h3><code>Constant::kind</code> changed in the AST</h3>
+<p><em><strong>Discussion in the official implementation: https://github.com/python/cpython/pull/102855#issuecomment-1508760963</strong></em></p>
+<p>This change in the AST is when unicode strings (prefixed with <code>u</code>) and f-strings are used in an implicitly concatenated string value. For example,</p>
+<pre><code class="language-python">u&quot;foo&quot; f&quot;{bar}&quot; &quot;baz&quot; &quot; some&quot;
+</code></pre>
+<p>Pre Python 3.12, the kind field would be assigned only if the prefix was on the first string. So, taking the above example, both <code>&quot;foo&quot;</code> and <code>&quot;baz some&quot;</code> (implicit concatenation) would be given the <code>u</code> kind:</p>
+<details><summary>Pre 3.12 AST:</summary>
+<p>
+
+<pre><code class="language-python">Constant(value='foo', kind='u'),
+FormattedValue(
+  value=Name(id='bar', ctx=Load()),
+  conversion=-1),
+Constant(value='baz some', kind='u')
+</code></pre>
+</p>
+</details> 
+
+<p>But, post Python 3.12, only the string with the <code>u</code> prefix will be assigned the value:</p>
+<details><summary>Pre 3.12 AST:</summary>
+<p>
+
+<pre><code class="language-python">Constant(value='foo', kind='u'),
+FormattedValue(
+  value=Name(id='bar', ctx=Load()),
+  conversion=-1),
+Constant(value='baz some')
+</code></pre>
+</p>
+</details>
+
+<p>Here are some more iterations around the change:</p>
+<ol>
+<li><code>&quot;foo&quot; f&quot;{bar}&quot; u&quot;baz&quot; &quot;no&quot;</code></li>
+</ol>
+<details><summary>Pre 3.12</summary>
+<p>
+
+<pre><code class="language-python">Constant(value='foo'),
+FormattedValue(
+  value=Name(id='bar', ctx=Load()),
+  conversion=-1),
+Constant(value='bazno')
+</code></pre>
+</p>
+</details>
+
+<details><summary>3.12</summary>
+<p>
+
+<pre><code class="language-python">Constant(value='foo'),
+FormattedValue(
+  value=Name(id='bar', ctx=Load()),
+  conversion=-1),
+Constant(value='bazno', kind='u')
+</code></pre>
+</p>
+</details> 
+
+<ol start="2">
+<li><code>&quot;foo&quot; f&quot;{bar}&quot; &quot;baz&quot; u&quot;no&quot;</code></li>
+</ol>
+<details><summary>Pre 3.12</summary>
+<p>
+
+<pre><code class="language-python">Constant(value='foo'),
+FormattedValue(
+  value=Name(id='bar', ctx=Load()),
+  conversion=-1),
+Constant(value='bazno')
+</code></pre>
+</p>
+</details>
+
+<details><summary>3.12</summary>
+<p>
+
+<pre><code class="language-python">Constant(value='foo'),
+FormattedValue(
+  value=Name(id='bar', ctx=Load()),
+  conversion=-1),
+Constant(value='bazno')
+</code></pre>
+</p>
+</details>
+
+<ol start="3">
+<li><code>u&quot;foo&quot; f&quot;bar {baz} realy&quot; u&quot;bar&quot; &quot;no&quot;</code></li>
+</ol>
+<details><summary>Pre 3.12</summary>
+<p>
+
+<pre><code class="language-python">Constant(value='foobar ', kind='u'),
+FormattedValue(
+  value=Name(id='baz', ctx=Load()),
+  conversion=-1),
+Constant(value=' realybarno', kind='u')
+</code></pre>
+</p>
+</details>
+
+<details><summary>3.12</summary>
+<p>
+
+<pre><code class="language-python">Constant(value='foobar ', kind='u'),
+FormattedValue(
+  value=Name(id='baz', ctx=Load()),
+  conversion=-1),
+Constant(value=' realybarno')
+</code></pre>
+</p>
+</details> 
+
+<h3>Errors</h3>
+<p>With the hand written parser, we were able to provide better error messages in case of any errors such as the following but now they all are removed and in those cases an &quot;unexpected token&quot; error will be thrown by lalrpop:</p>
+<ul>
+<li>A closing delimiter was not opened properly</li>
+<li>An opening delimiter was not closed properly</li>
+<li>Empty expression not allowed</li>
+</ul>
+<p>The &quot;Too many nested expressions in an f-string&quot; was removed and instead we can create a lint rule for that.</p>
+<p>And, &quot;The f-string expression cannot include the given character&quot; was removed because f-strings now support those characters which are mainly same quotes as the outer ones, escape sequences, comments, etc.</p>
+<h2>Test Plan</h2>
+<ol>
+<li>Refactor existing test cases to use <code>parse_suite</code> instead of <code>parse_fstrings</code> (doesn't exists anymore)</li>
+<li>Additional test cases are added as required</li>
+</ol>
+<p>Updated the snapshots. The change from <code>parse_fstrings</code> to <code>parse_suite</code> means that the snapshot would produce the module node instead of just a list of f-string parts. I've manually verified that the parts are still the same along with the node ranges.</p>
+<h2>Benchmarks</h2>
+<p>https://github.com/astral-sh/ruff/pull/7263#issue-1889732755</p>
+<p>fixes: #7043
+fixes: #6835</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-01 13:05</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #7035</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7035" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7013</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7013" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #6659</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/6659" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7041</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7041" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #7211</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7211" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7263</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7263" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7331</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7331" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7325</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7325" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7326</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7326" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7327</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7327" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7328</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7328" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7329</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7329" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7041?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-09-01 13:19</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/fstring-parser">CodSpeed Performance Report</a></h2>
+<h3>Merging #7041 will <strong>degrade performances by 9.7%</strong></h3>
+<p><sub>:warning: No base runs were found</sub></p>
+<p><sub>Falling back to comparing <code>dhruv/fstring-parser</code> (cd2e18b) with <code>main</code> (04183b0)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 8</code> regressions
+<code>✅ 17</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/fstring-parser">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>dhruv/fstring-parser</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>lexer[numpy/globals.py]</code> | 233.2 µs | 252.9 µs | -7.8% |
+| ❌ | <code>lexer[unicode/pypinyin.py]</code> | 620.2 µs | 673.4 µs | -7.89% |
+| ❌ | <code>lexer[large/dataset.py]</code> | 9.8 ms | 10.7 ms | -8.42% |
+| ❌ | <code>parser[numpy/ctypeslib.py]</code> | 12.4 ms | 12.7 ms | -2.35% |
+| ❌ | <code>lexer[numpy/ctypeslib.py]</code> | 2 ms | 2.1 ms | -7.65% |
+| ❌ | <code>parser[large/dataset.py]</code> | 68.4 ms | 70.1 ms | -2.34% |
+| ❌ | <code>lexer[pydantic/types.py]</code> | 4.1 ms | 4.6 ms | -9.7% |
+| ❌ | <code>parser[unicode/pypinyin.py]</code> | 4.3 ms | 4.4 ms | -2.6% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2023-09-05 04:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2023-09-05 04:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @dhruvmanila on 2023-09-05 04:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff/src/linter.rs</code>:151 on 2023-09-05 07:09</div>
+            <div class="timeline-body"><p>Unrelated to this PR but I stubmled over it when reviewing these changes: <code>Mode</code> still uses the wording <code>Jupyter</code>. Shouldn't it be <code>Mode::Ipython</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/parser.rs</code>:217 on 2023-09-05 07:13</div>
+            <div class="timeline-body"><p>We probably want to start grouping <code>source</code>, <code>mode</code> and <code>source_path</code> by an abstraction but we don't have to do this as part of this PR. But we should probably do it before introducing more arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:2096 on 2023-09-05 07:14</div>
+            <div class="timeline-body"><p>Nit: Should this be part of the lexer changes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/python.lalrpop</code>:1601 on 2023-09-05 07:20</div>
+            <div class="timeline-body"><p>Nit: It wasn't clear to me how lalrpop would pass the location and <code>s</code> to <code>parse_fstring_middle</code> (an individual tuple? separate arguments?). That's why I think it is clearer to pass the arguments explicitly (which also allows to re-order the arguments)</p>
+<pre><code class="language-suggestion">    &lt;location:@L&gt; &lt;s:fstring_middle&gt; =&gt;? Ok(parse_fstring_middle(fstring_middle, start_location)?),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/python.lalrpop</code>:1610 on 2023-09-05 07:23</div>
+            <div class="timeline-body"><p>Can we rename <code>c</code> to <code>conversion</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/python.lalrpop</code>:1612 on 2023-09-05 07:25</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                format_spec_ref.map_or(end_location, |spec| spec.range().start()) - TextSize::from(1)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/python.lalrpop</code>:1622 on 2023-09-05 07:29</div>
+            <div class="timeline-body"><p>Shouldn't <code>conversion</code> be initialized with the proper value even when no debug text is present? If not, group them in the grammar</p>
+<p><code>(&lt;debug:&quot;=&quot; &lt;c:FStringConversion?&gt;)?</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/python.lalrpop</code>:1617 on 2023-09-05 07:32</div>
+            <div class="timeline-body"><p>Nit: Very much personal preference but I find the many nested lambdas hard to read. Particularly because the map is also mutating its closure.</p>
+<pre><code class="language-suggestion">            let end_offset = if let Some((conversion_start, conversion_flag)) = conversion {
+                conversion = conversion_flag;
+                conversion_start
+            } else {
+                // Subtract 1 to account for the closing brace or the `:` in the format spec
+                format_spec_ref.map_or(end_location, |f| f.range().start()) - TextSize::from(1)
+            }
+            Some(ast::DebugText {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/python.lalrpop</code>:1635 on 2023-09-05 07:33</div>
+            <div class="timeline-body"><p>Can you explain your reasoning for excluding the <code>:</code> from the format spec range?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @MichaReiser on 2023-09-05 07:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @MichaReiser on 2023-09-05 07:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> removed by @MichaReiser on 2023-09-05 07:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:255 on 2023-09-05 07:46</div>
+            <div class="timeline-body"><p>It seems a bit strange that the function accepts a mixture of single arguments and tuples. I would change the signature to</p>
+<pre><code>pub(crate) fn parse_fstring_middle(source: &amp;str, is_raw: bool, start: TextSize) -&gt; Result&lt;Option&lt;Expr&gt;, LexicalError&gt; {}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:158 on 2023-09-05 07:50</div>
+            <div class="timeline-body"><p>The output string most likely has the same size as the input string. However, we aren't able to allocate a new string with the right capacity because we don't have the middle string here (okay, we kind of know that it is the source).</p>
+<p>Overall, the <code>parse_fstring_middle</code> feels strange to me and I'm inclined to instead inline this method into the public <code>parse_fstring_middle</code> function and use a <code>Cursor</code> for parsing. However, that would mean that you have to refactor <code>parse_escpaed_char</code> to use a <code>Cursor</code> internally and I don't know how much effort that is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:163 on 2023-09-05 07:56</div>
+            <div class="timeline-body"><p>This is unrelated to your change but <code>parse_escaped_char</code> should really not allocate a new string. I think it would be best to instead rename the method to <code>eat_escaped_char</code> and change it to accept a <code>Cursor</code> and a mutable string to which it appends the ouptut.</p>
+<p>In the future, we could go further and avoid allocating a new string alltogether if the input string (the plain fstring middle) and the &quot;parsed&quot; fstring middle matches. But let's not do this as part of this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:244 on 2023-09-05 07:58</div>
+            <div class="timeline-body"><p>The fact that this signature mixes arguments and tuple arguments is a bit strange. The alternative is to introduce a named <code>RawStringLiteral</code> type and pass that instead.</p>
+<pre><code class="language-suggestion">pub(crate) fn parse_string_literal(
+    literal: &amp;str,
+    kind: StringKind,
+    triple_quoted: bool,
+    start: TextSize,
+) -&gt; Result&lt;Expr, LexicalError&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:297 on 2023-09-05 08:01</div>
+            <div class="timeline-body"><p>Nit: this requires two full iterations. We can reduce it to one by using a plain loop</p>
+<pre><code class="language-rust">let mut has_fstring = false;
+let mut byte_literal_count = 0u32;
+
+for string in strings {
+    has_fstring |= pexpr.is_f_string_expr();
+
+    if is_bytes {
+        byte_literal_count += 1;
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:298 on 2023-09-05 08:02</div>
+            <div class="timeline-body"><p>What's the reason for passing <code>ParenthesizedExpr</code>? This should always either be StringLiteral, ByteLiteral, or FStringExpr nodes right? I recommend creating a new enum with just these three variants. It's very likely that that new union is smaller in size which helps performance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:178 on 2023-09-05 08:04</div>
+            <div class="timeline-body"><p>Lol, we should change kind to an enum. Allocating a string for this is silly (and I'm surprised the kind is a flag on constant when only strings can be unicode). But we can do this as a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:280 on 2023-09-05 08:07</div>
+            <div class="timeline-body"><p>Could you expand this comment with an example and why it is necessary? I know we talked about it on Discord but new and external maintainers won't know about the conversation or don't have access to it.</p>
+<p>Overall: this is unfortunate because it requires moving all parts into a new Vec (flatten, then collect). I wonder if a dedicated token would be a better solution</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:338 on 2023-09-05 08:10</div>
+            <div class="timeline-body"><p>I wonder if we should add a fast path (for the whole method) that handles the most common case of a single string:</p>
+<ul>
+<li>No need to test if it is a mixed byte / non-byte concatenation</li>
+<li>No need to copy the value (value.into_bytes() or use the original string)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:333 on 2023-09-05 08:15</div>
+            <div class="timeline-body"><p>We should change this to a <code>String</code> and use <code>push_str</code> rather than building a vec first and than joining the parts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/string.rs</code>:367 on 2023-09-05 08:16</div>
+            <div class="timeline-body"><p>Should we change this to a <code>String</code> and use <code>push_str</code> directly instead of pushing parts and joining them at the end?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-09-05 08:18</div>
+            <div class="timeline-body"><p>Nice work! Overall this is looking good to me. It will be interesting to get some ecosystem checks once ruff compiles.</p>
+<p>Most of my comments are nits but I think there's potential to clean up <code>string.rs</code> further (and hopefully improving performance at the same time). I leave it up to you if you want to do this as part of this or a follow up PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:2097 on 2023-09-05 09:06</div>
+            <div class="timeline-body"><p>I tried to run <code>cargo run --bin ruff -- check --no-cache scratch.py</code> on file with <code>f&quot;}&quot;</code> inside but i got an infinitely memory hungry loop (776dd2a290487830013c036a28c21bb521146077)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_parser/src/parser.rs</code>:1285 on 2023-09-05 09:10</div>
+            <div class="timeline-body"><p>implicit concatenation of different string types is such a weird feature</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_parser/src/python.lalrpop</code>:1608 on 2023-09-05 09:19</div>
+            <div class="timeline-body"><p>nit: <code>&quot;{&quot;.text_len()</code> instead of <code>TextSize::from(1)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_parser/src/string.rs</code>:2 on 2023-09-05 10:08</div>
+            <div class="timeline-body"><p>nit:</p>
+<pre><code class="language-suggestion">//! Parsing of string literals, byte literals and implicit string concatenation.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-09-05 10:17</div>
+            <div class="timeline-body"><p>The infinite loop for something that succesfully fails in the unit test is strange</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-05 13:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/linter.rs</code>:151 on 2023-09-05 13:00</div>
+            <div class="timeline-body"><p>My earlier thought process (which I'm quoting from #6395 PR description) was:</p>
+<blockquote>
+<p>The mode value is still <code>Mode::Jupyter</code> because the escape commands are part of the IPython syntax but the lexing/parsing is done for a Jupyter notebook.</p>
+</blockquote>
+<p>But now that you've mentioned, I think <code>Mode::Ipython</code> makes more sense as we've all the nodes prefixed with <code>Ipy</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-05 13:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/linter.rs</code>:151 on 2023-09-05 13:11</div>
+            <div class="timeline-body"><p>Opened #7153 :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-05 13:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:2096 on 2023-09-05 13:13</div>
+            <div class="timeline-body"><p>Oh yes, I didn't notice these few tests earlier so I must've forgotten to switch the branch 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-05 13:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/python.lalrpop</code>:1622 on 2023-09-05 13:29</div>
+            <div class="timeline-body"><p>I'm unable to follow your comment with the highlighted code. The <code>None</code> is assigned to <code>debug_text</code> via the following condition which now that I'm looking at can be refactored using <code>debug.map(|_| {...})</code>:</p>
+<pre><code class="language-rust">        let debug_text = if debug.is_some() {
+            let start_offset = location + TextSize::from(1);  // +1 to skip the opening brace
+            let end_offset = if let Some((conversion_start, conversion_flag)) = fstring_conversion {
+                conversion = conversion_flag;
+                conversion_start
+            } else {
+                // Subtract 1 to account for the closing brace or the `:` in the format spec
+                format_spec.as_ref().map_or(end_location, |spec| spec.range().start()) - TextSize::from(1)
+            };
+            Some(ast::DebugText {
+                leading: source_code[TextRange::new(start_offset, value.range().start())].to_string(),
+                trailing: source_code[TextRange::new(value.range().end(), end_offset)].to_string(),
+            })
+        } else {
+            None
+        };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-05 13:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/python.lalrpop</code>:1617 on 2023-09-05 13:30</div>
+            <div class="timeline-body"><p>Oh yes, I do agree that this is more readable. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-05 13:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/python.lalrpop</code>:1635 on 2023-09-05 13:34</div>
+            <div class="timeline-body"><p>It isn't included in the official CPython implementation nor our earlier implementation.</p>
+<p>https://play.ruff.rs/f1927a7d-bbb2-4afb-b56c-fffdaa74fa44</p>
+<pre><code>&gt;&gt;&gt; mod.body[0].value.values[0].format_spec.values[0].col_offset
+7
+&gt;&gt;&gt; mod.body[0].value.values[0].format_spec.values[0].end_col_offset
+10
+&gt;&gt;&gt; s = 'f&quot;{foo:.3f}&quot;'
+&gt;&gt;&gt; s[7:10]
+'.3f'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-05 16:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/string.rs</code>:298 on 2023-09-05 16:57</div>
+            <div class="timeline-body"><p>Yeah I actually thought of using that but it'll require moving the kind field (for unicode) into <code>StringConstant</code>. Giving a quick look at the usage of the kind field, it does not seem to be used many places so should be a quick refactor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/string.rs</code>:178 on 2023-09-05 17:02</div>
+            <div class="timeline-body"><p>I think it should be a boolean field <code>unicode</code> similar to <code>implicit_concatenated</code> on <code>StringConstant</code>. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-05 17:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/python.lalrpop</code>:1622 on 2023-09-06 07:59</div>
+            <div class="timeline-body"><p>What I understand from the code:</p>
+<ul>
+<li>The <code>conversion</code> field is always <code>ConversionFlag::None</code> if <code>debug</code> is <code>None</code></li>
+<li>But the grammar accepts <code>{test!s}</code></li>
+</ul>
+<p>The grammer is correct in my view but the initialization of the <code>conversion</code> field is missing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-06 07:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/python.lalrpop</code>:1635 on 2023-09-06 08:01</div>
+            <div class="timeline-body"><p>I would then lean towards moving the <code>:</code> into the <code>FStringReplacementField</code> to make it clear that the <code>:</code> is a separator and isn't part of the format spec node.</p>
+<p>The part I find difficult to understand is why is the <code>!</code> of the <code>FStringConversion</code> considered part of the node but the <code>:</code> is not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-06 08:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/python.lalrpop</code>:1622 on 2023-09-06 12:23</div>
+            <div class="timeline-body"><p>Oh right, that's a good find. I missed the initialization part. Thanks for noticing that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-06 12:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/python.lalrpop</code>:1635 on 2023-09-06 12:25</div>
+            <div class="timeline-body"><p>The <code>!</code> isn't considered part of any node. The reason for having the location before the <code>!</code> character is to extract out the start location of a <code>FStringConversion</code> which will be used to extract the debug text. Now, the downside for this is that an invalid conversion flag error would point to the <code>!</code> column instead of the actual value. We also can't directly add +1 to the location to point to the actual error location as there could be whitespace between <code>!</code> and the name token.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-06 12:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-06 16:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/string.rs</code>:367 on 2023-09-06 16:02</div>
+            <div class="timeline-body"><p>Yes, we can then use <code>std::mem::take</code> to move the <code>String</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-06 16:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/python.lalrpop</code>:1635 on 2023-09-06 16:42</div>
+            <div class="timeline-body"><p>I'm using a similar pattern as <code>AssignSuffix</code>:</p>
+<pre><code>FStringFormatSpecSuffix = {
+	&quot;:&quot; &lt;FStringFormatSpec&gt;
+}
+
+FStringFormatSpec = {
+	&lt;location:@L&gt; ...
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-06 16:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/parser.rs</code>:1285 on 2023-09-06 16:43</div>
+            <div class="timeline-body"><p>Yeah, I'm still a bit on the edge with the last test case in this function :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-07 12:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:2097 on 2023-09-07 12:37</div>
+            <div class="timeline-body"><p>This is a good find. The intention was not to check for infinite loop. The test function stops when it encounters an error but the lexer goes into an infinite loop when it's otherwise used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-08 03:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/string.rs</code>:298 on 2023-09-08 03:26</div>
+            <div class="timeline-body"><p>PR: #7211</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">python312</span> added by @dhruvmanila on 2023-09-08 03:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/lexer.rs</code>:2097 on 2023-09-09 14:33</div>
+            <div class="timeline-body"><p>Also, note that <code>cargo run --bin ruff</code> won't work right now as the linter changes w.r.t. the new f-string tokens are yet to be implemented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-09 14:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hugovk">@hugovk</a> on 2023-09-13 18:11</div>
+            <div class="timeline-body"><p>Thanks for this PR!</p>
+<p>I've tested it against CPython's f-string test file, and it runs as expected:</p>
+<p>https://github.com/python/cpython/blob/3.12/Lib/test/test_fstring.py</p>
+<p>Whereas <code>main</code> unsurprisingly fails to parse:</p>
+<pre><code>error: Failed to parse /Users/hugo/github/cpython/Lib/test/test_fstring.py:671:28: f-string: expecting '}'
+/Users/hugo/github/cpython/Lib/test/test_fstring.py:671:28: E999 SyntaxError: f-string: expecting '}'
+</code></pre>
+<p>It would be great if this was ready by the time Python 3.12 is released on 2023-10-02 (<a href="https://peps.python.org/pep-0693/">PEP 693</a>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-14 01:51</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for this PR!</p>
+</blockquote>
+<p>Hey, thanks for the comment. We're in the final phase of making the necessary changes across other parts of the codebase (linter and formatter) and then we'll merge this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2023-09-14 02:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-09-14 02:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-14 02:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:46 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Separate `Q003` to accomodate f-string context - astral-sh/ruff #7588</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Separate <code>Q003</code> to accomodate f-string context</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7588">#7588</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-09-22 05:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-22 05:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR updates the <code>Q003</code> rule to accommodate the new f-string context. The logic here takes into consideration the nested f-strings and the configured target version.</p>
+<p>The rule checks for escaped quotes within a string and determines if they are avoidable or not. It is avoidable if:</p>
+<ol>
+<li>Outer quote matches the user preferred quote</li>
+<li>Not a raw string</li>
+<li>Not a triple-quoted string</li>
+<li>String content contains the same quote as the outer one</li>
+<li>String content <em>doesn't</em> contain the opposite quote</li>
+</ol>
+<p>For f-string, the way it works is by using a context stack to keep track of certain things but mainly the text range (<code>FStringMiddle</code>) where the escapes exists. It contains the following:</p>
+<ol>
+<li>Do we want to check for escaped quotes in the current f-string? This is required to:<ul>
+<li>Preserve the context for <code>FStringMiddle</code> tokens where we need to check for escaped quotes. But, the answer to whether we need to check or not lies with the <code>FStringStart</code> token which contains the quotes. So, when the context starts, we'll store this information.</li>
+<li>Disallow nesting for pre 3.12 target versions</li>
+</ul>
+</li>
+<li>Store the <code>FStringStart</code> token range. This is required to create the edit to replace the quote if this f-string contains escaped quote(s).</li>
+<li>All the <code>FStringMiddle</code> ranges where there are escaped quote(s).</li>
+</ol>
+<h2>Test Plan</h2>
+<ul>
+<li>Add new test cases for nested f-strings.</li>
+<li>Write new tests for old Python versions as existing ones test it on the latest version by default which is 3.12 as of this writing.</li>
+<li>Verify the snapshots</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-22 05:14</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #7376</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7376" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7690</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7690" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7667</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7667" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7597</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7597" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7588</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7588" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #7589</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7589" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+<li><strong>PR #7586</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7586" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7515</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7515" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7477</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7477" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7387</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7387" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7378</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7378" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7329</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7329" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7328</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7328" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7327</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7327" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7326</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7326" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+<li><strong>PR #7325</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7325" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7588?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2023-09-22 05:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">python312</span> added by @dhruvmanila on 2023-09-22 05:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2023-09-22 05:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2023-09-22 05:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @dhruvmanila on 2023-09-22 05:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-22 13:39</div>
+            <div class="timeline-body"><p>I hope this needs a rebase xD 16k lines sounds painful to review</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-22 13:48</div>
+            <div class="timeline-body"><blockquote>
+<p>I hope this needs a rebase xD 16k lines sounds painful to review</p>
+</blockquote>
+<p>Oh wait, what happened here lol. Let me rebase.</p>
+<p>Edit: forgot to push the rebased branch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-09-22 13:58</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/issue-7297">CodSpeed Performance Report</a></h2>
+<h3>Merging #7588 will <strong>degrade performances by 2.33%</strong></h3>
+<p><sub>Comparing <code>dhruv/issue-7297</code> (7753ce8) with <code>dhruv/pep-701</code> (917cace)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 2</code> regressions
+<code>✅ 23</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/ruff/branches/dhruv/issue-7297">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>dhruv/pep-701</code> | <code>dhruv/issue-7297</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>linter/all-rules[pydantic/types.py]</code> | 72.3 ms | 74 ms | -2.33% |
+| ❌ | <code>linter/all-rules[large/dataset.py]</code> | 162.7 ms | 166.6 ms | -2.31% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @MichaReiser removed by @dhruvmanila on 2023-09-25 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2023-09-25 09:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/tokens.rs</code>:123 on 2023-09-26 06:24</div>
+            <div class="timeline-body"><p>What's the reason for moving the rule out of <code>from_tokens</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:67 on 2023-09-26 06:27</div>
+            <div class="timeline-body"><p>I would have expected a <code>enter_</code>...<code>exit_...</code> function pair How does it start checking for quotes again?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:50 on 2023-09-26 06:29</div>
+            <div class="timeline-body"><p>When I understand this correctly, we allocate a <code>fstring_middle_ranges</code> for each f-string. Can we flatten this datastructure so that it uses a single vector instead of N nested vectors?</p>
+<p>From what I understand, it may be sufficient to track the fstring middle ranges for the outermost fstring only (just push the ranges of the inner fstring middles into the same vec)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:109 on 2023-09-26 06:33</div>
+            <div class="timeline-body"><p>In case this is a nested string or f-string: We disable the tracking for the entire outer fstring. Isn't this too late in case we already flagged an escape early in the fstring?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:175 on 2023-09-26 06:37</div>
+            <div class="timeline-body"><p>Nit: The name of the method is misleading (or the field name is). It doesn't track <strong>all</strong> fstring middle parts. It tracks the fstring middle parts that contain the preferred quotes only.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:223 on 2023-09-26 06:38</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">fn unescape_string(value: &amp;str) -&gt; String {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:226 on 2023-09-26 06:39</div>
+            <div class="timeline-body"><p>I don't think it's necessary to allocate here. We should be able to implement this with <code>Peekable</code>/<code>Cursor</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:86 on 2023-09-26 06:40</div>
+            <div class="timeline-body"><p>This logic is fairly involved. I wonder if it would be easier to understand if we split the logic in two parts:</p>
+<ol>
+<li>Hot loop for when not inside of an f-string</li>
+<li>Loop that process an fstring (or skips it if pep701 isn't supported)</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-26 06:42</div>
+            <div class="timeline-body"><p>LGTM although the code is  a bit difficult to understand. I would love to get @charliermarsh's opinion on too because I'm not very familiar with the rule</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/tokens.rs</code>:123 on 2023-09-26 10:19</div>
+            <div class="timeline-body"><p>The idea was that the escaped quote check needs to be done in the content value only i.e., for f-string it's only the <code>FStringMiddle</code> tokens.</p>
+<p>The f-string context which needs to be tracked for this rule is different than the one for the quote rules where the main difference is how implicitly concatenated strings are handled. For this rule, implicit string concatenation doesn't matter because we only care about the content while for the quote rules it matters.</p>
+<p>For quote rules, each sequence needs to be independently built. For nested f-strings, the nested sequence will be different than the outer one and so on. This is the main reason for the separation. It becomes easier to reason about.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-26 10:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-26 10:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:67 on 2023-09-26 10:21</div>
+            <div class="timeline-body"><p>We don't start again. For example,</p>
+<pre><code class="language-python">f&quot;\&quot;foo\&quot; {'nested'}&quot;
+# ^^(1)^^^ ^^^(2)^^
+</code></pre>
+<p>Here, (1) will be checked first and the range will be added to <code>fstring_middle_ranges</code>. Then we encountered a nested string (2) but our target version doesn't support PEP 701, so we'll stop checking for the current f-string by inverting the flag and removing any previously diagnosed ranges.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-26 10:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:109 on 2023-09-26 10:24</div>
+            <div class="timeline-body"><p>Yes, that's why the <code>do_not_check_for_escaped_quote</code> method exists to stop checking any further and remove any existing ranges. Note that we don't extend the diagnostics until we reach the end of the f-string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-26 10:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:226 on 2023-09-26 10:33</div>
+            <div class="timeline-body"><p>I didn't look at the implementation in detail but yeah I agree that it can be implemented without allocation. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-26 11:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:50 on 2023-09-26 11:32</div>
+            <div class="timeline-body"><p>We need to associate the edits for the f-string it belongs to. The context helps in preserving that information. So, once we're at the end of a f-string (could be nested) we'll pop the current f-string context which will give us the range of <code>FStringStart</code> token and all the <code>FStringMiddle</code> tokens which contains escaped quotes.</p>
+<p>It could also be that the nested f-strings need not be checked but the outer one should be. So, once we're out of the nested f-string which will pop the context of that f-string, we need to reset the &quot;check for escaped quote&quot; field as per the context of the <em>now</em> current f-string (the outer f-string).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-26 11:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:86 on 2023-09-26 11:44</div>
+            <div class="timeline-body"><p>I'm looking into this and I think this might simplify other logic as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:86 on 2023-09-26 12:22</div>
+            <div class="timeline-body"><p>This is taking some time so I'm skipping this for now. I'll probably take this up later as a refactor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2023-09-26 12:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-26 19:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:226 on 2023-09-26 19:46</div>
+            <div class="timeline-body"><p>Ah ok so this code already exists and was moved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-09-26 19:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-26 19:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/flake8_quotes/rules/avoidable_escaped_quote.rs</code>:64 on 2023-09-26 19:58</div>
+            <div class="timeline-body"><p>Maybe: <code>ignore_escaped_quotes</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2023-09-27 07:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-09-27 07:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-27 07:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:47 UTC
+    </footer>
+</body>
+</html>

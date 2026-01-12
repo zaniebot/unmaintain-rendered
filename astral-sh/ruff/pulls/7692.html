@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignore overlong pragma comments when enforcing linter line length - astral-sh/ruff #7692</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ignore overlong pragma comments when enforcing linter line length</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7692">#7692</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-09-28 05:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-28 05:10</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR modifies the <code>line-too-long</code> and <code>doc-line-too-long</code> rules to ignore lines that are too long due to the presence of a pragma comment (e.g., <code># type: ignore</code> or <code># noqa</code>). That is, if a line only exceeds the limit due to the pragma comment, it will no longer be flagged as &quot;too long&quot;. This behavior mirrors that of the formatter, thus ensuring that we don't flag lines under E501 that the formatter would otherwise avoid wrapping.</p>
+<p>As a concrete example, given a line length of 88, the following would <em>no longer</em> be considered an E501 violation:</p>
+<pre><code class="language-python"># The string literal is 88 characters, including quotes.
+&quot;shape:shape:shape:shape:shape:shape:shape:shape:shape:shape:shape:shape:shape:shape:sh&quot;  # type: ignore
+</code></pre>
+<p>This, however, would:</p>
+<pre><code class="language-python"># The string literal is 89 characters, including quotes.
+&quot;shape:shape:shape:shape:shape:shape:shape:shape:shape:shape:shape:shape:shape:shape:sha&quot;  # type: ignore
+</code></pre>
+<p>In addition to mirroring the formatter, this also means that adding a pragma comment (like <code># noqa</code>) won't <em>cause</em> additional violations to appear (namely, E501). It's very common for users to add a <code># type: ignore</code> or similar to a line, only to find that they then have to add a suppression comment <em>after</em> it that was required before, as in <code># type: ignore  # noqa: E501</code>.</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/7471.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-09-28 05:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-28 05:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pycodestyle/helpers.rs</code>:88 on 2023-09-28 05:11</div>
+            <div class="timeline-body"><p>I'm not sure if we want to do this before or after computing the line width. We can avoid this lookup if we do it <em>after</em> computing the line width, but then we need to <em>recompute</em> the width after truncating the line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-28 05:13</div>
+            <div class="timeline-body"><p>If anyone is eager they are welcome to review, but I plan to do another clean-up pass on this with fresh eyes tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-28 05:28</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>ℹ️ ecosystem check <strong>detected changes</strong>. (+2294, -54, 0 error(s))</p>
+<details><summary>rasa (+20, -1)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/RasaHQ/rasa/blob/d5101b6d06cb2a56e81e792ccd24612a270d7a7a/rasa/api.py#L143'>rasa/api.py:143:95:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/RasaHQ/rasa/blob/d5101b6d06cb2a56e81e792ccd24612a270d7a7a/rasa/api.py#L144'>rasa/api.py:144:95:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/RasaHQ/rasa/blob/d5101b6d06cb2a56e81e792ccd24612a270d7a7a/rasa/core/actions/action.py#L1026'>rasa/core/actions/action.py:1026:101:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/RasaHQ/rasa/blob/d5101b6d06cb2a56e81e792ccd24612a270d7a7a/rasa/core/actions/action.py#L952'>rasa/core/actions/action.py:952:95:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/RasaHQ/rasa/blob/d5101b6d06cb2a56e81e792ccd24612a270d7a7a/rasa/core/actions/two_stage_fallback.py#L184'>rasa/core/actions/two_stage_fallback.py:184:105:</a> RUF100 [*] Unused blanket `noqa` directive
++ <a href='https://github.com/RasaHQ/rasa/blob/d5101b6d06cb2a56e81e792ccd24612a270d7a7a/rasa/core/agent.py#L428'>rasa/core/agent.py:428:93:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/RasaHQ/rasa/blob/d5101b6d06cb2a56e81e792ccd24612a270d7a7a/rasa/core/featurizers/single_state_featurizer.py#L119'>rasa/core/featurizers/single_state_featurizer.py:119:97:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/RasaHQ/rasa/blob/d5101b6d06cb2a56e81e792ccd24612a270d7a7a/rasa/core/test.py#L302'>rasa/core/test.py:302:92:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/RasaHQ/rasa/blob/d5101b6d06cb2a56e81e792ccd24612a270d7a7a/rasa/core/test.py#L309'>rasa/core/test.py:309:92:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/RasaHQ/rasa/blob/d5101b6d06cb2a56e81e792ccd24612a270d7a7a/rasa/core/test.py#L462'>rasa/core/test.py:462:97:</a> RUF100 [*] Unused blanket `noqa` directive
++ <a href='https://github.com/RasaHQ/rasa/blob/d5101b6d06cb2a56e81e792ccd24612a270d7a7a/rasa/nlu/extractors/crf_entity_extractor.py#L111'>rasa/nlu/extractors/crf_entity_extractor.py:111:89:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/RasaHQ/rasa/blob/d5101b6d06cb2a56e81e792ccd24612a270d7a7a/rasa/nlu/utils/hugging_face/registry.py#L28'>rasa/nlu/utils/hugging_face/registry.py:28:77:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/RasaHQ/rasa/blob/d5101b6d06cb2a56e81e792ccd24612a270d7a7a/rasa/shared/core/events.py#L88'>rasa/shared/core/events.py:88:109:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/RasaHQ/rasa/blob/d5101b6d06cb2a56e81e792ccd24612a270d7a7a/rasa/shared/core/slots.py#L300'>rasa/shared/core/slots.py:300:95:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/RasaHQ/rasa/blob/d5101b6d06cb2a56e81e792ccd24612a270d7a7a/rasa/shared/core/trackers.py#L278'>rasa/shared/core/trackers.py:278:111:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/RasaHQ/rasa/blob/d5101b6d06cb2a56e81e792ccd24612a270d7a7a/rasa/shared/core/training_data/story_writer/yaml_story_writer.py#L220'>rasa/shared/core/training_data/story_writer/yaml_story_writer.py:220:107:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/RasaHQ/rasa/blob/d5101b6d06cb2a56e81e792ccd24612a270d7a7a/rasa/shared/core/training_data/visualization.py#L454'>rasa/shared/core/training_data/visualization.py:454:111:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/RasaHQ/rasa/blob/d5101b6d06cb2a56e81e792ccd24612a270d7a7a/rasa/shared/nlu/training_data/entities_parser.py#L27'>rasa/shared/nlu/training_data/entities_parser.py:27:145:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/RasaHQ/rasa/blob/d5101b6d06cb2a56e81e792ccd24612a270d7a7a/rasa/utils/tensorflow/data_generator.py#L220'>rasa/utils/tensorflow/data_generator.py:220:97:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/RasaHQ/rasa/blob/d5101b6d06cb2a56e81e792ccd24612a270d7a7a/rasa/utils/tensorflow/model_data.py#L106'>rasa/utils/tensorflow/model_data.py:106:108:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
+- <a href='https://github.com/RasaHQ/rasa/blob/d5101b6d06cb2a56e81e792ccd24612a270d7a7a/stubs/aio_pika/robust_channel.pyi#L5'>stubs/aio_pika/robust_channel.pyi:5:89:</a> E501 Line too long (103 > 88 characters)
+</pre>
+
+</p>
+</details>
+<details><summary>airflow (+93, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/airbyte/__init__.py#L42'>airflow/providers/airbyte/__init__.py:42:105:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/alibaba/__init__.py#L42'>airflow/providers/alibaba/__init__.py:42:105:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/amazon/__init__.py#L42'>airflow/providers/amazon/__init__.py:42:104:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/apache/beam/__init__.py#L42'>airflow/providers/apache/beam/__init__.py:42:109:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/apache/drill/__init__.py#L42'>airflow/providers/apache/drill/__init__.py:42:110:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/apache/druid/__init__.py#L42'>airflow/providers/apache/druid/__init__.py:42:110:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/apache/flink/__init__.py#L42'>airflow/providers/apache/flink/__init__.py:42:110:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/apache/hdfs/__init__.py#L42'>airflow/providers/apache/hdfs/__init__.py:42:109:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/apache/hive/__init__.py#L42'>airflow/providers/apache/hive/__init__.py:42:109:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/apache/impala/__init__.py#L42'>airflow/providers/apache/impala/__init__.py:42:111:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/apache/kafka/__init__.py#L40'>airflow/providers/apache/kafka/__init__.py:40:110:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/apache/kylin/__init__.py#L40'>airflow/providers/apache/kylin/__init__.py:40:110:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/apache/livy/__init__.py#L42'>airflow/providers/apache/livy/__init__.py:42:109:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/apache/pig/__init__.py#L42'>airflow/providers/apache/pig/__init__.py:42:108:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/apache/pinot/__init__.py#L42'>airflow/providers/apache/pinot/__init__.py:42:110:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/apache/spark/__init__.py#L42'>airflow/providers/apache/spark/__init__.py:42:110:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/apache/sqoop/__init__.py#L42'>airflow/providers/apache/sqoop/__init__.py:42:110:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/apprise/__init__.py#L42'>airflow/providers/apprise/__init__.py:42:105:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/arangodb/__init__.py#L42'>airflow/providers/arangodb/__init__.py:42:106:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/asana/__init__.py#L42'>airflow/providers/asana/__init__.py:42:103:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/atlassian/jira/__init__.py#L40'>airflow/providers/atlassian/jira/__init__.py:40:112:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/celery/__init__.py#L42'>airflow/providers/celery/__init__.py:42:104:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/cloudant/__init__.py#L40'>airflow/providers/cloudant/__init__.py:40:106:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/cncf/kubernetes/__init__.py#L42'>airflow/providers/cncf/kubernetes/__init__.py:42:113:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/common/sql/__init__.py#L42'>airflow/providers/common/sql/__init__.py:42:108:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/daskexecutor/__init__.py#L42'>airflow/providers/daskexecutor/__init__.py:42:110:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/databricks/__init__.py#L42'>airflow/providers/databricks/__init__.py:42:108:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/datadog/__init__.py#L42'>airflow/providers/datadog/__init__.py:42:105:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/dbt/cloud/__init__.py#L42'>airflow/providers/dbt/cloud/__init__.py:42:107:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/dingding/__init__.py#L40'>airflow/providers/dingding/__init__.py:40:106:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/discord/__init__.py#L42'>airflow/providers/discord/__init__.py:42:105:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/docker/__init__.py#L42'>airflow/providers/docker/__init__.py:42:104:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/elasticsearch/__init__.py#L42'>airflow/providers/elasticsearch/__init__.py:42:111:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/exasol/__init__.py#L42'>airflow/providers/exasol/__init__.py:42:104:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/facebook/__init__.py#L42'>airflow/providers/facebook/__init__.py:42:106:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/ftp/__init__.py#L42'>airflow/providers/ftp/__init__.py:42:101:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/github/__init__.py#L42'>airflow/providers/github/__init__.py:42:104:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/google/__init__.py#L42'>airflow/providers/google/__init__.py:42:104:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/grpc/__init__.py#L42'>airflow/providers/grpc/__init__.py:42:102:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/hashicorp/__init__.py#L42'>airflow/providers/hashicorp/__init__.py:42:107:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/http/__init__.py#L42'>airflow/providers/http/__init__.py:42:102:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/imap/__init__.py#L42'>airflow/providers/imap/__init__.py:42:102:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/influxdb/__init__.py#L42'>airflow/providers/influxdb/__init__.py:42:106:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/jdbc/__init__.py#L42'>airflow/providers/jdbc/__init__.py:42:102:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/jenkins/__init__.py#L42'>airflow/providers/jenkins/__init__.py:42:105:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/microsoft/azure/__init__.py#L42'>airflow/providers/microsoft/azure/__init__.py:42:113:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/microsoft/mssql/__init__.py#L42'>airflow/providers/microsoft/mssql/__init__.py:42:113:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/microsoft/psrp/__init__.py#L42'>airflow/providers/microsoft/psrp/__init__.py:42:112:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/microsoft/winrm/__init__.py#L42'>airflow/providers/microsoft/winrm/__init__.py:42:113:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/mongo/__init__.py#L42'>airflow/providers/mongo/__init__.py:42:103:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/mysql/__init__.py#L42'>airflow/providers/mysql/__init__.py:42:103:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/neo4j/__init__.py#L42'>airflow/providers/neo4j/__init__.py:42:103:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/odbc/__init__.py#L40'>airflow/providers/odbc/__init__.py:40:102:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/openfaas/__init__.py#L40'>airflow/providers/openfaas/__init__.py:40:106:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/openlineage/__init__.py#L42'>airflow/providers/openlineage/__init__.py:42:109:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/opsgenie/__init__.py#L40'>airflow/providers/opsgenie/__init__.py:40:106:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/oracle/__init__.py#L42'>airflow/providers/oracle/__init__.py:42:104:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/pagerduty/__init__.py#L42'>airflow/providers/pagerduty/__init__.py:42:107:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/papermill/__init__.py#L40'>airflow/providers/papermill/__init__.py:40:107:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/plexus/__init__.py#L42'>airflow/providers/plexus/__init__.py:42:104:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/postgres/__init__.py#L42'>airflow/providers/postgres/__init__.py:42:106:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/presto/__init__.py#L42'>airflow/providers/presto/__init__.py:42:104:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/qubole/__init__.py#L42'>airflow/providers/qubole/__init__.py:42:104:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/redis/__init__.py#L42'>airflow/providers/redis/__init__.py:42:103:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/salesforce/__init__.py#L42'>airflow/providers/salesforce/__init__.py:42:108:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/samba/__init__.py#L42'>airflow/providers/samba/__init__.py:42:103:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/segment/__init__.py#L40'>airflow/providers/segment/__init__.py:40:105:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/sendgrid/__init__.py#L42'>airflow/providers/sendgrid/__init__.py:42:106:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/sftp/__init__.py#L42'>airflow/providers/sftp/__init__.py:42:102:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/sftp/operators/sftp.py#L228'>airflow/providers/sftp/operators/sftp.py:228:109:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/singularity/__init__.py#L42'>airflow/providers/singularity/__init__.py:42:109:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/slack/__init__.py#L42'>airflow/providers/slack/__init__.py:42:103:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/smtp/__init__.py#L42'>airflow/providers/smtp/__init__.py:42:102:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/snowflake/__init__.py#L42'>airflow/providers/snowflake/__init__.py:42:107:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/sqlite/__init__.py#L42'>airflow/providers/sqlite/__init__.py:42:104:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/ssh/__init__.py#L42'>airflow/providers/ssh/__init__.py:42:101:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/tableau/__init__.py#L42'>airflow/providers/tableau/__init__.py:42:105:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/tabular/__init__.py#L40'>airflow/providers/tabular/__init__.py:40:105:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/telegram/__init__.py#L40'>airflow/providers/telegram/__init__.py:40:106:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/trino/__init__.py#L42'>airflow/providers/trino/__init__.py:42:103:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/vertica/__init__.py#L42'>airflow/providers/vertica/__init__.py:42:105:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/yandex/__init__.py#L42'>airflow/providers/yandex/__init__.py:42:104:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/airflow/providers/zendesk/__init__.py#L42'>airflow/providers/zendesk/__init__.py:42:105:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/tests/always/test_connection.py#L187'>tests/always/test_connection.py:187:164:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/tests/charts/helm_template_generator.py#L44'>tests/charts/helm_template_generator.py:44:142:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/tests/charts/helm_template_generator.py#L46'>tests/charts/helm_template_generator.py:46:157:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/tests/providers/apache/flink/sensors/test_flink_kubernetes.py#L534'>tests/providers/apache/flink/sensors/test_flink_kubernetes.py:534:1143:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/tests/providers/openlineage/plugins/test_utils.py#L46'>tests/providers/openlineage/plugins/test_utils.py:46:388:</a> RUF100 [*] Unused blanket `noqa` directive
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/tests/system/providers/amazon/aws/example_sagemaker_endpoint.py#L159'>tests/system/providers/amazon/aws/example_sagemaker_endpoint.py:159:118:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/tests/utils/test_log_handlers.py#L245'>tests/utils/test_log_handlers.py:245:152:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/tests/utils/test_log_handlers.py#L611'>tests/utils/test_log_handlers.py:611:108:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/tests/utils/test_log_handlers.py#L628'>tests/utils/test_log_handlers.py:628:102:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/apache/airflow/blob/cbbb0bdd848eeb8f3857de7957500082d2fb4b14/tests/utils/test_log_handlers.py#L632'>tests/utils/test_log_handlers.py:632:108:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
+</pre>
+
+</p>
+</details>
+<details><summary>aws-sam-cli (+0, -1)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/aws/aws-sam-cli/blob/a16ed547b1c6c381e809ec7a8d343eedc66f7d78/tests/integration/local/start_api/test_start_api_with_terraform_application.py#L58'>tests/integration/local/start_api/test_start_api_with_terraform_application.py:58:121:</a> E501 Line too long (122 > 120 characters)
+</pre>
+
+</p>
+</details>
+<details><summary>openpilot (+2, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/commaai/openpilot/blob/481f18710e6142ebee5fb931ad5b0d50a72ee3a2/system/sensord/pigeond.py#L167'>system/sensord/pigeond.py:167:209:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/commaai/openpilot/blob/481f18710e6142ebee5fb931ad5b0d50a72ee3a2/system/sensord/pigeond.py#L172'>system/sensord/pigeond.py:172:225:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
+</pre>
+
+</p>
+</details>
+<details><summary>content (+17, -25)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L177'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:177:131:</a> E501 Line too long (147 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L177'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:177:131:</a> E501 Line too long (160 > 130 characters)
++ <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L179'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:179:131:</a> E501 Line too long (680 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L179'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:179:131:</a> E501 Line too long (693 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L279'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:279:131:</a> E501 Line too long (132 > 130 characters)
++ <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L293'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:293:131:</a> E501 Line too long (384 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L293'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:293:131:</a> E501 Line too long (396 > 130 characters)
++ <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L295'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:295:131:</a> E501 Line too long (1104 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L295'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:295:131:</a> E501 Line too long (1116 > 130 characters)
++ <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L296'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:296:131:</a> E501 Line too long (847 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L296'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:296:131:</a> E501 Line too long (859 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L307'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:307:131:</a> E501 Line too long (132 > 130 characters)
++ <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L325'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:325:131:</a> E501 Line too long (384 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L325'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:325:131:</a> E501 Line too long (396 > 130 characters)
++ <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L327'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:327:131:</a> E501 Line too long (1104 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L327'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:327:131:</a> E501 Line too long (1116 > 130 characters)
++ <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L328'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:328:131:</a> E501 Line too long (847 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L328'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:328:131:</a> E501 Line too long (859 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L339'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:339:131:</a> E501 Line too long (132 > 130 characters)
++ <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L353'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:353:131:</a> E501 Line too long (384 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L353'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:353:131:</a> E501 Line too long (396 > 130 characters)
++ <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L355'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:355:131:</a> E501 Line too long (1104 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L355'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:355:131:</a> E501 Line too long (1116 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L366'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:366:131:</a> E501 Line too long (132 > 130 characters)
++ <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L384'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:384:131:</a> E501 Line too long (384 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L384'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:384:131:</a> E501 Line too long (396 > 130 characters)
++ <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L386'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:386:131:</a> E501 Line too long (1104 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L386'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:386:131:</a> E501 Line too long (1116 > 130 characters)
++ <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L419'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:419:131:</a> E501 Line too long (144 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L419'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:419:131:</a> E501 Line too long (157 > 130 characters)
++ <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L451'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:451:131:</a> E501 Line too long (147 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L451'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:451:131:</a> E501 Line too long (160 > 130 characters)
++ <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L453'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:453:131:</a> E501 Line too long (680 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L453'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:453:131:</a> E501 Line too long (693 > 130 characters)
++ <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L479'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:479:131:</a> E501 Line too long (135 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L479'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:479:131:</a> E501 Line too long (148 > 130 characters)
++ <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L481'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:481:131:</a> E501 Line too long (398 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L481'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:481:131:</a> E501 Line too long (411 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L505'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:505:131:</a> E501 Line too long (166 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py#L530'>Packs/CofenseTriage/Integrations/CofenseTriagev2/CofenseTriagev2_test.py:530:131:</a> E501 Line too long (166 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/TrustwaveFusion/Integrations/TrustwaveFusion/TrustwaveFusion_test.py#L227'>Packs/TrustwaveFusion/Integrations/TrustwaveFusion/TrustwaveFusion_test.py:227:131:</a> E501 Line too long (148 > 130 characters)
+- <a href='https://github.com/demisto/content/blob/b05ca95d1bf22a7b3b97f356087409b10bf1197d/Packs/TrustwaveFusion/Integrations/TrustwaveFusion/TrustwaveFusion_test.py#L244'>Packs/TrustwaveFusion/Integrations/TrustwaveFusion/TrustwaveFusion_test.py:244:131:</a> E501 Line too long (148 > 130 characters)
+</pre>
+
+</p>
+</details>
+<details><summary>securedrop (+11, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/freedomofpress/securedrop/blob/2b25283d6de96d3e9717b9196f62dc18923c0199/securedrop/pretty_bad_protocol/_meta.py#L1045'>securedrop/pretty_bad_protocol/_meta.py:1045:106:</a> RUF100 [*] Unused blanket `noqa` directive
++ <a href='https://github.com/freedomofpress/securedrop/blob/2b25283d6de96d3e9717b9196f62dc18923c0199/securedrop/pretty_bad_protocol/_meta.py#L721'>securedrop/pretty_bad_protocol/_meta.py:721:106:</a> RUF100 [*] Unused blanket `noqa` directive
++ <a href='https://github.com/freedomofpress/securedrop/blob/2b25283d6de96d3e9717b9196f62dc18923c0199/securedrop/pretty_bad_protocol/_meta.py#L752'>securedrop/pretty_bad_protocol/_meta.py:752:111:</a> RUF100 [*] Unused blanket `noqa` directive
++ <a href='https://github.com/freedomofpress/securedrop/blob/2b25283d6de96d3e9717b9196f62dc18923c0199/securedrop/pretty_bad_protocol/_util.py#L402'>securedrop/pretty_bad_protocol/_util.py:402:117:</a> RUF100 [*] Unused blanket `noqa` directive
++ <a href='https://github.com/freedomofpress/securedrop/blob/2b25283d6de96d3e9717b9196f62dc18923c0199/securedrop/pretty_bad_protocol/_util.py#L471'>securedrop/pretty_bad_protocol/_util.py:471:100:</a> RUF100 [*] Unused blanket `noqa` directive
++ <a href='https://github.com/freedomofpress/securedrop/blob/2b25283d6de96d3e9717b9196f62dc18923c0199/securedrop/pretty_bad_protocol/gnupg.py#L1085'>securedrop/pretty_bad_protocol/gnupg.py:1085:121:</a> RUF100 [*] Unused blanket `noqa` directive
++ <a href='https://github.com/freedomofpress/securedrop/blob/2b25283d6de96d3e9717b9196f62dc18923c0199/securedrop/pretty_bad_protocol/gnupg.py#L377'>securedrop/pretty_bad_protocol/gnupg.py:377:103:</a> RUF100 [*] Unused blanket `noqa` directive
++ <a href='https://github.com/freedomofpress/securedrop/blob/2b25283d6de96d3e9717b9196f62dc18923c0199/securedrop/pretty_bad_protocol/gnupg.py#L413'>securedrop/pretty_bad_protocol/gnupg.py:413:114:</a> RUF100 [*] Unused blanket `noqa` directive
++ <a href='https://github.com/freedomofpress/securedrop/blob/2b25283d6de96d3e9717b9196f62dc18923c0199/securedrop/pretty_bad_protocol/gnupg.py#L495'>securedrop/pretty_bad_protocol/gnupg.py:495:99:</a> RUF100 [*] Unused blanket `noqa` directive
++ <a href='https://github.com/freedomofpress/securedrop/blob/2b25283d6de96d3e9717b9196f62dc18923c0199/securedrop/pretty_bad_protocol/gnupg.py#L592'>securedrop/pretty_bad_protocol/gnupg.py:592:122:</a> RUF100 [*] Unused blanket `noqa` directive
++ <a href='https://github.com/freedomofpress/securedrop/blob/2b25283d6de96d3e9717b9196f62dc18923c0199/securedrop/pretty_bad_protocol/gnupg.py#L683'>securedrop/pretty_bad_protocol/gnupg.py:683:133:</a> RUF100 [*] Unused blanket `noqa` directive
+</pre>
+
+</p>
+</details>
+<details><summary>pandas (+0, -7)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/pandas-dev/pandas/blob/c8e7a98d6e8ef88d2c397d524dcfdb302f6fb4c8/pandas/core/indexes/base.py#L5357'>pandas/core/indexes/base.py:5357:89:</a> E501 Line too long (105 > 88 characters)
+- <a href='https://github.com/pandas-dev/pandas/blob/c8e7a98d6e8ef88d2c397d524dcfdb302f6fb4c8/pandas/core/reshape/merge.py#L1392'>pandas/core/reshape/merge.py:1392:89:</a> E501 Line too long (101 > 88 characters)
+- <a href='https://github.com/pandas-dev/pandas/blob/c8e7a98d6e8ef88d2c397d524dcfdb302f6fb4c8/pandas/core/reshape/merge.py#L1398'>pandas/core/reshape/merge.py:1398:89:</a> E501 Line too long (101 > 88 characters)
+- <a href='https://github.com/pandas-dev/pandas/blob/c8e7a98d6e8ef88d2c397d524dcfdb302f6fb4c8/pandas/io/parquet.py#L169'>pandas/io/parquet.py:169:89:</a> E501 Line too long (107 > 88 characters)
+- <a href='https://github.com/pandas-dev/pandas/blob/c8e7a98d6e8ef88d2c397d524dcfdb302f6fb4c8/pandas/io/parsers/base_parser.py#L714'>pandas/io/parsers/base_parser.py:714:89:</a> E501 Line too long (99 > 88 characters)
+- <a href='https://github.com/pandas-dev/pandas/blob/c8e7a98d6e8ef88d2c397d524dcfdb302f6fb4c8/pandas/io/parsers/base_parser.py#L750'>pandas/io/parsers/base_parser.py:750:89:</a> E501 Line too long (95 > 88 characters)
+- <a href='https://github.com/pandas-dev/pandas/blob/c8e7a98d6e8ef88d2c397d524dcfdb302f6fb4c8/pandas/io/parsers/base_parser.py#L813'>pandas/io/parsers/base_parser.py:813:89:</a> E501 Line too long (90 > 88 characters)
+</pre>
+
+</p>
+</details>
+<details><summary>setuptools (+0, -1)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/pypa/setuptools/blob/8ad627dfd580ac9cad2fd9c3a51dc173c5a38eca/pkg_resources/_vendor/platformdirs/windows.py#L157'>pkg_resources/_vendor/platformdirs/windows.py:157:89:</a> E501 Line too long (115 > 88 characters)
+</pre>
+
+</p>
+</details>
+<details><summary>rotki (+2149, -0)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/package.py#L1098'>package.py:1098:100:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/accounting/cost_basis/base.py#L188'>rotkehlchen/accounting/cost_basis/base.py:188:93:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/accounting/cost_basis/base.py#L378'>rotkehlchen/accounting/cost_basis/base.py:378:94:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/accounting/export/csv.py#L149'>rotkehlchen/accounting/export/csv.py:149:73:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/accounting/export/csv.py#L97'>rotkehlchen/accounting/export/csv.py:97:99:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/accounting/history_base_entries.py#L36'>rotkehlchen/accounting/history_base_entries.py:36:99:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/accounting/pot.py#L407'>rotkehlchen/accounting/pot.py:407:135:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/accounting/pot.py#L416'>rotkehlchen/accounting/pot.py:416:104:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/accounting/pot.py#L418'>rotkehlchen/accounting/pot.py:418:134:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/accounting/pot.py#L420'>rotkehlchen/accounting/pot.py:420:126:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/accounting/structures/eth2.py#L170'>rotkehlchen/accounting/structures/eth2.py:170:101:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/accounting/structures/eth2.py#L297'>rotkehlchen/accounting/structures/eth2.py:297:100:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/accounting/structures/eth2.py#L394'>rotkehlchen/accounting/structures/eth2.py:394:97:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/rest.py#L1045'>rotkehlchen/api/rest.py:1045:99:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/rest.py#L1204'>rotkehlchen/api/rest.py:1204:132:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/rest.py#L1642'>rotkehlchen/api/rest.py:1642:176:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/rest.py#L1741'>rotkehlchen/api/rest.py:1741:99:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/rest.py#L1856'>rotkehlchen/api/rest.py:1856:99:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/rest.py#L2514'>rotkehlchen/api/rest.py:2514:105:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/rest.py#L2598'>rotkehlchen/api/rest.py:2598:106:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/rest.py#L2917'>rotkehlchen/api/rest.py:2917:92:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/rest.py#L3045'>rotkehlchen/api/rest.py:3045:100:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/rest.py#L3239'>rotkehlchen/api/rest.py:3239:104:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/rest.py#L3354'>rotkehlchen/api/rest.py:3354:111:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/rest.py#L3355'>rotkehlchen/api/rest.py:3355:104:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/rest.py#L4072'>rotkehlchen/api/rest.py:4072:97:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/rest.py#L4092'>rotkehlchen/api/rest.py:4092:102:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/rest.py#L4110'>rotkehlchen/api/rest.py:4110:96:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/rest.py#L516'>rotkehlchen/api/rest.py:516:102:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/rest.py#L665'>rotkehlchen/api/rest.py:665:102:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/v1/fields.py#L173'>rotkehlchen/api/v1/fields.py:173:109:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/v1/fields.py#L682'>rotkehlchen/api/v1/fields.py:682:101:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/v1/parser.py#L51'>rotkehlchen/api/v1/parser.py:51:124:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/v1/schemas.py#L1301'>rotkehlchen/api/v1/schemas.py:1301:113:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/v1/schemas.py#L195'>rotkehlchen/api/v1/schemas.py:195:77:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/v1/schemas.py#L3024'>rotkehlchen/api/v1/schemas.py:3024:104:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/websockets/notifier.py#L110'>rotkehlchen/api/websockets/notifier.py:110:101:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/websockets/notifier.py#L36'>rotkehlchen/api/websockets/notifier.py:36:101:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/websockets/notifier.py#L41'>rotkehlchen/api/websockets/notifier.py:41:97:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/api/websockets/notifier.py#L60'>rotkehlchen/api/websockets/notifier.py:60:101:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/asset.py#L64'>rotkehlchen/assets/asset.py:64:109:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/converters.py#L595'>rotkehlchen/assets/converters.py:595:13:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L10'>rotkehlchen/assets/exchanges_mappings/okx.py:10:91:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L12'>rotkehlchen/assets/exchanges_mappings/okx.py:12:89:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L14'>rotkehlchen/assets/exchanges_mappings/okx.py:14:89:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L16'>rotkehlchen/assets/exchanges_mappings/okx.py:16:89:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L22'>rotkehlchen/assets/exchanges_mappings/okx.py:22:89:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L23'>rotkehlchen/assets/exchanges_mappings/okx.py:23:89:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L24'>rotkehlchen/assets/exchanges_mappings/okx.py:24:89:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L25'>rotkehlchen/assets/exchanges_mappings/okx.py:25:90:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L26'>rotkehlchen/assets/exchanges_mappings/okx.py:26:90:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L28'>rotkehlchen/assets/exchanges_mappings/okx.py:28:89:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L32'>rotkehlchen/assets/exchanges_mappings/okx.py:32:90:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L33'>rotkehlchen/assets/exchanges_mappings/okx.py:33:89:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L34'>rotkehlchen/assets/exchanges_mappings/okx.py:34:90:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L38'>rotkehlchen/assets/exchanges_mappings/okx.py:38:89:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L39'>rotkehlchen/assets/exchanges_mappings/okx.py:39:89:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L40'>rotkehlchen/assets/exchanges_mappings/okx.py:40:89:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L42'>rotkehlchen/assets/exchanges_mappings/okx.py:42:91:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L43'>rotkehlchen/assets/exchanges_mappings/okx.py:43:89:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L44'>rotkehlchen/assets/exchanges_mappings/okx.py:44:90:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L45'>rotkehlchen/assets/exchanges_mappings/okx.py:45:90:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L47'>rotkehlchen/assets/exchanges_mappings/okx.py:47:90:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L48'>rotkehlchen/assets/exchanges_mappings/okx.py:48:90:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L49'>rotkehlchen/assets/exchanges_mappings/okx.py:49:90:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L50'>rotkehlchen/assets/exchanges_mappings/okx.py:50:89:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L51'>rotkehlchen/assets/exchanges_mappings/okx.py:51:89:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L55'>rotkehlchen/assets/exchanges_mappings/okx.py:55:89:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L7'>rotkehlchen/assets/exchanges_mappings/okx.py:7:90:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L8'>rotkehlchen/assets/exchanges_mappings/okx.py:8:90:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/exchanges_mappings/okx.py#L9'>rotkehlchen/assets/exchanges_mappings/okx.py:9:90:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/resolver.py#L128'>rotkehlchen/assets/resolver.py:128:124:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/resolver.py#L129'>rotkehlchen/assets/resolver.py:129:125:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/resolver.py#L159'>rotkehlchen/assets/resolver.py:159:124:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/resolver.py#L160'>rotkehlchen/assets/resolver.py:160:125:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/resolver.py#L71'>rotkehlchen/assets/resolver.py:71:124:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/resolver.py#L72'>rotkehlchen/assets/resolver.py:72:124:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/resolver.py#L97'>rotkehlchen/assets/resolver.py:97:124:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/resolver.py#L98'>rotkehlchen/assets/resolver.py:98:125:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/utils.py#L66'>rotkehlchen/assets/utils.py:66:87:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/assets/utils.py#L77'>rotkehlchen/assets/utils.py:77:115:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/balances/manual.py#L97'>rotkehlchen/balances/manual.py:97:99:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/chain/aggregator.py#L1011'>rotkehlchen/chain/aggregator.py:1011:156:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/chain/aggregator.py#L1014'>rotkehlchen/chain/aggregator.py:1014:175:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/chain/aggregator.py#L1021'>rotkehlchen/chain/aggregator.py:1021:194:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/chain/aggregator.py#L1023'>rotkehlchen/chain/aggregator.py:1023:193:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/chain/aggregator.py#L1098'>rotkehlchen/chain/aggregator.py:1098:97:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a href='https://github.com/rotki/rotki/blob/06aabefe900253ff67369e42d6a7a63feb82193c/rotkehlchen/chain/aggregator.py#L291'>rotkehlchen/chain/aggregator.py:291:100:</a> RUF100 [*] Unused `noqa` directive (unused: `E501`)
++ <a h
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-28 07:08</div>
+            <div class="timeline-body"><p>I haven't read through the code yet. Does the exclusion apply to end of line comments or own-line comments too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-28 13:09</div>
+            <div class="timeline-body"><p>It applies to both.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-28 13:39</div>
+            <div class="timeline-body"><blockquote>
+<p>It applies to both.</p>
+</blockquote>
+<p>Interesting. I guess that's fine because the formatter isn't opinionated about own-line pragma comments and the listed pragma comments are intended to be used as end-of-line comments. But it is a deviation from the formatter that only implements the special casing for end of line comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-09-28 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-09-28 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2023-09-28 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-09-28 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-28 19:34</div>
+            <div class="timeline-body"><p>@LefterisJP - Since this causes a lot of <code># noqa: E501</code> markers to become redundant in Rotki, want to flag this for you and also welcome any feedback you might have.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_linter/src/rules/pycodestyle/overlong.rs</code>:50 on 2023-09-29 08:47</div>
+            <div class="timeline-body"><p>Should Line be Copy instead? it's an <code>&amp;str</code> and a <code>u32</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pycodestyle/overlong.rs</code>:30 on 2023-09-29 09:18</div>
+            <div class="timeline-body"><p>That's very conservative (but correct). It means only lines with less than 22 characters skip the check below. This optimisation becomes less effective if we increase the default <code>tab_size</code> to 8 (making it only applies to lines with less or equal to 11 characters).</p>
+<p>Although I'm not sure what we should do about it. Dividing by two could be an option, considering that it's unlikely that every second character is a tab but it will reduce correctness,</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pycodestyle/overlong.rs</code>:53 on 2023-09-29 09:21</div>
+            <div class="timeline-body"><p>Would it make sense for <code>strip_trailing</code> to return the pragma comment instead, considering that the pragma comment tends to be shorter (no indent) than the code? Or is the intention to only highlight the non-pragma part in the violation? (In which case we could return <code>Option&lt;(&amp;str, &amp;str)&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pycodestyle/overlong.rs</code>:43 on 2023-09-29 09:22</div>
+            <div class="timeline-body"><p>To make it clear what trailing part it splits (may remove the need for the comment)</p>
+<pre><code class="language-suggestion">        let (line, width) = if let Some(line) = Overlong::strip_trailing_pragma_comment(line, indexer, task_tags) {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pycodestyle/overlong.rs</code>:50 on 2023-09-29 09:22</div>
+            <div class="timeline-body"><p>What's the reason for using <code>Owned</code>for lines with a trailing pragma. Isn't the line a substring of <code>line</code> and can be borrowed?</p>
+<p>I would use a custom enum if you want to encode the <code>WithPragma</code>, <code>WithoutPragma</code> cases to make this explicit in the code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pycodestyle/overlong.rs</code>:96 on 2023-09-29 09:24</div>
+            <div class="timeline-body"><p>of the line, without pragma comments?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pycodestyle/overlong.rs</code>:103 on 2023-09-29 09:25</div>
+            <div class="timeline-body"><p>How is this different from <code>width</code>? Doesn't account <code>Self::width</code> for tabs too?</p>
+<p>Edit: This confused me. Maybe make those static functions standalone functions (considering that they don't need to access any information related to <code>Overlong</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-09-29 09:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-09-29 10:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-29 20:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pycodestyle/overlong.rs</code>:30 on 2023-09-29 20:33</div>
+            <div class="timeline-body"><p>This was already present, just moved. We used to have a much better heuristic, because we assumed each byte was at most one character, but tabs ruin that -- a single byte can be as large as the tab width, sadly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-29 20:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pycodestyle/overlong.rs</code>:50 on 2023-09-29 20:40</div>
+            <div class="timeline-body"><p>Well the method takes <code>line: &amp;Line</code>... The line itself only contains borrowed data, but we <em>do</em> need to create a <code>Line</code> (not an <code>&amp;Line</code>) in this case. I'm not sure how to get around this other than <code>Cow</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-29 20:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pycodestyle/overlong.rs</code>:53 on 2023-09-29 20:48</div>
+            <div class="timeline-body"><p>The intention is to only highlight the non-pragma part of the violation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-29 22:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/rules/pycodestyle/overlong.rs</code>:50 on 2023-09-29 22:05</div>
+            <div class="timeline-body"><p>I'll make this clearer with a custom enum. Nice idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-09-29 23:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-29 23:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-29 23:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:47 UTC
+    </footer>
+</body>
+</html>

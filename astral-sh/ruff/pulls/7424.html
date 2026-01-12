@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid extra parentheses in `await` expressions - astral-sh/ruff #7424</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid extra parentheses in <code>await</code> expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7424">#7424</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-09-15 21:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-15 21:30</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR aligns the await parenthesizing with the unary case, which is: if the value is already parenthesized, avoid parenthesizing; otherwise, only parenthesize if the <em>value</em> needs parenthesizing.</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/7420.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+<p>No change in similarity.</p>
+<p>Before:</p>
+<p>| project      | similarity index  | total files       | changed files     |
+|--------------|------------------:|------------------:|------------------:|
+| cpython      |           0.76083 |              1789 |              1632 |
+| django       |           0.99982 |              2760 |                37 |
+| transformers |           0.99957 |              2587 |               399 |
+| twine        |           1.00000 |                33 |                 0 |
+| typeshed     |           0.99983 |              3496 |                18 |
+| warehouse    |           0.99923 |               648 |                18 |
+| zulip        |           0.99962 |              1437 |                22 |</p>
+<p>After:</p>
+<p>| project      | similarity index  | total files       | changed files     |
+|--------------|------------------:|------------------:|------------------:|
+| cpython      |           0.76083 |              1789 |              1632 |
+| django       |           0.99982 |              2760 |                37 |
+| transformers |           0.99957 |              2587 |               399 |
+| twine        |           1.00000 |                33 |                 0 |
+| typeshed     |           0.99983 |              3496 |                18 |
+| warehouse    |           0.99923 |               648 |                18 |
+| zulip        |           0.99962 |              1437 |                22 |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-15 21:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@expression__split_empty_brackets.py.snap</code>:182 on 2023-09-15 21:34</div>
+            <div class="timeline-body"><p>This is actually a deviation from Black now.</p>
+<p>Given:</p>
+<pre><code class="language-python">return await self().http_client().fetch(
+    f&quot;http://127.0.0.1:{self.port}{path}&quot;, method=method, **kwargs,
+)
+</code></pre>
+<p>We now format as:</p>
+<pre><code class="language-python">return await (
+    self()
+    .http_client()
+    .fetch(
+        f&quot;http://127.0.0.1:{self.port}{path}&quot;,
+        method=method,
+        **kwargs,
+    )
+)
+</code></pre>
+<p>Whereas Black formats as:</p>
+<pre><code class="language-python">return (
+    await self()
+    .http_client()
+    .fetch(
+        f&quot;http://127.0.0.1:{self.port}{path}&quot;,
+        method=method,
+        **kwargs,
+    )
+)
+</code></pre>
+<p>I need to explore this further.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2023-09-15 21:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-09-15 21:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-15 21:34</div>
+            <div class="timeline-body"><p>Draft for now, I need to explore this with the unary operator formatting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2023-09-16 02:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-09-16 14:40</div>
+            <div class="timeline-body"><p>Do we need the same for <code>yield</code>, <code>raise</code> and other keyword starting expressions?</p>
+<p>Please verify that the PR doesn't regress the similarity index for our test projects and update the PR summary with the metrics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-16 17:10</div>
+            <div class="timeline-body"><p>Will look into <code>yield</code> and <code>raise</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-09-16 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-16 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-16 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-16 17:19</div>
+            <div class="timeline-body"><p><code>raise</code> is not necessary since it's a statement, not an expression. <code>yield</code> needs some work.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:46 UTC
+    </footer>
+</body>
+</html>

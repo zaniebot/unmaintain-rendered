@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extend pragma comment cases - astral-sh/ruff #7687</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Extend pragma comment cases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7687">#7687</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-09-28 02:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-28 02:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Extends the pragma comment detection in the formatter to support case-insensitive <code>noqa</code> (as supposed by Ruff), plus a variety of other pragmas (<code>isort:</code>, <code>nosec</code>, etc.).</p>
+<p>Also extracts the detection out into the trivia crate so that we can reuse it in the linter (see: https://github.com/astral-sh/ruff/issues/7471).</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-09-28 02:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-09-28 02:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-09-28 02:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-28 02:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_trivia/src/pragmas.rs</code>:30 on 2023-09-28 02:07</div>
+            <div class="timeline-body"><p>Wonder if we should use aho-corasick or similar here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-09-28 02:15</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/charlie/pragma">CodSpeed Performance Report</a></h2>
+<h3>Merging #7687 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>charlie/pragma</code> (df2f4be) with <code>main</code> (1c02fcd)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 25</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-28 03:44</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_trivia/src/pragmas.rs</code>:30 on 2023-09-28 07:07</div>
+            <div class="timeline-body"><p>It feels a bit overkill to me to add such a heavy dependency for one (not very hot) code path</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-28 07:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/trailing_comments.py</code>:3 on 2023-09-28 07:11</div>
+            <div class="timeline-body"><p>I'm not sure how I feel about this... Our documentation is relatively clear that it should be written all lower case. Supporting multiple casing will slow down all our tooling, for no obvious benefit.</p>
+<p>It also opens the question why we only support different casing for <code>noqa</code> but not <code>type</code>, <code>pyright</code>, etc...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_trivia/src/pragmas.rs</code>:13 on 2023-09-28 07:13</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">pub fn is_pragma_comment(comment: &amp;str) -&gt; bool {
+</code></pre>
+<p>To make it clear that it tests the whole comment and isn't just testing whether <code>text</code> is a pragma keyword</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_trivia/src/pragmas.rs</code>:25 on 2023-09-28 07:15</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    matches!(
+        trimmed.as_bytes(),
+        [b'n' | b'N', b'o' | b'O', b'q' | b'Q', b'a' | b'A', ..] | [b'n', b'o', b's', b'e', b'c', ..]
+    ) ||
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-09-28 07:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2023-09-28 10:49</div>
+            <div class="timeline-body"><p>Do those mixed case comments come from some specific projects that uses them?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-28 14:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_trivia/src/pragmas.rs</code>:25 on 2023-09-28 14:09</div>
+            <div class="timeline-body"><p><code>nosec</code> doesn't support case-insensitive matching! I checked :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-28 14:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/trailing_comments.py</code>:3 on 2023-09-28 14:57</div>
+            <div class="timeline-body"><p>The answer is that it depends on what the tools themselves support, and Flake8 decided that its pragma should be case-insensitive. The same is not true of the others, even <code>nosec</code>.</p>
+<p>We continue to support these for compatibility and I think it's important to support <em>at least</em> <code># NOQA</code>:</p>
+<ul>
+<li><code># noqa</code>: 1.7M files (<a href="https://github.com/search?type=code&amp;q=%2F%28%3F-i%29noqa%2F+language%3APython">source</a>)</li>
+<li><code># NOQA</code>: 80k files (<a href="https://github.com/search?type=code&amp;q=%2F%28%3F-i%29NOQA%2F+language%3APython">source</a>)</li>
+<li><code># NoQA</code>: 1.5k files (<a href="https://github.com/search?type=code&amp;q=%2F%28%3F-i%29NoQA%2F+language%3APython">source</a>)</li>
+</ul>
+<p>(That being said, the linter <em>already</em> supports these so this logic should be consistent with that decision.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-28 18:40</div>
+            <div class="timeline-body"><p>@konstin - It's mostly just Sphinx and EdgeDB.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-28 18:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_trivia/src/pragmas.rs</code>:30 on 2023-09-28 18:42</div>
+            <div class="timeline-body"><p>I'm fine not adding it, but isn't this a fairly hot code path? It's run for every end-of-line comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2023-09-28 18:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/trailing_comments.py</code>:3 on 2023-09-28 18:43</div>
+            <div class="timeline-body"><p>We could also consider only supporting <code>noqa</code>, <code>NOQA</code>, and <code>NoQA</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-09-28 18:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-28 18:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-28 18:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:47 UTC
+    </footer>
+</body>
+</html>

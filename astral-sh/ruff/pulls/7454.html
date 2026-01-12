@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`refurb`] Implement `unnecessary-enumerate` (`FURB148`) - astral-sh/ruff #7454</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>refurb</code>] Implement <code>unnecessary-enumerate</code> (<code>FURB148</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7454">#7454</a>
+        opened by <a href="https://github.com/tjkuson">@tjkuson</a>
+        on 2023-09-17 11:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-09-17 11:24</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Implement <a href="https://github.com/dosisod/refurb/blob/master/refurb/checks/builtin/no_ignored_enumerate.py"><code>no-ignored-enumerate-items</code></a> as <code>unnecessary-enumerate</code> (<code>FURB148</code>).</p>
+<p>The auto-fix considers if a <code>start</code> argument is passed to the <code>enumerate()</code> function. If only the index is used, then the suggested fix is to pass the <code>start</code> value to the <code>range()</code> function. So,</p>
+<pre><code class="language-python">for i, _ in enumerate(xs, 1):
+    ...
+</code></pre>
+<p>becomes</p>
+<pre><code class="language-python">for i in range(1, len(xs)):
+    ...
+</code></pre>
+<p>If the index is ignored and only the value is ignored, and if a start value greater than zero is passed to <code>enumerate()</code>, the rule doesn't produce a suggestion. I couldn't find a unanimously accepted best way to iterate over a collection whilst skipping the first n elements. The rule still triggers, however.</p>
+<p>Related to #1348.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-17 11:40</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @tjkuson on 2023-09-17 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2023-09-17 15:00</div>
+            <div class="timeline-body"><blockquote>
+<p>I couldn't find a unanimously accepted best way to iterate over a collection whilst skipping the first n elements.</p>
+</blockquote>
+<p>Isn't this explicitly what <a href="https://docs.python.org/3/library/itertools.html#itertools.islice">itertools.islice</a> is designed for? Specifically, <code>itertools.islice(start_index, None)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-09-17 19:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Isn't this explicitly what <a href="https://docs.python.org/3/library/itertools.html#itertools.islice">itertools.islice</a> is designed for? Specifically, <code>itertools.islice(start_index, None)</code>.</p>
+</blockquote>
+<p>Yes, and it's what I would personally do. But, <a href="https://stackoverflow.com/questions/10079216/skip-first-entry-in-for-loop-in-python">looking online</a>, there are alternative methods without a consensus over which is best. My concern is that a non-trivial number of people would consider an <code>itertools.isclice</code> auto-fix (or alternative, for that matter) unexpected behaviour.</p>
+<p>Very happy to adapt the merge request to add an <code>islice</code> auto-fix if the maintainers support it, however!</p>
+<p>EDIT: The <code>islice</code> solution has the advantage of working on all iterables, whereas solutions like iterating over a <code>[n:]</code> sliced sequence won't work on all iterables. Could be a reason to settle on this fix over others?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2023-09-18 02:02</div>
+            <div class="timeline-body"><p>The first upvoted answer wouldn't work on generators. The 2nd upvoted
+answer is verbose and just suggests calling next on the iterator, leaving
+islice as the most upvoted answer in that StackOverflow post.</p>
+<p>On Sun, Sep 17, 2023 at 3:57 PM Tom Kuson <em><strong>@</strong></em>.***&gt; wrote:</p>
+<blockquote>
+<p>Isn't this explicitly what itertools.islice
+<a href="https://docs.python.org/3/library/itertools.html#itertools.islice">https://docs.python.org/3/library/itertools.html#itertools.islice</a> is
+designed for? Specifically, itertools.islice(start_index, None).</p>
+<p>Yes, and it's what I would personally do. But, looking online
+<a href="https://stackoverflow.com/questions/10079216/skip-first-entry-in-for-loop-in-python">https://stackoverflow.com/questions/10079216/skip-first-entry-in-for-loop-in-python</a>,
+there are alternative methods without a consensus over which is best. My
+concern is that a non-trivial number of people would consider an
+itertools.isclice auto-fix (or alternative, for that matter) unexpected
+behaviour.</p>
+<p>Very happy to adapt the merge request to add an islice auto-fix if the
+maintainers support it, however!</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/astral-sh/ruff/pull/7454#issuecomment-1722555214">https://github.com/astral-sh/ruff/pull/7454#issuecomment-1722555214</a>, or
+unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/AAPVMX6MLD56J5SXFBJCRMLX25I35ANCNFSM6AAAAAA43RTTEQ">https://github.com/notifications/unsubscribe-auth/AAPVMX6MLD56J5SXFBJCRMLX25I35ANCNFSM6AAAAAA43RTTEQ</a>
+.
+You are receiving this because you commented.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_semantic/src/helpers.rs</code>:7 on 2023-09-18 05:45</div>
+            <div class="timeline-body"><p>I wonder if this could be made a method on the <code>SemanticModel</code>:</p>
+<pre><code class="language-rust">impl SemanticModel {
+	// ...
+
+	pub fn is_expr_unused(&amp;self, expr: &amp;Expr) -&gt; bool {
+		// ...
+	}	
+}
+
+checker.semantic().is_expr_unused(expr)
+</code></pre>
+<p>But then it would mean that we would need to visit all relevant expressions in this context which I think is out of scope for this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/rules/refurb/rules/unnecessary_enumerate.rs</code>:65 on 2023-09-18 05:50</div>
+            <div class="timeline-body"><p>You could probably just use <code>map</code> instead:</p>
+<pre><code class="language-suggestion">        if let Some(suggestion) = iterable_suggestion.map(SourceCodeSnippet::full_display)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/rules/refurb/rules/unnecessary_enumerate.rs</code>:80 on 2023-09-18 05:50</div>
+            <div class="timeline-body"><p>Same suggestion as above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/rules/refurb/rules/unnecessary_enumerate.rs</code>:124 on 2023-09-18 05:54</div>
+            <div class="timeline-body"><p>nit: maybe we could move this to the respective match branch where it's being used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/rules/refurb/rules/unnecessary_enumerate.rs</code>:35 on 2023-09-18 05:57</div>
+            <div class="timeline-body"><p>I believe you meant this:</p>
+<pre><code class="language-suggestion">/// ```python
+/// for index, _ in enumerate(sequence):
+///     print(index)
+///
+/// for _, value in enumerate(sequence):
+///     print(value)
+/// ```
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2023-09-18 05:58</div>
+            <div class="timeline-body"><p>This is looking good, thanks for doing this!</p>
+<p>I think the implementation is similar to https://docs.astral.sh/ruff/rules/incorrect-dict-iterator/, maybe in the future we could combine and parameterize the implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @dhruvmanila on 2023-09-18 05:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2023-09-18 05:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tjkuson">@tjkuson</a> reviewed on 2023-09-18 08:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tjkuson">@tjkuson</a> on <code>crates/ruff/src/rules/refurb/rules/unnecessary_enumerate.rs</code>:35 on 2023-09-18 08:22</div>
+            <div class="timeline-body"><p>The original intent was to demonstrate that the logic does more than check for underscores, but I think committing your suggestion makes the rule's intent more explicit (more important in documentation).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tjkuson">@tjkuson</a> reviewed on 2023-09-18 08:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tjkuson">@tjkuson</a> on <code>crates/ruff/src/rules/refurb/rules/unnecessary_enumerate.rs</code>:65 on 2023-09-18 08:44</div>
+            <div class="timeline-body"><p>The suggestion causes a type mismatch, is there a better way?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-19 20:07</div>
+            <div class="timeline-body"><p>Thanks! I made some modifications. I think the <code>start</code> argument to enumerate just changes the <em>value</em> of the index, it doesn't skip the first <code>start</code> elements. Notice how in <a href="https://docs.python.org/3/library/functions.html#enumerate">this example</a> from the docs, they iterate over the same arguments, but the index is different. So I changed the fix in &quot;unused index&quot; case to just ignore <code>start</code> altogether, and I changed the <code>unused value</code> case to avoid fixing if <code>start</code> was set to something other than the default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-09-19 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-19 20:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-09-20 08:44</div>
+            <div class="timeline-body"><p>Oops, that was silly of me. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-20 08:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2023-09-25 13:43</div>
+            <div class="timeline-body"><p>FYI @tjkuson , the fix generates invalid code when the arg is a generator: https://github.com/astral-sh/ruff/issues/7656</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:46 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-logging`] Implement `LOG007`: `ExceptionWithoutExcInfo` - astral-sh/ruff #7410</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-logging</code>] Implement <code>LOG007</code>: <code>ExceptionWithoutExcInfo</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7410">#7410</a>
+        opened by <a href="https://github.com/qdegraaf">@qdegraaf</a>
+        on 2023-09-15 16:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/qdegraaf">@qdegraaf</a> on 2023-09-15 16:03</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR implements a new rule for <code>flake8-logging</code> plugin that checks for uses of <code>logging.exception()</code> with <code>exc_info</code> set to <code>False</code> or a falsy value. It suggests using <code>logging.error</code> in these cases instead.</p>
+<p>I am unsure about the name. Open to suggestions there, went with the most explicit name I could think of in the meantime.</p>
+<p>Refer https://github.com/astral-sh/ruff/issues/7248</p>
+<h2>Test Plan</h2>
+<p>Added a new fixture cases and ran <code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8-logging`] Implement LOG007: `ExcInfoFalseInException`" to "[`flake8-logging`] Implement `LOG007`: `ExcInfoFalseInException`" by @qdegraaf on 2023-09-15 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-15 16:19</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/qdegraaf">@qdegraaf</a> reviewed on 2023-09-15 16:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on <code>crates/ruff/src/rules/flake8_logging/rules/exc_info_false_in_exception.rs</code>:43 on 2023-09-15 16:28</div>
+            <div class="timeline-body"><p>Would it be worth it to check the name of the call first before calling <code>resolve_call_path()</code>for performance reasons? Or would that just add unnecessary clutter?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/flake8_logging/rules/exc_info_false_in_exception.rs</code>:16 on 2023-09-18 08:20</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// `exc_info=False` is the same as using `error()`, which is clearer and doesn't need the
+/// `exc_info` argument. This rule detects `exception()` calls with an exc_info argument that is
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/resources/test/fixtures/flake8_logging/LOG007.py</code>:1 on 2023-09-18 08:21</div>
+            <div class="timeline-body"><p>Can you add a test case with <code>logger.exception</code>? (https://github.com/adamchainz/flake8-logging/blob/8cd23181647d4c68391af1db71588e8b3dc2bcfe/tests/test_flake8_logging.py#L783-L793)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/flake8_logging/rules/exc_info_false_in_exception.rs</code>:40 on 2023-09-18 08:26</div>
+            <div class="timeline-body"><p>This needs to catch all log messages.</p>
+<p>More common than</p>
+<pre><code class="language-python">logging.exception(&quot;...&quot;)
+</code></pre>
+<p>is doing</p>
+<pre><code class="language-python">logger = logging.getLogger(__name__)
+
+logger.exception(&quot;...&quot;)
+</code></pre>
+<p>ruff has utils to detect logging calls, see <code>is_logger_candidate</code> and e.g. the G001 implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-09-18 08:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/qdegraaf">@qdegraaf</a> reviewed on 2023-09-18 13:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/qdegraaf">@qdegraaf</a> on <code>crates/ruff/src/rules/flake8_logging/rules/exc_info_false_in_exception.rs</code>:40 on 2023-09-18 13:09</div>
+            <div class="timeline-body"><p>Rewrote to utilise <code>is_logger_candidate</code>. It flags <code>logger.exception</code> and <code>logging.exception</code> now but does not flag <code>from logging import exception; exception()</code> Is that a limitation of <code>is_logger_candidate</code>? And if so, do we want to create another branch of logic to catch those cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8-logging`] Implement `LOG007`: `ExcInfoFalseInException`" to "[`flake8-logging`] Implement `LOG007`: `ExceptionWithoutExcInfo`" by @charliermarsh on 2023-09-18 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-09-18 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-09-18 17:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-09-18 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-18 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-09-19 06:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff/src/rules/flake8_logging/rules/exc_info_false_in_exception.rs</code>:40 on 2023-09-19 06:58</div>
+            <div class="timeline-body"><p>Moved this to https://github.com/astral-sh/ruff/issues/7502</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-20 09:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:46 UTC
+    </footer>
+</body>
+</html>

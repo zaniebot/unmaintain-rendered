@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Break before slice colon - astral-sh/ruff #7332</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Break before slice colon</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7332">#7332</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-09-13 10:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2023-09-13 10:02</div>
+            <div class="timeline-body"><p><strong>Summary</strong> Break slices at the colon first, since the colon is separator with the lowest precedence and we're in a parenthesized context.</p>
+<p><strong>Input</strong></p>
+<pre><code class="language-python">section_header_data = byte_array[byte_begin_index + byte_step_index * event_index : byte_begin_index + byte_step_index * (event_index + 1)]
+</code></pre>
+<p><strong>Black</strong></p>
+<pre><code class="language-python">section_header_data = byte_array[
+    byte_begin_index
+    + byte_step_index * event_index : byte_begin_index
+    + byte_step_index * (event_index + 1)
+]
+</code></pre>
+<p><strong>Current formatting</strong></p>
+<pre><code class="language-python">section_header_data = byte_array[
+    byte_begin_index + byte_step_index * event_index : byte_begin_index
+    + byte_step_index * (event_index + 1)
+]
+</code></pre>
+<p><strong>Proposed formatting</strong></p>
+<pre><code class="language-python">section_header_data = byte_array[
+    byte_begin_index + byte_step_index * event_index 
+    : byte_begin_index + byte_step_index * (event_index + 1)
+]
+</code></pre>
+<p>This is another intentional black deviation, but i find it a clear style improvement.</p>
+<p>This is consistent with adding a step:</p>
+<pre><code class="language-python">section_header_data2 = byte_array[
+    byte_begin_index + byte_step_index * event_index 
+    : byte_begin_index + byte_step_index 
+    : section_size
+]
+</code></pre>
+<p>As-is, this regresses trailing colon comments:</p>
+<p><strong>in</strong></p>
+<pre><code class="language-python">c1 = &quot;c&quot;[
+    1:  # e
+    # f
+    2
+]
+</code></pre>
+<p><strong>out</strong></p>
+<pre><code class="language-python">c1 = &quot;c&quot;[
+    1
+    :  # e
+    # f
+    2
+]
+</code></pre>
+<p><strong>main</strong></p>
+<p>| project      | similarity index  | total files       | changed files     |
+|--------------|------------------:|------------------:|------------------:|
+| cpython      |           0.76083 |              1789 |              1632 |
+| <strong>django</strong>       |           0.99981 |              2760 |                40 |
+| <strong>transformers</strong> |           0.99944 |              2587 |               413 |
+| twine        |           1.00000 |                33 |                 0 |
+| typeshed     |           0.99983 |              3496 |                18 |
+| warehouse    |           0.99834 |               648 |                20 |
+| <strong>zulip</strong>        |           0.99956 |              1437 |                23 |</p>
+<p><strong>PR</strong></p>
+<p>| project      | similarity index  | total files       | changed files     |
+|--------------|------------------:|------------------:|------------------:|
+| cpython      |           0.76083 |              1789 |              1632 |
+| <strong>django</strong>       |           0.99981 |              2760 |                41 |
+| <strong>transformers</strong> |           0.99942 |              2587 |               430 |
+| twine        |           1.00000 |                33 |                 0 |
+| typeshed     |           0.99983 |              3496 |                18 |
+| warehouse    |           0.99834 |               648 |                20 |
+| <strong>zulip</strong>        |           0.99956 |              1437 |                24 |</p>
+<p>For the similarity index, this is a regression.</p>
+<p>Fixes #7316</p>
+<p><strong>Test Plan</strong> Added the fixtures above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @konstin on 2023-09-13 10:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-13 10:08</div>
+            <div class="timeline-body"><p>Nice! Does this impact our similarity index? How would it look if we intended the right side if the line breaks?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-13 10:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_slice.rs</code>:94 on 2023-09-13 10:10</div>
+            <div class="timeline-body"><p>We should move this into the <code>else</code> branch or we may end up with an unintentional a <code>\n&lt;space&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-13 10:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/format@expression__slice.py.snap</code>:178 on 2023-09-13 10:11</div>
+            <div class="timeline-body"><p>Hmm, this isn't ideal. Do we need to group the line break with the left side so that it only renders if the left expands (or the <code>:</code> and the right side don't fit on the line)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-09-19 12:13</div>
+            <div class="timeline-body"><p>We have decided to not merge this to instead focus on black compatibility instead of adding more deviations</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-09-19 12:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:46 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add optimized `best_fit_parenthesize` IR - astral-sh/ruff #7475</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add optimized <code>best_fit_parenthesize</code> IR</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7475">#7475</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-09-18 06:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-18 06:43</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a custom IR for content that should only be parenthesized if it makes it fit. The custom IR removes the need to use the costly <code>BestFitting</code> IR element, allowing us to remove the poor heuristic around when to use the <code>BestFit</code> layout (because the IR is now cheap).</p>
+<p>The main downside of the custom IR is that it is less tested and further increases the complexity of the Printer (It is re-implementation of <code>BestFitting</code> with the three variants)</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/7463
+Closes https://github.com/astral-sh/ruff/issues/7067
+Closes #7462</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+<p><strong>Base</strong></p>
+<p>| project      | similarity index  | total files       | changed files     |
+|--------------|------------------:|------------------:|------------------:|
+| cpython      |           0.76083 |              1789 |              1632 |
+| django       |           0.99982 |              2760 |                37 |
+| transformers |           0.99957 |              2587 |               398 |
+| twine        |           1.00000 |                33 |                 0 |
+| typeshed     |           0.99983 |              3496 |                18 |
+| warehouse    |           0.99929 |               648 |                16 |
+| zulip        |           0.99962 |              1437 |                22 |</p>
+<p><strong>This PR</strong>
+| project      | similarity index  | total files       | changed files     |
+|--------------|------------------:|------------------:|------------------:|
+| cpython      |           0.76083 |              1789 |              1631 |
+| <strong>django</strong>       |           0.99983 |              2760 |                36 |
+| <strong>transformers</strong> |           0.99956 |              2587 |               404 |
+| twine        |           1.00000 |                33 |                 0 |
+| typeshed     |           0.99983 |              3496 |                18 |
+| warehouse    |           0.99929 |               648 |                16 |
+| <strong>zulip</strong>        |           0.99969 |              1437 |                21 |</p>
+<p>New <em>transformers</em> deviations: There are a few new transformers deviations of the form:</p>
+<pre><code class="language-python">if True:
+    if True:
+        if True:
+			model.config.use_cache = False  # FSTM still requires this hack -&gt; FSTM should probably be refactored similar to BART afterward
+
+# Formatted
+if True:
+    if True:
+        if True:
+			model.config.use_cache = (
+				False
+			)  # FSTM still requires this hack -&gt; FSTM should probably be refactored similar to BART afterward
+</code></pre>
+<p>This is because the <code>BestFit</code> layout is now also applied for constants.</p>
+<p>The formatting is now consistent with a 6 character identifier:</p>
+<pre><code class="language-python">if True:
+    if True:
+        if True:
+            model.config.use_cache = aaaaaa  # FSTM still requires this hack -&gt; FSTM should probably be refactored similar to BART afterward
+
+# Formatted
+if True:
+    if True:
+        if True:
+            model.config.use_cache = (
+                aaaaaa
+            )  # FSTM still requires this hack -&gt; FSTM should probably be refactored similar to BART afterward
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-18 06:43</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #7475</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7475" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7475?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-09-18 11:37</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/optional-parentheses-ir">CodSpeed Performance Report</a></h2>
+<h3>Merging #7475 will <strong>improve performances by 9.15%</strong></h3>
+<p><sub>Comparing <code>optional-parentheses-ir</code> (81333ac) with <code>main</code> (28b48ab)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 4</code> improvements
+<code>✅ 21</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>optional-parentheses-ir</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>formatter[pydantic/types.py]</code> | 20.8 ms | 19.3 ms | +7.62% |
+| ⚡ | <code>formatter[large/dataset.py]</code> | 57.3 ms | 52.5 ms | +9.15% |
+| ⚡ | <code>formatter[numpy/ctypeslib.py]</code> | 10.7 ms | 9.9 ms | +7.9% |
+| ⚡ | <code>formatter[unicode/pypinyin.py]</code> | 3.6 ms | 3.4 ms | +7.92% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @MichaReiser on 2023-09-18 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-09-18 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/tests/snapshots/black_compatibility@miscellaneous__long_strings_flag_disabled.py.snap</code>:325 on 2023-09-18 12:39</div>
+            <div class="timeline-body"><p>These didn't use the <code>best_fitting</code> layout before because they were excluded by the <code>use_best_fit</code>. This is more consistent</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add optional parentheses IR" to "Add optimized `best_fit_parenthesize` IR" by @MichaReiser on 2023-09-18 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @MichaReiser on 2023-09-18 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-09-18 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2023-09-18 15:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/expr_constant.rs</code>:82 on 2023-09-18 15:11</div>
+            <div class="timeline-body"><p>It's now cheap enough to always use <code>BestFit</code>. We only need to avoid it in cases where we never want parentheses</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/expression/mod.rs</code>:200 on 2023-09-18 15:12</div>
+            <div class="timeline-body"><p>Thanks @charliermarsh for adding these methods. It makes it straightforward to replace one API with the other :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-18 15:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_formatter/src/lib.rs</code>:228 on 2023-09-19 00:09</div>
+            <div class="timeline-body"><p>Maybe unintentional.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_formatter/src/format_element/tag.rs</code>:95 on 2023-09-19 00:16</div>
+            <div class="timeline-body"><p>Nit: <code>Beset</code> should <code>Best</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-09-19 00:17</div>
+            <div class="timeline-body"><p>This looks great, and the speedups are impressive, though I'll admit I'm not very familiar with the printer internals.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-09-19 06:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-09-19 06:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-19 06:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:46 UTC
+    </footer>
+</body>
+</html>

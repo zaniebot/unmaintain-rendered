@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modify `comment_ranges` slice in `BackwardsTokenizer` - astral-sh/ruff #7432</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Modify <code>comment_ranges</code> slice in <code>BackwardsTokenizer</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7432">#7432</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-09-16 03:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-16 03:38</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I was kinda curious to understand this issue (https://github.com/astral-sh/ruff/issues/7426) and just ended up attempting to address it.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2023-09-16 03:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2023-09-16 03:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2023-09-16 03:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-16 03:54</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:760 on 2023-09-16 14:52</div>
+            <div class="timeline-body"><p>I must have missed this in the previous PR but it seems that the lexer now always initializes with <code>after_newline</code>. The lexer used to have a special <code>up_to</code> method indicating that it is guaranteed not to be after a newline to avoid testing for comments.</p>
+<p>I'm bringing this up here because the downside is that we now always perform a binary search to find the last comment, even if the caller can guarantee that the start position isn't after a newline. Bringing back this optimization is probably worth its own PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:785 on 2023-09-16 14:53</div>
+            <div class="timeline-body"><p>Nit: May be worth testing if the <code>after_newline</code> boolean still is an optimization, considering that testing whether we're inside of a comment is now a single operation (unlike before where it was necessary to lex-out the full line, worst case, the entire file up to this position)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2023-09-16 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2023-09-16 18:02</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/ruff/branches/charlie/slice">CodSpeed Performance Report</a></h2>
+<h3>Merging #7432 will <strong>improve performances by 3%</strong></h3>
+<p><sub>Comparing <code>charlie/slice</code> (ce61771) with <code>main</code> (aae02cf)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements
+<code>✅ 24</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>charlie/slice</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>linter/all-rules[numpy/ctypeslib.py]</code> | 35.1 ms | 34 ms | +3% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2023-09-16 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-16 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-16 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2023-09-18 08:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/ruff_python_trivia/src/tokenizer.rs</code>:760 on 2023-09-18 08:32</div>
+            <div class="timeline-body"><p>i didn't implement this initially because i thought about doing the binary search esp for large files with many comments is expensive to do for every is-expression-parenthesized check, but it doesn't seem to show in our benchmarks. Removing this is also kinda ugly because we have to bring back <code>after_newline</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-09-18 08:33</div>
+            <div class="timeline-body"><p>thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:46 UTC
+    </footer>
+</body>
+</html>

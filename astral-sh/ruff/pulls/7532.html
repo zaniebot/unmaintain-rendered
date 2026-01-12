@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unify `Settings` and `AllSettings` - astral-sh/ruff #7532</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unify <code>Settings</code> and <code>AllSettings</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/7532">#7532</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-09-20 07:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-20 07:24</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR merges <code>AllSettings</code> and <code>Settings</code> (by merging <code>CliSettings</code> into <code>Settings</code>). The main motivation is to avoid the confusion of why the two settings exist, which still isn't entirely clear to me.
+Here's what I understand today (I am happy to close this PR if we can get to the bottom of why the two structs exist)</p>
+<p>#1891 split <code>Settings</code> into <code>AllSettings</code> and <code>Settings</code></p>
+<blockquote>
+<p>We want to automatically derive Hash for the library settings, which
+requires us to split off all the settings unused by the library
+(since these shouldn't affect the hash used by ruff_cli::cache).</p>
+</blockquote>
+<p>I solved this by extending the <code>CacheKey</code> derive macro to support the <code>cache_key(ignore)</code> field attribute to ignore individual fields. We can keep the automatically derived <code>CacheKey</code> implementation and explicitly mark the excluded fields.</p>
+<p>There has been some argument whether the two settings exist because the <code>CliSettings</code> are only respected for the &quot;root&quot; configuration. This holds true for all <code>CliSettings</code> except <code>cache-dir</code> as #7520 showed. Meaning that distinction may have been true but no longer is.</p>
+<p>My final guess is that the <code>CliSettings</code> used to be unique to using <code>ruff</code> from the cli. I think this is still mostly true (although most of the resolver code now lives inside <code>ruff_workspace</code>). However, I don't think it is sufficient reason to separate the two structs, especially considering that we could show diagnostics in our playground similar to <a href="https://biomejs.dev/playground/?code=aQBmACAAKABhACAAPQA9ACAAYgApAA%3D%3D">biome</a> (see console tab) where we would want to respect the <code>output-format</code> configuration (and <code>--show-sources</code> etc). <code>fix</code>, <code>fix-only</code> and <code>cache-dir</code> likely remain CLI only settings but, IMO, don't justify the cognitive load of having multiple settings structs.</p>
+<p>The main justification for me to keep the separate settings struct is that the linter doesn't need the <code>CliSettings</code>. These are settings that only concern the diagnostic rendering, and file traversal (although the same is true for <code>exclude</code>, <code>respect_gitignore</code> and other global settings). That's why I plan to split settings in more semantic sub-settings:</p>
+<ul>
+<li>Linter settings</li>
+<li>Formatter settings</li>
+<li>common / shared settings</li>
+<li>Maybe; Resolver settings?</li>
+</ul>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @MichaReiser on 2023-09-20 07:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-20 07:24</div>
+            <div class="timeline-body"><p>Current dependencies on/for this PR:</p>
+<ul>
+<li>main<ul>
+<li><strong>PR #7532</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7532" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>  👈<ul>
+<li><strong>PR #7542</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7542" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7543</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7543" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7544</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7544" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a><ul>
+<li><strong>PR #7545</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7545" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7548</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7548" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a>
+* <strong>PR #7549</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7549" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>PR #7536</strong> <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7536" target="_blank"><img src="https://static.graphite.dev/graphite-32x32-black.png" alt="Graphite" width="10px" height="10px"/></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>This comment was auto-generated by <a href="https://app.graphite.dev/github/pr/astral-sh/ruff/7532?utm_source=stack-comment">Graphite</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2023-09-20 07:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2023-09-20 07:49</div>
+            <div class="timeline-body"><h2>PR Check Results</h2>
+<h3>Ecosystem</h3>
+<p>✅ ecosystem check detected no changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/settings/defaults.rs</code>:78 on 2023-09-20 12:58</div>
+            <div class="timeline-body"><p>Nit: maybe a comment on why these are separated from the rest? Same with other instantiations.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2023-09-20 12:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2023-09-20 13:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/settings/defaults.rs</code>:78 on 2023-09-20 13:48</div>
+            <div class="timeline-body"><p>I'll leave it as is because these will be moved to their own <code>struct</code> in a PR higher in the stack, making the reason clear</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2023-09-20 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-09-20 13:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2023-09-20 13:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-12 02:39:47 UTC
+    </footer>
+</body>
+</html>
