@@ -1,0 +1,367 @@
+```yaml
+number: 3519
+title: Refine complexity rules for try-except-else-finally
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+merged: true
+base: main
+head: charlie/mccabe
+created_at: 2023-03-14T18:26:59Z
+updated_at: 2023-03-14T18:40:35Z
+url: https://github.com/astral-sh/ruff/pull/3519
+synced_at: 2026-01-12T04:39:45Z
+```
+
+# Refine complexity rules for try-except-else-finally
+
+---
+
+_Pull request opened by @charliermarsh on 2023-03-14 18:26_
+
+## Summary
+
+`try-finally` shouldn't increase the complexity score, but `try-except-else` should.
+
+Closes #3347.
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-03-14 18:27_
+
+---
+
+_Comment by @github-actions[bot] on 2023-03-14 18:39_
+
+ℹ️ ecosystem check **detected changes**. (+120, -158, 0 error(s))
+
+<details><summary>zulip (+49, -60)</summary>
+<p>
+
+```diff
++ analytics/management/commands/check_analytics_state.py:39:9: C901 `get_fill_state` is too complex (11)
+- analytics/management/commands/check_analytics_state.py:39:9: C901 `get_fill_state` is too complex (12)
++ analytics/views/installation_activity.py:99:5: C901 `realm_summary_table` is too complex (15)
+- analytics/views/installation_activity.py:99:5: C901 `realm_summary_table` is too complex (16)
++ analytics/views/support.py:150:5: C901 `support` is too complex (35)
+- analytics/views/support.py:150:5: C901 `support` is too complex (36)
++ corporate/views/webhook.py:23:5: C901 `stripe_webhook` is too complex (14)
+- corporate/views/webhook.py:23:5: C901 `stripe_webhook` is too complex (19)
++ tools/lib/provision.py:348:5: C901 `main` is too complex (13)
+- tools/lib/provision.py:348:5: C901 `main` is too complex (17)
++ tools/lib/provision_inner.py:212:5: C901 `main` is too complex (19)
+- tools/lib/provision_inner.py:212:5: C901 `main` is too complex (20)
++ tools/lib/template_parser.py:346:5: C901 `validate` is too complex (24)
+- tools/lib/template_parser.py:346:5: C901 `validate` is too complex (25)
++ tools/lib/template_parser.py:51:5: C901 `tokenize` is too complex (54)
+- tools/lib/template_parser.py:51:5: C901 `tokenize` is too complex (55)
++ zerver/actions/create_realm.py:132:5: C901 `do_create_realm` is too complex (16)
+- zerver/actions/create_realm.py:132:5: C901 `do_create_realm` is too complex (17)
++ zerver/actions/message_edit.py:905:5: C901 `check_update_message` is too complex (20)
+- zerver/actions/message_edit.py:905:5: C901 `check_update_message` is too complex (21)
++ zerver/actions/message_send.py:1332:5: C901 `check_message` is too complex (17)
+- zerver/actions/message_send.py:1332:5: C901 `check_message` is too complex (20)
+- zerver/data_import/slack.py:1215:5: C901 `fetch_shared_channel_users` is too complex (11)
++ zerver/data_import/slack.py:486:5: C901 `channels_to_zerver_stream` is too complex (12)
+- zerver/data_import/slack.py:486:5: C901 `channels_to_zerver_stream` is too complex (15)
++ zerver/data_import/slack.py:835:5: C901 `channel_message_to_zerver_message` is too complex (13)
+- zerver/data_import/slack.py:835:5: C901 `channel_message_to_zerver_message` is too complex (14)
++ zerver/decorator.py:723:5: C901 `authenticated_rest_api_view` is too complex (11)
+- zerver/decorator.py:723:5: C901 `authenticated_rest_api_view` is too complex (13)
+- zerver/decorator.py:736:9: C901 `_wrapped_view_func` is too complex (11)
+- zerver/forms.py:182:9: C901 `clean_email` is too complex (11)
+- zerver/forms.py:307:9: C901 `save` is too complex (12)
++ zerver/lib/export.py:555:5: C901 `export_from_config` is too complex (23)
+- zerver/lib/export.py:555:5: C901 `export_from_config` is too complex (24)
++ zerver/lib/import_realm.py:294:5: C901 `fix_message_rendered_content` is too complex (15)
+- zerver/lib/import_realm.py:294:5: C901 `fix_message_rendered_content` is too complex (16)
++ zerver/lib/markdown/__init__.py:2362:5: C901 `topic_links` is too complex (12)
+- zerver/lib/markdown/__init__.py:2362:5: C901 `topic_links` is too complex (13)
+- zerver/lib/markdown/__init__.py:2497:5: C901 `do_convert` is too complex (11)
++ zerver/lib/narrow.py:654:5: C901 `narrow_parameter` is too complex (11)
+- zerver/lib/narrow.py:654:5: C901 `narrow_parameter` is too complex (12)
++ zerver/lib/push_notifications.py:1037:5: C901 `handle_push_notification` is too complex (11)
+- zerver/lib/push_notifications.py:1037:5: C901 `handle_push_notification` is too complex (12)
++ zerver/lib/push_notifications.py:361:5: C901 `send_android_push_notification` is too complex (17)
+- zerver/lib/push_notifications.py:361:5: C901 `send_android_push_notification` is too complex (18)
++ zerver/lib/request.py:339:5: C901 `has_request_variables` is too complex (29)
+- zerver/lib/request.py:339:5: C901 `has_request_variables` is too complex (34)
++ zerver/lib/request.py:370:9: C901 `_wrapped_req_func` is too complex (23)
+- zerver/lib/request.py:370:9: C901 `_wrapped_req_func` is too complex (28)
++ zerver/lib/scim.py:226:9: C901 `save` is too complex (11)
+- zerver/lib/scim.py:226:9: C901 `save` is too complex (13)
++ zerver/lib/send_email.py:72:5: C901 `build_email` is too complex (20)
+- zerver/lib/send_email.py:72:5: C901 `build_email` is too complex (21)
++ zerver/lib/streams.py:246:5: C901 `access_stream_for_send_message` is too complex (12)
+- zerver/lib/streams.py:246:5: C901 `access_stream_for_send_message` is too complex (13)
++ zerver/lib/timeout.py:22:5: C901 `timeout` is too complex (11)
+- zerver/lib/timeout.py:22:5: C901 `timeout` is too complex (12)
++ zerver/lib/users.py:82:5: C901 `check_valid_bot_config` is too complex (11)
+- zerver/lib/users.py:82:5: C901 `check_valid_bot_config` is too complex (12)
++ zerver/management/commands/export.py:109:9: C901 `handle` is too complex (16)
+- zerver/management/commands/export.py:109:9: C901 `handle` is too complex (18)
+- zerver/management/commands/import.py:59:9: C901 `handle` is too complex (11)
+- zerver/management/commands/realm_domain.py:27:9: C901 `handle` is too complex (12)
++ zerver/management/commands/send_custom_email.py:71:9: C901 `handle` is too complex (11)
+- zerver/management/commands/send_custom_email.py:71:9: C901 `handle` is too complex (12)
++ zerver/openapi/openapi.py:385:5: C901 `validate_against_openapi_schema` is too complex (15)
+- zerver/openapi/openapi.py:385:5: C901 `validate_against_openapi_schema` is too complex (16)
++ zerver/tests/test_events.py:370:9: C901 `match_states` is too complex (15)
+- zerver/tests/test_events.py:370:9: C901 `match_states` is too complex (16)
++ zerver/tests/test_openapi.py:477:9: C901 `test_openapi_arguments` is too complex (12)
+- zerver/tests/test_openapi.py:477:9: C901 `test_openapi_arguments` is too complex (13)
+- zerver/tests/test_slack_importer.py:58:5: C901 `request_callback` is too complex (13)
++ zerver/tornado/event_queue.py:653:5: C901 `fetch_events` is too complex (12)
+- zerver/tornado/event_queue.py:653:5: C901 `fetch_events` is too complex (13)
++ zerver/views/auth.py:142:5: C901 `maybe_send_to_registration` is too complex (13)
+- zerver/views/auth.py:142:5: C901 `maybe_send_to_registration` is too complex (16)
++ zerver/views/auth.py:776:5: C901 `login_page` is too complex (16)
+- zerver/views/auth.py:776:5: C901 `login_page` is too complex (18)
++ zerver/views/documentation.py:74:9: C901 `get_path` is too complex (12)
+- zerver/views/documentation.py:74:9: C901 `get_path` is too complex (14)
++ zerver/views/message_send.py:191:5: C901 `send_message_backend` is too complex (14)
+- zerver/views/message_send.py:191:5: C901 `send_message_backend` is too complex (15)
++ zerver/views/realm.py:48:5: C901 `update_realm` is too complex (36)
+- zerver/views/realm.py:48:5: C901 `update_realm` is too complex (37)
++ zerver/views/registration.py:173:5: C901 `registration_helper` is too complex (43)
+- zerver/views/registration.py:173:5: C901 `registration_helper` is too complex (52)
+- zerver/views/registration.py:643:5: C901 `create_realm` is too complex (12)
+- zerver/views/registration.py:725:5: C901 `accounts_home` is too complex (13)
++ zerver/views/registration.py:828:5: C901 `find_account` is too complex (11)
+- zerver/views/registration.py:828:5: C901 `find_account` is too complex (13)
++ zerver/views/user_settings.py:149:5: C901 `json_change_settings` is too complex (18)
+- zerver/views/user_settings.py:149:5: C901 `json_change_settings` is too complex (20)
++ zerver/views/users.py:340:5: C901 `patch_bot_backend` is too complex (20)
+- zerver/views/users.py:340:5: C901 `patch_bot_backend` is too complex (21)
++ zerver/views/users.py:461:5: C901 `add_bot_backend` is too complex (19)
+- zerver/views/users.py:461:5: C901 `add_bot_backend` is too complex (21)
++ zerver/webhooks/slack_incoming/view.py:30:5: C901 `api_slack_incoming_webhook` is too complex (14)
+- zerver/webhooks/slack_incoming/view.py:30:5: C901 `api_slack_incoming_webhook` is too complex (15)
++ zerver/worker/queue_processors.py:957:9: C901 `consume` is too complex (13)
+- zerver/worker/queue_processors.py:957:9: C901 `consume` is too complex (15)
++ zproject/backends.py:1456:5: C901 `social_associate_user_helper` is too complex (18)
+- zproject/backends.py:1456:5: C901 `social_associate_user_helper` is too complex (21)
++ zproject/backends.py:1632:5: C901 `social_auth_finish` is too complex (13)
+- zproject/backends.py:1632:5: C901 `social_auth_finish` is too complex (14)
++ zproject/backends.py:2516:9: C901 `auth_complete` is too complex (13)
+- zproject/backends.py:2516:9: C901 `auth_complete` is too complex (14)
+- zproject/backends.py:436:9: C901 `authenticate` is too complex (11)
++ zproject/backends.py:914:9: C901 `get_or_build_user` is too complex (14)
+- zproject/backends.py:914:9: C901 `get_or_build_user` is too complex (17)
+```
+
+</p>
+</details>
+<details><summary>bokeh (+10, -12)</summary>
+<p>
+
+```diff
++ src/bokeh/core/property/bases.py:342:9: C901 `prepare_value` is too complex (13)
+- src/bokeh/core/property/bases.py:342:9: C901 `prepare_value` is too complex (14)
++ src/bokeh/core/query.py:112:5: C901 `match` is too complex (21)
+- src/bokeh/core/query.py:112:5: C901 `match` is too complex (22)
++ src/bokeh/models/util/structure.py:150:9: C901 `_make_graph` is too complex (11)
+- src/bokeh/models/util/structure.py:150:9: C901 `_make_graph` is too complex (14)
++ src/bokeh/plotting/_graph.py:54:5: C901 `get_graph_kwargs` is too complex (12)
+- src/bokeh/plotting/_graph.py:54:5: C901 `get_graph_kwargs` is too complex (14)
++ src/bokeh/plotting/_plot.py:139:5: C901 `_get_axis_class` is too complex (11)
+- src/bokeh/plotting/_plot.py:139:5: C901 `_get_axis_class` is too complex (12)
++ src/bokeh/plotting/_plot.py:75:5: C901 `get_range` is too complex (11)
+- src/bokeh/plotting/_plot.py:75:5: C901 `get_range` is too complex (12)
++ src/bokeh/server/server.py:353:9: C901 `__init__` is too complex (12)
+- src/bokeh/server/server.py:353:9: C901 `__init__` is too complex (13)
+- src/bokeh/server/util.py:103:5: C901 `create_hosts_allowlist` is too complex (11)
+- src/bokeh/sphinxext/bokehjs_content.py:128:9: C901 `get_codeblock_node` is too complex (11)
++ src/bokeh/util/package.py:42:5: C901 `validate` is too complex (13)
+- src/bokeh/util/package.py:42:5: C901 `validate` is too complex (15)
++ tests/support/plugins/bokeh_server.py:55:5: C901 `bokeh_server` is too complex (14)
+- tests/support/plugins/bokeh_server.py:55:5: C901 `bokeh_server` is too complex (15)
++ tests/support/plugins/jupyter_notebook.py:61:5: C901 `jupyter_notebook` is too complex (17)
+- tests/support/plugins/jupyter_notebook.py:61:5: C901 `jupyter_notebook` is too complex (18)
+```
+
+</p>
+</details>
+<details><summary>scikit-build (+1, -1)</summary>
+<p>
+
+```diff
++ skbuild/setuptools_wrap.py:383:5: C901 `setup` is too complex (47)
+- skbuild/setuptools_wrap.py:383:5: C901 `setup` is too complex (50)
+```
+
+</p>
+</details>
+<details><summary>airflow (+60, -85)</summary>
+<p>
+
+```diff
+- airflow/api_connexion/endpoints/log_endpoint.py:46:5: C901 `get_log` is too complex (12)
+- airflow/api_connexion/endpoints/pool_endpoint.py:82:5: C901 `patch_pool` is too complex (13)
+- airflow/api_connexion/endpoints/task_instance_endpoint.py:443:5: C901 `post_clear_task_instances` is too complex (11)
++ airflow/api_connexion/endpoints/user_endpoint.py:128:5: C901 `patch_user` is too complex (18)
+- airflow/api_connexion/endpoints/user_endpoint.py:128:5: C901 `patch_user` is too complex (20)
+- airflow/cli/cli_parser.py:63:9: C901 `_check_value` is too complex (12)
++ airflow/cli/commands/celery_command.py:100:5: C901 `worker` is too complex (11)
+- airflow/cli/commands/celery_command.py:100:5: C901 `worker` is too complex (12)
++ airflow/cli/commands/dag_command.py:51:5: C901 `dag_backfill` is too complex (13)
+- airflow/cli/commands/dag_command.py:51:5: C901 `dag_backfill` is too complex (14)
++ airflow/cli/commands/task_command.py:346:5: C901 `task_run` is too complex (11)
+- airflow/cli/commands/task_command.py:346:5: C901 `task_run` is too complex (13)
++ airflow/cli/commands/task_command.py:562:5: C901 `task_test` is too complex (11)
+- airflow/cli/commands/task_command.py:562:5: C901 `task_test` is too complex (12)
+- airflow/configuration.py:1127:9: C901 `_include_envs` is too complex (11)
++ airflow/configuration.py:915:9: C901 `getsection` is too complex (13)
+- airflow/configuration.py:915:9: C901 `getsection` is too complex (15)
++ airflow/dag_processing/manager.py:1079:9: C901 `prepare_file_path_queue` is too complex (11)
+- airflow/dag_processing/manager.py:1079:9: C901 `prepare_file_path_queue` is too complex (12)
++ airflow/dag_processing/manager.py:552:9: C901 `_run_parsing_loop` is too complex (22)
+- airflow/dag_processing/manager.py:552:9: C901 `_run_parsing_loop` is too complex (23)
++ airflow/dag_processing/processor.py:370:9: C901 `manage_slas` is too complex (26)
+- airflow/dag_processing/processor.py:370:9: C901 `manage_slas` is too complex (30)
++ airflow/executors/kubernetes_executor.py:630:9: C901 `sync` is too complex (14)
+- airflow/executors/kubernetes_executor.py:630:9: C901 `sync` is too complex (19)
++ airflow/jobs/backfill_job.py:409:9: C901 `_process_backfill_task_instances` is too complex (41)
+- airflow/jobs/backfill_job.py:409:9: C901 `_process_backfill_task_instances` is too complex (44)
++ airflow/jobs/backfill_job.py:443:17: C901 `_per_task_process` is too complex (21)
+- airflow/jobs/backfill_job.py:443:17: C901 `_per_task_process` is too complex (22)
++ airflow/jobs/backfill_job.py:791:9: C901 `_execute` is too complex (14)
+- airflow/jobs/backfill_job.py:791:9: C901 `_execute` is too complex (15)
+- airflow/jobs/local_task_job.py:108:9: C901 `_execute` is too complex (11)
++ airflow/jobs/scheduler_job.py:245:9: C901 `_executable_task_instances_to_queued` is too complex (25)
+- airflow/jobs/scheduler_job.py:245:9: C901 `_executable_task_instances_to_queued` is too complex (26)
+- airflow/jobs/scheduler_job.py:594:9: C901 `_process_executor_events` is too complex (11)
+- airflow/jobs/scheduler_job.py:721:9: C901 `_execute` is too complex (13)
+- airflow/kubernetes/pod_generator.py:343:9: C901 `construct_pod` is too complex (13)
+- airflow/logging_config.py:31:5: C901 `configure_logging` is too complex (11)
++ airflow/models/abstractoperator.py:389:9: C901 `expand_mapped_task` is too complex (12)
+- airflow/models/abstractoperator.py:389:9: C901 `expand_mapped_task` is too complex (13)
++ airflow/models/connection.py:206:9: C901 `get_uri` is too complex (13)
+- airflow/models/connection.py:206:9: C901 `get_uri` is too complex (14)
+- airflow/models/dag.py:962:9: C901 `iter_dagrun_infos_between` is too complex (12)
++ airflow/models/dagbag.py:457:9: C901 `_bag_dag` is too complex (11)
+- airflow/models/dagbag.py:457:9: C901 `_bag_dag` is too complex (13)
++ airflow/models/dagrun.py:744:9: C901 `_get_ready_tis` is too complex (13)
+- airflow/models/dagrun.py:744:9: C901 `_get_ready_tis` is too complex (14)
++ airflow/models/dagrun.py:947:9: C901 `_check_for_removed_or_restored_tasks` is too complex (14)
+- airflow/models/dagrun.py:947:9: C901 `_check_for_removed_or_restored_tasks` is too complex (16)
++ airflow/models/taskinstance.py:1383:9: C901 `_run_raw_task` is too complex (18)
+- airflow/models/taskinstance.py:1383:9: C901 `_run_raw_task` is too complex (19)
++ airflow/models/taskinstance.py:1830:9: C901 `handle_failure` is too complex (16)
+- airflow/models/taskinstance.py:1830:9: C901 `handle_failure` is too complex (18)
++ airflow/models/taskinstance.py:1935:9: C901 `get_template_context` is too complex (35)
+- airflow/models/taskinstance.py:1935:9: C901 `get_template_context` is too complex (36)
++ airflow/operators/trigger_dagrun.py:120:9: C901 `execute` is too complex (13)
+- airflow/operators/trigger_dagrun.py:120:9: C901 `execute` is too complex (15)
++ airflow/providers/amazon/aws/hooks/sagemaker.py:557:9: C901 `describe_training_job_with_log` is too complex (11)
+- airflow/providers/amazon/aws/hooks/sagemaker.py:557:9: C901 `describe_training_job_with_log` is too complex (12)
++ airflow/providers/amazon/aws/operators/eks.py:167:9: C901 `execute` is too complex (11)
+- airflow/providers/amazon/aws/operators/eks.py:167:9: C901 `execute` is too complex (12)
+- airflow/providers/amazon/aws/utils/connection_wrapper.py:424:5: C901 `_parse_s3_config` is too complex (12)
+- airflow/providers/cncf/kubernetes/triggers/pod.py:119:15: C901 `run` is too complex (11)
++ airflow/providers/common/sql/operators/sql.py:1072:9: C901 `execute` is too complex (13)
+- airflow/providers/common/sql/operators/sql.py:1072:9: C901 `execute` is too complex (14)
+- airflow/providers/databricks/hooks/databricks_base.py:471:9: C901 `_do_api_call` is too complex (11)
++ airflow/providers/docker/operators/docker.py:325:9: C901 `_run_image_with_mounts` is too complex (15)
+- airflow/providers/docker/operators/docker.py:325:9: C901 `_run_image_with_mounts` is too complex (17)
++ airflow/providers/google/cloud/hooks/compute_ssh.py:141:9: C901 `_load_connection_config` is too complex (11)
+- airflow/providers/google/cloud/hooks/compute_ssh.py:141:9: C901 `_load_connection_config` is too complex (12)
++ airflow/providers/google/cloud/hooks/gcs.py:451:9: C901 `upload` is too complex (15)
+- airflow/providers/google/cloud/hooks/gcs.py:451:9: C901 `upload` is too complex (16)
++ airflow/providers/google/cloud/hooks/stackdriver.py:219:9: C901 `upsert_alert` is too complex (11)
+- airflow/providers/google/cloud/hooks/stackdriver.py:219:9: C901 `upsert_alert` is too complex (12)
+- airflow/providers/google/cloud/operators/bigquery.py:2713:9: C901 `execute` is too complex (11)
++ airflow/providers/google/cloud/operators/dataproc.py:2266:9: C901 `execute` is too complex (12)
+- airflow/providers/google/cloud/operators/dataproc.py:2266:9: C901 `execute` is too complex (13)
++ airflow/providers/google/cloud/operators/mlengine.py:1269:9: C901 `execute` is too complex (18)
+- airflow/providers/google/cloud/operators/mlengine.py:1269:9: C901 `execute` is too complex (19)
++ airflow/providers/google/cloud/transfers/gcs_to_bigquery.py:322:9: C901 `execute` is too complex (16)
+- airflow/providers/google/cloud/transfers/gcs_to_bigquery.py:322:9: C901 `execute` is too complex (17)
++ airflow/providers/google/cloud/utils/field_validator.py:310:9: C901 `_validate_field` is too complex (15)
+- airflow/providers/google/cloud/utils/field_validator.py:310:9: C901 `_validate_field` is too complex (16)
++ airflow/providers/hashicorp/hooks/vault.py:106:9: C901 `__init__` is too complex (18)
+- airflow/providers/hashicorp/hooks/vault.py:106:9: C901 `__init__` is too complex (19)
++ airflow/providers/microsoft/azure/operators/container_instances.py:188:9: C901 `execute` is too complex (12)
+- airflow/providers/microsoft/azure/operators/container_instances.py:188:9: C901 `execute` is too complex (13)
++ airflow/providers/microsoft/azure/operators/container_instances.py:289:9: C901 `_monitor_logging` is too complex (13)
+- airflow/providers/microsoft/azure/operators/container_instances.py:289:9: C901 `_monitor_logging` is too complex (15)
++ airflow/providers/microsoft/winrm/hooks/winrm.py:119:9: C901 `get_conn` is too complex (28)
+- airflow/providers/microsoft/winrm/hooks/winrm.py:119:9: C901 `get_conn` is too complex (29)
++ airflow/providers/microsoft/winrm/operators/winrm.py:79:9: C901 `execute` is too complex (14)
+- airflow/providers/microsoft/winrm/operators/winrm.py:79:9: C901 `execute` is too complex (16)
++ airflow/providers/sftp/operators/sftp.py:106:9: C901 `execute` is too complex (18)
+- airflow/providers/sftp/operators/sftp.py:106:9: C901 `execute` is too complex (19)
++ airflow/providers/ssh/hooks/ssh.py:468:9: C901 `exec_ssh_client_command` is too complex (13)
+- airflow/providers/ssh/hooks/ssh.py:468:9: C901 `exec_ssh_client_command` is too complex (15)
++ airflow/providers_manager.py:756:9: C901 `_import_hook` is too complex (17)
+- airflow/providers_manager.py:756:9: C901 `_import_hook` is too complex (18)
++ airflow/serialization/serialized_objects.py:386:9: C901 `serialize` is too complex (24)
+- airflow/serialization/serialized_objects.py:386:9: C901 `serialize` is too complex (25)
+- airflow/template/templater.py:65:9: C901 `resolve_template_files` is too complex (12)
++ airflow/ti_deps/deps/trigger_rule_dep.py:96:9: C901 `_evaluate_trigger_rule` is too complex (70)
+- airflow/ti_deps/deps/trigger_rule_dep.py:96:9: C901 `_evaluate_trigger_rule` is too complex (71)
+- airflow/utils/code_utils.py:25:5: C901 `get_python_source` is too complex (11)
++ airflow/utils/email.py:219:5: C901 `send_mime_email` is too complex (11)
+- airflow/utils/email.py:219:5: C901 `send_mime_email` is too complex (14)
++ airflow/utils/log/secrets_masker.py:222:9: C901 `_redact` is too complex (11)
+- airflow/utils/log/secrets_masker.py:222:9: C901 `_redact` is too complex (12)
++ airflow/utils/process_utils.py:53:5: C901 `reap_process_group` is too complex (21)
+- airflow/utils/process_utils.py:53:5: C901 `reap_process_group` is too complex (27)
++ airflow/utils/serve_logs.py:43:5: C901 `create_app` is too complex (12)
+- airflow/utils/serve_logs.py:43:5: C901 `create_app` is too complex (13)
+- airflow/utils/serve_logs.py:56:9: C901 `validate_pre_signed_url` is too complex (11)
+- airflow/www/api/experimental/endpoints.py:81:5: C901 `trigger_dag` is too complex (11)
+- airflow/www/extensions/init_jinja_globals.py:30:5: C901 `init_jinja_globals` is too complex (11)
++ airflow/www/fab_security/manager.py:1055:9: C901 `auth_user_ldap` is too complex (31)
+- airflow/www/fab_security/manager.py:1055:9: C901 `auth_user_ldap` is too complex (34)
++ airflow/www/views.py:1326:9: C901 `rendered_templates` is too complex (14)
+- airflow/www/views.py:1326:9: C901 `rendered_templates` is too complex (15)
+- airflow/www/views.py:1489:9: C901 `get_logs_with_metadata` is too complex (12)
++ airflow/www/views.py:1885:9: C901 `trigger` is too complex (27)
+- airflow/www/views.py:1885:9: C901 `trigger` is too complex (31)
++ dev/assign_cherry_picked_prs_with_milestone.py:250:5: C901 `assign_prs` is too complex (32)
+- dev/assign_cherry_picked_prs_with_milestone.py:250:5: C901 `assign_prs` is too complex (34)
+- dev/breeze/src/airflow_breeze/commands/kubernetes_commands.py:1403:5: C901 `_run_complete_tests` is too complex (11)
++ dev/breeze/src/airflow_breeze/utils/confirm.py:34:5: C901 `user_confirm` is too complex (14)
+- dev/breeze/src/airflow_breeze/utils/confirm.py:34:5: C901 `user_confirm` is too complex (15)
+- dev/breeze/src/airflow_breeze/utils/kubernetes_utils.py:111:5: C901 `_download_tool_if_needed` is too complex (13)
++ dev/breeze/src/airflow_breeze/utils/parallel.py:363:5: C901 `check_async_run_results` is too complex (16)
+- dev/breeze/src/airflow_breeze/utils/parallel.py:363:5: C901 `check_async_run_results` is too complex (18)
+- dev/breeze/src/airflow_breeze/utils/path_utils.py:331:5: C901 `cleanup_python_generated_files` is too complex (11)
++ dev/provider_packages/prepare_provider_packages.py:698:5: C901 `make_sure_remote_apache_exists_and_fetch` is too complex (12)
+- dev/provider_packages/prepare_provider_packages.py:698:5: C901 `make_sure_remote_apache_exists_and_fetch` is too complex (15)
++ dev/provider_packages/prepare_provider_packages.py:934:5: C901 `get_all_changes_for_package` is too complex (13)
+- dev/provider_packages/prepare_provider_packages.py:934:5: C901 `get_all_changes_for_package` is too complex (14)
++ docs/exts/airflow_intersphinx.py:101:9: C901 `main` is too complex (14)
+- docs/exts/airflow_intersphinx.py:101:9: C901 `main` is too complex (15)
+- scripts/in_container/run_provider_yaml_files_check.py:116:5: C901 `assert_sets_equal` is too complex (12)
++ scripts/in_container/verify_providers.py:204:5: C901 `import_all_classes` is too complex (18)
+- scripts/in_container/verify_providers.py:204:5: C901 `import_all_classes` is too complex (19)
++ tests/conftest.py:459:5: C901 `dag_maker` is too complex (30)
+- tests/conftest.py:459:5: C901 `dag_maker` is too complex (32)
++ tests/jobs/test_triggerer_job.py:189:5: C901 `test_trigger_create_race_condition_18392` is too complex (16)
+- tests/jobs/test_triggerer_job.py:189:5: C901 `test_trigger_create_race_condition_18392` is too complex (17)
+```
+
+</p>
+</details>
+
+<!-- thollander/actions-comment-pull-request "ecosystem-results" -->
+
+---
+
+_Merged by @charliermarsh on 2023-03-14 18:40_
+
+---
+
+_Closed by @charliermarsh on 2023-03-14 18:40_
+
+---
+
+_Branch deleted on 2023-03-14 18:40_
+
+---

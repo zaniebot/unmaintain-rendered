@@ -1,0 +1,77 @@
+```yaml
+number: 3810
+title: Use crates.io version of pep440_rs
+type: pull_request
+state: closed
+author: konstin
+labels: []
+assignees: []
+base: main
+head: pep440_rs_released
+created_at: 2023-03-30T11:41:42Z
+updated_at: 2023-03-30T12:40:19Z
+url: https://github.com/astral-sh/ruff/pull/3810
+synced_at: 2026-01-12T04:39:45Z
+```
+
+# Use crates.io version of pep440_rs
+
+---
+
+_Pull request opened by @konstin on 2023-03-30 11:41_
+
+_No description provided._
+
+---
+
+_@MichaReiser approved on 2023-03-30 11:49_
+
+---
+
+_Comment by @github-actions[bot] on 2023-03-30 12:02_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.01     16.7±0.07ms     2.4 MB/sec    1.00     16.5±0.10ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.2±0.01ms     3.9 MB/sec    1.00      4.2±0.02ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    551.9±5.07µs     5.3 MB/sec    1.01    558.9±3.24µs     5.3 MB/sec
+linter/all-rules/pydantic/types.py         1.01      7.1±0.03ms     3.6 MB/sec    1.00      7.1±0.04ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.5±0.03ms     4.8 MB/sec    1.00      8.6±0.05ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1938.2±9.25µs     8.6 MB/sec    1.00   1931.9±9.84µs     8.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00    214.6±1.02µs    13.8 MB/sec    1.01    217.3±1.45µs    13.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.0±0.01ms     6.4 MB/sec    1.00      4.0±0.01ms     6.4 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     15.8±0.11ms     2.6 MB/sec    1.01     16.0±0.12ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.2±0.05ms     4.0 MB/sec    1.01      4.2±0.05ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.01    438.3±5.52µs     6.7 MB/sec    1.00    435.5±4.68µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.8±0.05ms     3.7 MB/sec    1.00      6.8±0.05ms     3.7 MB/sec
+linter/default-rules/large/dataset.py      1.01      8.3±0.06ms     4.9 MB/sec    1.00      8.2±0.03ms     5.0 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1785.5±12.13µs     9.3 MB/sec    1.01  1797.1±24.06µs     9.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    185.8±1.72µs    15.9 MB/sec    1.02    188.9±5.25µs    15.6 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.15ms     6.7 MB/sec    1.00      3.8±0.06ms     6.7 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Comment by @konstin on 2023-03-30 12:40_
+
+Now using graphite: https://github.com/charliermarsh/ruff/pull/3812
+
+---
+
+_Closed by @konstin on 2023-03-30 12:40_
+
+---

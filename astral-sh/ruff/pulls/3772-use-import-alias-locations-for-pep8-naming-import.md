@@ -1,0 +1,220 @@
+```yaml
+number: 3772
+title: "Use import alias locations for `pep8-naming` import rules"
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - bug
+assignees: []
+merged: true
+base: main
+head: charlie/noqa-names
+created_at: 2023-03-28T15:35:08Z
+updated_at: 2023-03-28T16:10:16Z
+url: https://github.com/astral-sh/ruff/pull/3772
+synced_at: 2026-01-12T04:39:45Z
+```
+
+# Use import alias locations for `pep8-naming` import rules
+
+---
+
+_Pull request opened by @charliermarsh on 2023-03-28 15:35_
+
+## Summary
+
+We now support either of these suppressions:
+
+```py
+from mod import (
+    lower_case as NonLowerCase,  # noqa: N812
+)
+
+from mod import (  # noqa: N812
+    lower_case as NonLowerCase,
+)
+```
+
+Previously, only the latter was supported.
+
+Closes #3763.
+
+---
+
+_Renamed from "Use import alias locations for pep8-naming import rules" to "Use import alias locations for `pep8-naming` import rules" by @charliermarsh on 2023-03-28 15:36_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-03-28 15:36_
+
+---
+
+_Merged by @charliermarsh on 2023-03-28 15:41_
+
+---
+
+_Closed by @charliermarsh on 2023-03-28 15:41_
+
+---
+
+_Branch deleted on 2023-03-28 15:41_
+
+---
+
+_Comment by @github-actions[bot] on 2023-03-28 15:48_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+51, -51, 0 error(s))
+
+<details><summary>airflow (+39, -39)</summary>
+<p>
+
+```diff
+- airflow/api_connexion/endpoints/task_instance_endpoint.py:47:1: N817 CamelCase `DagRun` imported as acronym `DR`
++ airflow/api_connexion/endpoints/task_instance_endpoint.py:47:35: N817 CamelCase `DagRun` imported as acronym `DR`
+- airflow/api_connexion/endpoints/task_instance_endpoint.py:49:1: N817 CamelCase `TaskInstance` imported as acronym `TI`
++ airflow/api_connexion/endpoints/task_instance_endpoint.py:49:41: N817 CamelCase `TaskInstance` imported as acronym `TI`
+- airflow/api_connexion/endpoints/xcom_endpoint.py:30:1: N817 CamelCase `DagRun` imported as acronym `DR`
++ airflow/api_connexion/endpoints/xcom_endpoint.py:30:28: N817 CamelCase `DagRun` imported as acronym `DR`
+- airflow/dag_processing/processor.py:47:1: N817 CamelCase `DagRun` imported as acronym `DR`
++ airflow/dag_processing/processor.py:47:35: N817 CamelCase `DagRun` imported as acronym `DR`
+- airflow/dag_processing/processor.py:49:1: N817 CamelCase `TaskInstance` imported as acronym `TI`
++ airflow/dag_processing/processor.py:49:41: N817 CamelCase `TaskInstance` imported as acronym `TI`
+- airflow/models/dag.py:219:5: N817 CamelCase `DatasetDagRunQueue` imported as acronym `DDRQ`
++ airflow/models/dag.py:219:69: N817 CamelCase `DatasetDagRunQueue` imported as acronym `DDRQ`
++ airflow/models/dag.py:3389:73: N817 CamelCase `DatasetDagRunQueue` imported as acronym `DDRQ`
+- airflow/models/dag.py:3389:9: N817 CamelCase `DatasetDagRunQueue` imported as acronym `DDRQ`
+- airflow/models/dagrun.py:57:1: N817 CamelCase `TaskInstance` imported as acronym `TI`
++ airflow/models/dagrun.py:57:41: N817 CamelCase `TaskInstance` imported as acronym `TI`
+- airflow/serialization/serialized_objects.py:52:1: N817 CamelCase `DagAttributeTypes` imported as acronym `DAT`
++ airflow/serialization/serialized_objects.py:52:41: N817 CamelCase `DagAttributeTypes` imported as acronym `DAT`
+- airflow/ti_deps/deps/prev_dagrun_dep.py:22:1: N817 CamelCase `TaskInstance` imported as acronym `TI`
++ airflow/ti_deps/deps/prev_dagrun_dep.py:22:59: N817 CamelCase `TaskInstance` imported as acronym `TI`
+- airflow/ti_deps/deps/trigger_rule_dep.py:31:1: N817 CamelCase `TriggerRule` imported as acronym `TR`
++ airflow/ti_deps/deps/trigger_rule_dep.py:31:40: N817 CamelCase `TriggerRule` imported as acronym `TR`
++ airflow/www/decorators.py:24:16: N814 Camelcase `BytesIO` imported as constant `IO`
+- airflow/www/decorators.py:24:1: N814 Camelcase `BytesIO` imported as constant `IO`
+- scripts/ci/testing/summarize_junit_failures.py:23:1: N817 CamelCase `ElementTree` imported as acronym `ET`
++ scripts/ci/testing/summarize_junit_failures.py:23:8: N817 CamelCase `ElementTree` imported as acronym `ET`
+- scripts/in_container/check_junitxml_result.py:21:1: N817 CamelCase `ElementTree` imported as acronym `ET`
++ scripts/in_container/check_junitxml_result.py:21:8: N817 CamelCase `ElementTree` imported as acronym `ET`
+- tests/api_connexion/endpoints/test_task_instance_endpoint.py:29:1: N817 CamelCase `RenderedTaskInstanceFields` imported as acronym `RTIF`
++ tests/api_connexion/endpoints/test_task_instance_endpoint.py:29:45: N817 CamelCase `RenderedTaskInstanceFields` imported as acronym `RTIF`
+- tests/api_connexion/schemas/test_task_instance_schema.py:29:1: N817 CamelCase `RenderedTaskInstanceFields` imported as acronym `RTIF`
+- tests/api_connexion/schemas/test_task_instance_schema.py:29:1: N817 CamelCase `TaskInstance` imported as acronym `TI`
++ tests/api_connexion/schemas/test_task_instance_schema.py:29:28: N817 CamelCase `RenderedTaskInstanceFields` imported as acronym `RTIF`
++ tests/api_connexion/schemas/test_task_instance_schema.py:29:73: N817 CamelCase `TaskInstance` imported as acronym `TI`
+- tests/jobs/test_backfill_job.py:43:1: N817 CamelCase `TaskInstance` imported as acronym `TI`
++ tests/jobs/test_backfill_job.py:43:42: N817 CamelCase `TaskInstance` imported as acronym `TI`
+- tests/lineage/test_lineage.py:27:1: N817 CamelCase `TaskInstance` imported as acronym `TI`
++ tests/lineage/test_lineage.py:27:28: N817 CamelCase `TaskInstance` imported as acronym `TI`
+- tests/models/test_cleartasks.py:25:1: N817 CamelCase `TaskInstance` imported as acronym `TI`
++ tests/models/test_cleartasks.py:25:33: N817 CamelCase `TaskInstance` imported as acronym `TI`
+- tests/models/test_dag.py:53:1: N817 CamelCase `TaskInstance` imported as acronym `TI`
++ tests/models/test_dag.py:53:69: N817 CamelCase `TaskInstance` imported as acronym `TI`
+- tests/models/test_dagrun.py:32:1: N817 CamelCase `TaskInstance` imported as acronym `TI`
++ tests/models/test_dagrun.py:38:5: N817 CamelCase `TaskInstance` imported as acronym `TI`
+- tests/models/test_pool.py:25:1: N817 CamelCase `TaskInstance` imported as acronym `TI`
++ tests/models/test_pool.py:25:41: N817 CamelCase `TaskInstance` imported as acronym `TI`
+- tests/models/test_renderedtifields.py:32:1: N817 CamelCase `RenderedTaskInstanceFields` imported as acronym `RTIF`
++ tests/models/test_renderedtifields.py:32:45: N817 CamelCase `RenderedTaskInstanceFields` imported as acronym `RTIF`
+- tests/models/test_serialized_dag.py:28:1: N817 CamelCase `SerializedDagModel` imported as acronym `SDM`
++ tests/models/test_serialized_dag.py:28:43: N817 CamelCase `SerializedDagModel` imported as acronym `SDM`
+- tests/models/test_skipmixin.py:29:1: N817 CamelCase `TaskInstance` imported as acronym `TI`
++ tests/models/test_skipmixin.py:29:41: N817 CamelCase `TaskInstance` imported as acronym `TI`
+- tests/models/test_taskinstance.py:62:1: N817 CamelCase `TaskInstance` imported as acronym `TI`
++ tests/models/test_taskinstance.py:62:55: N817 CamelCase `TaskInstance` imported as acronym `TI`
+- tests/operators/test_branch_operator.py:22:1: N817 CamelCase `TaskInstance` imported as acronym `TI`
++ tests/operators/test_branch_operator.py:22:41: N817 CamelCase `TaskInstance` imported as acronym `TI`
+- tests/operators/test_datetime.py:26:1: N817 CamelCase `TaskInstance` imported as acronym `TI`
++ tests/operators/test_datetime.py:26:41: N817 CamelCase `TaskInstance` imported as acronym `TI`
+- tests/operators/test_python.py:35:1: N817 CamelCase `TaskInstance` imported as acronym `TI`
++ tests/operators/test_python.py:35:41: N817 CamelCase `TaskInstance` imported as acronym `TI`
+- tests/operators/test_weekday.py:26:1: N817 CamelCase `TaskInstance` imported as acronym `TI`
++ tests/operators/test_weekday.py:26:41: N817 CamelCase `TaskInstance` imported as acronym `TI`
+- tests/providers/common/sql/operators/test_sql.py:28:1: N817 CamelCase `TaskInstance` imported as acronym `TI`
++ tests/providers/common/sql/operators/test_sql.py:28:48: N817 CamelCase `TaskInstance` imported as acronym `TI`
+- tests/providers/google/cloud/sensors/test_bigquery_dts.py:21:1: N817 CamelCase `MagicMock` imported as acronym `MM`
++ tests/providers/google/cloud/sensors/test_bigquery_dts.py:21:27: N817 CamelCase `MagicMock` imported as acronym `MM`
+- tests/providers/google/marketing_platform/operators/test_campaign_manager.py:26:1: N817 CamelCase `TaskInstance` imported as acronym `TI`
++ tests/providers/google/marketing_platform/operators/test_campaign_manager.py:26:33: N817 CamelCase `TaskInstance` imported as acronym `TI`
+- tests/providers/google/marketing_platform/operators/test_display_video.py:26:1: N817 CamelCase `TaskInstance` imported as acronym `TI`
++ tests/providers/google/marketing_platform/operators/test_display_video.py:26:33: N817 CamelCase `TaskInstance` imported as acronym `TI`
+- tests/providers/google/marketing_platform/operators/test_search_ads.py:26:1: N817 CamelCase `TaskInstance` imported as acronym `TI`
++ tests/providers/google/marketing_platform/operators/test_search_ads.py:26:33: N817 CamelCase `TaskInstance` imported as acronym `TI`
+- tests/providers/salesforce/hooks/test_salesforce.py:27:1: N813 Camelcase `Session` imported as lowercase `request_session`
++ tests/providers/salesforce/hooks/test_salesforce.py:27:22: N813 Camelcase `Session` imported as lowercase `request_session`
++ tests/test_utils/perf/scheduler_dag_execution_timing.py:108:52: N813 Camelcase `MockExecutor` imported as lowercase `executor`
+- tests/test_utils/perf/scheduler_dag_execution_timing.py:108:9: N813 Camelcase `MockExecutor` imported as lowercase `executor`
+- tests/utils/test_db.py:36:1: N813 Camelcase `Base` imported as lowercase `airflow_base`
++ tests/utils/test_db.py:36:28: N813 Camelcase `Base` imported as lowercase `airflow_base`
+```
+
+</p>
+</details>
+<details><summary>bokeh (+12, -12)</summary>
+<p>
+
+```diff
+- examples/basic/annotations/arrow.py:10:1: N813 Camelcase `Muted3` imported as lowercase `color`
++ examples/basic/annotations/arrow.py:10:28: N813 Camelcase `Muted3` imported as lowercase `color`
+- examples/topics/geo/texas_hover_map.py:12:1: N813 Camelcase `Viridis6` imported as lowercase `palette`
++ examples/topics/geo/texas_hover_map.py:12:28: N813 Camelcase `Viridis6` imported as lowercase `palette`
+- release/checks.py:15:1: N817 CamelCase `Version` imported as acronym `V`
++ release/checks.py:15:31: N817 CamelCase `Version` imported as acronym `V`
+- release/remote.py:15:1: N817 CamelCase `Version` imported as acronym `V`
++ release/remote.py:15:31: N817 CamelCase `Version` imported as acronym `V`
++ src/bokeh/core/serialization.py:25:19: N812 Lowercase `array` imported as non-lowercase `TypedArray`
+- src/bokeh/core/serialization.py:25:1: N812 Lowercase `array` imported as non-lowercase `TypedArray`
+- src/bokeh/models/callbacks.py:24:1: N813 Camelcase `Any` imported as lowercase `any`
++ src/bokeh/models/callbacks.py:24:20: N813 Camelcase `Any` imported as lowercase `any`
+- src/bokeh/sampledata/us_counties.py:45:1: N813 Camelcase `ElementTree` imported as lowercase `et`
++ src/bokeh/sampledata/us_counties.py:45:8: N813 Camelcase `ElementTree` imported as lowercase `et`
+- src/bokeh/sampledata/us_states.py:44:1: N813 Camelcase `ElementTree` imported as lowercase `et`
++ src/bokeh/sampledata/us_states.py:44:8: N813 Camelcase `ElementTree` imported as lowercase `et`
+- src/bokeh/sphinxext/bokeh_releases.py:45:1: N817 CamelCase `Version` imported as acronym `V`
++ src/bokeh/sphinxext/bokeh_releases.py:45:31: N817 CamelCase `Version` imported as acronym `V`
+- tests/support/plugins/project.py:38:1: N812 Lowercase `expected_conditions` imported as non-lowercase `EC`
++ tests/support/plugins/project.py:38:40: N812 Lowercase `expected_conditions` imported as non-lowercase `EC`
++ tests/unit/bokeh/core/test_serialization.py:22:19: N812 Lowercase `array` imported as non-lowercase `TypedArray`
+- tests/unit/bokeh/core/test_serialization.py:22:1: N812 Lowercase `array` imported as non-lowercase `TypedArray`
+- tests/unit/bokeh/test_resources.py:28:1: N817 CamelCase `Version` imported as acronym `V`
++ tests/unit/bokeh/test_resources.py:28:31: N817 CamelCase `Version` imported as acronym `V`
+```
+
+</p>
+</details>
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     16.3±0.23ms     2.5 MB/sec    1.02     16.6±0.10ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.1±0.06ms     4.0 MB/sec    1.01      4.2±0.04ms     4.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00   547.1±10.67µs     5.4 MB/sec    1.01    551.7±4.73µs     5.3 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.9±0.12ms     3.7 MB/sec    1.02      7.0±0.07ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.01      8.6±0.09ms     4.7 MB/sec    1.00      8.5±0.05ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1911.0±22.51µs     8.7 MB/sec    1.00  1909.5±15.96µs     8.7 MB/sec
+linter/default-rules/numpy/globals.py      1.00    214.5±1.95µs    13.8 MB/sec    1.00    214.6±3.04µs    13.8 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.9±0.04ms     6.5 MB/sec    1.00      3.9±0.03ms     6.5 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                    pr
+-----                                      ----                                    --
+linter/all-rules/large/dataset.py          1.00     14.8±0.22ms     2.7 MB/sec     1.01     15.0±0.23ms     2.7 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.8±0.06ms     4.4 MB/sec     1.01      3.8±0.09ms     4.3 MB/sec
+linter/all-rules/numpy/globals.py          1.00   462.1±11.33µs     6.4 MB/sec     1.00   461.8±14.29µs     6.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.3±0.11ms     4.0 MB/sec     1.02      6.4±0.19ms     4.0 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.7±0.11ms     5.3 MB/sec     1.00      7.7±0.10ms     5.3 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01  1698.7±110.09µs     9.8 MB/sec    1.00  1685.4±28.38µs     9.9 MB/sec
+linter/default-rules/numpy/globals.py      1.00    184.6±6.93µs    16.0 MB/sec     1.00    184.5±6.19µs    16.0 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.6±0.08ms     7.2 MB/sec     1.00      3.5±0.08ms     7.3 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---

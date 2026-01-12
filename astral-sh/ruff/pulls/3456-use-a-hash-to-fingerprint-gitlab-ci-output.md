@@ -1,0 +1,956 @@
+```yaml
+number: 3456
+title: Use a hash to fingerprint GitLab CI output
+type: pull_request
+state: merged
+author: charliermarsh
+labels: []
+assignees: []
+merged: true
+base: main
+head: charlie/gitlab
+created_at: 2023-03-12T05:09:59Z
+updated_at: 2023-03-12T05:22:40Z
+url: https://github.com/astral-sh/ruff/pull/3456
+synced_at: 2026-01-12T04:39:44Z
+```
+
+# Use a hash to fingerprint GitLab CI output
+
+---
+
+_Pull request opened by @charliermarsh on 2023-03-12 05:09_
+
+Example output:
+
+```console
+❯ cargo run -p ruff_cli -- foo.py --format gitlab -n
+   Compiling ruff_cli v0.0.254 (/Users/crmarsh/workspace/staging/crates/ruff_cli)
+    Finished dev [unoptimized + debuginfo] target(s) in 2.63s
+     Running `target/debug/ruff foo.py --format gitlab -n`
+[
+  {
+    "description": "(F401) `os` imported but unused",
+    "fingerprint": "3152c35dd8e4018f",
+    "location": {
+      "lines": {
+        "begin": 1,
+        "end": 1
+      },
+      "path": "/Users/crmarsh/workspace/staging/foo.py"
+    },
+    "severity": "major"
+  }
+]
+```
+
+Closes #3441.
+
+
+---
+
+_Comment by @github-actions[bot] on 2023-03-12 05:20_
+
+ℹ️ ecosystem check **detected changes**. (+0, -854, 0 error(s))
+
+<details><summary>zulip</summary>
+<p>
+
+```diff
+- zerver/apps.py:32:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- zerver/views/realm.py:185:5: B018 Found useless expression. Either assign it to a variable or remove it.
+```
+
+</p>
+</details>
+<details><summary>bokeh</summary>
+<p>
+
+```diff
+- tests/codebase/test_code_quality.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/codebase/test_eslint.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/codebase/test_importlib_metadata.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/codebase/test_isort.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/codebase/test_js_license_set.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/codebase/test_json.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/codebase/test_license.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/codebase/test_no_client_server_common.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/codebase/test_no_ipython_common.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/codebase/test_no_pandas_common.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/codebase/test_no_request_host.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/codebase/test_no_selenium_common.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/codebase/test_no_tornado_common.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/codebase/test_no_typing_extensions_common.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/codebase/test_python_execution_with_OO.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/codebase/test_ruff.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/codebase/test_windows_reserved_filenames.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/embed/test_json_item.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/models/test_datarange1d.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/models/test_plot.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/models/test_sources.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/test_regressions.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/tools/test_box_edit_tool.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/tools/test_box_zoom_tool.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/tools/test_custom_action.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/tools/test_freehand_draw_tool.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/tools/test_pan_tool.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/tools/test_point_draw_tool.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/tools/test_poly_draw_tool.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/tools/test_poly_edit_tool.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/tools/test_range_tool.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/tools/test_reset_tool.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/tools/test_tap_tool.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/tools/test_wheel_pan_tool.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/tools/test_wheel_zoom_tool.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/tools/test_zoom_in_tool.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/tools/test_zoom_out_tool.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/tables/test_cell_editors.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/tables/test_copy_paste.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/tables/test_data_table.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/tables/test_sortable.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/tables/test_source_updates.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_autocomplete_input.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_button.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_checkbox_button_group.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_checkbox_group.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_color_picker.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_copy_paste.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_datepicker.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_daterange_slider.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_dateslider.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_datetime_range_slider.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_div.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_dropdown.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_multi_choice.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_numeric_input.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_paragraph.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_password_input.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_pretext.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_radio_button_group.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_radio_group.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_range_slider.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_select.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_slider.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_spinner.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_text_input.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_textarea_input.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/integration/widgets/test_toggle.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/test_bokehjs.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/test_defaults.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/test_examples.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/_testing/util/test_env.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/application/handlers/test___init___handlers.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/application/handlers/test_code.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/application/handlers/test_code_runner.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/application/handlers/test_directory.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/application/handlers/test_document_lifecycle.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/application/handlers/test_function.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/application/handlers/test_handler.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/application/handlers/test_notebook__handlers.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/application/handlers/test_script.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/application/handlers/test_server_lifecycle.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/application/handlers/test_server_request_handler.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/application/test___init___application.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/application/test_application.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/client/test___init___client.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/client/test_connection.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/client/test_session__client.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/client/test_states.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/client/test_util__client.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/client/test_websocket.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/colors/test___init___colors.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/colors/test_color__colors.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/colors/test_groups.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/colors/test_named.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/colors/test_util__colors.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/command/subcommands/test___init___subcommands.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/command/subcommands/test_info.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/command/subcommands/test_json__subcommands.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/command/subcommands/test_sampledata__subcommands.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/command/subcommands/test_secret.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/command/subcommands/test_serve.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/command/test___init___command.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/command/test_bootstrap.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/command/test_subcommand.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/command/test_util__command.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/_util_property.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test___init___property.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_alias.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_aliases.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_any.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_auto.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_bases.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_color__property.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_container.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_dataspec.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_datetime.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_descriptor_factory.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_descriptors.py:110:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_descriptors.py:111:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_descriptors.py:112:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_descriptors.py:113:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_descriptors.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_either.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_enum.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_include.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_instance.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_json__property.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_nullable.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_numeric.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_override.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_pd.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_primitive.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_required.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_singletons.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_string_properties.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_validation__property.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_vectorization.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_visual.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/property/test_wrappers__property.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/test_enums.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/test_has_props.py:121:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/test_has_props.py:126:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/test_has_props.py:131:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/test_has_props.py:136:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/test_has_props.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/test_json_encoder.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/test_properties.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/test_properties.py:367:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/test_properties.py:391:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/test_query.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/test_serialization.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/test_templates.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/core/test_validation.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/document/_util_document.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/document/test_callbacks__document.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/document/test_document.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/document/test_events__document.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/document/test_locking.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/document/test_models.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/document/test_modules.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/embed/test___init___embed.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/embed/test_bundle.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/embed/test_elements.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/embed/test_notebook__embed.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/embed/test_server__embed.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/embed/test_standalone.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/embed/test_util__embed.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/embed/test_wrappers__embed.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/io/test___init___io.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/io/test_doc.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/io/test_export.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/io/test_notebook__io.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/io/test_output.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/io/test_saving.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/io/test_showing.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/io/test_state.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/io/test_util__io.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/io/test_webdriver.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/model/test___init___model.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/model/test_data_model.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/model/test_docs.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/model/test_model.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/model/test_util_model.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/_util_models.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/test_annotations.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/test_axes.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/test_callbacks__models.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/test_defaults.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/test_dom.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/test_filters.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/test_formatters.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/test_glyph_renderer.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/test_glyphs.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/test_glyphs.py:88:1: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/test_graph_renderer.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/test_graphs.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/test_grids.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/test_layouts__models.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/test_mappers.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/test_plots.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/test_plots.py:485:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/test_plots.py:491:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/test_ranges.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/test_sources.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/test_tools.py:14:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/test_transforms.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/util/test_structure.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/widgets/test_slider.py:139:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/widgets/test_slider.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/widgets/test_slider.py:141:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/widgets/test_slider.py:47:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/widgets/test_slider.py:49:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/widgets/test_slider.py:59:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/widgets/test_slider.py:61:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/widgets/test_slider.py:93:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/models/widgets/test_slider.py:95:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/plotting/test___init___plotting.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/plotting/test__decorators.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/plotting/test__graph.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/plotting/test__legends.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/plotting/test__plot.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/plotting/test__renderer.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/plotting/test__stack.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/plotting/test__tools.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/plotting/test_contour.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/plotting/test_figure.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/plotting/test_graph.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/protocol/messages/test_patch_doc.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/protocol/messages/test_pull_doc.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/protocol/messages/test_push_doc.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/protocol/test_message.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/protocol/test_receiver.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test___init___sampledata.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_airport_routes.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_airports.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_anscombe.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_antibiotics.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_autompg.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_autompg2.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_browsers.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_commits.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_daylight.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_degrees.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_gapminder.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_glucose.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_haar_cascade.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_iris.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_les_mis.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_movies_data.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_mtb.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_olympics2014.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_perceptions.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_periodic_table.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_population.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_sample_geojson.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_sample_superstore.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_sea_surface_temperature.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_sprint.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_stocks.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_unemployment.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_unemployment1948.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_us_cities.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_us_counties.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_us_holidays.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_us_marriages_divorces.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_us_states.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/sampledata/test_world_cities.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/server/test_auth_provider.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/server/test_callbacks__server.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/server/test_contexts.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/server/test_server__server.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/server/test_session__server.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/server/test_tornado__server.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/server/test_util.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/server/views/test_metadata_handler.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/server/views/test_root_handler.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/server/views/test_session_handler.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/server/views/test_ws.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/test___init__.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/test___main__.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/test_client_server.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/test_driving.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/test_events.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/test_ext.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/test_layouts.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/test_objects.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/test_palettes.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/test_server.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/test_settings.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/test_themes.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/test_tile_providers.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/test_transform.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/util/test_browser.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/util/test_callback_manager.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/util/test_compiler.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/util/test_dataclasses.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/util/test_dependencies.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/util/test_deprecation.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/util/test_hex.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/util/test_options.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/util/test_package.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/util/test_sampledata__util.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/util/test_strings.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/util/test_token.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/util/test_tornado__util.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/util/test_util__serialization.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/util/test_version.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/unit/bokeh/util/test_warnings.py:13:17: B018 Found useless expression. Either assign it to a variable or remove it.
+```
+
+</p>
+</details>
+<details><summary>scikit-build</summary>
+<p>
+
+_No changes detected_.
+
+</p>
+</details>
+<details><summary>airflow</summary>
+<p>
+
+```diff
+- airflow/example_dags/example_bash_operator.py:49:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_bash_operator.py:56:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_bash_operator.py:64:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_bash_operator.py:73:1: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_branch_datetime_operator.py:103:1: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_branch_datetime_operator.py:52:1: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_branch_datetime_operator.py:78:1: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_branch_day_of_week_operator.py:57:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_branch_day_of_week_operator.py:59:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_branch_labels.py:43:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_branch_operator.py:48:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_branch_operator_decorator.py:48:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_branch_python_dop_operator_3.py:60:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:161:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:162:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:163:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:165:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:166:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:167:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:169:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:170:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:171:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:173:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:174:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:175:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:177:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:178:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:179:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:192:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:193:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:195:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:196:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:198:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:199:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:202:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:203:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:206:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:207:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:210:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:214:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:217:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:218:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:219:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:220:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:87:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:90:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_complex.py:93:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_external_task_marker_dag.py:97:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_latest_only.py:37:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_latest_only_with_trigger.py:46:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_latest_only_with_trigger.py:47:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_nested_branch_dag.py:55:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_nested_branch_dag.py:56:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_params_trigger_ui.py:103:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_passing_params_via_test_command.py:86:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_python_operator.py:119:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_python_operator.py:159:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_python_operator.py:86:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_sensors.py:119:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_sensors.py:120:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_sensors.py:121:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_sensors.py:122:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_sensors.py:123:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_setup_teardown.py:44:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_skip_dag.py:53:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_skip_dag.py:54:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_skip_dag.py:55:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_subdag_operator.py:61:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_task_group.py:43:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_task_group.py:56:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_task_group.py:63:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_task_group_decorator.py:77:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_time_delta_sensor_async.py:41:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_xcom.py:91:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/example_xcomargs.py:65:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/tutorial.py:124:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/example_dags/tutorial_dag.py:131:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/amazon/aws/example_dags/example_eks_templated.py:132:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/amazon/aws/example_dags/example_glacier_to_gcs.py:72:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/cncf/kubernetes/hooks/kubernetes.py:245:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/ftp/hooks/ftp.py:274:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_automl_nl_text_classification.py:102:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_automl_nl_text_classification.py:103:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_automl_nl_text_sentiment.py:103:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_automl_nl_text_sentiment.py:104:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_automl_translation.py:109:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_automl_translation.py:110:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_automl_video_intelligence_classification.py:106:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_automl_video_intelligence_classification.py:107:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_automl_video_intelligence_tracking.py:107:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_automl_video_intelligence_tracking.py:108:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_automl_vision_object_detection.py:106:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_automl_vision_object_detection.py:107:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_cloud_sql_query.py:288:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_compute_ssh.py:87:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_compute_ssh.py:88:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_compute_ssh.py:90:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_dataflow.py:112:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_dataflow.py:245:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_dataflow.py:246:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_dataflow.py:247:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_dataflow.py:248:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_dataflow.py:291:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_looker.py:61:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_looker.py:63:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_presto_to_gcs.py:183:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_presto_to_gcs.py:184:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_presto_to_gcs.py:185:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_presto_to_gcs.py:186:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_presto_to_gcs.py:188:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_presto_to_gcs.py:189:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_presto_to_gcs.py:191:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_presto_to_gcs.py:192:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_presto_to_gcs.py:193:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_presto_to_gcs.py:194:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_salesforce_to_gcs.py:124:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_salesforce_to_gcs.py:125:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_salesforce_to_gcs.py:126:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_salesforce_to_gcs.py:127:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_salesforce_to_gcs.py:128:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_vertex_ai.py:423:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_vertex_ai.py:424:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_vertex_ai.py:425:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_vertex_ai.py:426:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_vertex_ai.py:427:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_vertex_ai.py:428:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_vertex_ai.py:582:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_vertex_ai.py:583:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_vertex_ai.py:637:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_vertex_ai.py:638:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_vertex_ai.py:709:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_vertex_ai.py:710:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_vertex_ai.py:753:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/example_dags/example_vertex_ai.py:754:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/utils/dataform.py:176:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/utils/dataform.py:185:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/cloud/utils/dataform.py:194:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/marketing_platform/example_dags/example_display_video.py:123:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- airflow/providers/google/marketing_platform/example_dags/example_display_video.py:208:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- docs/exts/docs_build/spelling_checks.py:169:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- docs/exts/docs_build/spelling_checks.py:171:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/always/test_connection.py:687:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/api_connexion/endpoints/test_task_endpoint.py:78:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/dags/test_clear_subdag.py:66:1: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/dags/test_miscellaneous.py:54:1: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/dags/test_miscellaneous.py:62:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/dags/test_miscellaneous.py:71:1: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/dags/test_only_empty_tasks.py:50:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/dags/test_prev_dagrun_dep.py:46:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/dags/test_subdag.py:82:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/decorators/test_sensor.py:102:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/decorators/test_sensor.py:128:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/decorators/test_sensor.py:154:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/decorators/test_sensor.py:178:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/decorators/test_sensor.py:50:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/decorators/test_sensor.py:78:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/decorators/test_short_circuit.py:42:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/decorators/test_short_circuit.py:46:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/decorators/test_short_circuit.py:54:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/jobs/test_backfill_job.py:1847:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/jobs/test_backfill_job.py:958:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/jobs/test_backfill_job.py:959:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/jobs/test_scheduler_job.py:1758:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/jobs/test_scheduler_job.py:3620:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/jobs/test_scheduler_job.py:3722:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/jobs/test_scheduler_job.py:4719:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/lineage/test_lineage.py:146:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_baseoperator.py:551:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_baseoperator.py:559:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_baseoperator.py:561:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_baseoperator.py:563:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_baseoperator.py:565:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_baseoperator.py:569:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_baseoperator.py:575:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_baseoperator.py:578:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_baseoperator.py:582:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_cleartasks.py:438:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_dag.py:1319:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_dag.py:1331:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_dag.py:1341:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_dag.py:1358:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_dag.py:1368:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_dag.py:1377:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_dag.py:1378:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_dag.py:1389:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_dag.py:1390:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_dag.py:2082:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_dag.py:274:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_dag.py:2913:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_dagbag.py:319:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_dagrun.py:1985:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_dagrun.py:2174:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_mappedoperator.py:100:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_mappedoperator.py:47:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_mappedoperator.py:65:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_mappedoperator.py:82:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_skipmixin.py:119:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_skipmixin.py:173:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_taskinstance.py:1309:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_taskinstance.py:1528:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_taskinstance.py:2061:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_taskinstance.py:251:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_taskinstance.py:519:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_xcom_arg.py:109:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_xcom_arg.py:160:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_xcom_arg.py:181:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/models/test_xcom_arg.py:94:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/operators/test_branch_operator.py:146:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/operators/test_branch_operator.py:147:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/operators/test_python.py:292:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/operators/test_python.py:303:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/operators/test_python.py:304:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/operators/test_python.py:315:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/operators/test_python.py:316:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/operators/test_python.py:327:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/operators/test_python.py:346:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/operators/test_python.py:400:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/operators/test_python.py:401:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/operators/test_python.py:539:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/operators/test_python.py:560:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/operators/test_subdag_operator.py:275:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/operators/test_subdag_operator.py:326:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/providers/alibaba/cloud/log/test_oss_task_handler.py:68:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/providers/amazon/aws/log/test_cloudwatch_task_handler.py:63:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/providers/amazon/aws/operators/test_eks.py:466:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/providers/amazon/aws/operators/test_emr_serverless.py:198:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/providers/amazon/aws/operators/test_emr_serverless.py:378:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/providers/amazon/aws/operators/test_emr_serverless.py:503:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/providers/amazon/aws/operators/test_emr_serverless.py:76:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/providers/amazon/aws/secrets/test_secrets_manager.py:379:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/providers/amazon/aws/secrets/test_systems_manager.py:195:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/providers/amazon/aws/sensors/test_emr_notebook_execution.py:76:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/providers/common/sql/operators/test_sql.py:1212:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/providers/common/sql/operators/test_sql.py:1213:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/providers/common/sql/operators/test_sql.py:1253:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/providers/common/sql/operators/test_sql.py:1254:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/providers/common/sql/operators/test_sql.py:581:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/providers/google/cloud/hooks/test_bigquery.py:1303:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/providers/microsoft/azure/hooks/test_azure_data_lake.py:60:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/providers/microsoft/azure/log/test_wasb_task_handler.py:81:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/sensors/test_base.py:117:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/sensors/test_external_task_sensor.py:1076:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/sensors/test_external_task_sensor.py:1092:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/sensors/test_external_task_sensor.py:1108:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/sensors/test_external_task_sensor.py:1175:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/sensors/test_external_task_sensor.py:1230:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/sensors/test_external_task_sensor.py:1313:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/sensors/test_external_task_sensor.py:813:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/sensors/test_external_task_sensor.py:822:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/sensors/test_external_task_sensor.py:831:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/sensors/test_external_task_sensor.py:838:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/serialization/test_dag_serialization.py:1272:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/serialization/test_dag_serialization.py:1273:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/serialization/test_dag_serialization.py:1426:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/serialization/test_dag_serialization.py:1532:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/serialization/test_dag_serialization.py:1671:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/serialization/test_dag_serialization.py:1727:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/serialization/test_dag_serialization.py:1728:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/serialization/test_dag_serialization.py:1729:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/serialization/test_dag_serialization.py:1730:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/serialization/test_dag_serialization.py:1731:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/serialization/test_dag_serialization.py:1732:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/serialization/test_dag_serialization.py:1733:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/serialization/test_dag_serialization.py:1734:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/alibaba/example_oss_bucket.py:43:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/alibaba/example_oss_object.py:65:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/apache/beam/example_beam.py:59:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/apache/beam/example_beam_java_flink.py:59:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/apache/beam/example_beam_java_spark.py:59:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/apache/beam/example_go.py:96:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/apache/beam/example_go_dataflow.py:73:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/apache/beam/example_java_dataflow.py:63:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/apache/beam/example_python.py:112:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/apache/beam/example_python_dataflow.py:76:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/apache/hive/example_twitter_dag.py:135:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/apache/hive/example_twitter_dag.py:155:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/apache/hive/example_twitter_dag.py:94:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/apache/kylin/example_kylin_dag.py:103:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/apache/livy/example_livy.py:54:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/asana/example_asana.py:99:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/cncf/kubernetes/example_kubernetes.py:166:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/cncf/kubernetes/example_kubernetes_async.py:170:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/cncf/kubernetes/example_kubernetes_decorator.py:63:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/cncf/kubernetes/example_spark_kubernetes.py:72:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/common/sql/example_sql_column_table_check.py:79:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/databricks/example_databricks.py:80:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/databricks/example_databricks_repos.py:79:6: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/databricks/example_databricks_sql.py:113:6: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/dbt/cloud/example_dbt_cloud.py:92:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/dingding/example_dingding.py:195:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/docker/example_docker.py:57:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/docker/example_docker_copy_data.py:103:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/docker/example_docker_swarm.py:48:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/elasticsearch/example_elasticsearch_query.py:78:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/ftp/example_ftp.py:86:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/ftp/example_ftp.py:87:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/ads/example_ads.py:109:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/automl/example_automl_dataset.py:179:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/automl/example_automl_model.py:258:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/automl/example_automl_nl_text_extraction.py:110:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/automl/example_automl_vision_classification.py:112:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/azure/example_azure_fileshare_to_gcs.py:73:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_dataset.py:79:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_operations.py:90:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_operations_location.py:73:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_queries.py:238:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_queries.py:240:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_queries.py:241:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_queries.py:242:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_queries.py:243:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_queries_async.py:252:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_queries_async.py:253:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_queries_async.py:254:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_queries_async.py:255:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_queries_async.py:256:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_queries_async.py:257:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_sensors.py:138:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_sensors.py:139:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_sensors.py:140:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_sensors.py:141:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_tables.py:201:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_to_bigquery.py:94:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_to_gcs.py:90:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_to_gcs_async.py:89:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_to_mssql.py:83:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigquery/example_bigquery_transfer.py:105:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigtable/example_bigtable.py:131:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/bigtable/example_bigtable.py:161:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/cloud_memorystore/example_cloud_memorystore_memcached.py:132:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/cloud_memorystore/example_cloud_memorystore_redis.py:241:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/cloud_sql/example_cloud_sql.py:291:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/data_loss_prevention/example_dlp_deidentify_content.py:148:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/data_loss_prevention/example_dlp_info_types.py:141:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/data_loss_prevention/example_dlp_inspect_template.py:108:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/data_loss_prevention/example_dlp_job.py:89:6: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/data_loss_prevention/example_dlp_job_trigger.py:94:6: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataflow/example_dataflow_native_java.py:104:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataflow/example_dataflow_native_python.py:104:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataflow/example_dataflow_native_python_async.py:175:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataflow/example_dataflow_template.py:86:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataform/example_dataform.py:276:6: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataform/example_dataform.py:278:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/datafusion/example_datafusion.py:274:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/datafusion/example_datafusion_async.py:255:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataprep/example_dataprep.py:154:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataproc/example_dataproc_batch.py:157:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataproc/example_dataproc_batch_deferrable.py:78:6: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataproc/example_dataproc_batch_persistent.py:111:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataproc/example_dataproc_cluster_deferrable.py:112:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataproc/example_dataproc_cluster_generator.py:111:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataproc/example_dataproc_gke.py:113:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataproc/example_dataproc_hadoop.py:130:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataproc/example_dataproc_hive.py:103:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataproc/example_dataproc_pig.py:97:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataproc/example_dataproc_pyspark.py:121:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataproc/example_dataproc_spark.py:99:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataproc/example_dataproc_spark_async.py:107:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataproc/example_dataproc_spark_deferrable.py:100:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataproc/example_dataproc_spark_sql.py:95:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataproc/example_dataproc_sparkr.py:117:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataproc/example_dataproc_sparkr.py:119:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataproc/example_dataproc_sparkr.py:121:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataproc/example_dataproc_update.py:105:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataproc/example_dataproc_workflow.py:103:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataproc_metastore/example_dataproc_metastore.py:178:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/dataproc_metastore/example_dataproc_metastore_backup.py:124:6: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/datastore/example_datastore_commit.py:93:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/datastore/example_datastore_query.py:78:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/datastore/example_datastore_rollback.py:61:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/gcs/example_calendar_to_gcs.py:62:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/gcs/example_firestore.py:149:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/gcs/example_gcs_acl.py:103:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/gcs/example_gcs_to_bigquery.py:75:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/gcs/example_gcs_to_bigquery_async.py:158:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/gcs/example_gcs_to_gdrive.py:109:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/gcs/example_gcs_to_sheets.py:69:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/gcs/example_gcs_transform.py:84:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/gcs/example_gcs_upload_download.py:84:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/gcs/example_gdrive_to_gcs.py:92:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/gcs/example_mssql_to_gcs.py:72:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/gcs/example_mysql_to_gcs.py:66:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/gcs/example_oracle_to_gcs.py:58:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/gcs/example_sheets.py:92:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/gcs/example_sheets_to_gcs.py:60:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/gcs/example_trino_to_gcs.py:192:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/kubernetes_engine/example_kubernetes_engine.py:105:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/kubernetes_engine/example_kubernetes_engine.py:106:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/kubernetes_engine/example_kubernetes_engine.py:107:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/kubernetes_engine/example_kubernetes_engine_async.py:103:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/kubernetes_engine/example_kubernetes_engine_async.py:104:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/kubernetes_engine/example_kubernetes_engine_async.py:105:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/ml_engine/example_mlengine.py:301:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/ml_engine/example_mlengine.py:302:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/ml_engine/example_mlengine.py:303:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/ml_engine/example_mlengine.py:306:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/ml_engine/example_mlengine.py:307:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/ml_engine/example_mlengine.py:309:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/ml_engine/example_mlengine.py:310:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/ml_engine/example_mlengine.py:311:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/ml_engine/example_mlengine.py:313:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/ml_engine/example_mlengine.py:314:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/ml_engine/example_mlengine.py:317:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/ml_engine/example_mlengine_async.py:302:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/ml_engine/example_mlengine_async.py:303:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/ml_engine/example_mlengine_async.py:304:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/ml_engine/example_mlengine_async.py:307:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/ml_engine/example_mlengine_async.py:308:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/ml_engine/example_mlengine_async.py:310:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/ml_engine/example_mlengine_async.py:311:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/ml_engine/example_mlengine_async.py:312:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/ml_engine/example_mlengine_async.py:314:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/ml_engine/example_mlengine_async.py:315:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/ml_engine/example_mlengine_async.py:318:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/natural_language/example_natural_language.py:116:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/natural_language/example_natural_language.py:117:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/natural_language/example_natural_language.py:118:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/natural_language/example_natural_language.py:119:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/pubsub/example_pubsub.py:130:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/spanner/example_spanner.py:148:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/speech_to_text/example_speech_to_text.py:80:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/text_to_speech/example_text_to_speech.py:72:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/transfers/example_gcs_to_sftp.py:156:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/translate/example_translate.py:54:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/translate_speech/example_translate_speech.py:102:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/vertex_ai/example_vertex_ai_auto_ml_forecasting_training.py:178:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/vertex_ai/example_vertex_ai_auto_ml_image_training.py:165:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/vertex_ai/example_vertex_ai_auto_ml_tabular_training.py:172:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/vertex_ai/example_vertex_ai_auto_ml_text_training.py:163:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/vertex_ai/example_vertex_ai_auto_ml_video_training.py:159:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/vertex_ai/example_vertex_ai_batch_prediction_job.py:214:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/vertex_ai/example_vertex_ai_custom_container.py:166:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/vertex_ai/example_vertex_ai_custom_job.py:158:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/vertex_ai/example_vertex_ai_custom_job_python_package.py:174:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/vertex_ai/example_vertex_ai_dataset.py:284:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/vertex_ai/example_vertex_ai_endpoint.py:231:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/vertex_ai/example_vertex_ai_hyperparameter_tuning_job.py:144:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/vertex_ai/example_vertex_ai_model_service.py:225:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/workflows/example_workflows.py:213:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/workflows/example_workflows.py:214:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/workflows/example_workflows.py:216:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/workflows/example_workflows.py:218:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/cloud/workflows/example_workflows.py:224:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/datacatalog/example_datacatalog_entries.py:180:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/datacatalog/example_datacatalog_search_catalog.py:200:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/datacatalog/example_datacatalog_tag_templates.py:169:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/datacatalog/example_datacatalog_tags.py:211:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/leveldb/example_leveldb.py:60:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/marketing_platform/example_analytics.py:94:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/marketing_platform/example_campaign_manager.py:180:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/marketing_platform/example_search_ads.py:79:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/google/suite/example_local_to_drive.py:72:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/http/example_http.py:113:1: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/http/example_http.py:114:1: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/jdbc/example_jdbc_queries.py:65:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/microsoft/azure/example_adf_run_pipeline.py:78:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/microsoft/azure/example_adls_delete.py:48:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/microsoft/azure/example_azure_blob_to_gcs.py:63:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/microsoft/azure/example_azure_cosmosdb.py:64:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/microsoft/azure/example_local_to_adls.py:48:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/microsoft/azure/example_local_to_wasb.py:44:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/microsoft/winrm/example_winrm.py:71:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/mysql/example_mysql.py:58:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/postgres/example_postgres.py:80:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/qubole/example_qubole.py:140:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/qubole/example_qubole.py:155:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/qubole/example_qubole.py:175:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/qubole/example_qubole.py:223:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/qubole/example_qubole_sensors.py:82:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/singularity/example_singularity.py:50:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/singularity/example_singularity.py:51:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/slack/example_slack.py:52:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/snowflake/example_snowflake.py:76:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/trino/example_trino.py:85:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/yandex/example_yandexcloud.py:186:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/yandex/example_yandexcloud_dataproc.py:162:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/yandex/example_yandexcloud_dataproc.py:163:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/system/providers/yandex/example_yandexcloud_dataproc_lightweight.py:71:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/test_utils/perf/dags/sql_perf_dag.py:56:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/ti_deps/deps/test_not_previously_skipped_dep.py:124:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/ti_deps/deps/test_not_previously_skipped_dep.py:153:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/ti_deps/deps/test_not_previously_skipped_dep.py:74:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/ti_deps/deps/test_not_previously_skipped_dep.py:98:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/ti_deps/deps/test_trigger_rule_dep.py:833:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/ti_deps/deps/test_trigger_rule_dep.py:834:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_dag_cycle.py:58:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_dag_cycle.py:59:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_dag_cycle.py:60:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_dot_renderer.py:131:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_dot_renderer.py:132:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_dot_renderer.py:163:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_dot_renderer.py:173:21: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_dot_renderer.py:177:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_dot_renderer.py:69:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_dot_renderer.py:70:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_dot_renderer.py:89:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_dot_renderer.py:90:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_edgemodifier.py:430:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_edgemodifier.py:480:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_edgemodifier.py:482:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_edgemodifier.py:487:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_edgemodifier.py:516:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_edgemodifier.py:518:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_edgemodifier.py:523:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_edgemodifier.py:566:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_edgemodifier.py:590:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_edgemodifier.py:635:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_edgemodifier.py:659:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:1090:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:1091:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:1117:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:1118:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:1119:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:1150:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:1152:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:1153:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:1187:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:1286:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:1288:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:161:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:162:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:197:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:198:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:234:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:235:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:315:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:371:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:372:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:373:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:374:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:436:17: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:440:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:442:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:448:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:449:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:451:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:456:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:461:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:463:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:581:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:582:5: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:831:13: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/utils/test_task_group.py:834:9: B018 Found useless expression. Either assign it to a variable or remove it.
+- tests/www/views/test_views.py:258:9: B018 Found useless expression. Either assign it to a variable or remove it.
+```
+
+</p>
+</details>
+
+<!-- thollander/actions-comment-pull-request "ecosystem-results" -->
+
+---
+
+_Merged by @charliermarsh on 2023-03-12 05:22_
+
+---
+
+_Closed by @charliermarsh on 2023-03-12 05:22_
+
+---
+
+_Branch deleted on 2023-03-12 05:22_
+
+---

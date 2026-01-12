@@ -1,0 +1,154 @@
+```yaml
+number: 3736
+title: "perf(pycodestyle): Refactor checks to iterate over tokens insteadof text"
+type: pull_request
+state: merged
+author: MichaReiser
+labels: []
+assignees: []
+merged: true
+base: main
+head: logical-lines_Replace_Regex_with_tokens_iterator
+created_at: 2023-03-26T00:29:19Z
+updated_at: 2023-03-28T08:37:16Z
+url: https://github.com/astral-sh/ruff/pull/3736
+synced_at: 2026-01-12T04:39:45Z
+```
+
+# perf(pycodestyle): Refactor checks to iterate over tokens insteadof text
+
+---
+
+_Pull request opened by @MichaReiser on 2023-03-26 00:29_
+
+This PR refactors the pycodestyle checks to iterate over the tokens instead of the text. The main motivation is that using `Regex` to match keywords and operators seems overkill because this has already been done when tokenizing the input. Besides avoiding Regex, the main benefit of this is that it allows removing the creation of the logical-line String and the mapping table from offset to Location (and calling into the mapping logic). This also reduces the overall memory consumption.
+
+## Notes
+
+The constructed *logical-lines* `String` omitted any `Dedent`, `Indent`, `Newline` tokens and it inserted a ` ` to join two lines in an expression spawning multiple physical lines. 
+
+```python
+a = [
+  1,
+  2,
+]
+```
+
+The normalized string for this example is `a = [1, 2]` 
+
+I don't think we need to rely on the normalized string representation for this and instead can implement the same behavior lazily in `Whitespace::trailing` and `Whitespace::leading` to stop counting if we see a newline character. 
+
+## Performance 
+
+* `no-logical`: Main with logical lines disabled
+* `pr3735`: Base ref with logical lines enabled
+* `pr3736`: This branch with logical lines enabled
+
+```
+group                                      no-logical                             pr3735                                  pr3736
+-----                                      ----------                             -----                                  ------
+linter/all-rules/large/dataset.py          1.00      8.5±0.01ms     4.8 MB/sec    1.10      9.4±0.05ms     4.3 MB/sec    1.03      8.8±0.06ms     4.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      2.1±0.01ms     7.8 MB/sec    1.09      2.3±0.00ms     7.1 MB/sec    1.03      2.2±0.02ms     7.6 MB/sec
+linter/all-rules/numpy/globals.py          1.00    247.9±3.25µs    11.9 MB/sec    1.10    272.6±1.25µs    10.8 MB/sec    1.06    262.9±2.80µs    11.2 MB/sec
+linter/all-rules/pydantic/types.py         1.00      3.7±0.04ms     7.0 MB/sec    1.11      4.1±0.07ms     6.3 MB/sec    1.05      3.8±0.03ms     6.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      4.7±0.01ms     8.7 MB/sec    1.19      5.6±0.11ms     7.3 MB/sec    1.10      5.1±0.01ms     7.9 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00    999.5±5.57µs    16.7 MB/sec    1.22   1216.5±2.35µs    13.7 MB/sec    1.09  1094.1±21.26µs    15.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    101.0±0.41µs    29.2 MB/sec    1.36    137.5±1.36µs    21.5 MB/sec    1.21    122.7±0.41µs    24.0 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.1±0.01ms    11.9 MB/sec    1.19      2.5±0.06ms    10.0 MB/sec    1.09      2.3±0.01ms    10.9 MB/sec
+
+```
+
+
+---
+
+_Comment by @MichaReiser on 2023-03-26 00:29_
+
+Current dependencies on/for this PR:
+* main
+  * **PR #3714** <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3714" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a> 
+    * **PR #3715** <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3715" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a> 
+      * **PR #3735** <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3735" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a> 
+        * **PR #3736** <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3736" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a>  👈
+          * **PR #3745** <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3745" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a> 
+            * **PR #3757** <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3757" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a> 
+          * **PR #3737** <a href="https://app.graphite.dev/github/pr/charliermarsh/ruff/3737" target="_blank"><img src="https://static.graphite.dev/graphite-32x32.png" alt="Graphite" width="10px" height="10px"/></a> 
+
+This comment was auto-generated by [Graphite](https://app.graphite.dev/github/pr/charliermarsh/ruff/3736?utm_source=stack-comment).
+
+---
+
+_Renamed from "logical-lines: Iterate over tokens" to "perf(pycodestyle): Refactor checks to iterate over tokens insteadof text" by @MichaReiser on 2023-03-26 11:29_
+
+---
+
+_Comment by @github-actions[bot] on 2023-03-26 11:50_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.1±0.09ms     2.9 MB/sec    1.00     14.2±0.10ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.01ms     4.6 MB/sec    1.00      3.6±0.02ms     4.6 MB/sec
+linter/all-rules/numpy/globals.py          1.00    498.2±0.99µs     5.9 MB/sec    1.00    498.1±0.99µs     5.9 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.1±0.04ms     4.2 MB/sec    1.01      6.2±0.06ms     4.1 MB/sec
+linter/default-rules/large/dataset.py      1.01      7.5±0.05ms     5.4 MB/sec    1.00      7.4±0.05ms     5.5 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.01   1665.7±3.43µs    10.0 MB/sec    1.00   1651.5±3.69µs    10.1 MB/sec
+linter/default-rules/numpy/globals.py      1.00    183.3±0.41µs    16.1 MB/sec    1.00    183.4±0.48µs    16.1 MB/sec
+linter/default-rules/pydantic/types.py     1.01      3.5±0.01ms     7.3 MB/sec    1.00      3.5±0.01ms     7.4 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     15.4±0.24ms     2.6 MB/sec    1.04     16.0±0.19ms     2.5 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.1±0.06ms     4.0 MB/sec    1.02      4.2±0.06ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    525.2±9.05µs     5.6 MB/sec    1.04    545.3±5.55µs     5.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.8±0.11ms     3.8 MB/sec    1.05      7.1±0.10ms     3.6 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.2±0.09ms     5.0 MB/sec    1.08      8.8±0.09ms     4.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1817.4±28.76µs     9.2 MB/sec    1.06  1932.1±24.61µs     8.6 MB/sec
+linter/default-rules/numpy/globals.py      1.00    198.4±3.15µs    14.9 MB/sec    1.08    215.0±8.83µs    13.7 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.05ms     6.7 MB/sec    1.07      4.1±0.07ms     6.2 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff/src/rules/pycodestyle/rules/whitespace_before_parameters.rs`:41 on 2023-03-26 18:44_
+
+I starred at this code for a long time and have come to the conclusion that checking `is_op_token(tok)` isn't necessary because we narrow down the token to `Lpar` or `Lsqb` on the very next line...
+
+---
+
+_@MichaReiser reviewed on 2023-03-26 18:44_
+
+---
+
+_Marked ready for review by @MichaReiser on 2023-03-27 06:40_
+
+---
+
+_Review requested from @charliermarsh by @MichaReiser on 2023-03-27 12:31_
+
+---
+
+_@charliermarsh approved on 2023-03-27 18:57_
+
+---
+
+_Merged by @MichaReiser on 2023-03-28 08:37_
+
+---
+
+_Closed by @MichaReiser on 2023-03-28 08:37_
+
+---
+
+_Branch deleted on 2023-03-28 08:37_
+
+---

@@ -1,0 +1,575 @@
+```yaml
+number: 3707
+title: Add pre-commit in CI
+type: pull_request
+state: merged
+author: JonathanPlasse
+labels: []
+assignees: []
+merged: true
+base: main
+head: add-pre-commit-in-ci
+created_at: 2023-03-24T02:01:13Z
+updated_at: 2023-03-24T22:32:52Z
+url: https://github.com/astral-sh/ruff/pull/3707
+synced_at: 2026-01-12T04:39:45Z
+```
+
+# Add pre-commit in CI
+
+---
+
+_Pull request opened by @JonathanPlasse on 2023-03-24 02:01_
+
+- Close #3612
+- Depends on #3706 to run successfully.
+
+---
+
+_Comment by @github-actions[bot] on 2023-03-24 02:26_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Comment by @charliermarsh on 2023-03-24 04:05_
+
+Can we think of any way to speed that step up? 7m is pretty long.
+
+---
+
+_Comment by @andersk on 2023-03-24 06:42_
+
+Use https://github.com/pre-commit/action? It may be in maintenance-only mode but at least it sets up the cache correctly.
+
+---
+
+_Review comment by @calumy on `.github/workflows/ci.yaml`:212 on 2023-03-24 07:59_
+
+> Can we think of any way to speed that step up? 7m is pretty long.
+
+Adding this snippet should work. Pre-commit caches at `~/.cache/pre-commit` by default; see [pre-commit docs](https://pre-commit.com/#managing-ci-caches).
+
+```suggestion
+      - run: pip install pre-commit
+      - name: Cache Pre-commit  
+        uses: actions/cache@v3
+        with:
+            path: ~/.cache/pre-commit
+            key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+```
+
+---
+
+_@calumy reviewed on 2023-03-24 07:59_
+
+---
+
+_Comment by @JonathanPlasse on 2023-03-24 18:28_
+
+<details>
+<summary><a href=https://github.com/charliermarsh/ruff/actions/runs/4514095059#summary-12260890879>Failed summary</a></summary>
+
+```console
+Validate pyproject.toml..................................................Passed
+mdformat.................................................................Passed
+markdownlint-fix.........................................................Passed
+cargo fmt...............................................................Skipped
+clippy..................................................................Skipped
+ruff.....................................................................Failed
+- hook id: ruff
+- exit code: 1
+- files were modified by this hook
+
+    Updating git repository `https://github.com/charliermarsh/LibCST`
+    Updating crates.io index
+    Updating git repository `https://github.com/konstin/pep440-rs.git`
+    Updating git repository `https://github.com/RustPython/RustPython.git`
+    Updating git repository `https://github.com/youknowone/unicode_names2.git`
+ Downloading crates ...
+  Downloaded bitflags v1.3.2
+  Downloaded heck v0.4.1
+  Downloaded crunchy v0.2.2
+  Downloaded lock_api v0.4.9
+  Downloaded libc v0.2.139
+  Downloaded unic-ucd-ident v0.9.0
+  Downloaded terminfo v0.7.5
+  Downloaded strsim v0.10.0
+  Downloaded tracing-core v0.1.30
+  Downloaded walkdir v2.3.2
+  Downloaded version_check v0.9.4
+  Downloaded time v0.1.45
+  Downloaded which v4.4.0
+  Downloaded remove_dir_all v0.5.3
+  Downloaded clap_complete_nushell v0.1.10
+  Downloaded smawk v0.3.1
+  Downloaded strum v0.24.1
+  Downloaded phf_shared v0.10.0
+  Downloaded precomputed-hash v0.1.1
+  Downloaded radium v0.7.0
+  Downloaded strum_macros v0.24.3
+  Downloaded unic-char-range v0.9.0
+  Downloaded unicode-xid v0.2.4
+  Downloaded unicode-linebreak v0.1.4
+  Downloaded crossbeam-utils v0.8.14
+  Downloaded diff v0.1.13
+  Downloaded inotify v0.9.6
+  Downloaded unic-ucd-version v0.9.0
+  Downloaded lexical-parse-float v0.8.5
+  Downloaded phf v0.11.1
+  Downloaded ryu v1.0.12
+  Downloaded toml_edit v0.19.4
+  Downloaded winnow v0.3.3
+  Downloaded phf_codegen v0.11.1
+  Downloaded schemars_derive v0.8.12
+  Downloaded volatile v0.3.0
+  Downloaded yansi-term v0.1.2
+  Downloaded tikv-jemallocator v0.5.0
+  Downloaded lz4_flex v0.9.5
+  Downloaded syn-ext v0.4.0
+  Downloaded lexical-util v0.8.5
+  Downloaded nom v5.1.2
+  Downloaded serde_json v1.0.93
+  Downloaded unic-char-property v0.9.0
+  Downloaded result-like-derive v0.4.6
+  Downloaded unic-ucd-category v0.9.0
+  Downloaded rustix v0.36.8
+  Downloaded unic-common v0.9.0
+  Downloaded pmutil v0.5.3
+  Downloaded tikv-jemalloc-sys v0.5.3+5.3.0-patched
+  Downloaded quick-xml v0.26.0
+  Downloaded rust-stemmers v1.2.0
+  Downloaded path-dedot v3.0.18
+  Downloaded clap_complete_command v0.5.1
+  Downloaded fern v0.6.1
+  Downloaded bstr v1.3.0
+  Downloaded nix v0.26.2
+  Downloaded lalrpop-util v0.19.8
+  Downloaded toml v0.7.2
+  Downloaded shellexpand v3.0.0
+  Downloaded notify v5.1.0
+  Downloaded peg-macros v0.8.1
+  Downloaded peg v0.8.1
+  Downloaded path-absolutize v3.0.14
+  Downloaded is-macro v0.2.2
+  Downloaded clap v4.1.8
+  Downloaded lexical-parse-integer v0.8.6
+  Downloaded io-lifetimes v1.0.5
+  Downloaded imperative v1.0.4
+  Downloaded ena v0.14.0
+  Downloaded globset v0.4.10
+  Downloaded bstr v0.2.17
+  Downloaded linux-raw-sys v0.1.4
+  Downloaded clap_derive v4.1.8
+  Downloaded annotate-snippets v0.6.1
+  Downloaded tiny-keccak v2.0.2
+  Downloaded schemars v0.8.12
+  Downloaded proc-macro2 v1.0.51
+  Downloaded proc-macro-error v1.0.4
+  Downloaded ignore v0.4.20
+  Downloaded num-bigint v0.4.3
+  Downloaded os_str_bytes v6.4.1
+  Downloaded num-complex v0.4.3
+  Downloaded inotify-sys v0.1.5
+  Downloaded unic-emoji-char v0.9.0
+  Downloaded string_cache v0.8.4
+  Downloaded matches v0.1.10
+  Downloaded clap_complete v4.1.2
+  Downloaded cachedir v0.3.0
+  Downloaded filetime v0.2.20
+  Downloaded chrono v0.4.23
+  Downloaded crossbeam-epoch v0.9.13
+  Downloaded colored v2.0.0
+  Downloaded bit-vec v0.6.3
+  Downloaded annotate-snippets v0.9.1
+  Downloaded unicode-ident v1.0.6
+  Downloaded thiserror v1.0.38
+  Downloaded ascii-canvas v3.0.0
+  Downloaded thiserror-impl v1.0.38
+  Downloaded tempfile v3.3.0
+  Downloaded similar v2.2.1
+  Downloaded serde_derive v1.0.152
+  Downloaded static_assertions v1.1.0
+  Downloaded serde_derive_internals v0.26.0
+  Downloaded rustversion v1.0.11
+  Downloaded paste v1.0.11
+  Downloaded itoa v1.0.5
+  Downloaded fastrand v1.9.0
+  Downloaded dirs-sys-next v0.1.2
+  Downloaded dirs-sys v0.3.7
+  Downloaded dirs-next v2.0.0
+  Downloaded proc-macro-error-attr v1.0.4
+  Downloaded pico-args v0.4.2
+  Downloaded phf_shared v0.11.1
+  Downloaded phf_generator v0.11.1
+  Downloaded dyn-clone v1.0.10
+  Downloaded clap_lex v0.3.1
+  Downloaded pathdiff v0.2.1
+  Downloaded nohash-hasher v0.2.0
+  Downloaded new_debug_unreachable v1.0.4
+  Downloaded clap_complete_fig v4.1.1
+  Downloaded quick-junit v0.3.2
+  Downloaded nextest-workspace-hack v0.1.0
+  Downloaded hexf-parse v0.2.1
+  Downloaded chic v1.2.2
+  Downloaded bit-set v0.5.3
+  Downloaded bisection v0.1.0
+  Downloaded tracing v0.1.37
+  Downloaded peg-runtime v0.8.1
+  Downloaded term v0.7.0
+  Downloaded serde v1.0.152
+  Downloaded rand_core v0.6.4
+  Downloaded lazy_static v1.4.0
+  Downloaded itertools v0.10.5
+  Downloaded indexmap v1.9.2
+  Downloaded iana-time-zone v0.1.53
+  Downloaded hashbrown v0.12.3
+  Downloaded glob v0.3.1
+  Downloaded fixedbitset v0.4.2
+  Downloaded either v1.8.1
+  Downloaded crossbeam-deque v0.8.2
+  Downloaded crossbeam-channel v0.5.6
+  Downloaded cfg-if v1.0.0
+  Downloaded cc v1.0.79
+  Downloaded bincode v1.3.3
+  Downloaded autocfg v1.1.0
+  Downloaded atty v0.2.14
+  Downloaded anyhow v1.0.69
+  Downloaded rand v0.8.5
+  Downloaded aho-corasick v0.7.20
+  Downloaded ahash v0.7.6
+  Downloaded Inflector v0.11.4
+  Downloaded uuid v1.3.0
+  Downloaded unicode-width v0.1.10
+  Downloaded twox-hash v1.6.3
+  Downloaded quote v1.0.23
+  Downloaded petgraph v0.6.3
+  Downloaded once_cell v1.17.1
+  Downloaded num-traits v0.2.15
+  Downloaded natord v1.0.9
+  Downloaded lalrpop v0.19.8
+  Downloaded tracing-attributes v0.1.23
+  Downloaded toml_datetime v0.6.1
+  Downloaded thread_local v1.1.7
+  Downloaded textwrap v0.16.0
+  Downloaded termcolor v1.2.0
+  Downloaded syn v1.0.109
+  Downloaded result-like v0.4.6
+  Downloaded clearscreen v2.0.0
+  Downloaded smallvec v1.10.0
+  Downloaded siphasher v0.3.10
+  Downloaded serde_spanned v0.6.1
+  Downloaded semver v1.0.16
+  Downloaded scopeguard v1.1.0
+  Downloaded same-file v1.0.6
+  Downloaded rustc-hash v1.1.0
+  Downloaded regex-syntax v0.6.28
+  Downloaded regex-automata v0.1.10
+  Downloaded regex v1.7.1
+  Downloaded rayon-core v1.11.0
+  Downloaded rayon v1.7.0
+  Downloaded memoffset v0.7.1
+  Downloaded is-terminal v0.4.4
+  Downloaded rand_chacha v0.3.1
+  Downloaded ppv-lite86 v0.2.17
+  Downloaded pin-project-lite v0.2.9
+  Downloaded parking_lot_core v0.9.7
+  Downloaded parking_lot v0.12.1
+  Downloaded num_cpus v1.15.0
+  Downloaded num-integer v0.1.45
+  Downloaded getrandom v0.2.8
+  Downloaded fnv v1.0.7
+  Downloaded mio v0.8.6
+  Downloaded memchr v2.5.0
+  Downloaded log v0.4.17
+  Downloaded dirs v4.0.0
+  Downloaded ascii v1.1.0
+   Compiling libc v0.2.139
+   Compiling cfg-if v1.0.0
+   Compiling proc-macro2 v1.0.51
+   Compiling quote v1.0.23
+   Compiling unicode-ident v1.0.6
+   Compiling syn v1.0.109
+   Compiling autocfg v1.1.0
+   Compiling version_check v0.9.4
+   Compiling once_cell v1.17.1
+   Compiling getrandom v0.2.8
+   Compiling memchr v2.5.0
+   Compiling ahash v0.7.6
+   Compiling siphasher v0.3.10
+   Compiling hashbrown v0.12.3
+   Compiling aho-corasick v0.7.20
+   Compiling regex-syntax v0.6.28
+   Compiling serde_derive v1.0.152
+   Compiling regex v1.7.1
+   Compiling bitflags v1.3.2
+   Compiling serde v1.0.152
+   Compiling either v1.8.1
+   Compiling log v0.4.17
+   Compiling phf_shared v0.11.1
+   Compiling rand_core v0.6.4
+   Compiling indexmap v1.9.2
+   Compiling scopeguard v1.1.0
+   Compiling ppv-lite86 v0.2.17
+   Compiling rand_chacha v0.3.1
+   Compiling num-traits v0.2.15
+   Compiling static_assertions v1.1.0
+   Compiling rand v0.8.5
+   Compiling itertools v0.10.5
+   Compiling num-integer v0.1.45
+   Compiling lock_api v0.4.9
+   Compiling phf_generator v0.11.1
+   Compiling parking_lot_core v0.9.7
+   Compiling regex-automata v0.1.10
+   Compiling phf_codegen v0.11.1
+   Compiling dirs-sys-next v0.1.2
+   Compiling crunchy v0.2.2
+   Compiling lazy_static v1.4.0
+   Compiling smallvec v1.10.0
+   Compiling dirs-next v2.0.0
+   Compiling proc-macro-error-attr v1.0.4
+   Compiling num-bigint v0.4.3
+   Compiling unic-char-range v0.9.0
+   Compiling io-lifetimes v1.0.5
+   Compiling tiny-keccak v2.0.2
+   Compiling unic-common v0.9.0
+   Compiling unic-ucd-version v0.9.0
+   Compiling unic-char-property v0.9.0
+   Compiling parking_lot v0.12.1
+   Compiling term v0.7.0
+   Compiling phf v0.11.1
+   Compiling phf_shared v0.10.0
+   Compiling proc-macro-error v1.0.4
+   Compiling atty v0.2.14
+   Compiling anyhow v1.0.69
+   Compiling new_debug_unreachable v1.0.4
+   Compiling precomputed-hash v0.1.1
+   Compiling fixedbitset v0.4.2
+   Compiling heck v0.4.1
+   Compiling bit-vec v0.6.3
+   Compiling rustix v0.36.8
+   Compiling bit-set v0.5.3
+   Compiling petgraph v0.6.3
+   Compiling string_cache v0.8.4
+   Compiling ascii-canvas v3.0.0
+   Compiling num-complex v0.4.3
+   Compiling twox-hash v1.6.3
+   Compiling ena v0.14.0
+   Compiling lalrpop-util v0.19.8
+   Compiling unicode-xid v0.2.4
+   Compiling crossbeam-utils v0.8.14
+   Compiling diff v0.1.13
+   Compiling pico-args v0.4.2
+   Compiling linux-raw-sys v0.1.4
+   Compiling lalrpop v0.19.8
+   Compiling lz4_flex v0.9.5
+   Compiling bstr v0.2.17
+   Compiling lexical-util v0.8.5
+   Compiling os_str_bytes v6.4.1
+   Compiling radium v0.7.0
+   Compiling clap_lex v0.3.1
+   Compiling lexical-parse-integer v0.8.6
+   Compiling rustpython-compiler-core v0.2.0 (https://github.com/RustPython/RustPython.git?rev=c15f670f2c30cfae6b41a1874893590148c74bc4#c15f670f)
+   Compiling clap_derive v4.1.8
+   Compiling is-terminal v0.4.4
+   Compiling pmutil v0.5.3
+   Compiling memoffset v0.7.1
+   Compiling rustc-hash v1.1.0
+   Compiling thiserror v1.0.38
+   Compiling matches v0.1.10
+   Compiling termcolor v1.2.0
+   Compiling strsim v0.10.0
+   Compiling fnv v1.0.7
+   Compiling clap v4.1.8
+   Compiling unic-ucd-category v0.9.0
+   Compiling rustpython-ast v0.2.0 (https://github.com/RustPython/RustPython.git?rev=c15f670f2c30cfae6b41a1874893590148c74bc4#c15f670f)
+   Compiling lexical-parse-float v0.8.5
+   Compiling unicode_names2 v0.6.0 (https://github.com/youknowone/unicode_names2.git?rev=4ce16aa85cbcdd9cc830410f1a72ef9a235f2fde#4ce16aa8)
+   Compiling unic-emoji-char v0.9.0
+   Compiling unic-ucd-ident v0.9.0
+   Compiling unicode-linebreak v0.1.4
+   Compiling rustpython-parser v0.2.0 (https://github.com/RustPython/RustPython.git?rev=c15f670f2c30cfae6b41a1874893590148c74bc4#c15f670f)
+   Compiling thiserror-impl v1.0.38
+   Compiling crossbeam-epoch v0.9.13
+   Compiling dirs-sys v0.3.7
+   Compiling volatile v0.3.0
+   Compiling rustversion v1.0.11
+   Compiling ascii v1.1.0
+   Compiling hexf-parse v0.2.1
+   Compiling unicode-width v0.1.10
+   Compiling rustpython-common v0.2.0 (https://github.com/RustPython/RustPython.git?rev=c15f670f2c30cfae6b41a1874893590148c74bc4#c15f670f)
+   Compiling dirs v4.0.0
+   Compiling bstr v1.3.0
+   Compiling nom v5.1.2
+   Compiling Inflector v0.11.4
+   Compiling paste v1.0.11
+   Compiling peg-runtime v0.8.1
+   Compiling serde_json v1.0.93
+   Compiling same-file v1.0.6
+   Compiling cc v1.0.79
+   Compiling tikv-jemalloc-sys v0.5.3+5.3.0-patched
+   Compiling walkdir v2.3.2
+   Compiling peg-macros v0.8.1
+   Compiling is-macro v0.2.2
+   Compiling globset v0.4.10
+   Compiling clap_complete v4.1.2
+   Compiling ruff_python_stdlib v0.0.0 (/home/runner/work/ruff/ruff/crates/ruff_python_stdlib)
+   Compiling crossbeam-channel v0.5.6
+   Compiling terminfo v0.7.5
+   Compiling toml_datetime v0.6.1
+   Compiling serde_spanned v0.6.1
+   Compiling tracing-attributes v0.1.23
+   Compiling serde_derive_internals v0.26.0
+   Compiling syn-ext v0.4.0
+   Compiling tracing-core v0.1.30
+   Compiling ruff_rustpython v0.0.0 (/home/runner/work/ruff/ruff/crates/ruff_rustpython)
+   Compiling filetime v0.2.20
+   Compiling time v0.1.45
+   Compiling itoa v1.0.5
+   Compiling smawk v0.3.1
+   Compiling iana-time-zone v0.1.53
+   Compiling semver v1.0.16
+   Compiling nextest-workspace-hack v0.1.0
+   Compiling schemars v0.8.12
+   Compiling ryu v1.0.12
+   Compiling winnow v0.3.3
+   Compiling rayon-core v1.11.0
+   Compiling nohash-hasher v0.2.0
+   Compiling annotate-snippets v0.6.1
+   Compiling pin-project-lite v0.2.9
+   Compiling tracing v0.1.37
+   Compiling chic v1.2.2
+   Compiling ruff_python_ast v0.0.0 (/home/runner/work/ruff/ruff/crates/ruff_python_ast)
+   Compiling toml_edit v0.19.4
+   Compiling chrono v0.4.23
+   Compiling textwrap v0.16.0
+   Compiling result-like-derive v0.4.6
+   Compiling schemars_derive v0.8.12
+   Compiling strum_macros v0.24.3
+   Compiling crossbeam-deque v0.8.2
+   Compiling peg v0.8.1
+   Compiling rust-stemmers v1.2.0
+   Compiling libcst_derive v0.1.0 (https://github.com/charliermarsh/LibCST?rev=80e4c1399f95e5beb532fdd1e209ad2dbb470438#80e4c139)
+   Compiling thread_local v1.1.7
+   Compiling path-dedot v3.0.18
+   Compiling num_cpus v1.15.0
+   Compiling inotify-sys v0.1.5
+   Compiling remove_dir_all v0.5.3
+   Compiling fastrand v1.9.0
+   Compiling dyn-clone v1.0.10
+   Compiling tempfile v3.3.0
+   Compiling inotify v0.9.6
+   Compiling path-absolutize v3.0.14
+   Compiling ignore v0.4.20
+   Compiling libcst v0.1.0 (https://github.com/charliermarsh/LibCST?rev=80e4c1399f95e5beb532fdd1e209ad2dbb470438#80e4c139)
+   Compiling imperative v1.0.4
+   Compiling strum v0.24.1
+   Compiling result-like v0.4.6
+   Compiling ruff_macros v0.0.0 (/home/runner/work/ruff/ruff/crates/ruff_macros)
+   Compiling toml v0.7.2
+   Compiling ruff_diagnostics v0.0.0 (/home/runner/work/ruff/ruff/crates/ruff_diagnostics)
+   Compiling pep440_rs v0.2.0 (https://github.com/konstin/pep440-rs.git?rev=a8fef4ec47f4c25b070b39cdbe6a0b9847e49941#a8fef4ec)
+   Compiling ruff_cache v0.0.0 (/home/runner/work/ruff/ruff/crates/ruff_cache)
+   Compiling clap_complete_nushell v0.1.10
+   Compiling clap_complete_fig v4.1.1
+   Compiling shellexpand v3.0.0
+   Compiling colored v2.0.0
+   Compiling nix v0.26.2
+   Compiling fern v0.6.1
+   Compiling mio v0.8.6
+   Compiling which v4.4.0
+   Compiling quick-xml v0.26.0
+   Compiling glob v0.3.1
+   Compiling uuid v1.3.0
+   Compiling bisection v0.1.0
+   Compiling pathdiff v0.2.1
+   Compiling yansi-term v0.1.2
+   Compiling natord v1.0.9
+   Compiling ruff v0.0.259 (/home/runner/work/ruff/ruff/crates/ruff)
+   Compiling tikv-jemallocator v0.5.0
+   Compiling annotate-snippets v0.9.1
+   Compiling quick-junit v0.3.2
+   Compiling clearscreen v2.0.0
+   Compiling notify v5.1.0
+   Compiling clap_complete_command v0.5.1
+   Compiling rayon v1.7.0
+   Compiling cachedir v0.3.0
+   Compiling bincode v1.3.3
+   Compiling similar v2.2.1
+   Compiling ruff_cli v0.0.259 (/home/runner/work/ruff/ruff/crates/ruff_cli)
+    Finished dev [unoptimized + debuginfo] target(s) in 5m 18s
+     Running `target/debug/ruff check --no-cache --force-exclude --fix --exit-non-zero-on-fix python/ruff/__init__.py python/ruff/__main__.py scripts/_utils.py scripts/add_plugin.py scripts/add_rule.py scripts/check_ecosystem.py scripts/file_to_fail_ci.py scripts/generate_known_standard_library.py scripts/generate_mkdocs.py scripts/transform_readme.py`
+scripts/file_to_fail_ci.py:1:1: D100 Missing docstring in public module
+scripts/file_to_fail_ci.py:1:5: ANN201 Missing return type annotation for public function `f`
+scripts/file_to_fail_ci.py:1:5: D103 Missing docstring in public function
+Found 4 errors (1 fixed, 3 remaining).
+
+pre-commit hook(s) made changes.
+If you are seeing this message in CI, reproduce locally with: `pre-commit run --all-files`.
+To run `pre-commit` as part of git workflow, use `pre-commit install`.
+All changes made by hooks:
+diff --git a/scripts/file_to_fail_ci.py b/scripts/file_to_fail_ci.py
+index ec4fc9e..582aeee 100644
+--- a/scripts/file_to_fail_ci.py
++++ b/scripts/file_to_fail_ci.py
+@@ -1,4 +1,4 @@
+ def f():
+     return None
+
+-[i for i in range(10)]
++list(range(10))
+```
+
+</details>
+<details open>
+<summary><a href=https://github.com/charliermarsh/ruff/actions/runs/4514369248?pr=3707#summary-12261670546>Successful summary</a></summary>
+
+```console
+Validate pyproject.toml..................................................Passed
+mdformat.................................................................Passed
+markdownlint-fix.........................................................Passed
+cargo fmt...............................................................Skipped
+clippy..................................................................Skipped
+ruff.....................................................................Passed
+dev-generate-all........................................................Skipped
+black....................................................................Passed
+```
+
+</details>
+
+
+---
+
+_Comment by @JonathanPlasse on 2023-03-24 19:18_
+
+I added caching for both pre-commit and Rust (for the Ruff hook).
+I also enable color in the terminal and generate a job summary where the color is removed as it is not supported in Markdown. 
+
+---
+
+_Comment by @JonathanPlasse on 2023-03-24 19:19_
+
+It now takes 2 minutes to run the pre-commit job.
+
+---
+
+_Merged by @charliermarsh on 2023-03-24 21:20_
+
+---
+
+_Closed by @charliermarsh on 2023-03-24 21:20_
+
+---
+
+_Comment by @charliermarsh on 2023-03-24 21:20_
+
+Thanks!
+
+---
+
+_Branch deleted on 2023-03-24 22:32_
+
+---

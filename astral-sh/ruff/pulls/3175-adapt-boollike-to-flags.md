@@ -1,0 +1,34 @@
+```yaml
+number: 3175
+title: Adapt BoolLike to flags
+type: pull_request
+state: merged
+author: youknowone
+labels: []
+assignees: []
+merged: true
+base: main
+head: more-flags
+created_at: 2023-02-23T16:31:06Z
+updated_at: 2023-02-23T21:31:47Z
+url: https://github.com/astral-sh/ruff/pull/3175
+synced_at: 2026-01-12T04:39:44Z
+```
+
+# Adapt BoolLike to flags
+
+---
+
+_Pull request opened by @youknowone on 2023-02-23 16:31_
+
+_No description provided._
+
+---
+
+_Merged by @charliermarsh on 2023-02-23 21:31_
+
+---
+
+_Closed by @charliermarsh on 2023-02-23 21:31_
+
+---
