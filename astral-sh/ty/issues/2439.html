@@ -102,10 +102,35 @@ Pyright: Expected no type arguments for class &quot;RowMapping&quot; [reportInva
         <div class="timeline-entry">
             <div class="event">Added to milestone "Stable" by @dhruvmanila on 2026-01-12 05:48</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tamireinhorn">@tamireinhorn</a> on 2026-01-12 06:56</div>
+            <div class="timeline-body"><blockquote>
+<p>In debug build, it gives me the <code>@Todo(specialized non-generic class)</code> type:</p>
+<pre><code class="language-py">import typing as t
+
+import sqlalchemy as sa
+
+def _(x: sa.Sequence[sa.RowMapping[str, t.Any]]):
+    # revealed: @Todo(specialized non-generic class)
+    reveal_type(x)
+</code></pre>
+<p>mypy and Pyright both error on the annotation:</p>
+<pre><code>mypy: &quot;Sequence&quot; expects no type arguments, but 1 given  [type-arg]
+mypy: &quot;RowMapping&quot; expects no type arguments, but 2 given  [type-arg]
+Pyright: Expected no type arguments for class &quot;RowMapping&quot; [reportInvalidTypeArguments]
+</code></pre>
+<p>ty doesn't raise this error and this suggests that these classes is non-generic, so I think we just need to raise a diagnostic and infer <code>Unknown</code> for these cases. In the code, it's marked as TODO:</p>
+<p>https://github.com/astral-sh/ruff/blob/09ff3e705639e4773f185994744390fdeb518e8e/crates/ty_python_semantic/src/types/infer/builder/type_expression.rs#L730-L732</p>
+<p>https://github.com/astral-sh/ruff/blob/09ff3e705639e4773f185994744390fdeb518e8e/crates/ty_python_semantic/src/types/infer/builder/type_expression.rs#L1066-L1068</p>
+<p>I don't see any open issues for this so we can use this.</p>
+</blockquote>
+<p>I forgot to mention, but on later testing, I removed the wrong type arguments for RowMapping, and ty still spat out the same type. I put them in just to check what happened and did not remove them from the example posted here. Can edit if preferred.</p>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-12 06:57:20 UTC
+        Synced at 2026-01-12 07:51:04 UTC
     </footer>
 </body>
 </html>
