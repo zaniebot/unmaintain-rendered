@@ -1,0 +1,38 @@
+```yaml
+number: 1562
+title: Avoid merging import from statements with inline comments
+type: pull_request
+state: merged
+author: charliermarsh
+labels: []
+assignees: []
+merged: true
+base: main
+head: charlie/import-comment
+created_at: 2023-01-02T21:24:37Z
+updated_at: 2023-01-02T21:24:42Z
+url: https://github.com/astral-sh/ruff/pull/1562
+synced_at: 2026-01-12T05:36:31Z
+```
+
+# Avoid merging import from statements with inline comments
+
+---
+
+_Pull request opened by @charliermarsh on 2023-01-02 21:24_
+
+Resolves #1551.
+
+---
+
+_Merged by @charliermarsh on 2023-01-02 21:24_
+
+---
+
+_Closed by @charliermarsh on 2023-01-02 21:24_
+
+---
+
+_Branch deleted on 2023-01-02 21:24_
+
+---
