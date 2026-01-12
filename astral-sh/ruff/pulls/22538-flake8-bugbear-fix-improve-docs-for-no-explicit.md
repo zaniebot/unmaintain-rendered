@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: fix-22395
 created_at: 2026-01-12T18:45:18Z
-updated_at: 2026-01-12T19:18:47Z
+updated_at: 2026-01-12T20:50:18Z
 url: https://github.com/astral-sh/ruff/pull/22538
-synced_at: 2026-01-12T20:26:27Z
+synced_at: 2026-01-12T21:25:53Z
 ```
 
 # [flake8_bugbear] fix: improve docs for `no_explicit_stacklevel`
@@ -60,5 +60,20 @@ I don't think we need to mention `skip_file_prefixes` here, especially because i
 _@dylwil3 requested changes on 2026-01-12 19:18_
 
 Thanks!
+
+---
+
+_@caiquejjx reviewed on 2026-01-12 20:47_
+
+---
+
+_Review comment by @caiquejjx on `crates/ruff_linter/src/rules/flake8_bugbear/rules/no_explicit_stacklevel.rs`:20 on 2026-01-12 20:47_
+
+ohh mb, i forgot this is only for python 3.12 and above.
+Applied those changes and there is a link to the docs already so I didn't need to add it 
+
+---
+
+_Review requested from @dylwil3 by @caiquejjx on 2026-01-12 20:50_
 
 ---

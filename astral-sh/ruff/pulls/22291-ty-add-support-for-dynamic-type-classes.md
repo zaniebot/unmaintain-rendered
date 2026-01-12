@@ -2,18 +2,19 @@
 number: 22291
 title: "[ty] Add support for dynamic `type()` classes"
 type: pull_request
-state: open
+state: merged
 author: charliermarsh
 labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+merged: true
 base: main
 head: charlie/dyn
 created_at: 2025-12-29T21:45:15Z
-updated_at: 2026-01-12T20:14:02Z
+updated_at: 2026-01-12T20:20:46Z
 url: https://github.com/astral-sh/ruff/pull/22291
-synced_at: 2026-01-12T20:26:27Z
+synced_at: 2026-01-12T21:25:53Z
 ```
 
 # [ty] Add support for dynamic `type()` classes
@@ -958,7 +959,7 @@ _Comment by @codspeed-hq[bot] on 2025-12-29 22:59_
 
 ---
 
-<sub>Comparing <code>charlie/dyn</code> (8df0d85) with <code>main</code> (78ef241)</sub>
+<sub>Comparing <code>charlie/dyn</code> (dd2fbb3) with <code>main</code> (78ef241)</sub>
 
 <a href="https://codspeed.io/astral-sh/ruff/branches/charlie%2Fdyn?utm_source=github&utm_medium=comment-v2&utm_content=button">
   <picture>
@@ -3676,5 +3677,17 @@ _@AlexWaygood reviewed on 2026-01-12 17:53_
 _Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4712 on 2026-01-12 17:53_
 
 yes
+
+---
+
+_Merged by @charliermarsh on 2026-01-12 20:20_
+
+---
+
+_Closed by @charliermarsh on 2026-01-12 20:20_
+
+---
+
+_Branch deleted on 2026-01-12 20:20_
 
 ---

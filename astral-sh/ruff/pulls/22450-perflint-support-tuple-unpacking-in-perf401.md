@@ -10,9 +10,9 @@ assignees: []
 base: main
 head: fix/21648-perf401-unpacking
 created_at: 2026-01-08T02:13:07Z
-updated_at: 2026-01-12T20:05:58Z
+updated_at: 2026-01-12T21:03:06Z
 url: https://github.com/astral-sh/ruff/pull/22450
-synced_at: 2026-01-12T20:26:27Z
+synced_at: 2026-01-12T21:25:53Z
 ```
 
 # perflint: support tuple unpacking in PERF401
@@ -530,5 +530,151 @@ Based on the ecosystem impact, I'm thinking this should probably also be a previ
 _Comment by @Jkhall81 on 2026-01-12 20:05_
 
 I worked it over a few times.  If it still needs improvement, I need a shove in the right direction.  But yes, it's ready for another review.
+
+---
+
+_Comment by @Jkhall81 on 2026-01-12 20:22_
+
+I can add tests based on the ecosystem results, no problem, if the 'rule update' is acceptable.
+
+---
+
+_Comment by @ntBre on 2026-01-12 20:26_
+
+Sounds good! I just wanted to double check before I took a look. @amyreese might have a better sense for whether we should add more tests based on what she saw in the earlier ecosystem reports.
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/perflint/rules/manual_list_comprehension.rs`:272 on 2026-01-12 20:45_
+
+Could we revert changing the order of this comparison and restore the comments that were here? I think the comments were still accurate.
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/perflint/rules/manual_list_comprehension.rs`:111 on 2026-01-12 20:52_
+
+I think if we move the `targets.contains` check into the `for target_id in &targets` loop, we can avoid allocating a `Vec` here and just return a `&[Expr]` from the `match`. This is the patch I was working with locally:
+
+```diff
+diff --git a/crates/ruff_linter/src/rules/perflint/rules/manual_list_comprehension.rs b/crates/ruff_linter/src/rules/perflint/rules/manual_list_comprehension.rs
+index 60edacb5e2..465211b334 100644
+--- a/crates/ruff_linter/src/rules/perflint/rules/manual_list_comprehension.rs
++++ b/crates/ruff_linter/src/rules/perflint/rules/manual_list_comprehension.rs
+@@ -95,20 +95,13 @@ impl Violation for ManualListComprehension {
+ 
+ /// PERF401
+ pub(crate) fn manual_list_comprehension(checker: &Checker, for_stmt: &ast::StmtFor) {
+-    let mut targets = Vec::new();
+-    match &*for_stmt.target {
+-        Expr::Name(ast::ExprName { id, .. }) => targets.push(id),
++    let targets = match &*for_stmt.target {
++        name @ Expr::Name(_) => std::slice::from_ref(name),
+         Expr::Tuple(ast::ExprTuple { elts, .. }) | Expr::List(ast::ExprList { elts, .. }) => {
+-            for elt in elts {
+-                if let Expr::Name(ast::ExprName { id, .. }) = elt {
+-                    targets.push(id);
+-                } else {
+-                    return;
+-                }
+-            }
++            elts.as_slice()
+         }
+         _ => return,
+-    }
++    };
+ 
+     let (stmt, if_test) = match &*for_stmt.body {
+         // ```python
+@@ -181,19 +174,6 @@ pub(crate) fn manual_list_comprehension(checker: &Checker, for_stmt: &ast::StmtF
+         return;
+     };
+ 
+-    // Ignore direct list copies (e.g., `for x in y: filtered.append(x)`), unless it's async, which
+-    // `manual-list-copy` doesn't cover.
+-    if !for_stmt.is_async {
+-        if if_test.is_none() {
+-            if arg
+-                .as_name_expr()
+-                .is_some_and(|arg| targets.contains(&&arg.id))
+-            {
+-                return;
+-            }
+-        }
+-    }
+-
+     // Avoid, e.g., `for x in y: filtered.append(filtered[-1] * 2)`.
+     if any_over_expr(arg, &|expr| {
+         expr.as_name_expr()
+@@ -254,11 +234,32 @@ pub(crate) fn manual_list_comprehension(checker: &Checker, for_stmt: &ast::StmtF
+ 
+     // Ensure none of the loop targets (e.g., x, y in `for x, y in ...`)
+     // leak outside the loop.
+-    for target_id in &targets {
+-        let Some(target_binding) = checker.semantic().bindings.iter().find(|binding| {
+-            binding.name(checker.locator().contents()) == **target_id
+-                && for_stmt.target.range().contains(binding.range().start())
+-        }) else {
++    for target in targets {
++        let ast::Expr::Name(ast::ExprName {
++            id: target_id,
++            range: target_range,
++            ..
++        }) = target
++        else {
++            return;
++        };
++
++        // Ignore direct list copies (e.g., `for x in y: filtered.append(x)`), unless it's async, which
++        // `manual-list-copy` doesn't cover.
++        if !for_stmt.is_async {
++            if if_test.is_none() {
++                if arg.as_name_expr().is_some_and(|arg| arg.id == *target_id) {
++                    return;
++                }
++            }
++        }
++
++        let Some(target_binding) = checker
++            .semantic()
++            .bindings
++            .iter()
++            .find(|binding| binding.range == *target_range)
++        else {
+             return;
+         };
+```
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/resources/test/fixtures/perflint/PERF401.py`:313 on 2026-01-12 20:53_
+
+I think it would make sense to add a test with a list target:
+
+```py
+def f():
+    xs = []
+    for [x, y] in [[1, 2]]:
+        xs.append(x + y)  # PERF401
+```
+
+since you handled it in the implementation.
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/perflint/rules/manual_list_comprehension.rs`:260 on 2026-01-12 21:01_
+
+I included this in the patch above, but if we keep a reference to the whole `Expr` or `ExprName`, we can simplify this back to:
+
+```suggestion
+            binding.range == *target_range
+```
+
+`Binding::name` is just using its range internally, so I don't think we're gaining anything by comparing both the str derived from the range and the range itself.
+
+---
+
+_@ntBre reviewed on 2026-01-12 21:03_
+
+Thank you! This looks reasonable to me overall, I Just had a few minor suggestions, mostly around avoiding allocating a `Vec` for the loop targets.
 
 ---

@@ -12,9 +12,9 @@ draft: true
 base: main
 head: claude/fix-issue-1858-UjARA
 created_at: 2026-01-09T00:06:59Z
-updated_at: 2026-01-09T22:22:03Z
+updated_at: 2026-01-12T21:06:27Z
 url: https://github.com/astral-sh/ruff/pull/22469
-synced_at: 2026-01-12T15:57:50Z
+synced_at: 2026-01-12T21:25:53Z
 ```
 
 # [ty] Support calls to intersection types
@@ -603,5 +603,79 @@ _Comment by @astral-sh-bot[bot] on 2026-01-09 03:48_
 **[Full report with detailed diff](https://7baa43d3.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://7baa43d3.ty-ecosystem-ext.pages.dev/timing))
 
 
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/call/bind.rs`:96 on 2026-01-12 19:59_
+
+Is it correct to just overwrite the previous `forms` here? Can you come up with a test case in which this loss of information causes a problem?
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/call/bind.rs`:120 on 2026-01-12 19:59_
+
+It seems like we should be able to collapse these into a single case -- if we can't, it suggests the intersection case isn't being handled quite right.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/call/bind.rs`:113 on 2026-01-12 20:01_
+
+How do we know that `BindingError` is correct here? Don't we need to look at the individual results of the individual elements and use our error priority levels?
+
+If this does need fixing, let's also add a test that fails with the current code and passes with the fixed code.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/call/bind.rs`:137 on 2026-01-12 20:03_
+
+In what scenario do we need to unwrap here? Is that scenario reachable, or should this just be an `.unwrap()`?
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/call/bind.rs`:141 on 2026-01-12 20:04_
+
+This comment is misleading. `Bindings` does not represent a "union or intersection" -- it always represents a union (possibly size one) of callables, each element of which is an intersection (possibly size one).
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/call/bind.rs`:215 on 2026-01-12 20:11_
+
+Each input binding should have a length-one `.elements`, because in our DNF representation of types, intersections cannot contain unions. So we can just assert that invariant (with a comment) instead of flat-mapping.
+
+If we did need to handle input unions here, we would need to distribute them, not just flat-map (the flat-map effectively turns an input union into an intersection, which is wrong.) But that's a bit complex, so no reason to do it when it should never happen.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/call/bind.rs`:272 on 2026-01-12 20:12_
+
+How is this method used? Do callers implicitly assume it's a union? Can flattening the union and intersection cause callers to treat the returned bindings incorrectly? Do we need to instead update callers to understand the two-level structure?
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/call/bind.rs`:277 on 2026-01-12 20:13_
+
+Same question as for `iter` -- is this flattening correct, given how callers use this?
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/call/bind.rs`:377 on 2026-01-12 20:17_
+
+Let's just call `element.retain_successful()` here, and handle the logic about which cases are no-ops etc internally within the `retain_successful()` method.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/call/bind.rs`:552 on 2026-01-12 20:21_
+
+I think the handling of `UnionDiagnostic` and `IntersectionDiagnostic` needs to be layered instead. If we have an intersection inside a union, and multiple bindings in that intersection fail with the same priority, we should report those errors with _both_ union and intersection context. (Let's add a test demonstrating this. It should be a test with snapshotted diagnostics.)
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/call/bind.rs`:458 on 2026-01-12 20:30_
+
+We could use `is_intersection()` here.
+
+---
+
+_@carljm reviewed on 2026-01-12 20:32_
 
 ---

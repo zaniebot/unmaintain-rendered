@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-12T18:35:50Z
+updated_at: 2026-01-12T20:50:38Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-12T19:14:12Z
+synced_at: 2026-01-12T21:25:56Z
 ```
 
 # Dependency Dashboard
@@ -47,6 +47,7 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/async-compression-0.x-lockfile -->Update Rust crate async-compression to v0.4.36
  - [ ] <!-- unschedule-branch=renovate/clap-4.x-lockfile -->Update Rust crate clap to v4.5.54
  - [ ] <!-- unschedule-branch=renovate/console-0.x-lockfile -->Update Rust crate console to v0.16.2
+ - [ ] <!-- unschedule-branch=renovate/h2-0.x-lockfile -->Update Rust crate h2 to v0.4.13
  - [ ] <!-- unschedule-branch=renovate/jiff-0.x-lockfile -->Update Rust crate jiff to v0.2.17
  - [ ] <!-- unschedule-branch=renovate/proc-macro2-1.x-lockfile -->Update Rust crate proc-macro2 to v1.0.104
  - [ ] <!-- unschedule-branch=renovate/rcgen-0.x-lockfile -->Update Rust crate rcgen to v0.14.6
@@ -106,7 +107,6 @@ The following updates await pending status checks. To force their creation now, 
 
  - [ ] <!-- approvePr-branch=renovate/embarkstudios-cargo-deny-action-2.x -->Update EmbarkStudios/cargo-deny-action action to v2.0.15
  - [ ] <!-- approvePr-branch=renovate/flate2-1.x-lockfile -->Update Rust crate flate2 to v1.1.8
- - [ ] <!-- approvePr-branch=renovate/h2-0.x-lockfile -->Update Rust crate h2 to v0.4.13
  - [ ] <!-- approvePr-branch=renovate/quote-1.x-lockfile -->Update Rust crate quote to v1.0.43
  - [ ] <!-- approvePr-branch=renovate/toml-0.x-lockfile -->Update Rust crate toml to v0.9.11
  - [ ] <!-- approvePr-branch=renovate/url-2.x-lockfile -->Update Rust crate url to v2.5.8
@@ -614,7 +614,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 </blockquote>
 </details>
 
-<details><summary>github-actions (22)</summary>
+<details><summary>github-actions (23)</summary>
 <blockquote>
 
 <details><summary>.github/workflows/bench.yml (8)</summary>
@@ -843,6 +843,12 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
 
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
+
+</details>
+
+<details><summary>.github/workflows/check-release.yml (1)</summary>
+
+ - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
 
 </details>
 

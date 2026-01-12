@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: wld/improve-conformance-suite
 created_at: 2025-12-28T01:15:26Z
-updated_at: 2026-01-12T20:12:38Z
+updated_at: 2026-01-12T21:09:21Z
 url: https://github.com/astral-sh/ruff/pull/22231
-synced_at: 2026-01-12T20:26:27Z
+synced_at: 2026-01-12T21:25:53Z
 ```
 
 # [ty] Add a conformance script to compare ty diagnostics with expected errors
@@ -610,7 +610,7 @@ That's a great tip, thanks!
 
 ---
 
-_Review comment by @AlexWaygood on `scripts/conformance.py`:411 on 2026-01-12 14:58_
+_Review comment by @AlexWaygood on `scripts/conformance.py`:448 on 2026-01-12 14:58_
 
 What do the terms "precision" and "recall" mean in this context? Also, I'd again prefer it if we spelled out "False positives", "Ture positives" and "False negatives" here
 
@@ -666,7 +666,7 @@ _@WillDuke reviewed on 2026-01-12 16:47_
 
 ---
 
-_Review comment by @WillDuke on `scripts/conformance.py`:411 on 2026-01-12 16:47_
+_Review comment by @WillDuke on `scripts/conformance.py`:448 on 2026-01-12 16:47_
 
 More jargon! Precision is the fraction of diagnostics which are true errors (the number of true positives divided by the total number of diagnostics), while recall is the fraction of true errors for which ty raises a diagnostic. My goal was to give you a sense of how accurate ty is when it raises a diagnostic (precision) and how comprehensive its ability to detect errors is (recall).
 
@@ -678,7 +678,7 @@ _@WillDuke reviewed on 2026-01-12 16:49_
 
 ---
 
-_Review comment by @WillDuke on `scripts/conformance.py`:411 on 2026-01-12 16:49_
+_Review comment by @WillDuke on `scripts/conformance.py`:448 on 2026-01-12 16:49_
 
 If you'd like to keep these stats, I could include a sentence explaining what they mean in the output. 
 
@@ -688,7 +688,7 @@ _@AlexWaygood reviewed on 2026-01-12 17:00_
 
 ---
 
-_Review comment by @AlexWaygood on `scripts/conformance.py`:411 on 2026-01-12 17:00_
+_Review comment by @AlexWaygood on `scripts/conformance.py`:448 on 2026-01-12 17:00_
 
 Yeah, these seem like useful statistics for sure! But rather than including them in the table, I think I'd prefer it if the script wrote out a descriptive sentence below the table: "The percentage of diagnostic emitted that were true positives increased from 49% to 51%", "The percentage of diagnostics emitted that were true positives held steady at 63%" or "The percentage of diagnostics emitted that were true positives fell from 78% to 74%", etc.
 
@@ -716,7 +716,7 @@ Maybe just `--tests-path`?
 
 ---
 
-_Review comment by @MichaReiser on `scripts/conformance.py`:411 on 2026-01-12 17:14_
+_Review comment by @MichaReiser on `scripts/conformance.py`:448 on 2026-01-12 17:14_
 
 I find sentences much harder to parse. It's what I like about codspeed. I can just look at the last column to see the result. 
 
@@ -734,7 +734,7 @@ _@AlexWaygood reviewed on 2026-01-12 17:39_
 
 ---
 
-_Review comment by @AlexWaygood on `scripts/conformance.py`:411 on 2026-01-12 17:39_
+_Review comment by @AlexWaygood on `scripts/conformance.py`:448 on 2026-01-12 17:39_
 
 I'm fine with a jargony table and some documentation below it that explains the jargon :-)
 
@@ -746,7 +746,7 @@ _@AlexWaygood reviewed on 2026-01-12 17:40_
 
 ---
 
-_Review comment by @AlexWaygood on `scripts/conformance.py`:411 on 2026-01-12 17:40_
+_Review comment by @AlexWaygood on `scripts/conformance.py`:448 on 2026-01-12 17:40_
 
 > I'm fine with a jargony table and some documentation below it that explains the jargon :-)
 
@@ -758,7 +758,7 @@ _@MichaReiser reviewed on 2026-01-12 18:04_
 
 ---
 
-_Review comment by @MichaReiser on `scripts/conformance.py`:411 on 2026-01-12 18:04_
+_Review comment by @MichaReiser on `scripts/conformance.py`:448 on 2026-01-12 18:04_
 
 This is what biomejs does https://github.com/biomejs/biome/pull/8361#issuecomment-3613423566
 
@@ -773,5 +773,15 @@ _@WillDuke reviewed on 2026-01-12 20:03_
 _Review comment by @WillDuke on `scripts/conformance.py`:370 on 2026-01-12 20:03_
 
 Along with those changes, I've also added a fourth category for new false negatives which are now rendered as "True positives removed 🫤"
+
+---
+
+_@WillDuke reviewed on 2026-01-12 21:09_
+
+---
+
+_Review comment by @WillDuke on `scripts/conformance.py`:448 on 2026-01-12 21:09_
+
+I've added an outcome column with the emojis and updated the summary sentence. Happy to iterate on it further.
 
 ---

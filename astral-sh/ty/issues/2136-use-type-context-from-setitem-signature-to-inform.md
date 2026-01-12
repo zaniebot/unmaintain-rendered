@@ -2,16 +2,16 @@
 number: 2136
 title: "Use type context from `__setitem__` signature to inform the type inferred on the right-hand side of subscript assignments"
 type: issue
-state: open
+state: closed
 author: nwalters512
 labels:
   - bug
   - bidirectional inference
 assignees: []
 created_at: 2025-12-20T22:29:36Z
-updated_at: 2026-01-09T05:29:41Z
+updated_at: 2026-01-12T21:05:07Z
 url: https://github.com/astral-sh/ty/issues/2136
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-12T21:25:36Z
 ```
 
 # Use type context from `__setitem__` signature to inform the type inferred on the right-hand side of subscript assignments
@@ -114,5 +114,9 @@ Okay cool, I was indeed missing something obvious :-) that sounds like a much ea
 ---
 
 _Assigned to @ibraheemdev by @ibraheemdev on 2026-01-09 05:29_
+
+---
+
+_Closed by @ibraheemdev on 2026-01-12 21:05_
 
 ---

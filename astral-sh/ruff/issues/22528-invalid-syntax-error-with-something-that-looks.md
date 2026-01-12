@@ -9,9 +9,9 @@ labels:
   - parser
 assignees: []
 created_at: 2026-01-12T08:42:37Z
-updated_at: 2026-01-12T08:54:48Z
+updated_at: 2026-01-12T20:58:34Z
 url: https://github.com/astral-sh/ruff/issues/22528
-synced_at: 2026-01-12T15:54:58Z
+synced_at: 2026-01-12T21:25:42Z
 ```
 
 # invalid syntax error with something that looks like a `match` statement
@@ -152,5 +152,40 @@ _Label `bug` added by @MichaReiser on 2026-01-12 08:51_
 ---
 
 _Label `parser` added by @MichaReiser on 2026-01-12 08:51_
+
+---
+
+_Comment by @dylwil3 on 2026-01-12 20:58_
+
+A minimal fix for just this example would be something like this:
+
+```diff
+diff --git i/crates/ruff_python_parser/src/parser/statement.rs w/crates/ruff_python_parser/src/parser/statement.rs
+index 0a56768df5..ae334e8b1d 100644
+--- i/crates/ruff_python_parser/src/parser/statement.rs
++++ w/crates/ruff_python_parser/src/parser/statement.rs
+@@ -2449,9 +2449,14 @@ impl<'src> Parser<'src> {
+ 
+         match self.current_token_kind() {
+             TokenKind::Colon => {
+-                // `match` is a keyword
++                // `match` is a keyword or annotated assignment
+                 self.bump(TokenKind::Colon);
+ 
++                if self.current_token_kind() != TokenKind::Newline {
++                    self.rewind(checkpoint);
++                    return None;
++                }
++
+                 let cases = self.parse_match_body();
+ 
+                 Some(ast::StmtMatch {
+```
+
+But I think the correct thing to do is mimic the CPython behavior more precisely. The relevant code is here:
+
+https://github.com/python/cpython/blob/66e1399311c17684c6e26f5d9d9603fbd0717d0d/Parser/parser.c#L7765-L7778
+
+and I believe the logic is to revert to treating `match` as an identifier unless we "match" (pun intended) the pattern: `match`, followed by valid `subject`, followed by `:` and `Newline` and indent, followed by one or more valid `case`s, followed by a `dedent`.
 
 ---

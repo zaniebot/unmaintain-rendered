@@ -2,18 +2,19 @@
 number: 22148
 title: "[ty] Use key and value parameter types as type context for `__setitem__` dunder calls"
 type: pull_request
-state: open
+state: merged
 author: ibraheemdev
 labels:
   - ty
   - ecosystem-analyzer
 assignees: []
+merged: true
 base: main
 head: ibraheem/setitem-dunder-tcx
 created_at: 2025-12-22T22:52:37Z
-updated_at: 2026-01-12T17:48:45Z
+updated_at: 2026-01-12T21:05:07Z
 url: https://github.com/astral-sh/ruff/pull/22148
-synced_at: 2026-01-12T18:23:35Z
+synced_at: 2026-01-12T21:25:53Z
 ```
 
 # [ty] Use key and value parameter types as type context for `__setitem__` dunder calls
@@ -86,18 +87,22 @@ spack (https://github.com/spack/spack)
 
 pip (https://github.com/pypa/pip)
 - src/pip/_internal/commands/search.py:101:13: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `dict[Unknown | str, Unknown | str | list[Unknown | str]]` on object of type `OrderedDict[str, TransformedHit]`
-- Found 613 diagnostics
-+ Found 612 diagnostics
+- Found 603 diagnostics
++ Found 602 diagnostics
 
 PyWinCtl (https://github.com/Kalmat/PyWinCtl)
 - src/pywinctl/_pywinctl_linux.py:307:13: error[invalid-assignment] Invalid subscript assignment with key of type `Unknown` and value of type `dict[Unknown | str, Unknown | dict[Unknown, Unknown]]` on object of type `dict[str, _WINDICT]`
 - Found 31 diagnostics
 + Found 30 diagnostics
 
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
+
 urllib3 (https://github.com/urllib3/urllib3)
 - src/urllib3/contrib/emscripten/fetch.py:400:34: error[not-subscriptable] Cannot subscript object of type `None` with no `__getitem__` method
-- Found 266 diagnostics
-+ Found 265 diagnostics
+- Found 306 diagnostics
++ Found 305 diagnostics
 
 pydantic (https://github.com/pydantic/pydantic)
 - pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
@@ -118,58 +123,21 @@ pydantic (https://github.com/pydantic/pydantic)
 + pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
 
 mypy (https://github.com/python/mypy)
-- mypy/build.py:1151:13: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `dict[Unknown | str, Unknown | (str & ~AlwaysFalsy) | int]` on object of type `dict[str, FgDepMeta]`
-- Found 1753 diagnostics
-+ Found 1752 diagnostics
+- mypy/build.py:1176:13: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `dict[Unknown | str, Unknown | (str & ~AlwaysFalsy) | int]` on object of type `dict[str, FgDepMeta]`
+- Found 1740 diagnostics
++ Found 1739 diagnostics
 
 freqtrade (https://github.com/freqtrade/freqtrade)
 - freqtrade/rpc/api_server/api_download_data.py:32:17: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `dict[Unknown | str, Unknown]` on object of type `dict[str, ProgressTask]`
 - freqtrade/rpc/api_server/api_download_data.py:73:5: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `dict[Unknown | str, Unknown | str | None | dict[Unknown, Unknown] | bool]` on object of type `dict[str, JobsContainer]`
 - freqtrade/rpc/api_server/api_pairlists.py:92:5: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `dict[Unknown | str, Unknown | str | None | bool | dict[Unknown, Unknown]]` on object of type `dict[str, JobsContainer]`
-- Found 683 diagnostics
-+ Found 680 diagnostics
+- Found 681 diagnostics
++ Found 678 diagnostics
 
 cwltool (https://github.com/common-workflow-language/cwltool)
 - cwltool/cwlprov/ro.py:263:13: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `dict[Unknown | str, Unknown | str | None]` on object of type `dict[str, Aggregate]`
-- Found 258 diagnostics
-+ Found 257 diagnostics
-
-scikit-build-core (https://github.com/scikit-build/scikit-build-core)
-+ src/scikit_build_core/build/wheel.py:98:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
-- Found 47 diagnostics
-+ Found 48 diagnostics
-
-prefect (https://github.com/PrefectHQ/prefect)
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_actions.py:193:9: error[invalid-assignment] Invalid subscript assignment with key of type `Literal["push"]` and value of type `list[Unknown | dict[Unknown | str, Unknown | dict[Unknown | str, Unknown | str | None]]]` on object of type `list[dict[str, Any]]`
-+ src/prefect/cli/deploy/_actions.py:193:9: error[invalid-assignment] Invalid subscript assignment with key of type `Literal["push"]` and value of type `list[dict[str, Any]] & list[Unknown | dict[Unknown | str, Unknown | dict[Unknown | str, Unknown | str | None]]]` on object of type `list[dict[str, Any]]`
-- src/prefect/cli/deploy/_actions.py:201:9: error[invalid-assignment] Invalid subscript assignment with key of type `Literal["pull"]` and value of type `list[Unknown | dict[Unknown | str, Unknown | dict[Unknown | str, Unknown | str | None]]]` on object of type `list[dict[str, Any]]`
-+ src/prefect/cli/deploy/_actions.py:201:9: error[invalid-assignment] Invalid subscript assignment with key of type `Literal["pull"]` and value of type `list[dict[str, Any]] & list[Unknown | dict[Unknown | str, Unknown | dict[Unknown | str, Unknown | str | None]]]` on object of type `list[dict[str, Any]]`
-- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `int | T@resolve_variables | float | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-+ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
-- src/prefect/locking/filesystem.py:138:9: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `dict[Unknown | str, Unknown | str | datetime | None | Path]` on object of type `dict[str, _LockInfo]`
-- src/prefect/locking/filesystem.py:187:9: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `dict[Unknown | str, Unknown | str | datetime | None | Path]` on object of type `dict[str, _LockInfo]`
-- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
-+ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements` on object of type `dict[str, Any]`
-- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
-+ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | int | dict[str, Any] | ... omitted 5 union elements]`
-- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
-+ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, int | T@resolve_variables | float | ... omitted 5 union elements]`
-- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
-+ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[int | T@resolve_variables | float | ... omitted 5 union elements]`
-- src/prefect/workers/base.py:228:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-+ src/prefect/workers/base.py:228:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | int | dict[str, Any] | ... omitted 4 union elements`
-- src/prefect/workers/base.py:230:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
-+ src/prefect/workers/base.py:230:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `int | T@resolve_variables | float | ... omitted 4 union elements`
-- Found 5534 diagnostics
-+ Found 5532 diagnostics
+- Found 257 diagnostics
++ Found 256 diagnostics
 
 dd-trace-py (https://github.com/DataDog/dd-trace-py)
 - ddtrace/contrib/internal/ray/span_manager.py:214:17: error[invalid-assignment] Invalid subscript assignment with key of type `None | str` and value of type `dict[Unknown, Unknown]` on object of type `dict[str, dict[tuple[int, int], Span]]`
@@ -187,45 +155,101 @@ dd-trace-py (https://github.com/DataDog/dd-trace-py)
 - ddtrace/internal/remoteconfig/client.py:152:46: error[invalid-argument-type] Argument is incorrect: Expected `Mapping[str, str]`, found `object`
 - ddtrace/internal/remoteconfig/client.py:152:46: error[invalid-argument-type] Argument is incorrect: Expected `Mapping[str, Any]`, found `object`
 - ddtrace/llmobs/_experiment.py:216:9: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `dict[Unknown | str, Unknown | str]` on object of type `dict[str, UpdatableDatasetRecord]`
-- Found 8424 diagnostics
-+ Found 8411 diagnostics
+- Found 8435 diagnostics
++ Found 8422 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_actions.py:193:9: error[invalid-assignment] Invalid subscript assignment with key of type `Literal["push"]` and value of type `list[Unknown | dict[Unknown | str, Unknown | dict[Unknown | str, Unknown | str | None]]]` on object of type `list[dict[str, Any]]`
++ src/prefect/cli/deploy/_actions.py:193:9: error[invalid-assignment] Invalid subscript assignment with key of type `Literal["push"]` and value of type `list[dict[str, Any]] & list[Unknown | dict[Unknown | str, Unknown | dict[Unknown | str, Unknown | str | None]]]` on object of type `list[dict[str, Any]]`
+- src/prefect/cli/deploy/_actions.py:201:9: error[invalid-assignment] Invalid subscript assignment with key of type `Literal["pull"]` and value of type `list[Unknown | dict[Unknown | str, Unknown | dict[Unknown | str, Unknown | str | None]]]` on object of type `list[dict[str, Any]]`
++ src/prefect/cli/deploy/_actions.py:201:9: error[invalid-assignment] Invalid subscript assignment with key of type `Literal["pull"]` and value of type `list[dict[str, Any]] & list[Unknown | dict[Unknown | str, Unknown | dict[Unknown | str, Unknown | str | None]]]` on object of type `list[dict[str, Any]]`
+- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
++ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
+- src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | ((...) -> Any)`
++ src/prefect/deployments/runner.py:795:70: warning[possibly-missing-attribute] Attribute `__name__` may be missing on object of type `Unknown | (((...) -> Any) & ((*args: object, **kwargs: object) -> object))`
+- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
++ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
+- src/prefect/flow_engine.py:812:32: error[invalid-await] `Unknown | R@FlowRunEngine | Coroutine[Any, Any, R@FlowRunEngine]` is not awaitable
+- src/prefect/flow_engine.py:1401:24: error[invalid-await] `Unknown | R@AsyncFlowRunEngine | Coroutine[Any, Any, R@AsyncFlowRunEngine]` is not awaitable
+- src/prefect/flow_engine.py:1482:43: error[invalid-argument-type] Argument to function `next` is incorrect: Expected `SupportsNext[Unknown]`, found `Unknown | R@run_generator_flow_sync`
+- src/prefect/flow_engine.py:1490:21: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_sync`
+- src/prefect/flow_engine.py:1524:44: warning[possibly-missing-attribute] Attribute `__anext__` may be missing on object of type `Unknown | R@run_generator_flow_async`
+- src/prefect/flow_engine.py:1531:25: warning[possibly-missing-attribute] Attribute `throw` may be missing on object of type `Unknown | R@run_generator_flow_async`
+- src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
++ src/prefect/flows.py:286:34: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
+- src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `(**P@Flow) -> R@Flow` has no attribute `__name__`
++ src/prefect/flows.py:404:68: error[unresolved-attribute] Object of type `((**P@Flow) -> R@Flow) & ((*args: object, **kwargs: object) -> object)` has no attribute `__name__`
++ src/prefect/flows.py:1750:53: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- src/prefect/locking/filesystem.py:138:9: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `dict[Unknown | str, Unknown | str | datetime | None | Path]` on object of type `dict[str, _LockInfo]`
+- src/prefect/locking/filesystem.py:187:9: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `dict[Unknown | str, Unknown | str | datetime | None | Path]` on object of type `dict[str, _LockInfo]`
+- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
++ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` on object of type `dict[str, Any]`
+- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
++ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | str | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
++ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
+- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
++ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
+- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
++ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
+- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
++ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
+- Found 5374 diagnostics
++ Found 5367 diagnostics
 
 hydpy (https://github.com/hydpy-dev/hydpy)
 - hydpy/core/threadingtools.py:261:21: error[invalid-assignment] Invalid subscript assignment with key of type `Node` and value of type `list[Element]` on object of type `dict[Node | Element, list[Node | Element]]`
-- Found 684 diagnostics
-+ Found 683 diagnostics
+- Found 665 diagnostics
++ Found 664 diagnostics
+
+materialize (https://github.com/MaterializeInc/materialize)
+- misc/python/materialize/mzcompose/services/materialized.py:205:13: error[invalid-assignment] Invalid subscript assignment with key of type `Literal["azurite", "minio"]` and value of type `dict[Unknown | str, Unknown | str]` on object of type `dict[str, ServiceDependency]`
+- misc/python/materialize/mzcompose/services/materialized.py:251:13: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `dict[Unknown | str, Unknown | str]` on object of type `dict[str, ServiceDependency]`
+- Found 514 diagnostics
++ Found 512 diagnostics
 
 static-frame (https://github.com/static-frame/static-frame)
-- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Top[Bus[Any]] | TypeBlocks | Batch | ... omitted 6 union elements, object_]`
-+ static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Self@iloc | Bus[Any], object_ | Self@iloc]`
-- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Top[Index[Any]] | TypeBlocks | Top[Bus[Any]] | ... omitted 6 union elements, generic[object]]`
-- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Top[Index[Any]] | TypeBlocks | Top[Bus[Any]] | ... omitted 7 union elements, generic[object]]`
-+ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | TypeBlocks | Batch | ... omitted 7 union elements, generic[object]]`
-- Found 1843 diagnostics
-+ Found 1842 diagnostics
++ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
+- static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Self@iloc | Bus[Any], object_ | Self@iloc]`
++ static_frame/core/bus.py:675:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Bus[Any], object_]`, found `InterGetItemILocReduces[Bus[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_ | Self@iloc]`
+- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | ndarray[Never, Never] | ... omitted 6 union elements, TVDtype@Series]`
++ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
+- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
++ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
++ static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
+- Found 1825 diagnostics
++ Found 1827 diagnostics
 
-jax (https://github.com/google/jax)
-+ jax/_src/tree_util.py:302:31: error[invalid-argument-type] Argument to bound method `register_node` is incorrect: Expected `(Hashable, Iterable[object], /) -> T@register_pytree_node`, found `(_AuxData@register_pytree_node, _Children@register_pytree_node, /) -> T@register_pytree_node`
-+ jax/_src/tree_util.py:305:31: error[invalid-argument-type] Argument to bound method `register_node` is incorrect: Expected `(Hashable, Iterable[object], /) -> T@register_pytree_node`, found `(_AuxData@register_pytree_node, _Children@register_pytree_node, /) -> T@register_pytree_node`
-+ jax/_src/tree_util.py:308:31: error[invalid-argument-type] Argument to bound method `register_node` is incorrect: Expected `(Hashable, Iterable[object], /) -> T@register_pytree_node`, found `(_AuxData@register_pytree_node, _Children@register_pytree_node, /) -> T@register_pytree_node`
-- Found 2802 diagnostics
-+ Found 2805 diagnostics
+rotki (https://github.com/rotki/rotki)
+- rotkehlchen/chain/decoding/tools.py:96:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[A@BaseDecoderTools]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
+- rotkehlchen/chain/decoding/tools.py:100:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
++ rotkehlchen/chain/decoding/tools.py:97:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress`, found `A@BaseDecoderTools`
++ rotkehlchen/chain/decoding/tools.py:98:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress | None`, found `A@BaseDecoderTools | None`
+- Found 2103 diagnostics
++ Found 2102 diagnostics
+
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
++ pandas-stubs/_typing.pyi:1232:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5169 diagnostics
++ Found 5170 diagnostics
 
 zulip (https://github.com/zulip/zulip)
-- zerver/lib/message.py:1006:13: error[invalid-assignment] Invalid subscript assignment with key of type `Any` and value of type `dict[str, Any]` on object of type `dict[int, RawUnreadStreamDict]`
-- zerver/lib/message.py:1019:13: error[invalid-assignment] Invalid subscript assignment with key of type `Any` and value of type `dict[str, Any]` on object of type `dict[int, RawUnreadDirectMessageDict]`
-- zerver/lib/message.py:1038:17: error[invalid-assignment] Invalid subscript assignment with key of type `Any` and value of type `dict[str, int | Unknown]` on object of type `dict[int, RawUnreadDirectMessageDict]`
-- zerver/lib/message.py:1042:17: error[invalid-assignment] Invalid subscript assignment with key of type `Any` and value of type `dict[str, str]` on object of type `dict[int, RawUnreadDirectMessageGroupDict]`
+- zerver/lib/message.py:1016:13: error[invalid-assignment] Invalid subscript assignment with key of type `Any` and value of type `dict[str, Any]` on object of type `dict[int, RawUnreadStreamDict]`
+- zerver/lib/message.py:1029:13: error[invalid-assignment] Invalid subscript assignment with key of type `Any` and value of type `dict[str, Any]` on object of type `dict[int, RawUnreadDirectMessageDict]`
+- zerver/lib/message.py:1048:17: error[invalid-assignment] Invalid subscript assignment with key of type `Any` and value of type `dict[str, int | Unknown]` on object of type `dict[int, RawUnreadDirectMessageDict]`
+- zerver/lib/message.py:1052:17: error[invalid-assignment] Invalid subscript assignment with key of type `Any` and value of type `dict[str, str]` on object of type `dict[int, RawUnreadDirectMessageGroupDict]`
 - zerver/tornado/event_queue.py:1030:13: error[invalid-assignment] Invalid subscript assignment with key of type `Unknown | str` and value of type `dict[str, ClientDescriptor | list[Unknown] | bool]` on object of type `dict[str, ClientInfo]`
 - zerver/tornado/event_queue.py:1041:13: error[invalid-assignment] Invalid subscript assignment with key of type `Unknown | str` and value of type `dict[str, ClientDescriptor | Any | bool]` on object of type `dict[str, ClientInfo]`
 - zilencer/views.py:1734:9: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `dict[Unknown | str, Unknown | int | None]` on object of type `dict[str, RemoteRealmDictValue]`
-- Found 3663 diagnostics
-+ Found 3656 diagnostics
-
-rotki (https://github.com/rotki/rotki)
-- rotkehlchen/balances/historical.py:73:13: error[invalid-assignment] Invalid subscript assignment with key of type `Asset` and value of type `dict[Unknown | str, Unknown | FVal]` on object of type `dict[Asset, HistoricalBalance]`
-- Found 2089 diagnostics
-+ Found 2088 diagnostics
+- Found 3679 diagnostics
++ Found 3672 diagnostics
 
 core (https://github.com/home-assistant/core)
 - homeassistant/components/media_player/__init__.py:1210:13: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `dict[Unknown | str, Unknown | Lock]` on object of type `OrderedDict[str, _CacheImage]`
@@ -236,14 +260,8 @@ core (https://github.com/home-assistant/core)
 - homeassistant/components/thread/diagnostics.py:179:18: error[invalid-assignment] Invalid subscript assignment with key of type `str & ~AlwaysFalsy` and value of type `dict[Unknown | str, Unknown | str | (list[str] & ~AlwaysFalsy) | ... omitted 3 union elements]` on object of type `dict[str, Router]`
 - homeassistant/components/traccar_server/coordinator.py:136:13: error[invalid-assignment] Invalid subscript assignment with key of type `Unknown` and value of type `dict[Unknown | str, Unknown | None | dict[str, Any]]` on object of type `dict[int, TraccarServerCoordinatorDataDevice]`
 + homeassistant/util/variance.py:47:12: error[invalid-return-type] Return type does not match returned value: expected `(**_P@ignore_variance) -> _R@ignore_variance`, found `_Wrapped[_P@ignore_variance, _R@ignore_variance | int | float | datetime, _P@ignore_variance, _R@ignore_variance | int | float | datetime]`
-- Found 14439 diagnostics
-+ Found 14433 diagnostics
-
-materialize (https://github.com/MaterializeInc/materialize)
-- misc/python/materialize/mzcompose/services/materialized.py:205:13: error[invalid-assignment] Invalid subscript assignment with key of type `Literal["azurite", "minio"]` and value of type `dict[Unknown | str, Unknown | str]` on object of type `dict[str, ServiceDependency]`
-- misc/python/materialize/mzcompose/services/materialized.py:251:13: error[invalid-assignment] Invalid subscript assignment with key of type `str` and value of type `dict[Unknown | str, Unknown | str]` on object of type `dict[str, ServiceDependency]`
-- Found 311 diagnostics
-+ Found 309 diagnostics
+- Found 14504 diagnostics
++ Found 14498 diagnostics
 
 
 ```
@@ -298,15 +316,18 @@ _Comment by @astral-sh-bot[bot] on 2025-12-22 23:27_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-assignment` | 0 | 29 | 9 |
-| `invalid-argument-type` | 0 | 12 | 4 |
-| `invalid-return-type` | 0 | 1 | 8 |
+| `invalid-assignment` | 0 | 28 | 9 |
+| `invalid-argument-type` | 1 | 12 | 3 |
+| `invalid-await` | 2 | 0 | 6 |
+| `invalid-return-type` | 0 | 0 | 6 |
+| `possibly-missing-attribute` | 3 | 0 | 1 |
+| `unresolved-attribute` | 0 | 0 | 2 |
 | `not-subscriptable` | 0 | 1 | 0 |
 | `unused-ignore-comment` | 0 | 1 | 0 |
-| **Total** | **0** | **44** | **21** |
+| **Total** | **6** | **42** | **27** |
 
 
-**[Full report with detailed diff](https://ae4ba581.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://ae4ba581.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://709beda0.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://709beda0.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -360,7 +381,7 @@ This encodes some things (notably the `MemberLookupPolicy`) that feel like they 
 
 ---
 
-_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer/builder.rs`:4068 on 2026-01-12 17:46_
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer/builder.rs`:4186 on 2026-01-12 17:46_
 
 I think the ergonomics of argument handling for `self.infer_and_try_call_dunder` could probably be better? But we can defer that to once we have >1 use of it.
 
@@ -377,5 +398,27 @@ _Review comment by @carljm on `crates/ty_python_semantic/src/types/infer/builder
 _@carljm approved on 2026-01-12 17:48_
 
 Thank you!
+
+---
+
+_@ibraheemdev reviewed on 2026-01-12 20:53_
+
+---
+
+_Review comment by @ibraheemdev on `crates/ty_python_semantic/src/types/infer/builder.rs`:4186 on 2026-01-12 20:53_
+
+Yeah, it's just a little bit tricky because the underlying method `infer_all_argument_types` is meant to work with variadic AST arguments, while this case requires a custom inference method per argument. Open to suggestions.
+
+---
+
+_Merged by @ibraheemdev on 2026-01-12 21:05_
+
+---
+
+_Closed by @ibraheemdev on 2026-01-12 21:05_
+
+---
+
+_Branch deleted on 2026-01-12 21:05_
 
 ---

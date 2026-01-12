@@ -2,16 +2,16 @@
 number: 2265
 title: "Support assignment to union of `TypedDict`"
 type: issue
-state: open
+state: closed
 author: ibraheemdev
 labels:
   - bidirectional inference
   - typeddict
 assignees: []
 created_at: 2025-12-29T22:07:07Z
-updated_at: 2026-01-09T05:29:47Z
+updated_at: 2026-01-12T21:11:00Z
 url: https://github.com/astral-sh/ty/issues/2265
-synced_at: 2026-01-12T15:54:26Z
+synced_at: 2026-01-12T21:25:36Z
 ```
 
 # Support assignment to union of `TypedDict`
@@ -65,5 +65,9 @@ Ah, interestingly, the examples above type check, but fail if I remove the `reve
 ---
 
 _Assigned to @ibraheemdev by @ibraheemdev on 2026-01-09 05:29_
+
+---
+
+_Closed by @ibraheemdev on 2026-01-12 21:11_
 
 ---

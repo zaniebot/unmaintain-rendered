@@ -2,15 +2,15 @@
 number: 740
 title: "Support `type()`'s functional syntax"
 type: issue
-state: open
+state: closed
 author: InSyncWithFoo
 labels:
   - runtime semantics
 assignees: []
 created_at: 2025-07-01T13:31:02Z
-updated_at: 2025-12-27T04:16:00Z
+updated_at: 2026-01-12T20:20:43Z
 url: https://github.com/astral-sh/ty/issues/740
-synced_at: 2026-01-12T15:54:23Z
+synced_at: 2026-01-12T21:25:36Z
 ```
 
 # Support `type()`'s functional syntax
@@ -65,5 +65,9 @@ testCaseClass = type("Foo", (TestCase,), {})
 # Argument to bound method `append` is incorrect: Expected `type[TestCase]`, found `type`
 tests.append(testCaseClass)
 ```
+
+---
+
+_Closed by @charliermarsh on 2026-01-12 20:20_
 
 ---
