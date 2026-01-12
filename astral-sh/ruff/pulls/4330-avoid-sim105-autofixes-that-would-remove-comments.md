@@ -1,0 +1,129 @@
+```yaml
+number: 4330
+title: Avoid SIM105 autofixes that would remove comments
+type: pull_request
+state: merged
+author: charliermarsh
+labels: []
+assignees: []
+merged: true
+base: main
+head: charlie/comment
+created_at: 2023-05-09T21:23:31Z
+updated_at: 2023-05-09T21:56:14Z
+url: https://github.com/astral-sh/ruff/pull/4330
+synced_at: 2026-01-12T03:56:39Z
+```
+
+# Avoid SIM105 autofixes that would remove comments
+
+---
+
+_Pull request opened by @charliermarsh on 2023-05-09 21:23_
+
+Closes #4318.
+
+---
+
+_Merged by @charliermarsh on 2023-05-09 21:30_
+
+---
+
+_Closed by @charliermarsh on 2023-05-09 21:30_
+
+---
+
+_Branch deleted on 2023-05-09 21:30_
+
+---
+
+_Comment by @github-actions[bot] on 2023-05-09 21:36_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+14, -14, 0 error(s))
+
+<details><summary>airflow (+12, -12)</summary>
+<p>
+
+```diff
++ airflow/callbacks/pipe_callback_sink.py:43:9: SIM105 Use `contextlib.suppress(ConnectionError)` instead of `try`-`except`-`pass`
+- airflow/callbacks/pipe_callback_sink.py:43:9: SIM105 [*] Use `contextlib.suppress(ConnectionError)` instead of `try`-`except`-`pass`
++ airflow/dag_processing/manager.py:181:9: SIM105 Use `contextlib.suppress(ConnectionError)` instead of `try`-`except`-`pass`
+- airflow/dag_processing/manager.py:181:9: SIM105 [*] Use `contextlib.suppress(ConnectionError)` instead of `try`-`except`-`pass`
++ airflow/executors/celery_executor.py:202:5: SIM105 Use `contextlib.suppress(ImportError)` instead of `try`-`except`-`pass`
+- airflow/executors/celery_executor.py:202:5: SIM105 [*] Use `contextlib.suppress(ImportError)` instead of `try`-`except`-`pass`
++ airflow/executors/celery_executor.py:207:5: SIM105 Use `contextlib.suppress(ImportError)` instead of `try`-`except`-`pass`
+- airflow/executors/celery_executor.py:207:5: SIM105 [*] Use `contextlib.suppress(ImportError)` instead of `try`-`except`-`pass`
++ airflow/providers/google/cloud/hooks/datafusion.py:510:13: SIM105 Use `contextlib.suppress(AirflowException)` instead of `try`-`except`-`pass`
+- airflow/providers/google/cloud/hooks/datafusion.py:510:13: SIM105 [*] Use `contextlib.suppress(AirflowException)` instead of `try`-`except`-`pass`
++ dev/breeze/src/airflow_breeze/utils/kubernetes_utils.py:165:9: SIM105 Use `contextlib.suppress(FileNotFoundError)` instead of `try`-`except`-`pass`
+- dev/breeze/src/airflow_breeze/utils/kubernetes_utils.py:165:9: SIM105 [*] Use `contextlib.suppress(FileNotFoundError)` instead of `try`-`except`-`pass`
++ dev/breeze/src/airflow_breeze/utils/kubernetes_utils.py:173:5: SIM105 Use `contextlib.suppress(OSError)` instead of `try`-`except`-`pass`
+- dev/breeze/src/airflow_breeze/utils/kubernetes_utils.py:173:5: SIM105 [*] Use `contextlib.suppress(OSError)` instead of `try`-`except`-`pass`
++ tests/listeners/test_listeners.py:86:5: SIM105 Use `contextlib.suppress(NotImplementedError)` instead of `try`-`except`-`pass`
+- tests/listeners/test_listeners.py:86:5: SIM105 [*] Use `contextlib.suppress(NotImplementedError)` instead of `try`-`except`-`pass`
++ tests/models/test_taskinstance.py:2771:9: SIM105 Use `contextlib.suppress(AirflowFailException)` instead of `try`-`except`-`pass`
+- tests/models/test_taskinstance.py:2771:9: SIM105 [*] Use `contextlib.suppress(AirflowFailException)` instead of `try`-`except`-`pass`
++ tests/models/test_taskinstance.py:2789:9: SIM105 Use `contextlib.suppress(AirflowException)` instead of `try`-`except`-`pass`
+- tests/models/test_taskinstance.py:2789:9: SIM105 [*] Use `contextlib.suppress(AirflowException)` instead of `try`-`except`-`pass`
++ tests/system/providers/amazon/aws/example_quicksight.py:117:5: SIM105 Use `contextlib.suppress(client.exceptions.ResourceNotFoundException)` instead of `try`-`except`-`pass`
+- tests/system/providers/amazon/aws/example_quicksight.py:117:5: SIM105 [*] Use `contextlib.suppress(client.exceptions.ResourceNotFoundException)` instead of `try`-`except`-`pass`
++ tests/system/providers/docker/example_taskflow_api_docker_virtualenv.py:112:5: SIM105 Use `contextlib.suppress(AttributeError)` instead of `try`-`except`-`pass`
+- tests/system/providers/docker/example_taskflow_api_docker_virtualenv.py:112:5: SIM105 [*] Use `contextlib.suppress(AttributeError)` instead of `try`-`except`-`pass`
+```
+
+</p>
+</details>
+<details><summary>bokeh (+2, -2)</summary>
+<p>
+
+```diff
++ docs/bokeh/docserver.py:94:5: SIM105 Use `contextlib.suppress(KeyboardInterrupt)` instead of `try`-`except`-`pass`
+- docs/bokeh/docserver.py:94:5: SIM105 [*] Use `contextlib.suppress(KeyboardInterrupt)` instead of `try`-`except`-`pass`
++ tests/support/plugins/file_server.py:111:9: SIM105 Use `contextlib.suppress(OSError)` instead of `try`-`except`-`pass`
+- tests/support/plugins/file_server.py:111:9: SIM105 [*] Use `contextlib.suppress(OSError)` instead of `try`-`except`-`pass`
+```
+
+</p>
+</details>
+
+### Benchmark
+#### Linux
+```
+group                                      main                                     pr
+-----                                      ----                                     --
+linter/all-rules/large/dataset.py          1.00     13.9±0.09ms     2.9 MB/sec      1.01     14.0±0.12ms     2.9 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.3±0.01ms     5.0 MB/sec      1.00      3.3±0.01ms     5.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    413.9±0.99µs     7.1 MB/sec      1.00    412.3±0.54µs     7.2 MB/sec
+linter/all-rules/pydantic/types.py         1.00      5.7±0.01ms     4.4 MB/sec      1.01      5.8±0.02ms     4.4 MB/sec
+linter/default-rules/large/dataset.py      1.14      8.0±1.35ms     5.1 MB/sec      1.00      7.0±0.04ms     5.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.25  1850.8±1234.70µs     9.0 MB/sec    1.00   1483.0±5.44µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    162.1±0.60µs    18.2 MB/sec      1.01    164.0±0.93µs    18.0 MB/sec
+linter/default-rules/pydantic/types.py     1.02      3.2±0.24ms     8.1 MB/sec      1.00      3.1±0.01ms     8.2 MB/sec
+parser/large/dataset.py                    1.00      5.4±0.01ms     7.5 MB/sec      1.00      5.5±0.00ms     7.5 MB/sec
+parser/numpy/ctypeslib.py                  1.00   1060.3±0.74µs    15.7 MB/sec      1.00   1063.0±0.72µs    15.7 MB/sec
+parser/numpy/globals.py                    1.00     95.0±0.11µs    31.1 MB/sec      1.13    107.8±0.16µs    27.4 MB/sec
+parser/pydantic/types.py                   1.00      2.3±0.00ms    11.0 MB/sec      1.00      2.3±0.01ms    11.0 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     23.9±0.62ms  1746.4 KB/sec    1.01     24.2±0.72ms  1723.6 KB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      5.8±0.23ms     2.9 MB/sec    1.02      5.9±0.28ms     2.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00   675.7±40.87µs     4.4 MB/sec    1.00   677.4±46.40µs     4.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      9.8±0.37ms     2.6 MB/sec    1.03     10.1±0.41ms     2.5 MB/sec
+linter/default-rules/large/dataset.py      1.00     11.9±0.36ms     3.4 MB/sec    1.00     11.9±0.38ms     3.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00      2.5±0.10ms     6.7 MB/sec    1.01      2.5±0.11ms     6.6 MB/sec
+linter/default-rules/numpy/globals.py      1.01   287.8±19.82µs    10.3 MB/sec    1.00   285.2±17.94µs    10.3 MB/sec
+linter/default-rules/pydantic/types.py     1.01      5.3±0.23ms     4.8 MB/sec    1.00      5.2±0.19ms     4.9 MB/sec
+parser/large/dataset.py                    1.01      9.6±0.32ms     4.2 MB/sec    1.00      9.5±0.40ms     4.3 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1856.5±66.41µs     9.0 MB/sec    1.00  1855.5±64.26µs     9.0 MB/sec
+parser/numpy/globals.py                    1.00   186.7±10.34µs    15.8 MB/sec    1.01   189.0±12.85µs    15.6 MB/sec
+parser/pydantic/types.py                   1.00      4.1±0.16ms     6.2 MB/sec    1.01      4.1±0.14ms     6.2 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---

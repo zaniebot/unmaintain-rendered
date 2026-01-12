@@ -1,0 +1,84 @@
+```yaml
+number: 4317
+title: "Move `show_source` onto CLI settings group"
+type: pull_request
+state: merged
+author: charliermarsh
+labels: []
+assignees: []
+merged: true
+base: main
+head: charlie/show-source
+created_at: 2023-05-09T17:03:21Z
+updated_at: 2023-05-09T17:49:01Z
+url: https://github.com/astral-sh/ruff/pull/4317
+synced_at: 2026-01-12T03:56:39Z
+```
+
+# Move `show_source` onto CLI settings group
+
+---
+
+_Pull request opened by @charliermarsh on 2023-05-09 17:03_
+
+Now that we _always_ compute source, we don't need it available as a library setting -- it's only relevant for the printer.
+
+---
+
+_Merged by @charliermarsh on 2023-05-09 17:26_
+
+---
+
+_Closed by @charliermarsh on 2023-05-09 17:26_
+
+---
+
+_Branch deleted on 2023-05-09 17:26_
+
+---
+
+_Comment by @github-actions[bot] on 2023-05-09 17:35_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     15.6±0.27ms     2.6 MB/sec    1.00     15.5±0.30ms     2.6 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.01      3.8±0.09ms     4.4 MB/sec    1.00      3.8±0.07ms     4.4 MB/sec
+linter/all-rules/numpy/globals.py          1.00   478.1±15.72µs     6.2 MB/sec    1.02   488.4±27.49µs     6.0 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.6±0.21ms     3.9 MB/sec    1.00      6.6±0.19ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.03      7.8±0.39ms     5.2 MB/sec    1.00      7.6±0.24ms     5.4 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1641.0±54.65µs    10.1 MB/sec    1.01  1660.4±133.55µs    10.0 MB/sec
+linter/default-rules/numpy/globals.py      1.00    198.9±9.68µs    14.8 MB/sec    1.00   198.2±10.78µs    14.9 MB/sec
+linter/default-rules/pydantic/types.py     1.02      3.5±0.09ms     7.4 MB/sec    1.00      3.4±0.11ms     7.5 MB/sec
+parser/large/dataset.py                    1.11      7.1±0.26ms     5.7 MB/sec    1.00      6.4±0.20ms     6.4 MB/sec
+parser/numpy/ctypeslib.py                  1.06  1339.6±34.86µs    12.4 MB/sec    1.00  1260.4±49.44µs    13.2 MB/sec
+parser/numpy/globals.py                    1.06    130.0±4.66µs    22.7 MB/sec    1.00    122.9±5.13µs    24.0 MB/sec
+parser/pydantic/types.py                   1.09      3.0±0.10ms     8.6 MB/sec    1.00      2.7±0.08ms     9.4 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     16.3±0.11ms     2.5 MB/sec    1.02     16.6±0.13ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.2±0.02ms     4.0 MB/sec    1.02      4.3±0.04ms     3.9 MB/sec
+linter/all-rules/numpy/globals.py          1.00    429.8±5.67µs     6.9 MB/sec    1.01    432.0±5.82µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.0±0.03ms     3.7 MB/sec    1.03      7.2±0.07ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.3±0.04ms     4.9 MB/sec    1.03      8.5±0.05ms     4.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1748.8±13.74µs     9.5 MB/sec    1.02  1789.8±12.51µs     9.3 MB/sec
+linter/default-rules/numpy/globals.py      1.00    188.4±2.46µs    15.7 MB/sec    1.02    192.1±5.95µs    15.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.8±0.03ms     6.7 MB/sec    1.02      3.8±0.04ms     6.6 MB/sec
+parser/large/dataset.py                    1.00      6.8±0.02ms     6.0 MB/sec    1.00      6.8±0.03ms     6.0 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1291.7±10.88µs    12.9 MB/sec    1.00   1290.0±6.08µs    12.9 MB/sec
+parser/numpy/globals.py                    1.00    133.5±0.64µs    22.1 MB/sec    1.00    133.7±1.06µs    22.1 MB/sec
+parser/pydantic/types.py                   1.00      2.9±0.01ms     8.9 MB/sec    1.00      2.9±0.02ms     8.9 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---

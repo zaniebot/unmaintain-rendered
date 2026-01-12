@@ -1,0 +1,93 @@
+```yaml
+number: 4042
+title: Add docs for tryceratops rules
+type: pull_request
+state: merged
+author: tjkuson
+labels:
+  - documentation
+assignees: []
+merged: true
+base: main
+head: tryceratops_docs
+created_at: 2023-04-20T10:37:31Z
+updated_at: 2023-05-09T22:15:03Z
+url: https://github.com/astral-sh/ruff/pull/4042
+synced_at: 2026-01-12T03:56:38Z
+```
+
+# Add docs for tryceratops rules
+
+---
+
+_Pull request opened by @tjkuson on 2023-04-20 10:37_
+
+Add documentation to the tryceratops rules that did not already have documentation. This should complete all the documentation for the tryceratops ruleset.
+
+Documentation is written by me but with inspiration from the [tryceratops](https://pypi.org/project/tryceratops/1.1.0/) package.
+
+Related to #2646.
+
+---
+
+_Comment by @github-actions[bot] on 2023-04-20 10:47_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     14.6±0.10ms     2.8 MB/sec    1.00     14.6±0.11ms     2.8 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.6±0.02ms     4.6 MB/sec    1.00      3.6±0.02ms     4.6 MB/sec
+linter/all-rules/numpy/globals.py          1.00    457.0±0.97µs     6.5 MB/sec    1.01    460.5±1.36µs     6.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.1±0.05ms     4.2 MB/sec    1.01      6.1±0.04ms     4.2 MB/sec
+linter/default-rules/large/dataset.py      1.00      7.3±0.05ms     5.6 MB/sec    1.00      7.3±0.03ms     5.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1612.3±7.84µs    10.3 MB/sec    1.02   1637.0±1.98µs    10.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    178.7±0.34µs    16.5 MB/sec    1.01    180.2±1.18µs    16.4 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.3±0.01ms     7.7 MB/sec    1.01      3.3±0.01ms     7.6 MB/sec
+parser/large/dataset.py                    1.02      6.0±0.01ms     6.8 MB/sec    1.00      5.9±0.01ms     6.9 MB/sec
+parser/numpy/ctypeslib.py                  1.01   1175.0±1.69µs    14.2 MB/sec    1.00   1159.0±1.07µs    14.4 MB/sec
+parser/numpy/globals.py                    1.03    116.9±0.73µs    25.2 MB/sec    1.00    113.3±0.20µs    26.0 MB/sec
+parser/pydantic/types.py                   1.01      2.6±0.00ms     9.9 MB/sec    1.00      2.5±0.00ms    10.0 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+linter/all-rules/large/dataset.py          1.00     17.0±0.34ms     2.4 MB/sec    1.02     17.3±0.42ms     2.4 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      4.4±0.18ms     3.8 MB/sec    1.00      4.4±0.14ms     3.7 MB/sec
+linter/all-rules/numpy/globals.py          1.00   545.5±19.83µs     5.4 MB/sec    1.01   548.3±25.18µs     5.4 MB/sec
+linter/all-rules/pydantic/types.py         1.00      7.3±0.19ms     3.5 MB/sec    1.01      7.3±0.30ms     3.5 MB/sec
+linter/default-rules/large/dataset.py      1.00      8.8±0.18ms     4.6 MB/sec    1.00      8.8±0.17ms     4.6 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1912.5±71.68µs     8.7 MB/sec    1.02  1950.5±89.55µs     8.5 MB/sec
+linter/default-rules/numpy/globals.py      1.00    216.5±9.13µs    13.6 MB/sec    1.03   223.3±11.68µs    13.2 MB/sec
+linter/default-rules/pydantic/types.py     1.00      4.0±0.07ms     6.4 MB/sec    1.02      4.1±0.18ms     6.3 MB/sec
+parser/large/dataset.py                    1.00      6.9±0.17ms     5.9 MB/sec    1.02      7.0±0.18ms     5.8 MB/sec
+parser/numpy/ctypeslib.py                  1.00  1325.7±60.35µs    12.6 MB/sec    1.02  1348.1±82.57µs    12.4 MB/sec
+parser/numpy/globals.py                    1.00    133.0±4.50µs    22.2 MB/sec    1.01    134.1±5.09µs    22.0 MB/sec
+parser/pydantic/types.py                   1.00      3.0±0.17ms     8.4 MB/sec    1.00      3.0±0.07ms     8.4 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_Label `documentation` added by @charliermarsh on 2023-04-23 04:31_
+
+---
+
+_Merged by @charliermarsh on 2023-04-23 04:35_
+
+---
+
+_Closed by @charliermarsh on 2023-04-23 04:35_
+
+---
+
+_Branch deleted on 2023-05-09 22:15_
+
+---
