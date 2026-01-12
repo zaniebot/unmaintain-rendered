@@ -2,15 +2,15 @@
 number: 17402
 title: cant activate python venv via nu shell batch
 type: issue
-state: open
+state: closed
 author: PoomTheerapat
 labels:
   - bug
 assignees: []
 created_at: 2026-01-10T19:16:39Z
-updated_at: 2026-01-10T19:16:39Z
+updated_at: 2026-01-12T05:47:17Z
 url: https://github.com/astral-sh/uv/issues/17402
-synced_at: 2026-01-12T02:26:26Z
+synced_at: 2026-01-12T06:55:09Z
 ```
 
 # cant activate python venv via nu shell batch
@@ -54,5 +54,9 @@ Python 3.9.11
 ---
 
 _Label `bug` added by @PoomTheerapat on 2026-01-10 19:16_
+
+---
+
+_Closed by @PoomTheerapat on 2026-01-12 05:47_
 
 ---

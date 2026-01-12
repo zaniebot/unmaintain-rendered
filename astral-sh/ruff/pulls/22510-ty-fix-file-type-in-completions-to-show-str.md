@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/spec
 created_at: 2026-01-11T22:28:08Z
-updated_at: 2026-01-12T00:38:16Z
+updated_at: 2026-01-12T06:20:10Z
 url: https://github.com/astral-sh/ruff/pull/22510
-synced_at: 2026-01-12T02:26:21Z
+synced_at: 2026-01-12T06:55:04Z
 ```
 
 # [ty] Fix `__file__` type in completions to show `str` instead of `str | None`
@@ -161,5 +161,9 @@ _Review requested from @MichaReiser by @charliermarsh on 2026-01-12 00:38_
 ---
 
 _Review requested from @Gankra by @charliermarsh on 2026-01-12 00:38_
+
+---
+
+_Review requested from @BurntSushi by @dhruvmanila on 2026-01-12 06:20_
 
 ---

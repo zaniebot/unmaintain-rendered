@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2025-09-18T14:05:37Z
-updated_at: 2026-01-09T14:56:45Z
+updated_at: 2026-01-12T06:05:09Z
 url: https://github.com/astral-sh/uv/issues/15933
-synced_at: 2026-01-10T03:11:35Z
+synced_at: 2026-01-12T06:55:09Z
 ```
 
 # Interrupted self update will result in incomplete binary file
@@ -54,5 +54,21 @@ At least on linux, when the installer script does the [mv into the final locatio
 Do we want to keep the fix in-tree, or should we report it upstream?
 
 I could also be wrong and the issue could be somewhere else, but so far I couldn't find anything else which stuck out.
+
+---
+
+_Comment by @zsyo on 2026-01-12 05:55_
+
+The same here, in the Windows environment, when running uv self update, the download was interrupted halfway through the network. When executing uv self update again, it reported an error
+
+```
+~ ❯ uv self update
+
+uv: The term 'uv' is not recognized as a name of a cmdlet, function, script file, or executable program.
+
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+```
+
+I found that `uv.exe` in the installation directory was renamed to `uv.exe.previous.exe`, and because of network issues, I used Ctrl+C to terminate the download program, which may have resulted in `uv.exe.previous.exe` not being restored to `uv.exe`. I think this update logic violates common sense. It seems more reasonable to first download the new file completely, and then move it to overwrite the old file.
 
 ---

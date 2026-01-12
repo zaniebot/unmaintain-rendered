@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2025-05-05T16:20:40Z
-updated_at: 2026-01-12T01:43:41Z
+updated_at: 2026-01-12T05:56:45Z
 url: https://github.com/astral-sh/ty/issues/31
-synced_at: 2026-01-12T02:26:11Z
+synced_at: 2026-01-12T06:54:49Z
 ```
 
 # Dependency Dashboard
@@ -37,14 +37,11 @@ Packages are marked as abandoned when they exceed the [`abandonmentThreshold`](h
 Unlike deprecated packages with official notices, abandonment is detected by release inactivity.
 
 
-## Open
+## Pending Status Checks
 
-The following updates have all been created. To force a retry/rebase of any, click on a checkbox below.
+The following updates await pending status checks. To force their creation now, click on a checkbox below.
 
- - [ ] <!-- rebase-branch=renovate/actions-checkout-digest -->[Update actions/checkout digest to 0c366fd](../pull/2452)
- - [ ] <!-- rebase-branch=renovate/pre-commit-dependencies -->[Update pre-commit dependencies](../pull/2453) (`astral-sh/uv-pre-commit`, `crate-ci/typos`, `rhysd/actionlint`)
- - [ ] <!-- rebase-branch=renovate/astral-sh-setup-uv-7.x -->[Update astral-sh/setup-uv action to v7.2.0](../pull/2454)
- - [ ] <!-- rebase-all-open-prs -->**Click on this checkbox to rebase all open PRs at once**
+ - [ ] <!-- approvePr-branch=renovate/pre-commit-dependencies -->Update pre-commit dependencies (`astral-sh/ruff-pre-commit`, `astral-sh/uv-pre-commit`, `crate-ci/typos`, `mdformat-mkdocs`, `zizmorcore/zizmor-pre-commit`)
 
 ## Detected Dependencies
 
@@ -128,12 +125,12 @@ The following updates have all been created. To force a retry/rebase of any, cli
  - `Swatinem/rust-cache v2.8.2@779680da715d629ac1d338a641029a2f4372abb5`
  - `PyO3/maturin-action v1.49.4@86b9d133d34bc1b40018696f782949dac11bd380`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `actions/cache v5.0.1@9255dc7a253b0ccc959486e2bca901246202afeb`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `actions/checkout v6.0.1@8e8c483db84b4bee98b60c0593521ed34d9990e8`
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `actions/setup-python v6.1.0@83679a892e2d95755f2dac6acb0bfd1e9ac5d548`
 
 </details>
@@ -157,25 +154,25 @@ The following updates have all been created. To force a retry/rebase of any, cli
 
 <details><summary>.github/workflows/publish-pypi.yml (2)</summary>
 
- - `astral-sh/setup-uv v7.1.6@681c641aba71e4a1c380be3ab5e12ad51f415867` → [Updates: `v7.2.0`]
+ - `astral-sh/setup-uv v7.2.0@61cb8a9741eeb8a550a1b8544337180c0fc8476b`
  - `actions/download-artifact v7.0.0@37930b1c2abaa49bbe596cd826c3c89aef350131`
 
 </details>
 
 <details><summary>.github/workflows/release.yml (13)</summary>
 
- - `actions/checkout 8e8c483db84b4bee98b60c0593521ed34d9990e8` → [Updates: `undefined`]
+ - `actions/checkout 0c366fd6a839edf440554fa01a7085ccba70ac98`
  - `actions/upload-artifact b7c566a772e6b6bfb58ed0dc250532a479d7789f`
  - `actions/upload-artifact b7c566a772e6b6bfb58ed0dc250532a479d7789f`
- - `actions/checkout 8e8c483db84b4bee98b60c0593521ed34d9990e8` → [Updates: `undefined`]
+ - `actions/checkout 0c366fd6a839edf440554fa01a7085ccba70ac98`
  - `actions/download-artifact 37930b1c2abaa49bbe596cd826c3c89aef350131`
  - `actions/download-artifact 37930b1c2abaa49bbe596cd826c3c89aef350131`
  - `actions/upload-artifact b7c566a772e6b6bfb58ed0dc250532a479d7789f`
- - `actions/checkout 8e8c483db84b4bee98b60c0593521ed34d9990e8` → [Updates: `undefined`]
+ - `actions/checkout 0c366fd6a839edf440554fa01a7085ccba70ac98`
  - `actions/download-artifact 37930b1c2abaa49bbe596cd826c3c89aef350131`
  - `actions/download-artifact 37930b1c2abaa49bbe596cd826c3c89aef350131`
  - `actions/upload-artifact b7c566a772e6b6bfb58ed0dc250532a479d7789f`
- - `actions/checkout 8e8c483db84b4bee98b60c0593521ed34d9990e8` → [Updates: `undefined`]
+ - `actions/checkout 0c366fd6a839edf440554fa01a7085ccba70ac98`
  - `actions/download-artifact 37930b1c2abaa49bbe596cd826c3c89aef350131`
 
 </details>
@@ -188,7 +185,7 @@ The following updates have all been created. To force a retry/rebase of any, cli
 
 <details><summary>.pre-commit-config.yaml (13)</summary>
 
- - `astral-sh/uv-pre-commit 0.9.18` → [Updates: `0.9.21`]
+ - `astral-sh/uv-pre-commit 0.9.21` → [Updates: `0.9.24`]
  - `pre-commit/pre-commit-hooks v6.0.0`
  - `astral-sh/ruff-pre-commit v0.14.10` → [Updates: `v0.14.11`]
  - `abravalheri/validate-pyproject v0.24.1`
@@ -196,11 +193,11 @@ The following updates have all been created. To force a retry/rebase of any, cli
  - `mdformat-footnote ==0.1.2`
  - `executablebooks/mdformat 1.0.0`
  - `igorshubovych/markdownlint-cli v0.47.0`
- - `crate-ci/typos v1.40.0` → [Updates: `v1.41.0`]
+ - `crate-ci/typos v1.41.0` → [Updates: `v1.42.0`]
  - `rbubley/mirrors-prettier v3.7.4`
  - `zizmorcore/zizmor-pre-commit v1.19.0` → [Updates: `v1.20.0`]
  - `python-jsonschema/check-jsonschema 0.36.0`
- - `rhysd/actionlint v1.7.9` → [Updates: `v1.7.10`]
+ - `rhysd/actionlint v1.7.10`
 
 </details>
 

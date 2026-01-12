@@ -8,9 +8,9 @@ labels:
   - server
 assignees: []
 created_at: 2025-11-14T17:35:12Z
-updated_at: 2025-11-14T17:35:13Z
+updated_at: 2026-01-12T06:24:36Z
 url: https://github.com/astral-sh/ty/issues/1560
-synced_at: 2026-01-10T02:06:25Z
+synced_at: 2026-01-12T06:54:49Z
 ```
 
 # Rename file refactor
@@ -28,5 +28,11 @@ _Added to milestone `Stable` by @MichaReiser on 2025-11-14 17:35_
 ---
 
 _Label `server` added by @MichaReiser on 2025-11-14 17:35_
+
+---
+
+_Comment by @dhruvmanila on 2026-01-12 06:24_
+
+I think this is the [`workspace/willRenameFiles` request](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#workspace_willRenameFiles) or [`workspace/didRenameFiles` notification](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#workspace_didRenameFiles) depending on when we want to update those import statements (before or after the file rename).
 
 ---

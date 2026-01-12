@@ -8,9 +8,9 @@ labels:
   - lint
 assignees: []
 created_at: 2026-01-11T10:45:07Z
-updated_at: 2026-01-11T14:19:43Z
+updated_at: 2026-01-12T06:16:24Z
 url: https://github.com/astral-sh/ty/issues/2442
-synced_at: 2026-01-12T02:26:12Z
+synced_at: 2026-01-12T06:54:49Z
 ```
 
 # Add a disabled-by-default diagnostic for implicitly `Unknown`-specialized types used in annotations
@@ -67,5 +67,11 @@ _Added to milestone `Stable` by @AlexWaygood on 2026-01-11 14:19_
 ---
 
 _Label `lint` added by @AlexWaygood on 2026-01-11 14:19_
+
+---
+
+_Comment by @dhruvmanila on 2026-01-12 06:16_
+
+Should this be part of https://github.com/astral-sh/ty/issues/527 ?
 
 ---

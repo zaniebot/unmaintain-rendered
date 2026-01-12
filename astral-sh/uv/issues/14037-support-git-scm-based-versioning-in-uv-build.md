@@ -10,9 +10,9 @@ labels:
   - build-backend
 assignees: []
 created_at: 2025-06-14T09:25:44Z
-updated_at: 2026-01-12T01:55:51Z
+updated_at: 2026-01-12T04:33:18Z
 url: https://github.com/astral-sh/uv/issues/14037
-synced_at: 2026-01-12T02:26:25Z
+synced_at: 2026-01-12T06:55:09Z
 ```
 
 # Support Git scm-based versioning in `uv` build backend
@@ -77,12 +77,6 @@ _Comment by @czechnology on 2025-11-11 15:23_
 
 Would be great to see this supported, it would simplify build&deploy pipelines. Calling `uv version` is an extra step which causes changes to the codebase and just unnecessary extra complexity.
 It is blocking us from migrating our libraries to `uv_build`. I have also seen OSS projects which are migrating to `uv` but in the process need to use `setuptools` or `hatchling` instead of `uv_build` because of this missing feature, seems like a missed opportunity for uv [build] :)
-
----
-
-_Comment by @DhavalGojiya on 2025-11-14 20:22_
-
-Eagerly Waiting for this feature.
 
 ---
 

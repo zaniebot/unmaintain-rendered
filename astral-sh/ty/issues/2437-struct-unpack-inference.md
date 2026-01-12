@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2026-01-10T22:44:38Z
-updated_at: 2026-01-10T22:44:38Z
+updated_at: 2026-01-12T06:35:06Z
 url: https://github.com/astral-sh/ty/issues/2437
-synced_at: 2026-01-12T02:26:12Z
+synced_at: 2026-01-12T06:54:49Z
 ```
 
 # Struct unpack inference
@@ -91,5 +91,25 @@ _No response_
 ---
 
 _Label `question` added by @sakgoyal on 2026-01-10 22:44_
+
+---
+
+_Comment by @dhruvmanila on 2026-01-12 06:32_
+
+I don't think so, mainly because the type of `struct.unpack` in typeshed is:
+
+```py
+def unpack(format: str | bytes, buffer: ReadableBuffer, /) -> tuple[Any, ...]:
+```
+
+> I am trying to add types to an untyped library, but it uses a lot of struct unpacking which results in a lot of manual casts or Any's everywhere.
+
+Can you provide a small example of this case? I don't see any `struct.unpack` in the provided code snippet.
+
+---
+
+_Comment by @dhruvmanila on 2026-01-12 06:35_
+
+Oh, is `get_unpack_type` an equivalent implementation of `struct.unpack` ?
 
 ---
