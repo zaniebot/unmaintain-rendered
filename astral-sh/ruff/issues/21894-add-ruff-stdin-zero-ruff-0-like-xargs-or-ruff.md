@@ -5,12 +5,13 @@ type: issue
 state: open
 author: rtaycher
 labels:
+  - documentation
   - question
 assignees: []
 created_at: 2025-12-10T13:57:59Z
-updated_at: 2025-12-10T15:43:07Z
+updated_at: 2026-01-11T12:41:26Z
 url: https://github.com/astral-sh/ruff/issues/21894
-synced_at: 2026-01-10T11:10:00Z
+synced_at: 2026-01-11T13:05:37Z
 ```
 
 # Add ruff --stdin--zero/ruff -0 like xargs or ruff --paths-from-file
@@ -48,5 +49,15 @@ See https://github.com/astral-sh/ruff/blob/7d47f711c148eac0f123f6a3e252718329583
 ---
 
 _Label `question` added by @MichaReiser on 2025-12-10 15:43_
+
+---
+
+_Comment by @rtaycher on 2026-01-11 12:04_
+
+That is a useful feature. would be  nice if it was documented
+
+---
+
+_Label `documentation` added by @MichaReiser on 2026-01-11 12:41_
 
 ---

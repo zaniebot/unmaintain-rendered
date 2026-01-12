@@ -1,0 +1,529 @@
+```yaml
+number: 6708
+title: "[`pylint`] Add fix for `subprocess-run-without-check` (`PLW1510`)"
+type: pull_request
+state: merged
+author: hauntsaninja
+labels:
+  - fixes
+assignees: []
+merged: true
+base: main
+head: w1510-fix
+created_at: 2023-08-20T19:55:58Z
+updated_at: 2023-12-12T05:14:22Z
+url: https://github.com/astral-sh/ruff/pull/6708
+synced_at: 2026-01-10T23:40:55Z
+```
+
+# [`pylint`] Add fix for `subprocess-run-without-check` (`PLW1510`)
+
+---
+
+_Pull request opened by @hauntsaninja on 2023-08-20 19:55_
+
+Let me know if I should care more about whitespace (and would appreciate pointers if so)
+
+---
+
+_Converted to draft by @hauntsaninja on 2023-08-20 19:59_
+
+---
+
+_Comment by @github-actions[bot] on 2023-08-20 20:09_
+
+## PR Check Results
+### Ecosystem
+ℹ️ ecosystem check **detected changes**. (+43, -41, 0 error(s))
+
+<details><summary>airflow (+10, -10)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/abef61ff3d6b9ae8dcb7f9dbbea78a9648a0c50b/airflow/providers/google/cloud/hooks/dataflow.py#L1013'>airflow/providers/google/cloud/hooks/dataflow.py:1013:20:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/abef61ff3d6b9ae8dcb7f9dbbea78a9648a0c50b/airflow/providers/google/cloud/hooks/dataflow.py#L1013'>airflow/providers/google/cloud/hooks/dataflow.py:1013:20:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/apache/airflow/blob/abef61ff3d6b9ae8dcb7f9dbbea78a9648a0c50b/dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py#L162'>dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py:162:30:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/abef61ff3d6b9ae8dcb7f9dbbea78a9648a0c50b/dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py#L162'>dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py:162:30:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/apache/airflow/blob/abef61ff3d6b9ae8dcb7f9dbbea78a9648a0c50b/dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py#L239'>dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py:239:30:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/abef61ff3d6b9ae8dcb7f9dbbea78a9648a0c50b/dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py#L239'>dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py:239:30:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/apache/airflow/blob/abef61ff3d6b9ae8dcb7f9dbbea78a9648a0c50b/docs/exts/docs_build/docs_builder.py#L163'>docs/exts/docs_build/docs_builder.py:163:30:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/abef61ff3d6b9ae8dcb7f9dbbea78a9648a0c50b/docs/exts/docs_build/docs_builder.py#L163'>docs/exts/docs_build/docs_builder.py:163:30:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/apache/airflow/blob/abef61ff3d6b9ae8dcb7f9dbbea78a9648a0c50b/docs/exts/docs_build/docs_builder.py#L240'>docs/exts/docs_build/docs_builder.py:240:30:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/abef61ff3d6b9ae8dcb7f9dbbea78a9648a0c50b/docs/exts/docs_build/docs_builder.py#L240'>docs/exts/docs_build/docs_builder.py:240:30:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/apache/airflow/blob/abef61ff3d6b9ae8dcb7f9dbbea78a9648a0c50b/scripts/ci/pre_commit/pre_commit_update_common_sql_api_stubs.py#L321'>scripts/ci/pre_commit/pre_commit_update_common_sql_api_stubs.py:321:5:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/abef61ff3d6b9ae8dcb7f9dbbea78a9648a0c50b/scripts/ci/pre_commit/pre_commit_update_common_sql_api_stubs.py#L321'>scripts/ci/pre_commit/pre_commit_update_common_sql_api_stubs.py:321:5:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/apache/airflow/blob/abef61ff3d6b9ae8dcb7f9dbbea78a9648a0c50b/scripts/in_container/remove_arm_packages.py#L47'>scripts/in_container/remove_arm_packages.py:47:5:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/abef61ff3d6b9ae8dcb7f9dbbea78a9648a0c50b/scripts/in_container/remove_arm_packages.py#L47'>scripts/in_container/remove_arm_packages.py:47:5:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/apache/airflow/blob/abef61ff3d6b9ae8dcb7f9dbbea78a9648a0c50b/scripts/tools/initialize_virtualenv.py#L172'>scripts/tools/initialize_virtualenv.py:172:5:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/abef61ff3d6b9ae8dcb7f9dbbea78a9648a0c50b/scripts/tools/initialize_virtualenv.py#L172'>scripts/tools/initialize_virtualenv.py:172:5:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/apache/airflow/blob/abef61ff3d6b9ae8dcb7f9dbbea78a9648a0c50b/scripts/tools/initialize_virtualenv.py#L181'>scripts/tools/initialize_virtualenv.py:181:5:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/abef61ff3d6b9ae8dcb7f9dbbea78a9648a0c50b/scripts/tools/initialize_virtualenv.py#L181'>scripts/tools/initialize_virtualenv.py:181:5:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/apache/airflow/blob/abef61ff3d6b9ae8dcb7f9dbbea78a9648a0c50b/scripts/tools/initialize_virtualenv.py#L97'>scripts/tools/initialize_virtualenv.py:97:9:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/abef61ff3d6b9ae8dcb7f9dbbea78a9648a0c50b/scripts/tools/initialize_virtualenv.py#L97'>scripts/tools/initialize_virtualenv.py:97:9:</a> PLW1510 `subprocess.run` without explicit `check` argument
+</pre>
+
+</p>
+</details>
+<details><summary>bokeh (+18, -18)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/release/system.py#L43'>release/system.py:43:18:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/release/system.py#L43'>release/system.py:43:18:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/scripts/hooks/install.py#L5'>scripts/hooks/install.py:5:5:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/scripts/hooks/install.py#L5'>scripts/hooks/install.py:5:5:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/scripts/hooks/protect_branches.py#L10'>scripts/hooks/protect_branches.py:10:22:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/scripts/hooks/protect_branches.py#L10'>scripts/hooks/protect_branches.py:10:22:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/scripts/hooks/uninstall.py#L5'>scripts/hooks/uninstall.py:5:5:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/scripts/hooks/uninstall.py#L5'>scripts/hooks/uninstall.py:5:5:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/setup.py#L52'>setup.py:52:16:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/setup.py#L52'>setup.py:52:16:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_eslint.py#L37'>tests/codebase/test_eslint.py:37:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_eslint.py#L37'>tests/codebase/test_eslint.py:37:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_isort.py#L58'>tests/codebase/test_isort.py:58:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_isort.py#L58'>tests/codebase/test_isort.py:58:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_js_license_set.py#L50'>tests/codebase/test_js_license_set.py:50:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_js_license_set.py#L50'>tests/codebase/test_js_license_set.py:50:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_license.py#L40'>tests/codebase/test_license.py:40:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_license.py#L40'>tests/codebase/test_license.py:40:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_no_client_server_common.py#L48'>tests/codebase/test_no_client_server_common.py:48:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_no_client_server_common.py#L48'>tests/codebase/test_no_client_server_common.py:48:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_no_client_server_common.py#L57'>tests/codebase/test_no_client_server_common.py:57:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_no_client_server_common.py#L57'>tests/codebase/test_no_client_server_common.py:57:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_no_ipython_common.py#L51'>tests/codebase/test_no_ipython_common.py:51:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_no_ipython_common.py#L51'>tests/codebase/test_no_ipython_common.py:51:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_no_pandas_common.py#L53'>tests/codebase/test_no_pandas_common.py:53:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_no_pandas_common.py#L53'>tests/codebase/test_no_pandas_common.py:53:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_no_selenium_common.py#L52'>tests/codebase/test_no_selenium_common.py:52:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_no_selenium_common.py#L52'>tests/codebase/test_no_selenium_common.py:52:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_no_tornado_common.py#L55'>tests/codebase/test_no_tornado_common.py:55:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_no_tornado_common.py#L55'>tests/codebase/test_no_tornado_common.py:55:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_no_typing_extensions_common.py#L49'>tests/codebase/test_no_typing_extensions_common.py:49:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_no_typing_extensions_common.py#L49'>tests/codebase/test_no_typing_extensions_common.py:49:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_ruff.py#L33'>tests/codebase/test_ruff.py:33:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/codebase/test_ruff.py#L33'>tests/codebase/test_ruff.py:33:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/support/util/project.py#L46'>tests/support/util/project.py:46:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/962a34c27fdae5dbef0a76984edd048c3d458332/tests/support/util/project.py#L46'>tests/support/util/project.py:46:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
+</pre>
+
+</p>
+</details>
+<details><summary>securedrop (+1, -1)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/freedomofpress/securedrop/blob/7eb784e3355de3400336adadce4915273e004671/securedrop/debian/ossec-common/var/ossec/checksdconfig.py#L35'>securedrop/debian/ossec-common/var/ossec/checksdconfig.py:35:14:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/freedomofpress/securedrop/blob/7eb784e3355de3400336adadce4915273e004671/securedrop/debian/ossec-common/var/ossec/checksdconfig.py#L35'>securedrop/debian/ossec-common/var/ossec/checksdconfig.py:35:14:</a> PLW1510 `subprocess.run` without explicit `check` argument
+</pre>
+
+</p>
+</details>
+<details><summary>ibis (+2, -2)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/7434068358e46c097f896ddf433036f313d1b95a/ibis/backends/impala/tests/conftest.py#L391'>ibis/backends/impala/tests/conftest.py:391:5:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/ibis-project/ibis/blob/7434068358e46c097f896ddf433036f313d1b95a/ibis/backends/impala/tests/conftest.py#L391'>ibis/backends/impala/tests/conftest.py:391:5:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/ibis-project/ibis/blob/7434068358e46c097f896ddf433036f313d1b95a/ibis/backends/impala/tests/conftest.py#L392'>ibis/backends/impala/tests/conftest.py:392:5:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/ibis-project/ibis/blob/7434068358e46c097f896ddf433036f313d1b95a/ibis/backends/impala/tests/conftest.py#L392'>ibis/backends/impala/tests/conftest.py:392:5:</a> PLW1510 `subprocess.run` without explicit `check` argument
+</pre>
+
+</p>
+</details>
+<details><summary>cibuildwheel (+6, -6)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/pypa/cibuildwheel/blob/ce71f445deee7ac0dabd1ee900d6672370e60478/bin/bump_version.py#L140'>bin/bump_version.py:140:5:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/pypa/cibuildwheel/blob/ce71f445deee7ac0dabd1ee900d6672370e60478/bin/bump_version.py#L140'>bin/bump_version.py:140:5:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/pypa/cibuildwheel/blob/ce71f445deee7ac0dabd1ee900d6672370e60478/bin/bump_version.py#L63'>bin/bump_version.py:63:26:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/pypa/cibuildwheel/blob/ce71f445deee7ac0dabd1ee900d6672370e60478/bin/bump_version.py#L63'>bin/bump_version.py:63:26:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/pypa/cibuildwheel/blob/ce71f445deee7ac0dabd1ee900d6672370e60478/bin/make_dependency_update_pr.py#L16'>bin/make_dependency_update_pr.py:16:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/pypa/cibuildwheel/blob/ce71f445deee7ac0dabd1ee900d6672370e60478/bin/make_dependency_update_pr.py#L16'>bin/make_dependency_update_pr.py:16:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/pypa/cibuildwheel/blob/ce71f445deee7ac0dabd1ee900d6672370e60478/bin/run_example_ci_configs.py#L20'>bin/run_example_ci_configs.py:20:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/pypa/cibuildwheel/blob/ce71f445deee7ac0dabd1ee900d6672370e60478/bin/run_example_ci_configs.py#L20'>bin/run_example_ci_configs.py:20:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/pypa/cibuildwheel/blob/ce71f445deee7ac0dabd1ee900d6672370e60478/bin/sample_build.py#L27'>bin/sample_build.py:27:14:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/pypa/cibuildwheel/blob/ce71f445deee7ac0dabd1ee900d6672370e60478/bin/sample_build.py#L27'>bin/sample_build.py:27:14:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/pypa/cibuildwheel/blob/ce71f445deee7ac0dabd1ee900d6672370e60478/bin/update_how_it_works_image.py#L22'>bin/update_how_it_works_image.py:22:5:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/pypa/cibuildwheel/blob/ce71f445deee7ac0dabd1ee900d6672370e60478/bin/update_how_it_works_image.py#L22'>bin/update_how_it_works_image.py:22:5:</a> PLW1510 `subprocess.run` without explicit `check` argument
+</pre>
+
+</p>
+</details>
+<details><summary>scikit-build (+1, -1)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/scikit-build/scikit-build/blob/676e110315a971abb856edbd6df0c74293e5ba2d/tests/__init__.py#L185'>tests/__init__.py:185:13:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/scikit-build/scikit-build/blob/676e110315a971abb856edbd6df0c74293e5ba2d/tests/__init__.py#L185'>tests/__init__.py:185:13:</a> PLW1510 `subprocess.run` without explicit `check` argument
+</pre>
+
+</p>
+</details>
+<details><summary>sphinx (+5, -3)</summary>
+<p>
+
+<pre>
++     = help: Add an explicit check=False
++    = help: Add an explicit check=False
++ <a href='https://github.com/sphinx-doc/sphinx/blob/ed84d63e6f2c4fd43b97fc43ee8be4156a13af9e/sphinx/__init__.py#L43'>sphinx/__init__.py:43:19:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/sphinx-doc/sphinx/blob/ed84d63e6f2c4fd43b97fc43ee8be4156a13af9e/sphinx/__init__.py#L43'>sphinx/__init__.py:43:19:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/sphinx-doc/sphinx/blob/ed84d63e6f2c4fd43b97fc43ee8be4156a13af9e/sphinx/testing/fixtures.py#L214'>sphinx/testing/fixtures.py:214:13:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/sphinx-doc/sphinx/blob/ed84d63e6f2c4fd43b97fc43ee8be4156a13af9e/sphinx/testing/fixtures.py#L214'>sphinx/testing/fixtures.py:214:13:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/sphinx-doc/sphinx/blob/ed84d63e6f2c4fd43b97fc43ee8be4156a13af9e/tests/test_ext_imgconverter.py#L13'>tests/test_ext_imgconverter.py:13:13:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/sphinx-doc/sphinx/blob/ed84d63e6f2c4fd43b97fc43ee8be4156a13af9e/tests/test_ext_imgconverter.py#L13'>tests/test_ext_imgconverter.py:13:13:</a> PLW1510 `subprocess.run` without explicit `check` argument
+</pre>
+
+</p>
+</details>
+Rules changed: 1
+
+| Rule | Changes | Additions | Removals |
+| ---- | ------- | --------- | -------- |
+| PLW1510 | 82 | 41 | 41 |
+
+### Benchmark
+#### Linux
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      3.9±0.03ms    10.3 MB/sec    1.01      4.0±0.02ms    10.2 MB/sec
+formatter/numpy/ctypeslib.py               1.00    827.0±2.47µs    20.1 MB/sec    1.02    844.2±4.97µs    19.7 MB/sec
+formatter/numpy/globals.py                 1.00     85.9±1.18µs    34.3 MB/sec    1.06     91.1±0.47µs    32.4 MB/sec
+formatter/pydantic/types.py                1.00  1585.7±10.04µs    16.1 MB/sec    1.05  1657.2±28.27µs    15.4 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.5±0.10ms     3.3 MB/sec    1.00     12.5±0.08ms     3.3 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.3±0.03ms     5.1 MB/sec    1.01      3.3±0.01ms     5.0 MB/sec
+linter/all-rules/numpy/globals.py          1.00    465.6±1.05µs     6.3 MB/sec    1.02    472.8±0.85µs     6.2 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.5±0.05ms     3.9 MB/sec    1.00      6.5±0.06ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.00      6.6±0.03ms     6.2 MB/sec    1.00      6.6±0.03ms     6.2 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00   1442.9±5.65µs    11.5 MB/sec    1.00   1439.2±4.42µs    11.6 MB/sec
+linter/default-rules/numpy/globals.py      1.01    170.0±1.57µs    17.4 MB/sec    1.00    168.3±0.31µs    17.5 MB/sec
+linter/default-rules/pydantic/types.py     1.00      2.9±0.01ms     8.7 MB/sec    1.00      2.9±0.01ms     8.7 MB/sec
+```
+
+#### Windows
+```
+group                                      main                                   pr
+-----                                      ----                                   --
+formatter/large/dataset.py                 1.00      3.7±0.05ms    10.9 MB/sec    1.02      3.8±0.07ms    10.7 MB/sec
+formatter/numpy/ctypeslib.py               1.00   763.6±14.29µs    21.8 MB/sec    1.02   778.5±20.18µs    21.4 MB/sec
+formatter/numpy/globals.py                 1.00     79.4±2.22µs    37.2 MB/sec    1.03     82.0±2.80µs    36.0 MB/sec
+formatter/pydantic/types.py                1.00  1538.1±29.18µs    16.6 MB/sec    1.01  1559.2±41.09µs    16.4 MB/sec
+linter/all-rules/large/dataset.py          1.00     12.5±0.18ms     3.2 MB/sec    1.01     12.7±0.14ms     3.2 MB/sec
+linter/all-rules/numpy/ctypeslib.py        1.00      3.5±0.04ms     4.8 MB/sec    1.01      3.5±0.03ms     4.8 MB/sec
+linter/all-rules/numpy/globals.py          1.00    434.5±7.48µs     6.8 MB/sec    1.01    437.1±5.19µs     6.8 MB/sec
+linter/all-rules/pydantic/types.py         1.00      6.5±0.10ms     3.9 MB/sec    1.00      6.5±0.07ms     3.9 MB/sec
+linter/default-rules/large/dataset.py      1.01      7.1±0.08ms     5.8 MB/sec    1.00      7.0±0.06ms     5.8 MB/sec
+linter/default-rules/numpy/ctypeslib.py    1.00  1484.1±18.36µs    11.2 MB/sec    1.00  1488.9±16.50µs    11.2 MB/sec
+linter/default-rules/numpy/globals.py      1.00    174.9±2.55µs    16.9 MB/sec    1.00    174.6±2.27µs    16.9 MB/sec
+linter/default-rules/pydantic/types.py     1.00      3.1±0.04ms     8.1 MB/sec    1.00      3.1±0.03ms     8.1 MB/sec
+```
+<!-- thollander/actions-comment-pull-request "PR Check Results" -->
+
+---
+
+_@charliermarsh reviewed on 2023-08-21 04:16_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff/src/rules/pylint/rules/subprocess_run_without_check.rs`:66 on 2023-08-21 04:16_
+
+Nit: the fix logic (and `diagnostic.set_fix` should be wrapped in a call to `if checker.patch(diagnostic.kind.rule()) { ... }`, to ensure that we skip the fix if the user marks the rule as unfixable.
+
+---
+
+_@charliermarsh reviewed on 2023-08-21 04:20_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff/src/rules/pylint/rules/subprocess_run_without_check.rs`:67 on 2023-08-21 04:20_
+
+If I'm reading correctly, I think this will evaluate to `true` if there's a comment after the trailing comma, which would cause us to insert a second comma between the two arguments. What about: find the last argument in the call, find the comma that follows it, then insert `check=False` after the comma (with branches to handle the cases in which there are no arguments to the call (strange) and no trailing comma)? `remove_argument` has similar logic: https://github.com/astral-sh/ruff/blob/086e11087ff1695b2ef02c689419388527801701/crates/ruff/src/autofix/edits.rs#L88.
+
+---
+
+_@charliermarsh reviewed on 2023-08-21 04:21_
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff/src/rules/pylint/rules/subprocess_run_without_check.rs`:67 on 2023-08-21 04:21_
+
+(Per your note in the summary, I'm not too worried about getting the whitespace exactly right here, but we need to be careful with the commas.)
+
+---
+
+_Comment by @github-actions[bot] on 2023-11-22 01:27_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+0 -0 violations, +74 -0 fixes in 41 projects)
+
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -0 violations, +22 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/airflow/providers/google/cloud/hooks/dataflow.py#L1033'>airflow/providers/google/cloud/hooks/dataflow.py:1033:20:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/airflow/providers/google/cloud/hooks/dataflow.py#L1033'>airflow/providers/google/cloud/hooks/dataflow.py:1033:20:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py#L163'>dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py:163:30:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py#L163'>dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py:163:30:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py#L242'>dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py:242:30:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py#L242'>dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py:242:30:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/docs/exts/docs_build/docs_builder.py#L164'>docs/exts/docs_build/docs_builder.py:164:30:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/docs/exts/docs_build/docs_builder.py#L164'>docs/exts/docs_build/docs_builder.py:164:30:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/docs/exts/docs_build/docs_builder.py#L241'>docs/exts/docs_build/docs_builder.py:241:30:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/docs/exts/docs_build/docs_builder.py#L241'>docs/exts/docs_build/docs_builder.py:241:30:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/scripts/ci/pre_commit/pre_commit_update_common_sql_api_stubs.py#L320'>scripts/ci/pre_commit/pre_commit_update_common_sql_api_stubs.py:320:5:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/scripts/ci/pre_commit/pre_commit_update_common_sql_api_stubs.py#L320'>scripts/ci/pre_commit/pre_commit_update_common_sql_api_stubs.py:320:5:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/scripts/in_container/remove_arm_packages.py#L47'>scripts/in_container/remove_arm_packages.py:47:5:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/scripts/in_container/remove_arm_packages.py#L47'>scripts/in_container/remove_arm_packages.py:47:5:</a> PLW1510 `subprocess.run` without explicit `check` argument
+... 8 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+0 -0 violations, +38 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/release/system.py#L43'>release/system.py:43:18:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/release/system.py#L43'>release/system.py:43:18:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/scripts/hooks/install.py#L5'>scripts/hooks/install.py:5:5:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/scripts/hooks/install.py#L5'>scripts/hooks/install.py:5:5:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/scripts/hooks/protect_branches.py#L10'>scripts/hooks/protect_branches.py:10:22:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/scripts/hooks/protect_branches.py#L10'>scripts/hooks/protect_branches.py:10:22:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/scripts/hooks/uninstall.py#L5'>scripts/hooks/uninstall.py:5:5:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/scripts/hooks/uninstall.py#L5'>scripts/hooks/uninstall.py:5:5:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/setup.py#L52'>setup.py:52:16:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/setup.py#L52'>setup.py:52:16:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_eslint.py#L37'>tests/codebase/test_eslint.py:37:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_eslint.py#L37'>tests/codebase/test_eslint.py:37:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_isort.py#L58'>tests/codebase/test_isort.py:58:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_isort.py#L58'>tests/codebase/test_isort.py:58:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_js_license_set.py#L50'>tests/codebase/test_js_license_set.py:50:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_js_license_set.py#L50'>tests/codebase/test_js_license_set.py:50:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_license.py#L40'>tests/codebase/test_license.py:40:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_license.py#L40'>tests/codebase/test_license.py:40:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_no_client_server_common.py#L48'>tests/codebase/test_no_client_server_common.py:48:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_no_client_server_common.py#L48'>tests/codebase/test_no_client_server_common.py:48:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_no_client_server_common.py#L57'>tests/codebase/test_no_client_server_common.py:57:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_no_client_server_common.py#L57'>tests/codebase/test_no_client_server_common.py:57:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_no_ipython_common.py#L51'>tests/codebase/test_no_ipython_common.py:51:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_no_ipython_common.py#L51'>tests/codebase/test_no_ipython_common.py:51:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_no_pandas_common.py#L53'>tests/codebase/test_no_pandas_common.py:53:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+... 13 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+0 -0 violations, +8 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/freedomofpress/securedrop/blob/f6553036b9cc8dd7dc0db3ac6eab1dc05aa8ccbb/admin/bootstrap.py#L276'>admin/bootstrap.py:276:19:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/freedomofpress/securedrop/blob/f6553036b9cc8dd7dc0db3ac6eab1dc05aa8ccbb/admin/bootstrap.py#L276'>admin/bootstrap.py:276:19:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/freedomofpress/securedrop/blob/f6553036b9cc8dd7dc0db3ac6eab1dc05aa8ccbb/admin/bootstrap.py#L281'>admin/bootstrap.py:281:25:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/freedomofpress/securedrop/blob/f6553036b9cc8dd7dc0db3ac6eab1dc05aa8ccbb/admin/bootstrap.py#L281'>admin/bootstrap.py:281:25:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/freedomofpress/securedrop/blob/f6553036b9cc8dd7dc0db3ac6eab1dc05aa8ccbb/devops/scripts/verify-mo.py#L116'>devops/scripts/verify-mo.py:116:16:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/freedomofpress/securedrop/blob/f6553036b9cc8dd7dc0db3ac6eab1dc05aa8ccbb/devops/scripts/verify-mo.py#L116'>devops/scripts/verify-mo.py:116:16:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/freedomofpress/securedrop/blob/f6553036b9cc8dd7dc0db3ac6eab1dc05aa8ccbb/securedrop/debian/ossec-common/var/ossec/checksdconfig.py#L35'>securedrop/debian/ossec-common/var/ossec/checksdconfig.py:35:14:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/freedomofpress/securedrop/blob/f6553036b9cc8dd7dc0db3ac6eab1dc05aa8ccbb/securedrop/debian/ossec-common/var/ossec/checksdconfig.py#L35'>securedrop/debian/ossec-common/var/ossec/checksdconfig.py:35:14:</a> PLW1510 `subprocess.run` without explicit `check` argument
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/sphinx-doc/sphinx">sphinx-doc/sphinx</a> (+0 -0 violations, +6 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/sphinx/__init__.py#L43'>sphinx/__init__.py:43:19:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/sphinx/__init__.py#L43'>sphinx/__init__.py:43:19:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/sphinx/testing/fixtures.py#L214'>sphinx/testing/fixtures.py:214:13:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/sphinx/testing/fixtures.py#L214'>sphinx/testing/fixtures.py:214:13:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/tests/test_ext_imgconverter.py#L13'>tests/test_ext_imgconverter.py:13:13:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/tests/test_ext_imgconverter.py#L13'>tests/test_ext_imgconverter.py:13:13:</a> PLW1510 `subprocess.run` without explicit `check` argument
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLW1510 | 74 | 0 | 0 | 74 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+0 -0 violations, +74 -0 fixes in 41 projects)
+
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -0 violations, +22 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/airflow/providers/google/cloud/hooks/dataflow.py#L1033'>airflow/providers/google/cloud/hooks/dataflow.py:1033:20:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/airflow/providers/google/cloud/hooks/dataflow.py#L1033'>airflow/providers/google/cloud/hooks/dataflow.py:1033:20:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py#L163'>dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py:163:30:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py#L163'>dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py:163:30:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py#L242'>dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py:242:30:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py#L242'>dev/breeze/src/airflow_breeze/utils/publish_docs_builder.py:242:30:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/docs/exts/docs_build/docs_builder.py#L164'>docs/exts/docs_build/docs_builder.py:164:30:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/docs/exts/docs_build/docs_builder.py#L164'>docs/exts/docs_build/docs_builder.py:164:30:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/docs/exts/docs_build/docs_builder.py#L241'>docs/exts/docs_build/docs_builder.py:241:30:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/docs/exts/docs_build/docs_builder.py#L241'>docs/exts/docs_build/docs_builder.py:241:30:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/scripts/ci/pre_commit/pre_commit_update_common_sql_api_stubs.py#L320'>scripts/ci/pre_commit/pre_commit_update_common_sql_api_stubs.py:320:5:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/scripts/ci/pre_commit/pre_commit_update_common_sql_api_stubs.py#L320'>scripts/ci/pre_commit/pre_commit_update_common_sql_api_stubs.py:320:5:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/scripts/in_container/remove_arm_packages.py#L47'>scripts/in_container/remove_arm_packages.py:47:5:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/apache/airflow/blob/357355ac09b4741d621a5408d859b697a07b3ceb/scripts/in_container/remove_arm_packages.py#L47'>scripts/in_container/remove_arm_packages.py:47:5:</a> PLW1510 `subprocess.run` without explicit `check` argument
+... 8 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+0 -0 violations, +38 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/release/system.py#L43'>release/system.py:43:18:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/release/system.py#L43'>release/system.py:43:18:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/scripts/hooks/install.py#L5'>scripts/hooks/install.py:5:5:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/scripts/hooks/install.py#L5'>scripts/hooks/install.py:5:5:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/scripts/hooks/protect_branches.py#L10'>scripts/hooks/protect_branches.py:10:22:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/scripts/hooks/protect_branches.py#L10'>scripts/hooks/protect_branches.py:10:22:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/scripts/hooks/uninstall.py#L5'>scripts/hooks/uninstall.py:5:5:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/scripts/hooks/uninstall.py#L5'>scripts/hooks/uninstall.py:5:5:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/setup.py#L52'>setup.py:52:16:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/setup.py#L52'>setup.py:52:16:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_eslint.py#L37'>tests/codebase/test_eslint.py:37:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_eslint.py#L37'>tests/codebase/test_eslint.py:37:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_isort.py#L58'>tests/codebase/test_isort.py:58:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_isort.py#L58'>tests/codebase/test_isort.py:58:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_js_license_set.py#L50'>tests/codebase/test_js_license_set.py:50:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_js_license_set.py#L50'>tests/codebase/test_js_license_set.py:50:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_license.py#L40'>tests/codebase/test_license.py:40:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_license.py#L40'>tests/codebase/test_license.py:40:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_no_client_server_common.py#L48'>tests/codebase/test_no_client_server_common.py:48:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_no_client_server_common.py#L48'>tests/codebase/test_no_client_server_common.py:48:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_no_client_server_common.py#L57'>tests/codebase/test_no_client_server_common.py:57:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_no_client_server_common.py#L57'>tests/codebase/test_no_client_server_common.py:57:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_no_ipython_common.py#L51'>tests/codebase/test_no_ipython_common.py:51:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_no_ipython_common.py#L51'>tests/codebase/test_no_ipython_common.py:51:12:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/codebase/test_no_pandas_common.py#L53'>tests/codebase/test_no_pandas_common.py:53:12:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+... 13 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+0 -0 violations, +8 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/freedomofpress/securedrop/blob/f6553036b9cc8dd7dc0db3ac6eab1dc05aa8ccbb/admin/bootstrap.py#L276'>admin/bootstrap.py:276:19:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/freedomofpress/securedrop/blob/f6553036b9cc8dd7dc0db3ac6eab1dc05aa8ccbb/admin/bootstrap.py#L276'>admin/bootstrap.py:276:19:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/freedomofpress/securedrop/blob/f6553036b9cc8dd7dc0db3ac6eab1dc05aa8ccbb/admin/bootstrap.py#L281'>admin/bootstrap.py:281:25:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/freedomofpress/securedrop/blob/f6553036b9cc8dd7dc0db3ac6eab1dc05aa8ccbb/admin/bootstrap.py#L281'>admin/bootstrap.py:281:25:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/freedomofpress/securedrop/blob/f6553036b9cc8dd7dc0db3ac6eab1dc05aa8ccbb/devops/scripts/verify-mo.py#L116'>devops/scripts/verify-mo.py:116:16:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/freedomofpress/securedrop/blob/f6553036b9cc8dd7dc0db3ac6eab1dc05aa8ccbb/devops/scripts/verify-mo.py#L116'>devops/scripts/verify-mo.py:116:16:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/freedomofpress/securedrop/blob/f6553036b9cc8dd7dc0db3ac6eab1dc05aa8ccbb/securedrop/debian/ossec-common/var/ossec/checksdconfig.py#L35'>securedrop/debian/ossec-common/var/ossec/checksdconfig.py:35:14:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/freedomofpress/securedrop/blob/f6553036b9cc8dd7dc0db3ac6eab1dc05aa8ccbb/securedrop/debian/ossec-common/var/ossec/checksdconfig.py#L35'>securedrop/debian/ossec-common/var/ossec/checksdconfig.py:35:14:</a> PLW1510 `subprocess.run` without explicit `check` argument
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/sphinx-doc/sphinx">sphinx-doc/sphinx</a> (+0 -0 violations, +6 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/sphinx/__init__.py#L43'>sphinx/__init__.py:43:19:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/sphinx/__init__.py#L43'>sphinx/__init__.py:43:19:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/sphinx/testing/fixtures.py#L214'>sphinx/testing/fixtures.py:214:13:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/sphinx/testing/fixtures.py#L214'>sphinx/testing/fixtures.py:214:13:</a> PLW1510 `subprocess.run` without explicit `check` argument
++ <a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/tests/test_ext_imgconverter.py#L13'>tests/test_ext_imgconverter.py:13:13:</a> PLW1510 [*] `subprocess.run` without explicit `check` argument
+- <a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/tests/test_ext_imgconverter.py#L13'>tests/test_ext_imgconverter.py:13:13:</a> PLW1510 `subprocess.run` without explicit `check` argument
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLW1510 | 74 | 0 | 0 | 74 | 0 |
+
+</p>
+</details>
+
+
+
+
+---
+
+_Comment by @T-256 on 2023-11-22 04:44_
+
+shouldn't this fix add to preview?
+
+
+---
+
+_Comment by @charliermarsh on 2023-11-22 14:06_
+
+@T-256 -- Yup! The change itself isn't complete yet.
+
+---
+
+_Comment by @hauntsaninja on 2023-12-04 06:45_
+
+Thanks for the ping. Looks like there's an `add_argument` thing now, so this change is now trivial
+
+---
+
+_Marked ready for review by @hauntsaninja on 2023-12-04 06:45_
+
+---
+
+_@charliermarsh approved on 2023-12-12 05:02_
+
+Thanks!
+
+---
+
+_Label `autofix` added by @charliermarsh on 2023-12-12 05:02_
+
+---
+
+_Renamed from "Add an autofix for PLW1510" to "[`pylint`] Add fix for `subprocess-run-without-check` (`PLW1510`)" by @charliermarsh on 2023-12-12 05:02_
+
+---
+
+_Merged by @charliermarsh on 2023-12-12 05:08_
+
+---
+
+_Closed by @charliermarsh on 2023-12-12 05:08_
+
+---
+
+_Branch deleted on 2023-12-12 05:13_
+
+---

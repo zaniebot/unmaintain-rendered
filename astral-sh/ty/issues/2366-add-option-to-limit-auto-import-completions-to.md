@@ -9,9 +9,9 @@ labels:
   - completions
 assignees: []
 created_at: 2026-01-06T14:47:54Z
-updated_at: 2026-01-06T17:15:27Z
+updated_at: 2026-01-11T06:17:11Z
 url: https://github.com/astral-sh/ty/issues/2366
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-11T06:53:31Z
 ```
 
 # Add option to limit auto-import completions to direct dependencies
@@ -99,5 +99,11 @@ _Comment by @AlexWaygood on 2026-01-06 17:15_
 > This would have a bad interaction with metapackages, right? (packages which only exist to depend on a cluster of packages so you can depend on them all with one dependency).
 
 Are those common? I don't think those are particularly idiomatic in the Python ecosystem. (But to be clear, I'm not objecting to having a mechanism to opt out of this behaviour, that seems fine. Though I agree that it should probably be the default to exclude non-direct dependencies; that seems good!)
+
+---
+
+_Comment by @toppk on 2026-01-11 06:17_
+
+Sorry to add more suggestions here (especially since I've only started to test ty, and havent' actually switch my LSP to it just yet), but I'm wondering if this direct dependency will ignore python default packages, for example typing.  Also, if the user has an existing from randompackage import Foo, would auto-import of Bar look inside randompackage even if it was not a direct dependency?    
 
 ---

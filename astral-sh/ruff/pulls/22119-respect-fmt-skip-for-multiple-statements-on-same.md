@@ -12,9 +12,9 @@ merged: true
 base: main
 head: fmt-skip-suite
 created_at: 2025-12-20T21:44:08Z
-updated_at: 2026-01-10T14:56:58Z
+updated_at: 2026-01-11T21:46:27Z
 url: https://github.com/astral-sh/ruff/pull/22119
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T02:12:03Z
 ```
 
 # Respect `fmt: skip` for multiple statements on same logical line
@@ -604,5 +604,11 @@ _Merged by @dylwil3 on 2026-01-10 14:56_
 ---
 
 _Closed by @dylwil3 on 2026-01-10 14:56_
+
+---
+
+_Comment by @madduck on 2026-01-11 21:46_
+
+Thanks a lot for your work on this @dylwil3, and everyone who was also involved! ♥
 
 ---

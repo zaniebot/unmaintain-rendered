@@ -9,9 +9,9 @@ labels:
   - style
 assignees: []
 created_at: 2023-10-30T15:58:08Z
-updated_at: 2025-11-13T09:55:46Z
+updated_at: 2026-01-10T22:23:42Z
 url: https://github.com/astral-sh/ruff/issues/8360
-synced_at: 2026-01-10T11:09:50Z
+synced_at: 2026-01-11T00:46:05Z
 ```
 
 # Formatter: Specify indentation for function parameters
@@ -604,5 +604,17 @@ _Comment by @thaibui on 2025-11-13 09:55_
 @MichaReiser Could you just merge the PR https://github.com/astral-sh/ruff/pull/19921 so that we don't have to have another fork? I followed this thread and ended up using `muff` instead of `ruff` simply because there isn't an option to change the default.
 
 Thanks for the work @jsh9 & @MichaReiser 
+
+---
+
+_Comment by @jsh9 on 2026-01-10 22:23_
+
+Happy 2026 everyone.
+
+As of January 2026, I'm still maintaining the Muff fork (https://github.com/jsh9/muff). 
+
+I keep the [Muff vs Ruff file diff](https://github.com/astral-sh/ruff/compare/main...jsh9:muff:main) as minimal as possible; I align Muff with the upstream (Ruff) regularly, but I only publish new versions **once every 1-2 months** due to the inconvenience of doing so.  (Compiling Rust code into binaries seems to require more powerful computing resources that GitHub Actions free tier doesn't offer, so compiling them manually on my own computers (physical ones or AWS).
+
+I sincerely hope the Ruff team will eventually consider implementing this option (which I implemented in https://github.com/astral-sh/ruff/pull/19921).
 
 ---

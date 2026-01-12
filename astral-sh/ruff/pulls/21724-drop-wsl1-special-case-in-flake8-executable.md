@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: wsl1-is-very-dead
 created_at: 2025-12-01T11:31:17Z
-updated_at: 2025-12-12T10:11:18Z
+updated_at: 2026-01-11T10:10:35Z
 url: https://github.com/astral-sh/ruff/pull/21724
-synced_at: 2026-01-10T16:42:11Z
+synced_at: 2026-01-12T02:12:03Z
 ```
 
 # Drop WSL1 special case in flake8-executable
@@ -259,5 +259,170 @@ _@K900 reviewed on 2025-12-12 10:11_
 _Review comment by @K900 on `crates/ruff_linter/src/rules/flake8_executable/rules/shebang_missing_executable_file.rs`:35 on 2025-12-12 10:11_
 
 It's not just WSL, you can mount a vfat partition on normal Linux, put a repo on it and it'll all be 0755 no matter what, because vfat just makes up the permission bits. I don't know if WSL will even _let you_ access non-NTFS partitions over drvfs?
+
+---
+
+_Comment by @MusicalNinjaDad on 2026-01-11 09:02_
+
+I hope it's OK to chime in here as the author of #10084 and someone with a lot of experience both using WSL and looking at potential solutions to this issue.
+
+@ntBre, you are correct - this *is* a breaking change and will cause false positives for a subset of users, where the status quo causes false negatives for a different subset of users. (I'll add a table summary to #10084 and copy it here too)
+
+@MichaReiser's original argumentation when discussing this was that false negatives are worse, as settings are mainly on a per-project basis - so it's hard to disable the rule only for some contributors.
+
+@K900 - this is definitely the easiest of "solutions" and I agree with you, and initially argued myself, that it has long been a strong recommendation by MS, that WSL users avoid using mounted windows partitions for performance reasons (see the note at the end of the description on #17584 for example timings)
+
+My personal opinion, FWIW, is that identifying default file permissions is the best: covers all use-cases, actually improves performance. (This is not what I first thought, when beginning to discuss and look at this issue; I actually agreed with the approach proposed in the PR when I first opened the issue).
+
+---
+
+_@MusicalNinjaDad reviewed on 2026-01-11 09:09_
+
+---
+
+_Review comment by @MusicalNinjaDad on `crates/ruff_linter/src/rules/flake8_executable/rules/shebang_missing_executable_file.rs`:35 on 2026-01-11 09:09_
+
+To be absolutely clear: the underlying problem is purely a **file-system issue** and in **no way inherent to WSL**.
+
+The reason it comes up in relation to WSL is that this is the most common real-life scenario of a linux user storing their code on an FS without *nix permission bits *and* where the user doesn't understand the consequences. (A linux user storing code on an xFAT UBS stick is more likely to understand why they are getting this problem and simply ignore it - but see #12941)
+
+---
+
+_Comment by @K900 on 2026-01-11 09:12_
+
+The problem I have with identifying file permissions is that to do that we need to:
+
+- find a place to write a test file to (we can't always do that)
+- be reasonably confident that the filesystem will behave the same way as the file we just wrote (drvfs doesn't)
+
+Edit: to be clear, #17584 does not in fact work for the "WSL, source root on drvfs, cloned from Windows" use case, because it will create a file with 644 permissions, drvfs will record that and give us back the correct permissions, but none of the other files will have the correct xattrs.
+
+---
+
+_Comment by @MusicalNinjaDad on 2026-01-11 09:21_
+
+Overview of currently proposed solutions:
+
+| | WSL user, WSL FS (#10084) | Linux user USB stick (#12941) | WSL user, Win FS (#3110, #5445) |
+| -- | -- | -- | -- |
+| Status Quo | :x: (false negatives) | :x: (false positives) | :x: (false negatives) |
+| #17548 | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| #21724 | :white_check_mark: | :x: (false positives) | :x: (false positives) |
+
+https://github.com/astral-sh/ruff/issues/10084#issuecomment-3734292000
+
+---
+
+_Comment by @MusicalNinjaDad on 2026-01-11 09:32_
+
+> The problem I have with identifying file permissions is that to do that we need to:
+> 
+> * find a place to write a test file to (we can't always do that)
+> * be reasonably confident that the filesystem will behave the same way as the file we just wrote (drvfs doesn't)
+
+Did you take a look at the approach in the other PR?
+
+1. check if pryproject.toml is executable (if not, then we can guarantee that we have a settable executable-bit)
+2. touch a file in project_root (could fail if project root is read-only, although this is a more acceptable edge case than current status quo and only triggers on FS with no exe-bit)
+
+What specifically do you have in mind by cases where we can't write a test file?
+
+I've not tested drvfs, do you have a test setup to see whether #17584 fails in that case? My understanding is that it is only relevant for WSL1 (as you say, now dead) and the above test would disable the lints at step 1 anyway.
+
+---
+
+_Comment by @K900 on 2026-01-11 09:36_
+
+drvfs is still what WSL2 calls the 9p stuff internally, the case I'm imagining is: user clones repo from Windows, then runs ruff in WSL. What happens then is:
+
+- pyproject.toml is executable, so we continue
+- we touch a file in project root, which is 644 by default because umask, that's recorded in NTFS xattrs, reading back the permissions gives us 644
+- all the other files are still marked executable because they have no xattrs
+
+---
+
+_Comment by @MusicalNinjaDad on 2026-01-11 09:45_
+
+> drvfs is still what WSL2 calls the 9p stuff internally, the case I'm imagining is: user clones repo from Windows, then runs ruff in WSL. What happens then is:
+> 
+> * pyproject.toml is executable, so we continue
+> * we touch a file in project root, which is 644 by default because umask, that's recorded in NTFS xattrs, reading back the permissions gives us 644
+> * all the other files are still marked executable because they have no xattrs
+
+imagining or tested?
+
+I have tested exactly this setup both locally, and in CI (https://github.com/MusicalNinjaDad/forks-ruff/actions/runs/14663820841/job/41154168824) and in both cases the touched file is executable and the lints are disabled.
+
+If you have a specific setup which leads to the behaviour you describe then I'd be really interested to hear the config in place, both from general curiosity and to help with this case.
+
+(EDIT: just tested this manually, again, on WSL2 with `cd /mnt/c/Users.../Temp; touch foo; ls -al foo` and `foo` has `0777` permissions)
+
+---
+
+_Comment by @K900 on 2026-01-11 09:52_
+
+<img width="1860" height="303" alt="image" src="https://github.com/user-attachments/assets/0672d31d-50cf-4aca-948e-77978a60b5d3" />
+
+On my end, the file touched from WSL is 0644.
+
+---
+
+_Comment by @K900 on 2026-01-11 10:00_
+
+Also here's a run with ruff from your branch (and a few dbg's sprinkled in):
+
+```
+d/test/chinatsu-master
+❯ ~/ruff/target/debug/ruff check --no-cache --select EXE
+[crates/ruff_linter/src/rules/flake8_executable/helpers.rs:29:9] is_executable(&settings.project_root.join("pyproject.toml")) = Ok(
+    true,
+)
+[crates/ruff_linter/src/rules/flake8_executable/helpers.rs:33:37] is_executable(tmpfile.path()) = Ok(
+    false,
+)
+chinatsu/__init__.py:1:1: EXE002 The file is executable but no shebang is present
+(etc)
+```
+
+---
+
+_Comment by @K900 on 2026-01-11 10:01_
+
+```diff
+diff --git a/crates/ruff_linter/src/rules/flake8_executable/helpers.rs b/crates/ruff_linter/src/rules/flake8_executable/helpers.rs
+index 717c805721..47e1e7352d 100644
+--- a/crates/ruff_linter/src/rules/flake8_executable/helpers.rs
++++ b/crates/ruff_linter/src/rules/flake8_executable/helpers.rs
+@@ -26,11 +26,11 @@ static EXECUTABLE_BY_DEFAULT: OnceLock<bool> = OnceLock::new();
+ #[cfg(target_family = "unix")]
+ pub(super) fn executable_by_default(settings: &LinterSettings) -> bool {
+     *EXECUTABLE_BY_DEFAULT.get_or_init(|| {
+-        is_executable(&settings.project_root.join("pyproject.toml")).unwrap_or(true)
++        dbg!(is_executable(&settings.project_root.join("pyproject.toml"))).unwrap_or(true)
+             // if pyproject.toml is executable or doesn't exist, run a slower check too:
+             && NamedTempFile::new_in(&settings.project_root)
+                 .map_err(std::convert::Into::into)
+-                .and_then(|tmpfile| is_executable(tmpfile.path()))
++                .and_then(|tmpfile| dbg!(is_executable(tmpfile.path())))
+                 .unwrap_or(false) // Assume a normal filesystem in case of read-only, IOError, ...
+     })
+ }
+```
+
+(for posterity)
+
+---
+
+_Comment by @MusicalNinjaDad on 2026-01-11 10:09_
+
+Thanks for the confirmation.
+
+Did you adjust your `[automount]` settings in `wsl.conf` to enable metadata and set a specific umask? Or are you running with default config and getting these results?
+
+---
+
+_Comment by @K900 on 2026-01-11 10:10_
+
+I have `options=metadata,uid=1000,gid=100`, the uid/gid stuff is just NixOS weirdness for historical reasons.
 
 ---

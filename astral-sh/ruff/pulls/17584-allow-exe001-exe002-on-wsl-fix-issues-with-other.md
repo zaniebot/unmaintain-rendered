@@ -9,9 +9,9 @@ assignees: []
 base: main
 head: wsl_shebang
 created_at: 2025-04-23T15:29:13Z
-updated_at: 2025-05-12T11:41:35Z
+updated_at: 2026-01-11T09:35:41Z
 url: https://github.com/astral-sh/ruff/pull/17584
-synced_at: 2026-01-10T18:57:02Z
+synced_at: 2026-01-12T02:12:02Z
 ```
 
 # Allow EXE001 & EXE002 on WSL, fix issues with other cases of mounting non-unix filesystems
@@ -227,5 +227,13 @@ Thanks - I fully understand and that quick note was really valuable.
 I'd also personally much rather have red-knot available than this included in ruff ;)
 
 I'll probably hang back on taking up other topics until I do get feedback on this (unless I get bored or randomly motivated) - so I can include any feedback on style etc from the start.
+
+---
+
+_Comment by @MusicalNinjaDad on 2026-01-11 09:35_
+
+Is there something I could do to make this approach easier to maintain? I understand if you are reluctant to take over the additional test infrastructure. (@ntBre, @MichaReiser, @amyreese)
+
+The logic change itself is simple and shouldn't add maintenance burden, particularly with CI-based tests in place. I *could* remove the testing and just provide the logic, although personally I dislike the idea ;)
 
 ---

@@ -1,0 +1,276 @@
+```yaml
+number: 8622
+title: "Implement autofix for `multiple-spaces-after-keyword` and `multiple-spaces-before-keyword`"
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - fixes
+assignees: []
+merged: true
+base: main
+head: charlie/fix
+created_at: 2023-11-11T23:28:41Z
+updated_at: 2023-11-11T23:55:09Z
+url: https://github.com/astral-sh/ruff/pull/8622
+synced_at: 2026-01-10T23:40:55Z
+```
+
+# Implement autofix for `multiple-spaces-after-keyword` and `multiple-spaces-before-keyword`
+
+---
+
+_Pull request opened by @charliermarsh on 2023-11-11 23:28_
+
+Closes https://github.com/astral-sh/ruff/issues/8312.
+
+---
+
+_Renamed from "Implement autofix for `multiple-spaces-after-keyword` and `multiple-spaces-before-keyword" to "Implement autofix for `multiple-spaces-after-keyword` and `multiple-spaces-before-keyword`" by @charliermarsh on 2023-11-11 23:28_
+
+---
+
+_Label `autofix` added by @charliermarsh on 2023-11-11 23:29_
+
+---
+
+_Merged by @charliermarsh on 2023-11-11 23:41_
+
+---
+
+_Closed by @charliermarsh on 2023-11-11 23:41_
+
+---
+
+_Branch deleted on 2023-11-11 23:41_
+
+---
+
+_Comment by @github-actions[bot] on 2023-11-11 23:55_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+0 -52 violations, +286 -0 fixes in 41 projects)
+
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+0 -0 violations, +36 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/DisnakeDev/disnake/blob/59b101f923c193a2f58b7a844eae47a3fb7869c0/disnake/client.py#L1261'>disnake/client.py:1261:52:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/DisnakeDev/disnake/blob/59b101f923c193a2f58b7a844eae47a3fb7869c0/disnake/client.py#L1261'>disnake/client.py:1261:52:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/DisnakeDev/disnake/blob/59b101f923c193a2f58b7a844eae47a3fb7869c0/disnake/client.py#L1262'>disnake/client.py:1262:53:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/DisnakeDev/disnake/blob/59b101f923c193a2f58b7a844eae47a3fb7869c0/disnake/client.py#L1262'>disnake/client.py:1262:53:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/DisnakeDev/disnake/blob/59b101f923c193a2f58b7a844eae47a3fb7869c0/disnake/enums.py#L413'>disnake/enums.py:413:33:</a> E272 Multiple spaces before keyword
++ <a href='https://github.com/DisnakeDev/disnake/blob/59b101f923c193a2f58b7a844eae47a3fb7869c0/disnake/enums.py#L413'>disnake/enums.py:413:33:</a> E272 [*] Multiple spaces before keyword
+- <a href='https://github.com/DisnakeDev/disnake/blob/59b101f923c193a2f58b7a844eae47a3fb7869c0/disnake/enums.py#L414'>disnake/enums.py:414:41:</a> E272 Multiple spaces before keyword
++ <a href='https://github.com/DisnakeDev/disnake/blob/59b101f923c193a2f58b7a844eae47a3fb7869c0/disnake/enums.py#L414'>disnake/enums.py:414:41:</a> E272 [*] Multiple spaces before keyword
+- <a href='https://github.com/DisnakeDev/disnake/blob/59b101f923c193a2f58b7a844eae47a3fb7869c0/disnake/enums.py#L415'>disnake/enums.py:415:32:</a> E272 Multiple spaces before keyword
++ <a href='https://github.com/DisnakeDev/disnake/blob/59b101f923c193a2f58b7a844eae47a3fb7869c0/disnake/enums.py#L415'>disnake/enums.py:415:32:</a> E272 [*] Multiple spaces before keyword
+... 23 additional changes omitted for rule E272
+... 26 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -0 violations, +6 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --select ALL --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/9cfb1a82f3b00fa70a7b5ce6818a9e618512de63/dev/prepare_release_issue.py#L268'>dev/prepare_release_issue.py:268:46:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/apache/airflow/blob/9cfb1a82f3b00fa70a7b5ce6818a9e618512de63/dev/prepare_release_issue.py#L268'>dev/prepare_release_issue.py:268:46:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/apache/airflow/blob/9cfb1a82f3b00fa70a7b5ce6818a9e618512de63/scripts/ci/pre_commit/pre_commit_check_provider_docs.py#L48'>scripts/ci/pre_commit/pre_commit_check_provider_docs.py:48:57:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/apache/airflow/blob/9cfb1a82f3b00fa70a7b5ce6818a9e618512de63/scripts/ci/pre_commit/pre_commit_check_provider_docs.py#L48'>scripts/ci/pre_commit/pre_commit_check_provider_docs.py:48:57:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/apache/airflow/blob/9cfb1a82f3b00fa70a7b5ce6818a9e618512de63/scripts/ci/pre_commit/pre_commit_update_providers_dependencies.py#L52'>scripts/ci/pre_commit/pre_commit_update_providers_dependencies.py:52:56:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/apache/airflow/blob/9cfb1a82f3b00fa70a7b5ce6818a9e618512de63/scripts/ci/pre_commit/pre_commit_update_providers_dependencies.py#L52'>scripts/ci/pre_commit/pre_commit_update_providers_dependencies.py:52:56:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+0 -0 violations, +14 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/aws/aws-sam-cli/blob/d63fa5d112f16f495c713ddbabcc2efeb69f1fa2/tests/unit/commands/local/lib/test_stack_provider.py#L114'>tests/unit/commands/local/lib/test_stack_provider.py:114:51:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/aws/aws-sam-cli/blob/d63fa5d112f16f495c713ddbabcc2efeb69f1fa2/tests/unit/commands/local/lib/test_stack_provider.py#L114'>tests/unit/commands/local/lib/test_stack_provider.py:114:51:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/aws/aws-sam-cli/blob/d63fa5d112f16f495c713ddbabcc2efeb69f1fa2/tests/unit/commands/local/lib/test_stack_provider.py#L152'>tests/unit/commands/local/lib/test_stack_provider.py:152:51:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/aws/aws-sam-cli/blob/d63fa5d112f16f495c713ddbabcc2efeb69f1fa2/tests/unit/commands/local/lib/test_stack_provider.py#L152'>tests/unit/commands/local/lib/test_stack_provider.py:152:51:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/aws/aws-sam-cli/blob/d63fa5d112f16f495c713ddbabcc2efeb69f1fa2/tests/unit/commands/local/lib/test_stack_provider.py#L190'>tests/unit/commands/local/lib/test_stack_provider.py:190:51:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/aws/aws-sam-cli/blob/d63fa5d112f16f495c713ddbabcc2efeb69f1fa2/tests/unit/commands/local/lib/test_stack_provider.py#L190'>tests/unit/commands/local/lib/test_stack_provider.py:190:51:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/aws/aws-sam-cli/blob/d63fa5d112f16f495c713ddbabcc2efeb69f1fa2/tests/unit/commands/local/lib/test_stack_provider.py#L229'>tests/unit/commands/local/lib/test_stack_provider.py:229:51:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/aws/aws-sam-cli/blob/d63fa5d112f16f495c713ddbabcc2efeb69f1fa2/tests/unit/commands/local/lib/test_stack_provider.py#L229'>tests/unit/commands/local/lib/test_stack_provider.py:229:51:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/aws/aws-sam-cli/blob/d63fa5d112f16f495c713ddbabcc2efeb69f1fa2/tests/unit/commands/local/lib/test_stack_provider.py#L270'>tests/unit/commands/local/lib/test_stack_provider.py:270:51:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/aws/aws-sam-cli/blob/d63fa5d112f16f495c713ddbabcc2efeb69f1fa2/tests/unit/commands/local/lib/test_stack_provider.py#L270'>tests/unit/commands/local/lib/test_stack_provider.py:270:51:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+... 4 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+0 -0 violations, +138 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --select ALL --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/examples/server/app/ohlc/main.py#L86'>examples/server/app/ohlc/main.py:86:7:</a> E271 Multiple spaces after keyword
++ <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/examples/server/app/ohlc/main.py#L86'>examples/server/app/ohlc/main.py:86:7:</a> E271 [*] Multiple spaces after keyword
+- <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/examples/server/app/surface3d/surface3d.py#L13'>examples/server/app/surface3d/surface3d.py:13:16:</a> E272 Multiple spaces before keyword
++ <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/examples/server/app/surface3d/surface3d.py#L13'>examples/server/app/surface3d/surface3d.py:13:16:</a> E272 [*] Multiple spaces before keyword
+- <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/src/bokeh/core/property/dataspec.py#L201'>src/bokeh/core/property/dataspec.py:201:71:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/src/bokeh/core/property/dataspec.py#L201'>src/bokeh/core/property/dataspec.py:201:71:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/src/bokeh/core/query.py#L108'>src/bokeh/core/query.py:108:11:</a> E271 Multiple spaces after keyword
++ <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/src/bokeh/core/query.py#L108'>src/bokeh/core/query.py:108:11:</a> E271 [*] Multiple spaces after keyword
+- <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/src/bokeh/core/query.py#L353'>src/bokeh/core/query.py:353:7:</a> E272 Multiple spaces before keyword
++ <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/src/bokeh/core/query.py#L353'>src/bokeh/core/query.py:353:7:</a> E272 [*] Multiple spaces before keyword
+- <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/src/bokeh/core/query.py#L354'>src/bokeh/core/query.py:354:7:</a> E272 Multiple spaces before keyword
++ <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/src/bokeh/core/query.py#L354'>src/bokeh/core/query.py:354:7:</a> E272 [*] Multiple spaces before keyword
+- <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/src/bokeh/core/query.py#L355'>src/bokeh/core/query.py:355:7:</a> E272 Multiple spaces before keyword
+... 52 additional changes omitted for rule E272
+- <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/src/bokeh/io/webdriver.py#L217'>src/bokeh/io/webdriver.py:217:17:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/src/bokeh/io/webdriver.py#L217'>src/bokeh/io/webdriver.py:217:17:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/src/bokeh/model/model.py#L84'>src/bokeh/model/model.py:84:40:</a> E271 Multiple spaces after keyword
++ <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/src/bokeh/model/model.py#L84'>src/bokeh/model/model.py:84:40:</a> E271 [*] Multiple spaces after keyword
+- <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/src/bokeh/models/tools.py#L1354'>src/bokeh/models/tools.py:1354:101:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/src/bokeh/models/tools.py#L1354'>src/bokeh/models/tools.py:1354:101:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/bokeh/bokeh/blob/2e85cfb76b23c8537a704ec1a0af94437a5834f0/src/bokeh/models/tools.py#L1862'>src/bokeh/models/tools.py:1862:28:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
+... 68 additional changes omitted for rule PLW0108
+... 118 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/commaai/openpilot">commaai/openpilot</a> (+0 -0 violations, +2 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/commaai/openpilot/blob/816c18a4ec08441e037f54053fe3da8ecd13b06c/selfdrive/test/process_replay/regen.py#L67'>selfdrive/test/process_replay/regen.py:67:26:</a> E271 Multiple spaces after keyword
++ <a href='https://github.com/commaai/openpilot/blob/816c18a4ec08441e037f54053fe3da8ecd13b06c/selfdrive/test/process_replay/regen.py#L67'>selfdrive/test/process_replay/regen.py:67:26:</a> E271 [*] Multiple spaces after keyword
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+0 -0 violations, +2 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/freedomofpress/securedrop/blob/acf1a8291b566c965aae3ba1471b0893345aeb87/securedrop/pretty_bad_protocol/gnupg.py#L657'>securedrop/pretty_bad_protocol/gnupg.py:657:26:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/freedomofpress/securedrop/blob/acf1a8291b566c965aae3ba1471b0893345aeb87/securedrop/pretty_bad_protocol/gnupg.py#L657'>securedrop/pretty_bad_protocol/gnupg.py:657:26:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/fronzbot/blinkpy">fronzbot/blinkpy</a> (+0 -0 violations, +10 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/fronzbot/blinkpy/blob/daea3cf6dcee9ef6f1b1812301762a55bf82162b/tests/test_blink_functions.py#L191'>tests/test_blink_functions.py:191:13:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/fronzbot/blinkpy/blob/daea3cf6dcee9ef6f1b1812301762a55bf82162b/tests/test_blink_functions.py#L191'>tests/test_blink_functions.py:191:13:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/fronzbot/blinkpy/blob/daea3cf6dcee9ef6f1b1812301762a55bf82162b/tests/test_sync_module.py#L591'>tests/test_sync_module.py:591:13:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/fronzbot/blinkpy/blob/daea3cf6dcee9ef6f1b1812301762a55bf82162b/tests/test_sync_module.py#L591'>tests/test_sync_module.py:591:13:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/fronzbot/blinkpy/blob/daea3cf6dcee9ef6f1b1812301762a55bf82162b/tests/test_util.py#L146'>tests/test_util.py:146:13:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/fronzbot/blinkpy/blob/daea3cf6dcee9ef6f1b1812301762a55bf82162b/tests/test_util.py#L146'>tests/test_util.py:146:13:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/fronzbot/blinkpy/blob/daea3cf6dcee9ef6f1b1812301762a55bf82162b/tests/test_util.py#L160'>tests/test_util.py:160:13:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/fronzbot/blinkpy/blob/daea3cf6dcee9ef6f1b1812301762a55bf82162b/tests/test_util.py#L160'>tests/test_util.py:160:13:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/fronzbot/blinkpy/blob/daea3cf6dcee9ef6f1b1812301762a55bf82162b/tests/test_util.py#L177'>tests/test_util.py:177:13:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/fronzbot/blinkpy/blob/daea3cf6dcee9ef6f1b1812301762a55bf82162b/tests/test_util.py#L177'>tests/test_util.py:177:13:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+0 -0 violations, +48 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/ibis-project/ibis/blob/39ed5f98db8d84f66c25a03b2bfccaf6956f188d/docs/backends/app/backend_info_app.py#L23'>docs/backends/app/backend_info_app.py:23:28:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/ibis-project/ibis/blob/39ed5f98db8d84f66c25a03b2bfccaf6956f188d/docs/backends/app/backend_info_app.py#L23'>docs/backends/app/backend_info_app.py:23:28:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/ibis-project/ibis/blob/39ed5f98db8d84f66c25a03b2bfccaf6956f188d/ibis/backends/dask/execution/reductions.py#L47'>ibis/backends/dask/execution/reductions.py:47:29:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/ibis-project/ibis/blob/39ed5f98db8d84f66c25a03b2bfccaf6956f188d/ibis/backends/dask/execution/reductions.py#L47'>ibis/backends/dask/execution/reductions.py:47:29:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/ibis-project/ibis/blob/39ed5f98db8d84f66c25a03b2bfccaf6956f188d/ibis/backends/impala/tests/test_value_exprs.py#L236'>ibis/backends/impala/tests/test_value_exprs.py:236:9:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/ibis-project/ibis/blob/39ed5f98db8d84f66c25a03b2bfccaf6956f188d/ibis/backends/impala/tests/test_value_exprs.py#L236'>ibis/backends/impala/tests/test_value_exprs.py:236:9:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/ibis-project/ibis/blob/39ed5f98db8d84f66c25a03b2bfccaf6956f188d/ibis/backends/mssql/registry.py#L198'>ibis/backends/mssql/registry.py:198:30:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/ibis-project/ibis/blob/39ed5f98db8d84f66c25a03b2bfccaf6956f188d/ibis/backends/mssql/registry.py#L198'>ibis/backends/mssql/registry.py:198:30:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/ibis-project/ibis/blob/39ed5f98db8d84f66c25a03b2bfccaf6956f188d/ibis/backends/mysql/registry.py#L231'>ibis/backends/mysql/registry.py:231:13:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
++ <a href='https://github.com/ibis-project/ibis/blob/39ed5f98db8d84f66c25a03b2bfccaf6956f188d/ibis/backends/mysql/registry.py#L231'>ibis/backends/mysql/registry.py:231:13:</a> PLW0108 [*] Lambda may be unnecessary; consider inlining inner function
+... 38 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+0 -51 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/pandas-dev/pandas/blob/b2d9ec17c52084ee2b629633c9119c01ea11d387/asv_bench/benchmarks/groupby.py#L907'>asv_bench/benchmarks/groupby.py:907:49:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/pandas-dev/pandas/blob/b2d9ec17c52084ee2b629633c9119c01ea11d387/asv_bench/benchmarks/io/csv.py#L342'>asv_bench/benchmarks/io/csv.py:342:25:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/pandas-dev/pandas/blob/b2d9ec17c52084ee2b629633c9119c01ea11d387/pandas/_testing/__init__.py#L843'>pandas/_testing/__init__.py:843:16:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/pandas-dev/pandas/blob/b2d9ec17c52084ee2b629633c9119c01ea11d387/pandas/_testing/__init__.py#L847'>pandas/_testing/__init__.py:847:16:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/pandas-dev/pandas/blob/b2d9ec17c52084ee2b629633c9119c01ea11d387/pandas/_testing/__init__.py#L855'>pandas/_testing/__init__.py:855:16:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/pandas-dev/pandas/blob/b2d9ec17c52084ee2b629633c9119c01ea11d387/pandas/_testing/__init__.py#L859'>pandas/_testing/__init__.py:859:16:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/pandas-dev/pandas/blob/b2d9ec17c52084ee2b629633c9119c01ea11d387/pandas/core/_numba/extensions.py#L279'>pandas/core/_numba/extensions.py:279:16:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/pandas-dev/pandas/blob/b2d9ec17c52084ee2b629633c9119c01ea11d387/pandas/io/formats/style_render.py#L1829'>pandas/io/formats/style_render.py:1829:18:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/pandas-dev/pandas/blob/b2d9ec17c52084ee2b629633c9119c01ea11d387/pandas/tests/apply/test_frame_apply.py#L1049'>pandas/tests/apply/test_frame_apply.py:1049:25:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
+- <a href='https://github.com/pandas-dev/pandas/blob/b2d9ec17c52084ee2b629633c9119c01ea11d387/pandas/tests/apply/test_frame_apply.py#L1049'>pandas/tests/apply/test_frame_apply.py:1049:6:</a> PLW0108 Lambda may be unnecessary; consider inlining inner function
+... 41 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/python/mypy">python/mypy</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/python/mypy/blob/e4c43cb68b742f0f51759565d1d3c4a722d16f55/mypy/types.py#L3329'>mypy/types.py:3329:95:</a> E272 Multiple spaces before keyword
+</pre>
+
+</p>
+</details>
+
+_... Truncated remaining completed projected reports due to GitHub comment length restrictions_
+
+<details><summary>Changes by rule (3 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLW0108 | 243 | 0 | 51 | 192 | 0 |
+| E272 | 87 | 0 | 1 | 86 | 0 |
+| E271 | 8 | 0 | 0 | 8 | 0 |
+
+</p>
+</details>
+
+
+
+
+---

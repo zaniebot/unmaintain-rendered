@@ -12,9 +12,9 @@ assignees: []
 base: main
 head: ruf069
 created_at: 2025-12-20T15:36:26Z
-updated_at: 2026-01-01T17:32:57Z
+updated_at: 2026-01-11T15:42:30Z
 url: https://github.com/astral-sh/ruff/pull/22114
-synced_at: 2026-01-10T16:36:18Z
+synced_at: 2026-01-12T02:12:03Z
 ```
 
 # [ruff] Add RUF069 to detect duplicate entries in __all__
@@ -109,8 +109,8 @@ _Comment by @astral-sh-bot[bot] on 2025-12-20 15:47_
 <p>
 
 <pre>
-+ <a href='https://github.com/langchain-ai/langchain/blob/3dcafac79bb696220f8e70f8ca82fcdc4b0b0dd7/libs/langchain/langchain_classic/document_loaders/__init__.py#L373'>libs/langchain/langchain_classic/document_loaders/__init__.py:373:5:</a> RUF069 [*] `__all__` contains duplicate entries
-+ <a href='https://github.com/langchain-ai/langchain/blob/3dcafac79bb696220f8e70f8ca82fcdc4b0b0dd7/libs/langchain/langchain_classic/document_loaders/__init__.py#L391'>libs/langchain/langchain_classic/document_loaders/__init__.py:391:5:</a> RUF069 [*] `__all__` contains duplicate entries
++ <a href='https://github.com/langchain-ai/langchain/blob/2ef23882d236a4b03d5d14c57b07dce4ca90640f/libs/langchain/langchain_classic/document_loaders/__init__.py#L373'>libs/langchain/langchain_classic/document_loaders/__init__.py:373:5:</a> RUF069 [*] `__all__` contains duplicate entries
++ <a href='https://github.com/langchain-ai/langchain/blob/2ef23882d236a4b03d5d14c57b07dce4ca90640f/libs/langchain/langchain_classic/document_loaders/__init__.py#L391'>libs/langchain/langchain_classic/document_loaders/__init__.py:391:5:</a> RUF069 [*] `__all__` contains duplicate entries
 </pre>
 
 </p>
@@ -122,9 +122,9 @@ _Comment by @astral-sh-bot[bot] on 2025-12-20 15:47_
 <p>
 
 <pre>
-+ <a href='https://github.com/python/typeshed/blob/90d855985be5aae9bc76e77b0f3d4b6738c38347/stubs/convertdate/convertdate/__init__.pyi#L45'>stubs/convertdate/convertdate/__init__.pyi:45:5:</a> RUF069 [*] `__all__` contains duplicate entries
-+ <a href='https://github.com/python/typeshed/blob/90d855985be5aae9bc76e77b0f3d4b6738c38347/stubs/reportlab/reportlab/lib/rltempfile.pyi#L4'>stubs/reportlab/reportlab/lib/rltempfile.pyi:4:30:</a> RUF069 [*] `__all__` contains duplicate entries
-+ <a href='https://github.com/python/typeshed/blob/90d855985be5aae9bc76e77b0f3d4b6738c38347/stubs/workalendar/workalendar/europe/__init__.pyi#L252'>stubs/workalendar/workalendar/europe/__init__.pyi:252:5:</a> RUF069 `__all__` contains duplicate entries
++ <a href='https://github.com/python/typeshed/blob/4092415812a1febd044fcc1db6b93d25873f17dd/stubs/convertdate/convertdate/__init__.pyi#L45'>stubs/convertdate/convertdate/__init__.pyi:45:5:</a> RUF069 [*] `__all__` contains duplicate entries
++ <a href='https://github.com/python/typeshed/blob/4092415812a1febd044fcc1db6b93d25873f17dd/stubs/reportlab/reportlab/lib/rltempfile.pyi#L4'>stubs/reportlab/reportlab/lib/rltempfile.pyi:4:30:</a> RUF069 [*] `__all__` contains duplicate entries
++ <a href='https://github.com/python/typeshed/blob/4092415812a1febd044fcc1db6b93d25873f17dd/stubs/workalendar/workalendar/europe/__init__.pyi#L252'>stubs/workalendar/workalendar/europe/__init__.pyi:252:5:</a> RUF069 [*] `__all__` contains duplicate entries
 </pre>
 
 </p>
@@ -136,7 +136,7 @@ _Comment by @astral-sh-bot[bot] on 2025-12-20 15:47_
 <p>
 
 <pre>
-+ <a href='https://github.com/astropy/astropy/blob/237a3ff8f949ebfd49bdc08e1023356fedd9e632/astropy/table/__init__.py#L32'>astropy/table/__init__.py:32:5:</a> RUF069 [*] `__all__` contains duplicate entries
++ <a href='https://github.com/astropy/astropy/blob/e5da169679537858e758da8486638bc94c481025/astropy/table/__init__.py#L32'>astropy/table/__init__.py:32:5:</a> RUF069 [*] `__all__` contains duplicate entries
 </pre>
 
 </p>
@@ -380,7 +380,7 @@ or you could inline the applicability too.
 
 ---
 
-_Review comment by @ntBre on `crates/ruff_linter/src/rules/ruff/rules/duplicate_all_entry.rs`:146 on 2026-01-01 16:33_
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/ruff/rules/duplicate_entry_in_dunder_all.rs`:154 on 2026-01-01 16:33_
 
 Do we need to check this before iterating over the elements and starting to emit diagnostics? Based on the comment, it sounds like we should, but it also seems like we could actually just `continue` here. It should be okay to emit diagnostics in this case right?
 
@@ -408,19 +408,19 @@ cc @chirizxc
 
 ---
 
-_Review comment by @ntBre on `crates/ruff_linter/resources/test/fixtures/ruff/RUF069.py`:23 on 2026-01-01 16:38_
+_Review comment by @ntBre on `crates/ruff_linter/resources/test/fixtures/ruff/RUF069.py`:22 on 2026-01-01 16:38_
 
 Let's throw in one multi-line case without comments.
 
 ---
 
-_Review comment by @ntBre on `crates/ruff_linter/src/rules/ruff/rules/duplicate_all_entry.rs`:1 on 2026-01-01 16:39_
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/ruff/rules/duplicate_entry_in_dunder_all.rs`:1 on 2026-01-01 16:39_
 
 Small nit, and this might just be me, but I often expect the file name to match the struct name exactly, so could we rename the file to `duplicate_entry_in_dunder_all.rs`?
 
 ---
 
-_Review comment by @ntBre on `crates/ruff_linter/src/rules/ruff/rules/duplicate_all_entry.rs`:35 on 2026-01-01 16:48_
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/ruff/rules/duplicate_entry_in_dunder_all.rs`:49 on 2026-01-01 16:48_
 
 We should add a `## Fix safety` section explaining the unsafety around comments. We may also want to double-check the comment range check. I don't think the existing test case actually deletes comments. I think the only way we could delete a comment is in a highly contrived case like:
 
@@ -487,5 +487,83 @@ _Comment by @ntBre on 2026-01-01 17:32_
 > @ntBre what do you think about this?
 
 @chirizxc I think it's tricky to check `.append` because we'd have to keep internal state on `__all__` values we've seen so far. There's not really a good way to do that with the current structure of the rule, which only sees one statement/expression at a time. I'm okay with leaving it out of the rule, especially in a first version.
+
+---
+
+_Review comment by @leandrobbraga on `crates/ruff_linter/src/rules/ruff/rules/duplicate_all_entry.rs`:157 on 2026-01-11 14:34_
+
+The `remove_member` implementation does not account for comments, removing them together with the element, which means that B033 also deletes them.
+
+This changed the snapshot from:
+
+```
+RUF069 [*] `__all__` contains duplicate entries
+  --> RUF069.py:33:5
+   |
+31 |     "B",
+32 |     # Comment
+33 |     "B",
+   |     ^^^
+34 | ]
+   |
+help: Remove duplicate entries from `__all__`
+29 |     "A",
+30 |     "A",
+31 |     "B",
+   -     # Comment
+   -     "B",
+32 +     # Comment,
+33 | ]
+note: This is an unsafe fix and may change runtime behavior
+```
+
+to
+
+```
+RUF069 [*] `__all__` contains duplicate entries
+  --> RUF069.py:33:5
+   |
+31 |     "B",
+32 |     # Comment
+33 |     "B",
+   |     ^^^
+34 | ]
+   |
+help: Remove duplicate entries from `__all__`
+29 |     "A",
+30 |     "A",
+31 |     "B",
+   -     # Comment
+   -     "B",
+32 | ]
+note: This is an unsafe fix and may change runtime behavior
+```
+
+Are you okay with that or should we strive to keep the comment, changing the behavior for B033 and RUF069?
+
+---
+
+_@leandrobbraga reviewed on 2026-01-11 14:34_
+
+---
+
+_@leandrobbraga reviewed on 2026-01-11 14:36_
+
+---
+
+_Review comment by @leandrobbraga on `crates/ruff_linter/src/rules/ruff/rules/duplicate_all_entry.rs`:157 on 2026-01-11 14:36_
+
+**Out of scope**: I've noticed a few other instances of text manipulation for deletion, from where I took initial inspiration:
+https://github.com/astral-sh/ruff/blob/b2b9d91859f2abc017e35d22f01696f141f6f5b1/crates/ty_python_semantic/src/suppression/unused.rs#L135-L165
+
+---
+
+_Comment by @leandrobbraga on 2026-01-11 15:04_
+
+I’ve addressed all the remarks, improved the documentation and bumped the version.
+
+---
+
+_Review requested from @ntBre by @leandrobbraga on 2026-01-11 15:04_
 
 ---

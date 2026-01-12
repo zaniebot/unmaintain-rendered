@@ -10,9 +10,9 @@ labels:
   - needs-info
 assignees: []
 created_at: 2025-12-22T18:54:10Z
-updated_at: 2025-12-31T15:44:56Z
+updated_at: 2026-01-11T04:55:59Z
 url: https://github.com/astral-sh/ty/issues/2169
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-11T05:54:06Z
 ```
 
 # Add ability to hide all warnings
@@ -81,5 +81,17 @@ Thanks. That's helpful. As another alternative design. Cargo has a `warnings` ca
 ---
 
 _Added to milestone `Stable` by @MichaReiser on 2025-12-31 15:44_
+
+---
+
+_Comment by @odie5533 on 2026-01-11 04:55_
+
+My use case:
+When a developer runs a check locally, it returns 200 warnings and errors all combined.
+Only **errors** should block their pre-commit (and CI), so I'd like to be able to filter to just show the errors with full details.
+
+Other flag possibilities:
+* --min-severity
+* --errors-only
 
 ---

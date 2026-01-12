@@ -9,9 +9,9 @@ labels:
   - preview
 assignees: []
 created_at: 2024-11-18T13:06:00Z
-updated_at: 2025-03-15T11:51:11Z
+updated_at: 2026-01-11T14:31:29Z
 url: https://github.com/astral-sh/ruff/issues/14433
-synced_at: 2026-01-10T11:09:56Z
+synced_at: 2026-01-11T15:05:49Z
 ```
 
 # Revisit unicode-to-unicode confusables in `RUF001`, `RUF002`, `RUF003`
@@ -110,7 +110,9 @@ Unicode Consortium ($5 000 to contribute, $50 000 to cast a full vote) documents
 > For compatibility purposes, a few Greek letters are separately encoded as symbols in other character blocks. Examples include U+00B5
 > µ MICRO SIGN in the Latin-1 Supplement character block and U+2126 Ω OHM SIGN in the Letterlike Symbols character block. The ohm sign is canonically equivalent to the capital omega, and normalization would remove any distinction. Its use is therefore discouraged in favor of capital omega. The same equivalence does not exist between micro sign and mu, and use of either character as a micro sign is common. For Greek text, only the mu should be used.
 
-On Wikipedia ($0 to contribute), the [Mu page](https://en.wikipedia.org/wiki/Mu_(letter)#Unicode) and [micro- page](https://en.wikipedia.org/wiki/Micro-#Symbol_encoding_in_character_sets) seem to disagree.
+[Edit: I don't understand why these authors write about non-existence of _canonical_ equivalence rather than the existence of _compatibility_ equivalence.]
+
+On Wikipedia ($0 to contribute), the [Mu page](https://en.wikipedia.org/wiki/Mu_(letter)#Unicode) and [micro- page](https://en.wikipedia.org/wiki/Micro-#Symbol_encoding_in_character_sets) [edit: previously seemed to disagree but have since been updated by me and maybe others].
 
 #### Kompatability
 > [K]ompatibility equivalence is a weaker type of equivalence [than canonical equivalence] between characters or sequences of characters which represent the same abstract character (or sequence of abstract characters), but which may have distinct visual appearances or behaviors. The visual appearances of the compatibility equivalent forms typically constitute a subset of the expected range of visual appearances of the character (or sequence of characters) they are equivalent to. However, these variant forms may represent a visual distinction that is significant in some textual contexts, but not in others. As a result, greater care is required to determine when use of a compatibility equivalent is appropriate. If the visual distinction is stylistic, then markup or styling could be used to represent the formatting information. However, some characters with compatibility decompositions are used in mathematical notation to represent a distinction of a semantic nature; replacing the use of distinct character codes by formatting in such contexts may cause problems.
@@ -129,7 +131,7 @@ https://www.unicode.org/charts/PDF/U0080.pdf
 While micro and mu "may have distinct visual appearances or behaviors", they are frequently indistinct: [Google fonts comparison of mu and micro](https://fonts.google.com/?preview.text=mu%20%CE%BC%20micro%20%C2%B5&preview.size=20&preview.layout=grid&categoryFilters=Feeling:%2FExpressive%2FBusiness).
 
 #### Code
-Since [PEP-3131](https://peps.python.org/pep-3131/) was implemented, Python allows both mu μ `\u03bc` and micro µ `\u00b5` as identifiers, but the underlying NFKC normalization means only the former will work reliably (see link in TL;DR for the getattr failure mode):
+Since [PEP-3131](https://peps.python.org/pep-3131/) was implemented, Python allows both mu μ `\u03bc` and micro µ `\u00b5` as identifiers, but the underlying NFKC normalization means only the former will work reliably.
 ```shell
 python -c 'print("""class C:
     \xb5=1
@@ -143,6 +145,8 @@ print(hex(ord(dir(C)[-1])))
 ```shell
 0x3bc
 ```
+
+See https://stackoverflow.com/q/34097193/3787516 for a getattr failure that autofixing micro to mu can prevent.
 
 #### Conclusion
 For the people that want to limit their .py files to unambiguous characters only, PEP-3131 replaces micro µ `\u00b5`  with mu μ `\u03bc`. Or dare I say: muve over, micro.

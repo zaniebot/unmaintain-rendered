@@ -11,9 +11,9 @@ assignees: []
 base: main
 head: charlie/dyn
 created_at: 2025-12-29T21:45:15Z
-updated_at: 2026-01-10T15:48:52Z
+updated_at: 2026-01-11T15:02:25Z
 url: https://github.com/astral-sh/ruff/pull/22291
-synced_at: 2026-01-10T15:56:07Z
+synced_at: 2026-01-12T02:12:03Z
 ```
 
 # [ty] Add support for dynamic `type()` classes
@@ -83,10 +83,17 @@ _Comment by @astral-sh-bot[bot] on 2025-12-29 21:48_
 <summary>Changes were detected when running on open source projects</summary>
 
 ```diff
+bidict (https://github.com/jab/bidict)
++ bidict/_base.py:147:47: warning[unsupported-base] Unsupported class base: Has type `type[BT@_make_inv_cls]`
+- Found 15 diagnostics
++ Found 16 diagnostics
+
 spack (https://github.com/spack/spack)
++ lib/spack/spack/builder.py:134:17: warning[unsupported-base] Unsupported class base: Has type `type[Self@__init__]`
++ lib/spack/spack/llnl/util/lang.py:693:50: warning[unsupported-base] Unsupported class base: Has type `type[Self@__init__]`
 - lib/spack/spack/test/packages.py:417:9: error[unresolved-attribute] Object of type `type` has no attribute `name`
 - Found 4318 diagnostics
-+ Found 4317 diagnostics
++ Found 4319 diagnostics
 
 werkzeug (https://github.com/pallets/werkzeug)
 - src/werkzeug/test.py:815:32: error[invalid-assignment] Object of type `type` is not assignable to `type[Response] | None`
@@ -100,6 +107,12 @@ black (https://github.com/psf/black)
 - Found 54 diagnostics
 + Found 58 diagnostics
 
+pytest (https://github.com/pytest-dev/pytest)
+- src/_pytest/_py/error.py:78:13: error[invalid-assignment] Invalid subscript assignment with key of type `int` and value of type `type` on object of type `dict[int, type[Error]]`
+- src/_pytest/_py/error.py:79:20: error[invalid-return-type] Return type does not match returned value: expected `type[Error]`, found `type`
+- Found 425 diagnostics
++ Found 423 diagnostics
+
 aiohttp-devtools (https://github.com/aio-libs/aiohttp-devtools)
 + tests/test_runserver_logs.py:17:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `logging.Logger`, found `tests.test_runserver_logs.<locals of function 'test_aiohttp_std'>.Logger`
 + tests/test_runserver_logs.py:39:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `logging.Logger`, found `tests.test_runserver_logs.<locals of function 'test_aiohttp_debugtoolbar'>.Logger`
@@ -108,10 +121,6 @@ aiohttp-devtools (https://github.com/aio-libs/aiohttp-devtools)
 + tests/test_runserver_logs.py:99:27: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `logging.Logger`, found `tests.test_runserver_logs.<locals of function 'test_extra'>.Logger`
 - Found 30 diagnostics
 + Found 35 diagnostics
-
-tornado (https://github.com/tornadoweb/tornado)
-- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
-+ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
 
 schemathesis (https://github.com/schemathesis/schemathesis)
 - src/schemathesis/core/deserialization.py:137:34: error[invalid-assignment] Object of type `type` is not assignable to `type[SafeLoader]`
@@ -122,30 +131,42 @@ schemathesis (https://github.com/schemathesis/schemathesis)
 pandera (https://github.com/pandera-dev/pandera)
 - pandera/api/dataframe/model.py:257:13: error[invalid-assignment] Object of type `type` is not assignable to attribute `Config` of type `type[BaseConfig]`
 + pandera/api/dataframe/model.py:257:42: warning[unsupported-base] Unsupported class base: Has type `type[BaseConfig]`
++ pandera/api/dataframe/model.py:306:55: warning[unsupported-base] Unsupported class base: Has type `type[Self@__class_getitem__] & <Protocol with members '__parameters__'>`
+- pandera/api/dataframe/model.py:308:16: error[invalid-return-type] Return type does not match returned value: expected `type[Self@__class_getitem__]`, found `type`
++ pandera/api/dataframe/model.py:308:16: error[invalid-return-type] Return type does not match returned value: expected `type[Self@__class_getitem__]`, found `<class '<unknown>'>`
 - pandera/api/dataframe/model.py:455:16: error[invalid-return-type] Return type does not match returned value: expected `tuple[type[BaseConfig], dict[str, Any]]`, found `tuple[type, dict[str, Any]]`
 + pandera/api/dataframe/model.py:455:32: warning[unsupported-base] Unsupported class base: Has type `type[BaseConfig]`
 - pandera/api/pyspark/model.py:162:13: error[invalid-assignment] Object of type `type` is not assignable to attribute `Config` of type `type[BaseConfig]`
++ pandera/api/pyspark/model.py:211:55: warning[unsupported-base] Unsupported class base: Has type `type[Self@__class_getitem__] & <Protocol with members '__parameters__'>`
+- pandera/api/pyspark/model.py:213:16: error[invalid-return-type] Return type does not match returned value: expected `type[Self@__class_getitem__]`, found `type`
++ pandera/api/pyspark/model.py:213:16: error[invalid-return-type] Return type does not match returned value: expected `type[Self@__class_getitem__]`, found `<class '<unknown>'>`
 - Found 1578 diagnostics
-+ Found 1577 diagnostics
++ Found 1579 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _VT@next | _T@next`
++ tornado/gen.py:255:62: error[invalid-argument-type] Argument to bound method `__init__` is incorrect: Expected `None | Awaitable[Unknown] | list[Awaitable[Unknown]] | dict[Any, Awaitable[Unknown]] | Future[Unknown]`, found `_T@next | _T@next | _VT@next`
 
 pydantic (https://github.com/pydantic/pydantic)
-- pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-+ pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-- pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-+ pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-- pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-+ pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-- pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-+ pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-- pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-+ pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-- pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-+ pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-- pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
-+ pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
-- pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
-+ pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
+- pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:943:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:983:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:1026:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:1066:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:1109:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:1148:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`
++ pydantic/fields.py:1188:5: error[invalid-parameter-default] Default value of type `PydanticUndefinedType` is not assignable to annotated parameter type `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`
+- pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, Divergent] | ((dict[str, Divergent], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, Divergent], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
++ pydantic/fields.py:1567:13: error[invalid-argument-type] Argument is incorrect: Expected `dict[str, int | float | str | ... omitted 3 union elements] | ((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) | None`, found `Top[dict[Unknown, Unknown]] | (((dict[str, int | float | str | ... omitted 3 union elements], /) -> None) & ~Top[dict[Unknown, Unknown]]) | None`
+- pydantic/v1/config.py:183:12: error[invalid-return-type] Return type does not match returned value: expected `type[BaseConfig]`, found `type`
 - pydantic/v1/networks.py:572:12: error[invalid-return-type] Return type does not match returned value: expected `type[AnyUrl]`, found `type`
++ pydantic/v1/schema.py:1094:50: warning[unsupported-base] Unsupported class base: Has type `(Any & type[SecretStr]) | (Any & type[SecretBytes])`
 - pydantic/v1/types.py:239:12: error[invalid-return-type] Return type does not match returned value: expected `type[int]`, found `type`
 - pydantic/v1/types.py:318:12: error[invalid-return-type] Return type does not match returned value: expected `type[int] | type[float]`, found `type`
 - pydantic/v1/types.py:391:12: error[invalid-return-type] Return type does not match returned value: expected `type[bytes]`, found `type`
@@ -155,6 +176,41 @@ pydantic (https://github.com/pydantic/pydantic)
 - pydantic/v1/types.py:1205:12: error[invalid-return-type] Return type does not match returned value: expected `type[date]`, found `type`
 - Found 3159 diagnostics
 + Found 3151 diagnostics
+
+artigraph (https://github.com/artigraph/artigraph)
++ src/arti/internal/mappings.py:111:49: warning[unsupported-base] Unsupported class base: Has type `type[Self@__class_getitem__]`
+- src/arti/producers/__init__.py:441:16: error[invalid-return-type] Return type does not match returned value: expected `type[Producer]`, found `type`
+- src/arti/types/__init__.py:339:13: error[invalid-argument-type] Argument to bound method `register_adapter` is incorrect: Expected `type[TypeAdapter]`, found `type`
++ src/arti/types/__init__.py:341:18: warning[unsupported-base] Unsupported class base: Has type `type[Self@generate]`
+- src/arti/types/bigquery.py:66:9: error[invalid-argument-type] Argument to bound method `register_adapter` is incorrect: Expected `type[TypeAdapter]`, found `type`
+- src/arti/types/pyarrow.py:42:9: error[invalid-argument-type] Argument to bound method `register_adapter` is incorrect: Expected `type[TypeAdapter]`, found `type`
+- Found 149 diagnostics
++ Found 147 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
+- psycopg/psycopg/types/array.py:350:12: error[invalid-return-type] Return type does not match returned value: expected `type[BaseListDumper]`, found `type`
+- psycopg/psycopg/types/array.py:356:12: error[invalid-return-type] Return type does not match returned value: expected `type[BaseListDumper]`, found `type`
+- psycopg/psycopg/types/composite.py:525:12: error[invalid-return-type] Return type does not match returned value: expected `type[_CompositeLoader[T@_make_loader]]`, found `type`
+- psycopg/psycopg/types/composite.py:534:12: error[invalid-return-type] Return type does not match returned value: expected `type[_CompositeBinaryLoader[T@_make_binary_loader]]`, found `type`
+- psycopg/psycopg/types/composite.py:543:12: error[invalid-return-type] Return type does not match returned value: expected `type[_SequenceDumper[T@_make_dumper]]`, found `type`
+- psycopg/psycopg/types/composite.py:552:12: error[invalid-return-type] Return type does not match returned value: expected `type[_SequenceBinaryDumper[T@_make_binary_dumper]]`, found `type`
+- psycopg/psycopg/types/enum.py:183:12: error[invalid-return-type] Return type does not match returned value: expected `type[_BaseEnumLoader[E@_make_loader]]`, found `type`
+- psycopg/psycopg/types/enum.py:191:12: error[invalid-return-type] Return type does not match returned value: expected `type[_BaseEnumLoader[E@_make_binary_loader]]`, found `type`
+- psycopg/psycopg/types/enum.py:199:12: error[invalid-return-type] Return type does not match returned value: expected `type[_BaseEnumDumper[E@_make_dumper]]`, found `type`
+- psycopg/psycopg/types/enum.py:207:12: error[invalid-return-type] Return type does not match returned value: expected `type[_BaseEnumDumper[E@_make_binary_dumper]]`, found `type`
++ psycopg/psycopg/types/json.py:140:26: warning[unsupported-base] Unsupported class base: Has type `type[Loader]`
+- psycopg/psycopg/types/multirange.py:407:12: error[invalid-return-type] Return type does not match returned value: expected `type[MultirangeLoader[Any]]`, found `type`
+- psycopg/psycopg/types/multirange.py:412:12: error[invalid-return-type] Return type does not match returned value: expected `type[MultirangeBinaryLoader[Any]]`, found `type`
+- psycopg/psycopg/types/range.py:586:12: error[invalid-return-type] Return type does not match returned value: expected `type[RangeLoader[Any]]`, found `type`
+- psycopg/psycopg/types/range.py:591:12: error[invalid-return-type] Return type does not match returned value: expected `type[RangeBinaryLoader[Any]]`, found `type`
+- Found 665 diagnostics
++ Found 652 diagnostics
+
+mkdocs (https://github.com/mkdocs/mkdocs)
++ mkdocs/config/config_options.py:101:28: warning[unsupported-base] Unsupported class base: Has type `type[Self@__class_getitem__]`
++ mkdocs/plugins.py:75:28: warning[unsupported-base] Unsupported class base: Has type `type[Self@__class_getitem__]`
+- Found 224 diagnostics
++ Found 226 diagnostics
 
 trio (https://github.com/python-trio/trio)
 - src/trio/_tests/test_util.py:236:5: error[unresolved-attribute] Unresolved attribute `recursion` on type `type`.
@@ -167,59 +223,52 @@ setuptools (https://github.com/pypa/setuptools)
 - setuptools/tests/test_editable_install.py:1204:24: error[invalid-argument-type] Argument to function `raises` is incorrect: Expected `type[BaseException] | tuple[type[BaseException], ...]`, found `type`
 
 prefect (https://github.com/PrefectHQ/prefect)
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:94:28: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/integrations/prefect-dbt/prefect_dbt/core/settings.py:99:28: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any]` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:86:21: error[invalid-assignment] Object of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables` is not assignable to `dict[str, Any]`
-+ src/prefect/cli/deploy/_core.py:87:21: error[invalid-assignment] Object of type `T@resolve_variables | str | int | ... omitted 4 union elements` is not assignable to `dict[str, Any]`
-- src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-+ src/prefect/deployments/steps/core.py:137:38: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
-- src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any]` on object of type `dict[str, Any]`
-+ src/prefect/utilities/templating.py:320:13: error[invalid-assignment] Invalid subscript assignment with key of type `object` and value of type `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements` on object of type `dict[str, Any]`
-- src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | Unknown]`
-+ src/prefect/utilities/templating.py:323:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_block_document_references | dict[str, Any]`, found `list[T@resolve_block_document_references | dict[str, Any] | str | ... omitted 5 union elements]`
-- src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | Unknown]`
-+ src/prefect/utilities/templating.py:437:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `dict[object, T@resolve_variables | str | int | ... omitted 5 union elements]`
-- src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | Unknown]`
-+ src/prefect/utilities/templating.py:442:16: error[invalid-return-type] Return type does not match returned value: expected `T@resolve_variables`, found `list[T@resolve_variables | str | int | ... omitted 5 union elements]`
-- src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any]`
-+ src/prefect/workers/base.py:232:13: error[invalid-argument-type] Argument is incorrect: Expected `T@resolve_variables`, found `T@resolve_block_document_references | dict[str, Any] | str | ... omitted 4 union elements`
-- src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables`
-+ src/prefect/workers/base.py:234:20: error[invalid-argument-type] Argument expression after ** must be a mapping type: Found `T@resolve_variables | str | int | ... omitted 4 union elements`
+- src/prefect/input/run_input.py:332:82: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5368 diagnostics
++ Found 5367 diagnostics
 
-pywin32 (https://github.com/mhammond/pywin32)
-+ com/win32com/client/__init__.py:339:20: error[duplicate-base] Duplicate base classes Unknown, Unknown in class `COMEventClass`
-+ com/win32com/client/__init__.py:377:20: error[duplicate-base] Duplicate base class Unknown in class `COMEventClass`
-- Found 2712 diagnostics
-+ Found 2714 diagnostics
+strawberry (https://github.com/strawberry-graphql/strawberry)
+- strawberry/tools/merge_types.py:35:12: error[invalid-return-type] Return type does not match returned value: expected `type`, found `<decorator produced by dataclass-like function>`
++ strawberry/types/base.py:341:50: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+
+scikit-build-core (https://github.com/scikit-build/scikit-build-core)
++ src/scikit_build_core/build/wheel.py:99:20: error[no-matching-overload] No overload of bound method `__init__` matches arguments
+- Found 47 diagnostics
++ Found 48 diagnostics
 
 jax (https://github.com/google/jax)
 - jax/_src/interpreters/partial_eval.py:1710:79: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
 - jax/_src/interpreters/partial_eval.py:1726:81: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 2799 diagnostics
-+ Found 2797 diagnostics
+- Found 2804 diagnostics
++ Found 2802 diagnostics
+
+ibis (https://github.com/ibis-project/ibis)
+- ibis/examples/__init__.py:122:9: error[unresolved-attribute] Object of type `type` has no attribute `fetch`
++ ibis/expr/operations/udf.py:155:16: error[invalid-return-type] Return type does not match returned value: expected `type[S@_make_node]`, found `<class '<unknown>'>`
+- ibis/expr/operations/udf.py:155:50: error[invalid-argument-type] Argument to class `type` is incorrect: Expected `tuple[type, ...]`, found `tuple[property]`
++ ibis/expr/operations/udf.py:155:51: error[invalid-base] Invalid class base with type `property`
+
+hydpy (https://github.com/hydpy-dev/hydpy)
++ hydpy/core/modeltools.py:3252:61: warning[unsupported-base] Unsupported class base: Has type `<class 'InletSequences'> | <class 'ObserverSequences'> | <class 'ReceiverSequences'> | ... omitted 8 union elements`
++ hydpy/core/testtools.py:1376:47: warning[unsupported-base] Unsupported class base: Has type `type[T@make_abc_testable]`
++ hydpy/core/testtools.py:1377:49: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- hydpy/core/testtools.py:1378:12: error[invalid-return-type] Return type does not match returned value: expected `type[T@make_abc_testable]`, found `type`
++ hydpy/core/testtools.py:1378:12: error[invalid-return-type] Return type does not match returned value: expected `type[T@make_abc_testable]`, found `<class '<unknown>'>`
+- Found 663 diagnostics
++ Found 666 diagnostics
 
 static-frame (https://github.com/static-frame/static-frame)
+- static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Index[Any]] | Bottom[Series[Any, Any]] | ... omitted 6 union elements, object_]`
++ static_frame/core/bus.py:671:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[Bus[Any], object_]`, found `InterGetItemLocReduces[Bus[Any] | Bottom[Series[Any, Any]] | ndarray[Never, Never] | ... omitted 6 union elements, object_]`
 - static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Any | Bottom[Series[Any, Any]], TVDtype@Index]`
 + static_frame/core/index.py:580:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemLocReduces[TVContainer_co@loc, TVDtype@Index]`, found `InterGetItemLocReduces[Bottom[Series[Any, Any]] | Any, TVDtype@Index]`
-- static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
-+ static_frame/core/series.py:772:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Series[Any, Any], TVDtype@Series]`, found `InterGetItemILocReduces[Series[Any, Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, TVDtype@Series]`
-- static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | ndarray[Never, Never] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
-+ static_frame/core/series.py:4072:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[SeriesHE[Any, Any], TVDtype@SeriesHE]`, found `InterGetItemILocReduces[Bottom[Series[Any, Any]] | Bottom[Index[Any]] | TypeBlocks | ... omitted 7 union elements, TVDtype@SeriesHE]`
 - static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | ndarray[Never, Never] | TypeBlocks | ... omitted 6 union elements, object_]`
 + static_frame/core/yarn.py:418:16: error[invalid-return-type] Return type does not match returned value: expected `InterGetItemILocReduces[Yarn[Any], object_]`, found `InterGetItemILocReduces[Yarn[Any] | Bottom[Index[Any]] | TypeBlocks | ... omitted 6 union elements, object_]`
 
-rotki (https://github.com/rotki/rotki)
-+ rotkehlchen/chain/decoding/tools.py:96:44: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- rotkehlchen/chain/decoding/tools.py:97:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress`, found `A@BaseDecoderTools`
-+ rotkehlchen/chain/decoding/tools.py:99:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `Sequence[A@BaseDecoderTools]`, found `Unknown | tuple[BTCAddress, ...] | tuple[ChecksumAddress, ...] | tuple[SubstrateAddress, ...] | tuple[SolanaAddress, ...]`
-- rotkehlchen/chain/decoding/tools.py:98:13: error[invalid-argument-type] Argument to function `decode_transfer_direction` is incorrect: Expected `BTCAddress | ChecksumAddress | SubstrateAddress | SolanaAddress | None`, found `A@BaseDecoderTools | None`
-+ rotkehlchen/chain/decoding/tools.py:100:62: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
-- Found 2102 diagnostics
-+ Found 2103 diagnostics
+pandas-stubs (https://github.com/pandas-dev/pandas-stubs)
+- pandas-stubs/_typing.pyi:1232:16: warning[unused-ignore-comment] Unused blanket `type: ignore` directive
+- Found 5170 diagnostics
++ Found 5169 diagnostics
 
 
 ```
@@ -247,13 +296,14 @@ _Comment by @codspeed-hq[bot] on 2025-12-29 22:59_
 
 
 
-`✅ 53` untouched benchmarks  
+`✅ 23` untouched benchmarks  
+`⏩ 30` skipped benchmarks[^skipped]  
 
 
 
 ---
 
-<sub>Comparing <code>charlie/dyn</code> (4e43509) with <code>main</code> (11cc324)</sub>
+<sub>Comparing <code>charlie/dyn</code> (7729353) with <code>main</code> (2c68057)</sub>
 
 <a href="https://codspeed.io/astral-sh/ruff/branches/charlie%2Fdyn?utm_source=github&utm_medium=comment-v2&utm_content=button">
   <picture>
@@ -263,6 +313,8 @@ _Comment by @codspeed-hq[bot] on 2025-12-29 22:59_
   </picture>
 </a>
 
+
+[^skipped]: 30 benchmarks were skipped, so the baseline results were used instead. If they were deleted from the codebase, [click here and archive them to remove them from the performance reports](https://codspeed.io/astral-sh/ruff/branches/charlie%2Fdyn?sectionId=benchmark-comparison-section-baseline-result-skipped&utm_source=github&utm_medium=comment-v2&utm_content=archive).
 
 
 ---
@@ -324,17 +376,19 @@ _Comment by @astral-sh-bot[bot] on 2025-12-30 03:30_
 
 | Lint rule | Added | Removed | Changed |
 |-----------|------:|--------:|--------:|
-| `invalid-return-type` | 2 | 12 | 5 |
-| `invalid-argument-type` | 7 | 3 | 3 |
-| `invalid-assignment` | 4 | 4 | 5 |
-| `unused-ignore-comment` | 1 | 4 | 0 |
-| `unresolved-attribute` | 2 | 1 | 1 |
-| `unsupported-base` | 4 | 0 | 0 |
-| `duplicate-base` | 2 | 0 | 0 |
-| **Total** | **22** | **24** | **14** |
+| `invalid-return-type` | 2 | 28 | 9 |
+| `unsupported-base` | 17 | 0 | 0 |
+| `invalid-argument-type` | 5 | 7 | 0 |
+| `invalid-assignment` | 4 | 5 | 0 |
+| `unresolved-attribute` | 2 | 2 | 3 |
+| `unused-ignore-comment` | 4 | 3 | 0 |
+| `possibly-missing-attribute` | 0 | 3 | 1 |
+| `invalid-await` | 0 | 2 | 0 |
+| `invalid-base` | 1 | 0 | 0 |
+| **Total** | **35** | **50** | **13** |
 
 
-**[Full report with detailed diff](https://f7bcb46c.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://f7bcb46c.ty-ecosystem-ext.pages.dev/timing))
+**[Full report with detailed diff](https://9be7a62a.ty-ecosystem-ext.pages.dev/diff)** ([timing results](https://9be7a62a.ty-ecosystem-ext.pages.dev/timing))
 
 
 
@@ -633,7 +687,7 @@ _Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:574 on 2026-01-08 15:32_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:578 on 2026-01-08 15:32_
 
 is this correct? Couldn't you create a protocol class using the `type()` function?
 
@@ -716,7 +770,7 @@ _Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4613 on 2026-01-08 15:40_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4692 on 2026-01-08 15:40_
 
 Hmm, but pyright's behaviour seems incorrect here? Ideally we would treat these as distinct types, the same as we do for different class-literals that have the same name. Storing the `Definition` on the `FunctionalClassLiteral` struct, as I suggested above, might help with that.
 
@@ -728,7 +782,7 @@ I would add `#[salsa::tracked]` to the `impl` block above and then put this meth
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4683 on 2026-01-08 15:43_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4766 on 2026-01-08 15:43_
 
 ```suggestion
         // If no bases, metaclass is `type`.
@@ -936,7 +990,7 @@ _@charliermarsh reviewed on 2026-01-09 01:38_
 
 ---
 
-_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:607 on 2026-01-09 01:38_
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:612 on 2026-01-09 01:38_
 
 I _think_ we want to omit dynamic classes here.
 
@@ -1030,7 +1084,7 @@ though idk if that's actually any clearer at the end of the day 😆
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/call/bind.rs`:1120 on 2026-01-09 19:21_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/call/bind.rs`:1138 on 2026-01-09 19:21_
 
 Why must this specifically be a static class-literal? In theory we could support this, right? (We don't have to do it in this PR, but you could add a test and/or a TODO comment)
 
@@ -1045,7 +1099,7 @@ If we made this change, `CodeGeneratorKind::from_class` would need to be updated
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:576 on 2026-01-09 19:32_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:580 on 2026-01-09 19:32_
 
 ```suggestion
     /// Returns whether this class is a `TypedDict`.
@@ -1083,7 +1137,7 @@ The code here is correct but the comments are wrong:
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:648 on 2026-01-09 19:40_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:653 on 2026-01-09 19:40_
 
 this will need to be revised in https://github.com/astral-sh/ruff/pull/22480, when we start adding support for dynamic classes to define attributes via the namespace parameter
 
@@ -1143,7 +1197,7 @@ index d67e927f39..5cf85f120c 100644
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:716 on 2026-01-09 19:47_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:721 on 2026-01-09 19:47_
 
 we may want to revise this in https://github.com/astral-sh/ruff/pull/22480, because a dynamic class could provide `__slots__` in the namespace dictionary, which would make it a disjoint base:
 
@@ -1199,7 +1253,7 @@ _Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4599 on 2026-01-09 20:10_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4678 on 2026-01-09 20:10_
 
 nit
 
@@ -1216,7 +1270,7 @@ nit
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4609 on 2026-01-09 20:10_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4688 on 2026-01-09 20:10_
 
 ```suggestion
 /// same name and bases:
@@ -1226,7 +1280,7 @@ _Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4633 on 2026-01-09 20:14_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4712 on 2026-01-09 20:14_
 
 We may need to put some warnings in the doc-comments for some of these fields that they shouldn't be accessed when we're inferring types for a different module to the one the class was defined in? I think doing so would lead to overly aggressive cache invalidation. @MichaReiser will be able to say whether I'm spouting nonsense here or not
 
@@ -1275,7 +1329,7 @@ so whereas for the static class, we return "the class `type` itself", for the fu
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4798 on 2026-01-09 20:23_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4881 on 2026-01-09 20:23_
 
 nit: I'd find this more readable
 
@@ -1446,7 +1500,7 @@ _@charliermarsh reviewed on 2026-01-09 21:18_
 
 ---
 
-_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/class.rs`:4798 on 2026-01-09 21:18_
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/class.rs`:4881 on 2026-01-09 21:18_
 
 Rust un-formats that away sadly :(
 
@@ -1464,7 +1518,7 @@ nit: should we match the code and call these "dynamic classes" throughout the te
 
 ---
 
-_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/call/type.md`:450 on 2026-01-10 02:22_
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/call/type.md`:469 on 2026-01-10 02:22_
 
 There's an issue here that shows up in pywin32 in the ecosystem:
 
@@ -1485,7 +1539,7 @@ If not, the other approach would be to manually avoid emitting this diagnostic i
 
 ---
 
-_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/call/type.md`:499 on 2026-01-10 02:23_
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/call/type.md`:518 on 2026-01-10 02:23_
 
 This means we aren't treating the bases of a dynamic class as forward references (deferred evaluation) in a stub file?
 
@@ -1505,7 +1559,7 @@ I also didn't make it through a complete review before needing to head out, but 
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:499 on 2026-01-10 10:49_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:518 on 2026-01-10 10:49_
 
 Yeah, I specifically asked Charlie to add this test to demonstrate that we wouldn't panic on cyclic definitions in stub files 😄
 
@@ -1515,7 +1569,7 @@ _@AlexWaygood reviewed on 2026-01-10 10:49_
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:394 on 2026-01-10 12:23_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:404 on 2026-01-10 12:23_
 
 but note that that `weird_other_arg` would actually be _mandatory_ if you created a dynamic class that had `Base` as a superclass, and `Base.__init_subclass__` required a `weird_other_arg` argument to be passed to it:
 
@@ -1608,7 +1662,7 @@ _Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:7021 on 2026-01-10 12:57_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:7106 on 2026-01-10 12:57_
 
 ```suggestion
                     // Check for metaclass conflicts
@@ -1640,7 +1694,7 @@ But given that this is the exact same message that we emit for static classes wi
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:5075 on 2026-01-10 12:59_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:5168 on 2026-01-10 12:59_
 
 ```suggestion
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
@@ -1748,13 +1802,13 @@ Can we add some tests to https://github.com/astral-sh/ruff/blob/main/crates/ty_p
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/overrides.rs`:48 on 2026-01-10 13:25_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/overrides.rs`:51 on 2026-01-10 13:25_
 
 We will want to change this in https://github.com/astral-sh/ruff/pull/22480 so that it accepts dynamic classes too: if we allow dynamic classes to define attributes in their namespace dictionary, we should also check whether those attributes are valid overrides of attributes in their superclasses.
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:607 on 2026-01-10 13:29_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:612 on 2026-01-10 13:29_
 
 It looks like most of these checks either don't apply to dynamic classes, or we have them independently implemented elsewhere for dynamic classes. So I think this is fine. But we should rename the method to `check_static_class_definitions, and mention in the docstring that we only iterate over class definitions created using `class` statements.
 
@@ -1771,7 +1825,7 @@ reveal_type(T)
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:5430 on 2026-01-10 13:34_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:5419 on 2026-01-10 13:34_
 
 ```suggestion
                         // Only handle 3-arg type() calls specially to capture the definition.
@@ -1803,7 +1857,7 @@ T = type(name, (), {})
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6084 on 2026-01-10 13:44_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6075 on 2026-01-10 13:44_
 
 I think here you want to do something like this:
 
@@ -1866,7 +1920,7 @@ Thank you, sorry. These are missed renames.
 
 ---
 
-_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6212 on 2026-01-10 13:47_
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer/builder.rs`:6153 on 2026-01-10 13:47_
 
 It looks like there's quite a lot of duplication between this and the method above. Can we not have them both call into a `infer_functional_type_call_impl` method or something?
 
@@ -1951,5 +2005,808 @@ index eb6e05e58c..9f60c590ac 100644
 _@AlexWaygood reviewed on 2026-01-10 13:53_
 
 This looks very good, and I think it's close! My main comment on this pass is I think we could do with a bunch more tests
+
+---
+
+_@charliermarsh reviewed on 2026-01-10 15:55_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/resources/mdtest/call/type.md`:404 on 2026-01-10 15:55_
+
+(Adding a TODO for now though happy to rebase on that if you want to merge it!)
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:523 on 2026-01-10 16:48_
+
+```suggestion
+                // Dynamic classes don't have inherited generic context and are never `object`.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:544 on 2026-01-10 16:48_
+
+```suggestion
+    /// For static classes, this applies default type arguments.
+    /// For dynamic classes, this returns a non-generic class type.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:563 on 2026-01-10 16:49_
+
+```suggestion
+    // TODO: We should emit a diagnostic if a dynamic class (created via `type()`) attempts
+    // to inherit from `Generic[T]`, since dynamic classes can't be generic. See also: `is_protocol`.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:571 on 2026-01-10 16:49_
+
+```suggestion
+    // TODO: We should emit a diagnostic if a dynamic class (created via `type()`) attempts
+    // to inherit from `Protocol`, since dynamic classes can't be protocols. See also: `generic_context`.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:578 on 2026-01-10 16:49_
+
+```suggestion
+    // TODO: We should emit a diagnostic if a dynamic class (created via `type()`) attempts
+    // to inherit from `TypedDict`. To create a functional TypedDict, you should invoke
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:620 on 2026-01-10 16:49_
+
+```suggestion
+    /// For static classes, this is the class name and any arguments passed to the `class` statement.
+    /// For dynamic classes, this is the entire `type()` call expression.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:769 on 2026-01-10 16:50_
+
+```suggestion
+    /// Dynamic classes cannot be `TypedDicts`, so this delegates to the Stmt variant.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:804 on 2026-01-10 16:50_
+
+```suggestion
+    fn from(dynamic: DynamicClassLiteral<'db>) -> Self {
+        ClassLiteral::Dynamic(dynamic)
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:946 on 2026-01-10 16:50_
+
+```suggestion
+    /// For static classes, returns `TypeDefinition::StaticClass`.
+    /// For dynamic classes, returns `TypeDefinition::DynamicClass` if a definition is available.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:1653 on 2026-01-10 16:50_
+
+```suggestion
+        // Dynamic classes don't have a generic context.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:1877 on 2026-01-10 16:51_
+
+```suggestion
+    fn from(dynamic: DynamicClassLiteral<'db>) -> Type<'db> {
+        Type::ClassLiteral(dynamic.into())
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:2590 on 2026-01-10 16:51_
+
+```suggestion
+            // For dynamic classes, we can't get a StaticClassLiteral, so use self for tracking.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:2645 on 2026-01-10 16:51_
+
+```suggestion
+            // For dynamic classes, we can't get a StaticClassLiteral, so use self for tracking.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:2672 on 2026-01-10 16:51_
+
+```suggestion
+        // Dynamic classes don't have dataclass transformer params.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:3685 on 2026-01-10 16:51_
+
+```suggestion
+                    // Dynamic classes don't have fields (no class body).
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4622 on 2026-01-10 16:52_
+
+outdated
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4695 on 2026-01-10 16:52_
+
+```suggestion
+    /// Get the metaclass of this dynamic class.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4706 on 2026-01-10 16:52_
+
+```suggestion
+    /// Try to get the metaclass of this dynamic class.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4776 on 2026-01-10 16:53_
+
+```suggestion
+    /// Iterate over the MRO of this dynamic class using C3 linearization.
+    ///
+    /// The MRO includes the dynamic class itself as the first element, followed
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4802 on 2026-01-10 16:53_
+
+```suggestion
+    /// - No inherited generic context (dynamic classes aren't generic).
+    /// - `is_self_object = false` (dynamic classes are never `object`).
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4832 on 2026-01-10 16:54_
+
+```suggestion
+            false, // Dynamic classes are never `object`.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4847 on 2026-01-10 16:54_
+
+```suggestion
+    /// Try to compute the MRO for this dynamic class.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4857 on 2026-01-10 16:54_
+
+```suggestion
+/// Error for metaclass conflicts in dynamic classes.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:4861 on 2026-01-10 16:55_
+
+Should be renamed to `DynamicMetaclassConflict`
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class_base.rs`:379 on 2026-01-10 16:55_
+
+```suggestion
+                    // Dynamic classes can't have cyclic MRO since their bases must
+                    // already exist at creation time. Unlike statement classes, we do not
+                    // permit dynamic classes to have forward references in their
+                    // bases list.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/mro.rs`:317 on 2026-01-10 16:56_
+
+```suggestion
+    /// Attempt to resolve the MRO of a dynamic class (created via `type(name, bases, dict)`).
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/mro.rs`:322 on 2026-01-10 16:56_
+
+parameter should be renamed
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/mro.rs`:389 on 2026-01-10 16:56_
+
+```suggestion
+    /// Compute a fallback MRO for a dynamic class when `of_dynamic_class` fails.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/mro.rs`:394 on 2026-01-10 16:57_
+
+parameter should be renamed
+
+---
+
+_Converted to draft by @charliermarsh on 2026-01-10 17:00_
+
+---
+
+_Comment by @charliermarsh on 2026-01-10 17:00_
+
+(Back to draft while I address feedback.)
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/mro.rs`:501 on 2026-01-10 17:00_
+
+```suggestion
+            ClassLiteral::Dynamic(dynamic) => {
+                ClassBase::Class(ClassType::NonGeneric(dynamic.into()))
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/mro.rs`:688 on 2026-01-10 17:02_
+
+```suggestion
+/// Error kinds for dynamic class MRO computation.
+///
+/// These mirror the relevant variants from `MroErrorKind` for static classes.
+```
+
+---
+
+_Comment by @AlexWaygood on 2026-01-10 17:21_
+
+I think you're using `SubsequentMroElements::Owned()` more than you need to -- you could do this:
+
+```diff
+diff --git a/crates/ty_python_semantic/src/types/class.rs b/crates/ty_python_semantic/src/types/class.rs
+index 2ac60dce6c..00ca535dc3 100644
+--- a/crates/ty_python_semantic/src/types/class.rs
++++ b/crates/ty_python_semantic/src/types/class.rs
+@@ -4848,19 +4848,10 @@ impl<'db> DynamicClassLiteral<'db> {
+     ///
+     /// Returns `Ok(Mro)` if successful, or `Err(FunctionalMroError)` if there's
+     /// an error (duplicate bases or C3 linearization failure).
++    #[salsa::tracked(returns(ref), heap_size=ruff_memory_usage::heap_size)]
+     pub(crate) fn try_mro(self, db: &'db dyn Db) -> Result<Mro<'db>, FunctionalMroError<'db>> {
+         Mro::of_dynamic_class(db, self)
+     }
+-
+-    /// Compute and cache the MRO for this functional class.
+-    ///
+-    /// Uses C3 linearization when possible, falling back to sequential iteration
+-    /// with deduplication when there's an error (duplicate bases or C3 merge failure).
+-    #[salsa::tracked(heap_size = ruff_memory_usage::heap_size)]
+-    pub(crate) fn mro(self, db: &'db dyn Db) -> Mro<'db> {
+-        self.try_mro(db)
+-            .unwrap_or_else(|_| Mro::functional_fallback(db, self))
+-    }
+ }
+ 
+ /// Error for metaclass conflicts in functional classes.
+diff --git a/crates/ty_python_semantic/src/types/mro.rs b/crates/ty_python_semantic/src/types/mro.rs
+index 9677b27603..9bb923b40a 100644
+--- a/crates/ty_python_semantic/src/types/mro.rs
++++ b/crates/ty_python_semantic/src/types/mro.rs
+@@ -435,6 +435,15 @@ impl<'db> FromIterator<ClassBase<'db>> for Mro<'db> {
+     }
+ }
+ 
++impl<'db> IntoIterator for Mro<'db> {
++    type Item = ClassBase<'db>;
++    type IntoIter = std::vec::IntoIter<ClassBase<'db>>;
++
++    fn into_iter(self) -> Self::IntoIter {
++        self.0.into_iter()
++    }
++}
++
+ /// Iterator that yields elements of a class's MRO.
+ ///
+ /// We avoid materialising the *full* MRO unless it is actually necessary:
+@@ -537,9 +546,14 @@ impl<'db> MroIterator<'db> {
+                     SubsequentMroElements::Borrowed(full_mro_iter)
+                 }
+                 ClassLiteral::Dynamic(functional) => {
+-                    let mro = functional.mro(self.db);
+-                    let elements: Vec<_> = mro.iter().skip(1).copied().collect();
+-                    SubsequentMroElements::Owned(elements.into_iter())
++                    let mut full_mro_iter = match functional.try_mro(self.db) {
++                        Ok(mro) => SubsequentMroElements::Borrowed(mro.iter()),
++                        Err(_) => SubsequentMroElements::Owned(
++                            Mro::functional_fallback(self.db, functional).into_iter(),
++                        ),
++                    };
++                    full_mro_iter.next();
++                    full_mro_iter
+                 }
+             })
+     }
+@@ -684,7 +698,7 @@ fn c3_merge(mut sequences: Vec<VecDeque<ClassBase>>) -> Option<Mro> {
+ /// Error kinds for functional class MRO computation.
+ ///
+ /// These mirror the relevant variants from `MroErrorKind` for regular classes.
+-#[derive(Debug, Clone)]
++#[derive(Debug, Clone, PartialEq, Eq, get_size2::GetSize, salsa::Update)]
+ pub(crate) enum FunctionalMroError<'db> {
+     /// The class has duplicate bases in its bases tuple.
+     DuplicateBases(Box<[ClassBase<'db>]>),
+```
+
+But I'm a bit confused about why `Mro::functional_fallback` is as complex as it is, and why the fallback isn't stored on the error returned `DynamicClassLiteral::try_mro`. If we computed and stored the fallback MRO in a way more similar to what we do for static classes, we might not need the `SubsequentMroElements` enum at all.
+
+---
+
+_@charliermarsh reviewed on 2026-01-10 17:47_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6153 on 2026-01-10 17:47_
+
+Added some shared helpers...
+
+---
+
+_Comment by @charliermarsh on 2026-01-10 17:47_
+
+Yeah you're right. I think the functional MRO went through several iterations and I must've solved whatever required the enum along the way. Thanks!
+
+---
+
+_@charliermarsh reviewed on 2026-01-10 17:48_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:5424 on 2026-01-10 17:48_
+
+This seems wrong, looking into it.
+
+---
+
+_@charliermarsh reviewed on 2026-01-10 17:49_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:6228 on 2026-01-10 17:49_
+
+(I suspect this is _not_ what you had in mind @AlexWaygood.)
+
+---
+
+_@charliermarsh reviewed on 2026-01-10 18:30_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/src/types/infer/builder.rs`:5424 on 2026-01-10 18:30_
+
+Still not sure I have the ideal approach here.
+
+---
+
+_Marked ready for review by @charliermarsh on 2026-01-10 18:48_
+
+---
+
+_@charliermarsh reviewed on 2026-01-10 18:53_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/resources/mdtest/call/type.md`:677 on 2026-01-10 18:53_
+
+I think we said we wanted to ban this as a known simplification @AlexWaygood -- is that right?
+
+---
+
+_@charliermarsh reviewed on 2026-01-10 18:59_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/resources/mdtest/call/type.md`:677 on 2026-01-10 18:59_
+
+Ah no -- it was inheriting from `Protocol` itself.
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:677 on 2026-01-10 19:00_
+
+yeah, inheriting from protocol classes is fine, it just doesn't seem necessary to support creating a _new_ `Protocol` class using `type()` (which you'd do by including `Protocol` itself in the bases list)
+
+---
+
+_@AlexWaygood reviewed on 2026-01-10 19:01_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:211 on 2026-01-11 11:08_
+
+```suggestion
+Dynamic classes can be used as the pivot class in `super()` calls:
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:259 on 2026-01-11 11:08_
+
+```suggestion
+# Child instances are subtypes of `Parent` instances.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:262 on 2026-01-11 11:09_
+
+```suggestion
+takes_parent(child)  # No error - `ChildCls` is a subtype of `Parent`
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:400 on 2026-01-11 11:11_
+
+```suggestion
+reveal_type(type("Foo", ()))  # revealed: Unknown
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:404 on 2026-01-11 11:17_
+
+```suggestion
+# TODO: the keyword arguments for `Foo`/`Bar`/`Baz` here are invalid
+# (you cannot pass `metaclass=` to `type()`, and none of them have
+# base classes with `__init_subclass__` methods),
+# but `type[Unknown]` would be better than `Unknown` here
+#
+# error: [no-matching-overload] "No overload of class `type` matches arguments"
+reveal_type(type("Foo", (), {}, weird_other_arg=42))  # revealed: Unknown
+# error: [no-matching-overload] "No overload of class `type` matches arguments"
+reveal_type(type("Bar", (int,), {}, weird_other_arg=42))  # revealed: Unknown
+# error: [no-matching-overload] "No overload of class `type` matches arguments"
+reveal_type(type("Baz", (), {}, metaclass=type))  # revealed: Unknown
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:434 on 2026-01-11 11:20_
+
+I still think this should cause us to emit a diagnostic. However, having seen the ecosystem report, I think perhaps it should be a different error code to `unsupported-base` (maybe `unsupported-dynamic-base`?). It seems fairly common for users to create dynamic classes with `type[]` types as a base class, and the whole point of dynamic classes is after all that you can create them... dynamically. Making it a different error code to the one we use for unsupported bases in static class definitions will allow users to switch off only the diagnostic regarding dynamic classes, if they find it really noisy. (And maybe we should actually have it disabled by default, since it's quite strict.)
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:521 on 2026-01-11 11:23_
+
+It might be fun to add this test too:
+
+```py
+def make_classes(name1: str, name2: str):
+    cls1 = type(name1, (), {})
+    cls2 = type(name2, (), {})
+
+    def inner(x: cls1): ...
+
+    # error: [invalid-argument-type] "Argument to function `inner` is incorrect: Expected `main.<locals of function 'make_classes'>.<unknown> @ main.py:2`, found `main.<locals of function 'make_classes'>.<unknown> @ main.py:3`"
+    inner(cls2())
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:565 on 2026-01-11 11:24_
+
+```suggestion
+When `bases` is a module-level variable holding a tuple of class literals, we can extract the base
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:716 on 2026-01-11 11:40_
+
+It seems like it is _possible_ to create an empty enum using `type()` if you try realy really hard. But yeah, we don't need to support this 😆
+
+```pycon
+>>> import enum as e
+>>> type("E", (e.Enum,), e.EnumDict())
+<enum 'E'>
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:702 on 2026-01-11 11:43_
+
+It doesn't need to be a keyword argument. Even if it's a positional-or-keyword argument in the `__init_subclass__` signature, that makes it a required keyword argument when subclassing that class (because there's no other way to pass arguments to a superclass's `__init_subclass__` method except by passing keyword arguments in the class statement or a dynamic `type()` call).
+
+```suggestion
+When a base class defines `__init_subclass__` with required arguments, those should be
+passed to `type()`. This is not yet supported:
+
+```py
+class Base:
+    def __init_subclass__(cls, required_arg: str, **kwargs):
+        super().__init_subclass__(**kwargs)
+        cls.config = required_arg
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/dataclasses/dataclasses.md`:1 on 2026-01-11 11:45_
+
+If you do it as
+
+```py
+from dataclasses import dataclass
+
+X = dataclass(type("X", (), {}))
+```
+
+do we store a `Definition` for the `X` class there? I think it's okay if we don't (this should come up very rarely), I'm just curious
+
+I guess ideally we'd add some dedicated tests for goto-definition in https://github.com/astral-sh/ruff/blob/main/crates/ty_ide/src/goto_type_definition.rs, which would include edge cases like this, but it's fine for that to be a followup. I realise that this PR is dragging on a bit!
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/ide_support/all_members.md`:931 on 2026-01-11 11:49_
+
+```suggestion
+# TODO: these should pass -- namespace dict attributes are not yet available for autocomplete
+static_assert(has_member(DynamicWithDict, "custom_attr"))  # error: [static-assert-error]
+static_assert(has_member(DynamicWithDict(), "custom_attr"))  # error: [static-assert-error]
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/ide_support/all_members.md`:966 on 2026-01-11 11:50_
+
+```suggestion
+# TODO: these should pass; instance members should be available
+static_assert(has_member(instance, "base_attr"))  # error: [static-assert-error]
+static_assert(has_member(instance, "__repr__"))  # error: [static-assert-error]
+static_assert(has_member(instance, "__hash__"))  # error: [static-assert-error]
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:598 on 2026-01-11 11:52_
+
+I would also be interested in some tests where the `*args` and/or `**kwargs` arguments "fill up" an unknown number of parameters in the `type()` call, e.g.
+
+```py
+def f(*args, **kwargs):
+    A = type(*args, **kwargs)
+    reveal_type(A)
+
+    B = type("B", *args, **kwargs)
+    reveal_type(B)
+
+    C = type("C", (), *args, **kwargs)
+    reveal_type(C)
+
+    D = type("D", (), {}, **kwargs)
+    reveal_type(D)
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:605 on 2026-01-11 12:00_
+
+this doesn't look correct -- I think we should do something like this here:
+
+```diff
+diff --git a/crates/ty_python_semantic/src/types/class.rs b/crates/ty_python_semantic/src/types/class.rs
+index 3ab1659f9e..48c4049704 100644
+--- a/crates/ty_python_semantic/src/types/class.rs
++++ b/crates/ty_python_semantic/src/types/class.rs
+@@ -596,12 +596,11 @@ impl<'db> ClassLiteral<'db> {
+         }
+     }
+ 
+-    /// Returns the metaclass instance type for this class.
++    /// Return a type representing "the set of all instances of the metaclass of this class".
+     pub(crate) fn metaclass_instance_type(self, db: &'db dyn Db) -> Type<'db> {
+-        match self {
+-            Self::Static(class) => class.metaclass_instance_type(db),
+-            Self::Dynamic(class) => class.metaclass(db),
+-        }
++        self.metaclass(db)
++            .to_instance(db)
++            .expect("`Type::to_instance()` should always return `Some()` when called on the type of a metaclass")
+     }
+ 
+     /// Returns whether this class is type-check only.
+@@ -2585,14 +2584,6 @@ impl<'db> StaticClassLiteral<'db> {
+             .unwrap_or_else(|_| SubclassOfType::subclass_of_unknown())
+     }
+ 
+-    /// Return a type representing "the set of all instances of the metaclass of this class".
+-    pub(super) fn metaclass_instance_type(self, db: &'db dyn Db) -> Type<'db> {
+-        self
+-            .metaclass(db)
+-            .to_instance(db)
+-            .expect("`Type::to_instance()` should always return `Some()` when called on the type of a metaclass")
+-    }
+-
+     /// Return the metaclass of this class, or an error if the metaclass cannot be inferred.
+     #[salsa::tracked(cycle_initial=try_metaclass_cycle_initial,
+         heap_size=ruff_memory_usage::heap_size,
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:634 on 2026-01-11 12:02_
+
+It's fine not to support dynamic classes being marked as deprecated, but in that case we should probably emit a diagnostic if somebody tries to do something like
+
+```py
+from warnings import deprecated
+
+X = deprecated(type("X", (), {}))
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/class.rs`:641 on 2026-01-11 12:02_
+
+same here, I guess ideally we'd emit a diagnostic for this if we don't want to support it
+
+```py
+from typing import final
+
+X = final(type("X", (), {}))
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:1 on 2026-01-11 12:06_
+
+We should also emit a diagnostic (but don't currently on this branch) if you try to use an `@final` class as the base class for a dynamic class, e.g.
+
+```py
+from typing import final
+
+@final
+class Base: ...
+
+type("X", (Base,), {})
+```
+
+This is maybe a counter-argument to https://github.com/astral-sh/ruff/pull/22291/files#r2678657516 -- if we looped through all dynamic class definitions in `TypeInferenceBuilder::check_class_definitions` as well as all the static class definitions, it might have been harder to forget to implement this check... but I'm guess there's a lot of stuff in that method that currently assumes that we have a `StmtClassDef` AST node, so it may be that what you have right now is the best design.
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/function.rs`:1742 on 2026-01-11 12:09_
+
+It seems like we should also emit a diagnostic for
+
+```py
+from ty_extensions import get_protocol_members
+
+get_protocol_members(type("X", (), {}))
+```
+
+?
+
+But this isn't high-priority, since `get_protocol_members` is mostly an internal debugging tool
+
+---
+
+_Comment by @AlexWaygood on 2026-01-11 13:13_
+
+@charliermarsh -- I pushed a commit fixing up and simplifying some of the `type()` expression parsing in `infer/builder.rs`, hope that's okay!
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/mro.rs`:668 on 2026-01-11 13:18_
+
+Is the reason why this is a separate struct to `MroError` is because the kinds of errors that could occur for dynamic class definitions is only a subset of the kinds of errors that could occur for static class definitions? If so, maybe it's worth saying that in the struct doc-comment?
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/mro.rs`:682 on 2026-01-11 13:19_
+
+```suggestion
+/// These mirror the relevant variants from `MroErrorKind` for static classes.
+```
+
+---
+
+_@AlexWaygood reviewed on 2026-01-11 13:22_
+
+---
+
+_Comment by @AlexWaygood on 2026-01-11 13:24_
+
+From my perspective, I think this is basically ready to go now! My remaining concerns are https://github.com/astral-sh/ruff/pull/22291#discussion_r2677500504 (which I'd like @MichaReiser's or @carljm's opinion on) and https://github.com/astral-sh/ruff/pull/22291#discussion_r2679453580.
+
+---
+
+_@charliermarsh reviewed on 2026-01-11 13:42_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/resources/mdtest/call/type.md`:1 on 2026-01-11 13:42_
+
+I believe I did this in https://github.com/astral-sh/ruff/pull/22499. I can revisit the approach in that review (RE whether it's worth using check_class_definitions), if that works?
+
+---
+
+_@AlexWaygood reviewed on 2026-01-11 13:48_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:1 on 2026-01-11 13:48_
+
+yeah sure!
+
+---
+
+_@AlexWaygood reviewed on 2026-01-11 14:08_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:638 on 2026-01-11 14:08_
+
+```suggestion
+    # TODO: `type[Unknown]` would cause fewer false positives
+    reveal_type(B)  # revealed: <class 'str'>
+
+    # Has string and tuple, but unknown additional args
+    C = type("C", (), *args, **kwargs)
+    # TODO: `type[Unknown]` would cause fewer false positives
+    reveal_type(C)  # revealed: type
+
+    # All three positional args provided, only **kwargs unknown
+    D = type("D", (), {}, **kwargs)
+    # TODO: `type[Unknown]` would cause fewer false positives
+    reveal_type(D)  # revealed: type
+```
+
+---
+
+_@AlexWaygood reviewed on 2026-01-11 14:28_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/call/type.md`:628 on 2026-01-11 14:28_
+
+I think here as well, `type[Unknown]` would cause fewer false positives (so I'd add a TODO here) -- it's ambiguous here whether we should pick the first overload (which would lead to us inferring `<class 'str'>` or the second overload (which would lead to us inferring a dynamic class-literal type). But either `<class 'str'>` or a dynamic class-literal type are both assignable to `type[Unknown]`, and it's a forgiving type that allows you to access most attributes on it.
+
+---
+
+_@charliermarsh reviewed on 2026-01-11 14:54_
+
+---
+
+_Review comment by @charliermarsh on `crates/ty_python_semantic/resources/mdtest/call/type.md`:628 on 2026-01-11 14:54_
+
+(Adding TODOs, going to tackle these in a separate PR.)
 
 ---

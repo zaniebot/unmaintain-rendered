@@ -8,9 +8,9 @@ labels:
   - rule
 assignees: []
 created_at: 2024-02-22T19:36:15Z
-updated_at: 2025-11-24T12:13:04Z
+updated_at: 2026-01-11T09:21:10Z
 url: https://github.com/astral-sh/ruff/issues/10084
-synced_at: 2026-01-10T11:09:52Z
+synced_at: 2026-01-11T09:56:57Z
 ```
 
 # EXE001 and EXE002 do not run on WSL
@@ -436,5 +436,17 @@ I see you fixed by removing the shebang with [d946262](https://github.com/fastap
 ---
 
 _Label `help wanted` removed by @MichaReiser on 2025-11-24 12:13_
+
+---
+
+_Comment by @MusicalNinjaDad on 2026-01-11 09:21_
+
+Overview of currently proposed solutions:
+
+| | WSL user, WSL FS (#10084) | Linux user USB stick (#12941) | WSL user, Win FS (#3110, #5445) |
+| -- | -- | -- | -- |
+| Status Quo | :x: (false negatives) | :x: (false positives) | :x: (false negatives) |
+| #17548 | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| #21724 | :white_check_mark: | :x: (false positives) | :x: (false positives) |
 
 ---

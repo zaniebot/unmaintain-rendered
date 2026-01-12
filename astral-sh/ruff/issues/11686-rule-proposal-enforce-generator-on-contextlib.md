@@ -8,9 +8,9 @@ labels:
   - rule
 assignees: []
 created_at: 2024-06-02T01:39:19Z
-updated_at: 2024-07-26T01:26:29Z
+updated_at: 2026-01-11T19:09:33Z
 url: https://github.com/astral-sh/ruff/issues/11686
-synced_at: 2026-01-10T11:09:53Z
+synced_at: 2026-01-11T19:14:50Z
 ```
 
 # Rule Proposal: Enforce `generator` on `contextlib.contextmanager` decorated functions
@@ -54,5 +54,13 @@ _Renamed from "Rule Proposal: Enforce `generator` on `contextlib.contextmanager`
 ---
 
 _Label `rule` added by @charliermarsh on 2024-07-26 01:26_
+
+---
+
+_Comment by @notatallshaw on 2026-01-11 19:09_
+
+I just recently came across this due the following PR being raised against packaging: https://github.com/pypa/packaging/pull/1046
+
+I wonder if another solution would be custom rules in `ty` for known `typeshed` inaccuracies?
 
 ---

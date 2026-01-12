@@ -8,9 +8,9 @@ labels:
   - internal
 assignees: []
 created_at: 2024-03-25T19:27:54Z
-updated_at: 2026-01-09T23:29:33Z
+updated_at: 2026-01-11T21:11:31Z
 url: https://github.com/astral-sh/uv/issues/2658
-synced_at: 2026-01-10T03:11:31Z
+synced_at: 2026-01-11T21:19:23Z
 ```
 
 # Dependency Dashboard
@@ -51,17 +51,19 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/cargo-util-0.x-lockfile -->Update Rust crate cargo-util to v0.2.25
  - [ ] <!-- unschedule-branch=renovate/clap-4.x-lockfile -->Update Rust crate clap to v4.5.54
  - [ ] <!-- unschedule-branch=renovate/console-0.x-lockfile -->Update Rust crate console to v0.16.2
- - [ ] <!-- unschedule-branch=renovate/insta-1.x-lockfile -->Update Rust crate insta to v1.45.1
  - [ ] <!-- unschedule-branch=renovate/jiff-0.x-lockfile -->Update Rust crate jiff to v0.2.17
  - [ ] <!-- unschedule-branch=renovate/proc-macro2-1.x-lockfile -->Update Rust crate proc-macro2 to v1.0.104
  - [ ] <!-- unschedule-branch=renovate/rcgen-0.x-lockfile -->Update Rust crate rcgen to v0.14.6
+ - [ ] <!-- unschedule-branch=renovate/rkyv-0.x-lockfile -->Update Rust crate rkyv to v0.8.13
  - [ ] <!-- unschedule-branch=renovate/rmp-serde-1.x-lockfile -->Update Rust crate rmp-serde to v1.3.1
  - [ ] <!-- unschedule-branch=renovate/serde_json-1.x-lockfile -->Update Rust crate serde_json to v1.0.148
- - [ ] <!-- unschedule-branch=renovate/syn-2.x-lockfile -->Update Rust crate syn to v2.0.112
+ - [ ] <!-- unschedule-branch=renovate/syn-2.x-lockfile -->Update Rust crate syn to v2.0.113
  - [ ] <!-- unschedule-branch=renovate/target-lexicon-0.x-lockfile -->Update Rust crate target-lexicon to v0.13.4
  - [ ] <!-- unschedule-branch=renovate/test-log-0.x-lockfile -->Update Rust crate test-log to v0.2.19
  - [ ] <!-- unschedule-branch=renovate/tikv-jemallocator-0.x-lockfile -->Update Rust crate tikv-jemallocator to v0.6.1
  - [ ] <!-- unschedule-branch=renovate/tokio-rustls-0.x-lockfile -->Update Rust crate tokio-rustls to v0.26.4
+ - [ ] <!-- unschedule-branch=renovate/tokio-stream-0.x-lockfile -->Update Rust crate tokio-stream to v0.1.18
+ - [ ] <!-- unschedule-branch=renovate/tokio-util-0.x-lockfile -->Update Rust crate tokio-util to v0.7.18
  - [ ] <!-- unschedule-branch=renovate/pubgrub -->Update Rust crate version-ranges to v0.1.4
  - [ ] <!-- unschedule-branch=renovate/swatinem-rust-cache-2.x -->Update Swatinem/rust-cache action to v2.8.2
  - [ ] <!-- unschedule-branch=renovate/tokio-tracing-monorepo -->Update tokio-tracing monorepo (`tracing`, `tracing-subscriber`)
@@ -81,12 +83,13 @@ The following updates are awaiting their schedule. To get an update now, click o
  - [ ] <!-- unschedule-branch=renovate/embed-manifest-1.x-lockfile -->Update Rust crate embed-manifest to v1.5.0
  - [ ] <!-- unschedule-branch=renovate/fs-err-3.x-lockfile -->Update Rust crate fs-err to v3.2.2
  - [ ] <!-- unschedule-branch=renovate/http-1.x-lockfile -->Update Rust crate http to v1.4.0
+ - [ ] <!-- unschedule-branch=renovate/insta-1.x-lockfile -->Update Rust crate insta to v1.46.0
  - [ ] <!-- unschedule-branch=renovate/junction-1.x-lockfile -->Update Rust crate junction to v1.3.0
  - [ ] <!-- unschedule-branch=renovate/reqwest-0.x -->Update Rust crate reqwest to 0.13.0
  - [ ] <!-- unschedule-branch=renovate/schemars-1.x-lockfile -->Update Rust crate schemars to v1.2.0
  - [ ] <!-- unschedule-branch=renovate/secret-service-5.x-lockfile -->Update Rust crate secret-service to v5.1.0
  - [ ] <!-- unschedule-branch=renovate/security-framework-3.x-lockfile -->Update Rust crate security-framework to v3.5.1
- - [ ] <!-- unschedule-branch=renovate/tokio-1.x-lockfile -->Update Rust crate tokio to v1.48.0
+ - [ ] <!-- unschedule-branch=renovate/tokio-1.x-lockfile -->Update Rust crate tokio to v1.49.0
  - [ ] <!-- unschedule-branch=renovate/windows-0.x -->Update Rust crate windows to 0.62.0
  - [ ] <!-- unschedule-branch=renovate/windows-registry-0.x -->Update Rust crate windows-registry to 0.6.0
  - [ ] <!-- unschedule-branch=renovate/wmi-0.x -->Update Rust crate wmi to 0.18.0
@@ -109,12 +112,10 @@ The following updates await pending status checks. To force their creation now, 
  - [ ] <!-- approvePr-branch=renovate/embarkstudios-cargo-deny-action-2.x -->Update EmbarkStudios/cargo-deny-action action to v2.0.15
  - [ ] <!-- approvePr-branch=renovate/h2-0.x-lockfile -->Update Rust crate h2 to v0.4.13
  - [ ] <!-- approvePr-branch=renovate/quote-1.x-lockfile -->Update Rust crate quote to v1.0.43
- - [ ] <!-- approvePr-branch=renovate/rkyv-0.x-lockfile -->Update Rust crate rkyv to v0.8.13
  - [ ] <!-- approvePr-branch=renovate/rustls-0.x-lockfile -->Update Rust crate rustls to v0.23.36
- - [ ] <!-- approvePr-branch=renovate/tokio-stream-0.x-lockfile -->Update Rust crate tokio-stream to v0.1.18
- - [ ] <!-- approvePr-branch=renovate/tokio-util-0.x-lockfile -->Update Rust crate tokio-util to v0.7.18
  - [ ] <!-- approvePr-branch=renovate/toml-0.x-lockfile -->Update Rust crate toml to v0.9.11
  - [ ] <!-- approvePr-branch=renovate/url-2.x-lockfile -->Update Rust crate url to v2.5.8
+ - [ ] <!-- approvePr-branch=renovate/data-encoding-2.x-lockfile -->Update Rust crate data-encoding to v2.10.0
  - [ ] <!-- approvePr-branch=renovate/indexmap-2.x-lockfile -->Update Rust crate indexmap to v2.13.0
  - [ ] <!-- approvePr-branch=renovate/whoami-2.x -->Update Rust crate whoami to v2
 
@@ -165,7 +166,7 @@ The following updates are blocked by an existing closed PR. To recreate the PR, 
  - `ctrlc 3.4.5`
  - `cyclonedx-bom 0.8.0`
  - `dashmap 6.1.0`
- - `data-encoding 2.6.0`
+ - `data-encoding 2.6.0` → [Updates: `2.6.0`]
  - `diskus 0.9.0`
  - `dotenvy 0.15.7`
  - `dunce 1.0.5`

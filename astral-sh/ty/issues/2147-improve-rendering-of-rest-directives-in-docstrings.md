@@ -9,9 +9,9 @@ labels:
   - server
 assignees: []
 created_at: 2025-12-21T16:44:09Z
-updated_at: 2026-01-09T04:14:55Z
+updated_at: 2026-01-11T23:23:28Z
 url: https://github.com/astral-sh/ty/issues/2147
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-12T00:23:29Z
 ```
 
 # Improve rendering of ReST directives in docstrings
@@ -59,5 +59,11 @@ This should be a nice and easy first contribution. We already parse out and find
 https://github.com/astral-sh/ruff/blob/f9f7a6901bc78f7429c6b2393d747350ac704f33/crates/ty_ide/src/docstring.rs#L361
 
 
+
+---
+
+_Comment by @AryanBagade on 2026-01-11 23:23_
+
+hey @Gankra can i work on it, been contributing to pyrefly owuld love to contribute here !!!
 
 ---

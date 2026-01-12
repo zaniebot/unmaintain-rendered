@@ -8,9 +8,9 @@ labels:
   - rule
 assignees: []
 created_at: 2025-12-23T22:35:08Z
-updated_at: 2025-12-25T10:40:19Z
+updated_at: 2026-01-10T22:41:13Z
 url: https://github.com/astral-sh/ruff/issues/22166
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-11T00:46:06Z
 ```
 
 # RUF012 warns for ctypes Structure._fields_
@@ -55,5 +55,11 @@ Thanks!
 > In the meantime I think you could annotate the field as either typing.ClassVar or typing.Final to suppress the diagnostic. Or maybe use a tuple for the _fields_ since the docs just say it needs to be a sequence.
 
 I only found this lint while looking through additional lints to add. For now I'll just disable it, because adding the annotations or switching the list to a tuple is too much churn. Since the upstream ctypes documentation uses lists of tuples for `_fields_` everywhere, this is probably in most cases written like this. 
+
+---
+
+_Comment by @caiquejjx on 2026-01-10 22:41_
+
+@ntBre I'd like to work in adding the exception if it's desired
 
 ---

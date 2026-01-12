@@ -9,9 +9,9 @@ labels:
   - needs-mre
 assignees: []
 created_at: 2025-03-07T09:35:20Z
-updated_at: 2025-11-05T19:10:52Z
+updated_at: 2026-01-11T14:23:45Z
 url: https://github.com/astral-sh/uv/issues/12036
-synced_at: 2026-01-10T03:23:53Z
+synced_at: 2026-01-11T15:05:52Z
 ```
 
 # Build intermittently fails when uv cache is on NFS mount
@@ -250,5 +250,13 @@ _Label `needs-mre` added by @konstin on 2025-11-05 18:16_
 _Comment by @konstin on 2025-11-05 19:10_
 
 I consider that a bug in the NFS implementations that they expose the `.nfs` and prevent directories from being deleted, but we may need to add some backoff and retry as workaround.
+
+---
+
+_Comment by @chrispy-snps on 2026-01-11 14:13_
+
+For some reason, we are now getting this error consistently too. I think the sleep/retry would work because (1) the .nfs* lock changes each time and (2) it's not present when I check for it, which means it likely expired just after being created.
+
+In the past, I have also had to implement sleep/retry logic to work around transient .nfs* locks. It feels terribly kludgy as a software developer...
 
 ---
